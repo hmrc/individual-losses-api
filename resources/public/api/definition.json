@@ -9,6 +9,11 @@
       "key": "hi",
       "name": "Say Hi",
       "description": "Say Hi!"
+    },
+    {
+      "key": "hello or hi",
+      "name": "Say Hello or Hi",
+      "description": "Say Hello or Hi!"
     }
   ],
   "api": {
