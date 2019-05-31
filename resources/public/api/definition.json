@@ -4,16 +4,21 @@
       "key": "hello",
       "name": "Say Hello",
       "description": "Say Hello!"
+    },
+    {
+      "key": "hi",
+      "name": "Say Hi",
+      "description": "Say Hi!"
     }
   ],
   "api": {
-    "name": "Hello World",
+    "name": "Individual Losses (MTD)",
     "description": "A 'hello world' example of an API on the HMRC API Developer Hub.",
-    "context": "hello",
+    "context": "individual-losses-api",
     "versions": [
       {
         "version": "1.0",
-        "status": "STABLE",
+        "status": "ALPHA",
         "endpointsEnabled": true
       }
     ]
