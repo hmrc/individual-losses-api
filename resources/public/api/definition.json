@@ -1,0 +1,21 @@
+{
+  "scopes": [
+    {
+      "key": "hello",
+      "name": "Say Hello",
+      "description": "Say Hello!"
+    }
+  ],
+  "api": {
+    "name": "Hello World",
+    "description": "A 'hello world' example of an API on the HMRC API Developer Hub.",
+    "context": "hello",
+    "versions": [
+      {
+        "version": "1.0",
+        "status": "STABLE",
+        "endpointsEnabled": true
+      }
+    ]
+  }
+}
