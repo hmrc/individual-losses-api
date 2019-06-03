@@ -31,7 +31,7 @@ uses:
 
         Any request to this endpoint initiates a 'Hello World' response.
       is: [headers.acceptHeader]
-      (annotations.scope): "hello or hi"
+      (annotations.scope): "yo"
       securedBy: [ sec.oauth_2_0: { scopes: [ "hello", "hi" ] } ]
       responses:
         200:
@@ -49,7 +49,7 @@ uses:
 
         Any authorised request to this endpoint initiates a 'Hello User' response.
       is: [headers.acceptHeader]
-      (annotations.scope): "hello"
+      (annotations.scope): "yo"
       securedBy: [ sec.oauth_2_0: { scopes: [ "hello" ] } ]
       responses:
         200:
