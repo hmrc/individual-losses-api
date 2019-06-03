@@ -1,0 +1,1 @@
+POST       /ni/:nino/:taxYear/sampleEndpoint                  v2.controllers.SampleController.handleRequest(nino: String, taxYear: String)

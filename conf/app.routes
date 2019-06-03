@@ -1,3 +1,0 @@
-GET         /world                         uk.gov.hmrc.hello.controllers.HelloWorldController.world
-GET         /user                          uk.gov.hmrc.hello.controllers.HelloWorldController.user
-GET         /application                   uk.gov.hmrc.hello.controllers.HelloWorldController.application
