@@ -19,7 +19,7 @@
   "api": {
     "name": "Individual Losses (MTD)",
     "description": "A 'hello world' example of an API on the HMRC API Developer Hub.",
-    "context": "individual-losses-api",
+    "context": "losses/individual",
     "versions": [
       {
         "version": "1.0",
