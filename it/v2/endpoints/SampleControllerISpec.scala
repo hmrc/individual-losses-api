@@ -19,7 +19,7 @@ package v2.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
 import play.api.libs.json.Json
-import play.api.libs.ws.{EmptyBody, WSRequest, WSResponse}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v2.models.errors._
 import v2.models.requestData.DesTaxYear
@@ -49,6 +49,14 @@ class SampleControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
     }
+
+    def errorBody(code: String): String =
+      s"""
+         |      {
+         |        "code": "$code",
+         |        "reason": "des message"
+         |      }
+      """.stripMargin
   }
 
   "Calling the sample endpoint" should {
@@ -74,70 +82,61 @@ class SampleControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-    "return 500 (Internal Server Error)" when {
+    "return error according to spec" when {
 
-      createErrorTest(Status.BAD_REQUEST, "INVALID_REQUEST", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.BAD_REQUEST, "INVALID_TAX_CRYSTALLISE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-    }
+      "validation error" when {
+        def validationErrorTest(requestNino: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"validation fails with ${expectedBody.code} error" in new SampleTest {
 
-    "return 400 (Bad Request)" when {
-      createErrorTest(Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError)
-      createErrorTest(Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError)
-    }
+            override val nino: String = requestNino
+            override val taxYear: String = requestTaxYear
 
-    "return 403 (Forbidden)" when {
-      // TODO
-    }
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+            }
 
-    def createErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-      s"des returns an $desCode error" in new SampleTest {
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DesStub.serviceError(nino, DesTaxYear.fromMtd(taxYear).toString, desStatus, errorBody(desCode))
+            val response: WSResponse = await(request().post(requestJson))
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
         }
 
-        val response: WSResponse = await(request().post(requestJson))
-        response.status shouldBe expectedStatus
-        response.json shouldBe Json.toJson(expectedBody)
+        val input = Seq(
+        ("AA1123A", "2017-18", Status.BAD_REQUEST, NinoFormatError),
+        ("AA123456A", "20177", Status.BAD_REQUEST, TaxYearFormatError),
+        ("AA123456A", "2015-16", Status.BAD_REQUEST, RuleTaxYearNotSupportedError))
+
+
+        input.foreach(args => (validationErrorTest _).tupled(args))
       }
-    }
 
-    "return 400 (Bad Request)" when {
-      createRequestValidationErrorTest("AA1123A", "2017-18", Status.BAD_REQUEST, NinoFormatError)
-      createRequestValidationErrorTest("AA123456A", "20177", Status.BAD_REQUEST, TaxYearFormatError)
-      createRequestValidationErrorTest("AA123456A", "2015-16", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-    }
+      "des service error" when{
+      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"des returns an $desCode error and status $desStatus" in new SampleTest {
 
-    def createRequestValidationErrorTest(requestNino: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-      s"validation fails with ${expectedBody.code} error" in new SampleTest {
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            DesStub.serviceError(nino, DesTaxYear.fromMtd(taxYear).toString, desStatus, errorBody(desCode))
+          }
 
-        override val nino: String = requestNino
-        override val taxYear: String = requestTaxYear
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
+          val response: WSResponse = await(request().post(requestJson))
+          response.status shouldBe expectedStatus
+          response.json shouldBe Json.toJson(expectedBody)
         }
-
-        val response: WSResponse = await(request().post(requestJson))
-        response.status shouldBe expectedStatus
-        response.json shouldBe Json.toJson(expectedBody)
       }
-    }
+
+      val input = Seq(
+        (Status.BAD_REQUEST, "INVALID_REQUEST", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+        (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
+        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError))
+
+      input.foreach(args => (serviceErrorTest _).tupled(args))
+    }}
   }
-
-  def errorBody(code: String): String =
-    s"""
-       |      {
-       |        "code": "$code",
-       |        "reason": "des message"
-       |      }
-      """.stripMargin
-
 }

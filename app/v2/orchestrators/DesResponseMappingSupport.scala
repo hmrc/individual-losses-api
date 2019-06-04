@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package v2.controllers
+package v2.orchestrators
 
 import play.api.Logger
+import v2.controllers.EndpointLogContext
 import v2.models.errors._
 import v2.models.outcomes.ResponseWrapper
 

@@ -20,24 +20,25 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v2.mocks.orchestrators.MockSampleOrchestrator
 import v2.mocks.requestParsers.MockSampleRequestDataParser
-import v2.mocks.services.{MockAuditService, MockSampleService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v2.models.audit.{AuditError, AuditEvent, SampleAuditDetail, SampleAuditResponse}
+import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import v2.models.audit.{ AuditError, AuditEvent, SampleAuditDetail, SampleAuditResponse }
 import v2.models.des.DesSampleResponse
-import v2.models.domain.SampleRequestBody
+import v2.models.domain.{ SampleRequestBody, SampleResponse }
 import v2.models.errors._
 import v2.models.outcomes.ResponseWrapper
-import v2.models.requestData.{DesTaxYear, SampleRawData, SampleRequestData}
+import v2.models.requestData.{ DesTaxYear, SampleRawData, SampleRequestData }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SampleControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockSampleRequestDataParser
-    with MockSampleService
+    with MockSampleOrchestrator
     with MockAuditService {
 
   trait Test {
@@ -47,7 +48,7 @@ class SampleControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       requestDataParser = mockRequestDataParser,
-      sampleService = mockSampleService,
+      sampleOrchestrator = mockSampleOrchestrator,
       auditService = mockAuditService,
       cc = cc
     )
@@ -56,22 +57,24 @@ class SampleControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
   }
 
-  private val nino = "AA123456A"
-  private val taxYear = "2017-18"
+  private val nino          = "AA123456A"
+  private val taxYear       = "2017-18"
   private val correlationId = "X-123"
 
-  private val requestBodyJson = Json.parse(
-    """{
+  private val requestBodyJson = Json.parse("""{
       |  "data" : "someData"
+      |}
+    """.stripMargin)
+
+  private val responseBody = Json.parse("""{
+      |  "responseData" : "result"
       |}
     """.stripMargin)
 
   private val requestBody = SampleRequestBody("someData")
 
-  private val rawData = SampleRawData(nino, taxYear, requestBodyJson)
+  private val rawData     = SampleRawData(nino, taxYear, requestBodyJson)
   private val requestData = SampleRequestData(Nino(nino), DesTaxYear.fromMtd(taxYear), requestBody)
-  private val responseData = DesSampleResponse("someResponseData")
-
 
   "handleRequest" should {
     "return CREATED" when {
@@ -81,19 +84,17 @@ class SampleControllerSpec
           .parse(rawData)
           .returns(Right(requestData))
 
-        MockSampleService
-          .doService(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseData))))
+        MockSampleOrchestrator
+          .orchestrate(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, SampleResponse("result")))))
 
         val result: Future[Result] = controller.handleRequest(nino, taxYear)(fakePostRequest(requestBodyJson))
-        status(result) shouldBe CREATED
 
-        val detail = SampleAuditDetail("Individual",
-          None,
-          nino,
-          taxYear,
-          correlationId,
-          SampleAuditResponse(CREATED, None))
+        status(result) shouldBe CREATED
+        contentAsJson(result) shouldBe responseBody
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val detail = SampleAuditDetail("Individual", None, nino, taxYear, correlationId, SampleAuditResponse(CREATED, None))
         val event: AuditEvent[SampleAuditDetail] =
           AuditEvent[SampleAuditDetail]("sampleAuditType", "sample-transaction-type", detail)
         MockedAuditService.verifyAuditEvent(event).once
@@ -141,17 +142,17 @@ class SampleControllerSpec
         input.foreach(args => (errorsFromParserTester _).tupled(args))
       }
 
-      "des errors occur" must {
-        def errorsFromServiceTester(errorCode: String, mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $errorCode error is returned from the service" in new Test {
+      "orchestrator errors occur" must {
+        def orchestrationErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
+          s"a $mtdError error is returned from the service" in new Test {
 
             MockSampleRequestDataParser
               .parse(rawData)
               .returns(Right(requestData))
 
-            MockSampleService
-              .doService(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(errorCode))))))
+            MockSampleOrchestrator
+              .orchestrate(requestData)
+              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
 
             val result: Future[Result] = controller.handleRequest(nino, taxYear)(fakePostRequest(requestBodyJson))
 
@@ -174,13 +175,12 @@ class SampleControllerSpec
         }
 
         val input = Seq(
-          ("INVALID_NINO", NinoFormatError, BAD_REQUEST),
-          ("INVALID_TAX_YEAR", TaxYearFormatError, BAD_REQUEST),
-          ("SERVER_ERROR", DownstreamError, INTERNAL_SERVER_ERROR),
-          ("SERVICE_UNAVAILABLE", DownstreamError, INTERNAL_SERVER_ERROR)
+          (NinoFormatError, BAD_REQUEST),
+          (TaxYearFormatError, BAD_REQUEST),
+          (DownstreamError, INTERNAL_SERVER_ERROR)
         )
 
-        input.foreach(args => (errorsFromServiceTester _).tupled(args))
+        input.foreach(args => (orchestrationErrors _).tupled(args))
       }
     }
   }

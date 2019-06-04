@@ -18,7 +18,7 @@ package v2.models.domain
 
 import play.api.libs.json.{Json, Writes}
 
-case class SampleResponse(requiredData: String)
+case class SampleResponse(responseData: String)
 
 object SampleResponse {
   implicit val writes: Writes[SampleResponse] = Json.writes[SampleResponse]

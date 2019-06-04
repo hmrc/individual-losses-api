@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package v2.models.domain
 
 import play.api.libs.json.Json
@@ -24,7 +25,7 @@ class SampleResponseSpec extends UnitSpec {
       Json.toJson(SampleResponse("someData")) shouldBe Json.parse(
         """
           |{
-          |  "requiredData" : "someData"
+          |  "responseData" : "someData"
           |}
         """.stripMargin)
     }
