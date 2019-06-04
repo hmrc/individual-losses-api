@@ -32,6 +32,9 @@ lazy val microservice = Project(appName, file("."))
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     scalaVersion := "2.11.12"
   )
+  .settings(
+    unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
+  )
   .settings(majorVersion := 0)
   .settings(publishingSettings: _*)
   .settings(CodeCoverageSettings.settings: _*)

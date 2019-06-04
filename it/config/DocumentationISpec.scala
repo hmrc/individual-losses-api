@@ -63,9 +63,9 @@ class DocumentationISpec extends IntegrationBaseSpec {
 
   "a documentation request" must {
     "return the documentation" in {
-      val response: WSResponse = await(buildRequest("/api/conf/2.0/application.raml").get())
+      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
       response.status shouldBe Status.OK
-      response.json shouldBe ""
+      response.body[String] should startWith("#%RAML 1.0")
     }
   }
 
