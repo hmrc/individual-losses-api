@@ -1,6 +1,6 @@
 # Add all the application routes to the app.routes file
 ->         /                     health.Routes
 ->         /                     definition.Routes
-->         /2.0                  v2.Routes
+->         /1.0                  v1.Routes
 
 GET        /admin/metrics        com.kenshoo.play.metrics.MetricsController.metrics

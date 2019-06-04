@@ -20,7 +20,7 @@ import definition.APIStatus.APIStatus
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import config.{AppConfig, FeatureSwitch}
-import v2.constants.Versions._
+import Versions._
 
 @Singleton
 class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
@@ -47,8 +47,9 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         description = "An API for providing individual losses data",
         context = appConfig.apiGatewayContext,
         versions = Seq(
-          APIVersion(version = VERSION_1, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_1), endpointsEnabled = true),
-          APIVersion(version = VERSION_2, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_2), endpointsEnabled = true)
+          APIVersion(version = VERSION_1, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_1), endpointsEnabled = true)
+//          ,
+//          APIVersion(version = VERSION_2, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_2), endpointsEnabled = true)
         ),
         requiresTrust = None
       )

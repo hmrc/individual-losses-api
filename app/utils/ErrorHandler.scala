@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.routing.Router
-import v2.models.errors.MtdError
+import v1.models.errors.MtdError
 
 import scala.concurrent._
 
