@@ -23,28 +23,28 @@ import v2.constants.Versions._
 import v2.definition.APIStatus.APIStatus
 
 @Singleton
-class SelfAssessmentApiDefinition @Inject()(appConfig: AppConfig) {
+class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
 
-  private val readScope  = "read:self-assessment"
-  private val writeScope = "write:self-assessment"
+  private val readScope  = "read:losses"
+  private val writeScope = "write:losses"
 
   lazy val definition: Definition =
     Definition(
       scopes = Seq(
         Scope(
           key = readScope,
-          name = "View your Self-Assessment information",
-          description = "Allow read access to self assessment data"
+          name = "View your Losses information",
+          description = "Allow read access to losses data"
         ),
         Scope(
           key = writeScope,
-          name = "Change your Self-Assessment information",
-          description = "Allow write access to self assessment data"
+          name = "Change your Losses information",
+          description = "Allow write access to losses data"
         )
       ),
       api = APIDefinition(
-        name = "Self Assessment (MTD)",
-        description = "An API for providing self assessment data and obtaining tax calculations",
+        name = "Individual Losses (MTD)",
+        description = "An API for providing individual losses data",
         context = appConfig.apiGatewayContext,
         versions = Seq(
           APIVersion(version = VERSION_1, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_1), endpointsEnabled = true),
