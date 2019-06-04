@@ -20,22 +20,22 @@ import java.util.UUID
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.Logger
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v2.controllers.requestParsers.SampleRequestDataParser
-import v2.models.audit.{AuditEvent, SampleAuditDetail, SampleAuditResponse}
+import v2.models.audit.{ AuditEvent, SampleAuditDetail, SampleAuditResponse }
 import v2.models.auth.UserDetails
 import v2.models.errors._
 import v2.models.requestData.SampleRawData
 import v2.orchestrators.SampleOrchestrator
 import v2.services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class SampleController @Inject()(val authService: EnrolmentsAuthService,
@@ -44,7 +44,7 @@ class SampleController @Inject()(val authService: EnrolmentsAuthService,
                                  sampleOrchestrator: SampleOrchestrator,
                                  auditService: AuditService,
                                  cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) {
+    extends AuthorisedController(cc) {
 
   protected val logger: Logger = Logger(this.getClass)
 
@@ -56,21 +56,22 @@ class SampleController @Inject()(val authService: EnrolmentsAuthService,
       val rawData = SampleRawData(nino, taxYear, request.body)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](requestDataParser.parseRequest(rawData))
+          parsedRequest  <- EitherT.fromEither[Future](requestDataParser.parseRequest(rawData))
           vendorResponse <- EitherT(sampleOrchestrator.orchestrate(parsedRequest))
         } yield {
-          logger.info(s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
-          auditSubmission(
-            createAuditDetails(rawData, CREATED, vendorResponse.correlationId, request.userDetails))
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+          auditSubmission(createAuditDetails(rawData, CREATED, vendorResponse.correlationId, request.userDetails))
 
           Created(Json.toJson(vendorResponse.responseData))
-            .withHeaders("X-CorrelationId" -> vendorResponse.correlationId).as(MimeTypes.JSON)
+            .withHeaders("X-CorrelationId" -> vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withHeaders("X-CorrelationId" -> correlationId)
+        val result        = errorResult(errorWrapper).withHeaders("X-CorrelationId" -> correlationId)
         auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
         result
       }.merge
@@ -78,9 +79,10 @@ class SampleController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError | RuleTaxYearRangeExceededError =>
+      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
+          RuleTaxYearRangeExceededError =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }

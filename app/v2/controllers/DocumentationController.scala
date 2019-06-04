@@ -18,12 +18,12 @@ package v2.controllers
 
 
 import controllers.Assets
+import definition.ApiDefinitionFactory
 import javax.inject.{Inject, Singleton}
 import play.api.http.HttpErrorHandler
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.api.controllers.{DocumentationController => HmrcDocumentationController}
-import v2.definition.ApiDefinitionFactory
 
 @Singleton
 class DocumentationController @Inject()(selfAssessmentApiDefinition: ApiDefinitionFactory,

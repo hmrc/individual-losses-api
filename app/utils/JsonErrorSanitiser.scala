@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-import sbt.Setting
-import scoverage.ScoverageKeys
+package utils
 
-object CodeCoverageSettings {
+object JsonErrorSanitiser {
 
-  private val excludedPackages: Seq[String] = Seq(
-    "<empty>",
-    "Reverse.*",
-    "uk.gov.hmrc.BuildInfo",
-    "app.*",
-    "prod.*",
-    ".*Routes.*",
-    "config.*",
-    "testOnly.*",
-    "testOnlyDoNotUseInAppConf.*"
-  )
+  def sanitise(str: String): String = {
 
-  val settings: Seq[Setting[_]] = Seq(
-    ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimum := 95,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
-  )
+    val searchString = "Invalid Json"
+
+    if (str.startsWith(searchString)) {
+      "Invalid Json"
+    } else {
+      val index = str.indexOf(searchString)
+      if (index > 0) {
+        str.substring(0, index).trim
+      } else {
+        str.trim
+      }
+    }
+  }
+
 }

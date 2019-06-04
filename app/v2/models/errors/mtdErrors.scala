@@ -16,7 +16,7 @@
 
 package v2.models.errors
 
-import play.api.libs.json.{ Json, Writes }
+import play.api.libs.json.{Json, Writes}
 
 case class MtdError(code: String, message: String)
 

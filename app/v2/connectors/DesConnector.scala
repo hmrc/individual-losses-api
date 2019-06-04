@@ -22,7 +22,7 @@ import play.api.libs.json.Writes
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import v2.config.AppConfig
+import config.AppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 

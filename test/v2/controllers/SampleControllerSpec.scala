@@ -22,13 +22,12 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.orchestrators.MockSampleOrchestrator
 import v2.mocks.requestParsers.MockSampleRequestDataParser
-import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import v2.models.audit.{ AuditError, AuditEvent, SampleAuditDetail, SampleAuditResponse }
-import v2.models.des.DesSampleResponse
-import v2.models.domain.{ SampleRequestBody, SampleResponse }
+import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v2.models.audit.{AuditError, AuditEvent, SampleAuditDetail, SampleAuditResponse}
+import v2.models.domain.{SampleRequestBody, SampleResponse}
 import v2.models.errors._
 import v2.models.outcomes.ResponseWrapper
-import v2.models.requestData.{ DesTaxYear, SampleRawData, SampleRequestData }
+import v2.models.requestData.{DesTaxYear, SampleRawData, SampleRequestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -136,6 +135,7 @@ class SampleControllerSpec
           (TaxYearFormatError, BAD_REQUEST),
           (RuleTaxYearNotSupportedError, BAD_REQUEST),
           (RuleTaxYearRangeExceededError, BAD_REQUEST),
+          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )
 

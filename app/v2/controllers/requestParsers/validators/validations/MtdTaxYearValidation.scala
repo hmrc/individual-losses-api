@@ -16,7 +16,7 @@
 
 package v2.controllers.requestParsers.validators.validations
 
-import v2.config.FixedConfig
+import config.FixedConfig
 import v2.models.errors.MtdError
 import v2.models.requestData.DesTaxYear
 

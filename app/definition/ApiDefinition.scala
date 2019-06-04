@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package v2.definition
+package definition
 
+import definition.APIStatus.APIStatus
 import play.api.libs.json.{Format, Json}
-import v2.definition.APIStatus.APIStatus
-import v2.enums.EnumJson
+import utils.enums.EnumJson
 
 case class Access(`type`: String, whitelistedApplicationIds: Seq[String])
 

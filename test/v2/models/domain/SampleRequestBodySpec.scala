@@ -31,7 +31,7 @@ class SampleRequestBodySpec extends UnitSpec with JsonErrorValidators {
         """.stripMargin
       )
 
-      "return a valid CrystallisationRequest model" in {
+      "return a valid model" in {
         SampleRequestBody("someData") shouldBe inputJson.as[SampleRequestBody]
       }
 

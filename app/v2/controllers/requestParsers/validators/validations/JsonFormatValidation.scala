@@ -22,9 +22,9 @@ import v2.models.errors.MtdError
 
 object JsonFormatValidation {
 
-  def validate[A](data: AnyContentAsJson, error: MtdError)(implicit reads: Reads[A]): List[MtdError] = {
+  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A]): List[MtdError] = {
 
-    data.json.validate[A] match {
+    data.validate[A] match {
       case JsSuccess(_, _) => NoValidationErrors
       case _               => List(error)
     }

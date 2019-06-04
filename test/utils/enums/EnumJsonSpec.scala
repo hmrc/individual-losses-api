@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.enums
+package utils.enums
 
 import play.api.libs.json.{Format, Json}
 import support.UnitSpec

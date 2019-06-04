@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.config
+package config
 
 import com.google.inject.AbstractModule
 

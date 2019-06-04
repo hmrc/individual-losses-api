@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuditServiceSpec extends ServiceSpec {
 
   private trait Test {
-    val mockedAppName = "mtd-crystallisation"
+    val mockedAppName = "sample-application"
     val mockAuditConnector: AuditConnector = mock[AuditConnector]
     val mockConfig: Configuration = mock[Configuration]
 
@@ -42,9 +42,9 @@ class AuditServiceSpec extends ServiceSpec {
 
   "AuditService" when {
     "auditing an event" should {
-      val auditType = "Crystallise"
-      val transactionName = "Crystallise"
-      val eventDetails = "CrystalliseDetails"
+      val auditType = "auditType"
+      val transactionName = "transaction-name"
+      val eventDetails = "EventDetails"
       val expected: Future[AuditResult] = Future.successful(Success)
       "return a successful audit result" in new Test {
 

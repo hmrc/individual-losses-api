@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v2.definition
+package definition
 
+import definition.APIStatus.APIStatus
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import v2.config.{AppConfig, FeatureSwitch}
+import config.{AppConfig, FeatureSwitch}
 import v2.constants.Versions._
-import v2.definition.APIStatus.APIStatus
 
 @Singleton
 class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {

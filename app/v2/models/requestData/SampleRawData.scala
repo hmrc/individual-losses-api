@@ -18,4 +18,4 @@ package v2.models.requestData
 
 import play.api.libs.json.JsValue
 
-case class SampleRawData(nino: String, taxYear: String, body : JsValue) extends RawData
+case class SampleRawData(nino: String, taxYear: String, body: JsValue) extends RawData

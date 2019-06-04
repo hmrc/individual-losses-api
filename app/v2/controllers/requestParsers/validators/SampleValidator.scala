@@ -17,7 +17,8 @@
 package v2.controllers.requestParsers.validators
 
 import v2.controllers.requestParsers.validators.validations._
-import v2.models.errors.{ MtdError, RuleTaxYearNotSupportedError }
+import v2.models.domain.SampleRequestBody
+import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
 import v2.models.requestData.SampleRawData
 
 class SampleValidator extends Validator[SampleRawData] {
@@ -27,7 +28,8 @@ class SampleValidator extends Validator[SampleRawData] {
   private def parameterFormatValidation: SampleRawData => List[List[MtdError]] = (data: SampleRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      TaxYearValidation.validate(data.taxYear)
+      TaxYearValidation.validate(data.taxYear),
+      JsonFormatValidation.validate[SampleRequestBody](data.body, RuleIncorrectOrEmptyBodyError)
     )
   }
 

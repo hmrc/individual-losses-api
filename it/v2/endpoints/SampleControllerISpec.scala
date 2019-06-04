@@ -82,6 +82,28 @@ class SampleControllerISpec extends IntegrationBaseSpec {
       }
     }
 
+    "return bad request error" when {
+      "badly formed json body" in new SampleTest {
+         val json =
+          s"""
+             |{
+             |  badJson
+             |}
+    """.stripMargin
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.serviceSuccess(nino, DesTaxYear.fromMtd(taxYear).toString)
+        }
+
+        val response: WSResponse = await(request().addHttpHeaders(("Content-Type", "application/json")).post(json))
+        response.status shouldBe Status.BAD_REQUEST
+        response.json shouldBe Json.toJson(MtdError("INVALID_REQUEST", "Invalid Json"))
+      }
+    }
+
     "return error according to spec" when {
 
       "validation error" when {
@@ -104,39 +126,40 @@ class SampleControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-        ("AA1123A", "2017-18", Status.BAD_REQUEST, NinoFormatError),
-        ("AA123456A", "20177", Status.BAD_REQUEST, TaxYearFormatError),
-        ("AA123456A", "2015-16", Status.BAD_REQUEST, RuleTaxYearNotSupportedError))
+          ("AA1123A", "2017-18", Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "20177", Status.BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "2015-16", Status.BAD_REQUEST, RuleTaxYearNotSupportedError))
 
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when{
-      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"des returns an $desCode error and status $desStatus" in new SampleTest {
+      "des service error" when {
+        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"des returns an $desCode error and status $desStatus" in new SampleTest {
 
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            DesStub.serviceError(nino, DesTaxYear.fromMtd(taxYear).toString, desStatus, errorBody(desCode))
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+              DesStub.serviceError(nino, DesTaxYear.fromMtd(taxYear).toString, desStatus, errorBody(desCode))
+            }
+
+            val response: WSResponse = await(request().post(requestJson))
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
           }
-
-          val response: WSResponse = await(request().post(requestJson))
-          response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedBody)
         }
+
+        val input = Seq(
+          (Status.BAD_REQUEST, "INVALID_REQUEST", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
+          (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError))
+
+        input.foreach(args => (serviceErrorTest _).tupled(args))
       }
-
-      val input = Seq(
-        (Status.BAD_REQUEST, "INVALID_REQUEST", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-        (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError))
-
-      input.foreach(args => (serviceErrorTest _).tupled(args))
-    }}
+    }
   }
 }
