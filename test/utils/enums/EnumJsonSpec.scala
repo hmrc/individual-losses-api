@@ -16,10 +16,11 @@
 
 package utils.enums
 
-import play.api.libs.json.{Format, Json}
+import org.scalatest.Inside
+import play.api.libs.json.{Format, JsError, Json}
 import support.UnitSpec
 
-class EnumJsonSpec extends UnitSpec {
+class EnumJsonSpec extends UnitSpec with Inside {
 
   object TestEnum extends Enumeration {
     type TestEnum = Value
@@ -49,6 +50,30 @@ class EnumJsonSpec extends UnitSpec {
 
     "allow json writes" in {
       Json.toJson(Holder(TestEnum.ITEM1)) shouldBe json
+    }
+
+    "validates unknown enum values" in {
+      val json = Json.parse(
+        """
+          |{
+          |   "item" : "ITEM_UNKNOWN"
+          |}
+        """.stripMargin)
+      inside(json.validate[Holder]) {
+        case e: JsError => e.errors.head._2.head.message should include("does not contain 'ITEM_UNKNOWN'")
+      }
+    }
+
+    "validates invalid structure" in {
+      val json = Json.parse(
+        """
+          |{
+          |   "item" : 1
+          |}
+        """.stripMargin)
+      inside(json.validate[Holder]) {
+        case e: JsError => e.errors.head._2.head.message should include("String value expected")
+      }
     }
   }
 }
