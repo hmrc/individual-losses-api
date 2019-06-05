@@ -2,7 +2,7 @@
 <configuration>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/api-microservice.log</file>
+        <file>logs/microservice.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
@@ -28,7 +28,7 @@
     </appender>
 
     <appender name="CONNECTOR_LOG_FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/connectors.log</file>
+        <file>logs/connector.log</file>
         <encoder>
             <pattern>%message%n</pattern>
         </encoder>
@@ -43,6 +43,8 @@
         <appender-ref ref="STDOUT_IGNORE_NETTY" />
     </logger>
 
+    <logger name="com.google.inject" level="INFO"/>
+
     <logger name="uk.gov" level="INFO"/>
 
     <logger name="application" level="DEBUG"/>
@@ -51,7 +53,7 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <root level="${logger.application:-WARN}">
+    <root level="INFO">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
