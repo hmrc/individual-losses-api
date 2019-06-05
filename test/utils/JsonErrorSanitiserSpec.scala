@@ -24,33 +24,20 @@ class JsonErrorSanitiserSpec extends UnitSpec {
   "JsonErrorSanitiser" should {
 
     "return an empty string for an empty string" in {
-
-      val inputString = ""
-      val expectedString = ""
-
-      val result = JsonErrorSanitiser.sanitise(inputString)
-      result shouldBe expectedString
-
+      JsonErrorSanitiser.sanitise("") shouldBe ""
     }
 
     "return the original non-sensitive string with spaces trimmed" in {
-
-      val inputString = "this data is not sensitive \n      "
-      val expectedString = "this data is not sensitive"
-
-      val result = JsonErrorSanitiser.sanitise(inputString)
-      result shouldBe expectedString
-
+      JsonErrorSanitiser.sanitise("  \n this data is not sensitive \n      ") shouldBe "this data is not sensitive"
     }
 
     "return the original sensitive string sanitised with spaces trimmed" in {
+      JsonErrorSanitiser.sanitise("Invalid Json: sensitive information  ") shouldBe "Invalid Json"
+    }
 
-      val inputString = "Invalid Json: Unexpected character (''' (code 39)): expected a valid value (number, String, array, object, 'true', 'false' or 'null')     "
-      val expectedString = "Invalid Json"
-
-      val result = JsonErrorSanitiser.sanitise(inputString)
-      result shouldBe expectedString
-
+    "return a non-sentitive prefix" in {
+      JsonErrorSanitiser.sanitise("Some not sensitive message. Invalid Json: sensitive information") shouldBe
+        "Some not sensitive message."
     }
 
   }

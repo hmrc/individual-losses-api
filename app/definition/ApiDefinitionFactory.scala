@@ -25,7 +25,7 @@ import Versions._
 @Singleton
 class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
 
-  private val readScope  = "read:losses"
+  private val readScope = "read:losses"
   private val writeScope = "write:losses"
 
   lazy val definition: Definition =
@@ -48,31 +48,24 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         context = appConfig.apiGatewayContext,
         versions = Seq(
           APIVersion(version = VERSION_1, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_1), endpointsEnabled = true)
-//          ,
-//          APIVersion(version = VERSION_2, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_2), endpointsEnabled = true)
+          //          ,
+          //          APIVersion(version = VERSION_2, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_2), endpointsEnabled = true)
         ),
         requiresTrust = None
       )
     )
 
   private[definition] def buildAPIStatus(version: String): APIStatus = {
-    appConfig.apiStatus(version) match {
-      case "ALPHA"      => APIStatus.ALPHA
-      case "BETA"       => APIStatus.BETA
-      case "STABLE"     => APIStatus.STABLE
-      case "DEPRECATED" => APIStatus.DEPRECATED
-      case "RETIRED"    => APIStatus.RETIRED
-      case _ =>
+    APIStatus.values
+      .find(_.toString == appConfig.apiStatus(version))
+      .getOrElse {
         Logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
         APIStatus.ALPHA
-    }
+      }
   }
 
   private[definition] def buildWhiteListingAccess(): Option[Access] = {
     val featureSwitch = FeatureSwitch(appConfig.featureSwitch)
-    featureSwitch.isWhiteListingEnabled match {
-      case true  => Some(Access("PRIVATE", featureSwitch.whiteListedApplicationIds))
-      case false => None
-    }
+    if (featureSwitch.isWhiteListingEnabled) Some(Access("PRIVATE", featureSwitch.whiteListedApplicationIds)) else None
   }
 }
