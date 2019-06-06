@@ -25,8 +25,8 @@ import Versions._
 @Singleton
 class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
 
-  private val readScope = "read:losses"
-  private val writeScope = "write:losses"
+  private val readScope = "read:self-assessment"
+  private val writeScope = "write:self-assessment"
 
   lazy val definition: Definition =
     Definition(
