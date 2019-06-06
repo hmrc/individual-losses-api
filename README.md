@@ -1,7 +1,9 @@
 API Example Microservice
 ========================
 
-TODO Describe microservice / API
+# To run locally
+
+sbt "run 9779"
  
 # Run tests
 ```

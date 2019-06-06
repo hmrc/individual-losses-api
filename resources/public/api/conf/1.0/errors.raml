@@ -1,0 +1,46 @@
+#%RAML 1.0 Library
+
+uses:
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+
+
+traits:
+  formatNino:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              code: FORMAT_NINO
+              message: The provided NINO is invalid
+  formatTaxYear:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              code: FORMAT_TAX_YEAR
+              message: The provided tax year is invalid    
+  notFound:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              code: MATCHING_RESOURCE_NOT_FOUND
+              message: askdjhfs
+  unauthorised:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              code: CLIENT_OR_AGENT_NOT_AUTHORISED
+              message: blah blah blah              
+  hasStandardErrors:
+    is: [notFound, unauthorised, formatNino, formatTaxYear]
+  
