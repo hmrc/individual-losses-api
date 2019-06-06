@@ -68,13 +68,13 @@ version: 1.0.0
             body:
               application/json: 
                 description: Retrieve all brought forward losses
-                #type: !include /schemas/ListAllBFLoss.json
-                #type: !include /schemas/ListAllBFLoss.1.json
-                type: !include /schemas/ListAllBFLoss.2.json
+                #type: !include schemas/ListAllBFLoss.json
+                #type: !include schemas/ListAllBFLoss.1.json
+                type: !include schemas/ListAllBFLoss.2.json
                 examples:
-                  #example: !include /examples/listAll/ListAll.json  
-                  #example: !include /examples/listAll/ListAll.1.json
-                  example: !include /examples/listAll/ListAll.2.json   
+                  #example: !include examples/listAll/ListAll.json
+                  #example: !include examples/listAll/ListAll.1.json
+                  example: !include examples/listAll/ListAll.2.json
       post:
         is:
           - acceptHeader
@@ -106,6 +106,10 @@ version: 1.0.0
                   id:
                     description: The ID of the loss brought forward.
                     type: integer
+                example: |
+                  {
+                    "id": 123
+                  }
   /{broughtForwardLossId}:
     uriParameters:
       broughtForwardLossId:
@@ -123,9 +127,9 @@ version: 1.0.0
           body:
             application/json:
               description: Retrieve a brought forward losses
-              type: !include /schemas/BroughtForwardLoss.json
+              type: !include schemas/BroughtForwardLoss.json
               examples:
-                example: !include /examples/createBFLoss/seClass4.json
+                example: !include examples/createBFLoss/seClass4.json
 
     delete:
       description: Delete a Brought Forward Loss
