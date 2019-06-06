@@ -27,12 +27,12 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |{
       |  "scopes":[
       |    {
-      |      "key":"read:losses",
+      |      "key":"read:self-assessment",
       |      "name":"View your Losses information",
       |      "description":"Allow read access to losses data"
       |    },
       |    {
-      |      "key":"write:losses",
+      |      "key":"write:self-assessment",
       |      "name":"Change your Losses information",
       |      "description":"Allow write access to losses data"
       |    }
