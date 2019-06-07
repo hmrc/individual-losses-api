@@ -11,7 +11,7 @@ traits:
   contentTypeHeader:
     headers:
       Content-Type:
-        description: <b>application/json
+        description: <b>application/json</b>
         type: string
   acceptHeader:
     headers:
@@ -33,12 +33,26 @@ traits:
     headers:
       X-CorrelationId:
         example: 5968c22d620000620096db57
-        description: Unique id for operation tracking       
+        description: Unique id for operation tracking
         
 title: Individual Losses
 description: |-
   This is a draft spec for the Individual Losses API.
 version: 1.0.0
+
+documentation:
+  - title: Overview
+    content: !include docs/overview.md
+  - title: Changelog
+    content: !include docs/changeLog.md
+  - title: Support
+    content: !include docs/support.md
+  - title: Testing
+    content: !include docs/testing.md
+  - title: Versioning
+    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
+  - title: Errors
+    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/errors.md
 
 '/losses/individual':
   /{nino}:
@@ -121,7 +135,7 @@ version: 1.0.0
       is:
         - acceptHeader
         - authorizationHeader
-        - errors.hasStandardErrors  
+        - errors.hasStandardErrors
       responses:
         200:
           body:
