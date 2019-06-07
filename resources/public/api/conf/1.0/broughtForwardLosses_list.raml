@@ -1,0 +1,33 @@
+description: Retrieve all Brought Forward Losses
+is:
+  - headers.acceptJson
+  - headers.authorization
+  - errors.notFound
+  - errors.formatTaxYear
+  - errors.agentSubscription
+  - errors.clientSubscriptionToMTD
+queryParameters:
+  taxYear:
+    description: Tax Year
+    example: "2017-18"
+    required: false
+  lossType:
+    description: "Type of Loss.  Can be one of the four loss types: <b><ul> <li> self-employment  <li>self-employment-class4  <li>uk-fhl-property   <li>uk-other-property </b>"
+    example: "self-employment"
+    required: false
+responses:
+  200:
+    body:
+      application/json:
+        description: Retrieve all brought forward losses
+        #type: !include schemas/ListAllBFLoss.json
+        #type: !include schemas/ListAllBFLoss.1.json
+        type: !include schemas/ListAllBFLoss.2.json
+        examples:
+          #example: !include examples/listAll/ListAll.json
+          #example: !include examples/listAll/ListAll.1.json
+          example: !include examples/listAll/ListAll.2.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique id for operation tracking <br> String, 36 characters.

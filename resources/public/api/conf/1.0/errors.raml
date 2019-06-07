@@ -5,6 +5,32 @@ uses:
 
 
 traits:
+  agentSubscription:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              agentNotSubscribed:
+                description: Agent not subscribed to Agent Services
+                value:
+                  code: AGENT_NOT_SUBSCRIBED
+              agentNotAuthorized:
+                description: The agent is not authorised to perform this action
+                value:
+                  code: AGENT_NOT_AUTHORIZED
+  clientSubscriptionToMTD:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              clientNotSubscribedToMTD:
+                description: The client is not subscribed to MTD
+                value:
+                  code: CLIENT_NOT_SUBSCRIBED
   formatNino:
     responses:
       400:
@@ -47,7 +73,7 @@ traits:
                 code: MATCHING_RESOURCE_NOT_FOUND
   rule_TaxYearNotSupported:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -57,7 +83,7 @@ traits:
                 code: RULE_TAX_YEAR_NOT_SUPPORTED
   ruleTaxYearRangeExceeded:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -67,7 +93,7 @@ traits:
                 code: RULE_TAX_YEAR_RANGE_EXCEEDED
   formatLossType:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -77,7 +103,7 @@ traits:
                 code: FORMAT_TYPE_OF_LOSS
   formatSelfEmploymentId:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -87,7 +113,7 @@ traits:
                 code: FORMAT_SELF_EMPLOYMENT_ID
   ruleSelfEmploymentId:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -95,11 +121,19 @@ traits:
               description: A self employment ID was supplied for a property business.
               value:
                 code: RULE_SELF_EMPLOYMENT_ID
-
-
+  formatLossId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The format of the loss id is not valid.
+              value:
+                code: FORMAT_LOSS_ID
   formatLossAmount:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -107,10 +141,9 @@ traits:
               description: The format of the loss amount is not valid.
               value:
                 code: FORMAT_LOSS_AMOUNT
-
   ruleLossAmount:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -118,11 +151,9 @@ traits:
               description: Amounts should be a positive number less than 99999999999.99 with up to 2 decimal places.
               value:
                 code: RULE_LOSS_AMOUNT
-
-
   ruleDuplicateLossAmount:
     responses:
-      404:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -130,14 +161,3 @@ traits:
               description: A previous amount was submitted for this tax year
               value:
                 code: RULE_DUPLICATE_???
-  unauthorised:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            example:
-              description: blah blah blah
-              value:
-                code: CLIENT_OR_AGENT_NOT_AUTHORISED
-  
