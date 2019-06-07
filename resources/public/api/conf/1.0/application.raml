@@ -50,9 +50,9 @@ documentation:
   - title: Testing
     content: !include docs/testing.md
   - title: Versioning
-    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
+    content: !include https://www.tax.service.gov.uk/api-documentation/assets/common/docs/versioning.md
   - title: Errors
-    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/errors.md
+    content: !include https://www.tax.service.gov.uk/api-documentation/assets/common/docs/errors.md
 
 '/losses/individual':
   /{nino}:
@@ -67,7 +67,8 @@ documentation:
         is:
           - acceptHeader
           - authorizationHeader
-          - errors.hasStandardErrors
+          - errors.notFound
+          - errors.formatTaxYear
         queryParameters:
           taxYear:
             description: Tax Year
@@ -94,7 +95,7 @@ documentation:
           - acceptHeader
           - authorizationHeader
           - contentTypeHeader
-          - errors.hasStandardErrors
+          - errors.notFound
         description: Create a Brought Forward Loss
         body:
           application/json:
@@ -135,7 +136,7 @@ documentation:
       is:
         - acceptHeader
         - authorizationHeader
-        - errors.hasStandardErrors
+        - errors.notFound
       responses:
         200:
           body:
@@ -150,7 +151,7 @@ documentation:
       is:
         - acceptHeader
         - authorizationHeader
-        - errors.hasStandardErrors
+        - errors.notFound
       responses:
         204:
           headers:

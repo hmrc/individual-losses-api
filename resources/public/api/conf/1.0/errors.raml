@@ -12,8 +12,9 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              code: FORMAT_NINO
-              message: The provided NINO is invalid
+              description: The provided NINO is invalid
+              value:
+                code: FORMAT_NINO
   formatTaxYear:
     responses:
       400:
@@ -21,8 +22,9 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              code: FORMAT_TAX_YEAR
-              message: The provided tax year is invalid    
+              description: The provided tax year is invalid
+              value:
+                code: FORMAT_TAX_YEAR
   notFound:
     responses:
       404:
@@ -30,8 +32,9 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              code: MATCHING_RESOURCE_NOT_FOUND
-              message: askdjhfs
+              description: askdjhfs
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
   unauthorised:
     responses:
       403:
@@ -39,8 +42,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              code: CLIENT_OR_AGENT_NOT_AUTHORISED
-              message: blah blah blah              
-  hasStandardErrors:
-    is: [notFound, unauthorised, formatNino, formatTaxYear]
+              description: blah blah blah
+              value:
+                code: CLIENT_OR_AGENT_NOT_AUTHORISED
   
