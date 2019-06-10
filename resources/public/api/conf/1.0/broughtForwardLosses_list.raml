@@ -4,8 +4,7 @@ is:
   - headers.authorization
   - errors.notFound
   - errors.formatTaxYear
-  - errors.agentSubscription
-  - errors.clientSubscriptionToMTD
+  - errors.clientOrAgentNotAuthorised
 queryParameters:
   taxYear:
     description: Tax Year
@@ -20,12 +19,8 @@ responses:
     body:
       application/json:
         description: Retrieve all brought forward losses
-        #type: !include schemas/ListAll_OnlyLinks.json
-        #type: !include schemas/ListAll_OnlyIds.json
         type: !include schemas/ListAllBFLoss_IdWithLinks.json
         examples:
-          #example: !include examples/listAll/ListAll_OnlyLinks.json
-          #example: !include examples/listAll/ListAll_OnlyIds.json
           example: !include examples/listAll/ListAll_IdWithLinks.json
     headers:
       X-CorrelationId:

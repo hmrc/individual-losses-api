@@ -36,12 +36,12 @@ documentation:
     /brought-forward:  
       get: !include broughtForwardLosses_list.raml
       post: !include broughtForwardLosses_create.raml
-      /{broughtForwardLossId}:
+      /{lossId}:
         uriParameters:
-          broughtForwardLossId:
-            description: National Insurance number, in the format AA999999A.
+          lossId:
+            description: Description to go here
             type: string
-            example: TC663795B
+            example: Example here
         get: !include broughtForwardLosses_get.raml
         delete: !include broughtForwardLosses_delete.raml
 
