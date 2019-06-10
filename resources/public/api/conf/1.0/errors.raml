@@ -5,6 +5,16 @@ uses:
 
 
 traits:
+  notFound:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The matching resource is not found.
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
   agentSubscription:
     responses:
       403:
@@ -63,16 +73,6 @@ traits:
               description: An empty or non-matching body was submitted
               value:
                 code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
-  notFound:
-    responses:
-      404:
-        body:
-          application/json:
-            type: types.errorResponse
-            example:
-              description: askdjhfs
-              value:
-                code: MATCHING_RESOURCE_NOT_FOUND
   rule_TaxYearNotSupported:
     responses:
       400:
