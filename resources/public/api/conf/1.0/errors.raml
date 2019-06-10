@@ -5,32 +5,27 @@ uses:
 
 
 traits:
-  agentSubscription:
+  notFound:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The matching resource is not found.
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  clientOrAgentNotAuthorised:
     responses:
       403:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              agentNotSubscribed:
-                description: Agent not subscribed to Agent Services
+              clientOrAgentNotAuthorised:
+                description: 'The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
                 value:
-                  code: AGENT_NOT_SUBSCRIBED
-              agentNotAuthorized:
-                description: The agent is not authorised to perform this action
-                value:
-                  code: AGENT_NOT_AUTHORIZED
-  clientSubscriptionToMTD:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              clientNotSubscribedToMTD:
-                description: The client is not subscribed to MTD
-                value:
-                  code: CLIENT_NOT_SUBSCRIBED
+                  code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
     responses:
       400:
@@ -63,16 +58,6 @@ traits:
               description: An empty or non-matching body was submitted
               value:
                 code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
-  notFound:
-    responses:
-      404:
-        body:
-          application/json:
-            type: types.errorResponse
-            example:
-              description: TBC
-              value:
-                code: MATCHING_RESOURCE_NOT_FOUND
   rule_TaxYearNotSupported:
     responses:
       400:

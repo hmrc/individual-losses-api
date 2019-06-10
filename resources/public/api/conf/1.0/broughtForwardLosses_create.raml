@@ -1,14 +1,14 @@
 is:
   - headers.acceptJson
   - headers.contentTypeJson
-  - headers.authorization
-  - headers.contentTypeJson
   - errors.notFound
-  - errors.agentSubscription
-  - errors.clientSubscriptionToMTD
+  - errors.clientOrAgentNotAuthorised
   - errors.formatNino
   - errors.formatTaxYear
 description: Create a Brought Forward Loss
+displayName: Create a Brought Forward Loss
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
     description: The brought forward loss information brought into MTD
@@ -28,12 +28,5 @@ responses:
         description: Unique id for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: object
-        properties:
-          id:
-            description: The ID of the loss brought forward.
-            type: integer
-        example: |
-          {
-            "id": 123
-          }
+        type: !include schemas/createBFLoss/Create_BFLoss_Response.json
+        example: !include examples/createBFLoss/response.json

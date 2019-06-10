@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Create Brought Forward Loss response",
+    "description": "Create Brought Forward Loss response",
+    "type": "object",
+    "properties": {
+      "id": {
+        "description": "Id of the Brought Forward Loss",
+        "example": "1cd12860-a4f4-452b-b488-a46ae20280ad",
+        "type": "string"
+      }
+    },
+    "required": ["id"]
+}
