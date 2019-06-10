@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Brought Forward Loss",
+    "description": "Brought Forward Loss",
+    "type": "object",
+    "properties": {
+        "typeOfLoss" : {
+            "type" : "string",
+            "enum": ["self-employment", "self-employment-class4", "uk-fhl-property", "uk-non-fhl-property"],
+            "description": "The type of business loss that is being brought-forward"
+        },
+        "selfEmploymentId" : {
+            "type": "string",
+            "description": "The ID of the self employment business the loss is for.  For SE loss types only",
+            "example": "1234567890"
+        },
+        "lossAmount": {
+            "type": "number",
+            "description": "The loss amount brought forward"
+        },
+        "taxYear": {
+            "type": "string",
+            "description": "The tax year to which the loss applies, the format yyyy-yy",
+            "example": "2017-18"
+        }    
+    },
+    "required": ["typeOfLoss", "lossAmount", "taxYear"]
+}

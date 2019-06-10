@@ -1,0 +1,20 @@
+description: Get a Brought Forward Loss
+is:
+  - headers.acceptJson
+  - headers.authorization
+  - errors.notFound
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.clientOrAgentNotAuthorised
+responses:
+  200:
+    body:
+      application/json:
+        description: Retrieve a brought forward loss
+        type: !include schemas/BroughtForwardLoss.json
+        examples:
+          example: !include examples/createBFLoss/seClass4.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique id for operation tracking <br> String, 36 characters.

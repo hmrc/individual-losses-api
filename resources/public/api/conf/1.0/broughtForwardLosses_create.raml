@@ -1,0 +1,34 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.authorization
+  - errors.notFound
+  - errors.clientOrAgentNotAuthorised
+  - errors.formatNino
+  - errors.formatTaxYear
+description: Create a Brought Forward Loss
+displayName: Create a Brought Forward Loss
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    description: The brought forward loss information brought into MTD
+    type: !include schemas/BroughtForwardLoss.json
+    examples:
+      example-1:
+        description: Class 4 self employment losses
+        value: !include examples/createBFLoss/seClass4.json
+      example-2:
+        description: UK FHL Property losses
+        value: !include examples/createBFLoss/fhl.json
+responses:
+  201:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique id for operation tracking <br> String, 36 characters.
+    body:
+      application/json:
+        type: !include schemas/createBFLoss/Create_BFLoss_Response.json
+        example: !include examples/createBFLoss/response.json
+
