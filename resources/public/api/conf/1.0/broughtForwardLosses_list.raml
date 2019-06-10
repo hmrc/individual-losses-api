@@ -20,13 +20,13 @@ responses:
     body:
       application/json:
         description: Retrieve all brought forward losses
-        #type: !include schemas/ListAllBFLoss.json
-        #type: !include schemas/ListAllBFLoss.1.json
-        type: !include schemas/ListAllBFLoss.2.json
+        #type: !include schemas/ListAll_OnlyLinks.json
+        #type: !include schemas/ListAll_OnlyIds.json
+        type: !include schemas/ListAllBFLoss_IdWithLinks.json
         examples:
-          #example: !include examples/listAll/ListAll.json
-          #example: !include examples/listAll/ListAll.1.json
-          example: !include examples/listAll/ListAll.2.json
+          #example: !include examples/listAll/ListAll_OnlyLinks.json
+          #example: !include examples/listAll/ListAll_OnlyIds.json
+          example: !include examples/listAll/ListAll_IdWithLinks.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435

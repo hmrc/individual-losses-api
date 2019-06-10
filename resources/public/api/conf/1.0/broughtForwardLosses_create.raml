@@ -9,6 +9,8 @@ is:
   - errors.formatNino
   - errors.formatTaxYear
 description: Create a Brought Forward Loss
+(annotations.scope): "write:individual-losses-api"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:individual-losses-api" ] } ]
 body:
   application/json:
     description: The brought forward loss information brought into MTD
