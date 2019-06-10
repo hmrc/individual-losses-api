@@ -12,9 +12,8 @@ displayName: Amend Brought Forward Loss
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
-    description: The brought forward loss information brought into MTD
-    type: !include schemas/BroughtForwardLoss_Amend.json
-    example: !include examples/amend/amend_request.json
+    type: !include schemas/amendBFLoss/amend_request.json
+    example: !include examples/amendBFLoss/amend_request.json
 responses:
   201:
     headers:
@@ -23,5 +22,5 @@ responses:
         description: Unique id for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include schemas/BroughtForwardLoss_Amend_Response.json
-        example: !include examples/amend/amend_response.json
+        type: !include schemas/amendBFLoss/amend_response.json
+        example: !include examples/amendBFLoss/amend_response.json
