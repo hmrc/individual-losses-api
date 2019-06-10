@@ -37,20 +37,22 @@ traits:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: The provided NINO is invalid
-              value:
-                code: FORMAT_NINO
+            examples:
+              formatNino:
+                description: The provided NINO is invalid
+                value:
+                  code: FORMAT_NINO
   formatTaxYear:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: The provided tax year is invalid
-              value:
-                code: FORMAT_TAX_YEAR
+            examples:
+              formatTaxYear:
+                description: The provided tax year is invalid
+                value:
+                  code: FORMAT_TAX_YEAR
   incorrectOrEmptyBody:
     responses:
       400:
