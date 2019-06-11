@@ -13,7 +13,7 @@
             "type": "string",
             "description": "An identifier for the self-employment business, unique to the customer.",
             "example": "XGIS00000001319",
-            "pattern": "^[A-Za-z0-9]{15}$"
+            "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
         },
         "lossAmount": {
             "type": "number",
