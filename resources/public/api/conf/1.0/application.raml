@@ -27,21 +27,31 @@ documentation:
     content: !include https://www.tax.service.gov.uk/api-documentation/assets/common/docs/errors.md
 
 '/losses/individual':
-  /{nino}:
-    uriParameters:
-      nino:
-        description: National Insurance number, in the format AA999999A.
-        type: string
-        example: TC663795B
-    /brought-forward:  
-      get: !include broughtForwardLosses_list.raml
-      post: !include broughtForwardLosses_create.raml
-      /{lossId}:
-        uriParameters:
-          lossId:
-            description: A unique identifier for the brought forward loss.
-            type: string
-        get: !include broughtForwardLosses_get.raml
-        delete: !include broughtForwardLosses_delete.raml
-        /change-loss-amount:
-          post: !include broughtForwardLosses_amend.raml
+ /{nino}:
+   uriParameters:
+     nino:
+       description: National Insurance number, in the format AA999999A.
+       type: string
+       example: TC663795B
+   /brought-forward:
+     post: !include broughtForwardLosses_create.raml
+     /{taxYear}:
+       uriParameters:
+         taxYear:
+           description: The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2016-17.
+           type: string
+           /{lossType}:
+             uriParameters:
+               lossType:
+                 description: "The type of business the loss applies to. Limited to the following possible values: <b><ul> <li> self-employment  <li>self-employment-class4  <li>uk-fhl-property   <li>uk-other-property </b>"
+                 type: string
+             get: !include broughtForwardLosses_list.raml
+     /{lossId}:
+       uriParameters:
+         lossId:
+           description: A unique identifier for the brought forward loss.
+           type: string
+       get: !include broughtForwardLosses_get.raml
+       delete: !include broughtForwardLosses_delete.raml
+       /change-loss-amount:
+         post: !include broughtForwardLosses_amend.raml

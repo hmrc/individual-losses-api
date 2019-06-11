@@ -1,6 +1,6 @@
 is:
   - headers.acceptJson
-  - headers.authorization
+  - headers.testScenarioHeader
   - errors.formatNino
   - errors.formatTaxYear
   - errors.rule_TaxYearNotSupported
@@ -13,19 +13,6 @@ displayName: List All Brought Forward Losses
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_listAll.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
-queryParameters:
-  nino:
-    description: National Insurance number, in the format AA999999A.
-    example: "TC663795B"
-    required: true
-  taxYear:
-    description: "The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2016-17."
-    example: "2017-18"
-    required: false
-  lossType:
-    description: "The type of business the loss applies to. Limited to the following possible values: <b><ul> <li> self-employment  <li>self-employment-class4  <li>uk-fhl-property   <li>uk-other-property </b>"
-    example: "self-employment"
-    required: false
     responses:
       200:
         body:
@@ -33,9 +20,17 @@ queryParameters:
             description: Retrieve all brought forward losses
             type: !include schemas/ListAllBFLoss_IdWithLinks.json
             examples:
-            example: !include examples/listAll/ListAll_IdWithLinks.json
-
+            example-1:
+              description: Ids with links
+              value: !include examples/listAll/ListAll_IdWithLinks.json
+            example-2:
+              description: Only ids
+              value: !include examples/listAll/ListAll_OnlyIds.json
+            example-3:
+              description: Only links
+              value: !include examples/listAll/ListAll_OnlyLinks.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
         description: Unique id for operation tracking <br> String, 36 characters.
+
