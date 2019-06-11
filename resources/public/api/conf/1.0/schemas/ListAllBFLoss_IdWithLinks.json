@@ -13,9 +13,9 @@
             "properties": {
               "id": {
                 "description": "The unique identifier of the loss",
-                "example": "1cd12860-a4f4-452b-b488-a46ae20280ad",
                 "type": "string",
-                "pattern": "^[A-Za-z0-9]{36}$"
+                "pattern": "^[A-Za-z0-9]{36}$",
+                "example": "1cd235dsd4f4452bb488a46ae202345sdf8a"
               },
               "links": {
                 "type": "array",
@@ -26,7 +26,7 @@
                   "properties": {
                     "href": {
                       "description": "Resource for the loss",
-                      "example": "/individuals/{uuid}/income-tax/losses-brought-forward/1cd12860-a4f4-452b-b488-a46ae20280ad",
+                      "example": "/individuals/{uuid}/income-tax/losses-brought-forward/1cd235dsd4f4452bb488a46ae202345sdf8a",
                       "type": "string"
                     },
                     "rel": {

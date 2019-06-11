@@ -1,20 +1,20 @@
 {
 	"losses" : [
 		{
-			"id": "405d76f9-c42e-464f-affc-4d19b78a750f",
+			"id": "1cd12860a4f4452bb488a46ae20280adfs8a",
 			"links" : [
 				{
-					"href": "/individuals/AA123456A/income-tax/losses-brought-forward/405d76f9-c42e-464f-affc-4d19b78a750f",
+					"href": "/individuals/AA123456A/income-tax/losses-brought-forward/1cd12860a4f4452bb488a46ae20280adfs8a",
 					"rel": "2018-19",
 					"method": "GET"
 				}
 			]
 		},
 		{
-			"id": "1cd12860-a4f4-452b-b488-a46ae20280ad",
+			"id": "1cd235dsd4f4452bb488a46ae202345sdf8a",
 			"links" : [
 				{
-					"href": "/individuals/AA123456A/income-tax/losses-brought-forward/1cd12860-a4f4-452b-b488-a46ae20280ad",
+					"href": "/individuals/AA123456A/income-tax/losses-brought-forward/1cd235dsd4f4452bb488a46ae202345sdf8a",
 					"rel": "2018-19",
 					"method": "GET"
 				}

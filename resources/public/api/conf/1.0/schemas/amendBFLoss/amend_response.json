@@ -7,7 +7,8 @@
     "id": {
       "type": "string",
       "description": "The unique identifier of the newly created brought forward losses",
-      "pattern": "^[A-Za-z0-9]{36}$"
+      "pattern": "^[A-Za-z0-9]{36}$",
+      "example": "1cd235dsd4f4452bb488a46ae202345sdf8a"
     }
   },
   "required": ["id"]
