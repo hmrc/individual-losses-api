@@ -12,9 +12,10 @@
             "required": ["id"],
             "properties": {
               "id": {
-                "description": "ID of the Brought Forward Loss",
+                "description": "The unique identifier of the loss",
                 "example": "1cd12860-a4f4-452b-b488-a46ae20280ad",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[A-Za-z0-9]{36}$"
               } 
             }
           }            
