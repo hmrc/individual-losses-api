@@ -1,7 +1,6 @@
 is:
   - headers.acceptJson
   - headers.contentTypeJson
-  - headers.authorization
   - errors.notFound
   - errors.clientOrAgentNotAuthorised
   - errors.formatNino
@@ -31,4 +30,3 @@ responses:
       application/json:
         type: !include schemas/createBFLoss/Create_BFLoss_Response.json
         example: !include examples/createBFLoss/response.json
-

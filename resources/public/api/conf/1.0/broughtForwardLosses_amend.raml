@@ -1,0 +1,30 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatLossId
+  - errors.formatLossAmount
+  - errors.ruleLossAmount
+  - errors.incorrectOrEmptyBody
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
+description: This endpoint allows users to update an existing brought forward loss amount which they have previously populated.
+displayName: Amend a Brought Forward Loss Amount
+(annotations.sandboxData): !include scenarios/broughtForwardLosses_amend.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/amendBFLoss/amend_request.json
+    example: !include examples/amendBFLoss/amend_request.json
+responses:
+  201:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique id for operation tracking <br> String, 36 characters.
+    body:
+      application/json:
+        type: !include schemas/amendBFLoss/amend_response.json
+        example: !include examples/amendBFLoss/amend_response.json

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Amend Brought Forward Loss Response",
+  "description": "Amend Brought Forward Loss Response",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Reference to the newly created brought forward losses"
+    }
+  },
+  "required": ["id"]
+}

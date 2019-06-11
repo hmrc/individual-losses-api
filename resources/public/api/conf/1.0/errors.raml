@@ -54,97 +54,107 @@ traits:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: An empty or non-matching body was submitted
-              value:
-                code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+            examples:
+              incorrectOrEmptyBody:
+                description: An empty or non-matching body was submitted
+                value:
+                  code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
   rule_TaxYearNotSupported:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
-              value:
-                code: RULE_TAX_YEAR_NOT_SUPPORTED
+            examples:
+              rule_TaxYearNotSupported:
+                description: The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
+                value:
+                  code: RULE_TAX_YEAR_NOT_SUPPORTED
   ruleTaxYearRangeExceeded:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: Tax year range exceeded. A tax year range of one year is required.
-              value:
-                code: RULE_TAX_YEAR_RANGE_EXCEEDED
+            examples:
+              ruleTaxYearRangeExceeded:
+                description: Tax year range exceeded. A tax year range of one year is required.
+                value:
+                  code: RULE_TAX_YEAR_RANGE_EXCEEDED
   formatLossType:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: The format of the loss type is not valid.
-              value:
-                code: FORMAT_TYPE_OF_LOSS
+            examples:
+              formatLossType:
+                description: The format of the loss type is not valid.
+                value:
+                  code: FORMAT_TYPE_OF_LOSS
   formatSelfEmploymentId:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: The format of the Self Employment ID is not valid.
-              value:
-                code: FORMAT_SELF_EMPLOYMENT_ID
+            examples:
+              formatSelfEmploymentId:
+                description: The format of the Self Employment ID is not valid.
+                value:
+                  code: FORMAT_SELF_EMPLOYMENT_ID
   ruleSelfEmploymentId:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: A self employment ID was supplied for a property business.
-              value:
-                code: RULE_SELF_EMPLOYMENT_ID
+            examples:
+              ruleSelfEmploymentId:
+                description: A self employment ID was supplied for a property business.
+                value:
+                  code: RULE_SELF_EMPLOYMENT_ID
   formatLossId:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: The format of the loss id is not valid.
-              value:
-                code: FORMAT_LOSS_ID
+            examples:
+              formatLossId:
+                description: The format of the loss id is not valid.
+                value:
+                  code: FORMAT_LOSS_ID
   formatLossAmount:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: The format of the loss amount is not valid.
-              value:
-                code: FORMAT_LOSS_AMOUNT
+            examples:
+              formatLossAmount:
+                description: The format of the loss amount is not valid.
+                value:
+                  code: FORMAT_LOSS_AMOUNT
   ruleLossAmount:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: Amounts should be a positive number less than 99999999999.99 with up to 2 decimal places.
-              value:
-                code: RULE_LOSS_AMOUNT
+            examples:
+              ruleLossAmount:
+                description: Amounts should be a positive number less than 99999999999.99 with up to 2 decimal places.
+                value:
+                  code: RULE_LOSS_AMOUNT
   ruleDuplicateLossAmount:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: A previous amount was submitted for this tax year
-              value:
-                code: RULE_DUPLICATE_???
+            examples:
+              ruleDuplicateLossAmount:
+                description: A previous amount was submitted for this tax year
+                value:
+                  code: RULE_DUPLICATE_???

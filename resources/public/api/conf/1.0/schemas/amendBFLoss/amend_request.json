@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Amend Brought Forward Loss",
+  "description": "Amend Brought Forward Loss",
+  "type": "object",
+  "properties": {
+    "lossAmount": {
+      "type": "number",
+      "description": "The loss amount brought forward"
+    }
+  },
+  "required": ["lossAmount"]
+}
