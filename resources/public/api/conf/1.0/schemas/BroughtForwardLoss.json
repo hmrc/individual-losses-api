@@ -6,23 +6,25 @@
     "properties": {
         "typeOfLoss" : {
             "type" : "string",
-            "enum": ["self-employment", "self-employment-class4", "uk-fhl-property", "uk-non-fhl-property"],
-            "description": "The type of business loss that is being brought-forward"
+            "enum": ["self-employment", "self-employment-class4", "uk-fhl-property", "uk-other-property"],
+            "description": "The type of business the loss applies to."
         },
         "selfEmploymentId" : {
             "type": "string",
-            "description": "The ID of the self employment business the loss is for.  For SE loss types only",
-            "example": "1234567890"
+            "description": "An identifier for the self-employment business, unique to the customer.",
+            "example": "XGIS00000001319",
+            "pattern": "^[A-Za-z0-9]{15}$"
         },
         "lossAmount": {
             "type": "number",
-            "description": "The loss amount brought forward"
+            "description": "Brought Forward Loss amount related to UK property or self-employment business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "example": "12345.67"
         },
         "taxYear": {
             "type": "string",
-            "description": "The tax year to which the loss applies, the format yyyy-yy",
+            "description": "The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2016-17.",
             "example": "2017-18"
-        }    
+        }
     },
     "required": ["typeOfLoss", "lossAmount", "taxYear"]
 }
