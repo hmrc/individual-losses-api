@@ -8,20 +8,13 @@ is:
   - errors.formatLossType
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
+  - queryParameters.taxYear
+  - queryParameters.lossType
 displayName: List All Brought Forward Losses
 description: This endpoint allows users to retrieve a list of all brought forward losses which they have incurred before joining MTD.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_listAll.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
-queryParameters:
- taxYear:
-   description: 'The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2016-17.'
-   example: "2017-18"
-   required: false
- lossType:
-   description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul> <li> self-employment  <li>self-employment-class4  <li>uk-fhl-property   <li>uk-other-property </b>'
-   example: "self-employment"
-   required: false
 responses:
  200:
    body:
