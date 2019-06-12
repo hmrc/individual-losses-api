@@ -11,5 +11,9 @@
             <td><p>N/A - DEFAULT</p></td>
             <td><p>Simulate success scenario</p></td>
         </tr>
+        <tr>
+           <td><p>NOT_FOUND</p></td>
+           <td><p>Simulates the scenario where no data is found.</p></td>
+        </tr>
     </tbody>
 </table>

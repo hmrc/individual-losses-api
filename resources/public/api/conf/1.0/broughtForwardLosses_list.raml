@@ -26,17 +26,8 @@ responses:
  200:
    body:
      application/json:
-       type: !include schemas/ListAllBFLoss_IdWithLinks.json
-       examples:
-         example-1:
-           description: Ids with links
-           value: !include examples/listAll/ListAll_IdWithLinks.json
-         example-2:
-           description: Only ids
-           value: !include examples/listAll/ListAll_OnlyIds.json
-         example-3:
-           description: Only links
-           value: !include examples/listAll/ListAll_OnlyLinks.json
+       type: !include schemas/listAllBFLoss/listAll_response.json
+       example: !include examples/listAllBFLoss/listAll_response.json
    headers:
      X-CorrelationId:
        example: c75f40a6-a3df-4429-a697-471eeec46435

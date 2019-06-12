@@ -6,9 +6,10 @@
     "properties": {
         "losses": {
           "type": "array",
+          "description": "Array of losses",
           "items": {
             "type": "object",
-            "description": "Brought Forward Loss ID's",
+            "description": "Loss object",
             "required": ["id"],
             "properties": {
               "id": {
