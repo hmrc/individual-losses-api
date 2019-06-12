@@ -8,8 +8,8 @@
     </thead>
     <tbody>
         <tr>
-            <td>N/A - DEFAULT</td>
-            <td>Simulate success scenario</td>
+            <td><p>N/A - DEFAULT</p></td>
+            <td><p>Simulate success scenario</p></td>
         </tr>
     </tbody>
 </table>

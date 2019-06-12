@@ -6,7 +6,9 @@
   "properties": {
     "id": {
       "type": "string",
-      "description": "Reference to the newly created brought forward losses"
+      "description": "The unique identifier of the newly created brought forward losses",
+      "pattern": "^[A-Za-z0-9\\-]{36}$",
+      "example": "405d76f9-c42e-464f-affc-4d19b78a750f"
     }
   },
   "required": ["id"]

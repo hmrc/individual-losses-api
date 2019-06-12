@@ -12,9 +12,10 @@
             "required": ["id", "links"],
             "properties": {
               "id": {
-                "description": "ID of the Brought Forward Loss",
-                "example": "1cd12860-a4f4-452b-b488-a46ae20280ad",
-                "type": "string"
+                "description": "The unique identifier of the loss",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9\\-]{36}$",
+                "example": "405d76f9-c42e-464f-affc-4d19b78a750f"
               },
               "links": {
                 "type": "array",
@@ -25,7 +26,7 @@
                   "properties": {
                     "href": {
                       "description": "Resource for the loss",
-                      "example": "/individuals/{uuid}/income-tax/losses-brought-forward/1cd12860-a4f4-452b-b488-a46ae20280ad",
+                      "example": "/individuals/{uuid}/income-tax/losses-brought-forward/405d76f9-c42e-464f-affc-4d19b78a750f",
                       "type": "string"
                     },
                     "rel": {
