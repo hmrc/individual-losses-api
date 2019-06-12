@@ -6,10 +6,9 @@
   "properties": {
     "losses": {
       "type": "array",
-      "description": "Array of losses",
       "items": {
         "type": "object",
-        "description": "Loss object",
+        "description": "Array of losses",
         "properties": {
           "id": {
             "description": "The unique identifier of the loss",
