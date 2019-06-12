@@ -13,7 +13,7 @@
             "properties": {
               "href": {
                 "description": "Resource for the loss",
-                "example": "/individuals/{uuid}/income-tax/losses-brought-forward/1cd235dsd4f4452bb488a46ae202345sdf8a",
+                "example": "/individuals/{uuid}/income-tax/losses-brought-forward/405d76f9-c42e-464f-affc-4d19b78a750f",
                 "type": "string"
               },
               "rel": {

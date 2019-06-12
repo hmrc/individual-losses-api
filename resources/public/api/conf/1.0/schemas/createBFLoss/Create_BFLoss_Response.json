@@ -7,8 +7,8 @@
       "id": {
         "description": "The unique identifier of the loss",
         "type": "string",
-        "pattern": "^[A-Za-z0-9]{36}$",
-        "example": "1cd235dsd4f4452bb488a46ae202345sdf8a"
+        "pattern": "^[A-Za-z0-9\\-]{36}$",
+        "example": "405d76f9-c42e-464f-affc-4d19b78a750f"
       }
     },
     "required": ["id"]
