@@ -1,26 +1,26 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "List All Brought Forward Losses",
-    "description": "List All Brought Forward Losses",
-    "type": "object",
-    "properties": {
-        "losses": {
-          "type": "array",
-          "description": "Array of losses",
-          "items": {
-            "type": "object",
-            "description": "Loss object",
-            "required": ["id"],
-            "properties": {
-              "id": {
-                "description": "The unique identifier of the loss",
-                "type": "string",
-                "pattern": "^[A-Za-z0-9\\-]{36}$",
-                "example": "405d76f9-c42e-464f-affc-4d19b78a750f"
-              } 
-            }
-          }            
-        }
-    },
-    "required": ["losses"]
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "List of All Brought Forward Losses",
+  "description": "List of All Brought Forward Losses",
+  "type": "object",
+  "properties": {
+    "losses": {
+      "type": "array",
+      "description": "Array of losses",
+      "items": {
+        "type": "object",
+        "description": "Loss object",
+        "properties": {
+          "id": {
+            "description": "The unique identifier of the loss",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9\\-]{36}$",
+            "example": "405d76f9-c42e-464f-affc-4d19b78a750f"
+          }
+        },
+        "required": ["id"]
+      }
+    }
+  },
+  "required": ["losses"]
 }
