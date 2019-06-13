@@ -25,10 +25,10 @@ body:
     type: !include ../schemas/lossClaims/LossClaim.json
     examples:
       example-1:
-        description: Self-employment loss claim
+        description: Self-employment claim
         value: !include ../examples/lossClaims/createClaim/se.json
       example-2:
-        description: UK FHL Property loss claim
+        description: UK FHL Property claim
         value: !include ../examples/lossClaims/createClaim/fhl.json
 responses:
   201:
@@ -38,5 +38,5 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include ../schemas/broughtForwardLosses/createBFLoss/create_response.json
-        example: !include ../examples/broughtFowardLosses/createBFLoss/response.json
+        type: !include ../schemas/lossClaims/createClaim/create_response.json
+        example: !include ../examples/lossClaims/createClaim/response.json

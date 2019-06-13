@@ -4,6 +4,9 @@ uses:
   sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
   annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+  headers: headers.raml
+  errors: errors.raml
+  queryParameters: queryParameters.raml
 
 title: Individual Losses (MTD)
 description: This is a draft spec for the Individual Losses API.
@@ -26,37 +29,6 @@ documentation:
   - title: Errors
     content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/errors.md
 
-traits:
-  contentTypeJson:
-    headers:
-      Content-Type:
-        description: Specifies the format of the request body, which must be JSON.
-        type: string
-        required: true
-        example: application/json
-  acceptJson:
-    headers:
-      Accept:
-        description: Specifies the response format and the version of the API to be used.
-        type: string
-        required: true
-        example: 'application/vnd.hmrc.1.0+json'
-  authorization:
-    headers:
-      Authorization:
-        description: |
-          An OAuth 2.0 Bearer Token with the <b>write:self-assessment</b> or <b>read:self-assessment</b> scope.
-        type: string
-        required: true
-        example: Bearer bb7fed3fe10dd235a2ccda3d50fb
-  testScenarioHeader:
-    headers:
-      Gov-Test-Scenario:
-        description: Only in sandbox environment. See Test Data table for all header values.
-        type: string
-        required: false
-        example: '-'
-
 '/individual/losses':
   /{nino}:
     uriParameters:
@@ -66,8 +38,8 @@ traits:
         example: TC663795B
     /brought-forward-losses:
       (annotations.group):
-         name: Brought Forward Losses
-         description: !include docs/group_broughtForwardLosses.md
+        name: Brought Forward Losses
+        description: !include docs/group_broughtForwardLosses.md
       post: !include endpoints/broughtForwardLosses_create.raml
       get: !include endpoints/broughtForwardLosses_list.raml
       /{lossId}:
@@ -81,6 +53,6 @@ traits:
           post: !include endpoints/broughtForwardLosses_amend.raml
     /claims:
       (annotations.group):
-         name: Loss Claims
-         description: !include docs/group_lossClaims.md
-      post: !include endpoints/lossClaim_create.raml
+        name: Loss Claims
+        description: !include docs/group_lossClaims.md
+      post: !include endpoints/lossClaims_create.raml
