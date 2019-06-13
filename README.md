@@ -1,4 +1,4 @@
-API Example Microservice
+=API Example Microservice
 ========================
 
 # To run locally
