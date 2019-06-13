@@ -5,12 +5,16 @@ uses:
   annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
   errors: errors.raml
   headers: headers.raml
+  queryParameters: queryParameters.raml
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
 title: Individual Losses
 description: |-
   This is a draft spec for the Individual Losses API.
 version: 1.0
+protocols: [ HTTPS ]
+baseUri: https://api.service.hmrc.gov.uk/
+mediaType: application/json
 
 documentation:
   - title: Overview
@@ -26,22 +30,22 @@ documentation:
   - title: Errors
     content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/errors.md
 
-'/losses/individual':
-  /{nino}:
-    uriParameters:
-      nino:
-        description: National Insurance number, in the format AA999999A.
-        type: string
-        example: TC663795B
-    /brought-forward:  
-      get: !include broughtForwardLosses_list.raml
-      post: !include broughtForwardLosses_create.raml
-      /{lossId}:
-        uriParameters:
-          lossId:
-            description: A unique identifier for the brought forward loss.
-            type: string
-        get: !include broughtForwardLosses_get.raml
-        delete: !include broughtForwardLosses_delete.raml
-        /change-loss-amount:
-          post: !include broughtForwardLosses_amend.raml
+'/individual/losses':
+ /{nino}:
+   uriParameters:
+     nino:
+       description: National Insurance number, in the format AA999999A.
+       type: string
+       example: TC663795B
+   /brought-forward-losses:
+     post: !include broughtForwardLosses_create.raml
+     get: !include broughtForwardLosses_list.raml
+     /{lossId}:
+       uriParameters:
+         lossId:
+           description: A unique identifier for the brought forward loss.
+           type: string
+       get: !include broughtForwardLosses_get.raml
+       delete: !include broughtForwardLosses_delete.raml
+       /change-loss-amount:
+         post: !include broughtForwardLosses_amend.raml
