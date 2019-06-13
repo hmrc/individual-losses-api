@@ -8,9 +8,8 @@ uses:
   queryParameters: queryParameters.raml
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
-title: Individual Losses
-description: |-
-  This is a draft spec for the Individual Losses API.
+title: Individual Losses (MTD)
+description: This is a draft spec for the Individual Losses API.
 version: 1.0
 protocols: [ HTTPS ]
 baseUri: https://api.service.hmrc.gov.uk/
@@ -31,21 +30,29 @@ documentation:
     content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/errors.md
 
 '/individual/losses':
- /{nino}:
-   uriParameters:
-     nino:
-       description: National Insurance number, in the format AA999999A.
-       type: string
-       example: TC663795B
-   /brought-forward-losses:
-     post: !include broughtForwardLosses_create.raml
-     get: !include broughtForwardLosses_list.raml
-     /{lossId}:
-       uriParameters:
-         lossId:
-           description: A unique identifier for the brought forward loss.
-           type: string
-       get: !include broughtForwardLosses_get.raml
-       delete: !include broughtForwardLosses_delete.raml
-       /change-loss-amount:
-         post: !include broughtForwardLosses_amend.raml
+  /{nino}:
+    uriParameters:
+      nino:
+        description: National Insurance number, in the format AA999999A.
+        type: string
+        example: TC663795B
+    /brought-forward-losses:
+      (annotations.group):
+         name: Brought Forward Losses
+         description: !include docs/group_broughtForwardLosses.md
+      post: !include endpoints/broughtForwardLosses_create.raml
+      get: !include endpoints/broughtForwardLosses_list.raml
+      /{lossId}:
+        uriParameters:
+          lossId:
+            description: A unique identifier for the brought forward loss.
+            type: string
+        get: !include endpoints/broughtForwardLosses_get.raml
+        delete: !include endpoints/broughtForwardLosses_delete.raml
+        /change-loss-amount:
+          post: !include endpoints/broughtForwardLosses_amend.raml
+    /claims:
+      (annotations.group):
+         name: Loss Claims
+         description: !include docs/group_lossClaims.md
+      get: !include endpoints/lossClaim_create.raml
