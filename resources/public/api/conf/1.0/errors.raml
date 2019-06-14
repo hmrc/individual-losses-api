@@ -158,3 +158,25 @@ traits:
                 description: A previous amount was submitted for this tax year
                 value:
                   code: RULE_DUPLICATE_???
+  formatTypeOfClaim:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatTypeOfClaim:
+                description: The format of the type of claim is not valid.
+                value:
+                  code: FORMAT_TYPE_OF_CLAIM
+  ruleTypeOfClaim:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTypeOfClaim:
+                description: The type of Claim requested is not available for this type of loss.
+                value:
+                  code: RULE_TYPE_OF_CLAIM_INVALID

@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Create a Loss Claim response",
+    "description": "Create a Loss Claim response",
+    "type": "object",
+    "properties": {
+      "id": {
+        "description": "The unique identifier of the loss claim",
+        "type": "string",
+        "pattern": "^[A-Za-z0-9\\-]{36}$",
+        "example": "405d76f9-c42e-464f-affc-4d19b78a750f"
+      }
+    },
+    "required": ["id"]
+}

@@ -12,18 +12,15 @@ is:
   - queryParameters.lossType
 displayName: List All Brought Forward Losses
 description: This endpoint allows users to retrieve a list of all brought forward losses which they have incurred before joining MTD.
-(annotations.sandboxData): !include scenarios/broughtForwardLosses_listAll.md
+(annotations.sandboxData): !include ../scenarios/broughtForwardLosses_listAll.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
 responses:
  200:
    body:
      application/json:
-       type: !include schemas/listAllBFLoss/listAll_response.json
-       examples:
-         example-1:
-           description: List with two losses
-           value: !include examples/listAllBFLoss/listAll_response.json
+       type: !include ../schemas/broughtForwardLosses/listAllBFLoss/listAll_response.json
+       example: !include ../examples/broughtFowardLosses/listAllBFLoss/listAll_response.json
    headers:
      X-CorrelationId:
        example: c75f40a6-a3df-4429-a697-471eeec46435

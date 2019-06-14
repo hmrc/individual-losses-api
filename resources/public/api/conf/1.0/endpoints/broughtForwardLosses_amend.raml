@@ -11,13 +11,13 @@ is:
   - errors.notFound
 displayName: Amend a Brought Forward Loss Amount
 description: This endpoint allows users to update an existing brought forward loss amount which they have previously populated.
-(annotations.sandboxData): !include scenarios/broughtForwardLosses_amend.md
+(annotations.sandboxData): !include ../scenarios/broughtForwardLosses_amend.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
-    type: !include schemas/amendBFLoss/amend_request.json
-    example: !include examples/amendBFLoss/amend_request.json
+    type: !include ../schemas/broughtForwardLosses/amendBFLoss/amend_request.json
+    example: !include ../examples/broughtFowardLosses/amendBFLoss/amend_request.json
 responses:
   201:
     headers:
@@ -26,5 +26,5 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include schemas/amendBFLoss/amend_response.json
-        example: !include examples/amendBFLoss/amend_response.json
+        type: !include ../schemas/broughtForwardLosses/amendBFLoss/amend_response.json
+        example: !include ../examples/broughtFowardLosses/amendBFLoss/amend_response.json
