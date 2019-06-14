@@ -5,6 +5,8 @@ project/target
 target
 lib_managed
 tmp
+.DS_Store
+**/*.DS_Store
 .history
 dist
 /.idea
