@@ -4,9 +4,9 @@ uses:
   sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
   annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
-  headers: headers.raml
-  errors: errors.raml
-  queryParameters: queryParameters.raml
+  headers: common/headers.raml
+  errors: common/errors.raml
+  queryParameters: common/queryParameters.raml
 
 title: Individual Losses (MTD)
 description: This is a draft spec for the Individual Losses API.
@@ -40,19 +40,19 @@ documentation:
       (annotations.group):
         name: Brought Forward Losses
         description: !include docs/group_broughtForwardLosses.md
-      post: !include endpoints/broughtForwardLosses_create.raml
-      get: !include endpoints/broughtForwardLosses_list.raml
+      post: !include broughtForwardLosses_create.raml
+      get: !include broughtForwardLosses_list.raml
       /{lossId}:
         uriParameters:
           lossId:
             description: A unique identifier for the brought forward loss.
             type: string
-        get: !include endpoints/broughtForwardLosses_get.raml
-        delete: !include endpoints/broughtForwardLosses_delete.raml
+        get: !include broughtForwardLosses_get.raml
+        delete: !include broughtForwardLosses_delete.raml
         /change-loss-amount:
-          post: !include endpoints/broughtForwardLosses_amend.raml
+          post: !include broughtForwardLosses_amend.raml
     /claims:
       (annotations.group):
         name: Loss Claims
         description: !include docs/group_lossClaims.md
-      post: !include endpoints/lossClaims_create.raml
+      post: !include lossClaims_create.raml

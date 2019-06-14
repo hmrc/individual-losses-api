@@ -16,20 +16,20 @@ is:
   - errors.notFound
 displayName: Create a Loss Claim
 description: This endpoint allows a user to create a Loss Claim against an income source for a specific tax year. Claims cannot be made until after the End of Period Statement.
-(annotations.sandboxData): !include ../scenarios/lossClaims_create.md
+(annotations.sandboxData): !include scenarios/lossClaims_create.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
     description: The brought forward loss information brought into MTD
-    type: !include ../schemas/lossClaims/LossClaim.json
+    type: !include schemas/lossClaims/LossClaim.json
     examples:
       example-1:
         description: Self-employment claim
-        value: !include ../examples/lossClaims/createClaim/se.json
+        value: !include examples/lossClaims/createClaim/se.json
       example-2:
         description: UK FHL Property claim
-        value: !include ../examples/lossClaims/createClaim/fhl.json
+        value: !include examples/lossClaims/createClaim/fhl.json
 responses:
   201:
     headers:
@@ -38,5 +38,5 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include ../schemas/lossClaims/createClaim/create_response.json
-        example: !include ../examples/lossClaims/createClaim/response.json
+        type: !include schemas/lossClaims/createClaim/create_response.json
+        example: !include examples/lossClaims/createClaim/response.json
