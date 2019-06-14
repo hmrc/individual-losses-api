@@ -7,21 +7,21 @@ is:
   - errors.notFound
 displayName: Get a Brought Forward Loss
 description: This endpoint allows a user to retrieve a single brought forward loss.
-(annotations.sandboxData): !include ../scenarios/broughtForwardLosses_get.md
+(annotations.sandboxData): !include scenarios/broughtForwardLosses_get.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
 responses:
   200:
     body:
       application/json:
-        type: !include ../schemas/broughtForwardLosses/BroughtForwardLoss.json
+        type: !include schemas/broughtForwardLosses/BroughtForwardLoss.json
         examples:
           example-1:
             description: Self-employment Class 4 loss
-            value: !include ../examples/broughtFowardLosses/createBFLoss/seClass4.json
+            value: !include examples/broughtFowardLosses/createBFLoss/seClass4.json
           example-2:
             description: UK FHL property loss
-            value: !include ../examples/broughtFowardLosses/createBFLoss/fhl.json
+            value: !include examples/broughtFowardLosses/createBFLoss/fhl.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
