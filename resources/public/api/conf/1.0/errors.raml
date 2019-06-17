@@ -180,3 +180,16 @@ traits:
                 description: The type of Claim requested is not available for this type of loss.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
+  formatClaimId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimId:
+                description: The format of the supplied loss claim ID is not valid.
+                value:
+                  code: FORMAT_LOSS_CLAIM_ID
+
+########## NOTE: This file is not working - Errors are currently being pulled from the top of application.raml
