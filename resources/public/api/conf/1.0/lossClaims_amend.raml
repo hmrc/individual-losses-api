@@ -1,0 +1,25 @@
+is:
+  - acceptJson
+  - contentTypeJson
+  - testScenarioHeader
+  - formatNino
+  - formatClaimId
+  - incorrectOrEmptyBody
+  - formatTypeOfClaim
+  - ruleTypeOfClaim
+  - notFound
+displayName: Amend Loss Claims
+description: This endpoint allows the user to update existing loss claims.
+(annotations.sandboxData): !include scenarios/lossClaims_amend.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/lossClaims/amendClaims/amend_request.json
+    example: !include examples/lossClaims/amendClaims/amend_request.json
+responses:
+  201:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

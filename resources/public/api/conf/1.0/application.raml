@@ -289,3 +289,5 @@ documentation:
             description: A unique identifier for the loss claim.
             type: string
         get: !include lossClaims_get.raml
+        /change-claim-type:
+          post: !include lossClaims_amend.raml
