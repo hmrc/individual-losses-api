@@ -272,3 +272,9 @@ documentation:
         name: Loss Claims
         description: !include docs/group_lossClaims.md
       post: !include lossClaims_create.raml
+      /{lossClaimId}:
+          uriParameters:
+            lossClaimId:
+              description: Loss Claim unique identifier.
+              type: string
+            get: !include lossClaims_delete.raml
