@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Amend Brought Forward Loss",
-  "description": "Amend Brought Forward Loss",
+  "title": "Amend a Loss Claim",
+  "description": "Amend a Loss Claim",
   "type": "object",
   "properties": {
     "typeOfClaim": {
