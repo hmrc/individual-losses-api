@@ -34,7 +34,7 @@ traits:
             type: types.errorResponse
             examples:
               formatNino:
-                description: The provided NINO is invalid
+                description: The format of the supplied NINO field is not valid
                 value:
                   code: FORMAT_NINO
   formatTaxYear:
@@ -122,7 +122,7 @@ traits:
             type: types.errorResponse
             examples:
               formatLossId:
-                description: The format of the loss id is not valid.
+                description: The format of the loss ID is not valid.
                 value:
                   code: FORMAT_LOSS_ID
   formatLossAmount:
@@ -179,7 +179,7 @@ traits:
               ruleTypeOfClaim:
                 description: The type of Claim requested is not available for this type of loss.
                 value:
-                  code: RULE_TYPE_OF_CLAIM_INVALID
+                  code: RULE_CLAIM_TYPE_NOT_VALID
   formatClaimId:
     responses:
       400:
