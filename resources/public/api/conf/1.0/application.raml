@@ -89,6 +89,17 @@ traits:
                 description: Tax year range exceeded. A tax year range of one year is required.
                 value:
                   code: RULE_TAX_YEAR_RANGE_EXCEEDED
+  ruleInvalidIncomeSourceId:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTypeOfClaim:
+                description: The supplied income source ID is invalid.
+                value:
+                  code: RULES_INVALID_INCOME_SOURCE_ID
   formatLossType:
     responses:
       400:
@@ -122,6 +133,17 @@ traits:
                 description: A self employment ID was supplied for a property business.
                 value:
                   code: RULE_SELF_EMPLOYMENT_ID
+  missingSelfEmploymentId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              missingSelfEmploymentId:
+                description: The self employment ID is missing.
+                value:
+                  code: MISSING_SELF_EMPLOYMENT_ID
   formatLossId:
     responses:
       400:
@@ -230,6 +252,18 @@ traits:
       lossType:
         description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul><li>`self-employment`<li>`self-employment-class4`<li>`uk-fhl-property`<li>`uk-other-property`</b>'
         required: false
+  typeOfLoss:
+    queryParameters:
+      typeOfLoss:
+        description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul><li>`self-employment`<li>`uk-fhl-property`<li>`uk-other-property`</b>'
+        required: false
+  selfEmploymentId:
+    queryParameters:
+      selfEmploymentId:
+        description: 'Unique identifier of the income source the claim relates to.'
+        example: 'XGIS00000001319'
+        required: false
+
 
 documentation:
   - title: Overview
@@ -272,3 +306,4 @@ documentation:
         name: Loss Claims
         description: !include docs/group_lossClaims.md
       post: !include lossClaims_create.raml
+      get: !include lossClaims_listAll.raml
