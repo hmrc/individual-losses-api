@@ -1,7 +1,10 @@
 {
-    "taxYear": "2018-19",
-    "carryForward": true,
-    "carrySideways": true,
-    "carrySidewaysFhl": true,
-    "selfEmploymentId": "XGIS00000001319"
+    "lossClaims" : [
+        {
+            "id": "405d76f9-c42e-464f-affc-4d19b78a750f"
+        },
+        {
+            "id": "1cd12860-a4f4-452b-b488-a46ae20280ad"
+        }
+    ]
 }

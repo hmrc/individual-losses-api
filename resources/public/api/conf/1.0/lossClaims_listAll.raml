@@ -16,17 +16,17 @@ is:
   - selfEmploymentId
 displayName: List All Loss Claims
 description: This endpoint allows the user to retrieve existing loss claims information.
-(annotations.sandboxData): !include scenarios/lossClaims_list.md
+(annotations.sandboxData): !include scenarios/lossClaims_listAll.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
 responses:
  200:
    body:
      application/json:
-        type: !include schemas/lossClaims/createClaim/create_response.json
-        example: !include examples/lossClaims/createClaim/response.json
-#        type: !include schemas/lossClaims/listAllLoss/response.json
-#        example: !include examples/lossClaims/listAllLoss/response.json
+#        type: !include schemas/lossClaims/createClaim/create_response.json
+#        example: !include examples/lossClaims/createClaim/response.json
+        type: !include schemas/lossClaims/listAllClaims/response.json
+        example: !include examples/lossClaims/listAllClaims/response.json
    headers:
      X-CorrelationId:
        example: c75f40a6-a3df-4429-a697-471eeec46435
