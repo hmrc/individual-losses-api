@@ -19,13 +19,15 @@ package config
 import play.api.Configuration
 
 case class FeatureSwitch(value: Option[Configuration]) {
-  val DEFAULT_VALUE = true
 
+  private val versionRegex = """(\d)\.\d""".r
+
+  val DEFAULT_VALUE = true
 
   def isWhiteListingEnabled: Boolean = {
     value match {
       case Some(config) => config.getOptional[Boolean]("white-list.enabled").getOrElse(false)
-      case None => false
+      case None         => false
     }
   }
 
@@ -38,6 +40,22 @@ case class FeatureSwitch(value: Option[Configuration]) {
       case None => Seq()
     }
   }
+
+  def isVersionEnabled(version: String): Boolean = {
+    val versionNoIfPresent: Option[String] =
+      version match {
+        case versionRegex(v) => Some(v)
+        case _               => None
+      }
+
+    val enabled = for {
+      versionNo <- versionNoIfPresent
+      config    <- value
+      enabled   <- config.getOptional[Boolean](s"version-$versionNo.enabled")
+    } yield enabled
+
+    enabled.getOrElse(false)
+  }
 }
 
 sealed case class FeatureConfig(config: Configuration) {
@@ -45,7 +63,7 @@ sealed case class FeatureConfig(config: Configuration) {
   def isSummaryEnabled(source: String, summary: String): Boolean = {
     val summaryEnabled = config.getOptional[Boolean](s"$source.$summary.enabled") match {
       case Some(flag) => flag
-      case None => true
+      case None       => true
     }
     isSourceEnabled(source) && summaryEnabled
   }
