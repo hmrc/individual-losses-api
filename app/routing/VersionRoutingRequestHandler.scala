@@ -16,29 +16,45 @@
 
 package routing
 
+import config.FeatureSwitch
 import definition.Versions
-import javax.inject.{ Inject, Singleton }
-import play.api.http.{ DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters }
-import play.api.mvc.{ Handler, RequestHeader }
+import javax.inject.{Inject, Singleton}
+import play.api.Configuration
+import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
+import play.api.libs.json.Json
+import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
 import play.api.routing.Router
+import v1.models.errors.UnsupportedVersionError
 
 @Singleton
 class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMap,
                                              errorHandler: HttpErrorHandler,
-                                             configuration: HttpConfiguration,
-                                             filters: HttpFilters)
-    extends DefaultHttpRequestHandler(versionRoutingMap.defaultRouter, errorHandler, configuration, filters) {
+                                             httpConfiguration: HttpConfiguration,
+                                             config: Option[Configuration],
+                                             filters: HttpFilters,
+                                             action: DefaultActionBuilder)
+    extends DefaultHttpRequestHandler(versionRoutingMap.defaultRouter, errorHandler, httpConfiguration, filters) {
+
+  private val featureSwitch = FeatureSwitch(config)
+
+  private val unsupportedVersionAction = action(Results.NotFound(Json.toJson(UnsupportedVersionError)))
 
   override def routeRequest(request: RequestHeader): Option[Handler] = {
-    val versionRouter =
-      for {
-        version <- Versions.getFromRequest(request)
-        router  <- versionRoutingMap.versionRouter(version)
-      } yield router
 
-    versionRouter match {
-      case Some(router) => routeWith(router)(request).orElse(routeWith(versionRoutingMap.defaultRouter)(request))
-      case None         => routeWith(versionRoutingMap.defaultRouter)(request)
+    Versions.getFromRequest(request) match {
+      case Some(version) =>
+        versionRoutingMap.versionRouter(version) match {
+          case Some(versionRouter) =>
+            routeWith(versionRouter)(request) match {
+              case Some(handler) if featureSwitch.isVersionEnabled(version) => Some(handler)
+              case Some(_)                                                  => Some(unsupportedVersionAction)
+              case None                                                     => routeWith(versionRoutingMap.defaultRouter)(request)
+            }
+
+          case None => Some(unsupportedVersionAction)
+        }
+
+      case None => routeWith(versionRoutingMap.defaultRouter)(request)
     }
   }
 

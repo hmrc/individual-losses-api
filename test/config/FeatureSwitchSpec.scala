@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class FeatureSwitchSpec extends UnitSpec {
 
-  private def create(config: String) =
+  private def createFeatureSwitch(config: String) =
     FeatureSwitch(Some(Configuration(ConfigFactory.parseString(config))))
 
   "version enabled" when {
@@ -34,7 +34,7 @@ class FeatureSwitchSpec extends UnitSpec {
     }
 
     "no config value" must {
-      val featureSwitch = create("")
+      val featureSwitch = createFeatureSwitch("")
 
       "return false" in {
         featureSwitch.isVersionEnabled("1.0") shouldBe false
@@ -42,7 +42,7 @@ class FeatureSwitchSpec extends UnitSpec {
     }
 
     "config set" must {
-      val featureSwitch = create("""
+      val featureSwitch = createFeatureSwitch("""
           |version-1.enabled = false
           |version-2.enabled = true
         """.stripMargin)
