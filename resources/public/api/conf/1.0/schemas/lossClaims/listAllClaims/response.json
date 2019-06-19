@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "List of All Loss Claims",
+  "description": "List of All Loss Claims",
+  "type": "object",
+  "properties": {
+    "lossClaims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Array of loss claims",
+        "properties": {
+          "id": {
+            "description": "The unique identifier of the loss claim",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9\\-]{36}$",
+            "example": "405d76f9-c42e-464f-affc-4d19b78a750f"
+          }
+        },
+        "required": ["id"]
+      }
+    }
+  },
+  "required": ["lossClaims"]
+}
