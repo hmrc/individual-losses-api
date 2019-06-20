@@ -1,18 +1,18 @@
 is:
-  - acceptJson
-  - testScenarioHeader
-  - formatNino
-  - formatTaxYear
-  - ruleTaxYearNotSupported
-  - ruleTaxYearRangeExceeded
-  - ruleInvalidIncomeSourceId
-  - ruleSelfEmploymentId
-  - formatSelfEmploymentId
-  - clientOrAgentNotAuthorised
-  - notFound
-  - taxYear
-  - typeOfLoss
-  - selfEmploymentId
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeExceeded
+  - errors.ruleInvalidIncomeSourceId
+  - errors.ruleSelfEmploymentId
+  - errors.formatSelfEmploymentId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
+  - queryParameters.taxYear
+  - queryParameters.typeOfLoss
+  - queryParameters.selfEmploymentId
 displayName: List All Loss Claims
 description: This endpoint allows the user to retrieve existing loss claims information.
 (annotations.sandboxData): !include scenarios/lossClaims_listAll.md

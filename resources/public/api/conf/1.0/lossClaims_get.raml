@@ -1,10 +1,10 @@
 is:
-  - acceptJson
-  - testScenarioHeader
-  - formatNino
-  - formatClaimId
-  - clientOrAgentNotAuthorised
-  - notFound
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatClaimId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
 displayName: Get a Loss Claim
 description: This endpoint allows the user to retrieve the detail of an existing loss claim.
 (annotations.sandboxData): !include scenarios/lossClaims_get.md

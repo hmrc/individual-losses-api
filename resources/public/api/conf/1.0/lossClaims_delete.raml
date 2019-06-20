@@ -1,11 +1,11 @@
 is:
-  - acceptJson
-  - contentTypeJson
-  - testScenarioHeader
-  - formatNino
-  - formatClaimId
-  - clientOrAgentNotAuthorised
-  - notFound
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatClaimId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
 displayName: Delete a Loss Claim
 description: This endpoint allows the user to remove a previously entered loss claim.
 (annotations.sandboxData): !include scenarios/lossClaims_delete.md

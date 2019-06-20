@@ -1,14 +1,14 @@
 is:
-  - acceptJson
-  - contentTypeJson
-  - testScenarioHeader
-  - formatNino
-  - formatLossId
-  - formatLossAmount
-  - ruleLossAmount
-  - incorrectOrEmptyBody
-  - clientOrAgentNotAuthorised
-  - notFound
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatLossId
+  - errors.formatLossAmount
+  - errors.ruleLossAmount
+  - errors.incorrectOrEmptyBody
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
 displayName: Amend a Brought Forward Loss Amount
 description: This endpoint allows users to update an existing brought forward loss amount which they have previously populated.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_amend.md
