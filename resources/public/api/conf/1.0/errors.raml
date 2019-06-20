@@ -179,7 +179,7 @@ traits:
               ruleDuplicateLossAmount:
                 description: A previous amount was submitted for this tax year
                 value:
-                  code: RULE_DUPLICATE_???
+                  code: RULE_DUPLICATE_S
   formatTypeOfClaim:
     responses:
       400:
@@ -213,3 +213,14 @@ traits:
                 description: The format of the supplied loss claim ID is not valid.
                 value:
                   code: FORMAT_LOSS_CLAIM_ID
+  ruleDuplicateSubmission:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDuplicateSubmission:
+                description: A brought forward loss already exists for this income source.
+                value:
+                  code: RULE_DUPLICATE_SUBMISSION
