@@ -1,19 +1,19 @@
 is:
-  - acceptJson
-  - contentTypeJson
-  - testScenarioHeader
-  - formatNino
-  - incorrectOrEmptyBody
-  - formatTaxYear
-  - ruleTaxYearNotSupported
-  - ruleTaxYearRangeExceeded
-  - formatLossType
-  - formatSelfEmploymentId
-  - ruleSelfEmploymentId
-  - formatLossAmount
-  - ruleLossAmount
-  - clientOrAgentNotAuthorised
-  - notFound
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.incorrectOrEmptyBody
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeExceeded
+  - errors.formatLossType
+  - errors.formatSelfEmploymentId
+  - errors.ruleSelfEmploymentId
+  - errors.formatLossAmount
+  - errors.ruleLossAmount
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
 displayName: Create a Brought Forward Loss
 description: This endpoint allows users to create a new brought forward loss which can be submitted against Self-employment, Self-employment class 4, UK FHL property and UK other (Non-FHL) property for the tax year prior to joining MTD.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_create.md

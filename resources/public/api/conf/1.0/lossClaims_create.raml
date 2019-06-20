@@ -1,19 +1,19 @@
 is:
-  - acceptJson
-  - contentTypeJson
-  - testScenarioHeader
-  - formatNino
-  - incorrectOrEmptyBody
-  - formatLossType
-  - formatSelfEmploymentId
-  - ruleSelfEmploymentId
-  - formatTypeOfClaim
-  - ruleTypeOfClaim
-  - formatTaxYear
-  - ruleTaxYearNotSupported
-  - ruleTaxYearRangeExceeded
-  - clientOrAgentNotAuthorised
-  - notFound
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.incorrectOrEmptyBody
+  - errors.formatLossType
+  - errors.formatSelfEmploymentId
+  - errors.ruleSelfEmploymentId
+  - errors.formatTypeOfClaim
+  - errors.ruleTypeOfClaim
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeExceeded
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
 displayName: Create a Loss Claim
 description: This endpoint allows a user to create a Loss Claim against an income source for a specific tax year. Claims cannot be made until after the End of Period Statement.
 (annotations.sandboxData): !include scenarios/lossClaims_create.md

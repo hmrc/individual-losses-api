@@ -1,13 +1,13 @@
 is:
-  - acceptJson
-  - contentTypeJson
-  - testScenarioHeader
-  - formatNino
-  - formatClaimId
-  - incorrectOrEmptyBody
-  - formatTypeOfClaim
-  - ruleTypeOfClaim
-  - notFound
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatClaimId
+  - errors.incorrectOrEmptyBody
+  - errors.formatTypeOfClaim
+  - errors.ruleTypeOfClaim
+  - errors.notFound
 displayName: Amend a Loss Claim
 description: This endpoint allows the user to update an existing loss claim.
 (annotations.sandboxData): !include scenarios/lossClaims_amend.md
