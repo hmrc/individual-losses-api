@@ -1,15 +1,15 @@
 is:
-  - acceptJson
-  - testScenarioHeader
-  - formatNino
-  - formatTaxYear
-  - ruleTaxYearNotSupported
-  - ruleTaxYearRangeExceeded
-  - formatLossType
-  - clientOrAgentNotAuthorised
-  - notFound
-  - taxYear
-  - lossType
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeExceeded
+  - errors.formatLossType
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
+  - queryParameters.taxYear
+  - queryParameters.lossType
 displayName: List All Brought Forward Losses
 description: This endpoint allows users to retrieve a list of all brought forward losses which they have incurred before joining MTD.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_listAll.md
