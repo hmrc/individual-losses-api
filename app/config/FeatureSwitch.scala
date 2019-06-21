@@ -55,18 +55,3 @@ case class FeatureSwitch(value: Option[Configuration]) {
     enabled.getOrElse(false)
   }
 }
-
-sealed case class FeatureConfig(config: Configuration) {
-
-  def isSummaryEnabled(source: String, summary: String): Boolean = {
-    val summaryEnabled = config.getOptional[Boolean](s"$source.$summary.enabled") match {
-      case Some(flag) => flag
-      case None       => true
-    }
-    isSourceEnabled(source) && summaryEnabled
-  }
-
-  def isSourceEnabled(source: String): Boolean = {
-    config.getOptional[Boolean](s"$source.enabled").getOrElse(true)
-  }
-}
