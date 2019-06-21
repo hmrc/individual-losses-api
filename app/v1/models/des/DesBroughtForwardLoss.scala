@@ -17,13 +17,28 @@
 package v1.models.des
 
 import play.api.libs.json._
+import v1.models.domain.BroughtForwardLoss
+import v1.models.requestData.DesTaxYear
 
 case class DesBroughtForwardLoss(lossType: String,
                                  incomeSourceId: Option[String],
                                  taxYearBroughtForwardFrom: String,
-                                 broughtForwardLossAmount: BigDecimal)
+                                 broughtForwardLossAmount: BigDecimal){
 
-object BroughtForwardLoss {
+  def toDes(desBroughtForwardLoss: DesBroughtForwardLoss) : BroughtForwardLoss = {
+    BroughtForwardLoss(typeOfLoss = lossType match {
+      case "INCOME" => "self-employment"
+      case "CLASS4" => "self-employment-class4"
+      case "04" => "uk-fhl-property"
+      case "02" => "uk-other-property"
+    },
+      selfEmploymentId =  incomeSourceId,
+      taxYear = DesTaxYear.fromDes(taxYearBroughtForwardFrom).toString,
+      lossAmount = broughtForwardLossAmount)
+  }
+}
+
+object DesBroughtForwardLoss {
   implicit val reads: Reads[DesBroughtForwardLoss] = Json.reads[DesBroughtForwardLoss]
 
   implicit val writes: Writes[DesBroughtForwardLoss] = Json.writes[DesBroughtForwardLoss]

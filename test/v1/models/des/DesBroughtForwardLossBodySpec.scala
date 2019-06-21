@@ -18,15 +18,15 @@ package v1.models.des
 
 import play.api.libs.json._
 import support.UnitSpec
-import v1.models.des.BroughtForwardLoss
+import v1.models.domain.BroughtForwardLoss
 import v1.models.utils.JsonErrorValidators
 
 class DesBroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
-/*
-  val zbroughtForwardLoss = BroughtForwardLoss(typeOfLoss = "self-employment",
+
+  val broughtForwardLoss = BroughtForwardLoss(typeOfLoss = "self-employment",
     selfEmploymentId = Some("XKIS00000000988"),
     taxYear = "2019-20",
-    lossAmount = 256.78)*/
+    lossAmount = 256.78)
 
 
 
@@ -36,37 +36,37 @@ class DesBroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
     broughtForwardLossAmount = 256.78)
 
 
-  val broughtForwardLossJson = Json.parse(
+  val desBroughtForwardLossJson = Json.parse(
     """
       |{
-      |    "selfEmploymentId": "XKIS00000000988",
-      |    "typeOfLoss": "self-employment",
-      |    "taxYear": "2019-20",
-      |    "lossAmount": 256.78
+      |    "incomeSourceId": "XKIS00000000988",
+      |    "lossType": "INCOME",
+      |    "taxYearBroughtForwardFrom": "2020",
+      |    "broughtForwardLossAmount": 256.78
       |}
     """.stripMargin)
 
-/*  "reads" when {
-    "passed valid BroughtForwardLoss JSON" should {
+  "reads" when {
+    "passed valid DesBroughtForwardLoss JSON" should {
       "return a valid model" in {
-        broughtForwardLossJson.as[DesBroughtForwardLoss] shouldBe broughtForwardLoss
+        desBroughtForwardLossJson.as[DesBroughtForwardLoss] shouldBe desBroughtForwardLoss
       }
 
-      testMandatoryProperty[DesBroughtForwardLoss](broughtForwardLossJson)("/typeOfLoss")
-      testPropertyType[DesBroughtForwardLoss](broughtForwardLossJson)(
-        path = "/typeOfLoss",
+      testMandatoryProperty[DesBroughtForwardLoss](desBroughtForwardLossJson)("/lossType")
+      testPropertyType[DesBroughtForwardLoss](desBroughtForwardLossJson)(
+        path = "/lossType",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[DesBroughtForwardLoss](broughtForwardLossJson)("/taxYear")
-      testPropertyType[DesBroughtForwardLoss](broughtForwardLossJson)(
-        path = "/taxYear",
+      testMandatoryProperty[DesBroughtForwardLoss](desBroughtForwardLossJson)("/taxYearBroughtForwardFrom")
+      testPropertyType[DesBroughtForwardLoss](desBroughtForwardLossJson)(
+        path = "/taxYearBroughtForwardFrom",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[DesBroughtForwardLoss](broughtForwardLossJson)("/lossAmount")
-      testPropertyType[DesBroughtForwardLoss](broughtForwardLossJson)(
-        path = "/lossAmount",
+      testMandatoryProperty[DesBroughtForwardLoss](desBroughtForwardLossJson)("/broughtForwardLossAmount")
+      testPropertyType[DesBroughtForwardLoss](desBroughtForwardLossJson)(
+        path = "/broughtForwardLossAmount",
         replacement = "dfgdf".toJson,
         expectedError = JsonError.NUMBER_FORMAT_EXCEPTION)
     }
@@ -75,47 +75,47 @@ class DesBroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
   "writes" when {
     "passed a valid BroughtForwardLoss model" should {
       "return a valid BroughtForwardLoss JSON" in {
-        Json.toJson(broughtForwardLoss) shouldBe broughtForwardLossJson
+        Json.toJson(desBroughtForwardLoss) shouldBe desBroughtForwardLossJson
       }
     }
   }
 
 
-  "toDes" when {
-    "passed valid BroughtForwardLoss" should {
-      "return valid DesBroughtForwardLoss" in {
+  "toMtd" when {
+    "passed valid DesBroughtForwardLoss" should {
+      "return valid BroughtForwardLoss" in {
 
-        val desResult = broughtForwardLoss.toDes(broughtForwardLoss)
-        desResult shouldBe desbroughtForwardLoss
+        val desResult = desBroughtForwardLoss.toDes(desBroughtForwardLoss)
+        desResult shouldBe broughtForwardLoss
 
       }
     }
   }
 
-  "Reading an typeOfLoss from Json" when {
-    "the BFLoss model has a lossType of 'self-employment'" should {
-      "create desBFLoss model with a lossType of 'INCOME'" in {
-        val desResult = broughtForwardLoss.copy(typeOfLoss = "self-employment-class4").toDes(broughtForwardLoss)
-        desResult shouldBe desbroughtForwardLoss.copy(lossType = "CLASS4")
+  "Reading a typeOfLoss from Json" when {
+    "the desBFLoss model has a lossType of 'INCOME'" should {
+      "create BFLoss model with a lossType of 'self-employment'" in {
+        val desResult = desBroughtForwardLoss.copy(lossType = "INCOME").toDes(desBroughtForwardLoss)
+        desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "self-employment")
       }
     }
-    "the BFLoss model has a lossType of 'self-employment-class4'" should {
-      "create desBFLoss model with a lossType of 'CLASS4'" in {
-        val desResult = broughtForwardLoss.copy(typeOfLoss = "self-employment-class4").toDes(broughtForwardLoss)
-        desResult shouldBe desbroughtForwardLoss.copy(lossType = "CLASS4")
+    "the desBFLoss model has a lossType of 'CLASS4'" should {
+      "create BFLoss model with a lossType of 'self-employment-class4'" in {
+        val desResult = desBroughtForwardLoss.copy(lossType = "CLASS4").toDes(desBroughtForwardLoss)
+        desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "self-employment-class4")
       }
     }
-    "the BFLoss model has a lossType of 'uk-fhl-property'" should {
-      "create desBFLoss model with a lossType of '04'" in {
-        val desResult = broughtForwardLoss.copy(typeOfLoss = "uk-fhl-property").toDes(broughtForwardLoss)
-        desResult shouldBe desbroughtForwardLoss.copy(lossType = "04")
+    "the desBFLoss model has a lossType of '04'" should {
+      "create BFLoss model with a lossType of 'uk-fhl-property'" in {
+        val desResult = desBroughtForwardLoss.copy(lossType = "04").toDes(desBroughtForwardLoss)
+        desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "uk-fhl-property")
       }
     }
-    "the BFLoss model has a lossType of 'uk-other-property'" should {
-      "create desBFLoss model with a lossType of '02'" in {
-        val desResult = broughtForwardLoss.copy(typeOfLoss = "uk-other-property").toDes(broughtForwardLoss)
-        desResult shouldBe desbroughtForwardLoss.copy(lossType = "02")
+    "the desBFLoss model has a lossType of '02'" should {
+      "create BFLoss model with a lossType of 'uk-other-property'" in {
+        val desResult = desBroughtForwardLoss.copy(lossType = "02").toDes(desBroughtForwardLoss)
+        desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "uk-other-property")
       }
     }
-  }*/
+  }
 }

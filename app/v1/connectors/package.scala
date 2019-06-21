@@ -24,4 +24,5 @@ package object connectors {
   type MtdIdLookupOutcome = Either[MtdError, String]
 
   type DesOutcome[A] = Either[ResponseWrapper[DesError], ResponseWrapper[A]]
+
 }

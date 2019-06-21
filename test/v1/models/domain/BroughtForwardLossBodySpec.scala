@@ -91,7 +91,7 @@ class BroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
     }
   }
 
-  "Reading an typeOfLoss from Json" when {
+  "Reading a typeOfLoss from Json" when {
     "the BFLoss model has a lossType of 'self-employment'" should {
       "create desBFLoss model with a lossType of 'INCOME'" in {
         val desResult = broughtForwardLoss.copy(typeOfLoss = "self-employment-class4").toDes(broughtForwardLoss)
