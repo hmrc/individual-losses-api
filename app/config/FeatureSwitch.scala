@@ -22,8 +22,6 @@ case class FeatureSwitch(value: Option[Configuration]) {
 
   private val versionRegex = """(\d)\.\d""".r
 
-  val DEFAULT_VALUE = true
-
   def isWhiteListingEnabled: Boolean = {
     value match {
       case Some(config) => config.getOptional[Boolean]("white-list.enabled").getOrElse(false)
