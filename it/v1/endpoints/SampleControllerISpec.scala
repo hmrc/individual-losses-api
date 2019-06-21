@@ -25,6 +25,8 @@ import v1.models.errors._
 import v1.models.requestData.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
+import play.api.http.HeaderNames.ACCEPT
+
 class SampleControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
@@ -48,6 +50,7 @@ class SampleControllerISpec extends IntegrationBaseSpec {
     def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
+        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
 
     def errorBody(code: String): String =
@@ -62,7 +65,7 @@ class SampleControllerISpec extends IntegrationBaseSpec {
   "Calling the sample endpoint" should {
 
     trait SampleTest extends Test {
-      def uri: String = s"/1.0/ni/$nino/$taxYear/sampleEndpoint"
+      def uri: String = s"/ni/$nino/$taxYear/sampleEndpoint"
     }
 
     "return a 201 status code" when {
