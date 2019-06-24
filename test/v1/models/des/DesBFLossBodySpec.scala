@@ -85,7 +85,7 @@ class DesBFLossBodySpec extends UnitSpec with JsonErrorValidators {
     "passed valid DesBroughtForwardLoss" should {
       "return valid BroughtForwardLoss" in {
 
-        val desResult = desBroughtForwardLoss.toDes(desBroughtForwardLoss)
+        val desResult = desBroughtForwardLoss.toMtd(desBroughtForwardLoss)
         desResult shouldBe broughtForwardLoss
 
       }
@@ -95,25 +95,25 @@ class DesBFLossBodySpec extends UnitSpec with JsonErrorValidators {
   "Reading a typeOfLoss from Json" when {
     "the desBFLoss model has a lossType of 'INCOME'" should {
       "create BFLoss model with a lossType of 'self-employment'" in {
-        val desResult = desBroughtForwardLoss.copy(lossType = "INCOME").toDes(desBroughtForwardLoss)
+        val desResult = desBroughtForwardLoss.copy(lossType = "INCOME").toMtd(desBroughtForwardLoss)
         desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "self-employment")
       }
     }
     "the desBFLoss model has a lossType of 'CLASS4'" should {
       "create BFLoss model with a lossType of 'self-employment-class4'" in {
-        val desResult = desBroughtForwardLoss.copy(lossType = "CLASS4").toDes(desBroughtForwardLoss)
+        val desResult = desBroughtForwardLoss.copy(lossType = "CLASS4").toMtd(desBroughtForwardLoss)
         desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "self-employment-class4")
       }
     }
     "the desBFLoss model has a lossType of '04'" should {
       "create BFLoss model with a lossType of 'uk-fhl-property'" in {
-        val desResult = desBroughtForwardLoss.copy(lossType = "04").toDes(desBroughtForwardLoss)
+        val desResult = desBroughtForwardLoss.copy(lossType = "04").toMtd(desBroughtForwardLoss)
         desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "uk-fhl-property")
       }
     }
     "the desBFLoss model has a lossType of '02'" should {
       "create BFLoss model with a lossType of 'uk-other-property'" in {
-        val desResult = desBroughtForwardLoss.copy(lossType = "02").toDes(desBroughtForwardLoss)
+        val desResult = desBroughtForwardLoss.copy(lossType = "02").toMtd(desBroughtForwardLoss)
         desResult shouldBe broughtForwardLoss.copy(typeOfLoss = "uk-other-property")
       }
     }
