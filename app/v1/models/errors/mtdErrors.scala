@@ -26,6 +26,7 @@ object MtdError {
 
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
+object AmountFormatError extends MtdError("FORMAT_LOSS_AMOUNT", "The format of the loss amount is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError
@@ -35,6 +36,14 @@ object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_B
 
 object RuleTaxYearRangeExceededError
     extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
+
+object RuleTypeOfLossUnsupported extends MtdError("FORMAT_TYPE_OF_LOSS", "The supplied type of loss format is invalid")
+
+object RuleInvalidSelfEmploymentId extends MtdError("FORMAT_SELF_EMPLOYMENT_ID", "The supplied self employment ID format is invalid")
+
+object RulePropertySelfEmploymentId extends MtdError("RULE_SELF_EMPLOYMENT_ID", "An ID was supplied for a non-self employment business type")
+
+object RuleInvalidLossAmount extends MtdError("RULE_LOSS_AMOUNT", "Amount should be a positive number less than 99999999999.99 with up to 2 decimal places")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

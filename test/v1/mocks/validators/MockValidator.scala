@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.mocks.validators
 
-import config.FixedConfig
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.Validator
 import v1.models.errors.MtdError
-import v1.models.requestData.DesTaxYear
+import v1.models.requestData.RawData
 
-object MtdTaxYearValidation extends FixedConfig {
+class MockValidator[B <: RawData] extends MockFactory {
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, error: MtdError): List[MtdError] = {
+  val mockValidator: Validator[B] = mock[Validator[B]]
 
-    val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
+  object MockValidator {
 
-    if (desTaxYear >= minimumTaxYear || TaxYearValidation.validate(taxYear) != Nil) NoValidationErrors else List(error)
+    def validate(data: B): CallHandler1[B, List[MtdError]] = {
+      (mockValidator
+        .validate(_: B))
+        .expects(data)
+    }
   }
 }

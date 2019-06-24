@@ -16,17 +16,17 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import config.FixedConfig
-import v1.models.errors.MtdError
-import v1.models.requestData.DesTaxYear
+import v1.models.errors.{MtdError, RuleTypeOfLossUnsupported}
 
-object MtdTaxYearValidation extends FixedConfig {
+object TypeOfLossValidation {
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, error: MtdError): List[MtdError] = {
+  val validFormats = List("self-employment", "self-employment-class4", "uk-fhl-property", "uk-other-property")
 
-    val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
-
-    if (desTaxYear >= minimumTaxYear || TaxYearValidation.validate(taxYear) != Nil) NoValidationErrors else List(error)
+  def validate(typeOfLoss: String): List[MtdError] = {
+    if (validFormats.contains(typeOfLoss)) {
+      NoValidationErrors
+    } else {
+      List(RuleTypeOfLossUnsupported)
+    }
   }
 }
