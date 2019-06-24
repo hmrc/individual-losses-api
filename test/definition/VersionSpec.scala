@@ -21,7 +21,7 @@ import play.api.test.FakeRequest
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
-class VersionSpec extends UnitSpec{
+class VersionSpec extends UnitSpec {
 
   "Versions" when {
     "retrieved from header carrier" must {
@@ -44,4 +44,4 @@ class VersionSpec extends UnitSpec{
       }
     }
   }
- }
+}
