@@ -29,8 +29,8 @@ class AmendBroughtForwardLossResponseSpec extends UnitSpec {
        |  "taxYear": "2020"
        |}
      """.stripMargin)
-  val desToModel = AmendBroughtForwardLossResponse(selfEmploymentId = "000000000000001", typeOfLoss = "INCOME", lossAmount = 99999999999.99, taxYear = "2020")
-  val modelToMtd = AmendBroughtForwardLossResponse(selfEmploymentId = "000000000000001", typeOfLoss = "INCOME", lossAmount = 99999999999.99, taxYear = "2019-20")
+  val desToModel = AmendBFLossResponse(selfEmploymentId = "000000000000001", typeOfLoss = "INCOME", lossAmount = 99999999999.99, taxYear = "2020")
+  val modelToMtd = AmendBFLossResponse(selfEmploymentId = "000000000000001", typeOfLoss = "INCOME", lossAmount = 99999999999.99, taxYear = "2019-20")
   val mtdJson = Json.parse(
     """{
        |  "selfEmploymentId": "000000000000001",
@@ -42,7 +42,7 @@ class AmendBroughtForwardLossResponseSpec extends UnitSpec {
 
   "Json Reads" should {
     "convert JSON from DES into a valid model" in {
-      desJson.as[AmendBroughtForwardLossResponse] shouldBe desToModel
+      desJson.as[AmendBFLossResponse] shouldBe desToModel
     }
   }
   "Json Writes" should {

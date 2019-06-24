@@ -27,7 +27,7 @@ class AmendBroughtForwardLossSpec extends UnitSpec {
       |  "lossAmount": 1000.99
       |}
     """.stripMargin)
-  val model = AmendBroughtForwardLoss(1000.99)
+  val model = AmendBFLoss(1000.99)
   val desJson = Json.parse(
     """
       |{
@@ -39,7 +39,7 @@ class AmendBroughtForwardLossSpec extends UnitSpec {
 
   "Json Reads" should {
     "convert valid MTD JSON into a model" in {
-      mtdJson.as[AmendBroughtForwardLoss] shouldBe model
+      mtdJson.as[AmendBFLoss] shouldBe model
     }
   }
 

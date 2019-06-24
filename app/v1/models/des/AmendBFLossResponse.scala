@@ -19,15 +19,15 @@ package v1.models.des
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class AmendBroughtForwardLossResponse(selfEmploymentId: String, typeOfLoss: String, lossAmount: BigDecimal, taxYear: String)
+case class AmendBFLossResponse(selfEmploymentId: String, typeOfLoss: String, lossAmount: BigDecimal, taxYear: String)
 
-object AmendBroughtForwardLossResponse {
-  implicit val writes: Writes[AmendBroughtForwardLossResponse] = Json.writes[AmendBroughtForwardLossResponse]
+object AmendBFLossResponse {
+  implicit val writes: Writes[AmendBFLossResponse] = Json.writes[AmendBFLossResponse]
 
-  implicit val desToMtdReads: Reads[AmendBroughtForwardLossResponse] = (
+  implicit val desToMtdReads: Reads[AmendBFLossResponse] = (
     (__ \ "incomeSourceId").read[String] and
       (__ \ "lossType").read[String] and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear").read[String]
-  )(AmendBroughtForwardLossResponse.apply _)
+  )(AmendBFLossResponse.apply _)
 }

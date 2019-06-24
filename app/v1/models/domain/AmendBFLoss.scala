@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.domain
 
-import play.api.mvc.AnyContentAsJson
-import uk.gov.hmrc.domain.Nino
+import play.api.libs.json._
 
-case class AmendBroughtForwardLossRawData(nino: Nino, body: AnyContentAsJson) extends RawData
+case class AmendBFLoss(lossAmount: BigDecimal)
+
+object AmendBFLoss {
+  implicit val reads: Reads[AmendBFLoss] = Json.reads[AmendBFLoss]
+  implicit val writes: Writes[AmendBFLoss] = new Writes[AmendBFLoss] {
+    override def writes(amendBroughtForwardLoss: AmendBFLoss): JsValue = Json.obj(
+      "updatedBroughtForwardLossAmount" -> amendBroughtForwardLoss.lossAmount
+    )
+  }
+}
