@@ -50,10 +50,7 @@ object BFLoss {
   }
 
   def isProperty(typeOfLoss: String): Boolean = {
-    if (typeOfLoss.equals("uk-other-property") || typeOfLoss.equals("uk-fhl-property"))
-    {true}
-    else
-    {false}
+    if (typeOfLoss.contains("property")) true else false
   }
 
   def convertToDesCode(typeOfLoss: String): String = typeOfLoss match {
