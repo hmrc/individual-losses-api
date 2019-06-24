@@ -17,31 +17,49 @@
 package v1.models.domain
 
 import play.api.libs.json._
-import v1.models.des.DesBFLoss
 import v1.models.requestData.DesTaxYear
 
 case class BFLoss(typeOfLoss: String,
                   selfEmploymentId: Option[String],
                   taxYear: String,
                   lossAmount: BigDecimal) {
-
-  def toDes(broughtForwardLoss: BFLoss) : DesBFLoss = {
-    DesBFLoss(lossType = typeOfLoss match {
-      case "self-employment" => "INCOME"
-      case "self-employment-class4" => "CLASS4"
-      case "uk-fhl-property" => "04"
-      case "uk-other-property" => "02"
-    },
-      incomeSourceId =  selfEmploymentId,
-      taxYearBroughtForwardFrom = DesTaxYear.fromMtd(taxYear).toString,
-      broughtForwardLossAmount = lossAmount)
-  }
 }
 
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-  implicit val writes: Writes[BFLoss] = Json.writes[BFLoss]
+  implicit val writes: Writes[BFLoss] = new Writes[BFLoss] {
+    override def writes(loss: BFLoss): JsValue = {
+
+      if (isProperty(loss.typeOfLoss))  {
+        Json.obj(
+          "incomeSourceType" -> convertToDesCode(loss.typeOfLoss),
+          "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+          "broughtForwardLossAmount" -> loss.lossAmount
+        )
+      }
+      else {
+        Json.obj(
+          "incomeSourceId" -> loss.selfEmploymentId,
+          "lossType" -> convertToDesCode(loss.typeOfLoss),
+          "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+          "broughtForwardLossAmount" -> loss.lossAmount
+        )
+      }
+    }
+  }
+
+  def isProperty(typeOfLoss: String): Boolean = {
+    if (typeOfLoss.equals("uk-other-property") || typeOfLoss.equals("uk-fhl-property"))
+    {true}
+    else
+    {false}
+  }
+
+  def convertToDesCode(typeOfLoss: String): String = typeOfLoss match {
+    case "self-employment" => "INCOME"
+    case "self-employment-class4" => "CLASS4"
+    case "uk-fhl-property" => "04"
+    case "uk-other-property" => "02"
+  }
 }
-
-
