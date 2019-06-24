@@ -18,12 +18,12 @@ package v1.models.des
 
 import play.api.libs.json._
 
-case class CreateBroughtForwardLossResponse(id: String)
+case class CreateBFLossResponse(id: String)
 
-object CreateBroughtForwardLossResponse {
-  implicit val writes: Writes[CreateBroughtForwardLossResponse] = Json.writes[CreateBroughtForwardLossResponse]
+object CreateBFLossResponse {
+  implicit val writes: Writes[CreateBFLossResponse] = Json.writes[CreateBFLossResponse]
 
-  implicit val desToMtdReads: Reads[CreateBroughtForwardLossResponse] =
-  (__ \ "lossId").read[String].map(CreateBroughtForwardLossResponse.apply)
+  implicit val desToMtdReads: Reads[CreateBFLossResponse] =
+  (__ \ "lossId").read[String].map(CreateBFLossResponse.apply)
 
 }

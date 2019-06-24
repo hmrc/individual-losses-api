@@ -17,16 +17,16 @@
 package v1.models.domain
 
 import play.api.libs.json._
-import v1.models.des.DesBroughtForwardLoss
+import v1.models.des.DesBFLoss
 import v1.models.requestData.DesTaxYear
 
-case class BroughtForwardLoss(typeOfLoss: String,
-                              selfEmploymentId: Option[String],
-                              taxYear: String,
-                              lossAmount: BigDecimal) {
+case class BFLoss(typeOfLoss: String,
+                  selfEmploymentId: Option[String],
+                  taxYear: String,
+                  lossAmount: BigDecimal) {
 
-  def toDes(broughtForwardLoss: BroughtForwardLoss) : DesBroughtForwardLoss = {
-    DesBroughtForwardLoss(lossType = typeOfLoss match {
+  def toDes(broughtForwardLoss: BFLoss) : DesBFLoss = {
+    DesBFLoss(lossType = typeOfLoss match {
       case "self-employment" => "INCOME"
       case "self-employment-class4" => "CLASS4"
       case "uk-fhl-property" => "04"
@@ -38,10 +38,10 @@ case class BroughtForwardLoss(typeOfLoss: String,
   }
 }
 
-object BroughtForwardLoss {
-  implicit val reads: Reads[BroughtForwardLoss] = Json.reads[BroughtForwardLoss]
+object BFLoss {
+  implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-  implicit val writes: Writes[BroughtForwardLoss] = Json.writes[BroughtForwardLoss]
+  implicit val writes: Writes[BFLoss] = Json.writes[BFLoss]
 }
 
 

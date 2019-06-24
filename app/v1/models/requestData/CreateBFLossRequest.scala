@@ -16,6 +16,6 @@
 
 package v1.models.requestData
 import uk.gov.hmrc.domain.Nino
-import v1.models.domain.BroughtForwardLoss
+import v1.models.domain.BFLoss
 
-case class CreateBFLossRequest(nino: Nino, broughtForwardLoss: BroughtForwardLoss)
+case class CreateBFLossRequest(nino: Nino, broughtForwardLoss: BFLoss)

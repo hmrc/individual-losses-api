@@ -18,18 +18,18 @@ package v1.models.domain
 
 import play.api.libs.json._
 import support.UnitSpec
-import v1.models.des.DesBroughtForwardLoss
+import v1.models.des.DesBFLoss
 import v1.models.utils.JsonErrorValidators
 
-class BroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
+class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
 
-  val broughtForwardLoss = BroughtForwardLoss(typeOfLoss = "self-employment",
+  val broughtForwardLoss = BFLoss(typeOfLoss = "self-employment",
     selfEmploymentId = Some("XKIS00000000988"),
     taxYear = "2019-20",
     lossAmount = 256.78)
 
 
-  val desbroughtForwardLoss = DesBroughtForwardLoss(lossType = "INCOME",
+  val desbroughtForwardLoss = DesBFLoss(lossType = "INCOME",
     incomeSourceId = Some("XKIS00000000988"),
     taxYearBroughtForwardFrom = "2020",
     broughtForwardLossAmount = 256.78)
@@ -48,23 +48,23 @@ class BroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
   "reads" when {
     "passed valid BroughtForwardLoss JSON" should {
       "return a valid model" in {
-        broughtForwardLossJson.as[BroughtForwardLoss] shouldBe broughtForwardLoss
+        broughtForwardLossJson.as[BFLoss] shouldBe broughtForwardLoss
       }
 
-      testMandatoryProperty[BroughtForwardLoss](broughtForwardLossJson)("/typeOfLoss")
-      testPropertyType[BroughtForwardLoss](broughtForwardLossJson)(
+      testMandatoryProperty[BFLoss](broughtForwardLossJson)("/typeOfLoss")
+      testPropertyType[BFLoss](broughtForwardLossJson)(
         path = "/typeOfLoss",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[BroughtForwardLoss](broughtForwardLossJson)("/taxYear")
-      testPropertyType[BroughtForwardLoss](broughtForwardLossJson)(
+      testMandatoryProperty[BFLoss](broughtForwardLossJson)("/taxYear")
+      testPropertyType[BFLoss](broughtForwardLossJson)(
         path = "/taxYear",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[BroughtForwardLoss](broughtForwardLossJson)("/lossAmount")
-      testPropertyType[BroughtForwardLoss](broughtForwardLossJson)(
+      testMandatoryProperty[BFLoss](broughtForwardLossJson)("/lossAmount")
+      testPropertyType[BFLoss](broughtForwardLossJson)(
         path = "/lossAmount",
         replacement = "dfgdf".toJson,
         expectedError = JsonError.NUMBER_FORMAT_EXCEPTION)

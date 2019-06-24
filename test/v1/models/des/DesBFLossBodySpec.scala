@@ -18,19 +18,19 @@ package v1.models.des
 
 import play.api.libs.json._
 import support.UnitSpec
-import v1.models.domain.BroughtForwardLoss
+import v1.models.domain.BFLoss
 import v1.models.utils.JsonErrorValidators
 
-class DesBroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
+class DesBFLossBodySpec extends UnitSpec with JsonErrorValidators {
 
-  val broughtForwardLoss = BroughtForwardLoss(typeOfLoss = "self-employment",
+  val broughtForwardLoss = BFLoss(typeOfLoss = "self-employment",
     selfEmploymentId = Some("XKIS00000000988"),
     taxYear = "2019-20",
     lossAmount = 256.78)
 
 
 
-  val desBroughtForwardLoss = DesBroughtForwardLoss(lossType = "INCOME",
+  val desBroughtForwardLoss = DesBFLoss(lossType = "INCOME",
     incomeSourceId = Some("XKIS00000000988"),
     taxYearBroughtForwardFrom = "2020",
     broughtForwardLossAmount = 256.78)
@@ -49,23 +49,23 @@ class DesBroughtForwardLossBodySpec extends UnitSpec with JsonErrorValidators {
   "reads" when {
     "passed valid DesBroughtForwardLoss JSON" should {
       "return a valid model" in {
-        desBroughtForwardLossJson.as[DesBroughtForwardLoss] shouldBe desBroughtForwardLoss
+        desBroughtForwardLossJson.as[DesBFLoss] shouldBe desBroughtForwardLoss
       }
 
-      testMandatoryProperty[DesBroughtForwardLoss](desBroughtForwardLossJson)("/lossType")
-      testPropertyType[DesBroughtForwardLoss](desBroughtForwardLossJson)(
+      testMandatoryProperty[DesBFLoss](desBroughtForwardLossJson)("/lossType")
+      testPropertyType[DesBFLoss](desBroughtForwardLossJson)(
         path = "/lossType",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[DesBroughtForwardLoss](desBroughtForwardLossJson)("/taxYearBroughtForwardFrom")
-      testPropertyType[DesBroughtForwardLoss](desBroughtForwardLossJson)(
+      testMandatoryProperty[DesBFLoss](desBroughtForwardLossJson)("/taxYearBroughtForwardFrom")
+      testPropertyType[DesBFLoss](desBroughtForwardLossJson)(
         path = "/taxYearBroughtForwardFrom",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[DesBroughtForwardLoss](desBroughtForwardLossJson)("/broughtForwardLossAmount")
-      testPropertyType[DesBroughtForwardLoss](desBroughtForwardLossJson)(
+      testMandatoryProperty[DesBFLoss](desBroughtForwardLossJson)("/broughtForwardLossAmount")
+      testPropertyType[DesBFLoss](desBroughtForwardLossJson)(
         path = "/broughtForwardLossAmount",
         replacement = "dfgdf".toJson,
         expectedError = JsonError.NUMBER_FORMAT_EXCEPTION)

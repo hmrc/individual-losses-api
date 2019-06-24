@@ -19,9 +19,9 @@ package v1.models.des
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class CreateBroughtForwardLossResponseSpec extends UnitSpec {
+class CreateBFLossResponseSpec extends UnitSpec {
 
-  val lossIdResponse = CreateBroughtForwardLossResponse(id = "AAZZ1234567890a")
+  val lossIdResponse = CreateBFLossResponse(id = "AAZZ1234567890a")
 
 
   val lossIdJson = Json.parse(
@@ -41,7 +41,7 @@ class CreateBroughtForwardLossResponseSpec extends UnitSpec {
   "reads" when {
     "passed valid LossIdResponse JSON" should {
       "return a valid model" in {
-        lossIdDesJson.as[CreateBroughtForwardLossResponse] shouldBe lossIdResponse
+        lossIdDesJson.as[CreateBFLossResponse] shouldBe lossIdResponse
       }
 
     }
