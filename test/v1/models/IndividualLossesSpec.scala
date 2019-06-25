@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models
 
-/**
-  * Represents a tax year for DES
-  *
-  * @param value the tax year string (where 2018 represents 2017-18)
-  */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
+import support.UnitSpec
+import v1.models.requestData.DesTaxYear
 
-object DesTaxYear {
+class IndividualLossesSpec extends UnitSpec {
 
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
-    */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(2) + taxYear.drop(5))
+  val taxYear = "2018-19"
+  val desTaxYear = "2019"
 
-  def fromDes(taxYear: String): DesTaxYear =
-    DesTaxYear((taxYear.toInt -1) + "-" + taxYear.drop(2))
+
+  "DesTaxYear" should {
+    "generate a des tax year" when {
+      "given a year" in {
+        val year = DesTaxYear.fromMtd(taxYear)
+        year.value shouldBe desTaxYear
+      }
+    }
+
+    "DesTaxYear" should {
+      "generate an mtd tax year" when {
+        "given a year" in {
+          val year = DesTaxYear.fromDes(desTaxYear)
+          year.value shouldBe taxYear
+        }
+      }
+    }
+  }
+
 }
