@@ -16,21 +16,15 @@
 
 package v1.models.errors
 
-import play.api.libs.json.Json
-import support.UnitSpec
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-class MtdErrorSpec extends UnitSpec {
+case class MtdError(code: String, message: String)
 
-  "writes" should {
-    "generate the correct JSON" in {
-      Json.toJson(MtdError("CODE", "some message")) shouldBe Json.parse(
-        """
-          |{
-          |   "code": "CODE",
-          |   "message": "some message"
-          |}
-        """.stripMargin
-      )
-    }
-  }
+object MtdError {
+  implicit val writes: Writes[MtdError] = Json.writes[MtdError]
+  implicit val reads: Reads[MtdError] = (
+    (__ \ "code").read[String] and
+      (__ \ "reason").read[String]
+    ) (MtdError.apply _)
 }

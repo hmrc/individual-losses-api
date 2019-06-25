@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-package v1.models.outcomes
+package v1.models.audit
 
-case class ResponseWrapper[+A](correlationId: String, responseData: A) {
-  def map[B](f: A => B): ResponseWrapper[B] = ResponseWrapper(correlationId, f(responseData))
+import play.api.libs.json.Json
+import support.UnitSpec
+
+class AuditMtdErrorSpec extends UnitSpec {
+
+  private val auditError = AuditError("FORMAT_NINO")
+
+  "writes" when {
+    "passed an audit error model" should {
+      "produce valid json" in {
+
+         val json = Json.parse(
+          s"""
+             |{
+             |  "errorCode": "FORMAT_NINO"
+             |}
+           """.stripMargin)
+
+        Json.toJson(auditError) shouldBe json
+      }
+    }
+  }
 }

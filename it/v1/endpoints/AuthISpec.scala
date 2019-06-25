@@ -44,7 +44,7 @@ class AuthISpec extends IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"/ni/$nino/$taxYear/sampleEndpoint")
+      buildRequest(s"/individual/losses/$nino/brought-forward-losses")
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
   }
@@ -73,7 +73,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.serviceSuccess(nino, DesTaxYear.fromMtd(taxYear).toString)
+          DesStub.serviceSuccess(nino)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))

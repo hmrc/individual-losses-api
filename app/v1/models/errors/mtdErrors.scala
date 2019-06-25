@@ -16,14 +16,6 @@
 
 package v1.models.errors
 
-import play.api.libs.json.{Json, Writes}
-
-case class MtdError(code: String, message: String)
-
-object MtdError {
-  implicit val writes: Writes[MtdError] = Json.writes[MtdError]
-}
-
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 
@@ -51,6 +43,6 @@ object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal
 object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised.")
 
 // Accept header Errors
-object  InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 
-object  UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found.")
+object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found.")

@@ -26,20 +26,20 @@ object DesStub extends WireMockMethods {
   private val responseBody = Json.parse(
     """
       | {
-      | "responseData" : "someResponse"
+      | "lossId": "AAZZ1234567890a"
       | }
     """.stripMargin)
 
-  private def url(nino: String, taxYear: String): String =
-    s"/income-tax/nino/$nino/taxYear/$taxYear/someService"
+  private def url(nino: String): String =
+    s"/income-tax/brought-forward-losses/$nino"
 
-  def serviceSuccess(nino: String, taxYear: String): StubMapping = {
-    when(method = POST, uri = url(nino, taxYear))
+  def serviceSuccess(nino: String): StubMapping = {
+    when(method = POST, uri = url(nino))
       .thenReturn(status = OK, responseBody)
   }
 
-  def serviceError(nino: String, taxYear: String, errorStatus: Int, errorBody: String): StubMapping = {
-    when(method = POST, uri = url(nino, taxYear))
+  def serviceError(nino: String, errorStatus: Int, errorBody: String): StubMapping = {
+    when(method = POST, uri = url(nino))
       .thenReturn(status = errorStatus, errorBody)
   }
 }

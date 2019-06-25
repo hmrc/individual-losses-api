@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.SampleRequestDataParser
-import v1.models.errors.ErrorWrapper
-import v1.models.requestData.{SampleRawData, SampleRequestData}
+import uk.gov.hmrc.http.HeaderCarrier
+import v1.connectors.CreateBFLossOutcome
+import v1.models.requestData.CreateBFLossRequest
+import v1.services.CreateBFLossService
 
-trait MockSampleRequestDataParser extends MockFactory {
+import scala.concurrent.{ExecutionContext, Future}
 
-  val mockRequestDataParser = mock[SampleRequestDataParser]
+trait MockCreateBFLossService extends MockFactory {
 
-  object MockSampleRequestDataParser {
-    def parse(data: SampleRawData): CallHandler[Either[ErrorWrapper, SampleRequestData]] = {
-      (mockRequestDataParser.parseRequest(_: SampleRawData)).expects(data)
+  val mockCreateBFLossService: CreateBFLossService = mock[CreateBFLossService]
+
+  object MockCreateBFLossService {
+
+    def create(requestData: CreateBFLossRequest): CallHandler[Future[CreateBFLossOutcome]] = {
+      (mockCreateBFLossService
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
   }
-
 }
