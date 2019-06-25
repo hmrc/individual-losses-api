@@ -49,3 +49,8 @@ object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal
 
 //Authorisation Errors
 object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised.")
+
+// Accept header Errors
+object  InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+
+object  UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found.")

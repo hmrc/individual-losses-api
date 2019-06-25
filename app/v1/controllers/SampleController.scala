@@ -20,22 +20,22 @@ import java.util.UUID
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{ Inject, Singleton }
-import play.api.Logger
+import javax.inject.{Inject, Singleton}
+import play.api.{Environment, Logger}
 import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, ControllerComponents }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v1.controllers.requestParsers.SampleRequestDataParser
-import v1.models.audit.{ AuditEvent, SampleAuditDetail, SampleAuditResponse }
+import v1.models.audit.{AuditEvent, SampleAuditDetail, SampleAuditResponse}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.requestData.SampleRawData
 import v1.orchestrators.SampleOrchestrator
 import v1.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SampleController @Inject()(val authService: EnrolmentsAuthService,
@@ -45,7 +45,6 @@ class SampleController @Inject()(val authService: EnrolmentsAuthService,
                                  auditService: AuditService,
                                  cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
-
   protected val logger: Logger = Logger(this.getClass)
 
   implicit val endpointLogContext: EndpointLogContext =
