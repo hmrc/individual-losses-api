@@ -169,17 +169,6 @@ traits:
                 description: Amounts should be a positive number less than 99999999999.99 with up to 2 decimal places.
                 value:
                   code: RULE_LOSS_AMOUNT
-  ruleDuplicateLossAmount:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleDuplicateLossAmount:
-                description: A previous amount was submitted for this tax year
-                value:
-                  code: RULE_DUPLICATE_S
   formatTypeOfClaim:
     responses:
       400:
