@@ -12,4 +12,16 @@
             <td><p>Simulate success scenario</p></td>
         </tr>
     </tbody>
+    <tbody>
+        <tr>
+            <td><p>DUPLICATE</p></td>
+            <td><p>Simulates the scenario where a brought forward loss already exists for this income source</p></td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td><p>NOT_FOUND</p></td>
+            <td><p>Simulates the scenario where no data can be found</p></td>
+        </tr>
+    </tbody>
 </table>
