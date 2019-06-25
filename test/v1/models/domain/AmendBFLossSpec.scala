@@ -19,7 +19,7 @@ package v1.models.domain
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class AmendBroughtForwardLossSpec extends UnitSpec {
+class AmendBFLossSpec extends UnitSpec {
 
   val mtdJson = Json.parse(
     """

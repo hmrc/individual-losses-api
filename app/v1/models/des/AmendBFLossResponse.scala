@@ -18,16 +18,18 @@ package v1.models.des
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import v1.models.domain.BFLoss
+import v1.models.requestData.DesTaxYear
 
-case class AmendBFLossResponse(selfEmploymentId: String, typeOfLoss: String, lossAmount: BigDecimal, taxYear: String)
+case class AmendBFLossResponse(selfEmploymentId: Option[String], typeOfLoss: String, lossAmount: BigDecimal, taxYear: String)
 
 object AmendBFLossResponse {
   implicit val writes: Writes[AmendBFLossResponse] = Json.writes[AmendBFLossResponse]
 
   implicit val desToMtdReads: Reads[AmendBFLossResponse] = (
-    (__ \ "incomeSourceId").read[String] and
-      (__ \ "lossType").read[String] and
+    (__ \ "incomeSourceId").readNullable[String] and
+      (__ \ "lossType").read[String].map(BFLoss.convertToMtdCode) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      (__ \ "taxYear").read[String]
+      (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString)
   )(AmendBFLossResponse.apply _)
 }
