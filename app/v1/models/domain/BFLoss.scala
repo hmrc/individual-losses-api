@@ -60,9 +60,12 @@ object BFLoss {
     case "uk-other-property" => "02"
   }
 
-  def convertToMtdCode(lossType: String): String = lossType match {
+  def convertLossTypeToMtdCode(lossType: String): String = lossType match {
     case "INCOME" => "self-employment"
     case "CLASS4" => "self-employment-class4"
+  }
+
+  def convertIncomeSourceTypeToMtdCode(lossType: String): String = lossType match {
     case "04" => "uk-fhl-property"
     case "02" => "uk-other-property"
   }

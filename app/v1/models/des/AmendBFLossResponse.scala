@@ -28,7 +28,8 @@ object AmendBFLossResponse {
 
   implicit val desToMtdReads: Reads[AmendBFLossResponse] = (
     (__ \ "incomeSourceId").readNullable[String] and
-      (__ \ "lossType").read[String].map(BFLoss.convertToMtdCode) and
+      ((__ \ "lossType").read[String].map(BFLoss.convertLossTypeToMtdCode)
+        orElse (__ \ "incomeSourceType").read[String].map(BFLoss.convertIncomeSourceTypeToMtdCode)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString)
   )(AmendBFLossResponse.apply _)

@@ -22,16 +22,21 @@ import support.UnitSpec
 class AmendBFLossResponseSpec extends UnitSpec {
 
   "Json Reads" should {
-    val desJson: String => JsValue = lossType => Json.parse(s"""
-        |{
-        |  "incomeSourceId": "000000000000001",
-        |  "lossType": "$lossType",
-        |  "broughtForwardLossAmount": 99999999999.99,
-        |  "taxYear": "2020"
-        |}
+    val desJson: (String, String) => JsValue = (desType, mtdType) => {
+      import v1.models.domain.BFLoss.isProperty
+      Json.parse(s"""
+                    |{
+                    |  "incomeSourceId": "000000000000001",
+                    |  ${if(isProperty(mtdType)) s""""incomeSourceType": "$desType",""" else s""""lossType": "$desType","""}
+                    |  "broughtForwardLossAmount": 99999999999.99,
+                    |  "taxYear": "2020"
+                    |}
       """.stripMargin)
+    }
+
     val desToModel: String => AmendBFLossResponse = typeOfLoss =>
       AmendBFLossResponse(selfEmploymentId = Some("000000000000001"), typeOfLoss = typeOfLoss, lossAmount = 99999999999.99, taxYear = "2019-20")
+
     val desToMtdMap: Map[String, String] = Map(
       "INCOME" -> "self-employment",
       "CLASS4" -> "self-employment-class4",
@@ -40,11 +45,10 @@ class AmendBFLossResponseSpec extends UnitSpec {
     )
 
     desToMtdMap.foreach {
-      case (desType, mtdType) => {
+      case (desType, mtdType) =>
         s"convert JSON from DES into a valid model for $desType" in {
-          desJson(desType).as[AmendBFLossResponse] shouldBe desToModel(mtdType)
+          desJson(desType, mtdType).as[AmendBFLossResponse] shouldBe desToModel(mtdType)
         }
-      }
     }
   }
   "Json Writes" should {
