@@ -28,8 +28,9 @@ import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
 class AmendBFLossParserSpec extends UnitSpec {
 
   private val nino       = "AA123456A"
+  private val lossId     = "AAZZ1234567890a"
   private val lossAmount = 3.00
-  private val data       = AmendBFLossRawData(nino, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
+  private val data       = AmendBFLossRawData(nino, lossId, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
 
   trait Test extends MockValidator[AmendBFLossRawData] {
     lazy val parser = new AmendBFLossParser(mockValidator)
@@ -39,7 +40,7 @@ class AmendBFLossParserSpec extends UnitSpec {
     "return an AmendBFLossRequest" when {
       "the validator returns no errors" in new Test {
         MockValidator.validate(data).returns(List())
-        parser.parseRequest(data) shouldBe Right(AmendBFLossRequest(Nino(nino), AmendBFLoss(lossAmount)))
+        parser.parseRequest(data) shouldBe Right(AmendBFLossRequest(Nino(nino), lossId, AmendBFLoss(lossAmount)))
       }
     }
     "return a single error" when {

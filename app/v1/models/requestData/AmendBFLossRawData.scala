@@ -19,4 +19,4 @@ package v1.models.requestData
 import play.api.mvc.AnyContentAsJson
 import uk.gov.hmrc.domain.Nino
 
-case class AmendBFLossRawData(nino: String, body: AnyContentAsJson) extends RawData
+case class AmendBFLossRawData(nino: String, lossId: String, body: AnyContentAsJson) extends RawData

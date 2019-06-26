@@ -16,9 +16,9 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations.{ AmountValidation, JsonFormatValidation, NinoValidation }
+import v1.controllers.requestParsers.validators.validations.{AmountValidation, JsonFormatValidation, LossIdValidation, NinoValidation}
 import v1.models.domain.AmendBFLoss
-import v1.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v1.models.requestData.AmendBFLossRawData
 
 class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
@@ -27,7 +27,8 @@ class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
 
   private def parameterFormatValidation: AmendBFLossRawData => List[List[MtdError]] = { data =>
     List(
-      NinoValidation.validate(data.nino)
+      NinoValidation.validate(data.nino),
+      LossIdValidation.validate(data.lossId)
     )
   }
 

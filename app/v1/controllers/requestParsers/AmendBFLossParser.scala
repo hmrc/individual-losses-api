@@ -28,7 +28,7 @@ class AmendBFLossParser @Inject()(validator: Validator[AmendBFLossRawData]) exte
   def parseRequest(data: AmendBFLossRawData): Either[ErrorWrapper, AmendBFLossRequest] = {
     validator.validate(data) match {
       case Nil =>
-        Right(AmendBFLossRequest(Nino(data.nino), data.body.json.as[AmendBFLoss]))
+        Right(AmendBFLossRequest(Nino(data.nino), data.lossId, data.body.json.as[AmendBFLoss]))
       case err :: Nil => Left(ErrorWrapper(None, err, None))
       case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
     }
