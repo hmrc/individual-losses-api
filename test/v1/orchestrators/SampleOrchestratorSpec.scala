@@ -20,7 +20,7 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
-import v1.mocks.services.MockSampleService
+import v1.mocks.services.MockCreateBFLossService
 import v1.models.des.DesSampleResponse
 import v1.models.domain.{SampleRequestBody, SampleResponse}
 import v1.models.errors._
@@ -30,7 +30,7 @@ import v1.models.requestData.{DesTaxYear, SampleRequestData}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SampleOrchestratorSpec extends UnitSpec with MockSampleService {
+class SampleOrchestratorSpec extends UnitSpec with MockCreateBFLossService {
 
   private val nino = "AA123456A"
   private val taxYear = "2017-18"
