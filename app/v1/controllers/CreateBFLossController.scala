@@ -18,13 +18,15 @@ package v1.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.libs.json.JsValue
+import play.api.http.MimeTypes
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.CreateBFLossParser
+import v1.models.errors._
 import v1.models.requestData.CreateBFLossRawData
 import v1.services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -33,7 +35,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        createBFLossParser: CreateBFLossParser,
                                        auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc) {
+  extends AuthorisedController(cc) {
   protected val logger: Logger = Logger(this.getClass)
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -42,6 +44,35 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
-      createBFLossParser.parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(request.body)))
+      createBFLossParser.parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(request.body))) match {
+        case Right(createBFLossRequest) => createBFLossService.createBFLoss(createBFLossRequest).map {
+          case Right(desResponse) =>
+            logger.info(s"[CreateBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
+            Created(Json.toJson(desResponse.responseData)).withHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
+          case Left(errorWrapper) => processError(errorWrapper).withHeaders("X-CorrelationId" -> errorWrapper.correlationId)
+        }
+
+
+      }
     }
+
+  private def processError(errorWrapper: ErrorWrapper) = {
+    errorWrapper.error match {
+      case BadRequestError
+           | NinoFormatError
+           | TaxYearFormatError
+           | RuleIncorrectOrEmptyBodyError
+           | RuleTaxYearNotSupportedError
+           | RuleTaxYearRangeExceededError
+           | RuleTypeOfLossUnsupported
+           | RuleInvalidSelfEmploymentId
+           | RulePropertySelfEmploymentId
+           | AmountFormatError
+           | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))
+      case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
+      case NotFoundError | RuleNotFoundIncomeSource => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+
+    }
+  }
 }

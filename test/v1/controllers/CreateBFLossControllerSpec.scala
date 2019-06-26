@@ -17,12 +17,13 @@
 package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.BFLoss
+import v1.models.errors.{ErrorWrapper, NinoFormatError}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
 
@@ -30,7 +31,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateBFLossService
@@ -44,6 +45,8 @@ class CreateBFLossControllerSpec
 
   val bfLoss = BFLoss("self-employment", Some("XKIS00000000988"), "2019-20", 256.78)
 
+  val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
+
   val requestBody: JsValue = Json.parse(
     """
       |{
@@ -54,6 +57,13 @@ class CreateBFLossControllerSpec
       |}
     """.stripMargin)
 
+  val responseBody: JsValue = Json.parse(
+    """
+      |{
+      |  "id": "AAZZ1234567890a"
+      |}
+    """.stripMargin)
+
   trait Test {
     val hc = HeaderCarrier()
 
@@ -61,7 +71,7 @@ class CreateBFLossControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       createBFLossService = mockCreateBFLossService,
-      createBFLossRequestDataParser = mockCreateBFLossRequestDataParser,
+      createBFLossParser = mockCreateBFLossRequestDataParser,
       auditService = mockAuditService,
       cc = cc
     )
@@ -75,8 +85,8 @@ class CreateBFLossControllerSpec
       "the request received is valid" in new Test {
 
         MockCreateBFLossRequestDataParser.parseRequest(
-          CreateBFLossRawData(nino, requestBody))
-          .returns(Right(retrieveCharitableGivingRequest))
+          CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Right(bfLossRequest))
 
         MockCreateBFLossService
           .create(CreateBFLossRequest(Nino(nino), bfLoss))
@@ -84,6 +94,19 @@ class CreateBFLossControllerSpec
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe CREATED
+        contentAsJson(result) shouldBe responseBody
+      }
+    }
+    "return single error response with status 400" when {
+      "the request received failed the validation" in new Test() {
+
+        MockCreateBFLossRequestDataParser.parseRequest(
+          CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Left(ErrorWrapper(None, NinoFormatError, None)))
+
+        val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+        status(result) shouldBe BAD_REQUEST
+        header("X-CorrelationId", result).nonEmpty shouldBe true
 
       }
     }
