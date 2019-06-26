@@ -1,1 +1,1 @@
-POST       /ni/:nino/:taxYear/sampleEndpoint                  v1.controllers.SampleController.handleRequest(nino: String, taxYear: String)
+POST       /individual/losses/:nino/brought-forward-losses               v1.controllers.CreateBFLossController.create(nino: String)

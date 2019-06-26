@@ -16,13 +16,16 @@
 
 package v1.connectors
 
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.libs.json.Writes
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import config.AppConfig
+import v1.connectors.httpparsers.StandardDesHttpParser
+import v1.models.des.CreateBFLossResponse
+import v1.models.domain.BFLoss
+import v1.models.requestData.CreateBFLossRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,25 +38,14 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
     hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
       .withExtraHeaders("Environment" -> appConfig.desEnv)
 
-  def post[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
-                                                              hc: HeaderCarrier,
-                                                              httpReads: HttpReads[DesOutcome[Resp]]): Future[DesOutcome[Resp]] = {
+  def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
+                                   ec: ExecutionContext): Future[DesOutcome[CreateBFLossResponse]] = {
 
-    def doPost(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] = {
-      http.POST(s"${appConfig.desBaseUrl}/${uri.uri}", body)
-    }
+    val nino    = createBFLossRequest.nino.nino
 
-    doPost(desHeaderCarrier(hc))
-  }
+    val url = s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino"
 
-  def get[Resp](uri: DesUri[Resp])(implicit ec: ExecutionContext,
-                                   hc: HeaderCarrier,
-                                   httpReads: HttpReads[DesOutcome[Resp]]): Future[DesOutcome[Resp]] = {
-
-    def doGet(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] =
-      http.GET(s"${appConfig.desBaseUrl}/${uri.uri}")
-
-    doGet(desHeaderCarrier(hc))
+    http.POST(url, createBFLossRequest.broughtForwardLoss)(BFLoss.writes, StandardDesHttpParser.reads[CreateBFLossResponse], desHeaderCarrier, implicitly)
   }
 
 }
