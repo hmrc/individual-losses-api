@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.controllers.requestParsers.validators.validations
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.AmendBFLoss
+import v1.models.errors.{LossIdFormatError, MtdError}
 
-case class AmendBFLossRequest(nino: Nino, lossId: String, amendBroughtForwardLoss: AmendBFLoss)
+object LossIdValidation {
+  val regex = "^[A-Za-z0-9]{15}$"
+
+  def validate(lossId: String): List[MtdError] = if(lossId.matches(regex)) List() else List(LossIdFormatError)
+}
