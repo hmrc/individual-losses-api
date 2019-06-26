@@ -20,10 +20,11 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.BFLoss
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.CreateBFLossRequest
+import v1.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -33,6 +34,7 @@ class CreateBFLossControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateBFLossService
+    with MockCreateBFLossRequestDataParser
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -59,6 +61,7 @@ class CreateBFLossControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       createBFLossService = mockCreateBFLossService,
+      createBFLossRequestDataParser = mockCreateBFLossRequestDataParser,
       auditService = mockAuditService,
       cc = cc
     )
@@ -68,12 +71,16 @@ class CreateBFLossControllerSpec
   }
 
   "create" should {
-    "return CREATED" when {
-      "request sent is valid" in new Test {
+    "return a successful response with header X-CorrelationId and body" when {
+      "the request received is valid" in new Test {
 
-        /*MockCreateBFLossService
+        MockCreateBFLossRequestDataParser.parseRequest(
+          CreateBFLossRawData(nino, requestBody))
+          .returns(Right(retrieveCharitableGivingRequest))
+
+        MockCreateBFLossService
           .create(CreateBFLossRequest(Nino(nino), bfLoss))
-          .returns(Future.successful(Right(DesResponse(correlationId, lossId))))*/
+          .returns(Future.successful(Right(DesResponse(correlationId, lossId))))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe CREATED

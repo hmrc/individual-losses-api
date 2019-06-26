@@ -19,7 +19,9 @@ package v1.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, ControllerComponents}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import v1.controllers.requestParsers.CreateBFLossParser
+import v1.models.requestData.CreateBFLossRawData
 import v1.services._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,6 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        createBFLossService: CreateBFLossService,
+                                       createBFLossParser: CreateBFLossParser,
                                        auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
@@ -38,6 +41,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      Future.successful(Created)
+
+      createBFLossParser.parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(request.body)))
     }
 }

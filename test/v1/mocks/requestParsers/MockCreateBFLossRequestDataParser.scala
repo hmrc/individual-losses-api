@@ -18,16 +18,16 @@ package v1.mocks.requestParsers
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers
+import v1.controllers.requestParsers.CreateBFLossParser
 import v1.models.errors.ErrorWrapper
 import v1.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
 
 trait MockCreateBFLossRequestDataParser extends MockFactory {
 
-  val mockCreateBFLossRequestDataParser = mock[CreateBFLossRequestDataParser]
+  val mockCreateBFLossRequestDataParser = mock[CreateBFLossParser]
 
-  object MockSampleRequestDataParser {
-    def parseRequest(data: CreateBFLossRequestDataParser): CallHandler[Either[ErrorWrapper, CreateBFLossRequest]] = {
+  object MockCreateBFLossRequestDataParser {
+    def parseRequest(data: CreateBFLossParser): CallHandler[Either[ErrorWrapper, CreateBFLossRequest]] = {
       (mockCreateBFLossRequestDataParser.parseRequest(_: CreateBFLossRawData)).expects(data)
     }
   }
