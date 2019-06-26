@@ -49,9 +49,7 @@ object BFLoss {
     }
   }
 
-  def isProperty(typeOfLoss: String): Boolean = {
-    if (typeOfLoss.contains("property")) true else false
-  }
+  def isProperty(typeOfLoss: String): Boolean = typeOfLoss.contains("property")
 
   def convertToDesCode(typeOfLoss: String): String = typeOfLoss match {
     case "self-employment" => "INCOME"
