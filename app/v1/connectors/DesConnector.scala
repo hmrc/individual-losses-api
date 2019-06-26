@@ -23,9 +23,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser
-import v1.models.des.CreateBFLossResponse
-import v1.models.domain.BFLoss
-import v1.models.requestData.CreateBFLossRequest
+import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse}
+import v1.models.domain.{AmendBFLoss, BFLoss}
+import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,6 +46,18 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
     val url = s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino"
 
     http.POST(url, createBFLossRequest.broughtForwardLoss)(BFLoss.writes, StandardDesHttpParser.reads[CreateBFLossResponse], desHeaderCarrier, implicitly)
+  }
+
+  def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
+                                                             ec: ExecutionContext): Future[DesOutcome[AmendBFLossResponse]] = {
+
+    val nino    = amendBFLossRequest.nino.nino
+    val lossId  = amendBFLossRequest.lossId
+
+    val url = s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId"
+
+    http.PUT(url, amendBFLossRequest.amendBroughtForwardLoss)(AmendBFLoss.writes,
+      StandardDesHttpParser.reads[AmendBFLossResponse], desHeaderCarrier, implicitly)
   }
 
 }
