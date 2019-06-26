@@ -16,17 +16,19 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import config.FixedConfig
-import v1.models.errors.MtdError
-import v1.models.requestData.DesTaxYear
+import v1.models.errors.{AmountFormatError, MtdError, RuleInvalidLossAmount}
 
-object MtdTaxYearValidation extends FixedConfig {
+object AmountValidation {
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, error: MtdError): List[MtdError] = {
-
-    val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
-
-    if (desTaxYear >= minimumTaxYear || TaxYearValidation.validate(taxYear) != Nil) NoValidationErrors else List(error)
+  def validate(amount: BigDecimal): List[MtdError] = {
+    if (amount.scale > 2) {
+      List(AmountFormatError)
+    }
+    else if (amount > 99999999999.99 || amount < 0) {
+      List(RuleInvalidLossAmount)
+    }
+    else {
+      NoValidationErrors
+    }
   }
 }
