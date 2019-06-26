@@ -37,6 +37,9 @@ object RulePropertySelfEmploymentId extends MtdError("RULE_SELF_EMPLOYMENT_ID", 
 
 object RuleInvalidLossAmount extends MtdError("RULE_LOSS_AMOUNT", "Amount should be a positive number less than 99999999999.99 with up to 2 decimal places")
 
+object RuleDuplicateSubmissionError
+  extends MtdError("RULE_DUPLICATE_SUBMISSION", "A brought forward loss already exists for this income source.")
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 
