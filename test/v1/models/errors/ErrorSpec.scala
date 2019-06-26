@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.models.errors
 
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.SampleRequestDataParser
-import v1.models.errors.ErrorWrapper
-import v1.models.requestData.{SampleRawData, SampleRequestData}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-trait MockSampleRequestDataParser extends MockFactory {
+class ErrorSpec extends UnitSpec{
 
-  val mockRequestDataParser = mock[SampleRequestDataParser]
+  "reads" should {
+    val error = MtdError("FORMAT_NINO", "The provided NINO is invalid")
 
-  object MockSampleRequestDataParser {
-    def parse(data: SampleRawData): CallHandler[Either[ErrorWrapper, SampleRequestData]] = {
-      (mockRequestDataParser.parseRequest(_: SampleRawData)).expects(data)
+    val json = Json.parse(
+      """
+        |{
+        |   "code": "FORMAT_NINO",
+        |   "reason": "The provided NINO is invalid"
+        |}
+      """.stripMargin
+    )
+
+    "generate the correct JSON" in {
+      json.as[MtdError] shouldBe error
     }
   }
-
 }

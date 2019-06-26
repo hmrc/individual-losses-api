@@ -14,28 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.audit
+package v1.models.requestData
 
-import play.api.libs.json.Json
-import support.UnitSpec
+import uk.gov.hmrc.domain.Nino
+import v1.models.domain.AmendBFLoss
 
-class AuditErrorSpec extends UnitSpec {
-
-  private val auditError = AuditError("FORMAT_NINO")
-
-  "writes" when {
-    "passed an audit error model" should {
-      "produce valid json" in {
-
-         val json = Json.parse(
-          s"""
-             |{
-             |  "errorCode": "FORMAT_NINO"
-             |}
-           """.stripMargin)
-
-        Json.toJson(auditError) shouldBe json
-      }
-    }
-  }
-}
+case class AmendBFLossRequest(nino: Nino, amendBroughtForwardLoss: AmendBFLoss)

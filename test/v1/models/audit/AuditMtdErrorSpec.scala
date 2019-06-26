@@ -14,12 +14,28 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.models.audit
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-case class DesSampleResponse(responseData: String)
+class AuditMtdErrorSpec extends UnitSpec {
 
-object DesSampleResponse {
-  implicit val reads: Reads[DesSampleResponse] = Json.reads[DesSampleResponse]
+  private val auditError = AuditError("FORMAT_NINO")
+
+  "writes" when {
+    "passed an audit error model" should {
+      "produce valid json" in {
+
+         val json = Json.parse(
+          s"""
+             |{
+             |  "errorCode": "FORMAT_NINO"
+             |}
+           """.stripMargin)
+
+        Json.toJson(auditError) shouldBe json
+      }
+    }
+  }
 }

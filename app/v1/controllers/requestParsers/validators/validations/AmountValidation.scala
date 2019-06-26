@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.controllers.requestParsers.validators.validations
 
-import play.api.libs.json.Json
-import support.UnitSpec
+import v1.models.errors.{AmountFormatError, MtdError, RuleInvalidLossAmount}
 
-class DesSampleResponseSpec extends UnitSpec {
-  "Json reads" should {
-    "use specified format" in {
-      val json = Json.parse(
-        """
-          |{
-          |  "responseData": "someResponse"
-          |}""".stripMargin)
+object AmountValidation {
 
-      json.as[DesSampleResponse] shouldBe DesSampleResponse("someResponse")
+  def validate(amount: BigDecimal): List[MtdError] = {
+    if (amount.scale > 2) {
+      List(AmountFormatError)
+    }
+    else if (amount > 99999999999.99 || amount < 0) {
+      List(RuleInvalidLossAmount)
+    }
+    else {
+      NoValidationErrors
     }
   }
 }

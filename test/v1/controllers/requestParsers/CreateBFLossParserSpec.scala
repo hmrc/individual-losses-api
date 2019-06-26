@@ -17,46 +17,48 @@
 package v1.controllers.requestParsers
 
 import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.validators.MockSampleValidator
-import v1.models.domain.SampleRequestBody
-import v1.models.errors._
-import v1.models.requestData.{DesTaxYear, SampleRawData, SampleRequestData}
+import v1.mocks.validators.MockValidator
+import v1.models.domain.BFLoss
+import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
+import v1.models.requestData._
 
-class SampleRequestDataParserSpec extends UnitSpec {
+class CreateBFLossParserSpec extends UnitSpec {
   val nino = "AA123456B"
   val taxYear = "2017-18"
-  val calcId = "someCalcId"
 
   private val requestBodyJson = Json.parse(
-    """{
-      |  "data" : "someData"
-      |}
-    """.stripMargin)
+    s"""{
+       |  "typeOfLoss" : "self-employment",
+       |  "selfEmploymentId" : "XAIS01234567890",
+       |  "taxYear" : "$taxYear",
+       |  "lossAmount" : 1000
+       |}""".stripMargin)
 
   val inputData =
-    SampleRawData(nino, taxYear, requestBodyJson)
+    CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
 
-  trait Test extends MockSampleValidator {
-    lazy val parser = new SampleRequestDataParser(mockValidator)
+  trait Test extends MockValidator[CreateBFLossRawData] {
+    lazy val parser = new CreateBFLossParser(mockValidator)
   }
 
   "parse" should {
 
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockSampleValidator.validate(inputData).returns(Nil)
+        MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(SampleRequestData(Nino(nino), DesTaxYear("2018"), SampleRequestBody("someData")))
+          Right(CreateBFLossRequest(Nino(nino), BFLoss("self-employment", Some("XAIS01234567890"), taxYear, 1000)))
       }
     }
 
     "return an ErrorWrapper" when {
 
       "a single validation error occurs" in new Test {
-        MockSampleValidator.validate(inputData)
+        MockValidator.validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -64,7 +66,7 @@ class SampleRequestDataParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockSampleValidator.validate(inputData)
+        MockValidator.validate(inputData)
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(inputData) shouldBe

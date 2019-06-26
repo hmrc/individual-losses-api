@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package v1.mocks.validators
+package v1.models.domain
 
-import org.scalamock.handlers.CallHandler1
-import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.SampleValidator
-import v1.models.errors.MtdError
-import v1.models.requestData.SampleRawData
+import play.api.libs.json._
 
-class MockSampleValidator extends MockFactory {
+case class AmendBFLoss(lossAmount: BigDecimal)
 
-  val mockValidator: SampleValidator = mock[SampleValidator]
-
-  object MockSampleValidator {
-
-    def validate(data: SampleRawData): CallHandler1[SampleRawData, List[MtdError]] = {
-      (mockValidator
-        .validate(_: SampleRawData))
-        .expects(data)
-    }
+object AmendBFLoss {
+  implicit val reads: Reads[AmendBFLoss] = Json.reads[AmendBFLoss]
+  implicit val writes: Writes[AmendBFLoss] = new Writes[AmendBFLoss] {
+    override def writes(amendBroughtForwardLoss: AmendBFLoss): JsValue = Json.obj(
+      "updatedBroughtForwardLossAmount" -> amendBroughtForwardLoss.lossAmount
+    )
   }
 }

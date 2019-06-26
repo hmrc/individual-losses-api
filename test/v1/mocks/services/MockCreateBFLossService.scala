@@ -19,24 +19,22 @@ package v1.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.DesOutcome
-import v1.models.des.{CreateBFLossResponse, DesSampleResponse}
-import v1.models.requestData.{CreateBFLossRequest, SampleRequestData}
-import v1.services.BFLossService
+import v1.connectors.CreateBFLossOutcome
+import v1.models.requestData.CreateBFLossRequest
+import v1.services.CreateBFLossService
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockCreateBFLossService extends MockFactory {
 
-  val mockCreateBFLossService: BFLossService = mock[MockCreateBFLossService]
+  val mockCreateBFLossService: CreateBFLossService = mock[CreateBFLossService]
 
-  object MockSampleService {
+  object MockCreateBFLossService {
 
-    def create(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[CreateBFLossResponse]] = {
+    def create(requestData: CreateBFLossRequest): CallHandler[Future[CreateBFLossOutcome]] = {
       (mockCreateBFLossService
-        .create(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)
     }
   }
-
 }

@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.errors
+package v1.models.requestData
 
-import play.api.libs.json._
+import play.api.mvc.AnyContentAsJson
+import uk.gov.hmrc.domain.Nino
+
+case class AmendBFLossRawData(nino: Nino, body: AnyContentAsJson) extends RawData

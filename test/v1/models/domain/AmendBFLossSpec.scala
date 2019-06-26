@@ -14,23 +14,39 @@
  * limitations under the License.
  */
 
-package v1.models.errors
+package v1.models.domain
 
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class MtdErrorSpec extends UnitSpec {
+class AmendBFLossSpec extends UnitSpec {
 
-  "writes" should {
-    "generate the correct JSON" in {
-      Json.toJson(MtdError("CODE", "some message")) shouldBe Json.parse(
-        """
-          |{
-          |   "code": "CODE",
-          |   "message": "some message"
-          |}
-        """.stripMargin
-      )
+  val mtdJson = Json.parse(
+    """
+      |{
+      |  "lossAmount": 1000.99
+      |}
+    """.stripMargin)
+  val model = AmendBFLoss(1000.99)
+  val desJson = Json.parse(
+    """
+      |{
+      |  "updatedBroughtForwardLossAmount": 1000.99
+      |}
+    """.stripMargin
+  )
+
+
+  "Json Reads" should {
+    "convert valid MTD JSON into a model" in {
+      mtdJson.as[AmendBFLoss] shouldBe model
     }
   }
+
+  "Json Writes" should {
+    "convert a model into valid DES JSON" in {
+      Json.toJson(model) shouldBe desJson
+    }
+  }
+
 }

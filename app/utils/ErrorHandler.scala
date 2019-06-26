@@ -35,7 +35,7 @@ class ErrorHandler @Inject()(
                               router: Provider[Router]
                             )(implicit ec: ExecutionContext) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
-  override protected def onBadRequest(request: RequestHeader, error: String): Future[Result] = {
+  override def onBadRequest(request: RequestHeader, error: String): Future[Result] = {
     Logger.warn(s"[ErrorHandler][onBadRequest] - Received undetected error: '$error'")
     val result = BadRequest(Json.toJson(MtdError("INVALID_REQUEST", JsonErrorSanitiser.sanitise(error))))
 

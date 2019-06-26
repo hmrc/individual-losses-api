@@ -18,21 +18,20 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.SampleValidator
-import v1.models.domain.SampleRequestBody
+import v1.controllers.requestParsers.validators.{CreateBFLossValidator, Validator}
+import v1.models.domain.BFLoss
 import v1.models.errors.{BadRequestError, ErrorWrapper}
-import v1.models.requestData.{DesTaxYear, SampleRawData, SampleRequestData}
+import v1.models.requestData._
 
-class SampleRequestDataParser @Inject()(validator: SampleValidator)
-  extends RequestParser[SampleRawData, SampleRequestData] {
+class CreateBFLossParser @Inject()(validator: Validator[CreateBFLossRawData])
+  extends RequestParser[CreateBFLossRawData, CreateBFLossRequest] {
 
-  def parseRequest(data: SampleRawData): Either[ErrorWrapper, SampleRequestData] = {
+  def parseRequest(data: CreateBFLossRawData): Either[ErrorWrapper, CreateBFLossRequest] = {
     validator.validate(data) match {
       case Nil =>
-        Right(SampleRequestData(Nino(data.nino), DesTaxYear.fromMtd(data.taxYear), data.body.as[SampleRequestBody]))
+        Right(CreateBFLossRequest(Nino(data.nino), data.body.json.as[BFLoss]))
       case err :: Nil => Left(ErrorWrapper(None, err, None))
       case errs => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
     }
   }
-
 }

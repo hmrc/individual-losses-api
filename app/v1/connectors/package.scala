@@ -16,13 +16,15 @@
 
 package v1
 
-import v1.models.errors.{DesError, MtdError}
-import v1.models.outcomes.ResponseWrapper
+import v1.models.errors.{DesError, ErrorWrapper, MtdError}
+import v1.models.outcomes.DesResponse
 
 package object connectors {
 
   type MtdIdLookupOutcome = Either[MtdError, String]
 
-  type DesOutcome[A] = Either[ResponseWrapper[DesError], ResponseWrapper[A]]
+  type DesOutcome[A] = Either[DesResponse[DesError], DesResponse[A]]
+
+  type CreateBFLossOutcome = Either[ErrorWrapper, DesResponse[String]]
 
 }

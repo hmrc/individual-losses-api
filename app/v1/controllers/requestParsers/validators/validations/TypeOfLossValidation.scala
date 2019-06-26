@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.outcomes
+package v1.controllers.requestParsers.validators.validations
 
-case class ResponseWrapper[+A](correlationId: String, responseData: A) {
-  def map[B](f: A => B): ResponseWrapper[B] = ResponseWrapper(correlationId, f(responseData))
+import v1.models.errors.{MtdError, RuleTypeOfLossUnsupported}
+
+object TypeOfLossValidation {
+
+  val validFormats = List("self-employment", "self-employment-class4", "uk-fhl-property", "uk-other-property")
+
+  def validate(typeOfLoss: String): List[MtdError] = {
+    if (validFormats.contains(typeOfLoss)) {
+      NoValidationErrors
+    } else {
+      List(RuleTypeOfLossUnsupported)
+    }
+  }
 }

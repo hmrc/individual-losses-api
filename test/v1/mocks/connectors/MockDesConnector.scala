@@ -18,9 +18,10 @@ package v1.mocks.connectors
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
-import v1.connectors.{DesConnector, DesOutcome, DesUri}
+import uk.gov.hmrc.http.HeaderCarrier
+import v1.connectors.{DesConnector, DesOutcome}
+import v1.models.des.CreateBFLossResponse
+import v1.models.requestData.CreateBFLossRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,16 +30,10 @@ trait MockDesConnector extends MockFactory {
 
   object MockedDesConnector {
 
-    def post[Body, Resp](body: Body, uri: DesUri[Resp]): CallHandler[Future[DesOutcome[Resp]]] = {
+    def createBFLoss(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[DesOutcome[CreateBFLossResponse]]] = {
       (connector
-        .post(_: Body, _: DesUri[Resp])(_: Writes[Body], _: ExecutionContext, _: HeaderCarrier, _: HttpReads[DesOutcome[Resp]]))
-        .expects(body, uri, *, *, *, *)
-    }
-
-    def get[Resp](uri: DesUri[Resp]): CallHandler[Future[DesOutcome[Resp]]] = {
-      (connector
-        .get(_: DesUri[Resp])(_: ExecutionContext, _: HeaderCarrier, _: HttpReads[DesOutcome[Resp]]))
-        .expects(uri, *, *, *)
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(createBFLossRequest, *, *)
     }
   }
 

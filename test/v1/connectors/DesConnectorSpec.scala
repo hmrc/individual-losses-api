@@ -16,30 +16,25 @@
 
 package v1.connectors
 
-import uk.gov.hmrc.http.HttpReads
+import uk.gov.hmrc.domain.Nino
 import v1.mocks.{MockAppConfig, MockHttpClient}
-import v1.models.outcomes.ResponseWrapper
+import v1.models.des.CreateBFLossResponse
+import v1.models.domain.BFLoss
+import v1.models.errors.{MultipleErrors, NinoFormatError, SingleError, TaxYearFormatError}
+import v1.models.outcomes.DesResponse
+import v1.models.requestData.CreateBFLossRequest
 
 import scala.concurrent.Future
 
 class DesConnectorSpec extends ConnectorSpec {
 
-  // WLOG
-  case class Result(value: Int)
+  lazy val baseUrl  = "test-BaseUrl"
+  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val baseUrl = "test-BaseUrl"
+  val nino    =  "AA123456A"
+  val lossId  = "AAZZ1234567890a"
 
-  val correlationId = "someCorrelationId"
-
-  // WLOG
-  val body = "body"
-
-  val outcome = Right(ResponseWrapper(correlationId, Result(2)))
-
-  val url         = "some/url?param=value"
-  val absoluteUrl = s"$baseUrl/$url"
-
-  implicit val httpReads: HttpReads[DesOutcome[Result]] = mock[HttpReads[DesOutcome[Result]]]
+  val bfLoss = BFLoss("self-employment", Some("XKIS00000000988"), "2019-20", 256.78)
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: DesConnector = new DesConnector(http = mockHttpClient, appConfig = mockAppConfig)
@@ -48,23 +43,49 @@ class DesConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desEnvironment returns "des-environment"
   }
 
-  "post" must {
-    "posts with the required des headers and returns the result" in new Test {
-      MockedHttpClient
-        .post(absoluteUrl, body, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-        .returns(Future.successful(outcome))
+  "create BFLoss" when {
+    "a valid request is supplied" should {
+      "return a successful response with the correct correlationId" in new Test {
+        val expected = Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))
 
-      await(connector.post(body, DesUri[Result](url))) shouldBe outcome
+        MockedHttpClient
+          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss)
+          .returns(Future.successful(expected))
+
+        createBFLossResult(connector) shouldBe expected
+      }
     }
-  }
 
-  "get" must {
-    "get with the requred des headers and return the result" in new Test {
-      MockedHttpClient
-        .get(absoluteUrl, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-        .returns(Future.successful(outcome))
+    "a request returning a single error" should {
+      "return an unsuccessful response with the correct correlationId and a single error" in new Test {
+        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
-      await(connector.get(DesUri[Result](url))) shouldBe outcome
+        MockedHttpClient
+          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss)
+          .returns(Future.successful(expected))
+
+        createBFLossResult(connector) shouldBe expected
+      }
     }
+
+    "a request returning multiple errors" should {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
+        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
+
+        MockedHttpClient
+          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss)
+          .returns(Future.successful(expected))
+
+        createBFLossResult(connector) shouldBe expected
+      }
+    }
+
+    def createBFLossResult(connector: DesConnector): DesOutcome[CreateBFLossResponse] =
+      await(
+        connector.createBFLoss(
+          CreateBFLossRequest(
+            nino = Nino(nino),
+            bfLoss
+          )))
   }
 }

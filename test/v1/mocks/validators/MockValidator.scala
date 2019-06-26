@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package v1.models.errors
+package v1.mocks.validators
 
-import play.api.libs.json.Json
-import support.UnitSpec
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.Validator
+import v1.models.errors.MtdError
+import v1.models.requestData.RawData
 
-class DesErrorCodeSpec extends UnitSpec {
+class MockValidator[B <: RawData] extends MockFactory {
 
-  "reads" should {
-    val json = Json.parse(
-      """
-        |{
-        |   "code": "CODE",
-        |   "reason": "ignored"
-        |}
-      """.stripMargin
-    )
+  val mockValidator: Validator[B] = mock[Validator[B]]
 
-    "generate the correct error code" in {
-      json.as[DesErrorCode] shouldBe DesErrorCode("CODE")
+  object MockValidator {
+
+    def validate(data: B): CallHandler1[B, List[MtdError]] = {
+      (mockValidator
+        .validate(_: B))
+        .expects(data)
     }
   }
 }

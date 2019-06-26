@@ -1,9 +1,11 @@
-=API Example Microservice
+API Example Microservice
 ========================
 
 # To run locally
 
-sbt "run 9779"
+`sbt "run 9779"`
+or
+`sbt run`
  
 # Run tests
 ```
