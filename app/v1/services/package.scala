@@ -21,7 +21,6 @@ import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.DesResponse
 
 package object services {
-  type RetrieveCharitableGivingOutcome = Either[ErrorWrapper, DesResponse[CreateBFLossResponse]]
 
-
+  type CreateBFLossOutcome = Either[ErrorWrapper, DesResponse[CreateBFLossResponse]]
 }

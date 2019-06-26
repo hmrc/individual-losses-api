@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package v1.controllers.requestParsers.validators.validations
 
-import play.api.libs.json._
 import support.UnitSpec
+import v1.models.errors.LossIdFormatError
 import v1.models.utils.JsonErrorValidators
 
-class SampleRequestBodySpec extends UnitSpec with JsonErrorValidators {
-  "reads" when {
-    "passed valid JSON" should {
-      val inputJson = Json.parse(
-        """
-          |{
-          |   "data": "someData"
-          |}
-        """.stripMargin
-      )
+class LossIdValidationSpec extends UnitSpec with JsonErrorValidators {
 
-      "return a valid model" in {
-        SampleRequestBody("someData") shouldBe inputJson.as[SampleRequestBody]
+  private val validLossId   = "AAZZ1234567890a"
+  private val invalidLossId = "AAZZ1234567890"
+
+  "LossIdValidation.validate" should {
+    "return an empty list" when {
+      "passed a valid lossId" in {
+        LossIdValidation.validate(validLossId).length shouldBe 0
       }
-
-      testMandatoryProperty[SampleRequestBody](inputJson)("/data")
-
-      testPropertyType[SampleRequestBody](inputJson)(
-        path = "/data",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION
-      )
+    }
+    "return a non-empty list" when {
+      "passed an invalid lossId" in {
+        val result = LossIdValidation.validate(invalidLossId)
+        result.length shouldBe 1
+        result.head shouldBe LossIdFormatError
+      }
     }
   }
+
 }

@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.controllers.requestParsers.validators.validations
 
-import play.api.libs.json.JsValue
+import v1.models.errors.{LossIdFormatError, MtdError}
 
-case class SampleRawData(nino: String, taxYear: String, body: JsValue) extends RawData
+object LossIdValidation {
+  val regex = "^[A-Za-z0-9]{15}$"
+
+  def validate(lossId: String): List[MtdError] = if(lossId.matches(regex)) List() else List(LossIdFormatError)
+}
