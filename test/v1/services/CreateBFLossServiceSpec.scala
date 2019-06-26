@@ -50,7 +50,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
           .createBFLoss(request)
           .returns(Future.successful(Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))))
 
-        await(service.createBFLoss(request)) shouldBe Right(DesResponse(correlationId, lossId))
+        await(service.createBFLoss(request)) shouldBe Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))
       }
     }
 

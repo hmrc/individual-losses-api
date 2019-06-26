@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1
 
-import play.api.libs.json.JsValue
+import v1.models.des.CreateBFLossResponse
+import v1.models.errors.ErrorWrapper
+import v1.models.outcomes.DesResponse
 
-case class SampleRawData(nino: String, taxYear: String, body: JsValue) extends RawData
+package object services {
+
+  type CreateBFLossOutcome = Either[ErrorWrapper, DesResponse[CreateBFLossResponse]]
+}
