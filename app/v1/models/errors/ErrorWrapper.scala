@@ -19,7 +19,7 @@ package v1.models.errors
 import play.api.libs.json.{ JsValue, Json, Writes }
 import v1.models.audit.AuditError
 
-case class ErrorWrapper(correlationId: Option[String], error: MtdError, errors: Option[Seq[MtdError]] = None)
+case class ErrorWrapper(correlationId: Option[String], error: Error, errors: Option[Seq[Error]] = None)
 
 object ErrorWrapper {
   implicit val writes: Writes[ErrorWrapper] = new Writes[ErrorWrapper] {

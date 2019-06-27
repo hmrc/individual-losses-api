@@ -35,7 +35,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
 
   val bfLoss = BFLoss("self-employment", Some("XKIS00000000988"), "2019-20", 256.78)
 
-  val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
+  val serviceUnavailableError = Error("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockDesConnector {
     lazy val service = new CreateBFLossService(connector)
@@ -87,7 +87,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
           s"return a $v MTD error" in new Test {
             MockedDesConnector
               .createBFLoss(request)
-              .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
+              .returns(Future.successful(Left(DesResponse(correlationId, SingleError(Error(k, "MESSAGE"))))))
 
             await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

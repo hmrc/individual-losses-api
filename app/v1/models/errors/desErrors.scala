@@ -18,6 +18,6 @@ package v1.models.errors
 
 sealed trait DesError
 
-case class SingleError(error: MtdError) extends DesError
-case class MultipleErrors(errors: Seq[MtdError]) extends DesError
-case class OutboundError(error: MtdError) extends DesError
+case class SingleError(error: Error) extends DesError
+case class MultipleErrors(errors: Seq[Error]) extends DesError
+case class OutboundError(error: Error) extends DesError

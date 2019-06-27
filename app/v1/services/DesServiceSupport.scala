@@ -48,10 +48,10 @@ trait DesServiceSupport {
     * @tparam V the vendor response domain object type
     * @return the function to map outcomes
     */
-  final def mapToVendor[D, V](endpointName: String, errorMap: PartialFunction[String, MtdError])(success: DesResponse[D] => VendorOutcome[V])(
+  final def mapToVendor[D, V](endpointName: String, errorMap: PartialFunction[String, Error])(success: DesResponse[D] => VendorOutcome[V])(
       desOutcome: DesOutcome[D]): VendorOutcome[V] = {
 
-    lazy val defaultErrorMapping: String => MtdError = { code =>
+    lazy val defaultErrorMapping: String => Error = { code =>
       logger.info(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
       DownstreamError
     }
@@ -92,7 +92,7 @@ trait DesServiceSupport {
     * @tparam D the DES response domain object type
     * @return the function to map outcomes
     */
-  final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, MtdError])(
+  final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, Error])(
       desOutcome: DesOutcome[D]): VendorOutcome[D] =
     mapToVendor[D, D](endpointName, errorMap) { desResponse =>
       Right(DesResponse(desResponse.correlationId, desResponse.responseData))

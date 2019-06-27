@@ -17,10 +17,10 @@
 package v1.models
 
 import v1.models.auth.UserDetails
-import v1.models.errors.MtdError
+import v1.models.errors.Error
 
 package object outcomes {
 
-  type AuthOutcome = Either[MtdError, UserDetails]
+  type AuthOutcome = Either[Error, UserDetails]
 
 }

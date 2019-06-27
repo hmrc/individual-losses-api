@@ -19,7 +19,7 @@ package v1.models.audit
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class AuditMtdErrorSpec extends UnitSpec {
+class AuditErrorSpec extends UnitSpec {
 
   private val auditError = AuditError("FORMAT_NINO")
 

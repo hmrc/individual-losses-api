@@ -18,26 +18,26 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.BFLoss
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, RuleTaxYearNotSupportedError}
+import v1.models.errors.{Error, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, RuleTaxYearNotSupportedError}
 import v1.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
 
   private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldsValidator)
 
-  private def parameterFormatValidation: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: CreateBFLossRawData => List[List[Error]] = { data =>
     List(
       NinoValidation.validate(data.nino)
     )
   }
 
-  private def bodyFormatValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: CreateBFLossRawData => List[List[Error]] = { data =>
     List(
       JsonFormatValidation.validate[BFLoss](data.body.json, RuleIncorrectOrEmptyBodyError)
     )
   }
 
-  private def bodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def bodyFieldsValidator: CreateBFLossRawData => List[List[Error]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
       TaxYearValidation.validate(req.taxYear),
@@ -48,5 +48,5 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
     )
   }
 
-  override def validate(data: CreateBFLossRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: CreateBFLossRawData): List[Error] = run(validationSet, data)
 }

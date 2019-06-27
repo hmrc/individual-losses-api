@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.routing.Router
-import v1.models.errors.MtdError
+import v1.models.errors.Error
 
 import scala.concurrent._
 
@@ -37,7 +37,7 @@ class ErrorHandler @Inject()(
 
   override def onBadRequest(request: RequestHeader, error: String): Future[Result] = {
     Logger.warn(s"[ErrorHandler][onBadRequest] - Received undetected error: '$error'")
-    val result = BadRequest(Json.toJson(MtdError("INVALID_REQUEST", JsonErrorSanitiser.sanitise(error))))
+    val result = BadRequest(Json.toJson(Error("INVALID_REQUEST", JsonErrorSanitiser.sanitise(error))))
 
     Future.successful(result)
   }

@@ -16,12 +16,12 @@
 
 package v1
 
-import v1.models.errors.{DesError, MtdError}
+import v1.models.errors.{DesError, Error}
 import v1.models.outcomes.DesResponse
 
 package object connectors {
 
-  type MtdIdLookupOutcome = Either[MtdError, String]
+  type MtdIdLookupOutcome = Either[Error, String]
 
   type DesOutcome[A] = Either[DesResponse[DesError], DesResponse[A]]
 }

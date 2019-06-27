@@ -30,15 +30,15 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
   val ep            = "someEndpoint"
   val correlationId = "correllationId"
 
-  val desError1        = MtdError("DES_CODE1", "desmsg1")
-  val desError2        = MtdError("DES_CODE2", "desmsg2")
-  val desError3        = MtdError("DES_CODE_DOWNSTREAM", "desmsg3")
-  val desErrorUnmapped = MtdError("DES_UNMAPPED", "desmsg4")
+  val desError1        = Error("DES_CODE1", "desmsg1")
+  val desError2        = Error("DES_CODE2", "desmsg2")
+  val desError3        = Error("DES_CODE_DOWNSTREAM", "desmsg3")
+  val desErrorUnmapped = Error("DES_UNMAPPED", "desmsg4")
 
-  val error1 = MtdError("CODE1", "msg1")
-  val error2 = MtdError("CODE2", "msg2")
+  val error1 = Error("CODE1", "msg1")
+  val error2 = Error("CODE2", "msg2")
 
-  val desToMtdErrorMap: PartialFunction[String, MtdError] = {
+  val desToMtdErrorMap: PartialFunction[String, Error] = {
     case "DES_CODE1"           => error1
     case "DES_CODE2"           => error2
     case "DES_CODE_DOWNSTREAM" => DownstreamError

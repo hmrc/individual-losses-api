@@ -22,8 +22,9 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.des.CreateBFLossResponse
 import v1.models.domain.BFLoss
-import v1.models.errors.{ErrorWrapper, NinoFormatError}
+import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
 
@@ -44,6 +45,8 @@ class CreateBFLossControllerSpec
   val lossId = "AAZZ1234567890a"
 
   val bfLoss = BFLoss("self-employment", Some("XKIS00000000988"), "2019-20", 256.78)
+
+  val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
 
   val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
 
@@ -90,13 +93,14 @@ class CreateBFLossControllerSpec
 
         MockCreateBFLossService
           .create(CreateBFLossRequest(Nino(nino), bfLoss))
-          .returns(Future.successful(Right(DesResponse(correlationId, lossId))))
+          .returns(Future.successful(Right(DesResponse(correlationId, createBFLossResponse))))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe CREATED
         contentAsJson(result) shouldBe responseBody
       }
     }
+
     "return single error response with status 400" when {
       "the request received failed the validation" in new Test() {
 
@@ -107,8 +111,69 @@ class CreateBFLossControllerSpec
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe BAD_REQUEST
         header("X-CorrelationId", result).nonEmpty shouldBe true
-
       }
+    }
+    "return a 400 Bad Request with a single error" when {
+
+      val badRequestErrorsFromParser = List(
+        NinoFormatError,
+        TaxYearFormatError,
+        RuleIncorrectOrEmptyBodyError,
+        RuleTaxYearNotSupportedError,
+        RuleTaxYearRangeExceededError,
+        RuleTypeOfLossUnsupported,
+        RuleInvalidSelfEmploymentId,
+        RulePropertySelfEmploymentId,
+        AmountFormatError,
+        RuleInvalidLossAmount
+      )
+
+      val notFoundErrorsFromService = List(
+        NotFoundError
+      )
+
+      val forbiddenErrorsFromService = List(
+        RuleDuplicateSubmissionError
+      )
+
+      forbiddenErrorsFromService.foreach(errorsFromServiceTester(_, FORBIDDEN))
+      badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
+      notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
+    }
+  }
+
+  def errorsFromParserTester(error: Error, expectedStatus: Int): Unit = {
+    s"a ${error.code} error is returned from the parser" in new Test {
+
+      MockCreateBFLossRequestDataParser.
+        parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+        .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+
+      val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+
+      status(response) shouldBe expectedStatus
+      contentAsJson(response) shouldBe Json.toJson(error)
+      header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+    }
+  }
+
+  def errorsFromServiceTester(error: Error, expectedStatus: Int): Unit = {
+    s"a ${error.code} error is returned from the service" in new Test {
+
+      MockCreateBFLossRequestDataParser.parseRequest(
+        CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+        .returns(Right(bfLossRequest))
+
+      MockCreateBFLossService
+        .create(CreateBFLossRequest(Nino(nino), bfLoss))
+        .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+
+      val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+      status(response) shouldBe expectedStatus
+      contentAsJson(response) shouldBe Json.toJson(error)
+      header("X-CorrelationId", response) shouldBe Some(correlationId)
+
     }
   }
 }

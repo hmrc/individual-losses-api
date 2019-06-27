@@ -18,10 +18,11 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.{CreateBFLossValidator, Validator}
+import v1.controllers.requestParsers.validators.Validator
 import v1.models.domain.BFLoss
 import v1.models.errors.{BadRequestError, ErrorWrapper}
 import v1.models.requestData._
+
 
 class CreateBFLossParser @Inject()(validator: Validator[CreateBFLossRawData])
   extends RequestParser[CreateBFLossRawData, CreateBFLossRequest] {
