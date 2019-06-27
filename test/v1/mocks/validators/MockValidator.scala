@@ -19,7 +19,7 @@ package v1.mocks.validators
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.Validator
-import v1.models.errors.Error
+import v1.models.errors.MTDError
 import v1.models.requestData.RawData
 
 class MockValidator[B <: RawData] extends MockFactory {
@@ -28,7 +28,7 @@ class MockValidator[B <: RawData] extends MockFactory {
 
   object MockValidator {
 
-    def validate(data: B): CallHandler1[B, List[Error]] = {
+    def validate(data: B): CallHandler1[B, List[MTDError]] = {
       (mockValidator
         .validate(_: B))
         .expects(data)

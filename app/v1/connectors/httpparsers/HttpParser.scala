@@ -47,10 +47,10 @@ trait HttpParser {
 
   def retrieveCorrelationId(response: HttpResponse): String = response.header("CorrelationId").getOrElse("")
 
-  private val multipleErrorReads: Reads[Seq[Error]] = (__ \ "failures").read[Seq[Error]]
+  private val multipleErrorReads: Reads[Seq[MTDError]] = (__ \ "failures").read[Seq[MTDError]]
 
   def parseErrors(response: HttpResponse): DesError = {
-    val singleError = response.validateJson[Error].map(SingleError)
+    val singleError = response.validateJson[MTDError].map(SingleError)
     lazy val multipleErrors = response.validateJson(multipleErrorReads).map(MultipleErrors)
     lazy val unableToParseJsonError = {
       Logger.warn(s"unable to parse errors from response: ${response.body}")

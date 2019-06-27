@@ -16,10 +16,10 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{LossIdFormatError, Error}
+import v1.models.errors.{LossIdFormatError, MTDError}
 
 object LossIdValidation {
   val regex = "^[A-Za-z0-9]{15}$"
 
-  def validate(lossId: String): List[Error] = if(lossId.matches(regex)) List() else List(LossIdFormatError)
+  def validate(lossId: String): List[MTDError] = if(lossId.matches(regex)) List() else List(LossIdFormatError)
 }

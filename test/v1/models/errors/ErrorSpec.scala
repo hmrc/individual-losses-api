@@ -22,7 +22,7 @@ import support.UnitSpec
 class ErrorSpec extends UnitSpec{
 
   "reads" should {
-    val error = Error("FORMAT_NINO", "The provided NINO is invalid")
+    val error = MTDError("FORMAT_NINO", "The provided NINO is invalid")
 
     val json = Json.parse(
       """
@@ -34,7 +34,7 @@ class ErrorSpec extends UnitSpec{
     )
 
     "generate the correct JSON" in {
-      json.as[Error] shouldBe error
+      json.as[MTDError] shouldBe error
     }
   }
 }
