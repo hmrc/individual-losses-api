@@ -27,10 +27,10 @@ body:
     examples:
       example-1:
         description: Self-employment Class 4 loss
-        value: !include examples/broughtFowardLosses/createBFLoss/seClass4.json
+        value: !include examples/broughtForwardLosses/createBFLoss/seClass4.json
       example-2:
         description: UK FHL Property loss
-        value: !include examples/broughtFowardLosses/createBFLoss/fhl.json
+        value: !include examples/broughtForwardLosses/createBFLoss/fhl.json
 responses:
   201:
     headers:
@@ -40,4 +40,4 @@ responses:
     body:
       application/json:
         type: !include schemas/broughtForwardLosses/createBFLoss/create_response.json
-        example: !include examples/broughtFowardLosses/createBFLoss/response.json
+        example: !include examples/broughtForwardLosses/createBFLoss/response.json
