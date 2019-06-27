@@ -16,16 +16,16 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.models.errors.MTDError
+import v1.models.errors.MtdError
 import v1.models.requestData.RawData
 
 trait Validator[A <: RawData] {
 
-  type ValidationLevel[T] = T => List[MTDError]
+  type ValidationLevel[T] = T => List[MtdError]
 
-  def validate(data: A): List[MTDError]
+  def validate(data: A): List[MtdError]
 
-  def run(validationSet: List[A => List[List[MTDError]]], data: A): List[MTDError] = {
+  def run(validationSet: List[A => List[List[MtdError]]], data: A): List[MtdError] = {
 
     validationSet match {
       case Nil => List()

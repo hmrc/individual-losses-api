@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators.validations
 import play.api.libs.json.{ Json, Reads }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v1.models.errors.MTDError
+import v1.models.errors.MtdError
 import v1.models.utils.JsonErrorValidators
 
 class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
@@ -28,7 +28,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 
   implicit val testDataObjectReads: Reads[TestDataObject] = Json.reads[TestDataObject]
 
-  val someError = MTDError("SOME_CODE", "some message")
+  val someError = MtdError("SOME_CODE", "some message")
 
   "validate" should {
     "return no errors" when {

@@ -16,32 +16,32 @@
 
 package v1.models.errors
 
-object NinoFormatError extends MTDError("FORMAT_NINO", "The provided NINO is invalid")
-object TaxYearFormatError extends MTDError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
-object AmountFormatError extends MTDError("FORMAT_LOSS_AMOUNT", "The format of the loss amount is invalid")
-object LossIdFormatError extends MTDError("FORMAT_LOSS_ID", "The format of the supplied loss ID is not valid")
+object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
+object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
+object AmountFormatError extends MtdError("FORMAT_LOSS_AMOUNT", "The format of the loss amount is invalid")
+object LossIdFormatError extends MtdError("FORMAT_LOSS_ID", "The format of the supplied loss ID is not valid")
 
 // Rule Errors
-object RuleTaxYearNotSupportedError extends MTDError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
+object RuleTaxYearNotSupportedError extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
 
-object RuleIncorrectOrEmptyBodyError extends MTDError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
-object RuleTaxYearRangeExceededError extends MTDError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
-object RuleTypeOfLossUnsupported extends MTDError("FORMAT_TYPE_OF_LOSS", "The supplied type of loss format is invalid")
-object RuleInvalidSelfEmploymentId extends MTDError("FORMAT_SELF_EMPLOYMENT_ID", "The supplied self employment ID format is invalid")
-object RulePropertySelfEmploymentId extends MTDError("RULE_SELF_EMPLOYMENT_ID", "An ID was supplied for a non-self employment business type")
-object RuleInvalidLossAmount extends MTDError("RULE_LOSS_AMOUNT", "Amount should be a positive number less than 99999999999.99 with up to 2 decimal places")
-object RuleDuplicateSubmissionError extends MTDError("RULE_DUPLICATE_SUBMISSION", "A brought forward loss already exists for this income source.")
+object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
+object RuleTaxYearRangeExceededError extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
+object RuleTypeOfLossUnsupported extends MtdError("FORMAT_TYPE_OF_LOSS", "The supplied type of loss format is invalid")
+object RuleInvalidSelfEmploymentId extends MtdError("FORMAT_SELF_EMPLOYMENT_ID", "The supplied self employment ID format is invalid")
+object RulePropertySelfEmploymentId extends MtdError("RULE_SELF_EMPLOYMENT_ID", "An ID was supplied for a non-self employment business type")
+object RuleInvalidLossAmount extends MtdError("RULE_LOSS_AMOUNT", "Amount should be a positive number less than 99999999999.99 with up to 2 decimal places")
+object RuleDuplicateSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "A brought forward loss already exists for this income source.")
 
 //Standard Errors
-object NotFoundError extends MTDError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
-object DownstreamError extends MTDError("INTERNAL_SERVER_ERROR", "An internal server error occurred")
-object BadRequestError extends MTDError("INVALID_REQUEST", "Invalid request")
-object BVRError extends MTDError("BUSINESS_ERROR", "Business validation error")
-object ServiceUnavailableError extends MTDError("SERVICE_UNAVAILABLE", "Internal server error")
+object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
+object DownstreamError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred")
+object BadRequestError extends MtdError("INVALID_REQUEST", "Invalid request")
+object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error")
+object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error")
 
 //Authorisation Errors
-object UnauthorisedError extends MTDError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised.")
+object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised.")
 
 // Accept header Errors
-object InvalidAcceptHeaderError extends MTDError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
-object UnsupportedVersionError extends MTDError("NOT_FOUND", "The requested resource could not be found.")
+object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found.")

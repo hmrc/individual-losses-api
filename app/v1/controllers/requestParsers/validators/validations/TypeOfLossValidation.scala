@@ -16,13 +16,13 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MTDError, RuleTypeOfLossUnsupported}
+import v1.models.errors.{MtdError, RuleTypeOfLossUnsupported}
 
 object TypeOfLossValidation {
 
   val validFormats = List("self-employment", "self-employment-class4", "uk-fhl-property", "uk-other-property")
 
-  def validate(typeOfLoss: String): List[MTDError] = {
+  def validate(typeOfLoss: String): List[MtdError] = {
     if (validFormats.contains(typeOfLoss)) {
       NoValidationErrors
     } else {

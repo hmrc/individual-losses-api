@@ -17,13 +17,13 @@
 package v1.controllers.requestParsers.validators.validations
 
 import config.FixedConfig
-import v1.models.errors.MTDError
+import v1.models.errors.MtdError
 import v1.models.requestData.DesTaxYear
 
 object MtdTaxYearValidation extends FixedConfig {
 
   // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, error: MTDError): List[MTDError] = {
+  def validate(taxYear: String, error: MtdError): List[MtdError] = {
 
     val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
 

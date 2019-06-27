@@ -18,32 +18,32 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations.{AmountValidation, JsonFormatValidation, LossIdValidation, NinoValidation}
 import v1.models.domain.AmendBFLoss
-import v1.models.errors.{MTDError, RuleIncorrectOrEmptyBodyError}
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v1.models.requestData.AmendBFLossRawData
 
 class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
 
   private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldsValidator)
 
-  private def parameterFormatValidation: AmendBFLossRawData => List[List[MTDError]] = { data =>
+  private def parameterFormatValidation: AmendBFLossRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       LossIdValidation.validate(data.lossId)
     )
   }
 
-  private def bodyFormatValidator: AmendBFLossRawData => List[List[MTDError]] = { data =>
+  private def bodyFormatValidator: AmendBFLossRawData => List[List[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[AmendBFLoss](data.body.json, RuleIncorrectOrEmptyBodyError)
     )
   }
 
-  private def bodyFieldsValidator: AmendBFLossRawData => List[List[MTDError]] = { data =>
+  private def bodyFieldsValidator: AmendBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[AmendBFLoss]
     List(
       AmountValidation.validate(req.lossAmount)
     )
   }
 
-  override def validate(data: AmendBFLossRawData): List[MTDError] = run(validationSet, data)
+  override def validate(data: AmendBFLossRawData): List[MtdError] = run(validationSet, data)
 }

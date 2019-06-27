@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MTDError, RuleInvalidSelfEmploymentId, RulePropertySelfEmploymentId}
+import v1.models.errors.{MtdError, RuleInvalidSelfEmploymentId, RulePropertySelfEmploymentId}
 
 object SelfEmploymentIdValidation {
 
@@ -24,15 +24,15 @@ object SelfEmploymentIdValidation {
 
   val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
-  def validate(typeOfLoss: String, selfEmploymentId: Option[String]): List[MTDError] = {
+  def validate(typeOfLoss: String, selfEmploymentId: Option[String]): List[MtdError] = {
     if (nonPropertyLossTypes.contains(typeOfLoss)) selfEmployedValidation(selfEmploymentId) else propertyValidation(selfEmploymentId)
   }
 
-  private def selfEmployedValidation(selfEmploymentId: Option[String]): List[MTDError] = {
+  private def selfEmployedValidation(selfEmploymentId: Option[String]): List[MtdError] = {
     if (selfEmploymentId.exists(_.matches(regex))) NoValidationErrors else List(RuleInvalidSelfEmploymentId)
   }
 
-  private def propertyValidation(selfEmploymentId: Option[String]): List[MTDError] = {
+  private def propertyValidation(selfEmploymentId: Option[String]): List[MtdError] = {
     if (selfEmploymentId.isEmpty) NoValidationErrors else List(RulePropertySelfEmploymentId)
   }
 }
