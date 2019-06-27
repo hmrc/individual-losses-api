@@ -12,23 +12,23 @@
             <td><p>Simulate success scenario for self-employment</p></td>
         </tr>
         <tr>
-            <td><p>N/A - SELF_EMPLOYMENT</p></td>
+            <td><p>SELF_EMPLOYMENT</p></td>
             <td><p>Simulate success scenario for self-employment</p></td>
         </tr>  
         <tr>
-            <td><p>N/A - CLASS_4</p></td>
+            <td><p>CLASS_4</p></td>
             <td><p>Simulate success scenario for self-employment class 4</p></td>
         </tr> 
         <tr>
-            <td><p>N/A - UK_FHL_PROPERTY</p></td>
+            <td><p>UK_FHL_PROPERTY</p></td>
             <td><p>Simulate success scenario for a UK FHL property</p></td>
         </tr>
         <tr>
-            <td><p>N/A - UK_OTHER_PROPERTY</p></td>
+            <td><p>UK_OTHER_PROPERTY</p></td>
             <td><p>Simulate success scenario for UK other property</p></td>
         </tr>  
         <tr>
-            <td><p>N/A - NOT_FOUND</p></td>
+            <td><p>NOT_FOUND</p></td>
             <td><p>Simulates the scenario where the loss cannot be found</p></td>
         </tr>                               
     </tbody>
