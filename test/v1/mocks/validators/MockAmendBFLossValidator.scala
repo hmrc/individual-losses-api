@@ -18,19 +18,17 @@ package v1.mocks.validators
 
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.Validator
+import v1.controllers.requestParsers.validators.AmendBFLossValidator
 import v1.models.errors.Error
-import v1.models.requestData.RawData
+import v1.models.requestData.AmendBFLossRawData
 
-class MockValidator[B <: RawData] extends MockFactory {
+class MockAmendBFLossValidator extends MockFactory {
 
-  val mockValidator: Validator[B] = mock[Validator[B]]
+  val mockValidator: AmendBFLossValidator = mock[AmendBFLossValidator]
 
   object MockValidator {
-
-    def validate(data: B): CallHandler1[B, List[Error]] = {
-      (mockValidator
-        .validate(_: B))
+    def validate(data: AmendBFLossRawData): CallHandler1[AmendBFLossRawData, List[Error]] = {
+      (mockValidator.validate(_: AmendBFLossRawData))
         .expects(data)
     }
   }

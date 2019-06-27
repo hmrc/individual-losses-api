@@ -46,7 +46,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
     val responseBody: JsValue = Json.parse(
       """
         |{
-        |    "id": "dfgdfgdfg"
+        |    "id": "AAZZ1234567890a"
         |}
       """.stripMargin)
 

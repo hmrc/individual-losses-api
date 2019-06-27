@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.validators.MockValidator
+import v1.mocks.validators.MockCreateBFLossValidator
 import v1.models.domain.BFLoss
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.requestData._
@@ -40,7 +40,7 @@ class CreateBFLossParserSpec extends UnitSpec {
   val inputData =
     CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
 
-  trait Test extends MockValidator[CreateBFLossRawData] {
+  trait Test extends MockCreateBFLossValidator {
     lazy val parser = new CreateBFLossParser(mockValidator)
   }
 
