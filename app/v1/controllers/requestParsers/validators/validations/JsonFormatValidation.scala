@@ -18,11 +18,11 @@ package v1.controllers.requestParsers.validators.validations
 
 import play.api.libs.json._
 import play.api.mvc.AnyContentAsJson
-import v1.models.errors.Error
+import v1.models.errors.MTDError
 
 object JsonFormatValidation {
 
-  def validate[A](data: JsValue, error: Error)(implicit reads: Reads[A]): List[Error] = {
+  def validate[A](data: JsValue, error: MTDError)(implicit reads: Reads[A]): List[MTDError] = {
 
     data.validate[A] match {
       case JsSuccess(_, _) => NoValidationErrors

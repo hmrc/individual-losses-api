@@ -43,7 +43,7 @@ class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceS
     }
   }
 
-  private def mappingDesToMtdError: Map[String, Error] =
+  private def mappingDesToMtdError: Map[String, MTDError] =
   Map(
     "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
     "DUPLICATE"                  -> RuleDuplicateSubmissionError,

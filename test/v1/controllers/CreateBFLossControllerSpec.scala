@@ -142,7 +142,7 @@ class CreateBFLossControllerSpec
     }
   }
 
-  def errorsFromParserTester(error: Error, expectedStatus: Int): Unit = {
+  def errorsFromParserTester(error: MTDError, expectedStatus: Int): Unit = {
     s"a ${error.code} error is returned from the parser" in new Test {
 
       MockCreateBFLossRequestDataParser.
@@ -158,7 +158,7 @@ class CreateBFLossControllerSpec
     }
   }
 
-  def errorsFromServiceTester(error: Error, expectedStatus: Int): Unit = {
+  def errorsFromServiceTester(error: MTDError, expectedStatus: Int): Unit = {
     s"a ${error.code} error is returned from the service" in new Test {
 
       MockCreateBFLossRequestDataParser.parseRequest(
