@@ -92,7 +92,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       "an invalid loss type is submitted" in {
         validator.validate(
           requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", selfEmploymentId = None)))) shouldBe
-          List(RuleTypeOfLossUnsupported)
+          List(TypeOfLossUnsupportedFormatError)
       }
     }
 
@@ -100,7 +100,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       "an invalid id is submitted" in {
         validator.validate(
           requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(selfEmploymentId = Some("invalid"))))) shouldBe
-          List(RuleInvalidSelfEmploymentId)
+          List(SelfEmploymentIdFormatError)
       }
     }
 
@@ -115,7 +115,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     "return multiple errors" when {
       "request supplied has multiple errors" in {
         validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
-          List(RuleTypeOfLossUnsupported, RulePropertySelfEmploymentId)
+          List(TypeOfLossUnsupportedFormatError, RulePropertySelfEmploymentId)
       }
     }
   }

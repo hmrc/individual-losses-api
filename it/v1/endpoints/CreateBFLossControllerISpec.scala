@@ -19,20 +19,39 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
+import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class CreateBFLossControllerISpec extends IntegrationBaseSpec {
 
+  def generateBFLoss(selfEmploymentId: Option[String], typeOfLoss: String, taxYear: String, lossAmount: BigDecimal): JsObject =
+    Json.obj("selfEmploymentId" -> selfEmploymentId,
+      "typeOfLoss" -> typeOfLoss,
+      "taxYear" -> taxYear,
+      "lossAmount" -> lossAmount)
+
+  val nino = "AA123456A"
+  val lossId = "AAZZ1234567890a"
+  val correlationId = "X-123"
+  val selfEmploymentId = "XKIS00000000988"
+  val taxYear = "2019-20"
+  val lossAmount = 256.78
+  val typeOfLoss = "self-employment"
+
   private trait Test {
 
-    val nino    =  "AA123456A"
-    val lossId  = "AAZZ1234567890a"
+    val nino = "AA123456A"
+    val lossId = "AAZZ1234567890a"
     val correlationId = "X-123"
+    val selfEmploymentId = "XKIS00000000988"
+    val taxYear = "2019-20"
+    val lossAmount = 256.78
+    val typeOfLoss = "self-employment"
 
-    val requestBody: JsValue = Json.parse(
+    val requestJson: JsValue = Json.parse(
       """
         |{
         |    "selfEmploymentId": "XKIS00000000988",
@@ -41,6 +60,21 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         |    "lossAmount": 256.78
         |}
       """.stripMargin)
+
+    val responseJson: JsValue = Json.parse(
+      """
+        |{
+        |    "id": "AAZZ1234567890a"
+        |}
+      """.stripMargin)
+
+    def errorBody(code: String): String =
+      s"""
+         |      {
+         |        "code": "$code",
+         |        "reason": "des message"
+         |      }
+      """.stripMargin
 
     def setupStubs(): StubMapping
 
@@ -52,13 +86,6 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
 
-    def errorBody(code: String): String =
-      s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "des message"
-         |      }
-      """.stripMargin
   }
 
   "Calling the create BFLoss endpoint" should {
@@ -78,8 +105,82 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
           DesStub.serviceSuccess(nino)
         }
 
-        val response: WSResponse = await(request().post(requestBody))
+        val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe Status.CREATED
+        response.json shouldBe responseJson
+
+      }
+    }
+
+
+    "return 500 (Internal Server Error)" when {
+
+      createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+    }
+
+    "return 403 FORBIDDEN" when {
+      createErrorTest(Status.CONFLICT, "DUPLICATE", Status.FORBIDDEN, RuleDuplicateSubmissionError)
+    }
+
+    "return 404 NOT FOUND" when {
+      createErrorTest(Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError)
+    }
+
+    def createErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      s"des returns an $desCode error" in new CreateBFLossControllerTest {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.serviceError(nino, desStatus, errorBody(desCode))
+        }
+
+        val response: WSResponse = await(request().post(requestJson))
+        response.status shouldBe expectedStatus
+        response.json shouldBe Json.toJson(expectedBody)
+      }
+    }
+
+    "return 400 (Bad Request)" when {
+
+      createBFLossValidationErrorTest("BADNINO", generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear, lossAmount), Status.BAD_REQUEST, NinoFormatError)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(Some(selfEmploymentId), typeOfLoss, "20111", lossAmount) , Status.BAD_REQUEST, TaxYearFormatError)
+      createBFLossValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(Some(selfEmploymentId), typeOfLoss, "2011-12", lossAmount), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(Some(selfEmploymentId), typeOfLoss, "2019-25", lossAmount), Status.BAD_REQUEST, RuleTaxYearRangeExceededError)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(None, "self-employment-class", "2019-20", lossAmount), Status.BAD_REQUEST, TypeOfLossUnsupportedFormatError)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(Some("sdfsf"), typeOfLoss, "2019-20", lossAmount), Status.BAD_REQUEST, SelfEmploymentIdFormatError)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(Some("selfEmploymentId"), "uk-other-property", "2019-20", lossAmount), Status.BAD_REQUEST, RulePropertySelfEmploymentId)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,-3234), Status.BAD_REQUEST, RuleInvalidLossAmount)
+      createBFLossValidationErrorTest("AA123456A",
+        generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,99999999999.999), Status.BAD_REQUEST, AmountFormatError)
+    }
+
+
+    def createBFLossValidationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      s"validation fails with ${expectedBody.code} error" in new CreateBFLossControllerTest {
+
+        override val nino: String = requestNino
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+        }
+
+        val response: WSResponse = await(request().post(requestBody))
+        response.status shouldBe expectedStatus
+        response.json shouldBe Json.toJson(expectedBody)
       }
     }
   }

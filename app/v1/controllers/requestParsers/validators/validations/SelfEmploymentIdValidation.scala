@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, RuleInvalidSelfEmploymentId, RulePropertySelfEmploymentId}
+import v1.models.errors.{MtdError, SelfEmploymentIdFormatError, RulePropertySelfEmploymentId}
 
 object SelfEmploymentIdValidation {
 
@@ -29,7 +29,7 @@ object SelfEmploymentIdValidation {
   }
 
   private def selfEmployedValidation(selfEmploymentId: Option[String]): List[MtdError] = {
-    if (selfEmploymentId.exists(_.matches(regex))) NoValidationErrors else List(RuleInvalidSelfEmploymentId)
+    if (selfEmploymentId.exists(_.matches(regex))) NoValidationErrors else List(SelfEmploymentIdFormatError)
   }
 
   private def propertyValidation(selfEmploymentId: Option[String]): List[MtdError] = {

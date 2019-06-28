@@ -18,12 +18,12 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.Validator
+import v1.controllers.requestParsers.validators.AmendBFLossValidator
 import v1.models.domain.AmendBFLoss
-import v1.models.errors.{ BadRequestError, ErrorWrapper }
+import v1.models.errors.{BadRequestError, ErrorWrapper}
 import v1.models.requestData._
 
-class AmendBFLossParser @Inject()(validator: Validator[AmendBFLossRawData]) extends RequestParser[AmendBFLossRawData, AmendBFLossRequest] {
+class AmendBFLossParser @Inject()(validator: AmendBFLossValidator) extends RequestParser[AmendBFLossRawData, AmendBFLossRequest] {
 
   def parseRequest(data: AmendBFLossRawData): Either[ErrorWrapper, AmendBFLossRequest] = {
     validator.validate(data) match {

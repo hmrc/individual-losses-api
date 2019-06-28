@@ -19,7 +19,7 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.requestData.DesTaxYear
@@ -34,11 +34,14 @@ class AuthISpec extends IntegrationBaseSpec {
     val correlationId = "X-123"
 
     val requestJson: String =
-      s"""
-         |{
-         |"data": "$data"
-         |}
-    """.stripMargin
+      """
+        |{
+        |    "selfEmploymentId": "XKIS00000000988",
+        |    "typeOfLoss": "self-employment",
+        |    "taxYear": "2019-20",
+        |    "lossAmount": 256.78
+        |}
+      """.stripMargin
 
     def setupStubs(): StubMapping
 

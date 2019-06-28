@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package v1.models.audit
+package v1.mocks.validators
 
-import play.api.libs.json.Json
-import support.UnitSpec
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.AmendBFLossValidator
+import v1.models.errors.MtdError
+import v1.models.requestData.AmendBFLossRawData
 
-class AuditMtdErrorSpec extends UnitSpec {
+class MockAmendBFLossValidator extends MockFactory {
 
-  private val auditError = AuditError("FORMAT_NINO")
+  val mockValidator: AmendBFLossValidator = mock[AmendBFLossValidator]
 
-  "writes" when {
-    "passed an audit error model" should {
-      "produce valid json" in {
-
-         val json = Json.parse(
-          s"""
-             |{
-             |  "errorCode": "FORMAT_NINO"
-             |}
-           """.stripMargin)
-
-        Json.toJson(auditError) shouldBe json
-      }
+  object MockValidator {
+    def validate(data: AmendBFLossRawData): CallHandler1[AmendBFLossRawData, List[MtdError]] = {
+      (mockValidator.validate(_: AmendBFLossRawData))
+        .expects(data)
     }
   }
 }

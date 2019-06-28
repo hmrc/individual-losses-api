@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.validators.MockValidator
+import v1.mocks.validators.MockAmendBFLossValidator
 import v1.models.domain.AmendBFLoss
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
 import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
@@ -32,7 +32,7 @@ class AmendBFLossParserSpec extends UnitSpec {
   private val lossAmount = 3.00
   private val data       = AmendBFLossRawData(nino, lossId, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
 
-  trait Test extends MockValidator[AmendBFLossRawData] {
+  trait Test extends MockAmendBFLossValidator {
     lazy val parser = new AmendBFLossParser(mockValidator)
   }
 

@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.audit
 
-import v1.models.errors.{MtdError, TypeOfLossUnsupportedFormatError}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-object TypeOfLossValidation {
+class AuditErrorSpec extends UnitSpec {
 
-  val validFormats = List("self-employment", "self-employment-class4", "uk-fhl-property", "uk-other-property")
+  private val auditError = AuditError("FORMAT_NINO")
 
-  def validate(typeOfLoss: String): List[MtdError] = {
-    if (validFormats.contains(typeOfLoss)) {
-      NoValidationErrors
-    } else {
-      List(TypeOfLossUnsupportedFormatError)
+  "writes" when {
+    "passed an audit error model" should {
+      "produce valid json" in {
+
+         val json = Json.parse(
+          s"""
+             |{
+             |  "errorCode": "FORMAT_NINO"
+             |}
+           """.stripMargin)
+
+        Json.toJson(auditError) shouldBe json
+      }
     }
   }
 }

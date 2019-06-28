@@ -16,10 +16,16 @@
 
 package v1.controllers
 
+import java.util.UUID
+
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.libs.json.JsValue
-import play.api.mvc.{Action, ControllerComponents}
+import play.api.http.MimeTypes
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import v1.controllers.requestParsers.CreateBFLossParser
+import v1.models.errors._
+import v1.models.requestData.CreateBFLossRawData
 import v1.services._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,16 +34,61 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        createBFLossService: CreateBFLossService,
+                                       createBFLossParser: CreateBFLossParser,
                                        auditService: AuditService,
-                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc) {
-  protected val logger: Logger = Logger(this.getClass)
+                                       cc: ControllerComponents)(implicit ec: ExecutionContext) extends AuthorisedController(cc) {
 
-  implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "CreateBFLossController", endpointName = "createBroughtForwardLoss")
+  protected val logger: Logger = Logger(this.getClass)
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      Future.successful(Created)
+
+      createBFLossParser.parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(request.body))) match {
+        case Right(createBFLossRequest) => createBFLossService.createBFLoss(createBFLossRequest).map {
+          case Right(desResponse) =>
+            logger.info(s"[CreateBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
+            Created(Json.toJson(desResponse.responseData))
+              .withHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
+
+          case Left(errorWrapper) =>
+            val result = processError(errorWrapper).withHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+            result
+        }
+        case Left(errorWrapper) =>
+          val result = processError(errorWrapper).withHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          Future.successful(result)
+      }
     }
+
+  private def processError(errorWrapper: ErrorWrapper) = {
+    errorWrapper.error match {
+      case BadRequestError
+           | NinoFormatError
+           | TaxYearFormatError
+           | RuleIncorrectOrEmptyBodyError
+           | RuleTaxYearNotSupportedError
+           | RuleTaxYearRangeExceededError
+           | TypeOfLossUnsupportedFormatError
+           | SelfEmploymentIdFormatError
+           | RulePropertySelfEmploymentId
+           | AmountFormatError
+           | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))
+      case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+    }
+  }
+
+  private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
+    errorWrapper.correlationId match {
+      case Some(correlationId) => logger.info("[CreateBFLossController][getCorrelationId] - " +
+        s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+        correlationId
+      case None =>
+        val correlationId = UUID.randomUUID().toString
+        logger.info("[CreateBFLossController][getCorrelationId] - " +
+          s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+        correlationId
+    }
+  }
 }
