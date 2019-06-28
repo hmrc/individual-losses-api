@@ -47,8 +47,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
     authorisedAction(nino).async(parse.json) { implicit request =>
 
       createBFLossParser.parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(request.body))) match {
-        case Right(createBFLossRequest) => createBFLossService.createBFLoss(createBFLossRequest)
-          .map {
+        case Right(createBFLossRequest) => createBFLossService.createBFLoss(createBFLossRequest).map {
           case Right(desResponse) =>
             logger.info(s"[CreateBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
             Created(Json.toJson(desResponse.responseData))
@@ -85,12 +84,12 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
     errorWrapper.correlationId match {
-      case Some(correlationId) => logger.info("[CharitableGivingController][getCorrelationId] - " +
+      case Some(correlationId) => logger.info("[CreateBFLossController][getCorrelationId] - " +
         s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
       case None =>
         val correlationId = UUID.randomUUID().toString
-        logger.info("[CharitableGivingController][getCorrelationId] - " +
+        logger.info("[CreateBFLossController][getCorrelationId] - " +
           s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
     }
