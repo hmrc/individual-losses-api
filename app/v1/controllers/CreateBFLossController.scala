@@ -40,9 +40,6 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   protected val logger: Logger = Logger(this.getClass)
 
-  implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "CreateBFLossController", endpointName = "createBroughtForwardLoss")
-
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
@@ -71,8 +68,8 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
            | RuleIncorrectOrEmptyBodyError
            | RuleTaxYearNotSupportedError
            | RuleTaxYearRangeExceededError
-           | RuleTypeOfLossUnsupported
-           | RuleInvalidSelfEmploymentId
+           | TypeOfLossUnsupportedFormatError
+           | SelfEmploymentIdFormatError
            | RulePropertySelfEmploymentId
            | AmountFormatError
            | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))

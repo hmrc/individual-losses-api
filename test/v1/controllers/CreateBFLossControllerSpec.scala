@@ -121,8 +121,8 @@ class CreateBFLossControllerSpec
         RuleIncorrectOrEmptyBodyError,
         RuleTaxYearNotSupportedError,
         RuleTaxYearRangeExceededError,
-        RuleTypeOfLossUnsupported,
-        RuleInvalidSelfEmploymentId,
+        TypeOfLossUnsupportedFormatError,
+        SelfEmploymentIdFormatError,
         RulePropertySelfEmploymentId,
         AmountFormatError,
         RuleInvalidLossAmount

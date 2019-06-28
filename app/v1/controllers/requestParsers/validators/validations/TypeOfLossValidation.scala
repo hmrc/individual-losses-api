@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, RuleTypeOfLossUnsupported}
+import v1.models.errors.{MtdError, TypeOfLossUnsupportedFormatError}
 
 object TypeOfLossValidation {
 
@@ -26,7 +26,7 @@ object TypeOfLossValidation {
     if (validFormats.contains(typeOfLoss)) {
       NoValidationErrors
     } else {
-      List(RuleTypeOfLossUnsupported)
+      List(TypeOfLossUnsupportedFormatError)
     }
   }
 }
