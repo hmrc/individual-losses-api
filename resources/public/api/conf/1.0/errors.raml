@@ -122,20 +122,9 @@ traits:
             type: types.errorResponse
             examples:
               ruleSelfEmploymentId:
-                description: A self employment ID was supplied for a property business.
+                description: A self-employment ID should be supplied for a self-employment business type.
                 value:
                   code: RULE_SELF_EMPLOYMENT_ID
-  missingSelfEmploymentId:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              missingSelfEmploymentId:
-                description: The self employment ID is missing.
-                value:
-                  code: MISSING_SELF_EMPLOYMENT_ID
   formatLossId:
     responses:
       400:
