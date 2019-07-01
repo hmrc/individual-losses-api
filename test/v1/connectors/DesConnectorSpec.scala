@@ -17,12 +17,12 @@
 package v1.connectors
 
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.{MockAppConfig, MockHttpClient}
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse}
-import v1.models.domain.{AmendBFLoss, BFLoss}
-import v1.models.errors.{MultipleErrors, NinoFormatError, SingleError, TaxYearFormatError}
+import v1.mocks.{ MockAppConfig, MockHttpClient }
+import v1.models.des.{ AmendBFLossResponse, CreateBFLossResponse }
+import v1.models.domain.{ AmendBFLoss, BFLoss }
+import v1.models.errors.{ LossIdFormatError, MultipleErrors, NinoFormatError, SingleError, TaxYearFormatError }
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest}
+import v1.models.requestData.{ AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest }
 
 import scala.concurrent.Future
 
@@ -31,11 +31,13 @@ class DesConnectorSpec extends ConnectorSpec {
   lazy val baseUrl  = "test-BaseUrl"
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val nino    =  "AA123456A"
-  val lossId  = "AAZZ1234567890a"
+  val nino   = "AA123456A"
+  val lossId = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: DesConnector = new DesConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+    val desRequestHeaders = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
@@ -48,7 +50,7 @@ class DesConnectorSpec extends ConnectorSpec {
         val expected = Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))
 
         MockedHttpClient
-          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss)
+          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss, desRequestHeaders : _*)
           .returns(Future.successful(expected))
 
         createBFLossResult(connector) shouldBe expected
@@ -60,7 +62,7 @@ class DesConnectorSpec extends ConnectorSpec {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
         MockedHttpClient
-          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss)
+          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss, desRequestHeaders : _*)
           .returns(Future.successful(expected))
 
         createBFLossResult(connector) shouldBe expected
@@ -72,7 +74,7 @@ class DesConnectorSpec extends ConnectorSpec {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockedHttpClient
-          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss)
+          .post(s"$baseUrl/income-tax/brought-forward-losses/$nino", bfLoss, desRequestHeaders : _*)
           .returns(Future.successful(expected))
 
         createBFLossResult(connector) shouldBe expected
@@ -90,8 +92,8 @@ class DesConnectorSpec extends ConnectorSpec {
 
   "amend BFLoss" when {
 
-    val amendBFLossResponse = AmendBFLossResponse(selfEmploymentId = Some("XKIS00000000988"), typeOfLoss = "INCOME",
-      lossAmount = 500.13, taxYear = "2019-20")
+    val amendBFLossResponse =
+      AmendBFLossResponse(selfEmploymentId = Some("XKIS00000000988"), typeOfLoss = "INCOME", lossAmount = 500.13, taxYear = "2019-20")
 
     val amendBFLoss = AmendBFLoss(500.13)
 
@@ -100,7 +102,7 @@ class DesConnectorSpec extends ConnectorSpec {
         val expected = Right(DesResponse(correlationId, amendBFLossResponse))
 
         MockedHttpClient
-          .put(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", amendBFLoss)
+          .put(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", amendBFLoss, desRequestHeaders : _*)
           .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
@@ -112,7 +114,7 @@ class DesConnectorSpec extends ConnectorSpec {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
         MockedHttpClient
-          .put(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", amendBFLoss)
+          .put(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", amendBFLoss, desRequestHeaders : _*)
           .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
@@ -124,7 +126,7 @@ class DesConnectorSpec extends ConnectorSpec {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockedHttpClient
-          .put(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", amendBFLoss)
+          .put(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", amendBFLoss, desRequestHeaders : _*)
           .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
@@ -138,6 +140,53 @@ class DesConnectorSpec extends ConnectorSpec {
             nino = Nino(nino),
             lossId = lossId,
             amendBFLoss
+          )))
+  }
+
+  "delete BFLoss" when {
+
+    "a valid request is supplied" should {
+      "return a successful response with the correct correlationId" in new Test {
+        val expected = Right(DesResponse(correlationId, ()))
+
+        MockedHttpClient
+          .delete(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        deleteBFLossResult(connector) shouldBe expected
+      }
+    }
+
+    "a request returning a single error" should {
+      "return an unsuccessful response with the correct correlationId and a single error" in new Test {
+        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+
+        MockedHttpClient
+          .delete(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        deleteBFLossResult(connector) shouldBe expected
+      }
+    }
+
+    "a request returning multiple errors" should {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
+        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+
+        MockedHttpClient
+          .delete(s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId", desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        deleteBFLossResult(connector) shouldBe expected
+      }
+    }
+
+    def deleteBFLossResult(connector: DesConnector): DesOutcome[Unit] =
+      await(
+        connector.deleteBFLoss(
+          DeleteBFLossRequest(
+            nino = Nino(nino),
+            lossId = lossId
           )))
   }
 }

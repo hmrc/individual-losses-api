@@ -30,23 +30,37 @@ trait MockHttpClient extends MockFactory {
 
   object MockedHttpClient {
 
-    def get[T](url: String): CallHandler[Future[T]] = {
+    def get[T](url: String, requiredHeaders: (String, String)*): CallHandler[Future[T]] = {
       (mockHttpClient
         .GET(_: String)(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
-        .expects(url, *, *, *)
+        .expects(where { (actualUrl,  _, hc, _) =>
+          url == actualUrl && requiredHeaders.forall(h => hc.headers.contains(h))
+        })
     }
 
-    def post[I, T](url: String, body: I): CallHandler[Future[T]] = {
+    def post[I, T](url: String, body: I, requiredHeaders: (String, String)*): CallHandler[Future[T]] = {
       (mockHttpClient
         .POST[I, T](_: String, _: I, _: Seq[(String, String)])(_: Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
-        .expects(url, body, *, *, *, *, *)
+        .expects(where { (actualUrl, actualBody, _, _, _, hc, _) =>
+        url == actualUrl && body == actualBody && requiredHeaders.forall(h => hc.headers.contains(h))
+      })
+
     }
 
-    def put[I, T](url: String, body: I): CallHandler[Future[T]] = {
+    def put[I, T](url: String, body: I, requiredHeaders: (String, String)*): CallHandler[Future[T]] = {
       (mockHttpClient
-        .PUT[I, T](_: String, _: I)(_:Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
-        .expects(url, body, *, *, *, *)
+        .PUT[I, T](_: String, _: I)(_: Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
+        .expects(where { (actualUrl, actualBody, _, _, hc, _) =>
+          url == actualUrl && body == actualBody && requiredHeaders.forall(h => hc.headers.contains(h))
+        })
+    }
+
+    def delete[T](url: String, requiredHeaders: (String, String)*): CallHandler[Future[T]] = {
+      (mockHttpClient
+        .DELETE(_: String)(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
+        .expects(where { (actualUrl,  _, hc, _) =>
+          url == actualUrl && requiredHeaders.forall(h => hc.headers.contains(h))
+        })
     }
   }
-
 }
