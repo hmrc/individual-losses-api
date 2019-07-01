@@ -28,8 +28,6 @@ case class BFLoss(typeOfLoss: String,
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-  val ogwrites: Writes[BFLoss] = Json.writes[BFLoss]
-
   implicit val writes: Writes[BFLoss] = new Writes[BFLoss] {
     override def writes(loss: BFLoss): JsValue = {
 
