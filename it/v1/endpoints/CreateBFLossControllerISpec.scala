@@ -33,7 +33,6 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       "taxYear" -> taxYear,
       "lossAmount" -> lossAmount)
 
-  val nino = "AA123456A"
   val lossId = "AAZZ1234567890a"
   val correlationId = "X-123"
   val selfEmploymentId = "XKIS00000000988"
@@ -44,12 +43,6 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
   private trait Test {
 
     val nino = "AA123456A"
-    val lossId = "AAZZ1234567890a"
-    val correlationId = "X-123"
-    val selfEmploymentId = "XKIS00000000988"
-    val taxYear = "2019-20"
-    val lossAmount = 256.78
-    val typeOfLoss = "self-employment"
 
     val requestJson: JsValue = Json.parse(
       """
@@ -65,6 +58,13 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       """
         |{
         |    "id": "AAZZ1234567890a"
+        |}
+      """.stripMargin)
+
+    val desResponseJson: JsValue = Json.parse(
+      """
+        |{
+        |    "lossId": "AAZZ1234567890a"
         |}
       """.stripMargin)
 
@@ -92,6 +92,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
 
     trait CreateBFLossControllerTest extends Test {
       def uri: String = s"/individual/losses/$nino/brought-forward-losses"
+      def desUrl: String = s"/income-tax/brought-forward-losses/$nino"
     }
 
     "return a 201 status code" when {
@@ -102,7 +103,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.serviceSuccess(nino)
+          DesStub.onSuccess(DesStub.POST, desUrl, Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -135,7 +136,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.serviceError(nino, desStatus, errorBody(desCode))
+          DesStub.onError(DesStub.POST, desUrl, desStatus, errorBody(desCode))
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -161,7 +162,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(Some("selfEmploymentId"), "uk-other-property", "2019-20", lossAmount), Status.BAD_REQUEST, RulePropertySelfEmploymentId)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,-3234), Status.BAD_REQUEST, RuleInvalidLossAmount)
+        generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,-3234.99), Status.BAD_REQUEST, RuleInvalidLossAmount)
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,99999999999.999), Status.BAD_REQUEST, AmountFormatError)
     }
@@ -171,11 +172,10 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       s"validation fails with ${expectedBody.code} error" in new CreateBFLossControllerTest {
 
         override val nino: String = requestNino
-
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
+          MtdIdLookupStub.ninoFound(requestNino)
         }
 
         val response: WSResponse = await(request().post(requestBody))

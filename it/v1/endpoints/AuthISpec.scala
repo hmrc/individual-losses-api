@@ -43,6 +43,13 @@ class AuthISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin
 
+    val desResponseJson: JsValue = Json.parse(
+      """
+        |{
+        |    "lossId": "AAZZ1234567890a"
+        |}
+      """.stripMargin)
+
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {
@@ -72,11 +79,12 @@ class AuthISpec extends IntegrationBaseSpec {
     "an MTD ID is successfully retrieve from the NINO and the user is authorised" should {
 
       "return 201" in new Test {
+        val desUrl: String = s"/income-tax/brought-forward-losses/$nino"
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.serviceSuccess(nino)
+          DesStub.onSuccess(DesStub.POST, desUrl, Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))
