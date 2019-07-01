@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.{SelfEmploymentIdFormatError, RulePropertySelfEmploymentId}
+import v1.models.errors.{SelfEmploymentIdFormatError, RuleSelfEmploymentId}
 
 class SelfEmploymentIdValidationSpec extends UnitSpec {
 
@@ -48,11 +48,11 @@ class SelfEmploymentIdValidationSpec extends UnitSpec {
     "return an error" when {
 
       "provided with a property loss with a valid id" in {
-        SelfEmploymentIdValidation.validate("uk-other-property", Some(validId)) shouldBe List(RulePropertySelfEmploymentId)
+        SelfEmploymentIdValidation.validate("uk-other-property", Some(validId)) shouldBe List(RuleSelfEmploymentId)
       }
 
       "provided with a self employment loss without any id" in {
-        SelfEmploymentIdValidation.validate("self-employment", None) shouldBe List(SelfEmploymentIdFormatError)
+        SelfEmploymentIdValidation.validate("self-employment", None) shouldBe List(RuleSelfEmploymentId)
       }
 
       invalidIds.foreach { badId =>

@@ -124,10 +124,25 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
+    "return RuleSelfEmploymentId error" when {
+      "a self-employment is not provided for a self-employment loss type" in {
+        validator.validate(
+          requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", selfEmploymentId = None)))) shouldBe
+          List(RuleSelfEmploymentId)
+      }
+
+      "a self-employment is not provided for a self-employment-class4 loss type" in {
+        validator.validate(
+          requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment-class4", selfEmploymentId = None)))) shouldBe
+          List(RuleSelfEmploymentId)
+      }
+    }
+
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
-          List(TypeOfLossUnsupportedFormatError, RulePropertySelfEmploymentId)
+        validator.validate(requestData.
+          CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", taxYear = "20177-18")))) shouldBe
+          List(TaxYearFormatError,TypeOfLossUnsupportedFormatError)
       }
     }
   }

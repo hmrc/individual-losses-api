@@ -23,7 +23,7 @@ import v1.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldsValidator)
+  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldsValidator1, bodyFieldsValidator2)
 
   private def parameterFormatValidation: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
@@ -37,12 +37,19 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
     )
   }
 
-  private def bodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+
+  private def bodyFieldsValidator1: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
       TaxYearValidation.validate(req.taxYear),
+      TypeOfLossValidation.validate(req.typeOfLoss)
+    )
+  }
+
+  private def bodyFieldsValidator2: CreateBFLossRawData => List[List[MtdError]] = { data =>
+    val req = data.body.json.as[BFLoss]
+    List(
       MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError),
-      TypeOfLossValidation.validate(req.typeOfLoss),
       SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
       AmountValidation.validate(req.lossAmount)
     )

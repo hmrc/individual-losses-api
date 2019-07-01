@@ -75,5 +75,14 @@ class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
 
     }
 
+    "the tax year bad" in {
+
+      val invalidTaxYear = "20177-17"
+      val validationResult = TaxYearValidation.validate(invalidTaxYear)
+      validationResult.isEmpty shouldBe false
+      validationResult.length shouldBe 1
+      validationResult.head shouldBe TaxYearFormatError
+    }
+
   }
 }

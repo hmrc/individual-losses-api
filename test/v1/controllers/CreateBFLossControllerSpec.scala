@@ -123,7 +123,7 @@ class CreateBFLossControllerSpec
         RuleTaxYearRangeExceededError,
         TypeOfLossUnsupportedFormatError,
         SelfEmploymentIdFormatError,
-        RulePropertySelfEmploymentId,
+        RuleSelfEmploymentId,
         AmountFormatError,
         RuleInvalidLossAmount
       )
