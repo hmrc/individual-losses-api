@@ -71,6 +71,11 @@ class CreateBFLossValidatorSpec extends UnitSpec {
         validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2016")))) shouldBe
           List(TaxYearFormatError)
       }
+
+      "a non-numeric tax year is supplied" in {
+        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "XXXX-YY")))) shouldBe
+          List(TaxYearFormatError)
+      }
     }
 
     "return RuleTaxYearRangeExceededError error" when {
@@ -92,6 +97,13 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       "an invalid loss type is submitted" in {
         validator.validate(
           requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", selfEmploymentId = None)))) shouldBe
+          List(TypeOfLossUnsupportedFormatError)
+      }
+
+      "there is also a self employment id" in {
+        validator.validate(
+          requestData.CreateBFLossRawData(validNino,
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", selfEmploymentId = Some(validSelfEmploymentId))))) shouldBe
           List(TypeOfLossUnsupportedFormatError)
       }
     }
