@@ -123,11 +123,17 @@ class AmendBFLossControllerSpec
         RuleInvalidLossAmount
       )
 
+      val badRequestErrorsFromService = List(
+        NinoFormatError,
+        LossIdFormatError
+      )
+
       val notFoundErrorsFromService = List(
         NotFoundError
       )
 
       badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
+      badRequestErrorsFromService.foreach(errorsFromServiceTester(_, BAD_REQUEST))
       notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
     }
   }
