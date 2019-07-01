@@ -21,33 +21,33 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DesConnector
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.CreateBFLossRequest
+import v1.models.requestData.DeleteBFLossRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
-class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceSupport {
+class DeleteBFLossService @Inject()(connector: DesConnector) extends DesServiceSupport {
 
   /**
     * Service name for logging
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def createBFLoss(request: CreateBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CreateBFLossOutcome] = {
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteBFLossOutcome] = {
 
-    connector.createBFLoss(request).map {
-      mapToVendor("createBFLoss", mappingDesToMtdError) { desResponse =>
+    connector.deleteBFLoss(request).map {
+      mapToVendor("deleteBFLoss", mappingDesToMtdError) { desResponse =>
         Right(DesResponse(desResponse.correlationId, desResponse.responseData))
       }
     }
   }
 
-  private def mappingDesToMtdError: Map[String, MtdError] =
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "DUPLICATE"                 -> RuleDuplicateSubmissionError,
-      "NOT_FOUND_INCOME_SOURCE"   -> NotFoundError,
-      "INVALID_PAYLOAD"           -> DownstreamError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError
-    )
+  private def mappingDesToMtdError: Map[String, MtdError] = Map(
+    "INVALID_IDVALUE"     -> NinoFormatError,
+    "INVALID_LOSS_ID"     -> LossIdFormatError,
+    "NOT_FOUND"           -> NotFoundError,
+    "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
+    "SERVER_ERROR"        -> DownstreamError,
+    "SERVICE_UNAVAILABLE" -> DownstreamError
+  )
+
 }
