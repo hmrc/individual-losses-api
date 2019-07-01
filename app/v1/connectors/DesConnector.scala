@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser
 import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse}
 import v1.models.domain.{AmendBFLoss, BFLoss}
-import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest}
+import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -60,4 +60,6 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
       StandardDesHttpParser.reads[AmendBFLossResponse], desHeaderCarrier, implicitly)
   }
 
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier,
+                                                          ec: ExecutionContext): Future[DesOutcome[Unit]] =  ???
 }
