@@ -22,11 +22,10 @@ import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import v1.connectors.httpparsers.StandardDesHttpParser
+import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.des.{ AmendBFLossResponse, CreateBFLossResponse }
 import v1.models.domain.{ AmendBFLoss, BFLoss }
 import v1.models.requestData.{ AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest }
-import StandardDesHttpParser._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -35,7 +34,7 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
 
   val logger = Logger(this.getClass)
 
-  private[connectors] def desHeaderCarrier(implicit hc: HeaderCarrier): HeaderCarrier =
+  private def desHeaderCarrier(implicit hc: HeaderCarrier): HeaderCarrier =
     hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
       .withExtraHeaders("Environment" -> appConfig.desEnv)
 
@@ -44,12 +43,11 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
 
     val nino = createBFLossRequest.nino.nino
 
-    val url = s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino"
+    def doIt(implicit hc: HeaderCarrier) =
+      http.POST[BFLoss, DesOutcome[CreateBFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino",
+                                                          createBFLossRequest.broughtForwardLoss)
 
-    http.POST(url, createBFLossRequest.broughtForwardLoss)(BFLoss.writes,
-                                                           StandardDesHttpParser.reads[CreateBFLossResponse],
-                                                           desHeaderCarrier,
-                                                           implicitly)
+    doIt(desHeaderCarrier)
   }
 
   def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
@@ -58,12 +56,11 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
     val nino   = amendBFLossRequest.nino.nino
     val lossId = amendBFLossRequest.lossId
 
-    val url = s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId"
+    def doIt(implicit hc: HeaderCarrier) =
+      http.PUT[AmendBFLoss, DesOutcome[AmendBFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId",
+                                                             amendBFLossRequest.amendBroughtForwardLoss)
 
-    http.PUT(url, amendBFLossRequest.amendBroughtForwardLoss)(AmendBFLoss.writes,
-                                                              StandardDesHttpParser.reads[AmendBFLossResponse],
-                                                              desHeaderCarrier,
-                                                              implicitly)
+    doIt(desHeaderCarrier)
   }
 
   def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
