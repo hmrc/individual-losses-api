@@ -32,10 +32,15 @@ class ErrorHandlerSpec extends UnitSpec with ScalaFutures with GuiceOneAppPerSui
   "The Error Handler" should {
 
     "return bad request error in the case of an invalid json" in new Setup {
-      val exception = new InvalidBearerToken()
       val result = await(errorHandler.onBadRequest(FakeRequest(), "Invalid Json"))
 
       result.header.status shouldBe Status.BAD_REQUEST
+    }
+
+    "return not found error in the case of an invalid URL" in new Setup {
+      val result = await(errorHandler.onNotFound(FakeRequest(), "Invalid URL"))
+
+      result.header.status shouldBe Status.NOT_FOUND
     }
   }
 }

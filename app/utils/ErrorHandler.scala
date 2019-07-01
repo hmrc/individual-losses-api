@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.routing.Router
-import v1.models.errors.MtdError
+import v1.models.errors.{MtdError, NotFoundError}
 
 import scala.concurrent._
 
@@ -40,6 +40,11 @@ class ErrorHandler @Inject()(
     val result = BadRequest(Json.toJson(MtdError("INVALID_REQUEST", JsonErrorSanitiser.sanitise(error))))
 
     Future.successful(result)
+  }
+
+  override def onNotFound(request: RequestHeader, error: String): Future[Result] = {
+    Logger.warn(s"[ErrorHandler][onNotFound] - Received NOT_FOUND error: '$error'")
+    Future.successful(NotFound(Json.toJson(NotFoundError)))
   }
 }
 
