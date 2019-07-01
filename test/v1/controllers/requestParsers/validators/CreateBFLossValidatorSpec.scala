@@ -71,6 +71,11 @@ class CreateBFLossValidatorSpec extends UnitSpec {
         validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2016")))) shouldBe
           List(TaxYearFormatError)
       }
+
+      "a non-numeric tax year is supplied" in {
+        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "XXXX-YY")))) shouldBe
+          List(TaxYearFormatError)
+      }
     }
 
     "return RuleTaxYearRangeExceededError error" when {
@@ -94,6 +99,13 @@ class CreateBFLossValidatorSpec extends UnitSpec {
           requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", selfEmploymentId = None)))) shouldBe
           List(TypeOfLossUnsupportedFormatError)
       }
+
+      "there is also a self employment id" in {
+        validator.validate(
+          requestData.CreateBFLossRawData(validNino,
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", selfEmploymentId = Some(validSelfEmploymentId))))) shouldBe
+          List(TypeOfLossUnsupportedFormatError)
+      }
     }
 
     "return SelfEmploymentIdValidation error" when {
@@ -112,10 +124,25 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
+    "return RuleSelfEmploymentId error" when {
+      "a self-employment is not provided for a self-employment loss type" in {
+        validator.validate(
+          requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", selfEmploymentId = None)))) shouldBe
+          List(RuleSelfEmploymentId)
+      }
+
+      "a self-employment is not provided for a self-employment-class4 loss type" in {
+        validator.validate(
+          requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment-class4", selfEmploymentId = None)))) shouldBe
+          List(RuleSelfEmploymentId)
+      }
+    }
+
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
-          List(TypeOfLossUnsupportedFormatError, RulePropertySelfEmploymentId)
+        validator.validate(requestData.
+          CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", taxYear = "20177-18")))) shouldBe
+          List(TaxYearFormatError,TypeOfLossUnsupportedFormatError)
       }
     }
   }
