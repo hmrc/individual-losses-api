@@ -17,17 +17,18 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse}
-import v1.models.domain.{AmendBFLoss, BFLoss}
-import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest}
+import v1.models.des.{ AmendBFLossResponse, CreateBFLossResponse }
+import v1.models.domain.{ AmendBFLoss, BFLoss }
+import v1.models.requestData.{ AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest }
+import StandardDesHttpParser._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
@@ -39,27 +40,39 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
       .withExtraHeaders("Environment" -> appConfig.desEnv)
 
   def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
-                                   ec: ExecutionContext): Future[DesOutcome[CreateBFLossResponse]] = {
+                                                             ec: ExecutionContext): Future[DesOutcome[CreateBFLossResponse]] = {
 
-    val nino    = createBFLossRequest.nino.nino
+    val nino = createBFLossRequest.nino.nino
 
     val url = s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino"
 
-    http.POST(url, createBFLossRequest.broughtForwardLoss)(BFLoss.writes, StandardDesHttpParser.reads[CreateBFLossResponse], desHeaderCarrier, implicitly)
+    http.POST(url, createBFLossRequest.broughtForwardLoss)(BFLoss.writes,
+                                                           StandardDesHttpParser.reads[CreateBFLossResponse],
+                                                           desHeaderCarrier,
+                                                           implicitly)
   }
 
   def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
-                                                             ec: ExecutionContext): Future[DesOutcome[AmendBFLossResponse]] = {
+                                                          ec: ExecutionContext): Future[DesOutcome[AmendBFLossResponse]] = {
 
-    val nino    = amendBFLossRequest.nino.nino
-    val lossId  = amendBFLossRequest.lossId
+    val nino   = amendBFLossRequest.nino.nino
+    val lossId = amendBFLossRequest.lossId
 
     val url = s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId"
 
     http.PUT(url, amendBFLossRequest.amendBroughtForwardLoss)(AmendBFLoss.writes,
-      StandardDesHttpParser.reads[AmendBFLossResponse], desHeaderCarrier, implicitly)
+                                                              StandardDesHttpParser.reads[AmendBFLossResponse],
+                                                              desHeaderCarrier,
+                                                              implicitly)
   }
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier,
-                                                          ec: ExecutionContext): Future[DesOutcome[Unit]] =  ???
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+    val nino   = request.nino.nino
+    val lossId = request.lossId
+
+    def doIt(implicit hc: HeaderCarrier) =
+      http.DELETE[DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId")
+
+    doIt(desHeaderCarrier)
+  }
 }
