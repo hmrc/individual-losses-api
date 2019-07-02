@@ -12,6 +12,10 @@
             <td><p>Simulate success scenario</p></td>
         </tr>
         <tr>
+           <td><p>DELETE_AFTER_CRYSTALLISATION</p></td>
+           <td><p>Simulates the scenario where the requested resource is locked.</p></td>
+        </tr>        
+        <tr>
            <td><p>NOT_FOUND</p></td>
            <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>
