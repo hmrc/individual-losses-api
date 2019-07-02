@@ -96,7 +96,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
   "Calling the amend BFLoss endpoint" should {
 
     trait AmendBFLossControllerTest extends Test {
-      def uri: String = s"/individual/losses/$nino/brought-forward-losses/$lossId/change-loss-amount"
+      def uri: String = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
       def desUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
     }
 

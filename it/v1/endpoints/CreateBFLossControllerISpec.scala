@@ -91,7 +91,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
   "Calling the create BFLoss endpoint" should {
 
     trait CreateBFLossControllerTest extends Test {
-      def uri: String = s"/individual/losses/$nino/brought-forward-losses"
+      def uri: String = s"/$nino/brought-forward-losses"
       def desUrl: String = s"/income-tax/brought-forward-losses/$nino"
     }
 
