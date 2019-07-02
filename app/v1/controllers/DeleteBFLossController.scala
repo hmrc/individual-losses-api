@@ -35,7 +35,8 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        deleteBFLossService: DeleteBFLossService,
                                        deleteBFLossParser: DeleteBFLossParser,
                                        auditService: AuditService,
-                                       cc: ControllerComponents)(implicit ec: ExecutionContext) extends AuthorisedController(cc) {
+                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
+  extends AuthorisedController(cc) with BaseController {
 
   protected val logger: Logger = Logger(this.getClass)
 
@@ -47,14 +48,14 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
           case Right(desResponse) =>
             logger.info(s"[DeleteBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
             NoContent
-              .withHeaders("X-CorrelationId" -> desResponse.correlationId)
+              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
 
           case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
             result
         }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }
