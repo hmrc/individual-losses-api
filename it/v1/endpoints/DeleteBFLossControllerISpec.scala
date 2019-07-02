@@ -19,15 +19,14 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.Json
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsObject, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
+import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 
-  val lossId        = "AAZZ1234567890a"
   val correlationId = "X-123"
 
   private trait Test {
@@ -66,7 +65,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onNoContent(DesStub.DELETE, desUrl)
+          DesStub.onSuccess(DesStub.DELETE, desUrl, Status.NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
