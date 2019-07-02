@@ -202,3 +202,14 @@ traits:
                 description: A brought forward loss already exists for this income source.
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
+  ruleDeleteAfterCrystallisation:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDeleteAfterCrystallisation:
+                description: The remote endpoint has indicated that the requested resource has been locked.
+                value:
+                  code: RULE_DELETE_AFTER_CRYSTALLISATION
