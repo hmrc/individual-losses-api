@@ -1,3 +1,5 @@
 POST       /individual/losses/:nino/brought-forward-losses               v1.controllers.CreateBFLossController.create(nino: String)
+DELETE     /individual/losses/:nino/brought-forward-losses/:lossId       v1.controllers.DeleteBFLossController.delete(nino: String, lossId: String)
 
 POST       /individual/losses/:nino/brought-forward-losses/:lossId/change-loss-amount               v1.controllers.AmendBFLossController.amend(nino: String, lossId: String)
+
