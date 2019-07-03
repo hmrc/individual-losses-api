@@ -32,7 +32,7 @@ import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.UnitSpec
-import v1.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import v1.models.errors.{PlatformInvalidAcceptHeaderError, PlatformNotFoundError}
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockFactory with Inside with MockAppConfig{
   test =>
@@ -104,7 +104,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
           val result = a.apply(request)
 
           status(result) shouldBe NOT_ACCEPTABLE
-          contentAsJson(result) shouldBe Json.toJson(InvalidAcceptHeaderError)
+          contentAsJson(result) shouldBe Json.toJson(PlatformInvalidAcceptHeaderError)
       }
     }
   }
@@ -134,7 +134,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
           val result = a.apply(request)
 
           status(result) shouldBe NOT_FOUND
-          contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
+          contentAsJson(result) shouldBe Json.toJson(PlatformNotFoundError)
       }
     }
   }
@@ -154,7 +154,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
             val result = a.apply(request)
 
             status(result) shouldBe NOT_FOUND
-            contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
+            contentAsJson(result) shouldBe Json.toJson(PlatformNotFoundError)
 
         }
       }

@@ -46,5 +46,9 @@ object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal
 object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised")
 
 // Accept header Errors
-object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
-object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
+object PlatformInvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+object PlatformNotFoundError extends MtdError("NOT_FOUND", "The requested resource could not be found")
+
+//Platform errors to mimic in error handler
+object InvalidAcceptHeader extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized")
+object InvalidBodyError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")

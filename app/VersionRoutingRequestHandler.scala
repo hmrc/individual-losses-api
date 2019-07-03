@@ -23,7 +23,7 @@ import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHan
 import play.api.libs.json.Json
 import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
 import play.api.routing.Router
-import v1.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import v1.models.errors.{PlatformInvalidAcceptHeaderError, PlatformNotFoundError}
 
 @Singleton
 class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMap,
@@ -36,9 +36,9 @@ class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMa
 
   private val featureSwitch = FeatureSwitch(config.featureSwitch)
 
-  private val unsupportedVersionAction = action(Results.NotFound(Json.toJson(UnsupportedVersionError)))
+  private val unsupportedVersionAction = action(Results.NotFound(Json.toJson(PlatformNotFoundError)))
 
-  private val invalidAcceptHeaderError = action(Results.NotAcceptable(Json.toJson(InvalidAcceptHeaderError)))
+  private val invalidAcceptHeaderError = action(Results.NotAcceptable(Json.toJson(PlatformInvalidAcceptHeaderError)))
 
   override def routeRequest(request: RequestHeader): Option[Handler] = {
 

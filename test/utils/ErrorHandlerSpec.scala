@@ -16,31 +16,172 @@
 
 package utils
 
-import org.scalatest.concurrent.ScalaFutures
+import mocks.MockTing
+import org.mockito.ArgumentCaptor
+import org.scalatest.OneInstancePerTest
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Configuration
+import play.api.http.HeaderNames
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.mvc.Http.Status
+import play.api.test.Helpers._
 import support.UnitSpec
-import uk.gov.hmrc.auth.core.InvalidBearerToken
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
+import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
+import v1.models.errors.NotFoundError
 
-class ErrorHandlerSpec extends UnitSpec with ScalaFutures with GuiceOneAppPerSuite {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
-  trait Setup {
-    val errorHandler = app.injector.instanceOf[ErrorHandler]
+
+class ErrorHandlerSpec extends UnitSpec with MockTing with GuiceOneAppPerSuite with OneInstancePerTest {
+
+  def versionHeader(version: String): (String, String) = HeaderNames.ACCEPT -> s"application/vnd.hmrc.$version+json"
+
+  class Test {
+    val method = "some-method"
+
+    def versionInHeader: Option[String]
+
+    def requestHeader = FakeRequest().withHeaders(versionInHeader.map(versionHeader).toSeq: _*)
+
+    val auditConnector = mock[AuditConnector]
+    val httpAuditEvent = mock[HttpAuditEvent]
+
+    when(auditConnector.sendEvent(any[DataEvent]())(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(Success))
+
+    val configuration = Configuration("appName" -> "myApp")
+    val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
   }
 
-  "The Error Handler" should {
+  "onClientError" should {
 
-    "return bad request error in the case of an invalid json" in new Setup {
-      val result = await(errorHandler.onBadRequest(FakeRequest(), "Invalid Json"))
+//    Seq(Some("1.0"),
+//      Some("8.0"),
+//      Some("XXX"),
+//      None)
+//      .foreach(behaveAsVersion1)
 
-      result.header.status shouldBe Status.BAD_REQUEST
+//    def behaveAsVersion1(thisVersionInHeader: Option[String]): Unit =
+//      "return 404 with version 1 error body" when {
+//        s"version header is $thisVersionInHeader" in new Test {
+//          override def versionInHeader = thisVersionInHeader
+//
+//          val result = handler.onClientError(requestHeader, Status.NOT_FOUND, "test")
+//          status(result) shouldBe Status.NOT_FOUND
+//
+//          contentAsJson(result) shouldBe Json.parse(s"""{"statusCode":404,"message":"URI not found", "requested": "${requestHeader.path}"}""")
+//
+//          val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+//          verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+//          captor.getValue.auditType shouldBe "ResourceNotFound"
+//        }
+//      }
+
+    "return 404 with modified body" when {
+      "resource not found and version 1 header is supplied" in new Test {
+        override def versionInHeader: Option[String] = Some("1.0")
+        val result = handler.onClientError(requestHeader, NOT_FOUND, "test")
+        status(result) shouldBe NOT_FOUND
+
+        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+
+        val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+        verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+        captor.getValue.auditType shouldBe "ResourceNotFound"
+      }
     }
-
-    "return not found error in the case of an invalid URL" in new Setup {
-      val result = await(errorHandler.onNotFound(FakeRequest(), "Invalid URL"))
-
-      result.header.status shouldBe Status.NOT_FOUND
-    }
+//
+//    "return 401 with version 2 error body" when {
+//      "unauthorised and version 2 header is supplied" in new Test(Some("2.0")) {
+//        val result = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
+//        status(result) shouldBe UNAUTHORIZED
+//
+//        contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
+//
+//        val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+//        verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+//        captor.getValue.auditType shouldBe "ClientError"
+//      }
+//    }
   }
+
+//  "onServerError" should {
+//
+//    Seq(Some("1.0"),
+//      Some("8.0"),
+//      Some("XXX"),
+//      None)
+//      .foreach(behaveAsVersion1)
+//
+//    def behaveAsVersion1(versionInHeader: Option[String]): Unit =
+//      "return 404 with version 1 error body" when {
+//        s"version header is $versionInHeader" in new Test(versionInHeader) {
+//          val resultF = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
+//          status(resultF) shouldEqual NOT_FOUND
+//          contentAsJson(resultF) shouldEqual Json.parse("""{"statusCode":404,"message":"test"}""")
+//
+//          val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+//          verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+//          captor.getValue.auditType shouldBe "ResourceNotFound"
+//        }
+//      }
+//
+//    "return 404 with version 2 error body" when {
+//      "NotFoundException thrown and version 2 header is supplied" in new Test(Some("2.0")) {
+//        val result = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
+//        status(result) shouldBe NOT_FOUND
+//
+//        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+//
+//        val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+//        verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+//        captor.getValue.auditType shouldBe "ResourceNotFound"
+//      }
+//    }
+//
+//    "return 401 with version 2 error body" when {
+//      "AuthorisationException thrown and version 2 header is supplied" in new Test(Some("2.0")) {
+//        val result = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
+//        status(result) shouldBe UNAUTHORIZED
+//
+//        contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
+//
+//        val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+//        verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+//        captor.getValue.auditType shouldBe "ClientError"
+//      }
+//
+//      "return 400 with version 2 error body" when {
+//        "JsValidationException thrown and version 2 header is supplied" in new Test(Some("2.0")) {
+//          val result = handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
+//          status(result) shouldBe BAD_REQUEST
+//
+//          contentAsJson(result) shouldBe Json.toJson(BadRequestError)
+//
+//          val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+//          verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+//          captor.getValue.auditType shouldBe "ServerValidationError"
+//        }
+//      }
+//
+//      "return 500 with version 2 error body" when {
+//        "other exeption thrown and version 2 header is supplied" in new Test(Some("2.0")) {
+//          val result = handler.onServerError(requestHeader, new Exception with NoStackTrace)
+//          status(result) shouldBe INTERNAL_SERVER_ERROR
+//
+//          contentAsJson(result) shouldBe Json.toJson(DownstreamError)
+//
+//          val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+//          verify(auditConnector, times(1)).sendEvent(captor.capture)(any[HeaderCarrier](), any[ExecutionContext]())
+//          captor.getValue.auditType shouldBe "ServerInternalError"
+//        }
+//      }
+//    }
+//  }
 }
+
