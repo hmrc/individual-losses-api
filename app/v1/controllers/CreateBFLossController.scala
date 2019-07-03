@@ -36,7 +36,8 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        createBFLossService: CreateBFLossService,
                                        createBFLossParser: CreateBFLossParser,
                                        auditService: AuditService,
-                                       cc: ControllerComponents)(implicit ec: ExecutionContext) extends AuthorisedController(cc) {
+                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
+  extends AuthorisedController(cc) with BaseController {
 
   protected val logger: Logger = Logger(this.getClass)
 
@@ -48,14 +49,14 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
           case Right(desResponse) =>
             logger.info(s"[CreateBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
             Created(Json.toJson(desResponse.responseData))
-              .withHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
+              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
 
           case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
             result
         }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }

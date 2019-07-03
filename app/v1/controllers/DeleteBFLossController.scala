@@ -20,36 +20,35 @@ import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import v1.controllers.requestParsers.AmendBFLossParser
+import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import v1.controllers.requestParsers.DeleteBFLossParser
 import v1.models.errors._
-import v1.models.requestData.AmendBFLossRawData
+import v1.models.requestData.DeleteBFLossRawData
 import v1.services._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
-                                      val lookupService: MtdIdLookupService,
-                                      amendBFLossService: AmendBFLossService,
-                                      amendBFLossParser: AmendBFLossParser,
-                                      auditService: AuditService,
-                                      cc: ControllerComponents)(implicit ec: ExecutionContext)
+class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
+                                       val lookupService: MtdIdLookupService,
+                                       deleteBFLossService: DeleteBFLossService,
+                                       deleteBFLossParser: DeleteBFLossParser,
+                                       auditService: AuditService,
+                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
   protected val logger: Logger = Logger(this.getClass)
 
-  def amend(nino: String, lossId: String): Action[JsValue] =
-    authorisedAction(nino).async(parse.json) { implicit request =>
+  def delete(nino: String, lossId: String): Action[AnyContent] =
+    authorisedAction(nino).async { implicit request =>
 
-      amendBFLossParser.parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))) match {
-        case Right(amendBFLossRequest) => amendBFLossService.amendBFLoss(amendBFLossRequest).map {
+      deleteBFLossParser.parseRequest(DeleteBFLossRawData(nino, lossId)) match {
+        case Right(deleteBFLossRequest) => deleteBFLossService.deleteBFLoss(deleteBFLossRequest).map {
           case Right(desResponse) =>
-            logger.info(s"[AmendBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-            Ok(Json.toJson(desResponse.responseData))
-              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
+            logger.info(s"[DeleteBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
+            NoContent
+              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
 
           case Left(errorWrapper) =>
             val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
@@ -65,10 +64,8 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
     errorWrapper.error match {
       case BadRequestError
            | NinoFormatError
-           | RuleIncorrectOrEmptyBodyError
-           | LossIdFormatError
-           | AmountFormatError
-           | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))
+           | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
+      case RuleDeleteAfterCrystallisationError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
@@ -76,12 +73,12 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
     errorWrapper.correlationId match {
-      case Some(correlationId) => logger.info("[AmendBFLossController][getCorrelationId] - " +
+      case Some(correlationId) => logger.info("[DeleteBFLossController][getCorrelationId] - " +
         s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
       case None =>
         val correlationId = UUID.randomUUID().toString
-        logger.info("[AmendBFLossController][getCorrelationId] - " +
+        logger.info("[DeleteBFLossController][getCorrelationId] - " +
           s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
     }
