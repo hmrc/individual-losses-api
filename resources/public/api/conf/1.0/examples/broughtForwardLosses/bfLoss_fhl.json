@@ -1,5 +1,5 @@
 {
-    "typeOfLoss":"uk-fhl-property",
+    "typeOfLoss":"uk-property-fhl",
     "lossAmount": 12345.67,
     "taxYear": "2018-19"
 }

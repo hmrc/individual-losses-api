@@ -40,8 +40,8 @@ class AmendBFLossResponseSpec extends UnitSpec {
     val desToMtdMap: Map[String, String] = Map(
       "INCOME" -> "self-employment",
       "CLASS4" -> "self-employment-class4",
-      "04"     -> "uk-fhl-property",
-      "02"     -> "uk-other-property"
+      "04"     -> "uk-property-fhl",
+      "02"     -> "uk-property-non-fhl"
     )
 
     desToMtdMap.foreach {

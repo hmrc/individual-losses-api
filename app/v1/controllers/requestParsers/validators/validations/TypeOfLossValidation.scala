@@ -20,7 +20,7 @@ import v1.models.errors.{MtdError, TypeOfLossUnsupportedFormatError}
 
 object TypeOfLossValidation {
 
-  val validFormats = List("self-employment", "self-employment-class4", "uk-fhl-property", "uk-other-property")
+  val validFormats = List("self-employment", "self-employment-class4", "uk-property-fhl", "uk-property-non-fhl")
 
   def validate(typeOfLoss: String): List[MtdError] = {
     if (validFormats.contains(typeOfLoss)) {
