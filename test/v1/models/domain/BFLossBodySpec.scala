@@ -29,7 +29,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
     lossAmount = 256.78)
 
   val broughtForwardLossProperty = BFLoss(
-    typeOfLoss = "uk-fhl-property",
+    typeOfLoss = "uk-property-fhl",
     selfEmploymentId = None,
     taxYear = "2019-20",
     lossAmount = 255.50)
@@ -58,7 +58,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
   val broughtForwardLossPropertyJson = Json.parse(
     """
       |{
-      |	  "typeOfLoss": "uk-fhl-property",
+      |	  "typeOfLoss": "uk-property-fhl",
       |	  "taxYear": "2019-20",
       |	  "lossAmount": 255.50
       |}
@@ -123,14 +123,14 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
         BFLoss.convertToDesCode("self-employment-class4") shouldBe "CLASS4"
       }
     }
-    "the BFLoss model has a lossType of 'uk-fhl-property'" should {
+    "the BFLoss model has a lossType of 'uk-property-fhl'" should {
       "create BFLoss model with a lossType of '04'" in {
-        BFLoss.convertToDesCode("uk-fhl-property") shouldBe "04"
+        BFLoss.convertToDesCode("uk-property-fhl") shouldBe "04"
       }
     }
-    "the BFLoss model has a lossType of 'uk-other-property'" should {
+    "the BFLoss model has a lossType of 'uk-property-non-fhl'" should {
       "create BFLoss model with a lossType of '02'" in {
-        BFLoss.convertToDesCode("uk-other-property") shouldBe "02"
+        BFLoss.convertToDesCode("uk-property-non-fhl") shouldBe "02"
       }
     }
   }

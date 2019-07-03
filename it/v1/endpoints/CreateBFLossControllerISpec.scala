@@ -160,7 +160,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(Some("sdfsf"), typeOfLoss, "2019-20", lossAmount), Status.BAD_REQUEST, SelfEmploymentIdFormatError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some("selfEmploymentId"), "uk-other-property", "2019-20", lossAmount), Status.BAD_REQUEST, RuleSelfEmploymentId)
+        generateBFLoss(Some("selfEmploymentId"), "uk-property-non-fhl", "2019-20", lossAmount), Status.BAD_REQUEST, RuleSelfEmploymentId)
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,-3234.99), Status.BAD_REQUEST, RuleInvalidLossAmount)
       createBFLossValidationErrorTest("AA123456A",

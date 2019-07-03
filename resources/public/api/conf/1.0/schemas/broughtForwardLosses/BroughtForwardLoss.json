@@ -6,7 +6,7 @@
     "properties": {
         "typeOfLoss" : {
             "type" : "string",
-            "enum": ["self-employment", "self-employment-class4", "uk-fhl-property", "uk-other-property"],
+            "enum": ["self-employment", "self-employment-class4", "uk-property-fhl", "uk-property-non-fhl"],
             "description": "The type of business the loss applies to."
         },
         "selfEmploymentId" : {

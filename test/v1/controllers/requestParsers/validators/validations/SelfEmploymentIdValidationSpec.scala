@@ -29,11 +29,11 @@ class SelfEmploymentIdValidationSpec extends UnitSpec {
     "return no errors" when {
 
       "provided with an fhl property loss without an id" in {
-        SelfEmploymentIdValidation.validate("uk-fhl-property", None).isEmpty shouldBe true
+        SelfEmploymentIdValidation.validate("uk-property-fhl", None).isEmpty shouldBe true
       }
 
       "provided with an other property loss without an id" in {
-        SelfEmploymentIdValidation.validate("uk-other-property", None).isEmpty shouldBe true
+        SelfEmploymentIdValidation.validate("uk-property-non-fhl", None).isEmpty shouldBe true
       }
 
       "provided with a self employment loss with a valid id" in {
@@ -48,7 +48,7 @@ class SelfEmploymentIdValidationSpec extends UnitSpec {
     "return an error" when {
 
       "provided with a property loss with a valid id" in {
-        SelfEmploymentIdValidation.validate("uk-other-property", Some(validId)) shouldBe List(RuleSelfEmploymentId)
+        SelfEmploymentIdValidation.validate("uk-property-non-fhl", Some(validId)) shouldBe List(RuleSelfEmploymentId)
       }
 
       "provided with a self employment loss without any id" in {
