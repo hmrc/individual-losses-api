@@ -5,7 +5,7 @@
     "type": "object",
     "properties": {
       "id": {
-        "description": "The unique identifier of the loss claim",
+        "description": "The unique identifier of the loss",
         "type": "string",
         "pattern": "^[A-Za-z0-9]{15}$",
         "example": "1234568790ABCDE"
