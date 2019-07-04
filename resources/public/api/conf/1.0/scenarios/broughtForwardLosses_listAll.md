@@ -9,7 +9,23 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success scenario</p></td>
+            <td><p>Simulate list containing 4 losses.</p></td>
+        </tr>
+        <tr>
+            <td><p>SELF_EMPLOYMENT</p></td>
+            <td><p>Simulate list containing single self-employment loss.</p></td>
+        </tr>
+        <tr>
+            <td><p>CLASS_4</p></td>
+            <td><p>Simulate list containing single self-employment class 4 loss.</p></td>
+        </tr>
+        <tr>
+            <td><p>UK_FHL_PROPERTY</p></td>
+            <td><p>Simulate list containing single UK FHL property loss.</p></td>
+        </tr>
+        <tr>
+            <td><p>UK_NON_FHL_PROPERTY</p></td>
+            <td><p>Simulate list containing single UK Non-FHL property loss.</p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>
