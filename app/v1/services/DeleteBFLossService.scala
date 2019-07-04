@@ -20,7 +20,6 @@ import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DesConnector
 import v1.models.errors._
-import v1.models.outcomes.DesResponse
 import v1.models.requestData.DeleteBFLossRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,9 +34,7 @@ class DeleteBFLossService @Inject()(connector: DesConnector) extends DesServiceS
   def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteBFLossOutcome] = {
 
     connector.deleteBFLoss(request).map {
-      mapToVendor("deleteBFLoss", mappingDesToMtdError) { desResponse =>
-        Right(DesResponse(desResponse.correlationId, desResponse.responseData))
-      }
+      mapToVendorDirect("deleteBFLoss", mappingDesToMtdError)
     }
   }
 
@@ -48,6 +45,9 @@ class DeleteBFLossService @Inject()(connector: DesConnector) extends DesServiceS
     "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
     "SERVER_ERROR"        -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
-  )
+  ).withDefault { error =>
+    logger.info(s"[DeleteBFLossService] [deleteBFLoss] - No mapping found for error code $error")
+    DownstreamError
+  }
 
 }

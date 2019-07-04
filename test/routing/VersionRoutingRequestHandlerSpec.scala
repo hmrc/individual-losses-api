@@ -25,14 +25,15 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Inside, Matchers}
 import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
+import play.api.http.{HttpConfiguration, HttpFilters}
 import play.api.libs.json.Json
 import play.api.mvc.{EssentialAction, _}
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.UnitSpec
-import v1.models.errors.{PlatformInvalidAcceptHeaderError, PlatformNotFoundError}
+import utils.ErrorHandler
+import v1.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockFactory with Inside with MockAppConfig{
   test =>
@@ -52,7 +53,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
 
   class Test(implicit acceptHeader: Option[String]) {
     val httpConfiguration = HttpConfiguration("context")
-    private val errorHandler      = mock[HttpErrorHandler]
+    private val errorHandler      = mock[ErrorHandler]
     private val filters           = mock[HttpFilters]
     (filters.filters _).stubs().returns(Seq.empty)
 
@@ -104,7 +105,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
           val result = a.apply(request)
 
           status(result) shouldBe NOT_ACCEPTABLE
-          contentAsJson(result) shouldBe Json.toJson(PlatformInvalidAcceptHeaderError)
+          contentAsJson(result) shouldBe Json.toJson(InvalidAcceptHeaderError)
       }
     }
   }
@@ -134,7 +135,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
           val result = a.apply(request)
 
           status(result) shouldBe NOT_FOUND
-          contentAsJson(result) shouldBe Json.toJson(PlatformNotFoundError)
+          contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
       }
     }
   }
@@ -154,7 +155,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
             val result = a.apply(request)
 
             status(result) shouldBe NOT_FOUND
-            contentAsJson(result) shouldBe Json.toJson(PlatformNotFoundError)
+            contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
 
         }
       }

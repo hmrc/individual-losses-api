@@ -82,7 +82,8 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "NOT_FOUND"                  -> NotFoundError,
       "INVALID_PAYLOAD"            -> DownstreamError,
       "SERVER_ERROR"               -> DownstreamError,
-      "SERVICE_UNAVAILABLE"        -> DownstreamError
+      "SERVICE_UNAVAILABLE"        -> DownstreamError,
+      "T"           -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

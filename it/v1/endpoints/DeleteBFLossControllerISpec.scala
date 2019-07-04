@@ -93,6 +93,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_IDVALUE", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_XXX", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDeleteAfterCrystallisationError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)

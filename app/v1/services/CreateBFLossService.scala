@@ -20,10 +20,9 @@ import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DesConnector
 import v1.models.errors._
-import v1.models.outcomes.DesResponse
 import v1.models.requestData.CreateBFLossRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceSupport {
 
@@ -35,9 +34,7 @@ class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceS
   def createBFLoss(request: CreateBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CreateBFLossOutcome] = {
 
     connector.createBFLoss(request).map {
-      mapToVendor("createBFLoss", mappingDesToMtdError) { desResponse =>
-        Right(DesResponse(desResponse.correlationId, desResponse.responseData))
-      }
+      mapToVendorDirect("createBFLoss", mappingDesToMtdError)
     }
   }
 
@@ -49,5 +46,8 @@ class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceS
       "INVALID_PAYLOAD"           -> DownstreamError,
       "SERVER_ERROR"              -> DownstreamError,
       "SERVICE_UNAVAILABLE"       -> DownstreamError
-    )
+    ).withDefault { error =>
+      logger.info(s"[CreateBFLossService] [createBFLoss] - No mapping found for error code $error")
+      DownstreamError
+    }
 }

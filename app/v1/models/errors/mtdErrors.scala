@@ -42,13 +42,11 @@ object BadRequestError extends MtdError("INVALID_REQUEST", "Invalid request")
 object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error")
 object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error")
 
+object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")
+
 //Authorisation Errors
 object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised")
 
 // Accept header Errors
-object PlatformInvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
-object PlatformNotFoundError extends MtdError("NOT_FOUND", "The requested resource could not be found")
-
-//Platform errors to mimic in error handler
-object InvalidAcceptHeader extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized")
-object InvalidBodyError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")
+object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
