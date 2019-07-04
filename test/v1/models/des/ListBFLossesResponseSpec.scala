@@ -19,11 +19,11 @@ package v1.models.des
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class RetrieveBFLossesResponseSpec extends UnitSpec {
+class ListBFLossesResponseSpec extends UnitSpec {
 
   "json writes" must {
     "output as per spec" in {
-      Json.toJson(RetrieveBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))) shouldBe
+      Json.toJson(ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))) shouldBe
         Json.parse("""
           |{
           |    "losses": [
@@ -78,8 +78,8 @@ class RetrieveBFLossesResponseSpec extends UnitSpec {
            |
         """.stripMargin)
 
-      desResponseJson.as[RetrieveBFLossesResponse] shouldBe
-        RetrieveBFLossesResponse(
+      desResponseJson.as[ListBFLossesResponse] shouldBe
+        ListBFLossesResponse(
           Seq(BFLossId("000000000000001"), BFLossId("000000000000002"), BFLossId("000000000000003"), BFLossId("000000000000004")))
     }
   }
