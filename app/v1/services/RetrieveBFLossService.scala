@@ -20,31 +20,29 @@ import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DesConnector
 import v1.models.errors._
-import v1.models.requestData.DeleteBFLossRequest
+import v1.models.requestData.RetrieveBFLossRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeleteBFLossService @Inject()(connector: DesConnector) extends DesServiceSupport {
+class RetrieveBFLossService @Inject()(connector: DesConnector) extends DesServiceSupport {
 
   /**
     * Service name for logging
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteBFLossOutcome] = {
+  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveBFLossOutcome] = {
 
-    connector.deleteBFLoss(request).map {
+    connector.retrieveBFLoss(request).map {
       mapToVendorDirect("retrieveBFLoss", mappingDesToMtdError)
     }
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
-    "INVALID_IDVALUE"     -> NinoFormatError,
-    "INVALID_LOSS_ID"     -> LossIdFormatError,
-    "NOT_FOUND"           -> NotFoundError,
-    "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
-    "SERVER_ERROR"        -> DownstreamError,
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_LOSS_ID" -> LossIdFormatError,
+    "NOT_FOUND" -> NotFoundError,
+    "SERVER_ERROR" -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
   )
-
 }

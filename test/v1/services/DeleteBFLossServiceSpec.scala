@@ -48,14 +48,17 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       }
     }
 
-    "return a downstream error" when {
-      "the connector call returns an outbound error" in new Test {
-        val desResponse = DesResponse(correlationId, OutboundError(DownstreamError))
-        val expected = ErrorWrapper(Some(correlationId), DownstreamError, None)
+    "return that wrapped error as-is" when {
+      "the connector returns an outbound error" in new Test {
+        val someError = MtdError("SOME_CODE", "some message")
+        val desResponse = DesResponse(correlationId, OutboundError(someError))
         MockedDesConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
 
-        await(service.deleteBFLoss(request)) shouldBe Left(expected)
+        await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
       }
+    }
+
+    "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val desResponse = DesResponse(correlationId, SingleError(DownstreamError))
         val expected = ErrorWrapper(Some(correlationId), DownstreamError, None)
