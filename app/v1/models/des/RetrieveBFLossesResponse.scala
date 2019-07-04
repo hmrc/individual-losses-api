@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package v1.models.des
 
-import play.api.libs.json.{ Json, Writes }
-
-case class BFLosses(losses: Seq[BFLossId])
-
-object BFLosses {
-  implicit val writes: Writes[BFLosses] = Json.writes[BFLosses]
-}
+import play.api.libs.json.{ JsPath, Json, Reads, Writes }
 
 case class BFLossId(id: String)
 
 object BFLossId {
   implicit val writes: Writes[BFLossId] = Json.writes[BFLossId]
+
+  implicit val reads: Reads[BFLossId] = (JsPath \ "lossId").read[String].map(BFLossId(_))
+}
+
+case class RetrieveBFLossesResponse(losses: Seq[BFLossId])
+
+object RetrieveBFLossesResponse {
+  implicit val writes: Writes[RetrieveBFLossesResponse] =
+    Json.writes[RetrieveBFLossesResponse]
+
+  implicit val reads: Reads[RetrieveBFLossesResponse] =
+    implicitly[Reads[Seq[BFLossId]]].map(RetrieveBFLossesResponse(_))
 }
