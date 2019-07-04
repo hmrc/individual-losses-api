@@ -37,9 +37,7 @@ class AmendBFLossService @Inject()(connector: DesConnector) extends DesServiceSu
       ec: ExecutionContext): Future[AmendBFLossOutcome] = {
 
     connector.amendBFLoss(request).map {
-      mapToVendor("amendBFLoss", mappingDesToMtdError) { desResponse =>
-        Right(DesResponse(desResponse.correlationId, desResponse.responseData))
-      }
+      mapToVendorDirect("amendBFLoss", mappingDesToMtdError)
     }
   }
 

@@ -35,9 +35,7 @@ class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceS
   def createBFLoss(request: CreateBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CreateBFLossOutcome] = {
 
     connector.createBFLoss(request).map {
-      mapToVendor("createBFLoss", mappingDesToMtdError) { desResponse =>
-        Right(DesResponse(desResponse.correlationId, desResponse.responseData))
-      }
+      mapToVendorDirect("createBFLoss", mappingDesToMtdError)
     }
   }
 
