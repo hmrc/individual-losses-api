@@ -18,11 +18,11 @@ package v1.connectors
 
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.{MockAppConfig, MockHttpClient}
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse}
+import v1.models.des._
 import v1.models.domain.{AmendBFLoss, BFLoss}
-import v1.models.errors.{LossIdFormatError, MultipleErrors, NinoFormatError, SingleError, TaxYearFormatError}
+import v1.models.errors._
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest, RetrieveBFLossRequest}
+import v1.models.requestData._
 
 import scala.concurrent.Future
 
@@ -237,6 +237,99 @@ class DesConnectorSpec extends ConnectorSpec {
           .returns(Future.successful(expected))
 
         retrieveBFLossResult(connector) shouldBe expected
+      }
+    }
+  }
+
+  "retrieveBFLosses" should {
+    val retrieveResponse = RetrieveBFLossResponse("2018-19", "self-employment", Some("fakeId"), 2000.25, "dateString")
+
+    def retrieveBFLossesResult(connector: DesConnector,
+                               taxYear: Option[String] = None,
+                               typeOfLoss: Option[String] = None,
+                               selfEmploymentId: Option[String] = None): DesOutcome[RetrieveBFLossesResponse] = {
+
+      await(connector.retrieveBFLosses(ListBFLossesRequest(
+        nino = Nino(nino),
+        taxYear = taxYear,
+        typeOfLoss = typeOfLoss,
+        selfEmploymentId = selfEmploymentId
+      )))
+    }
+
+    "return a successful response" when {
+
+      "provided with no parameters" in new Test {
+        val expected = Left(DesResponse(correlationId, RetrieveBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(), desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        retrieveBFLossesResult(connector) shouldBe expected
+      }
+
+      "provided with a tax year parameter" in new Test {
+        val expected = Left(DesResponse(correlationId, RetrieveBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(("taxYear", "2019")), desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        retrieveBFLossesResult(connector, taxYear = Some("2019")) shouldBe expected
+      }
+
+      "provided with a income source id parameter" in new Test {
+        val expected = Left(DesResponse(correlationId, RetrieveBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(("incomeSourceId", "testId")), desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        retrieveBFLossesResult(connector, selfEmploymentId = Some("testId")) shouldBe expected
+      }
+
+      "provided with a income source type parameter" in new Test {
+        val expected = Left(DesResponse(correlationId, RetrieveBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(("incomeSourceType", "self-employment")), desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        retrieveBFLossesResult(connector, typeOfLoss = Some("self-employment")) shouldBe expected
+      }
+
+      "provided with all parameters" in new Test {
+        val expected = Left(DesResponse(correlationId, RetrieveBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "self-employment")), desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        retrieveBFLossesResult(connector, taxYear = Some("2019"), selfEmploymentId = Some("testId") ,typeOfLoss = Some("self-employment")) shouldBe expected
+      }
+    }
+
+    "return an unsuccessful response" when {
+
+      "provided with a single error" in new Test {
+        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(), desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        retrieveBFLossesResult(connector) shouldBe expected
+      }
+
+      "provided with multiple errors" in new Test {
+        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(), desRequestHeaders : _*)
+          .returns(Future.successful(expected))
+
+        retrieveBFLossesResult(connector) shouldBe expected
       }
     }
   }
