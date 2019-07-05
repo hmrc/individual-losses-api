@@ -13,11 +13,7 @@
         </tr>
         <tr>
             <td><p>SELF_EMPLOYMENT</p></td>
-            <td><p>Simulate list containing single self-employment loss.</p></td>
-        </tr>
-        <tr>
-            <td><p>CLASS_4</p></td>
-            <td><p>Simulate list containing single self-employment class 4 loss.</p></td>
+            <td><p>Simulate list containing two self-employment losses.</p></td>
         </tr>
         <tr>
             <td><p>UK_FHL_PROPERTY</p></td>
