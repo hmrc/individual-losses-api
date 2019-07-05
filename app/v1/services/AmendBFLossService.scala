@@ -48,8 +48,8 @@ class AmendBFLossService @Inject()(connector: DesConnector) extends DesServiceSu
     "INVALID_PAYLOAD"            -> DownstreamError,
     "SERVER_ERROR"               -> DownstreamError,
     "SERVICE_UNAVAILABLE"        -> DownstreamError
-  ).withDefault { error =>
+  )/*.withDefault { error =>
     logger.info(s"[AmendBFLossService] [amendBFLoss] - No mapping found for error code $error")
     DownstreamError
-  }
+  }*/
 }

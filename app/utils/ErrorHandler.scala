@@ -27,10 +27,9 @@ import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.bootstrap.http.JsonErrorHandler
-import definition.Versions._
-import v1.models.errors._
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
+import uk.gov.hmrc.play.bootstrap.http.JsonErrorHandler
+import v1.models.errors._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,78 +46,62 @@ class ErrorHandler @Inject()(
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    getAPIVersionFromRequest match {
-      case Some(VERSION_1) =>
-        Logger.warn(s"[ErrorHandler][onClientError] error in version 1, for (${request.method}) [${request.uri}] with status:" +
+
+    Logger.warn(s"[ErrorHandler][onClientError] error in version 1, for (${request.method}) [${request.uri}] with status:" +
           s" $statusCode and message: $message")
-        statusCode match {
-          case BAD_REQUEST =>
-            auditConnector.sendEvent(dataEvent("ServerValidationError",
-              "Request bad format exception", request))
-            Future.successful(BadRequest(Json.toJson(BadRequestError)))
-          case NOT_FOUND =>
-            auditConnector.sendEvent(dataEvent("ResourceNotFound",
-              "Resource Endpoint Not Found", request))
-            Future.successful(NotFound(Json.toJson(NotFoundError)))
-          case _ =>
-            val errorCode = statusCode match {
-              case UNAUTHORIZED => UnauthorisedError
-              case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
-              case _ => MtdError("INVALID_REQUEST", message)
-            }
-
-            auditConnector.sendEvent(
-              dataEvent(
-                eventType = "ClientError",
-                transactionName = s"A client error occurred, status: $statusCode",
-                request = request,
-                detail = Map.empty
-              )
-            )
-
-            Future.successful(Status(statusCode)(Json.toJson(errorCode)))
+    statusCode match {
+      case BAD_REQUEST =>
+        auditConnector.sendEvent(dataEvent("ServerValidationError",
+          "Request bad format exception", request))
+        Future.successful(BadRequest(Json.toJson(BadRequestError)))
+      case NOT_FOUND =>
+        auditConnector.sendEvent(dataEvent("ResourceNotFound",
+          "Resource Endpoint Not Found", request))
+        Future.successful(NotFound(Json.toJson(NotFoundError)))
+      case _ =>
+        val errorCode = statusCode match {
+          case UNAUTHORIZED => UnauthorisedError
+          case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
+          case _ => MtdError("INVALID_REQUEST", message)
         }
-      case Some(_) =>
-        Logger.warn(s"[ErrorHandler][onClientError], error for (${request.method}) [${request.uri}] with status: $statusCode and message: $message")
-        Future.successful(Status(statusCode)(Json.toJson(UnsupportedVersionError)))
-      case None =>
-        Logger.warn(s"[ErrorHandler][onClientError], error for (${request.method}) [${request.uri}] with status: $statusCode and message: $message")
-        Future.successful(Status(statusCode)(Json.toJson(InvalidAcceptHeaderError)))
+
+        auditConnector.sendEvent(
+          dataEvent(
+            eventType = "ClientError",
+            transactionName = s"A client error occurred, status: $statusCode",
+            request = request,
+            detail = Map.empty
+          )
+        )
+
+        Future.successful(Status(statusCode)(Json.toJson(errorCode)))
     }
   }
 
   override def onServerError(request: RequestHeader, ex: Throwable): Future[Result] = {
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    getAPIVersionFromRequest match {
-      case Some(VERSION_1) =>
-        Logger.warn(s"[ErrorHandler][onServerError] Internal server error in version 1, for (${request.method}) [${request.uri}] -> ", ex)
+    Logger.warn(s"[ErrorHandler][onServerError] Internal server error in version 1, for (${request.method}) [${request.uri}] -> ", ex)
 
-        val (status, errorCode, eventType) = ex match {
-          case _: NotFoundException => (NOT_FOUND, NotFoundError, "ResourceNotFound")
-          case _: AuthorisationException => (UNAUTHORIZED, UnauthorisedError, "ClientError")
-          case _: JsValidationException => (BAD_REQUEST, BadRequestError, "ServerValidationError")
-          case e: HttpException => (e.responseCode, BadRequestError, "ServerValidationError")
-          case e: Upstream4xxResponse => (e.reportAs, BadRequestError, "ServerValidationError")
-          case e: Upstream5xxResponse => (e.reportAs, DownstreamError, "ServerInternalError")
-          case _ => (INTERNAL_SERVER_ERROR, DownstreamError, "ServerInternalError")
-        }
-
-        auditConnector.sendEvent(
-          dataEvent(
-            eventType = eventType,
-            transactionName = "Unexpected error",
-            request = request,
-            detail = Map("transactionFailureReason" -> ex.getMessage)
-          )
-        )
-
-        Future.successful(Status(status)(Json.toJson(errorCode)))
-
-      case _ => ErrorHandler.super.onServerError(request, ex)
+    val (status, errorCode, eventType) = ex match {
+      case _: NotFoundException => (NOT_FOUND, NotFoundError, "ResourceNotFound")
+      case _: AuthorisationException => (UNAUTHORIZED, UnauthorisedError, "ClientError")
+      case _: JsValidationException => (BAD_REQUEST, BadRequestError, "ServerValidationError")
+      case e: HttpException => (e.responseCode, BadRequestError, "ServerValidationError")
+      case e: Upstream4xxResponse => (e.reportAs, BadRequestError, "ServerValidationError")
+      case e: Upstream5xxResponse => (e.reportAs, DownstreamError, "ServerInternalError")
+      case _ => (INTERNAL_SERVER_ERROR, DownstreamError, "ServerInternalError")
     }
-  }
 
-  private def getAPIVersionFromRequest(implicit hc: HeaderCarrier): Option[String] =
-    Versions.getFromRequest
+    auditConnector.sendEvent(
+      dataEvent(
+        eventType = eventType,
+        transactionName = "Unexpected error",
+        request = request,
+        detail = Map("transactionFailureReason" -> ex.getMessage)
+      )
+    )
+
+    Future.successful(Status(status)(Json.toJson(errorCode)))
+  }
 }

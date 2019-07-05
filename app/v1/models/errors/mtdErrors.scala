@@ -46,6 +46,7 @@ object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting tex
 
 //Authorisation Errors
 object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised")
+object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized")
 
 // Accept header Errors
 object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
