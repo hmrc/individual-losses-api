@@ -23,7 +23,7 @@ import support.UnitSpec
 import uk.gov.hmrc.http.HttpResponse
 import v1.connectors.MtdIdLookupOutcome
 import v1.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
-import v1.models.errors.{DownstreamError, NinoFormatError, UnauthorisedError}
+import v1.models.errors.{DownstreamError, InvalidBearerTokenError, NinoFormatError}
 
 class MtdIdLookupHttpParserSpec extends UnitSpec {
 
@@ -81,7 +81,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
         val response = HttpResponse(UNAUTHORIZED)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(UnauthorisedError)
+        result shouldBe Left(InvalidBearerTokenError)
       }
     }
 
