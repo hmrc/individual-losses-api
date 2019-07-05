@@ -16,47 +16,63 @@
 
 package v1.models.des
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
+import v1.models.domain.{ PropertyLoss, TypeOfLoss }
 
 class AmendBFLossResponseSpec extends UnitSpec {
 
   "Json Reads" should {
-    val desJson: (String, String) => JsValue = (desType, mtdType) => {
-      import v1.models.domain.BFLoss.isProperty
+    def desPropertyJson(incomeSourceType: String): JsValue = {
       Json.parse(s"""
-                    |{
-                    |  "incomeSourceId": "000000000000001",
-                    |  ${if(isProperty(mtdType)) s""""incomeSourceType": "$desType",""" else s""""lossType": "$desType","""}
-                    |  "broughtForwardLossAmount": 99999999999.99,
-                    |  "taxYear": "2020"
-                    |}
+           |{
+           |  "incomeSourceId": "000000000000001",
+           |  "incomeSourceType": "$incomeSourceType",
+           |  "broughtForwardLossAmount": 99999999999.99,
+           |  "taxYear": "2020"
+           |}
       """.stripMargin)
     }
 
-    val desToModel: String => AmendBFLossResponse = typeOfLoss =>
+    def desEmploymentJson(lossType: String): JsValue = {
+      Json.parse(s"""
+           |{
+           |  "incomeSourceId": "000000000000001",
+           |  "lossType": "$lossType",
+           |  "broughtForwardLossAmount": 99999999999.99,
+           |  "taxYear": "2020"
+           |}
+      """.stripMargin)
+    }
+
+    def desToModel: TypeOfLoss => AmendBFLossResponse = typeOfLoss =>
       AmendBFLossResponse(selfEmploymentId = Some("000000000000001"), typeOfLoss = typeOfLoss, lossAmount = 99999999999.99, taxYear = "2019-20")
 
-    val desToMtdMap: Map[String, String] = Map(
-      "INCOME" -> "self-employment",
-      "CLASS4" -> "self-employment-class4",
-      "04"     -> "uk-property-fhl",
-      "02"     -> "uk-property-non-fhl"
-    )
+    "convert property JSON from DES into a valid model for property type 02" in {
+      desPropertyJson("02").as[AmendBFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
+    }
 
-    desToMtdMap.foreach {
-      case (desType, mtdType) =>
-        s"convert JSON from DES into a valid model for $desType" in {
-          desJson(desType, mtdType).as[AmendBFLossResponse] shouldBe desToModel(mtdType)
-        }
+    "convert property JSON from DES into a valid model for property type 04" in {
+      desPropertyJson("04").as[AmendBFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-fhl`)
+    }
+
+    "convert employment JSON from DES into a valid model for property type INCOME" in {
+      desEmploymentJson("INCOME").as[AmendBFLossResponse] shouldBe desToModel(TypeOfLoss.`self-employment`)
+    }
+
+    "convert employment JSON from DES into a valid model for property type CLASS4" in {
+      desEmploymentJson("CLASS4").as[AmendBFLossResponse] shouldBe desToModel(TypeOfLoss.`self-employment-class4`)
     }
   }
   "Json Writes" should {
     val model =
-      AmendBFLossResponse(selfEmploymentId = Some("000000000000001"), typeOfLoss = "INCOME", lossAmount = 99999999999.99, taxYear = "2019-20")
+      AmendBFLossResponse(selfEmploymentId = Some("000000000000001"),
+                          typeOfLoss = TypeOfLoss.`self-employment`,
+                          lossAmount = 99999999999.99,
+                          taxYear = "2019-20")
     val mtdJson = Json.parse("""{
         |  "selfEmploymentId": "000000000000001",
-        |  "typeOfLoss": "INCOME",
+        |  "typeOfLoss": "self-employment",
         |  "lossAmount": 99999999999.99,
         |  "taxYear": "2019-20"
         |}

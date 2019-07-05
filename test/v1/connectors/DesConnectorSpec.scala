@@ -17,9 +17,9 @@
 package v1.connectors
 
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.{ MockAppConfig, MockHttpClient }
+import v1.mocks.{MockAppConfig, MockHttpClient}
 import v1.models.des._
-import v1.models.domain.{ AmendBFLoss, BFLoss }
+import v1.models.domain.{AmendBFLoss, BFLoss, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData._
@@ -44,7 +44,7 @@ class DesConnectorSpec extends ConnectorSpec {
   }
 
   "create BFLoss" when {
-    val bfLoss = BFLoss("self-employment", Some("XKIS00000000988"), "2019-20", 256.78)
+    val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
         val expected = Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))
@@ -93,7 +93,7 @@ class DesConnectorSpec extends ConnectorSpec {
   "amend BFLoss" when {
 
     val amendBFLossResponse =
-      AmendBFLossResponse(selfEmploymentId = Some("XKIS00000000988"), typeOfLoss = "INCOME", lossAmount = 500.13, taxYear = "2019-20")
+      AmendBFLossResponse(selfEmploymentId = Some("XKIS00000000988"), typeOfLoss = TypeOfLoss.`self-employment`, lossAmount = 500.13, taxYear = "2019-20")
 
     val amendBFLoss = AmendBFLoss(500.13)
 
@@ -191,7 +191,7 @@ class DesConnectorSpec extends ConnectorSpec {
   }
 
   "retrieveBFLoss" should {
-    val retrieveResponse = RetrieveBFLossResponse("2018-19", "self-employment", Some("fakeId"), 2000.25, "dateString")
+    val retrieveResponse = RetrieveBFLossResponse("2018-19", TypeOfLoss.`self-employment`, Some("fakeId"), 2000.25, "dateString")
 
     def retrieveBFLossResult(connector: DesConnector): DesOutcome[RetrieveBFLossResponse] = {
       await(

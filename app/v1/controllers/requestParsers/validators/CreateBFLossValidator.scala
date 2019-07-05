@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.BFLoss
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, RuleTaxYearNotSupportedError}
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
 import v1.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
@@ -37,12 +37,11 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
     )
   }
 
-
   private def bodyFieldsValidator1: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
       TaxYearValidation.validate(req.taxYear),
-      TypeOfLossValidation.validate(req.typeOfLoss)
+      TypeOfLossValidation.validate(req.typeOfLoss.name)
     )
   }
 

@@ -21,7 +21,7 @@ import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockCreateBFLossValidator
-import v1.models.domain.BFLoss
+import v1.models.domain.{BFLoss, TypeOfLoss}
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.requestData._
 
@@ -51,7 +51,7 @@ class CreateBFLossParserSpec extends UnitSpec {
         MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(CreateBFLossRequest(Nino(nino), BFLoss("self-employment", Some("XAIS01234567890"), taxYear, 1000)))
+          Right(CreateBFLossRequest(Nino(nino), BFLoss(TypeOfLoss.`self-employment`, Some("XAIS01234567890"), taxYear, 1000)))
       }
     }
 

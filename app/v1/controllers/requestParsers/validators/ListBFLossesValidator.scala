@@ -15,29 +15,31 @@
  */
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations.{ MtdTaxYearValidation, NinoValidation, SelfEmploymentIdValidation, TaxYearValidation }
-import v1.models.errors.{ MtdError, RuleSelfEmploymentId, RuleTaxYearNotSupportedError, TypeOfLossFormatError }
+import v1.controllers.requestParsers.validators.validations.{MtdTaxYearValidation, NinoValidation, SelfEmploymentIdValidation, TaxYearValidation}
+import v1.models.domain.TypeOfLoss
+import v1.models.errors.{MtdError, RuleSelfEmploymentId, RuleTaxYearNotSupportedError, TypeOfLossFormatError}
 import v1.models.requestData.ListBFLossesRawData
+import TypeOfLoss._
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] {
 
   private val validationSet = List(formatValidation, postFormatValidation)
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
-  private val availableLossTypes = "^(uk-property-fhl|uk-property-non-fhl|self-employment)$"
+  private val availableLossTypeNames = Seq(`uk-property-fhl`,`uk-property-non-fhl`,`self-employment`).map(_.name)
 
   private def formatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
-      data.typeOfLoss.map(lossType => if (lossType.matches(availableLossTypes)) Nil else List(TypeOfLossFormatError)).getOrElse(Nil)
+      data.typeOfLoss.map(lossType => if (availableLossTypeNames.contains(lossType)) Nil else List(TypeOfLossFormatError)).getOrElse(Nil)
     )
   }
 
   private def postFormatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(
       data.taxYear.map(MtdTaxYearValidation.validate(_, RuleTaxYearNotSupportedError)).getOrElse(Nil),
-      data.typeOfLoss match {
+      data.typeOfLoss.map(TypeOfLoss.parse) match {
         case Some(lossType) => SelfEmploymentIdValidation.validate(lossType, data.selfEmploymentId)
         case None           => if (data.selfEmploymentId.isDefined) List(RuleSelfEmploymentId) else Nil
       }

@@ -22,21 +22,13 @@ import v1.models.utils.JsonErrorValidators
 
 class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
 
-  val broughtForwardLossEmployment = BFLoss(
-    typeOfLoss = "self-employment",
-    selfEmploymentId = Some("XKIS00000000988"),
-    taxYear = "2019-20",
-    lossAmount = 256.78)
+  val broughtForwardLossEmployment =
+    BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, selfEmploymentId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
 
-  val broughtForwardLossProperty = BFLoss(
-    typeOfLoss = "uk-property-fhl",
-    selfEmploymentId = None,
-    taxYear = "2019-20",
-    lossAmount = 255.50)
+  val broughtForwardLossProperty =
+    BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, selfEmploymentId = None, taxYear = "2019-20", lossAmount = 255.50)
 
-
-  val broughtForwardLossEmploymentJson = Json.parse(
-    """
+  val broughtForwardLossEmploymentJson = Json.parse("""
       |{
       |    "selfEmploymentId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
@@ -45,8 +37,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val broughtForwardLossEmploymentDesJson = Json.parse(
-    """
+  val broughtForwardLossEmploymentDesJson = Json.parse("""
       |{
       |	  "incomeSourceId": "XKIS00000000988",
       |	  "lossType": "INCOME",
@@ -55,8 +46,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val broughtForwardLossPropertyJson = Json.parse(
-    """
+  val broughtForwardLossPropertyJson = Json.parse("""
       |{
       |	  "typeOfLoss": "uk-property-fhl",
       |	  "taxYear": "2019-20",
@@ -64,8 +54,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val broughtForwardLossPropertyDesJson = Json.parse(
-    """
+  val broughtForwardLossPropertyDesJson = Json.parse("""
       |{
       |	  "incomeSourceType":"04",
       |	  "taxYear": "2020",
@@ -80,22 +69,19 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       }
 
       testMandatoryProperty[BFLoss](broughtForwardLossEmploymentJson)("/typeOfLoss")
-      testPropertyType[BFLoss](broughtForwardLossEmploymentJson)(
-        path = "/typeOfLoss",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[BFLoss](broughtForwardLossEmploymentJson)(path = "/typeOfLoss",
+                                                                 replacement = 12344.toJson,
+                                                                 expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
       testMandatoryProperty[BFLoss](broughtForwardLossEmploymentJson)("/taxYear")
-      testPropertyType[BFLoss](broughtForwardLossEmploymentJson)(
-        path = "/taxYear",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[BFLoss](broughtForwardLossEmploymentJson)(path = "/taxYear",
+                                                                 replacement = 12344.toJson,
+                                                                 expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
       testMandatoryProperty[BFLoss](broughtForwardLossEmploymentJson)("/lossAmount")
-      testPropertyType[BFLoss](broughtForwardLossEmploymentJson)(
-        path = "/lossAmount",
-        replacement = "dfgdf".toJson,
-        expectedError = JsonError.NUMBER_FORMAT_EXCEPTION)
+      testPropertyType[BFLoss](broughtForwardLossEmploymentJson)(path = "/lossAmount",
+                                                                 replacement = "dfgdf".toJson,
+                                                                 expectedError = JsonError.NUMBER_FORMAT_EXCEPTION)
     }
   }
 
@@ -108,29 +94,6 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
     "passed a valid BroughtForwardLoss Property model" should {
       "return a valid BroughtForwardLoss Property JSON" in {
         BFLoss.writes.writes(broughtForwardLossProperty) shouldBe broughtForwardLossPropertyDesJson
-      }
-    }
-  }
-
-  "Reading a typeOfLoss from Json" when {
-    "the BFLoss model has a lossType of 'self-employment'" should {
-      "create BFLoss model with a lossType of 'INCOME'" in {
-        BFLoss.convertToDesCode("self-employment") shouldBe "INCOME"
-      }
-    }
-    "the BFLoss model has a lossType of 'self-employment-class4'" should {
-      "create BFLoss model with a lossType of 'CLASS4'" in {
-        BFLoss.convertToDesCode("self-employment-class4") shouldBe "CLASS4"
-      }
-    }
-    "the BFLoss model has a lossType of 'uk-property-fhl'" should {
-      "create BFLoss model with a lossType of '04'" in {
-        BFLoss.convertToDesCode("uk-property-fhl") shouldBe "04"
-      }
-    }
-    "the BFLoss model has a lossType of 'uk-property-non-fhl'" should {
-      "create BFLoss model with a lossType of '02'" in {
-        BFLoss.convertToDesCode("uk-property-non-fhl") shouldBe "02"
       }
     }
   }

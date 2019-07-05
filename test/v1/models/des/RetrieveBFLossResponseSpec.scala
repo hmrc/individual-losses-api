@@ -20,13 +20,13 @@ import java.time.LocalDateTime
 
 import play.api.libs.json._
 import support.UnitSpec
+import v1.models.domain.TypeOfLoss
 
 class RetrieveBFLossResponseSpec extends UnitSpec {
 
   val testDateTime: LocalDateTime = LocalDateTime.now()
 
-  val validPropertyJson: JsValue = Json.parse(
-    s"""
+  val validPropertyJson: JsValue = Json.parse(s"""
       |{
       | "lossId" : "12356789abcdefg",
       | "taxYear" : "2018",
@@ -36,8 +36,7 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       |}
     """.stripMargin)
 
-  val validSEJson: JsValue = Json.parse(
-    s"""
+  val validSEJson: JsValue = Json.parse(s"""
        |{
        | "lossId" : "12356789abcdefg",
        | "taxYear" : "2019",
@@ -55,27 +54,29 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       "provided with valid property loss data" in {
         val result = validPropertyJson.validate[RetrieveBFLossResponse]
 
+        println(result)
+
         result.isSuccess shouldBe true
-        result.get shouldBe RetrieveBFLossResponse("2017-18", "uk-property-fhl", None, 1000.25, testDateTime.toString)
+        result.get shouldBe RetrieveBFLossResponse("2017-18", TypeOfLoss.`uk-property-fhl`, None, 1000.25, testDateTime.toString)
       }
 
       "provided with valid self-employed loss data" in {
         val result = validSEJson.validate[RetrieveBFLossResponse]
 
         result.isSuccess shouldBe true
-        result.get shouldBe RetrieveBFLossResponse("2018-19", "self-employment", Some("incomeSourceId"), 250.55, testDateTime.toString)
+        result.get shouldBe RetrieveBFLossResponse("2018-19", TypeOfLoss.`self-employment`, Some("incomeSourceId"), 250.55, testDateTime.toString)
       }
     }
 
     "return a failed model" when {
 
       val propertyRequiredElements = Seq("taxYear", "incomeSourceType", "broughtForwardLossAmount", "submissionDate")
-      val seRequiredElements = Seq("taxYear", "lossType",  "broughtForwardLossAmount", "submissionDate")
+      val seRequiredElements       = Seq("taxYear", "lossType", "broughtForwardLossAmount", "submissionDate")
 
       propertyRequiredElements.foreach { element =>
         s"the required element '$element' is missing from property data type" in {
           val invalidJson = validPropertyJson.as[JsObject] - element
-          val result = invalidJson.validate[RetrieveBFLossResponse]
+          val result      = invalidJson.validate[RetrieveBFLossResponse]
 
           result.isError shouldBe true
         }
@@ -84,7 +85,7 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       seRequiredElements.foreach { element =>
         s"the required element '$element' is missing from se data type" in {
           val invalidJson = validSEJson.as[JsObject] - element
-          val result = invalidJson.validate[RetrieveBFLossResponse]
+          val result      = invalidJson.validate[RetrieveBFLossResponse]
 
           result.isError shouldBe true
         }
@@ -97,10 +98,9 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
     "successfully produce json" when {
 
       "provided with a property model" in {
-        val model = RetrieveBFLossResponse("2017-18", "uk-property-fhl", None, 2500.55, testDateTime.toString)
+        val model = RetrieveBFLossResponse("2017-18", TypeOfLoss.`uk-property-fhl`, None, 2500.55, testDateTime.toString)
 
-        val expectedPropertyJson: JsValue = Json.parse(
-          s"""
+        val expectedPropertyJson: JsValue = Json.parse(s"""
             |{
             | "taxYear" : "2017-18",
             | "typeOfLoss" : "uk-property-fhl",
@@ -113,10 +113,9 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       }
 
       "provided with a se model" in {
-        val model = RetrieveBFLossResponse("2018-19", "self-employment", Some("someId"), 2500.56, testDateTime.toString)
+        val model = RetrieveBFLossResponse("2018-19", TypeOfLoss.`self-employment`, Some("someId"), 2500.56, testDateTime.toString)
 
-        val expectedSeJson: JsValue = Json.parse(
-          s"""
+        val expectedSeJson: JsValue = Json.parse(s"""
              |{
              | "taxYear" : "2018-19",
              | "typeOfLoss" : "self-employment",
