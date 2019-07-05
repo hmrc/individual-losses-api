@@ -22,8 +22,7 @@ import v1.models.requestData.DesTaxYear
 case class BFLoss(typeOfLoss: String,
                   selfEmploymentId: Option[String],
                   taxYear: String,
-                  lossAmount: BigDecimal) {
-}
+                  lossAmount: BigDecimal)
 
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
