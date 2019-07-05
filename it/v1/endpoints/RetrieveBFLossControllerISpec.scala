@@ -94,7 +94,6 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().get())
-        println(response)
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
       }
@@ -130,6 +129,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
           override val nino: String   = requestNino
           override val lossId: String = requestLossId
+
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
