@@ -14,19 +14,7 @@
  * limitations under the License.
  */
 
-package v1
+package v1.models.requestData
 
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse}
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.DesResponse
-
-package object services {
-
-  type CreateBFLossOutcome = Either[ErrorWrapper, DesResponse[CreateBFLossResponse]]
-
-  type RetrieveBFLossOutcome = Either[ErrorWrapper, DesResponse[RetrieveBFLossResponse]]
-
-  type AmendBFLossOutcome = Either[ErrorWrapper, DesResponse[AmendBFLossResponse]]
-
-  type DeleteBFLossOutcome = Either[ErrorWrapper, DesResponse[Unit]]
-}
+case class ListBFLossesRawData(nino: String, taxYear: Option[String],
+                               typeOfLoss:Option[String], selfEmploymentId: Option[String])

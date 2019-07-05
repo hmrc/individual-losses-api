@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package v1
+package v1.models.des
 
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse}
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.DesResponse
+import play.api.libs.json.{ JsPath, Json, Reads, Writes }
 
-package object services {
+case class BFLossId(id: String)
 
-  type CreateBFLossOutcome = Either[ErrorWrapper, DesResponse[CreateBFLossResponse]]
+object BFLossId {
+  implicit val writes: Writes[BFLossId] = Json.writes[BFLossId]
 
-  type RetrieveBFLossOutcome = Either[ErrorWrapper, DesResponse[RetrieveBFLossResponse]]
+  implicit val reads: Reads[BFLossId] = (JsPath \ "lossId").read[String].map(BFLossId(_))
+}
 
-  type AmendBFLossOutcome = Either[ErrorWrapper, DesResponse[AmendBFLossResponse]]
+case class RetrieveBFLossesResponse(losses: Seq[BFLossId])
 
-  type DeleteBFLossOutcome = Either[ErrorWrapper, DesResponse[Unit]]
+object RetrieveBFLossesResponse {
+  implicit val writes: Writes[RetrieveBFLossesResponse] =
+    Json.writes[RetrieveBFLossesResponse]
+
+  implicit val reads: Reads[RetrieveBFLossesResponse] =
+    implicitly[Reads[Seq[BFLossId]]].map(RetrieveBFLossesResponse(_))
 }
