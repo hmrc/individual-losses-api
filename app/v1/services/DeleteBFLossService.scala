@@ -45,9 +45,5 @@ class DeleteBFLossService @Inject()(connector: DesConnector) extends DesServiceS
     "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
     "SERVER_ERROR"        -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
-  ).withDefault { error =>
-    logger.info(s"[DeleteBFLossService] [deleteBFLoss] - No mapping found for error code $error")
-    DownstreamError
-  }
-
+  )
 }

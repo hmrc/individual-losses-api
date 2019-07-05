@@ -46,8 +46,5 @@ class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceS
       "INVALID_PAYLOAD"           -> DownstreamError,
       "SERVER_ERROR"              -> DownstreamError,
       "SERVICE_UNAVAILABLE"       -> DownstreamError
-    ).withDefault { error =>
-      logger.info(s"[CreateBFLossService] [createBFLoss] - No mapping found for error code $error")
-      DownstreamError
-    }
+    )
 }
