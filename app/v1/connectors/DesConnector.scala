@@ -17,17 +17,17 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{ AmendBFLossResponse, CreateBFLossResponse }
-import v1.models.domain.{ AmendBFLoss, BFLoss }
-import v1.models.requestData.{ AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest }
+import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse}
+import v1.models.domain.{AmendBFLoss, BFLoss}
+import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest, RetrieveBFLossRequest}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
@@ -69,6 +69,17 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
 
     def doIt(implicit hc: HeaderCarrier) =
       http.DELETE[DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId")
+
+    doIt(desHeaderCarrier)
+  }
+
+  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[RetrieveBFLossResponse]] = {
+    val nino   = request.nino.nino
+    val lossId = request.lossId
+
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[RetrieveBFLossResponse]] = {
+      http.GET[DesOutcome[RetrieveBFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId")
+    }
 
     doIt(desHeaderCarrier)
   }

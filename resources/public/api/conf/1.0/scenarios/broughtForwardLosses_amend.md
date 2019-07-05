@@ -24,7 +24,7 @@
             <td><p>Simulate success scenario for a UK FHL property</p></td>
         </tr>
         <tr>
-            <td><p>UK_OTHER_PROPERTY</p></td>
+            <td><p>UK_NON_FHL_PROPERTY</p></td>
             <td><p>Simulate success scenario for UK other property</p></td>
         </tr>  
         <tr>

@@ -33,12 +33,12 @@ class TypeOfLossValidationSpec extends UnitSpec {
         TypeOfLossValidation.validate("self-employment-class4").isEmpty shouldBe true
       }
 
-      "provided with a string of 'uk-fhl-property'" in {
-        TypeOfLossValidation.validate("uk-fhl-property").isEmpty shouldBe true
+      "provided with a string of 'uk-property-fhl'" in {
+        TypeOfLossValidation.validate("uk-property-fhl").isEmpty shouldBe true
       }
 
-      "provided with a string of 'uk-other-property'" in {
-        TypeOfLossValidation.validate("uk-other-property").isEmpty shouldBe true
+      "provided with a string of 'uk-property-non-fhl'" in {
+        TypeOfLossValidation.validate("uk-property-non-fhl").isEmpty shouldBe true
       }
     }
 

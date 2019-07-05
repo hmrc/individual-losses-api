@@ -56,14 +56,13 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       }
     }
 
-    "the connector returns an outbound error" should {
-      "return that outbound error as-is" in new Test {
-
-        val desResponse = DesResponse(correlationId, OutboundError(DownstreamError))
-        val expected = DesResponse(correlationId, OutboundError(DownstreamError))
+    "return that wrapped error as-is" when {
+      "the connector returns an outbound error" in new Test {
+        val someError = MtdError("SOME_CODE", "some message")
+        val desResponse = DesResponse(correlationId, OutboundError(someError))
         MockedDesConnector.amendBFLoss(request).returns(Future.successful(Left(desResponse)))
-        val result = await(service.amendBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), expected.responseData.error, None))
+
+        await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
       }
     }
 

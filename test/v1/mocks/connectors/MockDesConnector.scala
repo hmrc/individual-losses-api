@@ -20,8 +20,8 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesConnector, DesOutcome}
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse}
-import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest}
+import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse}
+import v1.models.requestData.{AmendBFLossRequest, CreateBFLossRequest, DeleteBFLossRequest, RetrieveBFLossRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,6 +46,12 @@ trait MockDesConnector extends MockFactory {
       (connector
         .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(deleteBFLossRequest, *, *)
+    }
+
+    def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[DesOutcome[RetrieveBFLossResponse]]] = {
+      (connector
+        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(request, *, *)
     }
   }
 

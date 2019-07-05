@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.des
 
-import v1.models.errors.{MtdError, TypeOfLossUnsupportedFormatError}
+import play.api.libs.json.{ JsPath, Json, Reads, Writes }
 
-object TypeOfLossValidation {
+case class BFLossId(id: String)
 
-  val validFormats = List("self-employment", "self-employment-class4", "uk-property-fhl", "uk-property-non-fhl")
+object BFLossId {
+  implicit val writes: Writes[BFLossId] = Json.writes[BFLossId]
 
-  def validate(typeOfLoss: String): List[MtdError] = {
-    if (validFormats.contains(typeOfLoss)) {
-      NoValidationErrors
-    } else {
-      List(TypeOfLossUnsupportedFormatError)
-    }
-  }
+  implicit val reads: Reads[BFLossId] = (JsPath \ "lossId").read[String].map(BFLossId(_))
+}
+
+case class RetrieveBFLossesResponse(losses: Seq[BFLossId])
+
+object RetrieveBFLossesResponse {
+  implicit val writes: Writes[RetrieveBFLossesResponse] =
+    Json.writes[RetrieveBFLossesResponse]
+
+  implicit val reads: Reads[RetrieveBFLossesResponse] =
+    implicitly[Reads[Seq[BFLossId]]].map(RetrieveBFLossesResponse(_))
 }

@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.requestData
 
-import v1.models.errors.{MtdError, TypeOfLossUnsupportedFormatError}
-
-object TypeOfLossValidation {
-
-  val validFormats = List("self-employment", "self-employment-class4", "uk-property-fhl", "uk-property-non-fhl")
-
-  def validate(typeOfLoss: String): List[MtdError] = {
-    if (validFormats.contains(typeOfLoss)) {
-      NoValidationErrors
-    } else {
-      List(TypeOfLossUnsupportedFormatError)
-    }
-  }
-}
+case class RetrieveBFLossRawData(nino: String, lossId: String) extends RawData

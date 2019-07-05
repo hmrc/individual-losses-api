@@ -54,8 +54,8 @@ object BFLoss {
   def convertToDesCode(typeOfLoss: String): String = typeOfLoss match {
     case "self-employment" => "INCOME"
     case "self-employment-class4" => "CLASS4"
-    case "uk-fhl-property" => "04"
-    case "uk-other-property" => "02"
+    case "uk-property-fhl" => "04"
+    case "uk-property-non-fhl" => "02"
   }
 
   def convertLossTypeToMtdCode(lossType: String): String = lossType match {
@@ -64,7 +64,7 @@ object BFLoss {
   }
 
   def convertIncomeSourceTypeToMtdCode(lossType: String): String = lossType match {
-    case "04" => "uk-fhl-property"
-    case "02" => "uk-other-property"
+    case "04" => "uk-property-fhl"
+    case "02" => "uk-property-non-fhl"
   }
 }
