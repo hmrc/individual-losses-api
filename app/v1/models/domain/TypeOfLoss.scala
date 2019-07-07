@@ -15,7 +15,7 @@
  */
 package v1.models.domain
 
-import play.api.libs.json.{ JsString, Reads, Writes }
+import play.api.libs.json.{ JsString, JsonValidationError, Reads, Writes }
 import v1.models.des.{ IncomeSourceType, LossType }
 
 sealed trait TypeOfLoss {
@@ -26,6 +26,7 @@ sealed trait TypeOfLoss {
 }
 
 object TypeOfLoss {
+
   case object `uk-property-fhl` extends TypeOfLoss {
     override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`04`)
     override def isProperty: Boolean                          = true
@@ -44,17 +45,14 @@ object TypeOfLoss {
     override def toLossType: Option[LossType] = Some(LossType.CLASS4)
   }
 
-  case class Other(override val name: String) extends TypeOfLoss
-
-  def parse(name: String): TypeOfLoss = name match {
+  val parser: PartialFunction[String, TypeOfLoss] = {
     case "self-employment"        => `self-employment`
     case "self-employment-class4" => `self-employment-class4`
     case "uk-property-non-fhl"    => `uk-property-non-fhl`
     case "uk-property-fhl"        => `uk-property-fhl`
-    case _                        => Other(name)
   }
 
-  implicit val reads: Reads[TypeOfLoss] = implicitly[Reads[String]].map(parse)
+  implicit val reads: Reads[TypeOfLoss] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.typeOfLoss"))(parser)
 
   implicit val writes: Writes[TypeOfLoss] = Writes[TypeOfLoss](ts => JsString(ts.name))
 }

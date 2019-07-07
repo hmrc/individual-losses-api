@@ -32,7 +32,7 @@ class ListBFLossesParser @Inject()(validator: ListBFLossesValidator) extends Req
 
         val incomeSourceType = for {
           typeOfLossString <- data.typeOfLoss
-          typeOfLoss = TypeOfLoss.parse(typeOfLossString)
+          typeOfLoss       <- TypeOfLoss.parser.lift(typeOfLossString)
           incomeSourceType <- typeOfLoss.toIncomeSourceType
         } yield incomeSourceType
 

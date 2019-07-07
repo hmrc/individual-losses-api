@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.TypeOfLoss
-import v1.models.errors.{ MtdError, TypeOfLossFormatError }
+import play.api.libs.json.{Reads, _}
+import v1.models.errors.MtdError
 
-object TypeOfLossValidation {
+/**
+  * Utilities to assist using validations where the value to validate comes from a JSON element
+  */
+object JsonValidation {
 
-  def validate(typeOfLoss: String): List[MtdError] = {
-    if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
+  def validate[T: Reads](jsLookupResult: JsLookupResult)(validation: T => List[MtdError]): List[MtdError] = {
+    jsLookupResult.validate[T] match {
+      case JsSuccess(value, _) => validation(value)
+      case _: JsError        => Nil
+    }
   }
 }
