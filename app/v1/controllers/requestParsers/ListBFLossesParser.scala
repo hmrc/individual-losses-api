@@ -19,6 +19,7 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.ListBFLossesValidator
+import v1.models.domain.TypeOfLoss
 import v1.models.errors.{ BadRequestError, ErrorWrapper }
 import v1.models.requestData._
 
@@ -28,15 +29,17 @@ class ListBFLossesParser @Inject()(validator: ListBFLossesValidator) extends Req
     validator.validate(data) match {
       case Nil =>
         val taxYear = data.taxYear
-        val typeOfLoss = data.typeOfLoss.map {
-          case "uk-property-non-fhl" => "02"
-          case "uk-property-fhl"     => "04"
-        }
+
+        val incomeSourceType = for {
+          typeOfLossString <- data.typeOfLoss
+          typeOfLoss = TypeOfLoss.parse(typeOfLossString)
+          incomeSourceType <- typeOfLoss.toIncomeSourceType
+        } yield incomeSourceType
 
         Right(
           ListBFLossesRequest(Nino(data.nino),
                               taxYear = taxYear.map(DesTaxYear.fromMtd),
-                              typeOfLoss = typeOfLoss,
+                              incomeSourceType = incomeSourceType,
                               selfEmploymentId = data.selfEmploymentId))
       case err :: Nil => Left(ErrorWrapper(None, err, None))
       case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))

@@ -17,9 +17,9 @@
 package v1.connectors
 
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.{MockAppConfig, MockHttpClient}
+import v1.mocks.{ MockAppConfig, MockHttpClient }
 import v1.models.des._
-import v1.models.domain.{AmendBFLoss, BFLoss, TypeOfLoss}
+import v1.models.domain.{ AmendBFLoss, BFLoss, TypeOfLoss }
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData._
@@ -93,7 +93,10 @@ class DesConnectorSpec extends ConnectorSpec {
   "amend BFLoss" when {
 
     val amendBFLossResponse =
-      AmendBFLossResponse(selfEmploymentId = Some("XKIS00000000988"), typeOfLoss = TypeOfLoss.`self-employment`, lossAmount = 500.13, taxYear = "2019-20")
+      AmendBFLossResponse(selfEmploymentId = Some("XKIS00000000988"),
+                          typeOfLoss = TypeOfLoss.`self-employment`,
+                          lossAmount = 500.13,
+                          taxYear = "2019-20")
 
     val amendBFLoss = AmendBFLoss(500.13)
 
@@ -244,16 +247,16 @@ class DesConnectorSpec extends ConnectorSpec {
   "listBFLosses" should {
 
     def listBFLossesResult(connector: DesConnector,
-                               taxYear: Option[DesTaxYear] = None,
-                               typeOfLoss: Option[String] = None,
-                               selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse] = {
+                           taxYear: Option[DesTaxYear] = None,
+                           incomeSourceType: Option[IncomeSourceType] = None,
+                           selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse] = {
 
       await(
         connector.listBFLosses(
           ListBFLossesRequest(
             nino = Nino(nino),
             taxYear = taxYear,
-            typeOfLoss = typeOfLoss,
+            incomeSourceType = incomeSourceType,
             selfEmploymentId = selfEmploymentId
           )))
     }
@@ -294,10 +297,10 @@ class DesConnectorSpec extends ConnectorSpec {
         val expected = Left(DesResponse(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
         MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(("incomeSourceType", "self-employment")), desRequestHeaders: _*)
+          .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(("incomeSourceType", "02")), desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
-        listBFLossesResult(connector, typeOfLoss = Some("self-employment")) shouldBe expected
+        listBFLossesResult(connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
       }
 
       "provided with all parameters" in new Test {
@@ -306,12 +309,15 @@ class DesConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .parameterGet(
             s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "self-employment")),
+            Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "02")),
             desRequestHeaders: _*
           )
           .returns(Future.successful(expected))
 
-        listBFLossesResult(connector, taxYear = Some(DesTaxYear("2019")), selfEmploymentId = Some("testId"), typeOfLoss = Some("self-employment")) shouldBe
+        listBFLossesResult(connector,
+                           taxYear = Some(DesTaxYear("2019")),
+                           selfEmploymentId = Some("testId"),
+                           incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe
           expected
       }
     }
