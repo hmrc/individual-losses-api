@@ -19,30 +19,29 @@ package v1.models.domain
 import play.api.libs.json._
 import v1.models.requestData.DesTaxYear
 
-case class BFLoss(typeOfLoss: TypeOfLoss, selfEmploymentId: Option[String], taxYear: String, lossAmount: BigDecimal)
+case class BFLoss(typeOfLoss: TypeOfLoss,
+                  selfEmploymentId: Option[String],
+                  taxYear: String,
+                  lossAmount: BigDecimal)
 
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
   implicit val writes: Writes[BFLoss] = new Writes[BFLoss] {
-    override def writes(loss: BFLoss): JsValue = {
-
-      loss.typeOfLoss match {
-        case propertyLoss: PropertyLoss =>
-          Json.obj(
-            "incomeSourceType"         -> propertyLoss.toIncomeSourceType,
-            "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
-            "broughtForwardLossAmount" -> loss.lossAmount
-          )
-
-        case incomeLoss: IncomeLoss =>
-          Json.obj(
-            "incomeSourceId"           -> loss.selfEmploymentId,
-            "lossType"                 -> incomeLoss.toLossType,
-            "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
-            "broughtForwardLossAmount" -> loss.lossAmount
-          )
+    override def writes(loss: BFLoss): JsValue =
+      if (loss.typeOfLoss.isProperty) {
+        Json.obj(
+          "incomeSourceType"         -> loss.typeOfLoss.toIncomeSourceType,
+          "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
+          "broughtForwardLossAmount" -> loss.lossAmount
+        )
+      } else {
+        Json.obj(
+          "incomeSourceId"           -> loss.selfEmploymentId,
+          "lossType"                 -> loss.typeOfLoss.toLossType,
+          "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
+          "broughtForwardLossAmount" -> loss.lossAmount
+        )
       }
-    }
   }
 }

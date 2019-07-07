@@ -23,15 +23,19 @@ class TypeOfLossSpec extends UnitSpec {
   "TypeOfLoss" when {
     "getting DES LossType" must {
       "work" in {
-        `self-employment`.toLossType shouldBe LossType.INCOME
-        `self-employment-class4`.toLossType shouldBe LossType.CLASS4
+        `self-employment`.toLossType shouldBe Some(LossType.INCOME)
+        `self-employment-class4`.toLossType shouldBe Some(LossType.CLASS4)
+        `uk-property-non-fhl`.toLossType shouldBe None
+        `uk-property-fhl`.toLossType shouldBe None
       }
     }
 
     "getting DES IncomeSourceType" must {
       "work" in {
-        `uk-property-non-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`02`
-        `uk-property-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`04`
+        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
+        `uk-property-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`04`)
+        `self-employment`.toIncomeSourceType shouldBe None
+        `self-employment-class4`.toIncomeSourceType shouldBe None
       }
     }
   }

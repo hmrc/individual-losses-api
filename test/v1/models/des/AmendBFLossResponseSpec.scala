@@ -16,9 +16,9 @@
 
 package v1.models.des
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.{ PropertyLoss, TypeOfLoss }
+import v1.models.domain.TypeOfLoss
 
 class AmendBFLossResponseSpec extends UnitSpec {
 
@@ -45,8 +45,9 @@ class AmendBFLossResponseSpec extends UnitSpec {
       """.stripMargin)
     }
 
-    def desToModel: TypeOfLoss => AmendBFLossResponse = typeOfLoss =>
-      AmendBFLossResponse(selfEmploymentId = Some("000000000000001"), typeOfLoss = typeOfLoss, lossAmount = 99999999999.99, taxYear = "2019-20")
+    def desToModel: TypeOfLoss => AmendBFLossResponse =
+      typeOfLoss =>
+        AmendBFLossResponse(selfEmploymentId = Some("000000000000001"), typeOfLoss = typeOfLoss, lossAmount = 99999999999.99, taxYear = "2019-20")
 
     "convert property JSON from DES into a valid model for property type 02" in {
       desPropertyJson("02").as[AmendBFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)

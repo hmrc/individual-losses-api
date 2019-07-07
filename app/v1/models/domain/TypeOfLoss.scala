@@ -15,36 +15,33 @@
  */
 package v1.models.domain
 
-import play.api.libs.json.{JsString, Reads, Writes}
-import v1.models.des.{IncomeSourceType, LossType}
+import play.api.libs.json.{ JsString, Reads, Writes }
+import v1.models.des.{ IncomeSourceType, LossType }
 
 sealed trait TypeOfLoss {
-  def name: String = toString
-}
-
-trait PropertyLoss {
-  def toIncomeSourceType: IncomeSourceType
-}
-
-trait IncomeLoss {
-  def toLossType: LossType
+  def name: String                                 = toString
+  def isProperty: Boolean                          = false
+  def toLossType: Option[LossType]                 = None
+  def toIncomeSourceType: Option[IncomeSourceType] = None
 }
 
 object TypeOfLoss {
-  case object `uk-property-fhl` extends TypeOfLoss with PropertyLoss {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`04`
+  case object `uk-property-fhl` extends TypeOfLoss {
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`04`)
+    override def isProperty: Boolean                          = true
   }
 
-  case object `uk-property-non-fhl` extends TypeOfLoss with PropertyLoss {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`02`
+  case object `uk-property-non-fhl` extends TypeOfLoss {
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
+    override def isProperty: Boolean                          = true
   }
 
-  case object `self-employment` extends TypeOfLoss with IncomeLoss {
-    override def toLossType: LossType = LossType.INCOME
+  case object `self-employment` extends TypeOfLoss {
+    override def toLossType: Option[LossType] = Some(LossType.INCOME)
   }
 
-  case object `self-employment-class4` extends TypeOfLoss with IncomeLoss {
-    override def toLossType: LossType = LossType.CLASS4
+  case object `self-employment-class4` extends TypeOfLoss {
+    override def toLossType: Option[LossType] = Some(LossType.CLASS4)
   }
 
   case class Other(override val name: String) extends TypeOfLoss
