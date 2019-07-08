@@ -16,43 +16,59 @@
 
 package v1.controllers
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.requestParsers.MockDeleteBFLossRequestDataParser
-import v1.mocks.services.{ MockAuditService, MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import v1.models.errors.{ NotFoundError, _ }
+import v1.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
+import v1.models.des.RetrieveBFLossResponse
+import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{ DeleteBFLossRawData, DeleteBFLossRequest }
+import v1.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeleteBFLossControllerSpec
-    extends ControllerBaseSpec
+class RetrieveBFLossControllerSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockDeleteBFLossService
-    with MockDeleteBFLossRequestDataParser
+    with MockRetrieveBFLossService
+    with MockRetrieveBFLossRequestDataParser
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino   = "AA123456A"
+  val nino = "AA123456A"
   val lossId = "AAZZ1234567890a"
 
-  val rawData = DeleteBFLossRawData(nino, lossId)
-  val request = DeleteBFLossRequest(Nino(nino), lossId)
+  val rawData = RetrieveBFLossRawData(nino, lossId)
+  val request = RetrieveBFLossRequest(Nino(nino), lossId)
+
+  val response = RetrieveBFLossResponse(taxYear = "2017-18",
+    typeOfLoss = "uk-property-fhl",
+    selfEmploymentId = None,
+    lossAmount = 100.00,
+    lastModified = "2018-07-13T12:13:48.763Z")
+
+  val responseJson: JsValue = Json.parse(
+    """
+      |{
+      |    "taxYear": "2017-18",
+      |    "typeOfLoss": "uk-property-fhl",
+      |    "lossAmount": 100.00,
+      |    "lastModified": "2018-07-13T12:13:48.763Z"
+      |}
+    """.stripMargin)
 
   trait Test {
     val hc = HeaderCarrier()
 
-    val controller = new DeleteBFLossController(
+    val controller = new RetrieveBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      deleteBFLossService = mockDeleteBFLossService,
-      deleteBFLossParser = mockDeleteBFLossRequestDataParser,
+      retrieveBFLossService = mockRetrieveBFLossService,
+      retrieveBFLossParser = mockRetrieveBFLossRequestDataParser,
       auditService = mockAuditService,
       cc = cc
     )
@@ -61,20 +77,21 @@ class DeleteBFLossControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
   }
 
-  "delete" should {
+  "retrieve" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
 
-        MockDeleteBFLossRequestDataParser
+        MockRetrieveBFLossRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
 
-        MockDeleteBFLossService
-          .delete(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, ()))))
+        MockRetrieveBFLossService
+          .retrieve(request)
+          .returns(Future.successful(Right(DesResponse(correlationId, response))))
 
-        val result: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-        status(result) shouldBe NO_CONTENT
+        val result: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
+        status(result) shouldBe OK
+        contentAsJson(result) shouldBe responseJson
       }
     }
 
@@ -82,11 +99,11 @@ class DeleteBFLossControllerSpec
       def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
-          MockDeleteBFLossRequestDataParser
+          MockRetrieveBFLossRequestDataParser
             .parseRequest(rawData)
             .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
-          val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
+          val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
 
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
@@ -98,22 +115,21 @@ class DeleteBFLossControllerSpec
       errorsFromParserTester(NotFoundError, NOT_FOUND)
       errorsFromParserTester(NinoFormatError, BAD_REQUEST)
       errorsFromParserTester(LossIdFormatError, BAD_REQUEST)
-
     }
 
     "handle non-mdtp validation errors as per spec" when {
       def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
-          MockDeleteBFLossRequestDataParser
+          MockRetrieveBFLossRequestDataParser
             .parseRequest(rawData)
             .returns(Right(request))
 
-          MockDeleteBFLossService
-            .delete(request)
+          MockRetrieveBFLossService
+            .retrieve(request)
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
-          val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
+          val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
@@ -124,7 +140,6 @@ class DeleteBFLossControllerSpec
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(RuleDeleteAfterCrystallisationError, FORBIDDEN)
     }
   }
 }

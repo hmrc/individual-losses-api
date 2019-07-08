@@ -113,7 +113,23 @@ class CreateBFLossControllerSpec
         header("X-CorrelationId", result).nonEmpty shouldBe true
       }
     }
-    "return a 400 Bad Request with a single error" when {
+  }
+
+  "handle mdtp validation errors as per spec" when {
+    def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      s"a ${error.code} error is returned from the parser" in new Test {
+
+        MockCreateBFLossRequestDataParser.
+          parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+
+        val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+
+        status(response) shouldBe expectedStatus
+        contentAsJson(response) shouldBe Json.toJson(error)
+        header("X-CorrelationId", response) shouldBe Some(correlationId)
+      }
+    }
 
       val badRequestErrorsFromParser = List(
         NinoFormatError,
@@ -128,52 +144,29 @@ class CreateBFLossControllerSpec
         RuleInvalidLossAmount
       )
 
-      val notFoundErrorsFromService = List(
-        NotFoundError
-      )
-
-      val forbiddenErrorsFromService = List(
-        RuleDuplicateSubmissionError
-      )
-
-      forbiddenErrorsFromService.foreach(errorsFromServiceTester(_, FORBIDDEN))
-      badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
-      notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
-    }
+    badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
   }
 
-  def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-    s"a ${error.code} error is returned from the parser" in new Test {
+  "handle non-mdtp validation errors as per spec" when {
+    def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      s"a ${error.code} error is returned from the service" in new Test {
 
-      MockCreateBFLossRequestDataParser.
-        parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-        .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+        MockCreateBFLossRequestDataParser.parseRequest(
+          CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Right(bfLossRequest))
 
-      val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+        MockCreateBFLossService
+          .create(CreateBFLossRequest(Nino(nino), bfLoss))
+          .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
-      status(response) shouldBe expectedStatus
-      contentAsJson(response) shouldBe Json.toJson(error)
-      header("X-CorrelationId", response) shouldBe Some(correlationId)
-
+        val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+        status(response) shouldBe expectedStatus
+        contentAsJson(response) shouldBe Json.toJson(error)
+        header("X-CorrelationId", response) shouldBe Some(correlationId)
+      }
     }
-  }
-
-  def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
-    s"a ${error.code} error is returned from the service" in new Test {
-
-      MockCreateBFLossRequestDataParser.parseRequest(
-        CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-        .returns(Right(bfLossRequest))
-
-      MockCreateBFLossService
-        .create(CreateBFLossRequest(Nino(nino), bfLoss))
-        .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
-
-      val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
-      status(response) shouldBe expectedStatus
-      contentAsJson(response) shouldBe Json.toJson(error)
-      header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-    }
+    errorsFromServiceTester(RuleDuplicateSubmissionError, FORBIDDEN)
+    errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
+    errorsFromServiceTester(NotFoundError, NOT_FOUND)
   }
 }
