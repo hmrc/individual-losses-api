@@ -88,7 +88,7 @@ traits:
           application/json:
             type: types.errorResponse
             examples:
-              ruleTypeOfClaim:
+              ruleInvalidIncomeSourceId:
                 description: The supplied income source ID is invalid.
                 value:
                   code: RULES_INVALID_INCOME_SOURCE_ID
@@ -177,9 +177,9 @@ traits:
             type: types.errorResponse
             examples:
               ruleTypeOfClaim:
-                description: The type of Claim requested is not available for this type of loss.
+                description: The type of claim supplied is not valid.
                 value:
-                  code: RULE_CLAIM_TYPE_NOT_VALID
+                  code: RULE_TYPE_OF_CLAIM_INVALID
   formatClaimId:
     responses:
       400:
@@ -200,6 +200,17 @@ traits:
             examples:
               ruleDuplicateSubmission:
                 description: A brought forward loss already exists for this income source.
+                value:
+                  code: RULE_DUPLICATE_SUBMISSION
+  ruleDuplicateClaimSubmission:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDuplicateSubmission:
+                description: The type of claim is the same as a previous submission.
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
   ruleDeleteAfterCrystallisation:

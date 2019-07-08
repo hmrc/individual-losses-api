@@ -17,7 +17,7 @@
 package v1.connectors
 
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.{ MockAppConfig, MockHttpClient }
+import v1.mocks.{MockAppConfig, MockHttpClient}
 import v1.models.des._
 import v1.models.domain.{ AmendBFLoss, BFLoss, TypeOfLoss }
 import v1.models.errors._
@@ -28,10 +28,10 @@ import scala.concurrent.Future
 
 class DesConnectorSpec extends ConnectorSpec {
 
-  lazy val baseUrl  = "test-BaseUrl"
+  lazy val baseUrl = "test-BaseUrl"
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val nino   = "AA123456A"
+  val nino = "AA123456A"
   val lossId = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
