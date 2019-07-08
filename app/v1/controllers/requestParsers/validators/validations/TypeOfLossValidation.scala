@@ -16,11 +16,12 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, TypeOfLossFormatError}
+import v1.models.domain.TypeOfLoss._
+import v1.models.errors.{ MtdError, TypeOfLossFormatError }
 
 object TypeOfLossValidation {
 
-  val validFormats = List("self-employment", "self-employment-class4", "uk-property-fhl", "uk-property-non-fhl")
+  private val validFormats = Seq(`uk-property-fhl`, `uk-property-non-fhl`, `self-employment`, `self-employment-class4`).map(_.name)
 
   def validate(typeOfLoss: String): List[MtdError] = {
     if (validFormats.contains(typeOfLoss)) {
