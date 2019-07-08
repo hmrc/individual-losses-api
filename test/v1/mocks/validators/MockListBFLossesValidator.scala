@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.mocks.validators
 
-import v1.models.errors.{MtdError, TypeOfLossFormatError}
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.ListBFLossesValidator
+import v1.models.errors.MtdError
+import v1.models.requestData.ListBFLossesRawData
 
-object TypeOfLossValidation {
+class MockListBFLossesValidator extends MockFactory {
 
-  val validFormats = List("self-employment", "self-employment-class4", "uk-property-fhl", "uk-property-non-fhl")
+  val mockValidator: ListBFLossesValidator = mock[ListBFLossesValidator]
 
-  def validate(typeOfLoss: String): List[MtdError] = {
-    if (validFormats.contains(typeOfLoss)) {
-      NoValidationErrors
-    } else {
-      List(TypeOfLossFormatError)
+  object MockValidator {
+    def validate(data: ListBFLossesRawData): CallHandler1[ListBFLossesRawData, List[MtdError]] = {
+      (mockValidator.validate(_: ListBFLossesRawData))
+        .expects(data)
     }
   }
 }

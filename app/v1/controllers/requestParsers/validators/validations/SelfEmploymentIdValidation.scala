@@ -16,13 +16,13 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, SelfEmploymentIdFormatError, RuleSelfEmploymentId}
+import v1.models.errors.{ MtdError, SelfEmploymentIdFormatError, RuleSelfEmploymentId }
 
 object SelfEmploymentIdValidation {
 
-  val nonPropertyLossTypes = Seq("self-employment", "self-employment-class4")
+  private val nonPropertyLossTypes = Seq("self-employment", "self-employment-class4")
 
-  val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
+  private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
   def validate(typeOfLoss: String, selfEmploymentId: Option[String]): List[MtdError] = {
     if (nonPropertyLossTypes.contains(typeOfLoss)) selfEmployedValidation(selfEmploymentId) else propertyValidation(selfEmploymentId)
@@ -30,12 +30,9 @@ object SelfEmploymentIdValidation {
 
   private def selfEmployedValidation(selfEmploymentId: Option[String]): List[MtdError] = {
     selfEmploymentId match {
-      case None => List(RuleSelfEmploymentId)
+      case None     => List(RuleSelfEmploymentId)
       case Some(id) => if (id.matches(regex)) NoValidationErrors else List(SelfEmploymentIdFormatError)
     }
-
-
-    //if (selfEmploymentId.exists(_.matches(regex))) NoValidationErrors else List(SelfEmploymentIdFormatError)
   }
 
   private def propertyValidation(selfEmploymentId: Option[String]): List[MtdError] = {
