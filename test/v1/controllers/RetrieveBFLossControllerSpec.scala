@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
 import v1.models.des.RetrieveBFLossResponse
+import v1.models.domain.TypeOfLoss
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
@@ -46,7 +47,7 @@ class RetrieveBFLossControllerSpec
   val request = RetrieveBFLossRequest(Nino(nino), lossId)
 
   val response = RetrieveBFLossResponse(taxYear = "2017-18",
-    typeOfLoss = "uk-property-fhl",
+    typeOfLoss = TypeOfLoss.`uk-property-fhl`,
     selfEmploymentId = None,
     lossAmount = 100.00,
     lastModified = "2018-07-13T12:13:48.763Z")

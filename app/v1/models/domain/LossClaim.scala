@@ -17,20 +17,32 @@
 package v1.models.domain
 
 import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import v1.models.requestData.DesTaxYear
 
 case class LossClaim(taxYear: String,
-                     typeOfLoss: String,
-                     typeOfClaim: String,
+                     typeOfLoss: TypeOfLoss,
+                     typeOfClaim: TypeOfClaim,
                      selfEmploymentId: Option[String])
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
   implicit val writes: Writes[LossClaim] = new Writes[LossClaim] {
-    override  def writes(lossClaim: LossClaim): JsValue = {
+    override  def writes(claim: LossClaim): JsValue = {
 
+      if (claim.typeOfLoss.isProperty) {
+        Json.obj(
+          "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
+          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
+          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+        )
+      }
+      else {
+        Json.obj(
+          "incomeSourceId" -> claim.selfEmploymentId,
+          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
+          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+        )
+      }
     }
-
-
   }
-
 }

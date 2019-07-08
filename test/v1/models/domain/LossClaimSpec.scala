@@ -22,6 +22,13 @@ import v1.models.utils.JsonErrorValidators
 
 class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
+  val lossClaimEmployment = LossClaim(
+    taxYear = "2017-18",
+    typeOfLoss = TypeOfLoss.`self-employment`,
+    typeOfClaim = TypeOfClaim`carry-forward`,
+    selfEmploymentId = Some("X2IS12356589871")
+  )
+
   val lossClaimEmploymentJson = Json.parse(
     """
       |{
@@ -41,6 +48,13 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
+  val lossClaimProperty = LossClaim(
+    taxYear = "2017-18",
+    typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
+    typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways-general-income`,
+    selfEmploymentId = None
+  )
+
   val lossClaimPropertyJson = Json.parse(
     """
       |{
@@ -58,18 +72,6 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |    "taxYear": "2018"
       |}
     """.stripMargin)
-
-  val lossClaimEmployment = LossClaim(taxYear = "2017-18",
-    typeOfLoss = "self-employment",
-    typeOfClaim = "carry-forward",
-    selfEmploymentId = Some("X2IS12356589871")
-  )
-
-  val lossClaimProperty = LossClaim(taxYear = "2017-18",
-    typeOfLoss = "uk-property-non-fhl",
-    typeOfClaim = "carry-forward-to-carry-sideways-general-income",
-    selfEmploymentId = None
-  )
 
   "reads" when {
     "passed a valid LossClaim Json" should {
@@ -103,11 +105,11 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
         LossClaim.writes.writes(lossClaimEmployment) shouldBe lossClaimEmploymentDesJson
       }
     }
-/*    "passed a valid Loss Claim Property model" should {
+    "passed a valid Loss Claim Property model" should {
       "return a valid Loss Claim Property JSON" in {
         LossClaim.writes.writes(lossClaimProperty) shouldBe lossClaimPropertyDesJson
       }
-    }*/
+    }
   }
 
 

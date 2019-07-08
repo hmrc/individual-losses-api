@@ -16,18 +16,12 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import play.api.libs.json.{Reads, _}
-import v1.models.errors.MtdError
+import v1.models.domain.TypeOfClaim
+import v1.models.errors.{MtdError, TypeOfClaimFormatError}
 
-/**
-  * Utilities to assist using validations where the value to validate comes from a JSON element
-  */
-object JsonValidation {
+object TypeOfClaimValidation {
 
-  def validate[T: Reads](jsLookupResult: JsLookupResult)(validation: T => List[MtdError]): List[MtdError] = {
-    jsLookupResult.validate[T] match {
-      case JsSuccess(value, _) => validation(value)
-      case _: JsError        => Nil
-    }
+  def validate(typeOfClaim: String): List[MtdError] = {
+    if (TypeOfClaim.parser.isDefinedAt(typeOfClaim)) NoValidationErrors else List(TypeOfClaimFormatError)
   }
 }
