@@ -19,7 +19,6 @@ import play.api.libs.json.{ JsString, JsonValidationError, Reads, Writes }
 import v1.models.des.{ IncomeSourceType, LossType }
 
 sealed trait TypeOfLoss {
-  def name: String                                 = toString
   def isProperty: Boolean                          = false
   def toLossType: Option[LossType]                 = None
   def toIncomeSourceType: Option[IncomeSourceType] = None
@@ -54,5 +53,5 @@ object TypeOfLoss {
 
   implicit val reads: Reads[TypeOfLoss] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.typeOfLoss"))(parser)
 
-  implicit val writes: Writes[TypeOfLoss] = Writes[TypeOfLoss](ts => JsString(ts.name))
+  implicit val writes: Writes[TypeOfLoss] = Writes[TypeOfLoss](ts => JsString(ts.toString))
 }
