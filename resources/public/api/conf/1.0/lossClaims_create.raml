@@ -12,6 +12,7 @@ is:
   - errors.formatTaxYear
   - errors.ruleTaxYearNotSupported
   - errors.ruleTaxYearRangeExceeded
+  - errors.ruleDuplicateClaimSubmission
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
 displayName: Create a Loss Claim [test only]
@@ -21,7 +22,6 @@ description: This endpoint allows a user to create a Loss Claim against an incom
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
-    description: The brought forward loss information brought into MTD
     type: !include schemas/lossClaims/LossClaim.json
     examples:
       example-1:

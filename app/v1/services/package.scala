@@ -16,7 +16,7 @@
 
 package v1
 
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse}
+import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse, ListBFLossesResponse}
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.DesResponse
 
@@ -25,6 +25,8 @@ package object services {
   type CreateBFLossOutcome = Either[ErrorWrapper, DesResponse[CreateBFLossResponse]]
 
   type RetrieveBFLossOutcome = Either[ErrorWrapper, DesResponse[RetrieveBFLossResponse]]
+
+  type ListBFLossesOutcome = Either[ErrorWrapper, DesResponse[ListBFLossesResponse]]
 
   type AmendBFLossOutcome = Either[ErrorWrapper, DesResponse[AmendBFLossResponse]]
 
