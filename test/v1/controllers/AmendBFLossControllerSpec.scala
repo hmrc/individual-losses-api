@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v1.mocks.services._
 import v1.models.des.AmendBFLossResponse
-import v1.models.domain.AmendBFLoss
+import v1.models.domain.{AmendBFLoss, TypeOfLoss}
 import v1.models.errors.{AmountFormatError, LossIdFormatError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, _}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
@@ -46,7 +46,7 @@ class AmendBFLossControllerSpec
   val lossAmount = BigDecimal(531.99)
   val amendBFLoss = AmendBFLoss(lossAmount)
 
-  val amendBFLossResponse = AmendBFLossResponse(Some("XKIS00000000988"), "self-employment", lossAmount, "2019-20")
+  val amendBFLossResponse = AmendBFLossResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, lossAmount, "2019-20")
 
   val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
 

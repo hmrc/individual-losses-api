@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package v1.models.des
 
-package v1.controllers.requestParsers.validators.validations
-
+import play.api.libs.json._
 import v1.models.domain.TypeOfLoss
-import v1.models.errors.{ MtdError, TypeOfLossFormatError }
 
-object TypeOfLossValidation {
+sealed trait LossType {
+  def toTypeOfLoss: TypeOfLoss
+}
 
-  def validate(typeOfLoss: String): List[MtdError] = {
-    if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
+object LossType {
+  case object INCOME extends LossType {
+    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
   }
+  case object CLASS4 extends LossType {
+    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment-class4`
+  }
+
+  implicit val reads: Reads[LossType] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.lossType")){
+    case "INCOME" => INCOME
+    case "CLASS4" => CLASS4
+  }
+
+  implicit val writes: Writes[LossType] = Writes[LossType](ts => JsString(ts.toString))
 }

@@ -18,16 +18,23 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.BFLoss
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, RuleTaxYearNotSupportedError}
+import v1.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError }
 import v1.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldsValidator1, bodyFieldsValidator2)
+  private val validationSet = List(parameterFormatValidation, bodyFieldsValidator1, bodyFormatValidator, bodyFieldsValidator2, bodyFieldsValidator3)
 
   private def parameterFormatValidation: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino)
+    )
+  }
+
+  // Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
+  private def bodyFieldsValidator1: CreateBFLossRawData => List[List[MtdError]] = { data =>
+    List(
+      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfLossValidation.validate)
     )
   }
 
@@ -37,16 +44,14 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
     )
   }
 
-
-  private def bodyFieldsValidator1: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def bodyFieldsValidator2: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
-      TaxYearValidation.validate(req.taxYear),
-      TypeOfLossValidation.validate(req.typeOfLoss)
+      TaxYearValidation.validate(req.taxYear)
     )
   }
 
-  private def bodyFieldsValidator2: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def bodyFieldsValidator3: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
       MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError),

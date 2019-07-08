@@ -19,6 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockDesConnector
 import v1.models.des.RetrieveBFLossResponse
+import v1.models.domain.TypeOfLoss
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.RetrieveBFLossRequest
@@ -41,7 +42,8 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
   "retrieve bf loss" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val desResponse = DesResponse(correlationId, RetrieveBFLossResponse("2018-19", "lossType", Some("selfEmploymentId"), 123.45, "time"))
+        val desResponse =
+          DesResponse(correlationId, RetrieveBFLossResponse("2018-19", TypeOfLoss.`self-employment`, Some("selfEmploymentId"), 123.45, "time"))
         MockedDesConnector.retrieveBFLoss(request).returns(Future.successful(Right(desResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Right(desResponse)
@@ -50,7 +52,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError = MtdError("SOME_CODE", "some message")
+        val someError   = MtdError("SOME_CODE", "some message")
         val desResponse = DesResponse(correlationId, OutboundError(someError))
         MockedDesConnector.retrieveBFLoss(request).returns(Future.successful(Left(desResponse)))
 

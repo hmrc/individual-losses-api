@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package v1.controllers.requestParsers.validators.validations
 
-package v1.models.requestData
+import play.api.libs.json.{Reads, _}
+import v1.models.errors.MtdError
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.des.IncomeSourceType
+/**
+  * Utilities to assist using validations where the value to validate comes from a JSON element
+  */
+object JsonValidation {
 
-case class ListBFLossesRequest(nino: Nino, taxYear: Option[DesTaxYear], incomeSourceType: Option[IncomeSourceType], selfEmploymentId: Option[String])
+  def validate[T: Reads](jsLookupResult: JsLookupResult)(validation: T => List[MtdError]): List[MtdError] = {
+    jsLookupResult.validate[T] match {
+      case JsSuccess(value, _) => validation(value)
+      case _: JsError        => Nil
+    }
+  }
+}

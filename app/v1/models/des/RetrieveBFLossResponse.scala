@@ -18,10 +18,14 @@ package v1.models.des
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v1.models.domain.BFLoss
+import v1.models.domain.TypeOfLoss
 import v1.models.requestData.DesTaxYear
 
-case class RetrieveBFLossResponse(taxYear: String, typeOfLoss: String, selfEmploymentId: Option[String], lossAmount: BigDecimal, lastModified: String)
+case class RetrieveBFLossResponse(taxYear: String,
+                                  typeOfLoss: TypeOfLoss,
+                                  selfEmploymentId: Option[String],
+                                  lossAmount: BigDecimal,
+                                  lastModified: String)
 
 object RetrieveBFLossResponse {
 
@@ -29,10 +33,10 @@ object RetrieveBFLossResponse {
 
   implicit val reads: Reads[RetrieveBFLossResponse] = (
     (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString) and
-      ((__ \ "lossType").read[String].map(BFLoss.convertLossTypeToMtdCode)
-        orElse (__ \ "incomeSourceType").read[String].map(BFLoss.convertIncomeSourceTypeToMtdCode)) and
+      ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
+        orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "incomeSourceId").readNullable[String] and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "submissionDate").read[String]
-    ) (RetrieveBFLossResponse.apply _)
+  )(RetrieveBFLossResponse.apply _)
 }

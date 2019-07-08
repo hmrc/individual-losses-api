@@ -87,7 +87,9 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
   def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListBFLossesResponse]] = {
     val nino = request.nino.nino
     val pathParameters =
-      Map("taxYear" -> request.taxYear.map(_.value), "incomeSourceId" -> request.selfEmploymentId, "incomeSourceType" -> request.typeOfLoss).collect {
+      Map("taxYear"          -> request.taxYear.map(_.value),
+          "incomeSourceId"   -> request.selfEmploymentId,
+          "incomeSourceType" -> request.incomeSourceType.map(_.toString)).collect {
         case (key, Some(value)) => key -> value
       }
 

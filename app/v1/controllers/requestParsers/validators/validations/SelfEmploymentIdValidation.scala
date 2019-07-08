@@ -16,16 +16,15 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{ MtdError, SelfEmploymentIdFormatError, RuleSelfEmploymentId }
+import v1.models.domain.TypeOfLoss
+import v1.models.errors.{MtdError, RuleSelfEmploymentId, SelfEmploymentIdFormatError}
 
 object SelfEmploymentIdValidation {
 
-  private val nonPropertyLossTypes = Seq("self-employment", "self-employment-class4")
-
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
-  def validate(typeOfLoss: String, selfEmploymentId: Option[String]): List[MtdError] = {
-    if (nonPropertyLossTypes.contains(typeOfLoss)) selfEmployedValidation(selfEmploymentId) else propertyValidation(selfEmploymentId)
+  def validate(typeOfLoss: TypeOfLoss, selfEmploymentId: Option[String]): List[MtdError] = {
+    if (typeOfLoss.isProperty) propertyValidation(selfEmploymentId) else selfEmployedValidation(selfEmploymentId)
   }
 
   private def selfEmployedValidation(selfEmploymentId: Option[String]): List[MtdError] = {
