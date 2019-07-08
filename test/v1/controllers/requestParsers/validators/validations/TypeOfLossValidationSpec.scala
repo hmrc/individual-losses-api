@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.TypeOfLossUnsupportedFormatError
+import v1.models.errors.TypeOfLossFormatError
 
 class TypeOfLossValidationSpec extends UnitSpec {
 
@@ -45,11 +45,11 @@ class TypeOfLossValidationSpec extends UnitSpec {
     "return an error" when {
 
       "provided with an empty string" in {
-        TypeOfLossValidation.validate("") shouldBe List(TypeOfLossUnsupportedFormatError)
+        TypeOfLossValidation.validate("") shouldBe List(TypeOfLossFormatError)
       }
 
       "provided with a non-matching string" in {
-        TypeOfLossValidation.validate("self-employment-a") shouldBe List(TypeOfLossUnsupportedFormatError)
+        TypeOfLossValidation.validate("self-employment-a") shouldBe List(TypeOfLossFormatError)
       }
     }
   }

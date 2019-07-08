@@ -96,6 +96,18 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
       }
     }
 
+    "the nino is valid but invalid bearer token" should {
+      "return a 401" in new Test {
+
+        MockedMtdIdLookupService
+          .lookup(nino)
+          .returns(Future.successful(Left(InvalidBearerTokenError)))
+
+        private val result = target.action(nino)(fakeGetRequest)
+        status(result) shouldBe UNAUTHORIZED
+      }
+    }
+
   }
 
   "authorisation checks fail when retrieving the MDT ID" should {
@@ -153,5 +165,4 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
       status(result) shouldBe FORBIDDEN
     }
   }
-
 }

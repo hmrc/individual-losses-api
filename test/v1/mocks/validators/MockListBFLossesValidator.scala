@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package support
+package v1.mocks.validators
 
-import com.codahale.metrics.SharedMetricRegistries
+import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{EitherValues, Matchers, WordSpecLike}
-import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
+import v1.controllers.requestParsers.validators.ListBFLossesValidator
+import v1.models.errors.MtdError
+import v1.models.requestData.ListBFLossesRawData
 
-trait UnitSpec extends WordSpecLike
-  with MockFactory
-  with EitherValues
-  with Matchers
-  with FutureAwaits
-  with DefaultAwaitTimeout
+class MockListBFLossesValidator extends MockFactory {
+
+  val mockValidator: ListBFLossesValidator = mock[ListBFLossesValidator]
+
+  object MockValidator {
+    def validate(data: ListBFLossesRawData): CallHandler1[ListBFLossesRawData, List[MtdError]] = {
+      (mockValidator.validate(_: ListBFLossesRawData))
+        .expects(data)
+    }
+  }
+}
