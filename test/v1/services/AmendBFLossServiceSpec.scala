@@ -19,7 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockDesConnector
 import v1.models.des.AmendBFLossResponse
-import v1.models.domain.AmendBFLoss
+import v1.models.domain.{AmendBFLoss, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.AmendBFLossRequest
@@ -35,7 +35,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
   val bfLoss = AmendBFLoss(256.78)
 
-  val bfLossResponse = AmendBFLossResponse(Some("XKIS00000000988"), "self-employment", 256.78, "2019-20")
+  val bfLossResponse = AmendBFLossResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, 256.78, "2019-20")
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 

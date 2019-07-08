@@ -19,7 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockDesConnector
 import v1.models.des.CreateBFLossResponse
-import v1.models.domain.BFLoss
+import v1.models.domain.{BFLoss, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.CreateBFLossRequest
@@ -33,7 +33,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   val nino = Nino("AA123456A")
   val lossId = "AAZZ1234567890a"
 
-  val bfLoss = BFLoss("self-employment", Some("XKIS00000000988"), "2019-20", 256.78)
+  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 

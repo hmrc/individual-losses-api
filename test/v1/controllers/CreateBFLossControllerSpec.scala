@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.des.CreateBFLossResponse
-import v1.models.domain.BFLoss
+import v1.models.domain.{BFLoss, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
@@ -44,7 +44,7 @@ class CreateBFLossControllerSpec
   val nino = "AA123456A"
   val lossId = "AAZZ1234567890a"
 
-  val bfLoss = BFLoss("self-employment", Some("XKIS00000000988"), "2019-20", 256.78)
+  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
   val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
 
