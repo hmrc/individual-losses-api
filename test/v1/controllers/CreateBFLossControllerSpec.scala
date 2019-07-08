@@ -113,10 +113,8 @@ class CreateBFLossControllerSpec
         header("X-CorrelationId", result).nonEmpty shouldBe true
       }
     }
-    "return a single error" when {
-
-    }
   }
+
   "handle mdtp validation errors as per spec" when {
     def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the parser" in new Test {
@@ -133,18 +131,18 @@ class CreateBFLossControllerSpec
       }
     }
 
-    val badRequestErrorsFromParser = List(
-      NinoFormatError,
-      TaxYearFormatError,
-      RuleIncorrectOrEmptyBodyError,
-      RuleTaxYearNotSupportedError,
-      RuleTaxYearRangeExceededError,
-      TypeOfLossUnsupportedFormatError,
-      SelfEmploymentIdFormatError,
-      RuleSelfEmploymentId,
-      AmountFormatError,
-      RuleInvalidLossAmount
-    )
+      val badRequestErrorsFromParser = List(
+        NinoFormatError,
+        TaxYearFormatError,
+        RuleIncorrectOrEmptyBodyError,
+        RuleTaxYearNotSupportedError,
+        RuleTaxYearRangeExceededError,
+        TypeOfLossFormatError,
+        SelfEmploymentIdFormatError,
+        RuleSelfEmploymentId,
+        AmountFormatError,
+        RuleInvalidLossAmount
+      )
 
     badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
   }

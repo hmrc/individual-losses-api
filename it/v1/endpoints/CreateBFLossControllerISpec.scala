@@ -117,6 +117,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
     "return 500 (Internal Server Error)" when {
 
       createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
@@ -156,7 +157,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(Some(selfEmploymentId), typeOfLoss, "2019-25", lossAmount), Status.BAD_REQUEST, RuleTaxYearRangeExceededError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(None, "self-employment-class", "2019-20", lossAmount), Status.BAD_REQUEST, TypeOfLossUnsupportedFormatError)
+        generateBFLoss(None, "self-employment-class", "2019-20", lossAmount), Status.BAD_REQUEST, TypeOfLossFormatError)
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(Some("sdfsf"), typeOfLoss, "2019-20", lossAmount), Status.BAD_REQUEST, SelfEmploymentIdFormatError)
       createBFLossValidationErrorTest("AA123456A",

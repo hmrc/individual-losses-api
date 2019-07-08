@@ -69,7 +69,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
            | RuleIncorrectOrEmptyBodyError
            | RuleTaxYearNotSupportedError
            | RuleTaxYearRangeExceededError
-           | TypeOfLossUnsupportedFormatError
+           | TypeOfLossFormatError
            | SelfEmploymentIdFormatError
            | RuleSelfEmploymentId
            | AmountFormatError

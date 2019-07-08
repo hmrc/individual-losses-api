@@ -26,12 +26,12 @@ object BFLossId {
   implicit val reads: Reads[BFLossId] = (JsPath \ "lossId").read[String].map(BFLossId(_))
 }
 
-case class RetrieveBFLossesResponse(losses: Seq[BFLossId])
+case class ListBFLossesResponse(losses: Seq[BFLossId])
 
-object RetrieveBFLossesResponse {
-  implicit val writes: Writes[RetrieveBFLossesResponse] =
-    Json.writes[RetrieveBFLossesResponse]
+object ListBFLossesResponse {
+  implicit val writes: Writes[ListBFLossesResponse] =
+    Json.writes[ListBFLossesResponse]
 
-  implicit val reads: Reads[RetrieveBFLossesResponse] =
-    implicitly[Reads[Seq[BFLossId]]].map(RetrieveBFLossesResponse(_))
+  implicit val reads: Reads[ListBFLossesResponse] =
+    implicitly[Reads[Seq[BFLossId]]].map(ListBFLossesResponse(_))
 }

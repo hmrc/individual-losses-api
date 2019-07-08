@@ -17,17 +17,17 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse, RetrieveBFLossesResponse}
-import v1.models.domain.{AmendBFLoss, BFLoss}
+import v1.models.des.{ AmendBFLossResponse, CreateBFLossResponse, ListBFLossesResponse, RetrieveBFLossResponse }
+import v1.models.domain.{ AmendBFLoss, BFLoss }
 import v1.models.requestData._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
@@ -84,14 +84,15 @@ class DesConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
     doIt(desHeaderCarrier)
   }
 
-  def retrieveBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[RetrieveBFLossesResponse]] = {
+  def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListBFLossesResponse]] = {
     val nino = request.nino.nino
-    val pathParameters = Map("taxYear" -> request.taxYear, "incomeSourceId" -> request.selfEmploymentId, "incomeSourceType" -> request.typeOfLoss).collect {
-      case (key, Some(value)) => key -> value
-    }
+    val pathParameters =
+      Map("taxYear" -> request.taxYear.map(_.value), "incomeSourceId" -> request.selfEmploymentId, "incomeSourceType" -> request.typeOfLoss).collect {
+        case (key, Some(value)) => key -> value
+      }
 
-    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[RetrieveBFLossesResponse]] = {
-      http.GET[DesOutcome[RetrieveBFLossesResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino", pathParameters.toSeq)
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListBFLossesResponse]] = {
+      http.GET[DesOutcome[ListBFLossesResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino", pathParameters.toSeq)
     }
 
     doIt(desHeaderCarrier)

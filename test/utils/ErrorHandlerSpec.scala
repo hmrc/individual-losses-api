@@ -16,31 +16,133 @@
 
 package utils
 
-import org.scalatest.concurrent.ScalaFutures
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Configuration
+import play.api.http.Status
+import play.api.http.Status.UNSUPPORTED_MEDIA_TYPE
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.mvc.Http.Status
+import play.api.test.Helpers._
 import support.UnitSpec
-import uk.gov.hmrc.auth.core.InvalidBearerToken
+import uk.gov.hmrc.auth.core.InsufficientEnrolments
+import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
+import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
+import v1.models.errors._
 
-class ErrorHandlerSpec extends UnitSpec with ScalaFutures with GuiceOneAppPerSuite {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NoStackTrace
 
-  trait Setup {
-    val errorHandler = app.injector.instanceOf[ErrorHandler]
+class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSuite {
+
+  def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
+
+  class Test() {
+    val method = "some-method"
+
+    val requestHeader = FakeRequest().withHeaders(versionHeader)
+
+    val auditConnector = MockitoSugar.mock[AuditConnector]
+    val httpAuditEvent = MockitoSugar.mock[HttpAuditEvent]
+
+    when(auditConnector.sendEvent(any[DataEvent]())(any[HeaderCarrier](), any[ExecutionContext]()))
+      .thenReturn(Future.successful(Success))
+
+    val configuration = Configuration("appName" -> "myApp")
+    val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
   }
 
-  "The Error Handler" should {
+  "onClientError" should {
+    "return 404 with error body" when {
+      s"URI not found" in new Test() {
 
-    "return bad request error in the case of an invalid json" in new Setup {
-      val result = await(errorHandler.onBadRequest(FakeRequest(), "Invalid Json"))
+        val result = handler.onClientError(requestHeader, Status.NOT_FOUND, "test")
+        status(result) shouldBe Status.NOT_FOUND
 
-      result.header.status shouldBe Status.BAD_REQUEST
+        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+      }
     }
 
-    "return not found error in the case of an invalid URL" in new Setup {
-      val result = await(errorHandler.onNotFound(FakeRequest(), "Invalid URL"))
+    "return 400 with error body" when {
+      "JsValidationException thrown and header is supplied" in new Test() {
+        val result = handler.onClientError(requestHeader, BAD_REQUEST, "test")
+        status(result) shouldBe BAD_REQUEST
 
-      result.header.status shouldBe Status.NOT_FOUND
+        contentAsJson(result) shouldBe Json.toJson(BadRequestError)
+      }
+    }
+
+    "return 401 with error body" when {
+      "unauthorised and header is supplied" in new Test() {
+        val result = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
+        status(result) shouldBe UNAUTHORIZED
+
+        contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
+      }
+    }
+
+    "return 415 with error body" when {
+      "unsupported body and header is supplied" in new Test() {
+        val result = handler.onClientError(requestHeader, UNSUPPORTED_MEDIA_TYPE, "test")
+        status(result) shouldBe UNSUPPORTED_MEDIA_TYPE
+
+        contentAsJson(result) shouldBe Json.toJson(InvalidBodyTypeError)
+      }
+    }
+
+    "return 405 with error body" when {
+      "invalid method type" in new Test() {
+        val result = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
+        status(result) shouldBe METHOD_NOT_ALLOWED
+
+        contentAsJson(result) shouldBe Json.toJson(MtdError("INVALID_REQUEST", "test"))
+      }
+    }
+  }
+
+  "onServerError" should {
+
+    "return 404 with error body" when {
+      "NotFoundException thrown" in new Test() {
+        val result = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
+        status(result) shouldBe NOT_FOUND
+
+        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+      }
+    }
+
+    "return 401 with error body" when {
+      "AuthorisationException thrown" in new Test() {
+        val result = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
+        status(result) shouldBe UNAUTHORIZED
+
+        contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
+      }
+    }
+
+    "return 400 with error body" when {
+      "JsValidationException thrown" in new Test() {
+        val result = handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
+        status(result) shouldBe BAD_REQUEST
+
+        contentAsJson(result) shouldBe Json.toJson(BadRequestError)
+      }
+    }
+
+    "return 500 with error body" when {
+      "other exception thrown" in new Test() {
+        val result = handler.onServerError(requestHeader, new Exception with NoStackTrace)
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+
+        contentAsJson(result) shouldBe Json.toJson(DownstreamError)
+      }
     }
   }
 }
+
