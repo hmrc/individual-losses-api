@@ -7,7 +7,7 @@
         "typeOfLoss" : {
             "type" : "string",
             "description": "The type of business the loss applies to.",
-            "enum": ["self-employment", "uk-property-fhl", "uk-property-non-fhl"]
+            "enum": ["self-employment", "uk-property-non-fhl"]
         },
         "selfEmploymentId" : {
             "type": "string",
@@ -18,12 +18,12 @@
         "typeOfClaim": {
             "type": "string",
             "description": "The type of claim to be applied.",
-            "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl"]
+            "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways-general-income"]
         },
         "taxYear": {
             "type": "string",
-            "description": "The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2016-17.",
-            "example": "2017-18"
+            "description": "The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid. The minimum tax year is 2019-20.",
+            "example": "2019-20"
         }
     },
     "required": ["typeOfLoss", "typeOfClaim", "taxYear"]
