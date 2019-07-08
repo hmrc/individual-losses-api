@@ -20,10 +20,9 @@ import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DesConnector
 import v1.models.errors._
-import v1.models.outcomes.DesResponse
 import v1.models.requestData.CreateBFLossRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class CreateBFLossService @Inject()(connector: DesConnector) extends DesServiceSupport {
 

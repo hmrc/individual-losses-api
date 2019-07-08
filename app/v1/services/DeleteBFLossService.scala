@@ -34,7 +34,7 @@ class DeleteBFLossService @Inject()(connector: DesConnector) extends DesServiceS
   def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteBFLossOutcome] = {
 
     connector.deleteBFLoss(request).map {
-      mapToVendorDirect("retrieveBFLoss", mappingDesToMtdError)
+      mapToVendorDirect("deleteBFLoss", mappingDesToMtdError)
     }
   }
 
@@ -46,5 +46,4 @@ class DeleteBFLossService @Inject()(connector: DesConnector) extends DesServiceS
     "SERVER_ERROR"        -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
   )
-
 }

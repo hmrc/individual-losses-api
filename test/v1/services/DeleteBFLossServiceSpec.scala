@@ -81,7 +81,8 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       "NOT_FOUND"           -> NotFoundError,
       "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
       "SERVER_ERROR"        -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "SERVICE_UNAVAILABLE" -> DownstreamError,
+      "UNEXPECTED_ERROR"    -> DownstreamError
     ).foreach {
       case(k, v) =>
         s"return a ${v.code} error" when {
