@@ -32,12 +32,30 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
+  val lossClaimEmploymentDesJson = Json.parse(
+    """
+      |{
+      |    "incomeSourceId": "X2IS12356589871",
+      |    "reliefClaimed": "CF",
+      |    "taxYear": "2018"
+      |}
+    """.stripMargin)
+
   val lossClaimPropertyJson = Json.parse(
     """
       |{
       |    "typeOfLoss": "uk-property-non-fhl",
       |    "typeOfClaim": "carry-forward-to-carry-sideways-general-income",
       |    "taxYear": "2017-18"
+      |}
+    """.stripMargin)
+
+  val lossClaimPropertyDesJson = Json.parse(
+    """
+      |{
+      |    "incomeSourceType": "02",
+      |    "reliefClaimed": "CFCSGI",
+      |    "taxYear": "2018"
       |}
     """.stripMargin)
 
@@ -59,26 +77,38 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       lossClaimEmploymentJson.as[LossClaim] shouldBe lossClaimEmployment
       }
 
-/*      testMandatoryProperty[BFLoss](lossClaimEmploymentJson)("/typeOfLoss")
-      testPropertyType[BFLoss](lossClaimEmploymentJson)(
+      testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/typeOfLoss")
+      testPropertyType[LossClaim](lossClaimEmploymentJson)(
         path = "/typeOfLoss",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[BFLoss](lossClaimEmploymentJson)("/taxYear")
-      testPropertyType[BFLoss](lossClaimEmploymentJson)(
+      testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/taxYear")
+      testPropertyType[LossClaim](lossClaimEmploymentJson)(
         path = "/taxYear",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[BFLoss](lossClaimEmploymentJson)("/typeOfClaim")
-      testPropertyType[BFLoss](lossClaimEmploymentJson)(
+      testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/typeOfClaim")
+      testPropertyType[LossClaim](lossClaimEmploymentJson)(
         path = "/typeOfClaim",
         replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)*/
+        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
     }
   }
 
+  "writes" when {
+    "passed a valid Loss Claim Employment model" should {
+      "return a valid Loss Claim Employment JSON" in {
+        LossClaim.writes.writes(lossClaimEmployment) shouldBe lossClaimEmploymentDesJson
+      }
+    }
+/*    "passed a valid Loss Claim Property model" should {
+      "return a valid Loss Claim Property JSON" in {
+        LossClaim.writes.writes(lossClaimProperty) shouldBe lossClaimPropertyDesJson
+      }
+    }*/
+  }
 
 
 }

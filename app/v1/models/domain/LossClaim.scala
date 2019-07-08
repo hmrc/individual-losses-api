@@ -16,7 +16,7 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{JsValue, Json, Reads, Writes}
 
 case class LossClaim(taxYear: String,
                      typeOfLoss: String,
@@ -24,5 +24,13 @@ case class LossClaim(taxYear: String,
                      selfEmploymentId: Option[String])
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
+
+  implicit val writes: Writes[LossClaim] = new Writes[LossClaim] {
+    override  def writes(lossClaim: LossClaim): JsValue = {
+
+    }
+
+
+  }
 
 }
