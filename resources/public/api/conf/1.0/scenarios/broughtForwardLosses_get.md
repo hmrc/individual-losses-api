@@ -9,7 +9,23 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success scenario</p></td>
+            <td><p>Simulate success response with self-employment loss.</p></td>
+        </tr>
+        <tr>
+            <td><p>SELF_EMPLOYMENT</p></td>
+            <td><p>Simulate success response with self-employment loss.</p></td>
+        </tr>
+        <tr>
+            <td><p>CLASS_$</p></td>
+            <td><p>Simulate success response with self-employment class 4 loss.</p></td>
+        </tr>
+        <tr>
+            <td><p>UK_FHL_PROPERTY</p></td>
+            <td><p>Simulate success response with UK FHL property loss.</p></td>
+        </tr>
+        <tr>
+            <td><p>UK_NON_FHL_PROPERTY</p></td>
+            <td><p>Simulate success response with UK Non-FHL Property loss.</p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>
