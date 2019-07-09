@@ -19,10 +19,12 @@ package v1.models.domain
 import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import v1.models.requestData.DesTaxYear
 
-case class LossClaim(taxYear: String,
-                     typeOfLoss: TypeOfLoss,
+case class LossClaim(typeOfLoss: TypeOfLoss,
+                     selfEmploymentId: Option[String],
                      typeOfClaim: TypeOfClaim,
-                     selfEmploymentId: Option[String])
+                     taxYear: String
+                     )
+
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
