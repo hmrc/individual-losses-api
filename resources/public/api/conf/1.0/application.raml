@@ -45,8 +45,9 @@ documentation:
       /{lossId}:
         uriParameters:
           lossId:
-            description: A unique identifier for the brought forward loss.
+            description: A unique identifier for the brought forward loss. <br><br>Must conform to the regular expression `^[A-Za-z0-9]{15}$`
             type: string
+            example: "1234568790ABCDE"
         get: !include broughtForwardLosses_get.raml
         delete: !include broughtForwardLosses_delete.raml
         /change-loss-amount:

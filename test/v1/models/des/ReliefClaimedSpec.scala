@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package v1.connectors
+package v1.models.des
 
-import config.AppConfig
-import play.api.Logger
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
+import support.UnitSpec
+import v1.models.des.ReliefClaimed._
+import v1.models.domain.TypeOfClaim
 
-trait DesConnector {
-
-  val logger = Logger(this.getClass)
-
-  def desHeaderCarrier(appConfig: AppConfig)(implicit hc: HeaderCarrier): HeaderCarrier =
-    hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders("Environment" -> appConfig.desEnv)
-
+class ReliefClaimedSpec extends UnitSpec {
+  "TypeOfClaim" when {
+    "getting DES reliefClaimed" must {
+      "work" in {
+        `CF`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward`
+        `CSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways`
+        `CFCSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward-to-carry-sideways-general-income`
+        `CSFHL`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways-fhl`
+      }
+    }
+  }
 }
