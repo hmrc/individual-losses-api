@@ -46,6 +46,11 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
       listBFLossesParser.parseRequest(ListBFLossesRawData(nino, taxYear = taxYear, typeOfLoss = typeOfLoss, selfEmploymentId = selfEmploymentId)) match {
         case Right(listBFLossesRequest) =>
           listBFLossesService.listBFLosses(listBFLossesRequest).map {
+            case Right(desResponse) if desResponse.responseData.losses.isEmpty =>
+              logger.info(s"[ListBFLossesController] Empty response received with correlationId: ${desResponse.correlationId}")
+              NotFound(Json.toJson(NotFoundError))
+                .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
+
             case Right(desResponse) =>
               logger.info(s"[ListBFLossesController] Success response received with correlationId: ${desResponse.correlationId}")
               Ok(Json.toJson(desResponse.responseData))
@@ -63,8 +68,8 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
   private def processError(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | SelfEmploymentIdFormatError | TypeOfLossFormatError | RuleSelfEmploymentId |
-          RuleTaxYearNotSupportedError | RuleTaxYearRangeExceededError | LossIdFormatError =>
+      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | SelfEmploymentIdFormatError | RuleSelfEmploymentId |
+          RuleTaxYearNotSupportedError | RuleTaxYearRangeExceededError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

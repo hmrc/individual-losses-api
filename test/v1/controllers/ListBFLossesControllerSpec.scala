@@ -97,6 +97,23 @@ class ListBFLossesControllerSpec
       }
     }
 
+    "return MATCHING_RESOURCE_NOT_FOUND" when {
+      "the request received is valid but an empty list of losses is returned from DES" in new Test {
+
+        MockListBFLossesRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
+
+        MockListBFLossesService
+          .list(request)
+          .returns(Future.successful(Right(DesResponse(correlationId, ListBFLossesResponse(Nil)))))
+
+        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
+        status(result) shouldBe NOT_FOUND
+        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+      }
+    }
+
     "handle mdtp validation errors as per spec" when {
       def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
