@@ -16,7 +16,7 @@
             <td><p>Simulate success response with self-employment loss.</p></td>
         </tr>
         <tr>
-            <td><p>CLASS_$</p></td>
+            <td><p>CLASS_4</p></td>
             <td><p>Simulate success response with self-employment class 4 loss.</p></td>
         </tr>
         <tr>
