@@ -23,7 +23,7 @@ import v1.models.requestData.ListBFLossesRawData
 class ListBFLossesValidatorSpec extends UnitSpec {
 
   private val validNino     = "AA123456A"
-  private val validTaxYear  = "2017-18"
+  private val validTaxYear  = "2021-22"
   private val validLossType = "self-employment"
   private val validSEId     = "XAIS01234567890"
 

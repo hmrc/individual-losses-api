@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import v1.models.errors.TypeOfClaimFormatError
 
 class TypeOfClaimValidationSpec extends UnitSpec {
 
@@ -50,6 +50,50 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
       "provided with a non-matching string" in {
         TypeOfClaimValidation.validate("carry-forwar") shouldBe List(TypeOfClaimFormatError)
+      }
+    }
+  }
+
+  "checkClaim" should {
+
+    "return no errors when typeOfLoss is 'uk-property-non-fhl2' and" when {
+
+      "typeOfClaim is 'carry-forward'" in {
+        TypeOfClaimValidation.checkClaim("carry-forward", "uk-property-non-fhl2").isEmpty shouldBe true
+      }
+
+      "provided with a string of 'carry-sideways'" in {
+        TypeOfClaimValidation.checkClaim("carry-sideways", "uk-property-non-fhl2").isEmpty shouldBe true
+      }
+
+      "provided with a string of 'carry-forward-to-carry-sideways-general-income'" in {
+        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "uk-property-non-fhl2").isEmpty shouldBe true
+      }
+
+      "provided with a string of 'carry-sideways-fhl'" in {
+        TypeOfClaimValidation.checkClaim("carry-sideways-fhl", "uk-property-non-fhl2").isEmpty shouldBe true
+      }
+    }
+
+    "return no errors when typeOfLoss is 'self-employment' and" when {
+
+      "typeOfClaim is 'carry-forward'" in {
+        TypeOfClaimValidation.checkClaim("carry-forward", "self-employment").isEmpty shouldBe true
+      }
+
+      "provided with a string of 'carry-sideways'" in {
+        TypeOfClaimValidation.checkClaim("carry-sideways", "self-employment").isEmpty shouldBe true
+      }
+    }
+
+    "return TypeOfClaimFormatError when typeOfLoss is 'self-employment' and" when {
+
+      "typeOfClaim is 'carry-sideways-fhl" in {
+        TypeOfClaimValidation.checkClaim("carry-sideways-fhl", "self-employment") shouldBe List(TypeOfClaimFormatError)
+      }
+
+      "typeOfClaim is 'carry-forward-to-carry-sideways-general-income" in {
+        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "self-employment") shouldBe List(TypeOfClaimFormatError)
       }
     }
   }

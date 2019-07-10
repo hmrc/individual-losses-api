@@ -26,7 +26,7 @@ import v1.models.requestData.CreateBFLossRawData
 class CreateBFLossValidatorSpec extends UnitSpec {
 
   private val validNino             = "AA123456A"
-  private val validTaxYear          = "2018-19"
+  private val validTaxYear          = "2016-17"
   private val validTypeOfLoss       = "self-employment"
   private val validSelfEmploymentId = "XAIS01234567890"
 
@@ -86,7 +86,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
     "return RuleTaxYearNotSupportedError error" when {
       "an out of range tax year is supplied" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2016-17")))) shouldBe
+        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2015-16")))) shouldBe
           List(RuleTaxYearNotSupportedError)
       }
     }
