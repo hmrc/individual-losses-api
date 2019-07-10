@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.TypeOfClaimFormatError
+import v1.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 class TypeOfClaimValidationSpec extends UnitSpec {
 
@@ -56,22 +56,22 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
   "checkClaim" should {
 
-    "return no errors when typeOfLoss is 'uk-property-non-fhl2' and" when {
+    "return no errors when typeOfLoss is 'uk-property-non-fhl' and" when {
 
       "typeOfClaim is 'carry-forward'" in {
-        TypeOfClaimValidation.checkClaim("carry-forward", "uk-property-non-fhl2").isEmpty shouldBe true
+        TypeOfClaimValidation.checkClaim("carry-forward", "uk-property-non-fhl").isEmpty shouldBe true
       }
 
       "provided with a string of 'carry-sideways'" in {
-        TypeOfClaimValidation.checkClaim("carry-sideways", "uk-property-non-fhl2").isEmpty shouldBe true
+        TypeOfClaimValidation.checkClaim("carry-sideways", "uk-property-non-fhl").isEmpty shouldBe true
       }
 
       "provided with a string of 'carry-forward-to-carry-sideways-general-income'" in {
-        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "uk-property-non-fhl2").isEmpty shouldBe true
+        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "uk-property-non-fhl").isEmpty shouldBe true
       }
 
       "provided with a string of 'carry-sideways-fhl'" in {
-        TypeOfClaimValidation.checkClaim("carry-sideways-fhl", "uk-property-non-fhl2").isEmpty shouldBe true
+        TypeOfClaimValidation.checkClaim("carry-sideways-fhl", "uk-property-non-fhl").isEmpty shouldBe true
       }
     }
 
@@ -89,11 +89,11 @@ class TypeOfClaimValidationSpec extends UnitSpec {
     "return TypeOfClaimFormatError when typeOfLoss is 'self-employment' and" when {
 
       "typeOfClaim is 'carry-sideways-fhl" in {
-        TypeOfClaimValidation.checkClaim("carry-sideways-fhl", "self-employment") shouldBe List(TypeOfClaimFormatError)
+        TypeOfClaimValidation.checkClaim("carry-sideways-fhl", "self-employment") shouldBe List(RuleTypeOfClaimInvalid)
       }
 
       "typeOfClaim is 'carry-forward-to-carry-sideways-general-income" in {
-        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "self-employment") shouldBe List(TypeOfClaimFormatError)
+        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "self-employment") shouldBe List(RuleTypeOfClaimInvalid)
       }
     }
   }

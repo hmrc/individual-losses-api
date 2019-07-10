@@ -30,6 +30,13 @@ class CreateBFLossValidatorSpec extends UnitSpec {
   private val validTypeOfLoss       = "self-employment"
   private val validSelfEmploymentId = "XAIS01234567890"
 
+  val emptyBody: JsValue = Json.parse(
+    s"""{
+       |
+       |
+       |}""".stripMargin
+  )
+
   def createRequestBodyJson(typeOfLoss: String = validTypeOfLoss,
                             selfEmploymentId: Option[String] = Some(validSelfEmploymentId),
                             taxYear: String = validTaxYear,
@@ -55,6 +62,13 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     "return no errors" when {
       "a valid request is supplied" in {
         validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
+      }
+    }
+
+    "return IncorrectOrEmptyBodySubmitted error" when {
+      "an incorrect or empty body is supplied" in {
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(emptyBody))) shouldBe
+          List(RuleIncorrectOrEmptyBodyError)
       }
     }
 

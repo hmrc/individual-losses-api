@@ -19,7 +19,6 @@ package v1.controllers.requestParsers.validators
 import play.api.libs.json.JsSuccess
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.LossClaim
-import v1.models.domain.TypeOfLoss._
 import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError, TypeOfLossFormatError}
 import v1.models.requestData.CreateLossClaimRawData
 
@@ -30,7 +29,8 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
 
   private val availableLossTypeNames = Seq("uk-property-non-fhl","self-employment")
 
-  private val validationSet = List(parameterFormatValidation, /*typeOfLossValidator, typeOfClaimValidator,*/ taxYearValidator, otherBodyFieldsValidator)
+  private val validationSet = List(parameterFormatValidation, typeOfLossValidator, typeOfClaimValidator,
+    bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
 
 
   private def parameterFormatValidation: CreateLossClaimRawData => List[List[MtdError]] = { data =>
@@ -39,20 +39,19 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
     )
   }
 
-  //Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
-//  private def typeOfLossValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
-//    val lossType = (data.body.json \ "typeOfLoss").validate[String] match {
-//      case JsSuccess(value, _) => validation(value)
-//
-//
-//    }
-//    print("////////////////////////////////")
-//    print(lossType)
-//    print("////////////////////////////////")
-//    print(availableLossTypeNames)
-//    List(
-//      if (availableLossTypeNames.contains(lossType)) Nil else List(TypeOfLossFormatError))
-//  }
+  //  Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
+  private def typeOfLossValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+    List(
+      (data.body.json \ "typeOfLoss").validate[String] match {
+        case JsSuccess(value, _) => value match {
+          case "self-employment" => NoValidationErrors
+          case "uk-property-non-fhl" => NoValidationErrors
+          case _ =>List(TypeOfLossFormatError)
+        }
+        case _ => List(RuleIncorrectOrEmptyBodyError)
+      }
+    )
+  }
 
   // Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
   private def typeOfClaimValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
