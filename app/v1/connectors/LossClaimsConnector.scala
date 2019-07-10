@@ -35,7 +35,7 @@ class LossClaimsConnector @Inject()(http: HttpClient, appConfig: AppConfig) exte
     val nino = createLossClaimsRequest.nino.nino
 
     def doIt(implicit hc: HeaderCarrier) =
-      http.POST[LossClaim, DesOutcome[CreateLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/$nino/loss-claims",
+      http.POST[LossClaim, DesOutcome[CreateLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino",
         createLossClaimsRequest.lossClaim)
 
     doIt(desHeaderCarrier(appConfig))

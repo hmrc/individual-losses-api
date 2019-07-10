@@ -50,7 +50,7 @@ class LossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Right(DesResponse(correlationId, CreateLossClaimsResponse(claimId)))
 
         MockedHttpClient
-          .post(s"$baseUrl/income-tax/$nino/loss-claims", lossClaim, desRequestHeaders: _*)
+          .post(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim, desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
@@ -62,7 +62,7 @@ class LossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
         MockedHttpClient
-          .post(s"$baseUrl/income-tax/$nino/loss-claims", lossClaim, desRequestHeaders: _*)
+          .post(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim, desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
@@ -74,7 +74,7 @@ class LossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockedHttpClient
-          .post(s"$baseUrl/income-tax/$nino/loss-claims", lossClaim, desRequestHeaders: _*)
+          .post(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim, desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
