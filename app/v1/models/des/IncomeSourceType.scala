@@ -17,6 +17,7 @@
 package v1.models.des
 
 import play.api.libs.json._
+import utils.enums.Enums
 import v1.models.domain.TypeOfLoss
 
 sealed trait IncomeSourceType {
@@ -32,10 +33,5 @@ object IncomeSourceType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property-fhl`
   }
 
-  implicit val reads: Reads[IncomeSourceType] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.incomeSourceType")) {
-    case "02" => `02`
-    case "04" => `04`
-  }
-
-  implicit val writes: Writes[IncomeSourceType] = Writes[IncomeSourceType](ts => JsString(ts.toString))
+  implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
 }

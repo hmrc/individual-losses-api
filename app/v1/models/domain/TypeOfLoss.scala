@@ -16,7 +16,8 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{ JsString, JsonValidationError, Reads, Writes }
+import play.api.libs.json.Format
+import utils.enums.Enums
 import v1.models.des.{ IncomeSourceType, LossType }
 
 sealed trait TypeOfLoss {
@@ -45,14 +46,8 @@ object TypeOfLoss {
     override def toLossType: Option[LossType] = Some(LossType.CLASS4)
   }
 
-  val parser: PartialFunction[String, TypeOfLoss] = {
-    case "self-employment"        => `self-employment`
-    case "self-employment-class4" => `self-employment-class4`
-    case "uk-property-non-fhl"    => `uk-property-non-fhl`
-    case "uk-property-fhl"        => `uk-property-fhl`
-  }
+  implicit val format: Format[TypeOfLoss] = Enums.format[TypeOfLoss]
 
-  implicit val reads: Reads[TypeOfLoss] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.typeOfLoss"))(parser)
+  val parser: PartialFunction[String, TypeOfLoss] = Enums.parser[TypeOfLoss]
 
-  implicit val writes: Writes[TypeOfLoss] = Writes[TypeOfLoss](ts => JsString(ts.toString))
 }
