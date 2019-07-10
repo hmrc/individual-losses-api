@@ -19,14 +19,14 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DesConnector, DesOutcome}
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, RetrieveBFLossResponse, ListBFLossesResponse}
+import v1.connectors.{BFLossConnector, DesOutcome}
+import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, ListBFLossesResponse, RetrieveBFLossResponse}
 import v1.models.requestData._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockDesConnector extends MockFactory {
-  val connector: DesConnector = mock[DesConnector]
+  val connector: BFLossConnector = mock[BFLossConnector]
 
   object MockedDesConnector {
 

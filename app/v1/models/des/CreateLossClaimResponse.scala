@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package v1.connectors
+package v1.models.des
 
-import config.AppConfig
-import play.api.Logger
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
+import play.api.libs.json.{Json, Reads, Writes, __}
 
-trait DesConnector {
+case class CreateLossClaimResponse(id: String)
 
-  val logger = Logger(this.getClass)
+object CreateLossClaimResponse {
+  implicit val writes: Writes[CreateLossClaimResponse] = Json.writes[CreateLossClaimResponse]
 
-  def desHeaderCarrier(appConfig: AppConfig)(implicit hc: HeaderCarrier): HeaderCarrier =
-    hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders("Environment" -> appConfig.desEnv)
+  implicit val desToMtdReads: Reads[CreateLossClaimResponse] =
+    (__ \ "claimId").read[String].map(CreateLossClaimResponse.apply)
 
 }
+
+
+

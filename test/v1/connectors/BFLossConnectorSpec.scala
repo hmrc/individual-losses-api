@@ -26,7 +26,7 @@ import v1.models.requestData._
 
 import scala.concurrent.Future
 
-class DesConnectorSpec extends ConnectorSpec {
+class BFLossConnectorSpec extends ConnectorSpec {
 
   lazy val baseUrl = "test-BaseUrl"
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -35,7 +35,7 @@ class DesConnectorSpec extends ConnectorSpec {
   val lossId = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: DesConnector = new DesConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: BFLossConnector = new BFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
@@ -81,7 +81,7 @@ class DesConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def createBFLossResult(connector: DesConnector): DesOutcome[CreateBFLossResponse] =
+    def createBFLossResult(connector: BFLossConnector): DesOutcome[CreateBFLossResponse] =
       await(
         connector.createBFLoss(
           CreateBFLossRequest(
@@ -136,7 +136,7 @@ class DesConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def amendBFLossResult(connector: DesConnector): DesOutcome[AmendBFLossResponse] =
+    def amendBFLossResult(connector: BFLossConnector): DesOutcome[AmendBFLossResponse] =
       await(
         connector.amendBFLoss(
           AmendBFLossRequest(
@@ -184,7 +184,7 @@ class DesConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def deleteBFLossResult(connector: DesConnector): DesOutcome[Unit] =
+    def deleteBFLossResult(connector: BFLossConnector): DesOutcome[Unit] =
       await(
         connector.deleteBFLoss(
           DeleteBFLossRequest(
@@ -196,7 +196,7 @@ class DesConnectorSpec extends ConnectorSpec {
   "retrieveBFLoss" should {
     val retrieveResponse = RetrieveBFLossResponse("2018-19", TypeOfLoss.`self-employment`, Some("fakeId"), 2000.25, "dateString")
 
-    def retrieveBFLossResult(connector: DesConnector): DesOutcome[RetrieveBFLossResponse] = {
+    def retrieveBFLossResult(connector: BFLossConnector): DesOutcome[RetrieveBFLossResponse] = {
       await(
         connector.retrieveBFLoss(
           RetrieveBFLossRequest(
@@ -245,12 +245,10 @@ class DesConnectorSpec extends ConnectorSpec {
   }
 
   "listBFLosses" should {
-
-    def listBFLossesResult(connector: DesConnector,
+    def listBFLossesResult(connector: BFLossConnector,
                            taxYear: Option[DesTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
                            selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse] = {
-
       await(
         connector.listBFLosses(
           ListBFLossesRequest(
