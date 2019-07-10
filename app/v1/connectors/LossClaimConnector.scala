@@ -21,21 +21,21 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.CreateLossClaimsResponse
+import v1.models.des.CreateLossClaimResponse
 import v1.models.domain.LossClaim
-import v1.models.requestData.CreateLossClaimsRequest
+import v1.models.requestData.CreateLossClaimRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LossClaimsConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
+class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
 
-  def createLossClaim(createLossClaimsRequest: CreateLossClaimsRequest)(implicit hc: HeaderCarrier,
-                                                                         ec: ExecutionContext): Future[DesOutcome[CreateLossClaimsResponse]] = {
+  def createLossClaim(createLossClaimsRequest: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                                       ec: ExecutionContext): Future[DesOutcome[CreateLossClaimResponse]] = {
     val nino = createLossClaimsRequest.nino.nino
 
     def doIt(implicit hc: HeaderCarrier) =
-      http.POST[LossClaim, DesOutcome[CreateLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino",
+      http.POST[LossClaim, DesOutcome[CreateLossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino",
         createLossClaimsRequest.lossClaim)
 
     doIt(desHeaderCarrier(appConfig))

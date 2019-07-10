@@ -19,9 +19,9 @@ package v1.models.des
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
-class CreateLossClaimsResponseSpec extends UnitSpec {
+class CreateLossClaimResponseSpec extends UnitSpec {
 
-  val createClaimsResponse = CreateLossClaimsResponse(id = "AAZZ1234567890a")
+  val createClaimsResponse = CreateLossClaimResponse(id = "AAZZ1234567890a")
 
 
   val createClaimsResponseJson: JsValue = Json.parse(
@@ -41,7 +41,7 @@ class CreateLossClaimsResponseSpec extends UnitSpec {
   "reads" when {
     "passed valid LossIdResponse JSON" should {
       "return a valid model" in {
-        createClaimsResponseDesJson.as[CreateLossClaimsResponse] shouldBe createClaimsResponse
+        createClaimsResponseDesJson.as[CreateLossClaimResponse] shouldBe createClaimsResponse
       }
 
     }

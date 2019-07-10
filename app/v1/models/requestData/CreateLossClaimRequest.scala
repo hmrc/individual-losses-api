@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.models.requestData
 
-import play.api.libs.json.{Json, Reads, Writes, __}
+import uk.gov.hmrc.domain.Nino
+import v1.models.domain.LossClaim
 
-case class CreateLossClaimsResponse(id: String)
-
-object CreateLossClaimsResponse {
-  implicit val writes: Writes[CreateLossClaimsResponse] = Json.writes[CreateLossClaimsResponse]
-
-  implicit val desToMtdReads: Reads[CreateLossClaimsResponse] =
-    (__ \ "claimId").read[String].map(CreateLossClaimsResponse.apply)
-
-}
-
-
-
+case class CreateLossClaimRequest(nino: Nino, lossClaim: LossClaim)

@@ -26,7 +26,7 @@ import v1.models.requestData._
 
 import scala.concurrent.Future
 
-class LossClaimsConnectorSpec extends ConnectorSpec {
+class LossClaimConnectorSpec extends ConnectorSpec {
 
   lazy val baseUrl = "test-BaseUrl"
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -35,7 +35,7 @@ class LossClaimsConnectorSpec extends ConnectorSpec {
   val claimId = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: LossClaimsConnector = new LossClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
@@ -47,7 +47,7 @@ class LossClaimsConnectorSpec extends ConnectorSpec {
     val lossClaim = LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward` ,Some("XKIS00000000988"))
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, CreateLossClaimsResponse(claimId)))
+        val expected = Right(DesResponse(correlationId, CreateLossClaimResponse(claimId)))
 
         MockedHttpClient
           .post(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim, desRequestHeaders: _*)
@@ -81,10 +81,10 @@ class LossClaimsConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def createLossClaimsResult(connector: LossClaimsConnector): DesOutcome[CreateLossClaimsResponse] =
+    def createLossClaimsResult(connector: LossClaimConnector): DesOutcome[CreateLossClaimResponse] =
       await(
         connector.createLossClaim(
-          CreateLossClaimsRequest(
+          CreateLossClaimRequest(
             nino = Nino(nino),
             lossClaim
           )))
