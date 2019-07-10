@@ -18,13 +18,13 @@ package v1.services
 
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.DesConnector
+import v1.connectors.BFLossConnector
 import v1.models.errors._
 import v1.models.requestData.AmendBFLossRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendBFLossService @Inject()(connector: DesConnector) extends DesServiceSupport {
+class AmendBFLossService @Inject()(connector: BFLossConnector) extends DesServiceSupport {
 
   /**
     * Service name for logging

@@ -18,30 +18,29 @@ package v1.services
 
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.BFLossConnector
+import v1.connectors.LossClaimConnector
 import v1.models.errors._
-import v1.models.requestData.CreateBFLossRequest
+import v1.models.requestData.CreateLossClaimRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServiceSupport {
+class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
 
   /**
     * Service name for logging
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def createBFLoss(request: CreateBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CreateBFLossOutcome] = {
-
-    connector.createBFLoss(request).map {
-      mapToVendorDirect("createBFLoss", mappingDesToMtdError)
+  def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CreateLossClaimOutcome] = {
+    connector.createLossClaim(request).map {
+      mapToVendorDirect("createLossClaim", mappingDesToMtdError)
     }
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "DUPLICATE"                 -> RuleDuplicateSubmissionError,
+      "DUPLICATE"                 -> RuleDuplicateClaimSubmissionError,
       "NOT_FOUND_INCOME_SOURCE"   -> NotFoundError,
       "INVALID_PAYLOAD"           -> DownstreamError,
       "SERVER_ERROR"              -> DownstreamError,

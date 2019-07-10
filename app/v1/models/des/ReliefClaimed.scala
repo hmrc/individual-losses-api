@@ -18,7 +18,6 @@ package v1.models.des
 
 import play.api.libs.json._
 import v1.models.domain.TypeOfClaim
-import v1.models.domain.TypeOfClaim.parser
 
 sealed trait ReliefClaimed {
   def toTypeOfClaim: TypeOfClaim
