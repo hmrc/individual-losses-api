@@ -21,23 +21,22 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, ListBFLossesResponse, RetrieveBFLossResponse}
-import v1.models.domain.{AmendBFLoss, BFLoss}
-import v1.models.requestData._
+import v1.models.des.CreateLossClaimsResponse
+import v1.models.domain.LossClaim
+import v1.models.requestData.CreateLossClaimsRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
+class LossClaimsConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
 
-  def createLossClaim(createBFLossRequest: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                             ec: ExecutionContext): Future[DesOutcome[CreateBFLossResponse]] = {
-
-    val nino = createBFLossRequest.nino.nino
+  def createLossClaim(createLossClaimsRequest: CreateLossClaimsRequest)(implicit hc: HeaderCarrier,
+                                                                         ec: ExecutionContext): Future[DesOutcome[CreateLossClaimsResponse]] = {
+    val nino = createLossClaimsRequest.nino.nino
 
     def doIt(implicit hc: HeaderCarrier) =
-      http.POST[BFLoss, DesOutcome[CreateBFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino",
-                                                          createBFLossRequest.broughtForwardLoss)
+      http.POST[LossClaim, DesOutcome[CreateLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/$nino/loss-claims",
+        createLossClaimsRequest.lossClaim)
 
     doIt(desHeaderCarrier(appConfig))
   }
