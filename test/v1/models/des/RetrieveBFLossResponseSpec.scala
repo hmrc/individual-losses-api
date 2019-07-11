@@ -54,8 +54,6 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       "provided with valid property loss data" in {
         val result = validPropertyJson.validate[RetrieveBFLossResponse]
 
-        println(result)
-
         result.isSuccess shouldBe true
         result.get shouldBe RetrieveBFLossResponse("2017-18", TypeOfLoss.`uk-property-fhl`, None, 1000.25, testDateTime.toString)
       }

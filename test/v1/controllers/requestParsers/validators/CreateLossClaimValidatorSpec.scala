@@ -62,11 +62,26 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
   val validator = new CreateLossClaimValidator
 
   "running a validation" should {
+
     "return no errors" when {
-      "a valid request is supplied" in {
+
+      "a valid employment request is supplied" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
       }
+
+      "a valid property request is supplied" in {
+        validator.validate(CreateLossClaimRawData(validNino,
+          AnyContentAsJson(createRequestBodyJson(
+            typeOfLoss = "uk-property-non-fhl", typeOfClaim = "carry-sideways", selfEmploymentId = None)))) shouldBe Nil
+      }
+
+      "a valid property request with 'carry-sideways-fhl' is supplied" in {
+        validator.validate(CreateLossClaimRawData(validNino,
+          AnyContentAsJson(createRequestBodyJson(typeOfLoss = "uk-property-non-fhl",
+            typeOfClaim = "carry-sideways-fhl", selfEmploymentId = None)))) shouldBe Nil
+      }
     }
+
 
     "return IncorrectOrEmptyBodySubmitted error" when {
       "an incorrect or empty body is supplied" in {
@@ -115,7 +130,6 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
           List(TypeOfLossFormatError)
       }
 
-
       "there is also a self employment id" in {
         validator.validate(
           CreateLossClaimRawData(
@@ -139,26 +153,27 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
             AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", selfEmploymentId = None)))) shouldBe
           List(RuleSelfEmploymentId)
       }
+    }
 
-      "return RuleTypeOfClaimInvalid error" when {
-        "an incorrect typeOfClaim is used for self-employment typeOfLoss" in {
-          validator.validate(
-            CreateLossClaimRawData(validNino,
-              AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways-general-income")))) shouldBe
-            List(RuleTypeOfClaimInvalid)
-        }
-      }
-
-
-      "return multiple errors" when {
-        "request supplied has multiple errors" in {
-          validator.validate(
-            CreateLossClaimRawData(
-              validNino,
-              AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", selfEmploymentId = None, taxYear = "2010-11")))) shouldBe
-            List(RuleTaxYearNotSupportedError, RuleSelfEmploymentId)
-        }
+    "return RuleTypeOfClaimInvalid error" when {
+      "an incorrect typeOfClaim is used for self-employment typeOfLoss" in {
+        validator.validate(
+          CreateLossClaimRawData(validNino,
+            AnyContentAsJson(createRequestBodyJson(
+              typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways-general-income")))) shouldBe
+          List(RuleTypeOfClaimInvalid)
       }
     }
+
+    "return multiple errors" when {
+      "request supplied has multiple errors" in {
+        validator.validate(
+          CreateLossClaimRawData(
+            validNino,
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", selfEmploymentId = None, taxYear = "2010-11")))) shouldBe
+          List(RuleTaxYearNotSupportedError, RuleSelfEmploymentId)
+      }
+    }
+
   }
 }
