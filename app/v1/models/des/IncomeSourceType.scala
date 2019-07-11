@@ -32,6 +32,7 @@ object IncomeSourceType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property-fhl`
   }
 
+
   implicit val reads: Reads[IncomeSourceType] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.incomeSourceType")) {
     case "02" => `02`
     case "04" => `04`

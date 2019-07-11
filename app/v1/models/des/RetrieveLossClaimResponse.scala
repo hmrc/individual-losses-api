@@ -33,10 +33,12 @@ object RetrieveLossClaimResponse {
 
   implicit val reads: Reads[RetrieveLossClaimResponse] = (
     (__ \ "taxYearClaimedFor").read[String].map(DesTaxYear.fromDes).map(_.toString) and
-      (__ \ "incomeSourceType").read[LossType].map(_.toTypeOfLoss) and
+      ((__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
+        //For SE scenario where incomeSourceType doesn't exist
+        orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (__ \ "incomeSourceId").readNullable[String] and
       (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
-      (__ \ "submissionId").read[String]
+      (__ \ "submissionDate").read[String]
     )(RetrieveLossClaimResponse.apply _)
 
 }

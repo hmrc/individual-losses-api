@@ -29,12 +29,28 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
   private val validTaxYear          = "2019-20"
   private val validSelfEmploymentId = "XAIS01234567890"
 
+  val employmentModel = RetrieveLossClaimResponse(
+    validTaxYear,
+    TypeOfLoss.`self-employment`,
+    Some(validSelfEmploymentId),
+    TypeOfClaim.`carry-forward`,
+    testDateTime.toString
+  )
+
+  val propertyModel = RetrieveLossClaimResponse(
+    validTaxYear,
+    TypeOfLoss.`uk-property-non-fhl`,
+    None,
+    TypeOfClaim.`carry-forward`,
+    testDateTime.toString
+  )
+
+
   val validSEJson: JsValue = Json.parse(s"""
                                            |{
-                                           | "incomeSourceType" : "self-employment",
-                                           | "incomeSourceId" : "X2IS12356589871",
+                                           | "incomeSourceId" : "XAIS01234567890",
                                            | "reliefClaimed" : "CF",
-                                           | "taxYear" : "2020",
+                                           | "taxYearClaimedFor" : "2020",
                                            | "submissionDate" : "${testDateTime.toString}"
                                            |}
     """.stripMargin)
@@ -43,7 +59,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
                                                  |{
                                                  | "incomeSourceType" : "02",
                                                  | "reliefClaimed" : "CF",
-                                                 | "taxYear" : "2020",
+                                                 | "taxYearClaimedFor" : "2020",
                                                  | "submissionDate" : "${testDateTime.toString}"
                                                  |}
     """.stripMargin)
@@ -53,81 +69,82 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
     "return a validated model" when {
 
       "provided with valid self-employed loss data" in {
-        val result = validSEJson.validate[RetrieveLossClaimResponse]
 
+        val result = validSEJson.validate[RetrieveLossClaimResponse]
         result.isSuccess shouldBe true
-        result.get shouldBe
-          RetrieveLossClaimResponse(validTaxYear, TypeOfLoss.`self-employment`, Some(validSelfEmploymentId), TypeOfClaim.`carry-forward`, testDateTime.toString)
+        result.get shouldBe employmentModel
+
       }
 
       "provided with valid property loss data" in {
-        val result = validPropertyJson.validate[RetrieveBFLossResponse]
+        val result = validPropertyJson.validate[RetrieveLossClaimResponse]
 
         result.isSuccess shouldBe true
-        result.get shouldBe
-          RetrieveLossClaimResponse(validTaxYear, TypeOfLoss.`self-employment`, None, TypeOfClaim.`carry-forward`, testDateTime.toString)
+        result.get shouldBe propertyModel
       }
     }
 
-    /*    "return a failed model" when {
 
-          val propertyRequiredElements = Seq("taxYear", "incomeSourceType", "broughtForwardLossAmount", "submissionDate")
-          val seRequiredElements       = Seq("taxYear", "lossType", "broughtForwardLossAmount", "submissionDate")
+    "return a failed model" when {
 
-          propertyRequiredElements.foreach { element =>
-            s"the required element '$element' is missing from property data type" in {
-              val invalidJson = validPropertyJson.as[JsObject] - element
-              val result      = invalidJson.validate[RetrieveBFLossResponse]
+      val propertyRequiredElements = Seq("taxYearClaimedFor", "reliefClaimed", "submissionDate")
+      val seRequiredElements = Seq("taxYearClaimedFor", "reliefClaimed", "submissionDate")
 
-              result.isError shouldBe true
-            }
-          }
+      propertyRequiredElements.foreach { element =>
+        s"the required element '$element' is missing from property data type" in {
+          val invalidJson = validPropertyJson.as[JsObject] - element
+          val result = invalidJson.validate[RetrieveLossClaimResponse]
 
-          seRequiredElements.foreach { element =>
-            s"the required element '$element' is missing from se data type" in {
-              val invalidJson = validSEJson.as[JsObject] - element
-              val result      = invalidJson.validate[RetrieveBFLossResponse]
+          result.isError shouldBe true
+        }
+      }
 
-              result.isError shouldBe true
-            }
-          }
-        }*/
-  }
-  /*
+      seRequiredElements.foreach { element =>
+        s"the required element '$element' is missing from se data type" in {
+          val invalidJson = validSEJson.as[JsObject] - element
+          val result = invalidJson.validate[RetrieveLossClaimResponse]
+
+          result.isError shouldBe true
+        }
+      }
+    }
+
     "Json writes" should {
 
       "successfully produce json" when {
 
         "provided with a property model" in {
-          val model = RetrieveBFLossResponse("2017-18", TypeOfLoss.`uk-property-fhl`, None, 2500.55, testDateTime.toString)
 
-          val expectedPropertyJson: JsValue = Json.parse(s"""
-              |{
-              | "taxYear" : "2017-18",
-              | "typeOfLoss" : "uk-property-fhl",
-              | "lossAmount" : 2500.55,
-              | "lastModified" : "${testDateTime.toString}"
-              |}
-            """.stripMargin)
 
-          Json.toJson(model) shouldBe expectedPropertyJson
-        }
-
-        "provided with a se model" in {
-          val model = RetrieveBFLossResponse("2018-19", TypeOfLoss.`self-employment`, Some("someId"), 2500.56, testDateTime.toString)
-
-          val expectedSeJson: JsValue = Json.parse(s"""
+          val expectedPropertyJson: JsValue = Json.parse(
+            s"""
                |{
-               | "taxYear" : "2018-19",
-               | "typeOfLoss" : "self-employment",
-               | "selfEmploymentId" : "someId",
-               | "lossAmount" : 2500.56,
+               | "typeOfLoss": "uk-property-non-fhl",
+               | "typeOfClaim": "carry-forward",
+               | "taxYear": "2019-20",
                | "lastModified" : "${testDateTime.toString}"
                |}
             """.stripMargin)
 
-          Json.toJson(model) shouldBe expectedSeJson
+          Json.toJson(propertyModel) shouldBe expectedPropertyJson
+        }
+
+        "provided with a se model" in {
+
+          val expectedSEJson: JsValue = Json.parse(
+            s"""
+               |{
+               | "typeOfLoss": "self-employment",
+               |  "selfEmploymentId": "XAIS01234567890",
+               | "typeOfClaim": "carry-forward",
+               | "taxYear": "2019-20",
+               | "lastModified" : "${testDateTime.toString}"
+               |}
+            """.stripMargin)
+
+          Json.toJson(employmentModel) shouldBe expectedSEJson
         }
       }
-    }*/
+    }
+  }
 }
