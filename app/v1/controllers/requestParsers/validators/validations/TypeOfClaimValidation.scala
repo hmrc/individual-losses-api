@@ -17,11 +17,19 @@
 package v1.controllers.requestParsers.validators.validations
 
 import v1.models.domain.TypeOfClaim
-import v1.models.errors.{MtdError, TypeOfClaimFormatError}
+import v1.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 object TypeOfClaimValidation {
 
   def validate(typeOfClaim: String): List[MtdError] = {
     if (TypeOfClaim.parser.isDefinedAt(typeOfClaim)) NoValidationErrors else List(TypeOfClaimFormatError)
   }
+
+  def checkClaim(typeOfClaim: String, typeOfLoss: String): List[MtdError] =
+    (typeOfLoss, typeOfClaim) match {
+      case ("uk-property-non-fhl", _) => NoValidationErrors
+      case ("self-employment","carry-forward") => NoValidationErrors
+      case ("self-employment", "carry-sideways") => NoValidationErrors
+      case (_,_) => List(RuleTypeOfClaimInvalid)
+    }
 }

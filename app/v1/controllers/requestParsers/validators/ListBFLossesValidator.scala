@@ -39,7 +39,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] {
 
   private def postFormatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(
-      data.taxYear.map(MtdTaxYearValidation.validate(_, RuleTaxYearNotSupportedError)).getOrElse(Nil),
+      data.taxYear.map(MtdTaxYearValidation.validate(_, RuleTaxYearNotSupportedError, isBFLoss = true)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
         case Some(lossType) => SelfEmploymentIdValidation.validate(lossType, data.selfEmploymentId)
         case None           => if (data.selfEmploymentId.isDefined) List(RuleSelfEmploymentId) else Nil

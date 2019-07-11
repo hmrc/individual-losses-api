@@ -24,27 +24,32 @@ class MtdTaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
 
   "validate" should {
     "return no errors" when {
-      "a tax year greater than 2017 is supplied" in {
+      "a tax year greater than 2017 is supplied for brought forward losses" in {
 
-        val validTaxYear = "2018-19"
-        val validationResult = MtdTaxYearValidation.validate(validTaxYear, RuleTaxYearNotSupportedError)
-        validationResult.isEmpty shouldBe true
-
-      }
-
-      "the minimum allowed tax year is supplied" in {
         val validTaxYear = "2017-18"
-        val validationResult = MtdTaxYearValidation.validate(validTaxYear, RuleTaxYearNotSupportedError)
+        val validationResult = MtdTaxYearValidation.validate(validTaxYear, RuleTaxYearNotSupportedError, isBFLoss = true)
+        validationResult.isEmpty shouldBe true
+
+      }
+
+      "the minimum allowed tax year is supplied for brought forward losses" in {
+        val validTaxYear = "2016-17"
+        val validationResult = MtdTaxYearValidation.validate(validTaxYear, RuleTaxYearNotSupportedError, isBFLoss = true)
         validationResult.isEmpty shouldBe true
       }
 
+      "the minimum allowed tax year is supplied for loss claims" in {
+        val validTaxYear = "2019-20"
+        val validationResult = MtdTaxYearValidation.validate(validTaxYear, RuleTaxYearNotSupportedError)
+        validationResult.isEmpty shouldBe true
+      }
     }
 
     "return the given error" when {
       "a tax year below 2017 is supplied" in {
 
         val invalidTaxYear = "2015-16"
-        val validationResult = MtdTaxYearValidation.validate(invalidTaxYear, RuleTaxYearNotSupportedError)
+        val validationResult = MtdTaxYearValidation.validate(invalidTaxYear, RuleTaxYearNotSupportedError,isBFLoss = true)
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe RuleTaxYearNotSupportedError

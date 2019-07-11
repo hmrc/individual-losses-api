@@ -23,7 +23,7 @@ import v1.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFieldsValidator1, bodyFormatValidator, bodyFieldsValidator2, bodyFieldsValidator3)
+  private val validationSet = List(parameterFormatValidation, typeOfLossValidator, bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
 
   private def parameterFormatValidation: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
@@ -32,7 +32,7 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
   }
 
   // Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
-  private def bodyFieldsValidator1: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def typeOfLossValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
       JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfLossValidation.validate)
     )
@@ -44,17 +44,17 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
     )
   }
 
-  private def bodyFieldsValidator2: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def taxYearValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
       TaxYearValidation.validate(req.taxYear)
     )
   }
 
-  private def bodyFieldsValidator3: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def otherBodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
-      MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError),
+      MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError, true),
       SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
       AmountValidation.validate(req.lossAmount)
     )

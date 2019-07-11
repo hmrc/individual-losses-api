@@ -26,9 +26,16 @@ import v1.models.requestData.CreateBFLossRawData
 class CreateBFLossValidatorSpec extends UnitSpec {
 
   private val validNino             = "AA123456A"
-  private val validTaxYear          = "2018-19"
+  private val validTaxYear          = "2016-17"
   private val validTypeOfLoss       = "self-employment"
   private val validSelfEmploymentId = "XAIS01234567890"
+
+  val emptyBody: JsValue = Json.parse(
+    s"""{
+       |
+       |
+       |}""".stripMargin
+  )
 
   def createRequestBodyJson(typeOfLoss: String = validTypeOfLoss,
                             selfEmploymentId: Option[String] = Some(validSelfEmploymentId),
@@ -55,6 +62,13 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     "return no errors" when {
       "a valid request is supplied" in {
         validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
+      }
+    }
+
+    "return IncorrectOrEmptyBodySubmitted error" when {
+      "an incorrect or empty body is supplied" in {
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(emptyBody))) shouldBe
+          List(RuleIncorrectOrEmptyBodyError)
       }
     }
 
@@ -86,7 +100,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
     "return RuleTaxYearNotSupportedError error" when {
       "an out of range tax year is supplied" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2016-17")))) shouldBe
+        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2015-16")))) shouldBe
           List(RuleTaxYearNotSupportedError)
       }
     }

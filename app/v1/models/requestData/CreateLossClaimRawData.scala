@@ -16,23 +16,6 @@
 
 package v1.models.requestData
 
-/**
-  * Represents a tax year for DES
-  *
-  * @param value the tax year string (where 2018 represents 2017-18)
-  */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
+import play.api.mvc.AnyContentAsJson
 
-object DesTaxYear {
-
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
-    */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(2) + taxYear.drop(5))
-
-  def fromDes(taxYear: String): DesTaxYear =
-    DesTaxYear((taxYear.toInt -1) + "-" + taxYear.drop(2))
-}
+case class CreateLossClaimRawData(nino: String, body: AnyContentAsJson) extends RawData

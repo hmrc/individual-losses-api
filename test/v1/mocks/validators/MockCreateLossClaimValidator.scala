@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.mocks.validators
 
-import config.FixedConfig
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.CreateLossClaimValidator
 import v1.models.errors.MtdError
-import v1.models.requestData.DesTaxYear
+import v1.models.requestData.CreateLossClaimRawData
 
-object MtdTaxYearValidation extends FixedConfig {
+class MockCreateLossClaimValidator extends MockFactory {
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, error: MtdError, isBFLoss: Boolean = false): List[MtdError] = {
+  val mockValidator: CreateLossClaimValidator = mock[CreateLossClaimValidator]
 
-    val minTaxYear = if (isBFLoss) minimumTaxYearBFLoss else minimumTaxYearLossClaim
-
-    val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
-
-    if (desTaxYear >= minTaxYear || TaxYearValidation.validate(taxYear) != Nil) NoValidationErrors else List(error)
+  object MockValidator {
+    def validate(data: CreateLossClaimRawData): CallHandler1[CreateLossClaimRawData, List[MtdError]] = {
+      (mockValidator.validate(_: CreateLossClaimRawData))
+        .expects(data)
+    }
   }
 }
