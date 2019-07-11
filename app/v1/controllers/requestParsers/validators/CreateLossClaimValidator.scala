@@ -25,10 +25,6 @@ import v1.models.requestData.CreateLossClaimRawData
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
 
-  /*  private val validationSet = List(parameterFormatValidation, typeOfLossValidator, bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)*/
-
-  private val availableLossTypeNames = Seq("uk-property-non-fhl","self-employment")
-
   private val validationSet = List(parameterFormatValidation, typeOfLossValidator, typeOfClaimValidator,
     bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
 
@@ -77,7 +73,8 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
     val req = data.body.json.as[LossClaim]
     List(
       MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError),
-      SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId)
+      SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
+      TypeOfClaimValidation.checkClaim(req.typeOfClaim.toString, req.typeOfLoss.toString)
     )
   }
 

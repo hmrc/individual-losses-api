@@ -140,6 +140,16 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
           List(RuleSelfEmploymentId)
       }
 
+      "return RuleTypeOfClaimInvalid error" when {
+        "an incorrect typeOfClaim is used for self-employment typeOfLoss" in {
+          validator.validate(
+            CreateLossClaimRawData(validNino,
+              AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways-general-income")))) shouldBe
+            List(RuleTypeOfClaimInvalid)
+        }
+      }
+
+
       "return multiple errors" when {
         "request supplied has multiple errors" in {
           validator.validate(

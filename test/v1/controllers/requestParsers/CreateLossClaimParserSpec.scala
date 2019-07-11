@@ -20,28 +20,28 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.validators.MockCreateBFLossValidator
-import v1.models.domain.{BFLoss, TypeOfLoss}
+import v1.mocks.validators.MockCreateLossClaimValidator
+import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.requestData._
 
 class CreateLossClaimParserSpec extends UnitSpec {
   val nino = "AA123456B"
-  val taxYear = "2017-18"
+  val taxYear = "2019-20"
 
   private val requestBodyJson = Json.parse(
     s"""{
        |  "typeOfLoss" : "self-employment",
        |  "selfEmploymentId" : "XAIS01234567890",
        |  "taxYear" : "$taxYear",
-       |  "lossAmount" : 1000
+       |  "typeOfClaim" : "carry-forward"
        |}""".stripMargin)
 
   val inputData =
-    CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
+    CreateLossClaimRawData(nino, AnyContentAsJson(requestBodyJson))
 
-  trait Test extends MockCreateBFLossValidator {
-    lazy val parser = new CreateBFLossParser(mockValidator)
+  trait Test extends MockCreateLossClaimValidator {
+    lazy val parser = new CreateLossClaimParser(mockValidator)
   }
 
   "parse" should {
@@ -51,7 +51,7 @@ class CreateLossClaimParserSpec extends UnitSpec {
         MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(CreateBFLossRequest(Nino(nino), BFLoss(TypeOfLoss.`self-employment`, Some("XAIS01234567890"), taxYear, 1000)))
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XAIS01234567890"))))
       }
     }
 
