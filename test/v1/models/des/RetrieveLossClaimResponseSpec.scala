@@ -33,7 +33,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
     validTaxYear,
     TypeOfLoss.`self-employment`,
     Some(validSelfEmploymentId),
-    TypeOfClaim.`carry-forward`,
+    TypeOfClaim.`carry-sideways`,
     testDateTime.toString
   )
 
@@ -49,7 +49,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
   val validSEJson: JsValue = Json.parse(s"""
                                            |{
                                            | "incomeSourceId" : "XAIS01234567890",
-                                           | "reliefClaimed" : "CF",
+                                           | "reliefClaimed" : "CSGI",
                                            | "taxYearClaimedFor" : "2020",
                                            | "submissionDate" : "${testDateTime.toString}"
                                            |}
@@ -68,7 +68,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
 
     "return a validated model" when {
 
-      "provided with valid self-employed loss data" in {
+      "provided with valid self-employment loss data" in {
 
         val result = validSEJson.validate[RetrieveLossClaimResponse]
         result.isSuccess shouldBe true
@@ -113,8 +113,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
 
       "successfully produce json" when {
 
-        "provided with a property model" in {
-
+        "provided a carry-forward property model" in {
 
           val expectedPropertyJson: JsValue = Json.parse(
             s"""
@@ -129,6 +128,36 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
           Json.toJson(propertyModel) shouldBe expectedPropertyJson
         }
 
+        "provided a carry-forward-to-carry-sideways-general-income property model" in {
+
+          val expectedPropertyJson: JsValue = Json.parse(
+            s"""
+               |{
+               | "typeOfLoss": "uk-property-non-fhl",
+               | "typeOfClaim": "carry-forward-to-carry-sideways-general-income",
+               | "taxYear": "2019-20",
+               | "lastModified" : "${testDateTime.toString}"
+               |}
+            """.stripMargin)
+
+          Json.toJson(propertyModel.copy(typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways-general-income`)) shouldBe expectedPropertyJson
+        }
+
+        "provided a carry-sideways-fhl property model" in {
+
+          val expectedPropertyJson: JsValue = Json.parse(
+            s"""
+               |{
+               | "typeOfLoss": "uk-property-non-fhl",
+               | "typeOfClaim": "carry-sideways-fhl",
+               | "taxYear": "2019-20",
+               | "lastModified" : "${testDateTime.toString}"
+               |}
+            """.stripMargin)
+
+          Json.toJson(propertyModel.copy(typeOfClaim = TypeOfClaim.`carry-sideways-fhl`)) shouldBe expectedPropertyJson
+        }
+
         "provided with a se model" in {
 
           val expectedSEJson: JsValue = Json.parse(
@@ -136,7 +165,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
                |{
                | "typeOfLoss": "self-employment",
                |  "selfEmploymentId": "XAIS01234567890",
-               | "typeOfClaim": "carry-forward",
+               | "typeOfClaim": "carry-sideways",
                | "taxYear": "2019-20",
                | "lastModified" : "${testDateTime.toString}"
                |}

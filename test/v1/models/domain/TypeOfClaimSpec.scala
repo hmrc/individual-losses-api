@@ -17,7 +17,7 @@
 package v1.models.domain
 
 import support.UnitSpec
-import v1.models.des.{IncomeSourceType, LossType, ReliefClaimed}
+import v1.models.des.ReliefClaimed
 import v1.models.domain.TypeOfClaim._
 
 class TypeOfClaimSpec extends UnitSpec {

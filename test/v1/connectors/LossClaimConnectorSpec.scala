@@ -16,6 +16,8 @@
 
 package v1.connectors
 
+import java.time.LocalDateTime
+
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.{MockAppConfig, MockHttpClient}
 import v1.models.des._
@@ -44,7 +46,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
   }
 
   "create LossClaim" when {
-    val lossClaim = LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward` ,Some("XKIS00000000988"))
+    val lossClaim = LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
         val expected = Right(DesResponse(correlationId, CreateLossClaimResponse(claimId)))
@@ -88,5 +90,72 @@ class LossClaimConnectorSpec extends ConnectorSpec {
             nino = Nino(nino),
             lossClaim
           )))
+  }
+
+
+  "retrieveLossClaim" should {
+
+    val testDateTime: LocalDateTime = LocalDateTime.now()
+    val validTaxYear = "2019-20"
+    val validSelfEmploymentId = "XAIS01234567890"
+    val nino = "AA123456A"
+    val lossId = "AAZZ1234567890a"
+
+
+    val retrieveResponse = RetrieveLossClaimResponse(
+      validTaxYear,
+      TypeOfLoss.`self-employment`,
+      Some(validSelfEmploymentId),
+      TypeOfClaim.`carry-forward`,
+      testDateTime.toString
+    )
+
+    def retrieveLossClaimResult(connector: LossClaimConnector): DesOutcome[RetrieveLossClaimResponse] = {
+      await(
+        connector.retrieveLossClaim(
+          RetrieveLossClaimRequest(
+            nino = Nino(nino),
+            claimId = claimId
+          )
+        )
+      )
+    }
+
+    "return a successful response and correlationId" when {
+
+      "provided with a valid request" in new Test {
+        val expected = Left(DesResponse(correlationId, retrieveResponse))
+
+        MockedHttpClient
+          .get(s"$baseUrl/income-tax/claims-for-relief/$nino/$lossId", desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        retrieveLossClaimResult(connector) shouldBe expected
+      }
+    }
+
+
+    "return an unsuccessful response" when {
+
+      "provided with a single error" in new Test {
+        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+
+        MockedHttpClient
+          .get(s"$baseUrl/income-tax/claims-for-relief/$nino/$lossId", desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        retrieveLossClaimResult(connector) shouldBe expected
+      }
+
+      "provided with multiple errors" in new Test {
+        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+
+        MockedHttpClient
+          .get(s"$baseUrl/income-tax/claims-for-relief/$nino/$lossId", desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        retrieveLossClaimResult(connector) shouldBe expected
+      }
+    }
   }
 }

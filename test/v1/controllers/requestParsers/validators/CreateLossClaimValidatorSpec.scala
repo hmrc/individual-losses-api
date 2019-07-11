@@ -63,8 +63,19 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
 
   "running a validation" should {
     "return no errors" when {
-      "a valid request is supplied" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
+      "a valid employment request is supplied" in {
+        validator.validate(CreateLossClaimRawData(validNino,
+          AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
+      }
+
+      "a valid property request is supplied" in {
+        validator.validate(CreateLossClaimRawData(validNino,
+          AnyContentAsJson(createRequestBodyJson(typeOfLoss = "uk-property-non-fhl", typeOfClaim = "carry-sideways", selfEmploymentId = None)))) shouldBe Nil
+      }
+      "a valid property request with 'carry-sideways-fhl' is supplied" in {
+        validator.validate(CreateLossClaimRawData(validNino,
+          AnyContentAsJson(createRequestBodyJson(typeOfLoss = "uk-property-non-fhl",
+            typeOfClaim = "carry-sideways-fhl", selfEmploymentId = None)))) shouldBe Nil
       }
     }
 
