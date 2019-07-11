@@ -17,8 +17,8 @@ description: This endpoint allows the user to update an existing loss claim.
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
-    type: !include schemas/lossClaims/amendClaims/amend_request.json
-    example: !include examples/lossClaims/amendClaims/amend_request.json
+    type: !include schemas/lossClaims/amendClaim/amend_request.json
+    example: !include examples/lossClaims/amendClaim/amend_request.json
 responses:
   201:
     headers:
