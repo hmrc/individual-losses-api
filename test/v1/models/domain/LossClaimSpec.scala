@@ -23,7 +23,7 @@ import v1.models.utils.JsonErrorValidators
 class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
   val lossClaimEmployment = LossClaim(
-    taxYear = "2017-18",
+    taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim`carry-forward`,
     selfEmploymentId = Some("X2IS12356589871")
@@ -35,7 +35,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |    "typeOfLoss": "self-employment",
       |    "selfEmploymentId": "X2IS12356589871",
       |    "typeOfClaim": "carry-forward",
-      |    "taxYear": "2017-18"
+      |    "taxYear": "2019-20"
       |}
     """.stripMargin)
 
@@ -44,12 +44,12 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |{
       |    "incomeSourceId": "X2IS12356589871",
       |    "reliefClaimed": "CF",
-      |    "taxYear": "2018"
+      |    "taxYear": "2020"
       |}
     """.stripMargin)
 
   val lossClaimProperty = LossClaim(
-    taxYear = "2017-18",
+    taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
     typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways-general-income`,
     selfEmploymentId = None
@@ -60,7 +60,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |{
       |    "typeOfLoss": "uk-property-non-fhl",
       |    "typeOfClaim": "carry-forward-to-carry-sideways-general-income",
-      |    "taxYear": "2017-18"
+      |    "taxYear": "2019-20"
       |}
     """.stripMargin)
 
@@ -69,7 +69,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |{
       |    "incomeSourceType": "02",
       |    "reliefClaimed": "CFCSGI",
-      |    "taxYear": "2018"
+      |    "taxYear": "2020"
       |}
     """.stripMargin)
 
