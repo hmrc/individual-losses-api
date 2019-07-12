@@ -19,11 +19,11 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{ DesOutcome, LossClaimConnector }
-import v1.models.des.CreateLossClaimResponse
+import v1.connectors.{DesOutcome, LossClaimConnector}
+import v1.models.des.{CreateLossClaimResponse, RetrieveLossClaimResponse}
 import v1.models.requestData._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockLossClaimConnector extends MockFactory {
   val connector: LossClaimConnector = mock[LossClaimConnector]
@@ -33,6 +33,12 @@ trait MockLossClaimConnector extends MockFactory {
     def createLossClaim(request: CreateLossClaimRequest): CallHandler[Future[DesOutcome[CreateLossClaimResponse]]] = {
       (connector
         .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(request, *, *)
+    }
+
+    def retrieveLossClaim(request: RetrieveLossClaimRequest): CallHandler[Future[DesOutcome[RetrieveLossClaimResponse]]] = {
+      (connector
+        .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
     }
   }
