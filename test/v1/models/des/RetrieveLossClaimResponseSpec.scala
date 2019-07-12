@@ -29,21 +29,6 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
   private val validTaxYear          = "2019-20"
   private val validSelfEmploymentId = "XAIS01234567890"
 
-  val employmentModel = RetrieveLossClaimResponse(
-    validTaxYear,
-    TypeOfLoss.`self-employment`,
-    Some(validSelfEmploymentId),
-    TypeOfClaim.`carry-sideways`,
-    testDateTime.toString
-  )
-
-  val propertyModel = RetrieveLossClaimResponse(
-    validTaxYear,
-    TypeOfLoss.`uk-property-non-fhl`,
-    None,
-    TypeOfClaim.`carry-forward`,
-    testDateTime.toString
-  )
 
 
   val validSEJson: JsValue = Json.parse(s"""
@@ -55,6 +40,15 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
                                            |}
     """.stripMargin)
 
+  val employmentModel = RetrieveLossClaimResponse(
+    validTaxYear,
+    TypeOfLoss.`self-employment`,
+    Some(validSelfEmploymentId),
+    TypeOfClaim.`carry-sideways`,
+    testDateTime.toString
+  )
+
+
   val validPropertyJson: JsValue = Json.parse(s"""
                                                  |{
                                                  | "incomeSourceType" : "02",
@@ -63,6 +57,15 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
                                                  | "submissionDate" : "${testDateTime.toString}"
                                                  |}
     """.stripMargin)
+
+
+  val propertyModel = RetrieveLossClaimResponse(
+    validTaxYear,
+    TypeOfLoss.`uk-property-non-fhl`,
+    None,
+    TypeOfClaim.`carry-forward`,
+    testDateTime.toString
+  )
 
   "Json Reads" should {
 
