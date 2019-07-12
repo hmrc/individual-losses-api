@@ -3,3 +3,7 @@ DELETE     /:nino/brought-forward-losses/:lossId                        v1.contr
 POST       /:nino/brought-forward-losses/:lossId/change-loss-amount     v1.controllers.AmendBFLossController.amend(nino: String, lossId: String)
 GET        /:nino/brought-forward-losses/:lossId                        v1.controllers.RetrieveBFLossController.retrieve(nino: String, lossId: String)
 GET        /:nino/brought-forward-losses                                v1.controllers.ListBFLossesController.list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], selfEmploymentId: Option[String])
+
+# Loss Claims
+
+POST       /:nino/loss-claims                                           v1.controllers.CreateLossClaimController.create(nino: String)
