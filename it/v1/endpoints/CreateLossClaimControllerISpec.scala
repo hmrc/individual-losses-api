@@ -33,7 +33,6 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       "taxYear" -> taxYear,
       "typeOfClaim" -> typeOfClaim)
 
-  val lossId = "AAZZ1234567890a"
   val correlationId = "X-123"
   val selfEmploymentId = "XKIS00000000988"
   val taxYear = "2019-20"

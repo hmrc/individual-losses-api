@@ -42,7 +42,6 @@ class CreateLossClaimControllerSpec
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val nino = "AA123456A"
-  val lossId = "AAZZ1234567890a"
 
   val lossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways` , Some("XKIS00000000988"))
 
