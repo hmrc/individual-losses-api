@@ -18,11 +18,12 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.RetrieveBFLossValidator
-import v1.models.requestData._
+import v1.controllers.requestParsers.validators.DeleteLossClaimValidator
+import v1.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
-class RetrieveBFLossParser @Inject()(val validator: RetrieveBFLossValidator) extends RequestParser[RetrieveBFLossRawData, RetrieveBFLossRequest] {
+class DeleteLossClaimParser @Inject()(val validator: DeleteLossClaimValidator) extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
 
-  override protected def requestFor(data: RetrieveBFLossRawData): RetrieveBFLossRequest =
-    RetrieveBFLossRequest(Nino(data.nino), data.lossId)
+  override protected def requestFor(data: DeleteLossClaimRawData): DeleteLossClaimRequest =
+    DeleteLossClaimRequest(Nino(data.nino), data.claimId)
+
 }
