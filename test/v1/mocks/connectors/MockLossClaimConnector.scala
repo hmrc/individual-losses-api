@@ -41,6 +41,12 @@ trait MockLossClaimConnector extends MockFactory {
         .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
     }
+
+    def deleteLossClaim(deleteLossClaimRequest: DeleteLossClaimRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+      (connector
+        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(deleteLossClaimRequest, *, *)
+    }
   }
 
 }
