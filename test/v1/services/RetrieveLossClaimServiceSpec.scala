@@ -19,7 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.RetrieveLossClaimResponse
-import v1.models.domain.{TypeOfClaim, TypeOfLoss}
+import v1.models.domain.{ TypeOfClaim, TypeOfLoss }
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.RetrieveLossClaimRequest
@@ -30,7 +30,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val nino   = Nino("AA123456A")
+  val nino    = Nino("AA123456A")
   val claimId = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
@@ -43,7 +43,8 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val desResponse =
-          DesResponse(correlationId,
+          DesResponse(
+            correlationId,
             RetrieveLossClaimResponse("2019-20", TypeOfLoss.`self-employment`, Some("selfEmploymentId"), TypeOfClaim.`carry-forward`, "time"))
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Right(desResponse)))
 
@@ -82,7 +83,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-      "NOT_FOUND_INCOME_SOURCE"   -> NotFoundError,
+      "NOT_FOUND"                 -> NotFoundError,
       "SERVER_ERROR"              -> DownstreamError,
       "SERVICE_UNAVAILABLE"       -> DownstreamError
     ).foreach {

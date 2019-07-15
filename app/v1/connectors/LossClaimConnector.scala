@@ -23,20 +23,20 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.des.{CreateLossClaimResponse, RetrieveLossClaimResponse}
 import v1.models.domain.LossClaim
-import v1.models.requestData.{CreateLossClaimRequest, RetrieveLossClaimRequest}
+import v1.models.requestData.{CreateLossClaimRequest, DeleteLossClaimRequest, RetrieveLossClaimRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
 
-  def createLossClaim(createLossClaimsRequest: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                                       ec: ExecutionContext): Future[DesOutcome[CreateLossClaimResponse]] = {
-    val nino = createLossClaimsRequest.nino.nino
+  def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                       ec: ExecutionContext): Future[DesOutcome[CreateLossClaimResponse]] = {
+    val nino = request.nino.nino
 
     def doIt(implicit hc: HeaderCarrier) =
       http.POST[LossClaim, DesOutcome[CreateLossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino",
-        createLossClaimsRequest.lossClaim)
+        request.lossClaim)
 
     doIt(desHeaderCarrier(appConfig))
   }
@@ -51,4 +51,14 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
 
     doIt(desHeaderCarrier(appConfig))
   }
+
+ def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+   val nino = request.nino.nino
+   val claimId = request.claimId
+
+   def doIt(implicit hc: HeaderCarrier) =
+     http.DELETE[DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId")
+
+   doIt(desHeaderCarrier(appConfig))
+ }
 }
