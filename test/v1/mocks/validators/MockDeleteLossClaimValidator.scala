@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.mocks.validators
 
-import v1.controllers.requestParsers.validators.Validator
-import v1.models.errors.{ BadRequestError, ErrorWrapper }
-import v1.models.requestData.RawData
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.DeleteLossClaimValidator
+import v1.models.errors.MtdError
+import v1.models.requestData.DeleteLossClaimRawData
 
-trait RequestParser[Raw <: RawData, Request] {
-  val validator: Validator[Raw]
+class MockDeleteLossClaimValidator extends MockFactory {
 
-  protected def requestFor(data: Raw): Request
+  val mockValidator: DeleteLossClaimValidator = mock[DeleteLossClaimValidator]
 
-  def parseRequest(data: Raw): Either[ErrorWrapper, Request] = {
-    validator.validate(data) match {
-      case Nil        => Right(requestFor(data))
-      case err :: Nil => Left(ErrorWrapper(None, err, None))
-      case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
+  object MockValidator {
+    def validate(data: DeleteLossClaimRawData): CallHandler1[DeleteLossClaimRawData, List[MtdError]] = {
+      (mockValidator.validate(_: DeleteLossClaimRawData))
+        .expects(data)
     }
   }
 }
