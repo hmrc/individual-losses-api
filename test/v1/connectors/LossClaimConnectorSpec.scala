@@ -147,7 +147,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
       }
 
       "provided with multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockedHttpClient
           .get(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
@@ -186,7 +186,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockedHttpClient
           .delete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
