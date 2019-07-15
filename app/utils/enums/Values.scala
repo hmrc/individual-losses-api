@@ -21,29 +21,29 @@ import shapeless._
 // Based on code in https://github.com/milessabin/shapeless/blob/master/examples/src/main/scala/shapeless/examples/enum.scala
 object Values {
 
-  trait MkValues[T] {
-    def values: List[T]
+  trait MkValues[E] {
+    def values: List[E]
   }
 
   object MkValues {
-    implicit def values[T, Repr <: Coproduct](implicit gen: Generic.Aux[T, Repr], v: Aux[T, Repr]): MkValues[T] =
-      new MkValues[T] {
-        def values: List[T] = v.values
+    implicit def values[E, Impls <: Coproduct](implicit gen: Generic.Aux[E, Impls], v: Aux[E, Impls]): MkValues[E] =
+      new MkValues[E] {
+        def values: List[E] = v.values
       }
 
-    trait Aux[T, Repr] {
-      def values: List[T]
+    trait Aux[E, Impls] {
+      def values: List[E]
     }
 
     object Aux {
-      implicit def cnilAux[A]: Aux[A, CNil] =
-        new Aux[A, CNil] {
-          def values: Nil.type = Nil
+      implicit def cnilAux[E]: Aux[E, CNil] =
+        new Aux[E, CNil] {
+          def values: List[E] = Nil
         }
 
-      implicit def cconsAux[T, L <: T, R <: Coproduct](implicit l: Witness.Aux[L], r: Aux[T, R]): Aux[T, L :+: R] =
-        new Aux[T, L :+: R] {
-          def values: List[T] = l.value :: r.values
+      implicit def cconsAux[E, L <: E, R <: Coproduct](implicit l: Witness.Aux[L], r: Aux[E, R]): Aux[E, L :+: R] =
+        new Aux[E, L :+: R] {
+          def values: List[E] = l.value :: r.values
         }
     }
   }

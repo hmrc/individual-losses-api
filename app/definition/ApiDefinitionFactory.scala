@@ -16,7 +16,6 @@
 
 package definition
 
-import definition.APIStatus.APIStatus
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import config.{AppConfig, FeatureSwitch}
@@ -56,8 +55,7 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
     )
 
   private[definition] def buildAPIStatus(version: String): APIStatus = {
-    APIStatus.values
-      .find(_.toString == appConfig.apiStatus(version))
+    APIStatus.parser.lift(appConfig.apiStatus(version))
       .getOrElse {
         Logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
         APIStatus.ALPHA
