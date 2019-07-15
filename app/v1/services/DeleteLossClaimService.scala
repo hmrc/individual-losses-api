@@ -31,19 +31,18 @@ class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends De
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def deleteBFLoss(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteLossClaimOutcome] = {
-    ???
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteLossClaimOutcome] = {
 
-//    connector.deleteBFLoss(request).map {
-//      mapToVendorDirect("deleteBFLoss", mappingDesToMtdError)
-//    }
+    connector.deleteLossClaim(request).map {
+      mapToVendorDirect("deleteLossClaim", mappingDesToMtdError)
+    }
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
-    "INVALID_IDVALUE"     -> NinoFormatError,
-    "INVALID_CLAIM_ID"    -> ClaimIdFormatError,
-    "NOT_FOUND"           -> NotFoundError,
-    "SERVER_ERROR"        -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
+    "INVALID_CLAIM_ID"           -> ClaimIdFormatError,
+    "NOT_FOUND"                  -> NotFoundError,
+    "SERVER_ERROR"               -> DownstreamError,
+    "SERVICE_UNAVAILABLE"        -> DownstreamError
   )
 }
