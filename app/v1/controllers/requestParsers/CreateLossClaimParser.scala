@@ -20,20 +20,11 @@ import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.CreateLossClaimValidator
 import v1.models.domain.LossClaim
-import v1.models.errors.{BadRequestError, ErrorWrapper}
 import v1.models.requestData._
 
+class CreateLossClaimParser @Inject()(val validator: CreateLossClaimValidator) extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
 
-class CreateLossClaimParser @Inject()(validator: CreateLossClaimValidator)
-  extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
+  override protected def requestFor(data: CreateLossClaimRawData): CreateLossClaimRequest =
+    CreateLossClaimRequest(Nino(data.nino), data.body.json.as[LossClaim])
 
-  def parseRequest(data: CreateLossClaimRawData): Either[ErrorWrapper, CreateLossClaimRequest] = {
-    validator.validate(data) match {
-      case Nil =>
-        Right(CreateLossClaimRequest(Nino(data.nino), data.body.json.as[LossClaim]))
-      case err :: Nil => Left(ErrorWrapper(None, err, None))
-      case errs => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
-    }
-  }
 }
-

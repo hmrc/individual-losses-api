@@ -19,16 +19,11 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteLossClaimValidator
-import v1.models.errors.{BadRequestError, ErrorWrapper}
 import v1.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
-class DeleteLossClaimParser @Inject()(validator: DeleteLossClaimValidator) extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
+class DeleteLossClaimParser @Inject()(val validator: DeleteLossClaimValidator) extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
 
-  override def parseRequest(data: DeleteLossClaimRawData): Either[ErrorWrapper, DeleteLossClaimRequest] =
-    validator.validate(data) match {
-      case Nil =>
-        Right(DeleteLossClaimRequest(Nino(data.nino), data.claimId))
-      case err :: Nil => Left(ErrorWrapper(None, err, None))
-      case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
-    }
+  override protected def requestFor(data: DeleteLossClaimRawData): DeleteLossClaimRequest =
+    DeleteLossClaimRequest(Nino(data.nino), data.claimId)
+
 }

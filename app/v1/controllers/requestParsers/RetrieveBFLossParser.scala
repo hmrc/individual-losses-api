@@ -19,17 +19,10 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.RetrieveBFLossValidator
-import v1.models.errors.{ BadRequestError, ErrorWrapper }
 import v1.models.requestData._
 
-class RetrieveBFLossParser @Inject()(validator: RetrieveBFLossValidator) extends RequestParser[RetrieveBFLossRawData, RetrieveBFLossRequest] {
+class RetrieveBFLossParser @Inject()(val validator: RetrieveBFLossValidator) extends RequestParser[RetrieveBFLossRawData, RetrieveBFLossRequest] {
 
-  def parseRequest(data: RetrieveBFLossRawData): Either[ErrorWrapper, RetrieveBFLossRequest] = {
-    validator.validate(data) match {
-      case Nil =>
-        Right(RetrieveBFLossRequest(Nino(data.nino), data.lossId))
-      case err :: Nil => Left(ErrorWrapper(None, err, None))
-      case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
-    }
-  }
+  override protected def requestFor(data: RetrieveBFLossRawData): RetrieveBFLossRequest =
+    RetrieveBFLossRequest(Nino(data.nino), data.lossId)
 }
