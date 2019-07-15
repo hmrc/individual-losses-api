@@ -16,9 +16,26 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{ LossIdFormatError, MtdError }
+import support.UnitSpec
+import v1.models.errors.ClaimIdFormatError
+import v1.models.utils.JsonErrorValidators
 
-object LossIdValidation extends RegexValidation {
-  override protected val regexFormat: String = "^[A-Za-z0-9]{15}$"
-  override protected val error: MtdError     = LossIdFormatError
+class ClaimIdValidationSpec extends UnitSpec with JsonErrorValidators {
+
+  private val validClaimId   = "AAZZ1234567890a"
+  private val invalidClaimId = "AAZZ1234567890"
+
+  "ClaimIdValidation.validate" should {
+    "return an empty list" when {
+      "passed a valid claimId" in {
+        ClaimIdValidation.validate(validClaimId) shouldBe empty
+      }
+    }
+    "return a non-empty list" when {
+      "passed an invalid claimId" in {
+        ClaimIdValidation.validate(invalidClaimId) shouldBe List(ClaimIdFormatError)
+      }
+    }
+  }
+
 }

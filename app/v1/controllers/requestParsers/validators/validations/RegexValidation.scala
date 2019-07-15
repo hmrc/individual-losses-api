@@ -16,9 +16,20 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{ LossIdFormatError, MtdError }
+import v1.models.errors.MtdError
 
-object LossIdValidation extends RegexValidation {
-  override protected val regexFormat: String = "^[A-Za-z0-9]{15}$"
-  override protected val error: MtdError     = LossIdFormatError
+trait RegexValidation {
+  protected val regexFormat: String
+
+  protected val error: MtdError
+
+  def validate(value: String): List[MtdError] =
+    RegexValidation.validate(error, value, regexFormat)
+}
+
+object RegexValidation {
+
+  def validate(error: MtdError, value: String, regexFormat: String): List[MtdError] = {
+    if (value.matches(regexFormat)) NoValidationErrors else List(error)
+  }
 }

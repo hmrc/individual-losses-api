@@ -18,38 +18,38 @@ package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.requestData.RetrieveBFLossRawData
+import v1.models.requestData.RetrieveLossClaimRawData
 
-class RetrieveBFLossValidatorSpec extends UnitSpec {
+class RetrieveLossClaimValidatorSpec extends UnitSpec {
 
   private val validNino     = "AA123456A"
   private val invalidNino   = "AA123456"
-  private val validLossId   = "AAZZ1234567890a"
-  private val invalidLossId = "AAZZ1234567890"
+  private val validClaimId   = "AAZZ1234567890a"
+  private val invalidClaimId = "AAZZ1234567890"
 
-  private val retrieveBFLossRawData: (String, String) => RetrieveBFLossRawData = (nino, lossId) => RetrieveBFLossRawData(nino, lossId)
+  private val rawData: (String, String) => RetrieveLossClaimRawData = (nino, id) => RetrieveLossClaimRawData(nino, id)
 
-  val validator = new RetrieveBFLossValidator
+  val validator = new RetrieveLossClaimValidator
 
   "retrieve validation" should {
     "return no errors" when {
       "supplied with a valid nino and a valid loss amount" in {
-        validator.validate(retrieveBFLossRawData(validNino, validLossId)) shouldBe empty
+        validator.validate(rawData(validNino, validClaimId)) shouldBe List()
       }
     }
     "return a FORMAT_NINO error" when {
       "the provided nino is invalid" in {
-        validator.validate(retrieveBFLossRawData(invalidNino, validLossId)) shouldBe List(NinoFormatError)
+        validator.validate(rawData(invalidNino, validClaimId)) shouldBe List(NinoFormatError)
       }
     }
-    "return a FORMAT_LOSS_ID error" when {
-      "the provided lossId is invalid" in {
-        validator.validate(retrieveBFLossRawData(validNino, invalidLossId)) shouldBe List(LossIdFormatError)
+    "return a FORMAT_CLAIM_ID error" when {
+      "the provided claimId is invalid" in {
+        validator.validate(rawData(validNino, invalidClaimId)) shouldBe List(ClaimIdFormatError)
       }
     }
     "return multiple errors" when {
       "a request with multiple errors is provided" in {
-        validator.validate(retrieveBFLossRawData(invalidNino, invalidLossId)) shouldBe List(NinoFormatError, LossIdFormatError)
+        validator.validate(rawData(invalidNino, invalidClaimId)) shouldBe List(NinoFormatError, ClaimIdFormatError)
       }
     }
   }
