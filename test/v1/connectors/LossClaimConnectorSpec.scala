@@ -92,7 +92,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
           )))
   }
 
-  "retrieveLossClaim" should {
+  "retrieve LossClaim" should {
 
     val testDateTime: LocalDateTime = LocalDateTime.now()
     val validTaxYear = "2019-20"
@@ -156,5 +156,52 @@ class LossClaimConnectorSpec extends ConnectorSpec {
         retrieveLossClaimResult(connector) shouldBe expected
       }
     }
+  }
+
+  "delete LossClaim" when {
+
+    "a valid request is supplied" should {
+      "return a successful response with the correct correlationId" in new Test {
+        val expected = Right(DesResponse(correlationId, ()))
+
+        MockedHttpClient
+          .delete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        deleteLossClaimResult(connector) shouldBe expected
+      }
+    }
+
+    "a request returning a single error" should {
+      "return an unsuccessful response with the correct correlationId and a single error" in new Test {
+        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+
+        MockedHttpClient
+          .delete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        deleteLossClaimResult(connector) shouldBe expected
+      }
+    }
+
+    "a request returning multiple errors" should {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
+        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+
+        MockedHttpClient
+          .delete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        deleteLossClaimResult(connector) shouldBe expected
+      }
+    }
+
+    def deleteLossClaimResult(connector: LossClaimConnector): DesOutcome[Unit] =
+      await(
+        connector.deleteLossClaim(
+          DeleteLossClaimRequest(
+            nino = Nino(nino),
+            claimId = claimId
+          )))
   }
 }
