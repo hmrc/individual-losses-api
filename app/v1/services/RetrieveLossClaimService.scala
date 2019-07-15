@@ -22,7 +22,7 @@ import v1.connectors.LossClaimConnector
 import v1.models.errors._
 import v1.models.requestData.RetrieveLossClaimRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
 
@@ -40,9 +40,9 @@ class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends 
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_CLAIM_ID" -> ClaimIdFormatError,
-    "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "SERVER_ERROR"              -> DownstreamError,
+    "SERVICE_UNAVAILABLE"       -> DownstreamError
   )
 }
