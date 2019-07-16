@@ -121,6 +121,7 @@ class DeleteBFLossControllerSpec
       }
 
       errorsFromServiceTester(BadRequestError, BAD_REQUEST)
+      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)

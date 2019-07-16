@@ -16,60 +16,43 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
-import v1.models.des.RetrieveBFLossResponse
-import v1.models.domain.TypeOfLoss
+import v1.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
+import v1.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
+import v1.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveBFLossControllerSpec
-  extends ControllerBaseSpec
+class DeleteLossClaimControllerSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockRetrieveBFLossService
-    with MockRetrieveBFLossRequestDataParser
+    with MockDeleteLossClaimService
+    with MockDeleteLossClaimRequestDataParser
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino = "AA123456A"
-  val lossId = "AAZZ1234567890a"
 
-  val rawData = RetrieveBFLossRawData(nino, lossId)
-  val request = RetrieveBFLossRequest(Nino(nino), lossId)
+  val nino   = "AA123456A"
+  val claimId = "AAZZ1234567890a"
 
-  val response = RetrieveBFLossResponse(taxYear = "2017-18",
-    typeOfLoss = TypeOfLoss.`uk-property-fhl`,
-    selfEmploymentId = None,
-    lossAmount = 100.00,
-    lastModified = "2018-07-13T12:13:48.763Z")
-
-  val responseJson: JsValue = Json.parse(
-    """
-      |{
-      |    "taxYear": "2017-18",
-      |    "typeOfLoss": "uk-property-fhl",
-      |    "lossAmount": 100.00,
-      |    "lastModified": "2018-07-13T12:13:48.763Z"
-      |}
-    """.stripMargin)
+  val rawData = DeleteLossClaimRawData(nino, claimId)
+  val request = DeleteLossClaimRequest(Nino(nino), claimId)
 
   trait Test {
     val hc = HeaderCarrier()
 
-    val controller = new RetrieveBFLossController(
+    val controller = new DeleteLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      retrieveBFLossService = mockRetrieveBFLossService,
-      retrieveBFLossParser = mockRetrieveBFLossRequestDataParser,
+      deleteLossClaimService = mockDeleteLossClaimService,
+      deleteLossClaimParser = mockDeleteLossClaimRequestDataParser,
       auditService = mockAuditService,
       cc = cc
     )
@@ -78,21 +61,20 @@ class RetrieveBFLossControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
   }
 
-  "retrieve" should {
+  "delete" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
 
-        MockRetrieveBFLossRequestDataParser
+        MockDeleteLossClaimRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
 
-        MockRetrieveBFLossService
-          .retrieve(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, response))))
+        MockDeleteLossClaimService
+          .delete(request)
+          .returns(Future.successful(Right(DesResponse(correlationId, ()))))
 
-        val result: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
-        status(result) shouldBe OK
-        contentAsJson(result) shouldBe responseJson
+        val result: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
+        status(result) shouldBe NO_CONTENT
       }
     }
 
@@ -100,11 +82,11 @@ class RetrieveBFLossControllerSpec
       def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
-          MockRetrieveBFLossRequestDataParser
+          MockDeleteLossClaimRequestDataParser
             .parseRequest(rawData)
             .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
-          val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
+          val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
 
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
@@ -113,24 +95,24 @@ class RetrieveBFLossControllerSpec
       }
 
       errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NotFoundError, NOT_FOUND)
       errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(LossIdFormatError, BAD_REQUEST)
+      errorsFromParserTester(ClaimIdFormatError, BAD_REQUEST)
+
     }
 
     "handle non-mdtp validation errors as per spec" when {
       def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
-          MockRetrieveBFLossRequestDataParser
+          MockDeleteLossClaimRequestDataParser
             .parseRequest(rawData)
             .returns(Right(request))
 
-          MockRetrieveBFLossService
-            .retrieve(request)
+          MockDeleteLossClaimService
+            .delete(request)
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
-          val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
+          val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
@@ -141,7 +123,7 @@ class RetrieveBFLossControllerSpec
       errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
+      errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)
     }
   }
 }

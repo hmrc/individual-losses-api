@@ -25,17 +25,17 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
+class DeleteLossClaimControllerISpec extends IntegrationBaseSpec {
 
   val correlationId = "X-123"
 
   private trait Test {
 
     val nino   = "AA123456A"
-    val lossId = "AAZZ1234567890a"
+    val claimId = "AAZZ1234567890a"
 
-    def uri: String    = s"/$nino/brought-forward-losses/$lossId"
-    def desUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
+    def uri: String    = s"/$nino/loss-claims/$claimId"
+    def desUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
@@ -55,7 +55,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the delete BFLoss endpoint" should {
+  "Calling the delete Loss Claim endpoint" should {
 
     "return a 204 status code" when {
 
@@ -91,21 +91,20 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_IDVALUE", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDeleteAfterCrystallisationError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
 
     "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String, requestLossId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String, requestClaimId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String   = requestNino
-          override val lossId: String = requestLossId
+          override val claimId: String = requestClaimId
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
@@ -119,7 +118,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
       }
 
       validationErrorTest("BADNINO", "AAZZ1234567890a", Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADLOSSID", Status.BAD_REQUEST, LossIdFormatError)
+      validationErrorTest("AA123456A", "BADCLAIMID", Status.BAD_REQUEST, ClaimIdFormatError)
     }
 
   }
