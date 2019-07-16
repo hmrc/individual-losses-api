@@ -165,6 +165,9 @@ class CreateLossClaimControllerSpec
         header("X-CorrelationId", response) shouldBe Some(correlationId)
       }
     }
+
+    errorsFromServiceTester(BadRequestError, BAD_REQUEST)
+    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     errorsFromServiceTester(RuleDuplicateClaimSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)
