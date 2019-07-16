@@ -25,10 +25,10 @@ import v1.models.requestData._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDesConnector extends MockFactory {
+trait MockBFLossConnector extends MockFactory {
   val connector: BFLossConnector = mock[BFLossConnector]
 
-  object MockedDesConnector {
+  object MockedBFLossConnector {
 
     def createBFLoss(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[DesOutcome[CreateBFLossResponse]]] = {
       (connector
