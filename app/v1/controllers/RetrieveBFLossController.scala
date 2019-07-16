@@ -42,12 +42,13 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+      val rawData = RetrieveBFLossRawData(nino, lossId)
 
-      retrieveBFLossParser.parseRequest(RetrieveBFLossRawData(nino, lossId)) match {
+      retrieveBFLossParser.parseRequest(rawData) match {
         case Right(retrieveBFLossRequest) => retrieveBFLossService.retrieveBFLoss(retrieveBFLossRequest).map {
           case Right(desResponse) =>
             logger.info(s"[RetrieveBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-            Ok(Json.toJson(desResponse.responseData))
+            Ok(desResponse.responseData.hateoasWrites(rawData))
               .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
 
           case Left(errorWrapper) =>

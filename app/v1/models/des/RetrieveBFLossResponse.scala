@@ -18,14 +18,31 @@ package v1.models.des
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v1.models.domain.TypeOfLoss
-import v1.models.requestData.DesTaxYear
+import v1.models.domain.{HateoasModel, LinkGenerator, TypeOfLoss}
+import v1.models.requestData.{DesTaxYear, RawData, RetrieveBFLossRawData}
 
 case class RetrieveBFLossResponse(taxYear: String,
                                   typeOfLoss: TypeOfLoss,
                                   selfEmploymentId: Option[String],
                                   lossAmount: BigDecimal,
                                   lastModified: String)
+    extends HateoasModel[RetrieveBFLossRawData] {
+
+  override val booleanList: RetrieveBFLossRawData => Seq[(Boolean, LinkGenerator)] = data => {
+    Seq((true, LinkGenerator("amend", s"/${data.nino}/brought-forward-losses/${data.lossId}/change-loss-amount", "POST")))
+  }
+  override val hateoasWrites: RawData => JsValue = d => {
+    val data = d.asInstanceOf[RetrieveBFLossRawData]
+    Json.obj(
+      "taxYear"          -> taxYear,
+      "typeOfLoss"       -> typeOfLoss,
+      "selfEmploymentId" -> selfEmploymentId,
+      "lossAmount"       -> lossAmount,
+      "lastModified"     -> lastModified,
+      "links"            -> getLinks(data)
+    )
+  }
+}
 
 object RetrieveBFLossResponse {
 
