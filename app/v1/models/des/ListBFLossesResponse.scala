@@ -16,12 +16,12 @@
 
 package v1.models.des
 
-import play.api.libs.json.{ JsPath, Json, Reads, Writes }
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class BFLossId(id: String)
 
 object BFLossId {
-  implicit val writes: Writes[BFLossId] = Json.writes[BFLossId]
+  implicit val writes: OWrites[BFLossId] = Json.writes[BFLossId]
 
   implicit val reads: Reads[BFLossId] = (JsPath \ "lossId").read[String].map(BFLossId(_))
 }
@@ -29,7 +29,7 @@ object BFLossId {
 case class ListBFLossesResponse(losses: Seq[BFLossId])
 
 object ListBFLossesResponse {
-  implicit val writes: Writes[ListBFLossesResponse] =
+  implicit val writes: OWrites[ListBFLossesResponse] =
     Json.writes[ListBFLossesResponse]
 
   implicit val reads: Reads[ListBFLossesResponse] =

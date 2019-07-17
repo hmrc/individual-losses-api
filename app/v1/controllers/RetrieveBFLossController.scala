@@ -18,42 +18,50 @@ package v1.controllers
 
 import java.util.UUID
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.Logger
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import v1.controllers.requestParsers.RetrieveBFLossParser
+import v1.hateaos.{ Link, Wrapper }
+import v1.models.des.RetrieveBFLossResponse
 import v1.models.errors._
 import v1.models.requestData.RetrieveBFLossRawData
 import v1.services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
+
+class RetrieveBFLossHateaosFactory {
+  def links(response: RetrieveBFLossResponse): Seq[Link] = ???
+}
 
 @Singleton
 class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                          val lookupService: MtdIdLookupService,
                                          retrieveBFLossService: RetrieveBFLossService,
                                          retrieveBFLossParser: RetrieveBFLossParser,
+                                         hateaosFactory: RetrieveBFLossHateaosFactory,
                                          auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController {
+    extends AuthorisedController(cc)
+    with BaseController {
 
   protected val logger: Logger = Logger(this.getClass)
 
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       retrieveBFLossParser.parseRequest(RetrieveBFLossRawData(nino, lossId)) match {
-        case Right(retrieveBFLossRequest) => retrieveBFLossService.retrieveBFLoss(retrieveBFLossRequest).map {
-          case Right(desResponse) =>
-            logger.info(s"[RetrieveBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-            Ok(Json.toJson(desResponse.responseData))
-              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
+        case Right(retrieveBFLossRequest) =>
+          retrieveBFLossService.retrieveBFLoss(retrieveBFLossRequest).map {
+            case Right(desResponse) =>
+              logger.info(s"[RetrieveBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
+              Ok(Json.toJson(Wrapper(desResponse.responseData, hateaosFactory.links(desResponse.responseData))))
+                .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
 
-          case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
-            result
-        }
+            case Left(errorWrapper) =>
+              val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+              result
+          }
         case Left(errorWrapper) =>
           val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
           Future.successful(result)
@@ -62,23 +70,24 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   private def processError(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError
-           | NinoFormatError
-           | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError                                         => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError                                       => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
   private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
     errorWrapper.correlationId match {
-      case Some(correlationId) => logger.info("[RetrieveBFLossController][getCorrelationId] - " +
-        s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+      case Some(correlationId) =>
+        logger.info(
+          "[RetrieveBFLossController][getCorrelationId] - " +
+            s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
       case None =>
         val correlationId = UUID.randomUUID().toString
-        logger.info("[RetrieveBFLossController][getCorrelationId] - " +
-          s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+        logger.info(
+          "[RetrieveBFLossController][getCorrelationId] - " +
+            s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
     }
   }

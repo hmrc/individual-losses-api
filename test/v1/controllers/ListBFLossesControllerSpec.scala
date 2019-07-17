@@ -71,6 +71,7 @@ class ListBFLossesControllerSpec
       lookupService = mockMtdIdLookupService,
       listBFLossesService = mockListBFLossesService,
       listBFLossesParser = mockListBFLossesRequestDataParser,
+      hateaosFactory = ???,
       auditService = mockAuditService,
       cc = cc
     )

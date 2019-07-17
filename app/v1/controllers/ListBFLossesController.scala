@@ -18,22 +18,35 @@ package v1.controllers
 
 import java.util.UUID
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.libs.json.{Json, OWrites, Writes}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.ListBFLossesParser
+import v1.hateaos.{Link, Wrapper}
+import v1.models.des.{BFLossId, ListBFLossesResponse, RetrieveBFLossResponse}
 import v1.models.errors._
 import v1.models.requestData.ListBFLossesRawData
 import v1.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
+
+case class WrappedListBFLossesResponse(losses: Seq[Wrapper[BFLossId]])
+
+object WrappedListBFLossesResponse {
+  implicit val writes: Writes[WrappedListBFLossesResponse] = Json.writes[WrappedListBFLossesResponse]
+}
+
+class ListBFLossesHateaosFactory {
+  def links(responseItem: BFLossId): Seq[Link] = ???
+}
 
 @Singleton
 class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        listBFLossesService: ListBFLossesService,
                                        listBFLossesParser: ListBFLossesParser,
+                                       hateaosFactory: ListBFLossesHateaosFactory,
                                        auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
@@ -53,7 +66,11 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
             case Right(desResponse) =>
               logger.info(s"[ListBFLossesController] Success response received with correlationId: ${desResponse.correlationId}")
-              Ok(Json.toJson(desResponse.responseData))
+
+              val wrappedResult: WrappedListBFLossesResponse =
+                WrappedListBFLossesResponse(desResponse.responseData.losses.map(item => Wrapper(item, hateaosFactory.links(item))))
+
+              Ok(Json.toJson(wrappedResult))
                 .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
 
             case Left(errorWrapper) =>

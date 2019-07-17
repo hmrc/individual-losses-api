@@ -70,6 +70,7 @@ class RetrieveBFLossControllerSpec
       lookupService = mockMtdIdLookupService,
       retrieveBFLossService = mockRetrieveBFLossService,
       retrieveBFLossParser = mockRetrieveBFLossRequestDataParser,
+      hateaosFactory = ???,
       auditService = mockAuditService,
       cc = cc
     )

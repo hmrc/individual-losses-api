@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package v1.hateaos
 
 import cats.data.EitherT
@@ -50,6 +51,16 @@ object HateaosOptionA {
   trait HateoasFactory {
     def links(payload: Payload): Seq[Link]
   }
+
+//  trait LossesHatFactory extends HateoasFactory {
+//    def linksForGetBFLoss(nino: Nino, id: String): Link    = ???
+//    def linksForDeleteBFLoss(nino: Nino, id: String): Link = ???
+//    //...
+//  }
+//
+//  class GetBFLosses extends LossesHatFactory {
+//    override def links(payload: RetrieveBFLossRequest): Seq[Link] = Seq(linksForGetBFLoss(payload.nino, payload.lossId))
+//  }
 
   class OrchestratorOrController @Inject()(hateoasFactory: HateoasFactory, service: Service) {
 
