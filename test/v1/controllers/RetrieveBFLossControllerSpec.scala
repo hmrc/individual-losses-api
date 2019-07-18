@@ -58,7 +58,14 @@ class RetrieveBFLossControllerSpec
       |    "taxYear": "2017-18",
       |    "typeOfLoss": "uk-property-fhl",
       |    "lossAmount": 100.00,
-      |    "lastModified": "2018-07-13T12:13:48.763Z"
+      |    "lastModified": "2018-07-13T12:13:48.763Z",
+      |    "links": [
+      |        {
+      |            "rel": "amend",
+      |            "href": "/AA123456A/brought-forward-losses/AAZZ1234567890a/change-loss-amount",
+      |            "method": "POST"
+      |        }
+      |    ]
       |}
     """.stripMargin)
 

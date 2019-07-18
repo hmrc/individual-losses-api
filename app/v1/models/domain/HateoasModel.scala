@@ -17,11 +17,10 @@
 package v1.models.domain
 
 import play.api.libs.json.{JsValue, Json, Writes}
-import v1.models.requestData.RawData
 
 trait HateoasModel[T] {
   val booleanList: T => Seq[(Boolean, LinkGenerator)] // Seq[(does this link exist, what this link is)]
-  val hateoasWrites: RawData => JsValue
+  val hateoasWrites: T => JsValue
 
   val getLinks: T => Option[JsValue] = o => {
     if (booleanList(o).exists(_._1)) {
