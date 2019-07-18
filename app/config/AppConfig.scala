@@ -55,6 +55,6 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
 
 trait FixedConfig {
   // Minimum tax year for MTD
-  val minimumTaxYearBFLoss = 2017
+  val minimumTaxYearBFLoss = 2019
   val minimumTaxYearLossClaim = 2020
 }
