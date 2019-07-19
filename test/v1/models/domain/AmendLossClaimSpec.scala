@@ -18,30 +18,58 @@ package v1.models.domain
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v1.models.domain.TypeOfClaim.{`carry-forward-to-carry-sideways-general-income`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
 
 class AmendLossClaimSpec extends UnitSpec {
 
-  def json(reliefClaimed: String): JsValue = Json.parse {
+  def desJson(reliefClaimed: String): JsValue = Json.parse {
     s"""
-      |{
-      | "reliefClaimed" : "$reliefClaimed"
-      |}
+       |{
+       | "reliefClaimed" : "$reliefClaimed"
+       |}
     """.stripMargin
   }
 
-  val testData = Map(
-    "CF" -> TypeOfClaim.`carry-forward`,
-    "CSGI" -> TypeOfClaim.`carry-sideways`,
-    "CFCSGI" -> TypeOfClaim.`carry-forward-to-carry-sideways-general-income`,
-    "CSFHL" -> TypeOfClaim.`carry-sideways-fhl`)
+  def mtdJson(typeOfClaim: String): JsValue = Json.parse {
+    s"""
+       |{
+       |  "typeOfClaim" : "$typeOfClaim"
+       |}
+     """.stripMargin
+  }
 
   "Calling .write" should {
 
+    val testData = Map(
+      "CF" -> TypeOfClaim.`carry-forward`,
+      "CSGI" -> TypeOfClaim.`carry-sideways`,
+      "CFCSGI" -> TypeOfClaim.`carry-forward-to-carry-sideways-general-income`,
+      "CSFHL" -> TypeOfClaim.`carry-sideways-fhl`)
+
     "produce the correct Json for des submission" when {
 
-      testData.foreach( test =>
+      testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
-          Json.toJson(AmendLossClaim(test._2)) shouldBe json(test._1)
+          Json.toJson(AmendLossClaim(test._2)) shouldBe desJson(test._1)
+        }
+      )
+    }
+  }
+
+  "Calling .read" should {
+
+    val testData = Map(
+      "carry-forward" -> `carry-forward`,
+      "carry-sideways" -> `carry-sideways`,
+      "carry-forward-to-carry-sideways-general-income" -> `carry-forward-to-carry-sideways-general-income`,
+      "carry-sideways-fhl" -> `carry-sideways-fhl`
+    )
+
+    "produce the correct model from MTD submission json" when {
+
+      testData.foreach(test =>
+        s"supplied with a TypeOfClaim of ${test._1}" in {
+          mtdJson(test._1).as[AmendLossClaim] shouldBe AmendLossClaim(test._2)
         }
       )
     }
