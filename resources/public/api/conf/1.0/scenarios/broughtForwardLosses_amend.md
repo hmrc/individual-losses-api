@@ -20,11 +20,11 @@
             <td><p>Simulate success scenario for self-employment class 4</p></td>
         </tr> 
         <tr>
-            <td><p>UK_FHL_PROPERTY</p></td>
+            <td><p>UK_PROPERTY_FHL</p></td>
             <td><p>Simulate success scenario for a UK FHL property</p></td>
         </tr>
         <tr>
-            <td><p>UK_NON_FHL_PROPERTY</p></td>
+            <td><p>UK_PROPERTY_NON_FHL</p></td>
             <td><p>Simulate success scenario for UK other property</p></td>
         </tr>  
         <tr>

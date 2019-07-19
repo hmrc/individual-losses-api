@@ -25,6 +25,9 @@ sealed trait IncomeSourceType {
 
 object IncomeSourceType {
 
+  case object `01` extends IncomeSourceType {
+    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
+  }
   case object `02` extends IncomeSourceType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property-non-fhl`
   }
@@ -33,6 +36,7 @@ object IncomeSourceType {
   }
 
   implicit val reads: Reads[IncomeSourceType] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.incomeSourceType")) {
+    case "01" => `01`
     case "02" => `02`
     case "04" => `04`
   }

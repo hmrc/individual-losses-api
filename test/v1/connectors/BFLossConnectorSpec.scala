@@ -307,7 +307,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .parameterGet(
             s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "02")),
+            Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01")),
             desRequestHeaders: _*
           )
           .returns(Future.successful(expected))
@@ -315,7 +315,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         listBFLossesResult(connector,
                            taxYear = Some(DesTaxYear("2019")),
                            selfEmploymentId = Some("testId"),
-                           incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe
+                           incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe
           expected
       }
     }

@@ -41,8 +41,8 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] {
     List(
       data.taxYear.map(MtdTaxYearValidation.validate(_, RuleTaxYearNotSupportedError, isBFLoss = true)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => SelfEmploymentIdValidation.validate(lossType, data.selfEmploymentId)
-        case None           => if (data.selfEmploymentId.isDefined) List(RuleSelfEmploymentId) else Nil
+        case Some(lossType) => SelfEmploymentIdValidation.validate(lossType, data.selfEmploymentId, isListBFLoss = true)
+        case None           => Nil
       }
     )
   }

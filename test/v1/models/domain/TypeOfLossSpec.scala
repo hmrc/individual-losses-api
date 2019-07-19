@@ -35,7 +35,7 @@ class TypeOfLossSpec extends UnitSpec {
       "work" in {
         `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
         `uk-property-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`04`)
-        `self-employment`.toIncomeSourceType shouldBe None
+        `self-employment`.toIncomeSourceType shouldBe Some(IncomeSourceType.`01`)
         `self-employment-class4`.toIncomeSourceType shouldBe None
       }
     }
