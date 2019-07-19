@@ -92,6 +92,17 @@ traits:
                 description: The supplied income source ID is invalid.
                 value:
                   code: RULES_INVALID_INCOME_SOURCE_ID
+  ruleNoChangeTypeOfClaim:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNoChangeTypeOfClaim:
+                description: The remote endpoint has indicated that the requested type of claim is already active.
+                value:
+                  code: RULE_NO_CHANGE
   formatLossType:
     responses:
       400:
