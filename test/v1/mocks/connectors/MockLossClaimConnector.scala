@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, LossClaimConnector}
-import v1.models.des.{CreateLossClaimResponse, RetrieveLossClaimResponse}
+import v1.models.des.{AmendLossClaimResponse, CreateLossClaimResponse, RetrieveLossClaimResponse}
 import v1.models.requestData._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,6 +34,12 @@ trait MockLossClaimConnector extends MockFactory {
       (connector
         .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
+    }
+
+    def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest): CallHandler[Future[DesOutcome[AmendLossClaimResponse]]] = {
+      (connector
+        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(amendLossClaimRequest, *, *)
     }
 
     def retrieveLossClaim(request: RetrieveLossClaimRequest): CallHandler[Future[DesOutcome[RetrieveLossClaimResponse]]] = {

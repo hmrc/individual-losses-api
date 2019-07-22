@@ -16,9 +16,9 @@
 
 package v1.models.des
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
-import v1.models.domain.{TypeOfClaim, TypeOfLoss}
+import v1.models.domain.{ TypeOfClaim, TypeOfLoss }
 
 class AmendLossClaimResponseSpec extends UnitSpec {
 
@@ -48,25 +48,35 @@ class AmendLossClaimResponseSpec extends UnitSpec {
 
     def desToModel: TypeOfLoss => AmendLossClaimResponse =
       typeOfLoss =>
-        AmendLossClaimResponse(selfEmploymentId = Some("000000000000001"), typeOfLoss = Some(typeOfLoss),
-          typeOfClaim = TypeOfClaim.`carry-sideways-fhl`, taxYear = "2019-20", lastModified = "20180708")
+        AmendLossClaimResponse(
+          selfEmploymentId = Some("000000000000001"),
+          typeOfLoss = typeOfLoss,
+          typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
+          taxYear = "2019-20",
+          lastModified = "20180708"
+      )
 
     "convert property JSON from DES into a valid model for property type 02" in {
       desPropertyJson("02").as[AmendLossClaimResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
     }
 
     "convert se json from DES into a valid model" in {
-      desEmploymentJson.as[AmendLossClaimResponse] shouldBe AmendLossClaimResponse(Some("000000000000001"), None, TypeOfClaim.`carry-forward`,
-      "2019-20", "20180708")
+      desEmploymentJson.as[AmendLossClaimResponse] shouldBe AmendLossClaimResponse(Some("000000000000001"),
+                                                                                   TypeOfLoss.`self-employment`,
+                                                                                   TypeOfClaim.`carry-forward`,
+                                                                                   "2019-20",
+                                                                                   "20180708")
     }
   }
   "Json Writes" should {
     val model =
-      AmendLossClaimResponse(selfEmploymentId = Some("000000000000001"),
-        typeOfLoss = Some(TypeOfLoss.`self-employment`),
+      AmendLossClaimResponse(
+        selfEmploymentId = Some("000000000000001"),
+        typeOfLoss = TypeOfLoss.`self-employment`,
         typeOfClaim = TypeOfClaim.`carry-forward`,
         taxYear = "2019-20",
-        lastModified = "")
+        lastModified = ""
+      )
     val mtdJson = Json.parse("""{
                                |  "selfEmploymentId": "000000000000001",
                                |  "typeOfLoss": "self-employment",

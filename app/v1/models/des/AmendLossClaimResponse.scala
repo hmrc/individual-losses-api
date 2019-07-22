@@ -21,13 +21,15 @@ import play.api.libs.json.{Json, OWrites, Reads, __}
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 import v1.models.requestData.DesTaxYear
 
-case class AmendLossClaimResponse(selfEmploymentId: Option[String], typeOfLoss: Option[TypeOfLoss], typeOfClaim: TypeOfClaim, taxYear: String, lastModified: String)
+case class AmendLossClaimResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, taxYear: String, lastModified: String)
 
 object AmendLossClaimResponse {
   implicit val writes: OWrites[AmendLossClaimResponse] = Json.writes[AmendLossClaimResponse]
   implicit val reads: Reads[AmendLossClaimResponse] = (
     (__ \ "incomeSourceId").readNullable[String] and
-      (__ \ "incomeSourceType").readNullable[IncomeSourceType].map(_.map(_.toTypeOfLoss)) and
+      ((__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
+        //For SE scenario where incomeSourceType doesn't exist
+        orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]

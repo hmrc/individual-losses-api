@@ -36,7 +36,8 @@ object RuleInvalidLossAmount extends MtdError("RULE_LOSS_AMOUNT", "Amount should
 object RuleDuplicateSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "A brought forward loss already exists for this income source")
 object RuleDuplicateClaimSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "This claim matches a previous submission")
 object RuleDeleteAfterCrystallisationError extends MtdError("RULE_DELETE_AFTER_CRYSTALLISATION", "This loss cannot be deleted after crystallisation")
-object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The type of Claim requested is not available for this type of loss")
+object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The claim type selected is not available for this type of loss")
+object RuleClaimTypeNotChanged extends MtdError("RULE_NO_CHANGE", "The type of claim has not changed")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
