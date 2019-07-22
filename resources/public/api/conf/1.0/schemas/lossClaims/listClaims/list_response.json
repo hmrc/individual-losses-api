@@ -1,25 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "List of All Brought Forward Losses",
-  "description": "List of All Brought Forward Losses",
+  "title": "List of Loss Claims",
+  "description": "List of Loss Claims",
   "type": "object",
   "properties": {
-    "losses": {
+    "claims": {
       "type": "array",
       "items": {
         "type": "object",
-        "description": "Array of losses",
+        "description": "Array of loss claims",
         "properties": {
           "id": {
-            "description": "The unique identifier of the loss",
+            "description": "The unique identifier of the loss claim",
             "type": "string",
             "pattern": "^[A-Za-z0-9]{15}$",
-            "example": "000000123456789"
+            "example": "A2Za0911235813z"
           }
         },
         "required": ["id"]
       }
     }
   },
-  "required": ["losses"]
+  "required": ["claims"]
 }

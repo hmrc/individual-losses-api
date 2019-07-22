@@ -81,17 +81,6 @@ traits:
                 description: Tax year range exceeded. A tax year range of one year is required.
                 value:
                   code: RULE_TAX_YEAR_RANGE_EXCEEDED
-  ruleInvalidIncomeSourceId:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleInvalidIncomeSourceId:
-                description: The supplied income source ID is invalid.
-                value:
-                  code: RULES_INVALID_INCOME_SOURCE_ID
   formatLossType:
     responses:
       400:
