@@ -10,20 +10,20 @@ is:
   - errors.formatSelfEmploymentId
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
-  - queryParameters.taxYear_Claims
-  - queryParameters.typeOfLoss_Claims
+  - queryParameters.taxYearForClaims
+  - queryParameters.typeOfLossForClaims
   - queryParameters.selfEmploymentId
 displayName: List Loss Claims [test only]
 description: This endpoint allows the user to retrieve existing loss claims information.
-(annotations.sandboxData): !include scenarios/lossClaims_listAll.md
+(annotations.sandboxData): !include scenarios/lossClaims_list.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
 responses:
  200:
    body:
      application/json:
-        type: !include schemas/lossClaims/listAllClaims/response.json
-        example: !include examples/lossClaims/listAllClaims/response.json
+        type: !include schemas/lossClaims/listClaims/list_response.json
+        example: !include examples/lossClaims/listClaims/response.json
    headers:
      X-CorrelationId:
        example: c75f40a6-a3df-4429-a697-471eeec46435

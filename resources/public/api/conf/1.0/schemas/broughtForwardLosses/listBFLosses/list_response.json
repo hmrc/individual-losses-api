@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "List of All Brought Forward Losses",
-  "description": "List of All Brought Forward Losses",
+  "title": "List of Brought Forward Losses",
+  "description": "List of Brought Forward Losses",
   "type": "object",
   "properties": {
     "losses": {
