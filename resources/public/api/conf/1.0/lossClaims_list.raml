@@ -5,15 +5,15 @@ is:
   - errors.formatTaxYear
   - errors.ruleTaxYearNotSupported
   - errors.ruleTaxYearRangeExceeded
-  - errors.ruleInvalidIncomeSourceId
   - errors.ruleSelfEmploymentId
+  - errors.formatLossType
   - errors.formatSelfEmploymentId
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
-  - queryParameters.taxYearClaims
-  - queryParameters.typeOfLoss
+  - queryParameters.taxYear_Claims
+  - queryParameters.typeOfLoss_Claims
   - queryParameters.selfEmploymentId
-displayName: List All Loss Claims [test only]
+displayName: List Loss Claims [test only]
 description: This endpoint allows the user to retrieve existing loss claims information.
 (annotations.sandboxData): !include scenarios/lossClaims_listAll.md
 (annotations.scope): "read:self-assessment"

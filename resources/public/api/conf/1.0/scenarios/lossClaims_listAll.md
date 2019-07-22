@@ -9,7 +9,31 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success scenario</p></td>
+            <td><p>Simulate list containing 4 loss claims.</p></td>
+        </tr>
+        <tr>
+            <td><p>SE_FORWARD</p></td>
+            <td><p>Simulate list containing two self-employment loss claims with carry-forward </p></td>
+        </tr>  
+        <tr>
+            <td><p>SE_SIDEWAYS</p></td>
+            <td><p>Simulate list containing two self-employment loss claims with carry-sideways </p></td>
+        </tr>
+        <tr>
+            <td><p>NONFHL_FORWARD</p></td>
+            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-forward </p></td>
+        </tr>
+        <tr>
+            <td><p>NONFHL_SIDEWAYS</p></td>
+            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-sideways </p></td>
+        </tr>
+        <tr>
+            <td><p>NONFHL_SIDEWAYS_FHL</p></td>
+            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-sideways-fhl </p></td>
+        </tr>
+        <tr>
+            <td><p>NONFHL_FORWARD_TO_SIDEWAYS</p></td>
+            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-forward-to-carry-sideways-general-income </p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>
