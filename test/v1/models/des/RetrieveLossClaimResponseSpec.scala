@@ -131,19 +131,19 @@ class RetrieveLossClaimResponseSpec extends UnitSpec {
           Json.toJson(propertyModel) shouldBe expectedPropertyJson
         }
 
-        "provided a carry-forward-to-carry-sideways-general-income property model" in {
+        "provided a carry-forward-to-carry-sideways property model" in {
 
           val expectedPropertyJson: JsValue = Json.parse(
             s"""
                |{
                | "typeOfLoss": "uk-property-non-fhl",
-               | "typeOfClaim": "carry-forward-to-carry-sideways-general-income",
+               | "typeOfClaim": "carry-forward-to-carry-sideways",
                | "taxYear": "2019-20",
                | "lastModified" : "${testDateTime.toString}"
                |}
             """.stripMargin)
 
-          Json.toJson(propertyModel.copy(typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways-general-income`)) shouldBe expectedPropertyJson
+          Json.toJson(propertyModel.copy(typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`)) shouldBe expectedPropertyJson
         }
 
         "provided a carry-sideways-fhl property model" in {
