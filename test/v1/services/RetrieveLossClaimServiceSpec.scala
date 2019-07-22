@@ -18,8 +18,8 @@ package v1.services
 
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
-import v1.models.des.RetrieveLossClaimResponse
-import v1.models.domain.{ TypeOfClaim, TypeOfLoss }
+import v1.models.des.LossClaimResponse
+import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.RetrieveLossClaimRequest
@@ -43,9 +43,8 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val desResponse =
-          DesResponse(
-            correlationId,
-            RetrieveLossClaimResponse("2019-20", TypeOfLoss.`self-employment`, Some("selfEmploymentId"), TypeOfClaim.`carry-forward`, "time"))
+          DesResponse(correlationId,
+                      LossClaimResponse(Some("selfEmploymentId"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "time"))
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Right(desResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Right(desResponse)

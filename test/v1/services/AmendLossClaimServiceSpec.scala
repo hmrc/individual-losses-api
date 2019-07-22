@@ -18,7 +18,7 @@ package v1.services
 
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
-import v1.models.des.AmendLossClaimResponse
+import v1.models.des.LossClaimResponse
 import v1.models.domain.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
@@ -36,7 +36,7 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
   val lossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
 
   val lossClaimResponse =
-    AmendLossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "lastModified")
+    LossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "lastModified")
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 

@@ -32,7 +32,7 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
   "amend LossClaim" when {
 
     val amendLossClaimResponse =
-      AmendLossClaimResponse(selfEmploymentId = Some("XKIS00000000988"),
+      LossClaimResponse(selfEmploymentId = Some("XKIS00000000988"),
         typeOfLoss = TypeOfLoss.`self-employment`,
         typeOfClaim = TypeOfClaim.`carry-forward`,
         taxYear = "2019-20", lastModified = LocalDateTime.now().toString)
@@ -76,7 +76,7 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def amendLossClaimResult(connector: LossClaimConnector): DesOutcome[AmendLossClaimResponse] =
+    def amendLossClaimResult(connector: LossClaimConnector): DesOutcome[LossClaimResponse] =
       await(
         connector.amendLossClaim(
           AmendLossClaimRequest(

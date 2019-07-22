@@ -17,28 +17,21 @@
 package v1.models.des
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.json.{Json, OWrites, Reads, __}
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 import v1.models.requestData.DesTaxYear
 
-case class RetrieveLossClaimResponse(taxYear: String,
-                                     typeOfLoss: TypeOfLoss,
-                                     selfEmploymentId: Option[String],
-                                     typeOfClaim: TypeOfClaim,
-                                     lastModified: String
-                                    )
-object RetrieveLossClaimResponse {
+case class LossClaimResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, taxYear: String, lastModified: String)
 
-  implicit val writes: OWrites[RetrieveLossClaimResponse] = Json.writes[RetrieveLossClaimResponse]
-
-  implicit val reads: Reads[RetrieveLossClaimResponse] = (
-    (__ \ "taxYearClaimedFor").read[String].map(DesTaxYear.fromDes).map(_.toString) and
+object LossClaimResponse {
+  implicit val writes: OWrites[LossClaimResponse] = Json.writes[LossClaimResponse]
+  implicit val reads: Reads[LossClaimResponse] = (
+    (__ \ "incomeSourceId").readNullable[String] and
       ((__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
         //For SE scenario where incomeSourceType doesn't exist
         orElse Reads.pure(TypeOfLoss.`self-employment`)) and
-      (__ \ "incomeSourceId").readNullable[String] and
       (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
+      (__ \ "taxYearClaimedFor").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]
-    )(RetrieveLossClaimResponse.apply _)
-
+    ) (LossClaimResponse.apply _)
 }

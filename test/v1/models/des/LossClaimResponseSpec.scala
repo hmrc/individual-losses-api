@@ -20,7 +20,7 @@ import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 import v1.models.domain.{ TypeOfClaim, TypeOfLoss }
 
-class AmendLossClaimResponseSpec extends UnitSpec {
+class LossClaimResponseSpec extends UnitSpec {
 
   "Json Reads" should {
     def desPropertyJson(incomeSourceType: String): JsValue = {
@@ -29,7 +29,8 @@ class AmendLossClaimResponseSpec extends UnitSpec {
                     |  "incomeSourceId": "000000000000001",
                     |  "incomeSourceType": "$incomeSourceType",
                     |  "reliefClaimed": "CSFHL",
-                    |  "taxYear": "2020",
+                    |  "taxYearClaimedFor": "2020",
+                    |  "claimId": "notUsed",
                     |  "submissionDate": "20180708"
                     |}
       """.stripMargin)
@@ -40,15 +41,16 @@ class AmendLossClaimResponseSpec extends UnitSpec {
                     |{
                     |  "incomeSourceId": "000000000000001",
                     |  "reliefClaimed": "CF",
-                    |  "taxYear": "2020",
+                    |  "taxYearClaimedFor": "2020",
+                    |  "claimId": "notUsed",
                     |  "submissionDate": "20180708"
                     |}
       """.stripMargin)
     }
 
-    def desToModel: TypeOfLoss => AmendLossClaimResponse =
+    def desToModel: TypeOfLoss => LossClaimResponse =
       typeOfLoss =>
-        AmendLossClaimResponse(
+        LossClaimResponse(
           selfEmploymentId = Some("000000000000001"),
           typeOfLoss = typeOfLoss,
           typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
@@ -57,11 +59,11 @@ class AmendLossClaimResponseSpec extends UnitSpec {
       )
 
     "convert property JSON from DES into a valid model for property type 02" in {
-      desPropertyJson("02").as[AmendLossClaimResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
+      desPropertyJson("02").as[LossClaimResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
     }
 
     "convert se json from DES into a valid model" in {
-      desEmploymentJson.as[AmendLossClaimResponse] shouldBe AmendLossClaimResponse(Some("000000000000001"),
+      desEmploymentJson.as[LossClaimResponse] shouldBe LossClaimResponse(Some("000000000000001"),
                                                                                    TypeOfLoss.`self-employment`,
                                                                                    TypeOfClaim.`carry-forward`,
                                                                                    "2019-20",
@@ -70,7 +72,7 @@ class AmendLossClaimResponseSpec extends UnitSpec {
   }
   "Json Writes" should {
     val model =
-      AmendLossClaimResponse(
+      LossClaimResponse(
         selfEmploymentId = Some("000000000000001"),
         typeOfLoss = TypeOfLoss.`self-employment`,
         typeOfClaim = TypeOfClaim.`carry-forward`,
