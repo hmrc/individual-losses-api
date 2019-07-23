@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td><p>NONFHL_FORWARD_TO_SIDEWAYS</p></td>
-            <td><p>Simulate successful retrieval of UK Non-FHL property loss claim with carry-forward-to-carry-sideways-general-income </p></td>
+            <td><p>Simulate successful retrieval of UK Non-FHL property loss claim with carry-forward-to-carry-sideways </p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>

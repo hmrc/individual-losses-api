@@ -18,7 +18,7 @@
         "typeOfClaim": {
             "type": "string",
             "description": "The type of claim to be applied.",
-            "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways-general-income"]
+            "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways"]
         },
         "taxYear": {
             "type": "string",

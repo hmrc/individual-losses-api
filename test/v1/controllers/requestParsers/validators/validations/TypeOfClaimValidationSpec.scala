@@ -33,8 +33,8 @@ class TypeOfClaimValidationSpec extends UnitSpec {
         TypeOfClaimValidation.validate("carry-sideways").isEmpty shouldBe true
       }
 
-      "provided with a string of 'carry-forward-to-carry-sideways-general-income'" in {
-        TypeOfClaimValidation.validate("carry-forward-to-carry-sideways-general-income").isEmpty shouldBe true
+      "provided with a string of 'carry-forward-to-carry-sideways'" in {
+        TypeOfClaimValidation.validate("carry-forward-to-carry-sideways").isEmpty shouldBe true
       }
 
       "provided with a string of 'carry-sideways-fhl'" in {
@@ -66,8 +66,8 @@ class TypeOfClaimValidationSpec extends UnitSpec {
         TypeOfClaimValidation.checkClaim("carry-sideways", "uk-property-non-fhl").isEmpty shouldBe true
       }
 
-      "provided with a string of 'carry-forward-to-carry-sideways-general-income'" in {
-        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "uk-property-non-fhl").isEmpty shouldBe true
+      "provided with a string of 'carry-forward-to-carry-sideways'" in {
+        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways", "uk-property-non-fhl").isEmpty shouldBe true
       }
 
       "provided with a string of 'carry-sideways-fhl'" in {
@@ -92,8 +92,8 @@ class TypeOfClaimValidationSpec extends UnitSpec {
         TypeOfClaimValidation.checkClaim("carry-sideways-fhl", "self-employment") shouldBe List(RuleTypeOfClaimInvalid)
       }
 
-      "typeOfClaim is 'carry-forward-to-carry-sideways-general-income" in {
-        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways-general-income", "self-employment") shouldBe List(RuleTypeOfClaimInvalid)
+      "typeOfClaim is 'carry-forward-to-carry-sideways" in {
+        TypeOfClaimValidation.checkClaim("carry-forward-to-carry-sideways", "self-employment") shouldBe List(RuleTypeOfClaimInvalid)
       }
     }
   }
