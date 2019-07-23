@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package v1.mocks.validators
 
-import support.UnitSpec
-import v1.models.des.ReliefClaimed
-import v1.models.domain.TypeOfClaim._
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.AmendLossClaimValidator
+import v1.models.errors.MtdError
+import v1.models.requestData.AmendLossClaimRawData
 
-class TypeOfClaimSpec extends UnitSpec {
-  "TypeOfClaim" when {
-    "getting DES reliefClaimed" must {
-      "work" in {
-        `carry-forward`.toReliefClaimed shouldBe ReliefClaimed.`CF`
-        `carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CSGI`
-        `carry-forward-to-carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
-        `carry-sideways-fhl`.toReliefClaimed shouldBe ReliefClaimed.`CSFHL`
-      }
+class MockAmendLossClaimValidator extends MockFactory {
+
+  val mockValidator: AmendLossClaimValidator = mock[AmendLossClaimValidator]
+
+  object MockValidator {
+    def validate(data: AmendLossClaimRawData): CallHandler1[AmendLossClaimRawData, List[MtdError]] = {
+      (mockValidator.validate(_: AmendLossClaimRawData))
+        .expects(data)
     }
   }
 }

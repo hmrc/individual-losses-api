@@ -160,7 +160,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(validNino,
             AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways-general-income")))) shouldBe
+              typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
           List(RuleTypeOfClaimInvalid)
       }
     }

@@ -18,14 +18,14 @@ package v1.models.domain
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.TypeOfClaim.{`carry-forward-to-carry-sideways-general-income`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
+import v1.models.domain.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
 
 class AmendLossClaimSpec extends UnitSpec {
 
   def desJson(reliefClaimed: String): JsValue = Json.parse {
     s"""
        |{
-       | "reliefClaimed" : "$reliefClaimed"
+       | "updatedReliefClaimedType" : "$reliefClaimed"
        |}
     """.stripMargin
   }
@@ -43,7 +43,7 @@ class AmendLossClaimSpec extends UnitSpec {
     val testData = Map(
       "CF" -> TypeOfClaim.`carry-forward`,
       "CSGI" -> TypeOfClaim.`carry-sideways`,
-      "CFCSGI" -> TypeOfClaim.`carry-forward-to-carry-sideways-general-income`,
+      "CFCSGI" -> TypeOfClaim.`carry-forward-to-carry-sideways`,
       "CSFHL" -> TypeOfClaim.`carry-sideways-fhl`)
 
     "produce the correct Json for des submission" when {
@@ -61,7 +61,7 @@ class AmendLossClaimSpec extends UnitSpec {
     val testData = Map(
       "carry-forward" -> `carry-forward`,
       "carry-sideways" -> `carry-sideways`,
-      "carry-forward-to-carry-sideways-general-income" -> `carry-forward-to-carry-sideways-general-income`,
+      "carry-forward-to-carry-sideways" -> `carry-forward-to-carry-sideways`,
       "carry-sideways-fhl" -> `carry-sideways-fhl`
     )
 

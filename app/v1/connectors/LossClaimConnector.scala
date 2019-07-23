@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{AmendLossClaimResponse, CreateLossClaimResponse, ListLossClaimsResponse, RetrieveLossClaimResponse}
+import v1.models.des.{LossClaimResponse, CreateLossClaimResponse, ListLossClaimsResponse}
 import v1.models.domain.{AmendLossClaim, LossClaim}
 import v1.models.requestData._
 
@@ -42,24 +42,24 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
   }
 
   def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                                   ec: ExecutionContext): Future[DesOutcome[AmendLossClaimResponse]] = {
+                                                          ec: ExecutionContext): Future[DesOutcome[LossClaimResponse]] = {
 
     val nino = amendLossClaimRequest.nino.nino
     val claimId = amendLossClaimRequest.claimId
 
     def doIt(implicit hc: HeaderCarrier) =
-      http.PUT[AmendLossClaim, DesOutcome[AmendLossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId",
+      http.PUT[AmendLossClaim, DesOutcome[LossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId",
         amendLossClaimRequest.amendLossClaim)
 
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[RetrieveLossClaimResponse]] = {
+  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[LossClaimResponse]] = {
     val nino = request.nino.nino
     val claimId = request.claimId
 
-    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[RetrieveLossClaimResponse]] = {
-      http.GET[DesOutcome[RetrieveLossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId")
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[LossClaimResponse]] = {
+      http.GET[DesOutcome[LossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId")
     }
 
     doIt(desHeaderCarrier(appConfig))

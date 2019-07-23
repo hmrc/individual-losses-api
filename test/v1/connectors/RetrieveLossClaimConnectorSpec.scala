@@ -19,7 +19,6 @@ package v1.connectors
 import java.time.LocalDateTime
 
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.{MockAppConfig, MockHttpClient}
 import v1.models.des._
 import v1.models.domain._
 import v1.models.errors._
@@ -39,15 +38,15 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
     val claimId = "AAZZ1234567890a"
 
 
-    val retrieveResponse = RetrieveLossClaimResponse(
-      validTaxYear,
-      TypeOfLoss.`self-employment`,
+    val retrieveResponse = LossClaimResponse(
       Some(validSelfEmploymentId),
+      TypeOfLoss.`self-employment`,
       TypeOfClaim.`carry-forward`,
+      validTaxYear,
       testDateTime.toString
     )
 
-    def retrieveLossClaimResult(connector: LossClaimConnector): DesOutcome[RetrieveLossClaimResponse] = {
+    def retrieveLossClaimResult(connector: LossClaimConnector): DesOutcome[LossClaimResponse] = {
       await(
         connector.retrieveLossClaim(
           RetrieveLossClaimRequest(
