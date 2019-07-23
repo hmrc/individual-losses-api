@@ -9,7 +9,7 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success scenario for self-employment loss claim with carry-forward</p></td>
+            <td><p>Simulate success scenario</p></td>
         </tr>
         <tr>
             <td><p>SE_FORWARD</p></td>
