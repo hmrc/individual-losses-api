@@ -25,7 +25,7 @@ class AmendLossClaimSpec extends UnitSpec {
   def desJson(reliefClaimed: String): JsValue = Json.parse {
     s"""
        |{
-       | "reliefClaimed" : "$reliefClaimed"
+       | "updatedReliefClaimedType" : "$reliefClaimed"
        |}
     """.stripMargin
   }

@@ -24,7 +24,7 @@ object AmendLossClaim {
   implicit val reads: Reads[AmendLossClaim] = Json.reads[AmendLossClaim]
   implicit val writes: OWrites[AmendLossClaim] = new OWrites[AmendLossClaim] {
     override def writes(o: AmendLossClaim): JsObject = Json.obj(
-      "reliefClaimed" -> o.typeOfClaim.toReliefClaimed
+      "updatedReliefClaimedType" -> o.typeOfClaim.toReliefClaimed
     )
   }
 
