@@ -67,9 +67,15 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
 
   def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListLossClaimsResponse]] = {
     val nino = request.nino.nino
+    val pathParameters =
+      Map("taxYear"          -> request.taxYear.map(_.value),
+        "incomeSourceId"   -> request.selfEmploymentId,
+        "incomeSourceType" -> request.incomeSourceType.map(_.toString)).collect {
+        case (key, Some(value)) => key -> value
+      }
 
     def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListLossClaimsResponse]] = {
-      http.GET[DesOutcome[ListLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino")
+      http.GET[DesOutcome[ListLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino", pathParameters.toSeq)
     }
 
     doIt(desHeaderCarrier(appConfig))

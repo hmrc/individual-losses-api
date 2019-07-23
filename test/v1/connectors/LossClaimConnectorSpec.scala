@@ -16,17 +16,7 @@
 
 package v1.connectors
 
-import java.time.LocalDateTime
-
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.{MockAppConfig, MockHttpClient}
-import v1.models.des._
-import v1.models.domain._
-import v1.models.errors._
-import v1.models.outcomes.DesResponse
-import v1.models.requestData._
-
-import scala.concurrent.Future
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 

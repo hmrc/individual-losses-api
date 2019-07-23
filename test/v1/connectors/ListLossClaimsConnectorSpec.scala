@@ -28,15 +28,73 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
   "list LossClaims" when {
 
-    "a valid request is supplied" should {
+    val claimId2 = "AAZZ1234567890b"
+
+    "a valid request is supplied with no query parameters" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId)))))
+        val expected = Right(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId), LossClaimId(claimId2)))))
 
         MockedHttpClient
-          .get(s"$baseUrl/income-tax/claims-for-relief/$nino", desRequestHeaders: _*)
+          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(), desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
         listLossClaimsResult(connector) shouldBe expected
+      }
+    }
+
+    "provided with a tax year parameter" should {
+      "return a successful response with the correct correlationId" in new Test {
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId), LossClaimId(claimId2)))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("taxYear", "2019")), desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        listLossClaimsResult(connector, taxYear = Some(DesTaxYear("2019"))) shouldBe expected
+      }
+    }
+
+    "provided with a income source id parameter" should {
+      "return a successful response with the correct correlationId" in new Test {
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId), LossClaimId(claimId2)))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("incomeSourceId", "testId")), desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        listLossClaimsResult(connector, selfEmploymentId = Some("testId")) shouldBe expected
+      }
+    }
+
+    "provided with a income source type parameter" should {
+      "return a successful response with the correct correlationId" in new Test {
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId), LossClaimId(claimId2)))))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("incomeSourceType", "02")), desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        listLossClaimsResult(connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
+      }
+    }
+
+    "provided with all parameters" should {
+      "return a successful response with the correct correlationId" in new Test {
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId), LossClaimId(claimId2)))))
+
+        MockedHttpClient
+          .parameterGet(
+            s"$baseUrl/income-tax/claims-for-relief/$nino",
+            Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01")),
+            desRequestHeaders: _*
+          )
+          .returns(Future.successful(expected))
+
+        listLossClaimsResult(connector,
+          taxYear = Some(DesTaxYear("2019")),
+          selfEmploymentId = Some("testId"),
+          incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe
+          expected
       }
     }
 
@@ -45,7 +103,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
         MockedHttpClient
-          .get(s"$baseUrl/income-tax/claims-for-relief/$nino", desRequestHeaders: _*)
+          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(), desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
         listLossClaimsResult(connector) shouldBe expected
@@ -57,21 +115,24 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockedHttpClient
-          .get(s"$baseUrl/income-tax/claims-for-relief/$nino", desRequestHeaders: _*)
+          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("taxYear", "2019")), desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
-        listLossClaimsResult(connector) shouldBe expected
+        listLossClaimsResult(connector, Some(DesTaxYear("2019"))) shouldBe expected
       }
     }
 
-    def listLossClaimsResult(connector: LossClaimConnector): DesOutcome[ListLossClaimsResponse] =
+    def listLossClaimsResult(connector: LossClaimConnector,
+                             taxYear: Option[DesTaxYear] = None,
+                             incomeSourceType: Option[IncomeSourceType] = None,
+                             selfEmploymentId: Option[String] = None): DesOutcome[ListLossClaimsResponse] =
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(
             nino = Nino(nino),
-            None,
-            None,
-            None
+            taxYear = taxYear,
+            incomeSourceType = incomeSourceType,
+            selfEmploymentId = selfEmploymentId
           )))
   }
 }
