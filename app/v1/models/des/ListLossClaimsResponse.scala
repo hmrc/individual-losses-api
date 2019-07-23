@@ -16,19 +16,22 @@
 
 package v1.models.des
 
-import support.UnitSpec
-import v1.models.des.ReliefClaimed._
-import v1.models.domain.TypeOfClaim
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
-class ReliefClaimedSpec extends UnitSpec {
-  "TypeOfClaim" when {
-    "getting DES reliefClaimed" must {
-      "work" in {
-        `CF`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward`
-        `CSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways`
-        `CFCSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward-to-carry-sideways`
-        `CSFHL`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways-fhl`
-      }
-    }
-  }
+case class LossClaimId(id: String)
+
+object LossClaimId {
+  implicit val writes: Writes[LossClaimId] = Json.writes[LossClaimId]
+
+  implicit val reads: Reads[LossClaimId] = (JsPath \ "claimId").read[String].map(LossClaimId(_))
+}
+
+case class ListLossClaimsResponse(claims: Seq[LossClaimId])
+
+object ListLossClaimsResponse {
+  implicit val writes: Writes[ListLossClaimsResponse] =
+    Json.writes[ListLossClaimsResponse]
+
+  implicit val reads: Reads[ListLossClaimsResponse] =
+    implicitly[Reads[Seq[LossClaimId]]].map(ListLossClaimsResponse(_))
 }

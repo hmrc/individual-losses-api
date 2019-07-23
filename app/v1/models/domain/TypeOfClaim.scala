@@ -34,7 +34,7 @@ object TypeOfClaim {
     override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CSGI`
   }
 
-  case object `carry-forward-to-carry-sideways-general-income` extends TypeOfClaim {
+  case object `carry-forward-to-carry-sideways` extends TypeOfClaim {
     override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CFCSGI`
   }
 
@@ -46,7 +46,7 @@ object TypeOfClaim {
   val parser: PartialFunction[String, TypeOfClaim] = {
     case "carry-forward"    => `carry-forward`
     case "carry-sideways"    => `carry-sideways`
-    case "carry-forward-to-carry-sideways-general-income" => `carry-forward-to-carry-sideways-general-income`
+    case "carry-forward-to-carry-sideways" => `carry-forward-to-carry-sideways`
     case "carry-sideways-fhl" => `carry-sideways-fhl`
   }
 

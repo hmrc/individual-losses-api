@@ -14,21 +14,6 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package v1.models.requestData
 
-import support.UnitSpec
-import v1.models.des.ReliefClaimed
-import v1.models.domain.TypeOfClaim._
-
-class TypeOfClaimSpec extends UnitSpec {
-  "TypeOfClaim" when {
-    "getting DES reliefClaimed" must {
-      "work" in {
-        `carry-forward`.toReliefClaimed shouldBe ReliefClaimed.`CF`
-        `carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CSGI`
-        `carry-forward-to-carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
-        `carry-sideways-fhl`.toReliefClaimed shouldBe ReliefClaimed.`CSFHL`
-      }
-    }
-  }
-}
+case class ListLossClaimsRawData(nino: String, taxYear: Option[String], typeOfLoss: Option[String], selfEmploymentId: Option[String]) extends RawData

@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package v1.models.requestData
 
-import support.UnitSpec
-import v1.models.des.ReliefClaimed
-import v1.models.domain.TypeOfClaim._
+import uk.gov.hmrc.domain.Nino
+import v1.models.des.IncomeSourceType
 
-class TypeOfClaimSpec extends UnitSpec {
-  "TypeOfClaim" when {
-    "getting DES reliefClaimed" must {
-      "work" in {
-        `carry-forward`.toReliefClaimed shouldBe ReliefClaimed.`CF`
-        `carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CSGI`
-        `carry-forward-to-carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
-        `carry-sideways-fhl`.toReliefClaimed shouldBe ReliefClaimed.`CSFHL`
-      }
-    }
-  }
-}
+case class ListLossClaimsRequest(nino: Nino, taxYear: Option[DesTaxYear], incomeSourceType: Option[IncomeSourceType], selfEmploymentId: Option[String])
