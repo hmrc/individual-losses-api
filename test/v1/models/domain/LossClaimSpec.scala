@@ -25,7 +25,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
   val lossClaimEmployment = LossClaim(
     taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`self-employment`,
-    typeOfClaim = TypeOfClaim`carry-forward`,
+    typeOfClaim = TypeOfClaim.`carry-forward`,
     selfEmploymentId = Some("X2IS12356589871")
   )
 

@@ -22,7 +22,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockRetrieveLossClaimRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveLossClaimService}
-import v1.models.des.RetrieveLossClaimResponse
+import v1.models.des.LossClaimResponse
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
@@ -46,7 +46,7 @@ class RetrieveLossClaimControllerSpec
   val rawData = RetrieveLossClaimRawData(nino, claimId)
   val request = RetrieveLossClaimRequest(Nino(nino), claimId)
 
-  val response = RetrieveLossClaimResponse(taxYear = "2017-18",
+  val response = LossClaimResponse(taxYear = "2017-18",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
     selfEmploymentId = None,
     typeOfClaim = TypeOfClaim.`carry-forward`,
