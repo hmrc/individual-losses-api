@@ -28,7 +28,7 @@ object AmendLossClaimResponse {
   implicit val reads: Reads[AmendLossClaimResponse] = (
     (__ \ "incomeSourceId").readNullable[String] and
       (__ \ "incomeSourceType").readNullable[IncomeSourceType].map(_.map(_.toTypeOfLoss)) and
-      (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
+      (__ \ "updatedReliefClaimedType").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]
     ) (AmendLossClaimResponse.apply _)

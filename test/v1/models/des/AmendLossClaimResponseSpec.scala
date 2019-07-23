@@ -28,7 +28,7 @@ class AmendLossClaimResponseSpec extends UnitSpec {
                     |{
                     |  "incomeSourceId": "000000000000001",
                     |  "incomeSourceType": "$incomeSourceType",
-                    |  "reliefClaimed": "CSFHL",
+                    |  "updatedReliefClaimedType": "CSFHL",
                     |  "taxYear": "2020",
                     |  "submissionDate": "20180708"
                     |}
@@ -39,7 +39,7 @@ class AmendLossClaimResponseSpec extends UnitSpec {
       Json.parse(s"""
                     |{
                     |  "incomeSourceId": "000000000000001",
-                    |  "reliefClaimed": "CF",
+                    |  "updatedReliefClaimedType": "CF",
                     |  "taxYear": "2020",
                     |  "submissionDate": "20180708"
                     |}

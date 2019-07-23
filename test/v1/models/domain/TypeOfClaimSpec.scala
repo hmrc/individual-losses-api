@@ -26,7 +26,7 @@ class TypeOfClaimSpec extends UnitSpec {
       "work" in {
         `carry-forward`.toReliefClaimed shouldBe ReliefClaimed.`CF`
         `carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CSGI`
-        `carry-forward-to-carry-sideways-general-income`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
+        `carry-forward-to-carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
         `carry-sideways-fhl`.toReliefClaimed shouldBe ReliefClaimed.`CSFHL`
       }
     }
