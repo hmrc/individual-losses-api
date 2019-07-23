@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{CreateLossClaimResponse, LossClaimResponse}
+import v1.models.des.{LossClaimResponse, CreateLossClaimResponse, ListLossClaimsResponse}
 import v1.models.domain.{AmendLossClaim, LossClaim}
-import v1.models.requestData.{AmendLossClaimRequest, CreateLossClaimRequest, DeleteLossClaimRequest, RetrieveLossClaimRequest}
+import v1.models.requestData._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,13 +65,29 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
- def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
-   val nino = request.nino.nino
-   val claimId = request.claimId
+  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListLossClaimsResponse]] = {
+    val nino = request.nino.nino
+    val pathParameters =
+      Map("taxYear"          -> request.taxYear.map(_.value),
+        "incomeSourceId"   -> request.selfEmploymentId,
+        "incomeSourceType" -> request.incomeSourceType.map(_.toString)).collect {
+        case (key, Some(value)) => key -> value
+      }
 
-   def doIt(implicit hc: HeaderCarrier) =
-     http.DELETE[DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId")
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListLossClaimsResponse]] = {
+      http.GET[DesOutcome[ListLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino", pathParameters.toSeq)
+    }
 
-   doIt(desHeaderCarrier(appConfig))
- }
+    doIt(desHeaderCarrier(appConfig))
+  }
+
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+    val nino = request.nino.nino
+    val claimId = request.claimId
+
+    def doIt(implicit hc: HeaderCarrier) =
+      http.DELETE[DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId")
+
+    doIt(desHeaderCarrier(appConfig))
+  }
 }
