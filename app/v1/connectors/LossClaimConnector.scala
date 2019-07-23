@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{CreateLossClaimResponse, RetrieveLossClaimResponse}
-import v1.models.domain.LossClaim
-import v1.models.requestData.{CreateLossClaimRequest, DeleteLossClaimRequest, RetrieveLossClaimRequest}
+import v1.models.des.{AmendLossClaimResponse, CreateLossClaimResponse, RetrieveLossClaimResponse}
+import v1.models.domain.{AmendLossClaim, LossClaim}
+import v1.models.requestData.{AmendLossClaimRequest, CreateLossClaimRequest, DeleteLossClaimRequest, RetrieveLossClaimRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,6 +37,19 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     def doIt(implicit hc: HeaderCarrier) =
       http.POST[LossClaim, DesOutcome[CreateLossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino",
         request.lossClaim)
+
+    doIt(desHeaderCarrier(appConfig))
+  }
+
+  def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                          ec: ExecutionContext): Future[DesOutcome[AmendLossClaimResponse]] = {
+
+    val nino = amendLossClaimRequest.nino.nino
+    val claimId = amendLossClaimRequest.claimId
+
+    def doIt(implicit hc: HeaderCarrier) =
+      http.PUT[AmendLossClaim, DesOutcome[AmendLossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId",
+        amendLossClaimRequest.amendLossClaim)
 
     doIt(desHeaderCarrier(appConfig))
   }

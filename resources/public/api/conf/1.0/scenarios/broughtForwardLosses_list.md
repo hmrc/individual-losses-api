@@ -16,11 +16,11 @@
             <td><p>Simulate list containing two self-employment losses.</p></td>
         </tr>
         <tr>
-            <td><p>UK_FHL_PROPERTY</p></td>
+            <td><p>UK_PROPERTY_FHL</p></td>
             <td><p>Simulate list containing single UK FHL property loss.</p></td>
         </tr>
         <tr>
-            <td><p>UK_NON_FHL_PROPERTY</p></td>
+            <td><p>UK_PROPERTY_NON_FHL</p></td>
             <td><p>Simulate list containing single UK Non-FHL property loss.</p></td>
         </tr>
         <tr>

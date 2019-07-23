@@ -81,17 +81,6 @@ traits:
                 description: Tax year range exceeded. A tax year range of one year is required.
                 value:
                   code: RULE_TAX_YEAR_RANGE_EXCEEDED
-  ruleInvalidIncomeSourceId:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleInvalidIncomeSourceId:
-                description: The supplied income source ID is invalid.
-                value:
-                  code: RULES_INVALID_INCOME_SOURCE_ID
   ruleNoChangeTypeOfClaim:
     responses:
       403:
@@ -133,7 +122,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleSelfEmploymentId:
-                description: A self-employment ID should be supplied for a self-employment business type.
+                description: A self-employment ID can only be supplied for a self-employment business type
                 value:
                   code: RULE_SELF_EMPLOYMENT_ID
   formatLossId:

@@ -20,11 +20,11 @@
             <td><p>Simulate success response with self-employment class 4 loss.</p></td>
         </tr>
         <tr>
-            <td><p>UK_FHL_PROPERTY</p></td>
+            <td><p>UK_PROPERTY_FHL</p></td>
             <td><p>Simulate success response with UK FHL property loss.</p></td>
         </tr>
         <tr>
-            <td><p>UK_NON_FHL_PROPERTY</p></td>
+            <td><p>UK_PROPERTY_NON_FHL</p></td>
             <td><p>Simulate success response with UK Non-FHL Property loss.</p></td>
         </tr>
         <tr>

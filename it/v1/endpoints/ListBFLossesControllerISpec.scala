@@ -154,6 +154,38 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe Status.OK
       }
 
+      "querying for selfEmploymentId with no typeOfLoss" in new Test {
+        override val taxYear: Option[String]          = None
+        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceId" -> "XKIS00000000988"), Status.OK, desResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe Status.OK
+      }
+
+      "querying for self-employment with no selfEmploymentId" in new Test {
+        override val taxYear: Option[String]          = None
+        override val typeOfLoss: Option[String]       = Some("self-employment")
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceType" -> "01"), Status.OK, desResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe Status.OK
+      }
+
       "query with taxYear" in new Test {
         override val taxYear: Option[String]          = Some("2018-19")
         override val typeOfLoss: Option[String]       = Some("self-employment")

@@ -61,6 +61,14 @@ class ListBFLossesResponseSpec extends UnitSpec {
            |   "submissionDate": "2018-07-13T12:13:48.763Z"
            |  },
            |  {
+           |   "incomeSourceId": "000000000000000",
+           |   "incomeSourceType": "01",
+           |   "broughtForwardLossAmount": 0.02,
+           |   "taxYear": "2000",
+           |   "lossId": "000000000000008",
+           |   "submissionDate": "2018-07-13T12:13:48.763Z"
+           |  },
+           |  {
            |   "incomeSourceType": "02",
            |   "broughtForwardLossAmount": 0.02,
            |   "taxYear": "2000",
@@ -80,7 +88,7 @@ class ListBFLossesResponseSpec extends UnitSpec {
 
       desResponseJson.as[ListBFLossesResponse] shouldBe
         ListBFLossesResponse(
-          Seq(BFLossId("000000000000001"), BFLossId("000000000000002"), BFLossId("000000000000003"), BFLossId("000000000000004")))
+          Seq(BFLossId("000000000000001"), BFLossId("000000000000002"), BFLossId("000000000000008"), BFLossId("000000000000003"), BFLossId("000000000000004")))
     }
   }
 
