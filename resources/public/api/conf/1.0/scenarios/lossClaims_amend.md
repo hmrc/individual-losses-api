@@ -9,43 +9,43 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success scenario for self-employment loss claim with carry-forward </p></td>
+            <td><p>Simulate success scenario for self-employment loss claim with carry-forward</p></td>
         </tr>
         <tr>
             <td><p>SE_FORWARD</p></td>
-            <td><p>Simulate success scenario for self-employment loss claim with carry-forward </p></td>
+            <td><p>Simulate success scenario for self-employment loss claim with carry-forward</p></td>
         </tr>  
         <tr>
             <td><p>SE_SIDEWAYS</p></td>
-            <td><p>Simulate success scenario for self-employment loss claim with carry-sideways </p></td>
+            <td><p>Simulate success scenario for self-employment loss claim with carry-sideways</p></td>
         </tr>
         <tr>
             <td><p>NONFHL_FORWARD</p></td>
-            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-forward </p></td>
+            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-forward</p></td>
         </tr>
         <tr>
             <td><p>NONFHL_SIDEWAYS</p></td>
-            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-sideways </p></td>
+            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-sideways</p></td>
         </tr>
         <tr>
             <td><p>NONFHL_SIDEWAYS_FHL</p></td>
-            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-sideways-fhl </p></td>
+            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-sideways-fhl</p></td>
         </tr>
         <tr>
             <td><p>NONFHL_FORWARD_TO_SIDEWAYS</p></td>
-            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-forward-to-carry-sideways-general-income </p></td>
+            <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-forward-to-carry-sideways</p></td>
         </tr>        
         <tr>
            <td><p>NOT_FOUND</p></td>
-           <td><p>Simulates the scenario where no data is found.</p></td>
+           <td><p>Simulates the scenario where no data is found</p></td>
         </tr>     
         <tr>
            <td><p>NO_CHANGE</p></td>
-           <td><p>Simulates the scenario where the back end detects that no change has been made.</p></td>
+           <td><p>Simulates the scenario where the back end detects that no change has been made</p></td>
         </tr>     
         <tr>
            <td><p>INVALID</p></td>
-           <td><p>Simulates the scenario where the type of claim selected is not valid for the type of loss.</p></td>
+           <td><p>Simulates the scenario where the type of claim selected is not valid for the type of loss</p></td>
         </tr>         
     </tbody>
 </table>
