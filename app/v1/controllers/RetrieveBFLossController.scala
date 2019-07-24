@@ -16,10 +16,7 @@
 
 package v1.controllers
 
-import java.util.UUID
-
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.RetrieveBFLossParser
@@ -38,7 +35,6 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
-  protected val logger: Logger = Logger(this.getClass)
 
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -67,19 +63,6 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
            | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
-
-  private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
-    errorWrapper.correlationId match {
-      case Some(correlationId) => logger.info("[RetrieveBFLossController][getCorrelationId] - " +
-        s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
-      case None =>
-        val correlationId = UUID.randomUUID().toString
-        logger.info("[RetrieveBFLossController][getCorrelationId] - " +
-          s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
     }
   }
 }

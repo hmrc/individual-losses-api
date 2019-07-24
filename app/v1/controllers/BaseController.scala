@@ -16,9 +16,16 @@
 
 package v1.controllers
 
+import java.util.UUID
+
+import play.api.Logger
+import play.api.libs.json.Json
 import play.api.mvc.Result
+import v1.models.errors.ErrorWrapper
 
 trait BaseController {
+
+  protected val logger = Logger(this.getClass)
 
   implicit class Response(result: Result) {
 
@@ -30,6 +37,19 @@ trait BaseController {
       )
 
       result.copy(header = result.header.copy(headers = result.header.headers ++ newHeaders))
+    }
+  }
+
+  protected def getCorrelationId(errorWrapper: ErrorWrapper): String = {
+    errorWrapper.correlationId match {
+      case Some(correlationId) => logger.info(s"[${logger.underlyingLogger}] - " +
+        s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+        correlationId
+      case None =>
+        val correlationId = UUID.randomUUID().toString
+        logger.info(s"[${getClass.getSimpleName}] -" +
+          s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+        correlationId
     }
   }
 }

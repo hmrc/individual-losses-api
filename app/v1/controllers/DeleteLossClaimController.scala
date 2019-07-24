@@ -16,18 +16,15 @@
 
 package v1.controllers
 
-import java.util.UUID
-
-import javax.inject.{ Inject, Singleton }
-import play.api.Logger
+import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.DeleteLossClaimParser
 import v1.models.errors._
 import v1.models.requestData.DeleteLossClaimRawData
 import v1.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService,
@@ -39,7 +36,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
     extends AuthorisedController(cc)
     with BaseController {
 
-  protected val logger: Logger = Logger(this.getClass)
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -66,22 +62,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
       case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
       case DownstreamError                                        => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
-
-  private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
-    errorWrapper.correlationId match {
-      case Some(correlationId) =>
-        logger.info(
-          "[DeleteLossClaimController][getCorrelationId] - " +
-            s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
-      case None =>
-        val correlationId = UUID.randomUUID().toString
-        logger.info(
-          "[DeleteLossClaimController][getCorrelationId] - " +
-            s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
     }
   }
 }
