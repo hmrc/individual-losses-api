@@ -65,6 +65,8 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
            | LossIdFormatError
            | AmountFormatError
            | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))
+
+      case RuleLossAmountNotChanged => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
