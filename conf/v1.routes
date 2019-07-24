@@ -12,3 +12,4 @@ GET        /:nino/brought-forward-losses                                v1.contr
 POST       /:nino/loss-claims                                           v1.controllers.CreateLossClaimController.create(nino: String)
 DELETE     /:nino/loss-claims/:claimId                                  v1.controllers.DeleteLossClaimController.delete(nino: String, claimId: String)
 GET        /:nino/loss-claims/:claimId                                  v1.controllers.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
+POST       /:nino/loss-claims/:claimId/change-type-of-claim              v1.controllers.AmendLossClaimController.amend(nino: String, claimId: String)
