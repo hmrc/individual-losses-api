@@ -24,4 +24,9 @@ object TypeOfLossValidation {
   def validate(typeOfLoss: String): List[MtdError] = {
     if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
+
+  def validateLossClaim(typeOfLoss: String): List[MtdError] = {
+    val validTypes = List("self-employment", "uk-property-non-fhl")
+    if (validTypes.contains(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
+  }
 }
