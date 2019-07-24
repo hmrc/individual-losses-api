@@ -19,7 +19,7 @@ package v1.connectors
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.{MockAppConfig, MockHttpClient}
 import v1.models.des._
-import v1.models.domain.{ AmendBFLoss, BFLoss, TypeOfLoss }
+import v1.models.domain.{AmendBFLoss, BFLoss, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData._
@@ -93,10 +93,11 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "amend BFLoss" when {
 
     val amendBFLossResponse =
-      AmendBFLossResponse(selfEmploymentId = Some("XKIS00000000988"),
+      BFLossResponse(selfEmploymentId = Some("XKIS00000000988"),
                           typeOfLoss = TypeOfLoss.`self-employment`,
                           lossAmount = 500.13,
-                          taxYear = "2019-20")
+                          taxYear = "2019-20",
+                          lastModified = "2018-07-13T12:13:48.763Z")
 
     val amendBFLoss = AmendBFLoss(500.13)
 
@@ -136,7 +137,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def amendBFLossResult(connector: BFLossConnector): DesOutcome[AmendBFLossResponse] =
+    def amendBFLossResult(connector: BFLossConnector): DesOutcome[BFLossResponse] =
       await(
         connector.amendBFLoss(
           AmendBFLossRequest(
@@ -194,9 +195,9 @@ class BFLossConnectorSpec extends ConnectorSpec {
   }
 
   "retrieveBFLoss" should {
-    val retrieveResponse = RetrieveBFLossResponse("2018-19", TypeOfLoss.`self-employment`, Some("fakeId"), 2000.25, "dateString")
+    val retrieveResponse = BFLossResponse(Some("fakeId"), TypeOfLoss.`self-employment`, 2000.25, "2018-19", "dateString")
 
-    def retrieveBFLossResult(connector: BFLossConnector): DesOutcome[RetrieveBFLossResponse] = {
+    def retrieveBFLossResult(connector: BFLossConnector): DesOutcome[BFLossResponse] = {
       await(
         connector.retrieveBFLoss(
           RetrieveBFLossRequest(

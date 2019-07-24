@@ -17,8 +17,8 @@
 package v1.models.domain
 
 import support.UnitSpec
-import v1.models.des.{ IncomeSourceType, LossType }
-import TypeOfLoss._
+import v1.models.des.{IncomeSourceType, LossType}
+import v1.models.domain.TypeOfLoss._
 
 class TypeOfLossSpec extends UnitSpec {
   "TypeOfLoss" when {

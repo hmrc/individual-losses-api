@@ -16,7 +16,6 @@
 
 package support
 
-import com.codahale.metrics.SharedMetricRegistries
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{EitherValues, Matchers, WordSpecLike}
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}

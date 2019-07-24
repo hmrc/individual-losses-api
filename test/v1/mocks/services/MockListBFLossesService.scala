@@ -20,9 +20,9 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.requestData.ListBFLossesRequest
-import v1.services.{ ListBFLossesOutcome, ListBFLossesService }
+import v1.services.{ListBFLossesOutcome, ListBFLossesService}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockListBFLossesService extends MockFactory {
 

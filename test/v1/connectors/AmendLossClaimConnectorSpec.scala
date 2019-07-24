@@ -35,7 +35,8 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
       LossClaimResponse(selfEmploymentId = Some("XKIS00000000988"),
         typeOfLoss = TypeOfLoss.`self-employment`,
         typeOfClaim = TypeOfClaim.`carry-forward`,
-        taxYear = "2019-20", lastModified = LocalDateTime.now().toString)
+        taxYear = "2019-20",
+        lastModified = LocalDateTime.now().toString)
 
     val amendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
 

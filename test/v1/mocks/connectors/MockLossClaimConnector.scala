@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, LossClaimConnector}
-import v1.models.des.{LossClaimResponse, CreateLossClaimResponse}
+import v1.models.des.{CreateLossClaimResponse, LossClaimResponse}
 import v1.models.requestData._
 
 import scala.concurrent.{ExecutionContext, Future}

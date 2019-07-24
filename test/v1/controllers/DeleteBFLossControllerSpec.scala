@@ -21,10 +21,10 @@ import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockDeleteBFLossRequestDataParser
-import v1.mocks.services.{ MockAuditService, MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import v1.models.errors.{ NotFoundError, _ }
+import v1.mocks.services.{MockAuditService, MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{ DeleteBFLossRawData, DeleteBFLossRequest }
+import v1.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

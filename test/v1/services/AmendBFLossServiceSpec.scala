@@ -18,7 +18,7 @@ package v1.services
 
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockBFLossConnector
-import v1.models.des.AmendBFLossResponse
+import v1.models.des.BFLossResponse
 import v1.models.domain.{AmendBFLoss, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
@@ -35,7 +35,13 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
   val bfLoss = AmendBFLoss(256.78)
 
-  val bfLossResponse = AmendBFLossResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, 256.78, "2019-20")
+  val bfLossResponse = BFLossResponse(
+    Some("XKIS00000000988"),
+    TypeOfLoss.`self-employment`,
+    256.78,
+    "2019-20",
+    "2018-07-13T12:13:48.763Z"
+  )
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
@@ -80,6 +86,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "INVALID_LOSS_ID"            -> LossIdFormatError,
       "NOT_FOUND"                  -> NotFoundError,
       "INVALID_PAYLOAD"            -> DownstreamError,
+      "CONFLICT"                   -> RuleLossAmountNotChanged,
       "SERVER_ERROR"               -> DownstreamError,
       "SERVICE_UNAVAILABLE"        -> DownstreamError,
       "UNEXPECTED_ERROR"           -> DownstreamError

@@ -16,9 +16,9 @@
 
 package v1.models.des
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.{ TypeOfClaim, TypeOfLoss }
+import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 
 class LossClaimResponseSpec extends UnitSpec {
 

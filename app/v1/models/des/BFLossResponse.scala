@@ -21,22 +21,21 @@ import play.api.libs.json._
 import v1.models.domain.TypeOfLoss
 import v1.models.requestData.DesTaxYear
 
-case class RetrieveBFLossResponse(taxYear: String,
-                                  typeOfLoss: TypeOfLoss,
-                                  selfEmploymentId: Option[String],
-                                  lossAmount: BigDecimal,
-                                  lastModified: String)
+case class BFLossResponse(selfEmploymentId: Option[String],
+                          typeOfLoss: TypeOfLoss,
+                          lossAmount: BigDecimal,
+                          taxYear: String,
+                          lastModified: String)
 
-object RetrieveBFLossResponse {
+object BFLossResponse {
+  implicit val writes: Writes[BFLossResponse] = Json.writes[BFLossResponse]
 
-  implicit val writes: OWrites[RetrieveBFLossResponse] = Json.writes[RetrieveBFLossResponse]
-
-  implicit val reads: Reads[RetrieveBFLossResponse] = (
-    (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString) and
+  implicit val desToMtdReads: Reads[BFLossResponse] = (
+    (__ \ "incomeSourceId").readNullable[String] and
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
-      (__ \ "incomeSourceId").readNullable[String] and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
+      (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]
-  )(RetrieveBFLossResponse.apply _)
+  )(BFLossResponse.apply _)
 }
