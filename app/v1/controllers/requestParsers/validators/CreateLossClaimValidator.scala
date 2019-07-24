@@ -38,14 +38,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
   //  Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
   private def typeOfLossValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     List(
-      (data.body.json \ "typeOfLoss").validate[String] match {
-        case JsSuccess(value, _) => value match {
-          case "self-employment" => NoValidationErrors
-          case "uk-property-non-fhl" => NoValidationErrors
-          case _ =>List(TypeOfLossFormatError)
-        }
-        case _ => List(RuleIncorrectOrEmptyBodyError)
-      }
+      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfLossValidation.validateLossClaim)
     )
   }
 
