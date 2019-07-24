@@ -39,7 +39,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
-  protected val logger: Logger = Logger(this.getClass)
+  protected implicit val logger: Logger = Logger(this.getClass)
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
@@ -74,16 +74,4 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
     }
   }
 
-  private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
-    errorWrapper.correlationId match {
-      case Some(correlationId) => logger.info("[AmendBFLossController][getCorrelationId] - " +
-        s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
-      case None =>
-        val correlationId = UUID.randomUUID().toString
-        logger.info("[AmendBFLossController][getCorrelationId] - " +
-          s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
-    }
-  }
 }
