@@ -36,6 +36,8 @@ package object services {
 
   type RetrieveLossClaimOutcome = Either[ErrorWrapper, DesResponse[LossClaimResponse]]
 
+  type ListLossClaimsOutcome = Either[ErrorWrapper, DesResponse[ListLossClaimsResponse]]
+
   type AmendLossClaimOutcome = Either[ErrorWrapper, DesResponse[LossClaimResponse]]
 
   type DeleteLossClaimOutcome = Either[ErrorWrapper, DesResponse[Unit]]
