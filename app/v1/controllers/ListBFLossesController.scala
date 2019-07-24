@@ -16,18 +16,15 @@
 
 package v1.controllers
 
-import java.util.UUID
-
-import javax.inject.{ Inject, Singleton }
-import play.api.Logger
+import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.ListBFLossesParser
 import v1.models.errors._
 import v1.models.requestData.ListBFLossesRawData
 import v1.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
@@ -39,7 +36,6 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
     extends AuthorisedController(cc)
     with BaseController {
 
-  protected implicit val logger: Logger = Logger(this.getClass)
 
   def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], selfEmploymentId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

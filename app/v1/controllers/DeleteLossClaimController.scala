@@ -16,18 +16,15 @@
 
 package v1.controllers
 
-import java.util.UUID
-
-import javax.inject.{ Inject, Singleton }
-import play.api.Logger
+import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.DeleteLossClaimParser
 import v1.models.errors._
 import v1.models.requestData.DeleteLossClaimRawData
 import v1.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService,
@@ -39,7 +36,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
     extends AuthorisedController(cc)
     with BaseController {
 
-  protected implicit val logger: Logger = Logger(this.getClass)
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

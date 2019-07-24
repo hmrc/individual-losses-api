@@ -25,6 +25,8 @@ import v1.models.errors.ErrorWrapper
 
 trait BaseController {
 
+  protected val logger = Logger(this.getClass)
+
   implicit class Response(result: Result) {
 
     def withApiHeaders(responseHeaders: (String, String)*): Result = {
@@ -38,14 +40,14 @@ trait BaseController {
     }
   }
 
-  protected def getCorrelationId(errorWrapper: ErrorWrapper)(implicit logger: Logger): String = {
+  protected def getCorrelationId(errorWrapper: ErrorWrapper): String = {
     errorWrapper.correlationId match {
       case Some(correlationId) => logger.info(s"[${logger.underlyingLogger}] - " +
         s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
       case None =>
         val correlationId = UUID.randomUUID().toString
-        logger.info(s"[${logger.underlyingLogger}] -" +
+        logger.info(s"[${getClass.getSimpleName}] -" +
           s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
     }

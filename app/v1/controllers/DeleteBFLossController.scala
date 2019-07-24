@@ -16,10 +16,7 @@
 
 package v1.controllers
 
-import java.util.UUID
-
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.DeleteBFLossParser
@@ -38,7 +35,6 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
-  protected implicit val logger: Logger = Logger(this.getClass)
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

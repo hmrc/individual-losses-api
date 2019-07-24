@@ -16,10 +16,7 @@
 
 package v1.controllers
 
-import java.util.UUID
-
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
@@ -39,7 +36,6 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
-  protected implicit val logger: Logger = Logger(this.getClass)
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
