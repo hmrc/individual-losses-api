@@ -38,20 +38,20 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       retrieveBFLossParser.parseRequest(RetrieveBFLossRawData(nino, lossId)) match {
-        case Right(retrieveBFLossRequest) => retrieveBFLossService.retrieveBFLoss(retrieveBFLossRequest).map {
-          case Right(desResponse) =>
-            logger.info(s"[RetrieveBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-            Ok(Json.toJson(desResponse.responseData))
-              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
+        case Right(retrieveBFLossRequest) =>
+          retrieveBFLossService.retrieveBFLoss(retrieveBFLossRequest).map {
+            case Right(desResponse) =>
+              logger.info(s"[RetrieveBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
+              Ok(Json.toJson(desResponse.responseData))
+                .withApiHeaders(desResponse.correlationId)
 
-          case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
-            result
-        }
+            case Left(errorWrapper) =>
+              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
+              result
+          }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }

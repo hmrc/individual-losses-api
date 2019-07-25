@@ -40,18 +40,19 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
     authorisedAction(nino).async { implicit request =>
 
       deleteBFLossParser.parseRequest(DeleteBFLossRawData(nino, lossId)) match {
-        case Right(deleteBFLossRequest) => deleteBFLossService.deleteBFLoss(deleteBFLossRequest).map {
-          case Right(desResponse) =>
-            logger.info(s"[DeleteBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-            NoContent
-              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
+        case Right(deleteBFLossRequest) =>
+          deleteBFLossService.deleteBFLoss(deleteBFLossRequest).map {
+            case Right(desResponse) =>
+              logger.info(s"[DeleteBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
+              NoContent
+                .withApiHeaders(desResponse.correlationId)
 
-          case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
-            result
-        }
+            case Left(errorWrapper) =>
+              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
+              result
+          }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }

@@ -46,14 +46,14 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
           case Right(desResponse) =>
             logger.info(s"[AmendLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
             Ok(Json.toJson(desResponse.responseData))
-              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
+              .withApiHeaders(desResponse.correlationId).as(MimeTypes.JSON)
 
           case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+            val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
             result
         }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }

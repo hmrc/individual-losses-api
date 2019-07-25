@@ -16,10 +16,10 @@
 
 package v1.controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
 import v1.controllers.requestParsers.CreateBFLossParser
 import v1.models.errors._
 import v1.models.requestData.CreateBFLossRawData
@@ -39,20 +39,21 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       createBFLossParser.parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(request.body))) match {
-        case Right(createBFLossRequest) => createBFLossService.createBFLoss(createBFLossRequest).map {
-          case Right(desResponse) =>
-            logger.info(s"[CreateBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-            Created(Json.toJson(desResponse.responseData))
-              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
+        case Right(createBFLossRequest) =>
+          createBFLossService.createBFLoss(createBFLossRequest).map {
+            case Right(desResponse) =>
+              logger.info(s"[CreateBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
+              Created(Json.toJson(desResponse.responseData))
+                .withApiHeaders(desResponse.correlationId)
+                .as(MimeTypes.JSON)
 
-          case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
-            result
-        }
+            case Left(errorWrapper) =>
+              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
+              result
+          }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }
