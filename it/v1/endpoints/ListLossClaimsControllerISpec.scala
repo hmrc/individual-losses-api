@@ -25,7 +25,7 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class ListBFLossesControllerISpec extends IntegrationBaseSpec {
+class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
 
   val correlationId = "X-123"
 
@@ -33,37 +33,35 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
 
   val responseJson: JsValue = Json.parse(s"""
         |{
-        |    "losses": [
+        |    "claims": [
         |        {
-        |            "id": "000000000000001"
+        |            "id": "000000000000011"
         |        },
         |        {
-        |            "id": "000000000000002"
+        |            "id": "000000000000022"
         |        }
         |    ]
         |}
      """.stripMargin)
 
   val desResponseJson: JsValue =
-    Json.parse(s"""
-       |[
-       |{
-       |"incomeSourceId": "000000000000000",
-       |"lossType": "INCOME",
-       |"broughtForwardLossAmount": 99999999999.99,
-       |"taxYear": "2000",
-       |"lossId": "000000000000001",
-       |"submissionDate": "2018-07-13T12:13:48.763Z"
-       |},
-       |{
-       |"incomeSourceId": "000000000000000",
-       |"lossType": "INCOME",
-       |"broughtForwardLossAmount": 0.02,
-       |"taxYear": "2000",
-       |"lossId": "000000000000002",
-       |"submissionDate": "2018-07-13T12:13:48.763Z"
-       |}
-       |]
+    Json.parse(s"""[
+        |    {
+        |        "incomeSourceId": "000000000000001",
+        |        "reliefClaimed": "CF",
+        |        "taxYearClaimedFor": "2099",
+        |        "claimId": "000000000000011",
+        |        "submissionDate": "2019-07-13T12:13:48.763Z"
+        |    },
+        |    {
+        |        "incomeSourceId": "000000000000002",
+        |        "reliefClaimed": "CF",
+        |        "taxYearClaimedFor": "2020",
+        |        "claimId": "000000000000022",
+        |        "submissionDate": "2018-07-13T12:13:48.763Z"
+        |    }
+        |]
+        |
      """.stripMargin)
 
   private trait Test {
@@ -73,7 +71,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
     val typeOfLoss: Option[String]       = None
     val selfEmploymentId: Option[String] = None
 
-    def uri: String = s"/$nino/brought-forward-losses"
+    def uri: String = s"/$nino/loss-claims"
 
     def queryParams: Seq[(String, String)] =
       Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "selfEmploymentId" -> selfEmploymentId)
@@ -81,7 +79,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
           case (k, Some(v)) => (k, v)
         }
 
-    def desUrl: String = s"/income-tax/brought-forward-losses/$nino"
+    def desUrl: String = s"/income-tax/claims-for-relief/$nino"
 
     def errorBody(code: String): String =
       s"""
@@ -102,7 +100,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the ListBFLosses endpoint" should {
+  "Calling the ListLossClaims endpoint" should {
 
     "return a 200 status code" when {
 
@@ -118,25 +116,23 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for property" in new Test {
         override val taxYear: Option[String]          = None
-        override val typeOfLoss: Option[String]       = Some("uk-property-fhl")
+        override val typeOfLoss: Option[String]       = Some("uk-property-non-fhl")
         override val selfEmploymentId: Option[String] = None
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceType" -> "04"), Status.OK, desResponseJson)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceType" -> "02"), Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for self-employment" in new Test {
@@ -154,7 +150,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for selfEmploymentId with no typeOfLoss" in new Test {
@@ -171,7 +166,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for self-employment with no selfEmploymentId" in new Test {
@@ -188,7 +182,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "query with taxYear" in new Test {
@@ -206,7 +199,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "query with taxYear only" in new Test {
@@ -222,7 +214,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -240,8 +231,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().get())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-
         }
       }
 
@@ -286,7 +275,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", Some("2019-21"), None, None, Status.BAD_REQUEST, RuleTaxYearRangeExceededError)
       validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, Status.BAD_REQUEST, TypeOfLossFormatError)
       validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), Status.BAD_REQUEST, SelfEmploymentIdFormatError)
-      validationErrorTest("AA123456A", None, Some("uk-property-fhl"), Some("XA01234556790"), Status.BAD_REQUEST, RuleSelfEmploymentId)
+      validationErrorTest("AA123456A", None, Some("uk-property-non-fhl"), Some("XA01234556790"), Status.BAD_REQUEST, RuleSelfEmploymentId)
     }
 
   }
