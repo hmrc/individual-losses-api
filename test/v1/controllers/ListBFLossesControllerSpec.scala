@@ -94,6 +94,7 @@ class ListBFLossesControllerSpec
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseJson
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 
@@ -111,6 +112,7 @@ class ListBFLossesControllerSpec
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe NOT_FOUND
         contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 

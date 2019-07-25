@@ -118,6 +118,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for property" in new Test {
@@ -135,6 +136,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for self-employment" in new Test {
@@ -152,6 +154,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for selfEmploymentId with no typeOfLoss" in new Test {
@@ -168,6 +171,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for self-employment with no selfEmploymentId" in new Test {
@@ -184,6 +188,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "query with taxYear" in new Test {
@@ -201,6 +206,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "query with taxYear only" in new Test {
@@ -216,6 +222,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -233,6 +240,8 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().get())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
+
         }
       }
 

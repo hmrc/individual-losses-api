@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.mocks.requestParsers
 
-import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.AmendLossClaimValidator
-import v1.models.domain.AmendLossClaim
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.AmendLossClaimParser
+import v1.models.errors.ErrorWrapper
 import v1.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
-class AmendLossClaimParser @Inject()(val validator: AmendLossClaimValidator)
-  extends RequestParser[AmendLossClaimRawData, AmendLossClaimRequest] {
+trait MockAmendLossClaimRequestDataParser extends MockFactory {
 
-  override protected def requestFor(data: AmendLossClaimRawData): AmendLossClaimRequest =
-    AmendLossClaimRequest(Nino(data.nino), data.claimId, data.body.json.as[AmendLossClaim])
+  val mockAmendLossClaimRequestDataParser = mock[AmendLossClaimParser]
+
+  object MockAmendLossClaimRequestDataParser {
+    def parseRequest(data: AmendLossClaimRawData): CallHandler[Either[ErrorWrapper, AmendLossClaimRequest]] = {
+      (mockAmendLossClaimRequestDataParser.parseRequest(_: AmendLossClaimRawData)).expects(data)
+    }
+  }
+
 }

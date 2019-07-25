@@ -19,13 +19,13 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{ JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
+import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
+class AmendLossClaimControllerISpec extends IntegrationBaseSpec {
 
   val correlationId = "X-123"
 
@@ -49,12 +49,19 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
        |}
       """.stripMargin)
 
+  val requestJson: JsValue = Json.parse(
+    s"""
+       |{
+       |    "typeOfClaim": "carry-forward"
+       |}
+      """.stripMargin)
+
   private trait Test {
 
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    def uri: String    = s"/$nino/loss-claims/$claimId"
+    def uri: String    = s"/$nino/loss-claims/$claimId/change-type-of-claim"
     def desUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
@@ -75,7 +82,7 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the retrieve LossClaim endpoint" should {
+  "Calling the amend LossClaim endpoint" should {
 
     "return a 200 status code" when {
 
@@ -85,10 +92,10 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUrl, Status.OK, desResponseJson)
+          DesStub.onSuccess(DesStub.PUT, desUrl, Status.OK, desResponseJson)
         }
 
-        val response: WSResponse = await(request().get())
+        val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -103,10 +110,10 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.onError(DesStub.GET, desUrl, desStatus, errorBody(desCode))
+            DesStub.onError(DesStub.PUT, desUrl, desStatus, errorBody(desCode))
           }
 
-          val response: WSResponse = await(request().get())
+          val response: WSResponse = await(request().post(requestJson))
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -115,13 +122,17 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.FORBIDDEN, RuleTypeOfClaimInvalid)
+      serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleClaimTypeNotChanged)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
 
     "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String, requestClaimId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String, requestClaimId: String, requestBody: JsValue,
+                              expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String    = requestNino
@@ -133,14 +144,24 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
             MtdIdLookupStub.ninoFound(requestNino)
           }
 
-          val response: WSResponse = await(request().get())
+          val response: WSResponse = await(request().post(requestBody))
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
         }
       }
 
-      validationErrorTest("BADNINO", "AAZZ1234567890a", Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADClaimId", Status.BAD_REQUEST, ClaimIdFormatError)
+      val invalidClaimTypeRequestJson: JsValue = Json.parse(
+        s"""
+           |{
+           |    "typeOfClaim": "carry-backward"
+           |}
+      """.stripMargin)
+
+      validationErrorTest("BADNINO", "AAZZ1234567890a", requestJson, Status.BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BADClaimId", requestJson, Status.BAD_REQUEST, ClaimIdFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", invalidClaimTypeRequestJson,
+        Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
 
   }
