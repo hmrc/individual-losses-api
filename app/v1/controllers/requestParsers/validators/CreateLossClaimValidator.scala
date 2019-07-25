@@ -67,7 +67,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
     List(
       MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError),
       SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
-      TypeOfClaimValidation.checkClaim(req.typeOfClaim.toString, req.typeOfLoss.toString)
+      TypeOfClaimValidation.checkClaim(req.typeOfClaim, req.typeOfLoss)
     )
   }
 
