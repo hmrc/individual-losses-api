@@ -98,6 +98,7 @@ class AmendBFLossControllerSpec
         val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 

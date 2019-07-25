@@ -108,7 +108,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe Status.CREATED
         response.json shouldBe responseJson
-
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -141,6 +141,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe expectedStatus
         response.json shouldBe Json.toJson(expectedBody)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 

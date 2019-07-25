@@ -98,6 +98,7 @@ class AmendLossClaimControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -115,6 +116,7 @@ class AmendLossClaimControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().post(requestJson))
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
         }
       }
 

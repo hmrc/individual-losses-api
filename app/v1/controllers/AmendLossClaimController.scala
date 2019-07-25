@@ -19,7 +19,6 @@ package v1.controllers
 import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
@@ -38,8 +37,6 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
                                          auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
-
-  protected val logger: Logger = Logger(this.getClass)
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
@@ -68,22 +65,9 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
            | RuleIncorrectOrEmptyBodyError
            | ClaimIdFormatError
            | TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))
+      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid   => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
-
-  private def getCorrelationId(errorWrapper: ErrorWrapper): String = {
-    errorWrapper.correlationId match {
-      case Some(correlationId) => logger.info("[AmendLossClaimController][getCorrelationId] - " +
-        s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
-      case None =>
-        val correlationId = UUID.randomUUID().toString
-        logger.info("[AmendLossClaimController][getCorrelationId] - " +
-          s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
     }
   }
 }
