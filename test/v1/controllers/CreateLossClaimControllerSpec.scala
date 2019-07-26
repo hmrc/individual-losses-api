@@ -16,23 +16,23 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v1.mocks.services._
 import v1.models.des.CreateLossClaimResponse
-import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
-import v1.models.errors.{NotFoundError, _}
+import v1.models.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
+import v1.models.errors.{ NotFoundError, _ }
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{CreateLossClaimRawData, CreateLossClaimRequest}
+import v1.models.requestData.{ CreateLossClaimRawData, CreateLossClaimRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateLossClaimControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateLossClaimService
@@ -43,14 +43,13 @@ class CreateLossClaimControllerSpec
 
   val nino = "AA123456A"
 
-  val lossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways` , Some("XKIS00000000988"))
+  val lossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, Some("XKIS00000000988"))
 
   val createLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
 
   val lossClaimRequest: CreateLossClaimRequest = CreateLossClaimRequest(Nino(nino), lossClaim)
 
-  val requestBody: JsValue = Json.parse(
-    """
+  val requestBody: JsValue = Json.parse("""
       |{
       |    "selfEmploymentId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
@@ -59,8 +58,7 @@ class CreateLossClaimControllerSpec
       |}
     """.stripMargin)
 
-  val responseBody: JsValue = Json.parse(
-    """
+  val responseBody: JsValue = Json.parse("""
       |{
       |  "id": "AAZZ1234567890a"
       |}
@@ -86,8 +84,8 @@ class CreateLossClaimControllerSpec
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
 
-        MockCreateLossClaimRequestDataParser.parseRequest(
-          CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+        MockCreateLossClaimRequestDataParser
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Right(lossClaimRequest))
 
         MockCreateLossClaimService
@@ -104,8 +102,8 @@ class CreateLossClaimControllerSpec
     "return single error response with status 400" when {
       "the request received failed the validation" in new Test() {
 
-        MockCreateLossClaimRequestDataParser.parseRequest(
-          CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+        MockCreateLossClaimRequestDataParser
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(None, NinoFormatError, None)))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
@@ -119,8 +117,8 @@ class CreateLossClaimControllerSpec
     def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the parser" in new Test {
 
-        MockCreateLossClaimRequestDataParser.
-          parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+        MockCreateLossClaimRequestDataParser
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
@@ -131,19 +129,19 @@ class CreateLossClaimControllerSpec
       }
     }
 
-      val badRequestErrorsFromParser = List(
-        BadRequestError,
-        NinoFormatError,
-        TaxYearFormatError,
-        RuleIncorrectOrEmptyBodyError,
-        RuleTaxYearNotSupportedError,
-        RuleTaxYearRangeExceededError,
-        TypeOfLossFormatError,
-        SelfEmploymentIdFormatError,
-        RuleSelfEmploymentId,
-        RuleTypeOfClaimInvalid,
-        TypeOfClaimFormatError
-      )
+    val badRequestErrorsFromParser = List(
+      BadRequestError,
+      NinoFormatError,
+      TaxYearFormatError,
+      RuleIncorrectOrEmptyBodyError,
+      RuleTaxYearNotSupportedError,
+      RuleTaxYearRangeExceededError,
+      TypeOfLossFormatError,
+      SelfEmploymentIdFormatError,
+      RuleSelfEmploymentId,
+      RuleTypeOfClaimInvalid,
+      TypeOfClaimFormatError
+    )
 
     badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
   }
@@ -152,8 +150,8 @@ class CreateLossClaimControllerSpec
     def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the service" in new Test {
 
-        MockCreateLossClaimRequestDataParser.parseRequest(
-          CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+        MockCreateLossClaimRequestDataParser
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Right(lossClaimRequest))
 
         MockCreateLossClaimService
@@ -172,5 +170,7 @@ class CreateLossClaimControllerSpec
     errorsFromServiceTester(RuleDuplicateClaimSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)
+    errorsFromServiceTester(RuleTypeOfClaimInvalid, BAD_REQUEST)
+    errorsFromServiceTester(RulePeriodNotEnded, FORBIDDEN)
   }
 }

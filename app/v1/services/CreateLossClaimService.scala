@@ -39,11 +39,13 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
 
   private def mappingDesToMtdError: Map[String, MtdError] =
     Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "DUPLICATE"                 -> RuleDuplicateClaimSubmissionError,
-      "NOT_FOUND_INCOME_SOURCE"   -> NotFoundError,
-      "INVALID_PAYLOAD"           -> DownstreamError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError
+      "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
+      "DUPLICATE"                   -> RuleDuplicateClaimSubmissionError,
+      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+      "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
+      "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
+      "INVALID_PAYLOAD"             -> DownstreamError,
+      "SERVER_ERROR"                -> DownstreamError,
+      "SERVICE_UNAVAILABLE"         -> DownstreamError
     )
 }

@@ -19,7 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.CreateLossClaimResponse
-import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
+import v1.models.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.CreateLossClaimRequest
@@ -30,7 +30,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val nino = Nino("AA123456A")
+  val nino    = Nino("AA123456A")
   val claimId = "AAZZ1234567890a"
 
   val lossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
@@ -56,7 +56,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError = MtdError("SOME_CODE", "some message")
+        val someError   = MtdError("SOME_CODE", "some message")
         val desResponse = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(desResponse)))
 
@@ -74,13 +74,15 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
     }
 
     Map(
-      "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-      "DUPLICATE"                  -> RuleDuplicateClaimSubmissionError,
-      "NOT_FOUND_INCOME_SOURCE"    -> NotFoundError,
-      "INVALID_PAYLOAD"            -> DownstreamError,
-      "SERVER_ERROR"               -> DownstreamError,
-      "SERVICE_UNAVAILABLE"        -> DownstreamError,
-      "UNEXPECTED_ERROR"           -> DownstreamError
+      "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
+      "DUPLICATE"                   -> RuleDuplicateClaimSubmissionError,
+      "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
+      "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
+      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+      "INVALID_PAYLOAD"             -> DownstreamError,
+      "SERVER_ERROR"                -> DownstreamError,
+      "SERVICE_UNAVAILABLE"         -> DownstreamError,
+      "UNEXPECTED_ERROR"            -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

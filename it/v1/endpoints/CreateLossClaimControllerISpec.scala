@@ -112,16 +112,27 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-
     "return 500 (Internal Server Error)" when {
 
       createErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+
+      // These use default mapping but in spec so check explicity...
+      createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.FORBIDDEN, "INVALID_TAX_YEAR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.FORBIDDEN, "INCOME_SOURCE_NOT_ACTIVE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_ENDED", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+    }
+
+    "return 400 (Bad Request)" when {
+
+      createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
     }
 
     "return 403 FORBIDDEN" when {
       createErrorTest(Status.CONFLICT, "DUPLICATE", Status.FORBIDDEN, RuleDuplicateClaimSubmissionError)
+      createErrorTest(Status.FORBIDDEN, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
     }
 
     "return 404 NOT FOUND" when {
