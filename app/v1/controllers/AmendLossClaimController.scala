@@ -16,35 +16,36 @@
 
 package v1.controllers
 
+import java.util.UUID
+
 import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import v1.controllers.requestParsers.CreateLossClaimParser
+import v1.controllers.requestParsers.AmendLossClaimParser
 import v1.models.errors._
-import v1.models.requestData.CreateLossClaimRawData
+import v1.models.requestData.AmendLossClaimRawData
 import v1.services._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService,
-                                          val lookupService: MtdIdLookupService,
-                                          createLossClaimService: CreateLossClaimService,
-                                          createLossClaimParser: CreateLossClaimParser,
-                                          auditService: AuditService,
-                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
+class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
+                                         val lookupService: MtdIdLookupService,
+                                         amendLossClaimService: AmendLossClaimService,
+                                         amendLossClaimParser: AmendLossClaimParser,
+                                         auditService: AuditService,
+                                         cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
-
-  def create(nino: String): Action[JsValue] =
+  def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
-      createLossClaimParser.parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(request.body))) match {
-        case Right(createLossClaimRequest) => createLossClaimService.createLossClaim(createLossClaimRequest).map {
+      amendLossClaimParser.parseRequest(AmendLossClaimRawData(nino, lossId, AnyContentAsJson(request.body))) match {
+        case Right(amendLossClaimRequest) => amendLossClaimService.amendLossClaim(amendLossClaimRequest).map {
           case Right(desResponse) =>
-            logger.info(s"[CreateLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
-            Created(Json.toJson(desResponse.responseData))
+            logger.info(s"[AmendLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
+            Ok(Json.toJson(desResponse.responseData))
               .withApiHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
 
           case Left(errorWrapper) =>
@@ -61,16 +62,10 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
     errorWrapper.error match {
       case BadRequestError
            | NinoFormatError
-           | TaxYearFormatError
            | RuleIncorrectOrEmptyBodyError
-           | RuleTaxYearNotSupportedError
-           | RuleTaxYearRangeExceededError
-           | TypeOfLossFormatError
-           | SelfEmploymentIdFormatError
-           | RuleSelfEmploymentId
-           | RuleTypeOfClaimInvalid
+           | ClaimIdFormatError
            | TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded => Forbidden(Json.toJson(errorWrapper))
+      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid   => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }

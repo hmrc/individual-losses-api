@@ -20,22 +20,22 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
-import v1.models.des.{BFLossId, ListBFLossesResponse}
+import v1.mocks.requestParsers.MockListLossClaimsRequestDataParser
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
+import v1.models.des.{LossClaimId, ListLossClaimsResponse}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
+import v1.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ListBFLossesControllerSpec
+class ListLossClaimsControllerSpec
     extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockListBFLossesService
-    with MockListBFLossesRequestDataParser
+    with MockListLossClaimsService
+    with MockListLossClaimsRequestDataParser
     with MockAuditService {
 
   // WLOG as request data parsing is mocked...
@@ -45,14 +45,14 @@ class ListBFLossesControllerSpec
   val selfEmployment = "self-employment"
   val selfEmploymentId = "selfEmploymentId"
 
-  val rawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
-  val request = ListBFLossesRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
+  val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
+  val request = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
 
-  val response = ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))
+  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789"), LossClaimId("000000123456790")))
 
   val responseJson: JsValue = Json.parse("""
       |{
-      |    "losses": [
+      |    "claims": [
       |        {
       |            "id": "000000123456789"
       |        },
@@ -66,11 +66,11 @@ class ListBFLossesControllerSpec
   trait Test {
     val hc = HeaderCarrier()
 
-    val controller = new ListBFLossesController(
+    val controller = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      listBFLossesService = mockListBFLossesService,
-      listBFLossesParser = mockListBFLossesRequestDataParser,
+      listLossClaimsService = mockListLossClaimsService,
+      listLossClaimsParser = mockListLossClaimsRequestDataParser,
       auditService = mockAuditService,
       cc = cc
     )
@@ -83,36 +83,34 @@ class ListBFLossesControllerSpec
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
 
-        MockListBFLossesRequestDataParser
+        MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
 
-        MockListBFLossesService
+        MockListLossClaimsService
           .list(request)
           .returns(Future.successful(Right(DesResponse(correlationId, response))))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseJson
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 
     "return MATCHING_RESOURCE_NOT_FOUND" when {
-      "the request received is valid but an empty list of losses is returned from DES" in new Test {
+      "the request received is valid but an empty list of claims is returned from DES" in new Test {
 
-        MockListBFLossesRequestDataParser
+        MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
 
-        MockListBFLossesService
+        MockListLossClaimsService
           .list(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, ListBFLossesResponse(Nil)))))
+          .returns(Future.successful(Right(DesResponse(correlationId, ListLossClaimsResponse(Nil)))))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe NOT_FOUND
         contentAsJson(result) shouldBe Json.toJson(NotFoundError)
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 
@@ -120,7 +118,7 @@ class ListBFLossesControllerSpec
       def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
-          MockListBFLossesRequestDataParser
+          MockListLossClaimsRequestDataParser
             .parseRequest(rawData)
             .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
@@ -135,22 +133,22 @@ class ListBFLossesControllerSpec
       errorsFromParserTester(BadRequestError, BAD_REQUEST)
       errorsFromParserTester(NinoFormatError, BAD_REQUEST)
       errorsFromParserTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
-      errorsFromParserTester(SelfEmploymentIdFormatError, BAD_REQUEST)
-      errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearRangeExceededError, BAD_REQUEST)
+      errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
+      errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
+      errorsFromParserTester(SelfEmploymentIdFormatError, BAD_REQUEST)
      }
 
     "handle non-mdtp validation errors as per spec" when {
       def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
-          MockListBFLossesRequestDataParser
+          MockListLossClaimsRequestDataParser
             .parseRequest(rawData)
             .returns(Right(request))
 
-          MockListBFLossesService
+          MockListLossClaimsService
             .list(request)
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 

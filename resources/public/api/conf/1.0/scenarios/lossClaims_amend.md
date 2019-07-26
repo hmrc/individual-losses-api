@@ -44,7 +44,7 @@
            <td><p>Simulates the scenario where the back end detects that no change has been made</p></td>
         </tr>     
         <tr>
-           <td><p>INVALID</p></td>
+           <td><p>INVALID_CLAIM_TYPE</p></td>
            <td><p>Simulates the scenario where the type of claim selected is not valid for the type of loss</p></td>
         </tr>         
     </tbody>

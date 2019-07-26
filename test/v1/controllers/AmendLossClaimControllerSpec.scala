@@ -20,40 +20,35 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
+import v1.mocks.requestParsers.MockAmendLossClaimRequestDataParser
 import v1.mocks.services._
-import v1.models.des.BFLossResponse
-import v1.models.domain.{AmendBFLoss, TypeOfLoss}
-import v1.models.errors.{AmountFormatError, LossIdFormatError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, _}
+import v1.models.des.LossClaimResponse
+import v1.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
+import v1.models.errors.{NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, _}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
+import v1.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AmendBFLossControllerSpec
+class AmendLossClaimControllerSpec
   extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockAmendBFLossService
-    with MockAmendBFLossRequestDataParser
+    with MockAmendLossClaimService
+    with MockAmendLossClaimRequestDataParser
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val nino = "AA123456A"
-  val lossId = "AAZZ1234567890a"
-  val lossAmount = BigDecimal(531.99)
-  val amendBFLoss = AmendBFLoss(lossAmount)
+  val claimId = "AAZZ1234567890a"
+  val amendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
 
-  val amendBFLossResponse = BFLossResponse(
-    selfEmploymentId = Some("XKIS00000000988"),
-    typeOfLoss = TypeOfLoss.`self-employment`,
-    lossAmount = lossAmount,
-    taxYear = "2019-20",
-    lastModified = "2018-07-13T12:13:48.763Z")
+  val amendLossClaimResponse =
+    LossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "2018-07-13T12:13:48.763Z")
 
-  val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
+  val lossClaimRequest: AmendLossClaimRequest = AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim)
 
   val responseBody: JsValue = Json.parse(
     s"""
@@ -61,7 +56,7 @@ class AmendBFLossControllerSpec
       |    "selfEmploymentId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2019-20",
-      |    "lossAmount": $lossAmount,
+      |    "typeOfClaim": "carry-forward",
       |    "lastModified": "2018-07-13T12:13:48.763Z"
       |}
     """.stripMargin)
@@ -69,18 +64,18 @@ class AmendBFLossControllerSpec
   val requestBody: JsValue = Json.parse(
     s"""
       |{
-      |  "lossAmount": $lossAmount
+      |  "typeOfClaim": "carry-forward"
       |}
     """.stripMargin)
 
   trait Test {
     val hc = HeaderCarrier()
 
-    val controller = new AmendBFLossController(
+    val controller = new AmendLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      amendBFLossService = mockAmendBFLossService,
-      amendBFLossParser = mockAmendBFLossRequestDataParser,
+      amendLossClaimService = mockAmendLossClaimService,
+      amendLossClaimParser = mockAmendLossClaimRequestDataParser,
       auditService = mockAuditService,
       cc = cc
     )
@@ -93,15 +88,15 @@ class AmendBFLossControllerSpec
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
 
-        MockAmendBFLossRequestDataParser.parseRequest(
-          AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-          .returns(Right(bfLossRequest))
+        MockAmendLossClaimRequestDataParser.parseRequest(
+          AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .returns(Right(lossClaimRequest))
 
-        MockAmendBFLossService
-          .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
-          .returns(Future.successful(Right(DesResponse(correlationId, amendBFLossResponse))))
+        MockAmendLossClaimService
+          .amend(AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
+          .returns(Future.successful(Right(DesResponse(correlationId, amendLossClaimResponse))))
 
-        val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
+        val result: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -111,11 +106,11 @@ class AmendBFLossControllerSpec
     "return single error response with status 400" when {
       "the request received failed the validation" in new Test() {
 
-        MockAmendBFLossRequestDataParser.parseRequest(
-          AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
+        MockAmendLossClaimRequestDataParser.parseRequest(
+          AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(None, NinoFormatError, None)))
 
-        val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
+        val result: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
         status(result) shouldBe BAD_REQUEST
         header("X-CorrelationId", result).nonEmpty shouldBe true
       }
@@ -125,23 +120,28 @@ class AmendBFLossControllerSpec
       val badRequestErrorsFromParser = List(
         NinoFormatError,
         RuleIncorrectOrEmptyBodyError,
-        LossIdFormatError,
-        AmountFormatError,
-        RuleInvalidLossAmount
+        ClaimIdFormatError,
+        TypeOfClaimFormatError
       )
 
       val badRequestErrorsFromService = List(
         NinoFormatError,
-        LossIdFormatError
+        ClaimIdFormatError
       )
 
       val notFoundErrorsFromService = List(
         NotFoundError
       )
 
+      val forbiddenErrorsFromService = List(
+        RuleClaimTypeNotChanged,
+        RuleTypeOfClaimInvalid
+      )
+
       badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
       badRequestErrorsFromService.foreach(errorsFromServiceTester(_, BAD_REQUEST))
       notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
+      forbiddenErrorsFromService.foreach(errorsFromServiceTester(_, FORBIDDEN))
       errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
@@ -149,11 +149,11 @@ class AmendBFLossControllerSpec
   def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
     s"a ${error.code} error is returned from the parser" in new Test {
 
-      MockAmendBFLossRequestDataParser.
-        parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
+      MockAmendLossClaimRequestDataParser.
+        parseRequest(AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
         .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
-      val response: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
+      val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
 
       status(response) shouldBe expectedStatus
       contentAsJson(response) shouldBe Json.toJson(error)
@@ -165,15 +165,15 @@ class AmendBFLossControllerSpec
   def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
     s"a ${error.code} error is returned from the service" in new Test {
 
-      MockAmendBFLossRequestDataParser.parseRequest(
-        AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-        .returns(Right(bfLossRequest))
+      MockAmendLossClaimRequestDataParser.parseRequest(
+        AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
+        .returns(Right(lossClaimRequest))
 
-      MockAmendBFLossService
-        .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+      MockAmendLossClaimService
+        .amend(AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
         .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
-      val response: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
+      val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
       status(response) shouldBe expectedStatus
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)

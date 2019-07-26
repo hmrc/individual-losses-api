@@ -180,6 +180,17 @@ traits:
                 description: The type of claim supplied is not valid.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
+  rulePeriodNotEnded:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              rulePeriodNotEnded:
+                description: The loss claim has been made too soon.
+                value:
+                  code: RULE_PERIOD_NOT_ENDED
   formatClaimId:
     responses:
       400:

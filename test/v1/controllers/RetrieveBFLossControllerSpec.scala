@@ -93,6 +93,7 @@ class RetrieveBFLossControllerSpec
         val result: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseJson
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 

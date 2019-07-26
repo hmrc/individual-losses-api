@@ -75,6 +75,7 @@ class DeleteBFLossControllerSpec
 
         val result: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
         status(result) shouldBe NO_CONTENT
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 

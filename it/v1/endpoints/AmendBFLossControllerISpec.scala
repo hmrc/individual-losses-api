@@ -116,7 +116,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson(531.99)))
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
-
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -150,6 +150,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson(531.99)))
         response.status shouldBe expectedStatus
         response.json shouldBe Json.toJson(expectedBody)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
