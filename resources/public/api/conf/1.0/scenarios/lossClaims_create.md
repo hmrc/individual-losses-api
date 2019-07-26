@@ -24,4 +24,10 @@
             <td><p>Simulates the scenario where the given income source could not be found</p></td>
         </tr>            
     </tbody>
+    <tbody>
+        <tr>
+            <td><p>PERIOD_NOT_ENDED</p></td>
+            <td><p>Simulates the scenario where the remote endpoint has indicated that the relevant accounting period has not yet ended</p></td>
+        </tr>            
+    </tbody>
 </table>
