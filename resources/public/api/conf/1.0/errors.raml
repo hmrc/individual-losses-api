@@ -235,3 +235,14 @@ traits:
                 description: The remote endpoint has indicated that the requested resource has been locked.
                 value:
                   code: RULE_DELETE_AFTER_CRYSTALLISATION
+  ruleNoChangeLossAmount:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNoChangeLossAmount:
+                description: The loss amount supplied is the same as the existing stored loss amount.
+                value:
+                  code: RULE_NO_CHANGE
