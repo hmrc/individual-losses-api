@@ -19,20 +19,13 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendBFLossControllerISpec extends IntegrationBaseSpec {
-
-  def generateBFLoss(selfEmploymentId: Option[String], typeOfLoss: String, taxYear: String, lossAmount: BigDecimal): JsObject =
-    Json.obj("selfEmploymentId" -> selfEmploymentId,
-      "typeOfLoss" -> typeOfLoss,
-      "taxYear" -> taxYear,
-      "lossAmount" -> lossAmount
-    )
 
   val lossAmount = 531.99
 

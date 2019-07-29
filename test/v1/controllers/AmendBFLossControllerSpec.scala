@@ -142,6 +142,7 @@ class AmendBFLossControllerSpec
       badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
       badRequestErrorsFromService.foreach(errorsFromServiceTester(_, BAD_REQUEST))
       notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
+      errorsFromServiceTester(RuleLossAmountNotChanged, FORBIDDEN)
       errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
