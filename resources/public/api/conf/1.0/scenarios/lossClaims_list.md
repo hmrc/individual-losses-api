@@ -9,35 +9,19 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate list containing 4 loss claims.</p></td>
+            <td><p>Simulate list containing 4 loss claims</p></td>
         </tr>
         <tr>
-            <td><p>SE_FORWARD</p></td>
-            <td><p>Simulate list containing two self-employment loss claims with carry-forward </p></td>
+            <td><p>SELF_EMPLOYMENT</p></td>
+            <td><p>Simulate list containing 2 self-employment loss claims</p></td>
         </tr>  
         <tr>
-            <td><p>SE_SIDEWAYS</p></td>
-            <td><p>Simulate list containing two self-employment loss claims with carry-sideways </p></td>
-        </tr>
-        <tr>
-            <td><p>NONFHL_FORWARD</p></td>
-            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-forward </p></td>
-        </tr>
-        <tr>
-            <td><p>NONFHL_SIDEWAYS</p></td>
-            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-sideways </p></td>
-        </tr>
-        <tr>
-            <td><p>NONFHL_SIDEWAYS_FHL</p></td>
-            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-sideways-fhl </p></td>
-        </tr>
-        <tr>
-            <td><p>NONFHL_FORWARD_TO_SIDEWAYS</p></td>
-            <td><p>Simulate list containing two UK Non-FHL property loss claims with carry-forward-to-carry-sideways </p></td>
+            <td><p>UK_PROPERTY_NON_FHL</p></td>
+            <td><p>Simulate list containing 2 uk-property-non-fhl loss claims</p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>
-           <td><p>Simulates the scenario where no data is found.</p></td>
+           <td><p>Simulate the scenario where no data is found</p></td>
         </tr>           
     </tbody>
 </table>
