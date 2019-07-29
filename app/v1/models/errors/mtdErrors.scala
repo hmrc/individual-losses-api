@@ -39,7 +39,7 @@ object RuleDeleteAfterCrystallisationError extends MtdError("RULE_DELETE_AFTER_C
 object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The claim type selected is not available for this type of loss")
 object RuleClaimTypeNotChanged extends MtdError("RULE_NO_CHANGE", "The type of claim has not changed")
 object RulePeriodNotEnded extends MtdError("RULE_PERIOD_NOT_ENDED", "The remote endpoint has indicated that the relevant accounting period has not yet ended")
-object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed.")
+object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
