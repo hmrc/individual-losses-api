@@ -24,11 +24,11 @@ package object services {
 
   type CreateBFLossOutcome = Either[ErrorWrapper, DesResponse[CreateBFLossResponse]]
 
-  type RetrieveBFLossOutcome = Either[ErrorWrapper, DesResponse[RetrieveBFLossResponse]]
+  type RetrieveBFLossOutcome = Either[ErrorWrapper, DesResponse[BFLossResponse]]
 
   type ListBFLossesOutcome = Either[ErrorWrapper, DesResponse[ListBFLossesResponse]]
 
-  type AmendBFLossOutcome = Either[ErrorWrapper, DesResponse[AmendBFLossResponse]]
+  type AmendBFLossOutcome = Either[ErrorWrapper, DesResponse[BFLossResponse]]
 
   type DeleteBFLossOutcome = Either[ErrorWrapper, DesResponse[Unit]]
 

@@ -22,7 +22,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v1.mocks.services._
-import v1.models.des.AmendBFLossResponse
+import v1.models.des.BFLossResponse
 import v1.models.domain.{AmendBFLoss, TypeOfLoss}
 import v1.models.errors.{AmountFormatError, LossIdFormatError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, _}
 import v1.models.outcomes.DesResponse
@@ -46,7 +46,12 @@ class AmendBFLossControllerSpec
   val lossAmount = BigDecimal(531.99)
   val amendBFLoss = AmendBFLoss(lossAmount)
 
-  val amendBFLossResponse = AmendBFLossResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, lossAmount, "2019-20")
+  val amendBFLossResponse = BFLossResponse(
+    selfEmploymentId = Some("XKIS00000000988"),
+    typeOfLoss = TypeOfLoss.`self-employment`,
+    lossAmount = lossAmount,
+    taxYear = "2019-20",
+    lastModified = "2018-07-13T12:13:48.763Z")
 
   val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
 
@@ -56,7 +61,8 @@ class AmendBFLossControllerSpec
       |    "selfEmploymentId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2019-20",
-      |    "lossAmount": $lossAmount
+      |    "lossAmount": $lossAmount,
+      |    "lastModified": "2018-07-13T12:13:48.763Z"
       |}
     """.stripMargin)
 
@@ -136,6 +142,7 @@ class AmendBFLossControllerSpec
       badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
       badRequestErrorsFromService.foreach(errorsFromServiceTester(_, BAD_REQUEST))
       notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
+      errorsFromServiceTester(RuleLossAmountNotChanged, FORBIDDEN)
       errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     }
   }

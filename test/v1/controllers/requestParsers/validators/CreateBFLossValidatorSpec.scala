@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.models.errors._

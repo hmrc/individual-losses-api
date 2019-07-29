@@ -21,9 +21,9 @@ import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendLossClaimValidator
-import v1.models.domain.{AmendBFLoss, AmendLossClaim, TypeOfClaim}
+import v1.models.domain.{AmendLossClaim, TypeOfClaim}
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
-import v1.models.requestData.{AmendBFLossRequest, AmendLossClaimRawData, AmendLossClaimRequest}
+import v1.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
 class AmendLossClaimParserSpec extends UnitSpec {
 

@@ -16,11 +16,11 @@
 
 package v1.services
 
+import cats.syntax.either._
 import support.UnitSpec
 import v1.connectors.DesOutcome
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
-import cats.syntax.either._
 
 class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
 

@@ -18,7 +18,7 @@ package v1.services
 
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockBFLossConnector
-import v1.models.des.{BFLossId, RetrieveBFLossResponse, ListBFLossesResponse}
+import v1.models.des.{BFLossId, ListBFLossesResponse}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.ListBFLossesRequest
