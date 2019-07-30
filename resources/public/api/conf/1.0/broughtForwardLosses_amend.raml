@@ -27,11 +27,11 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include schemas/broughtForwardLosses/BroughtForwardLoss.json
+        type: !include schemas/broughtForwardLosses/BroughtForwardLoss_response.json
         examples:
           example-1:
             description: Self-employment Class 4 loss
-            value: !include examples/broughtForwardLosses/bfLoss_seClass4.json
+            value: !include examples/broughtForwardLosses/bfLoss_seClass4_response.json
           example-2:
             description: UK FHL property loss
-            value: !include examples/broughtForwardLosses/bfLoss_fhl.json
+            value: !include examples/broughtForwardLosses/bfLoss_fhl_response.json
