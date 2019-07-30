@@ -185,7 +185,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
       }
 
       "query with taxYear" in new Test {
-        override val taxYear: Option[String]          = Some("2018-19")
+        override val taxYear: Option[String]          = Some("2019-20")
         override val typeOfLoss: Option[String]       = Some("self-employment")
         override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
 
@@ -193,7 +193,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2019"), Status.OK, desResponseJson)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020"), Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -202,13 +202,13 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
       }
 
       "query with taxYear only" in new Test {
-        override val taxYear: Option[String] = Some("2018-19")
+        override val taxYear: Option[String] = Some("2019-20")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUrl, Map("taxYear" -> "2019"), Status.OK, desResponseJson)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("taxYear" -> "2020"), Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -271,7 +271,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
 
       validationErrorTest("BADNINO", None, None, None, Status.BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", Some("XXXX-YY"), None, None, Status.BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", Some("2010-11"), None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", Some("2018-19"), None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       validationErrorTest("AA123456A", Some("2019-21"), None, None, Status.BAD_REQUEST, RuleTaxYearRangeExceededError)
       validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, Status.BAD_REQUEST, TypeOfLossFormatError)
       validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), Status.BAD_REQUEST, SelfEmploymentIdFormatError)
