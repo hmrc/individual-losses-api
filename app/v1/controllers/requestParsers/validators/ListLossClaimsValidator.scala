@@ -16,12 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
+import config.FixedConfig
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.TypeOfLoss
-import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError}
+import v1.models.errors.MtdError
 import v1.models.requestData.ListLossClaimsRawData
 
-class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] {
+class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with FixedConfig {
 
   private val validationSet = List(formatValidation, postFormatValidation)
 
@@ -33,7 +34,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] {
 
   private def postFormatValidation: ListLossClaimsRawData => List[List[MtdError]] = { data =>
     List(
-      data.taxYear.map(MtdTaxYearValidation.validate(_, RuleTaxYearNotSupportedError, isBFLoss = false)).getOrElse(Nil),
+      data.taxYear.map(MtdTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
         case Some(lossType) => SelfEmploymentIdValidation.validate(lossType, data.selfEmploymentId, idOptional = true)
         case None           => Nil
