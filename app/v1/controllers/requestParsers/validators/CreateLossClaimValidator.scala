@@ -16,14 +16,14 @@
 
 package v1.controllers.requestParsers.validators
 
-import play.api.libs.json.JsSuccess
+import config.FixedConfig
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.LossClaim
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError, TypeOfLossFormatError}
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v1.models.requestData.CreateLossClaimRawData
 
 
-class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
+class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig{
 
   private val validationSet = List(parameterFormatValidation, typeOfLossValidator, typeOfClaimValidator,
     bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
@@ -65,7 +65,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] {
   private def otherBodyFieldsValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[LossClaim]
     List(
-      MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError),
+      MtdTaxYearValidation.validate(req.taxYear, minimumTaxYearLossClaim),
       SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
       TypeOfClaimValidation.checkClaim(req.typeOfClaim.toString, req.typeOfLoss.toString)
     )

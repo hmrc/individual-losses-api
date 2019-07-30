@@ -82,7 +82,7 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
     "return RuleTaxYearNotSupportedError" when {
       "the tax year is too early" in {
         validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some("2010-11"),
+          taxYear = Some("2018-19"),
           typeOfLoss = Some(validLossType),
           selfEmploymentId = Some(validSEId))) shouldBe List(RuleTaxYearNotSupportedError)
       }

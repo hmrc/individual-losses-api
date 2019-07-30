@@ -82,7 +82,7 @@ class ListBFLossesValidatorSpec extends UnitSpec {
     "return RuleTaxYearNotSupportedError" when {
       "the tax year is too early" in {
         validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYear = Some("2010-11"),
+          taxYear = Some("2017-18"),
           typeOfLoss = Some(validLossType),
           selfEmploymentId = Some(validSEId))) shouldBe List(RuleTaxYearNotSupportedError)
       }

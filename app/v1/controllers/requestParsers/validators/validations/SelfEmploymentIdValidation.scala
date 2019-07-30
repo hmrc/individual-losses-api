@@ -23,15 +23,15 @@ object SelfEmploymentIdValidation {
 
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
-  def validate(typeOfLoss: TypeOfLoss, selfEmploymentId: Option[String], isListBFLoss: Boolean = false): List[MtdError] = {
-    if (typeOfLoss.isProperty) propertyValidation(selfEmploymentId) else selfEmployedValidation(selfEmploymentId, isListBFLoss)
+  def validate(typeOfLoss: TypeOfLoss, selfEmploymentId: Option[String], idOptional: Boolean = false): List[MtdError] = {
+    if (typeOfLoss.isProperty) propertyValidation(selfEmploymentId) else selfEmployedValidation(selfEmploymentId, idOptional)
   }
 
-  private def selfEmployedValidation(selfEmploymentId: Option[String], isListBFLoss: Boolean): List[MtdError] = {
+  private def selfEmployedValidation(selfEmploymentId: Option[String], idOptional: Boolean): List[MtdError] = {
     selfEmploymentId match {
-      case None if isListBFLoss => Nil
-      case None                 => List(RuleSelfEmploymentId)
-      case Some(id)             => if (id.matches(regex)) NoValidationErrors else List(SelfEmploymentIdFormatError)
+      case None if idOptional => Nil
+      case None               => List(RuleSelfEmploymentId)
+      case Some(id)           => if (id.matches(regex)) NoValidationErrors else List(SelfEmploymentIdFormatError)
     }
   }
 

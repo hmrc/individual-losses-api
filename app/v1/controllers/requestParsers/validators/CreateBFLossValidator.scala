@@ -16,12 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
+import config.FixedConfig
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.BFLoss
-import v1.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError }
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v1.models.requestData.CreateBFLossRawData
 
-class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
+class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedConfig {
 
   private val validationSet = List(parameterFormatValidation, typeOfLossValidator, bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
 
@@ -54,7 +55,7 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] {
   private def otherBodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
-      MtdTaxYearValidation.validate(req.taxYear, RuleTaxYearNotSupportedError, true),
+      MtdTaxYearValidation.validate(req.taxYear, minimumTaxYearBFLoss),
       SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
       AmountValidation.validate(req.lossAmount)
     )
