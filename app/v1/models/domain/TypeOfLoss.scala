@@ -40,6 +40,7 @@ object TypeOfLoss {
 
   case object `self-employment` extends TypeOfLoss {
     override def toLossType: Option[LossType] = Some(LossType.INCOME)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`01`)
   }
 
   case object `self-employment-class4` extends TypeOfLoss {

@@ -17,8 +17,8 @@
 package v1.services
 
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.connectors.MockDesConnector
-import v1.models.des.AmendBFLossResponse
+import v1.mocks.connectors.MockBFLossConnector
+import v1.models.des.BFLossResponse
 import v1.models.domain.{AmendBFLoss, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
@@ -35,11 +35,17 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
   val bfLoss = AmendBFLoss(256.78)
 
-  val bfLossResponse = AmendBFLossResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, 256.78, "2019-20")
+  val bfLossResponse = BFLossResponse(
+    Some("XKIS00000000988"),
+    TypeOfLoss.`self-employment`,
+    256.78,
+    "2019-20",
+    "2018-07-13T12:13:48.763Z"
+  )
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
-  trait Test extends MockDesConnector {
+  trait Test extends MockBFLossConnector {
     lazy val service = new AmendBFLossService(connector)
   }
 
@@ -48,7 +54,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {
-        MockedDesConnector
+        MockedBFLossConnector
           .amendBFLoss(request)
           .returns(Future.successful(Right(DesResponse(correlationId, bfLossResponse))))
 
@@ -60,7 +66,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "the connector returns an outbound error" in new Test {
         val someError = MtdError("SOME_CODE", "some message")
         val desResponse = DesResponse(correlationId, OutboundError(someError))
-        MockedDesConnector.amendBFLoss(request).returns(Future.successful(Left(desResponse)))
+        MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
       }
@@ -69,7 +75,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
         val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
-        MockedDesConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
+        MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
         val result = await(service.amendBFLoss(request))
         result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
       }
@@ -80,6 +86,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "INVALID_LOSS_ID"            -> LossIdFormatError,
       "NOT_FOUND"                  -> NotFoundError,
       "INVALID_PAYLOAD"            -> DownstreamError,
+      "CONFLICT"                   -> RuleLossAmountNotChanged,
       "SERVER_ERROR"               -> DownstreamError,
       "SERVICE_UNAVAILABLE"        -> DownstreamError,
       "UNEXPECTED_ERROR"           -> DownstreamError
@@ -87,7 +94,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       case (k, v) =>
         s"a $k error is received from the connector" should {
           s"return a $v MTD error" in new Test {
-            MockedDesConnector
+            MockedBFLossConnector
               .amendBFLoss(request)
               .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 

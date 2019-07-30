@@ -20,29 +20,22 @@ import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.ListBFLossesValidator
 import v1.models.domain.TypeOfLoss
-import v1.models.errors.{ BadRequestError, ErrorWrapper }
 import v1.models.requestData._
 
-class ListBFLossesParser @Inject()(validator: ListBFLossesValidator) extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
+class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
 
-  def parseRequest(data: ListBFLossesRawData): Either[ErrorWrapper, ListBFLossesRequest] = {
-    validator.validate(data) match {
-      case Nil =>
-        val taxYear = data.taxYear
+  override protected def requestFor(data: ListBFLossesRawData): ListBFLossesRequest = {
+    val taxYear = data.taxYear
 
-        val incomeSourceType = for {
-          typeOfLossString <- data.typeOfLoss
-          typeOfLoss       <- TypeOfLoss.parser.lift(typeOfLossString)
-          incomeSourceType <- typeOfLoss.toIncomeSourceType
-        } yield incomeSourceType
+    val incomeSourceType = for {
+      typeOfLossString <- data.typeOfLoss
+      typeOfLoss       <- TypeOfLoss.parser.lift(typeOfLossString)
+      incomeSourceType <- typeOfLoss.toIncomeSourceType
+    } yield incomeSourceType
 
-        Right(
-          ListBFLossesRequest(Nino(data.nino),
-                              taxYear = taxYear.map(DesTaxYear.fromMtd),
-                              incomeSourceType = incomeSourceType,
-                              selfEmploymentId = data.selfEmploymentId))
-      case err :: Nil => Left(ErrorWrapper(None, err, None))
-      case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
-    }
+    ListBFLossesRequest(Nino(data.nino),
+        taxYear = taxYear.map(DesTaxYear.fromMtd),
+        incomeSourceType = incomeSourceType,
+        selfEmploymentId = data.selfEmploymentId)
   }
 }

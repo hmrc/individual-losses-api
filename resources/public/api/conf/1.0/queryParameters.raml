@@ -4,13 +4,24 @@ uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
 traits:
-  taxYear:
+  taxYearForClaims:
     queryParameters:
       taxYear:
-        description: 'The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2016-17.'
-        example: "2017-18"
+        description: 'The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid. The minimum tax year is 2019-20.'
+        example: "2019-20"
         required: false
-  typeOfLoss:
+  taxYearForBFLosses:
+    queryParameters:
+      taxYear:
+        description: 'The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2018-20 is not valid. The minimum tax year is 2018-19.'
+        example: "2018-19"
+        required: false
+  typeOfLossForClaims:
+    queryParameters:
+      typeOfLoss:
+        description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul><li>`self-employment`<li>`uk-property-non-fhl`</b>'
+        required: false
+  typeOfLossForBFLosses:
     queryParameters:
       typeOfLoss:
         description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul><li>`self-employment`<li>`uk-property-fhl`<li>`uk-property-non-fhl`</b>'

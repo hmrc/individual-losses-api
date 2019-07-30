@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{AmendBFLossResponse, CreateBFLossResponse, ListBFLossesResponse, RetrieveBFLossResponse}
+import v1.models.des.{BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v1.models.domain.{AmendBFLoss, BFLoss}
 import v1.models.requestData._
 
@@ -43,13 +43,13 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
   }
 
   def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
-                                                          ec: ExecutionContext): Future[DesOutcome[AmendBFLossResponse]] = {
+                                                          ec: ExecutionContext): Future[DesOutcome[BFLossResponse]] = {
 
     val nino = amendBFLossRequest.nino.nino
     val lossId = amendBFLossRequest.lossId
 
     def doIt(implicit hc: HeaderCarrier) =
-      http.PUT[AmendBFLoss, DesOutcome[AmendBFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId",
+      http.PUT[AmendBFLoss, DesOutcome[BFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId",
         amendBFLossRequest.amendBroughtForwardLoss)
 
     doIt(desHeaderCarrier(appConfig))
@@ -65,12 +65,12 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[RetrieveBFLossResponse]] = {
+  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[BFLossResponse]] = {
     val nino = request.nino.nino
     val lossId = request.lossId
 
-    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[RetrieveBFLossResponse]] = {
-      http.GET[DesOutcome[RetrieveBFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId")
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[BFLossResponse]] = {
+      http.GET[DesOutcome[BFLossResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId")
     }
 
     doIt(desHeaderCarrier(appConfig))

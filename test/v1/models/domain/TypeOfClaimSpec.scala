@@ -17,7 +17,7 @@
 package v1.models.domain
 
 import support.UnitSpec
-import v1.models.des.{IncomeSourceType, LossType, ReliefClaimed}
+import v1.models.des.ReliefClaimed
 import v1.models.domain.TypeOfClaim._
 
 class TypeOfClaimSpec extends UnitSpec {
@@ -26,7 +26,7 @@ class TypeOfClaimSpec extends UnitSpec {
       "work" in {
         `carry-forward`.toReliefClaimed shouldBe ReliefClaimed.`CF`
         `carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CSGI`
-        `carry-forward-to-carry-sideways-general-income`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
+        `carry-forward-to-carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
         `carry-sideways-fhl`.toReliefClaimed shouldBe ReliefClaimed.`CSFHL`
       }
     }

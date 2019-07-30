@@ -57,14 +57,15 @@ documentation:
         name: Loss Claims
         description: !include docs/group_lossClaims.md
       post: !include lossClaims_create.raml
-      get: !include lossClaims_listAll.raml
+      get: !include lossClaims_list.raml
       /{claimId}:
         uriParameters:
           claimId:
-            description: A unique identifier for the loss claim.
+            description: A unique identifier for the loss claim. <br><br>Must conform to the regular expression `^[A-Za-z0-9]{15}$`
             type: string
+            example: "AAZZ0123456789a"
         get: !include lossClaims_get.raml
         delete: !include lossClaims_delete.raml
-        /change-claim-type:
+        /change-type-of-claim:
           post: !include lossClaims_amend.raml
 

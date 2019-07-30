@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
 import v1.models.domain.TypeOfLoss
-import v1.models.errors.{ RuleSelfEmploymentId, SelfEmploymentIdFormatError }
+import v1.models.errors.{RuleSelfEmploymentId, SelfEmploymentIdFormatError}
 
 class SelfEmploymentIdValidationSpec extends UnitSpec {
 

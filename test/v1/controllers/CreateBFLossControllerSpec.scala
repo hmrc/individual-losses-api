@@ -98,6 +98,7 @@ class CreateBFLossControllerSpec
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe CREATED
         contentAsJson(result) shouldBe responseBody
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
 
@@ -165,6 +166,9 @@ class CreateBFLossControllerSpec
         header("X-CorrelationId", response) shouldBe Some(correlationId)
       }
     }
+
+    errorsFromServiceTester(BadRequestError, BAD_REQUEST)
+    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     errorsFromServiceTester(RuleDuplicateSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)

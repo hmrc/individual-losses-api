@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.models.errors._
@@ -26,7 +26,7 @@ import v1.models.requestData.CreateBFLossRawData
 class CreateBFLossValidatorSpec extends UnitSpec {
 
   private val validNino             = "AA123456A"
-  private val validTaxYear          = "2016-17"
+  private val validTaxYear          = "2018-19"
   private val validTypeOfLoss       = "self-employment"
   private val validSelfEmploymentId = "XAIS01234567890"
 

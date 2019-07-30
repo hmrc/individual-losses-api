@@ -34,12 +34,17 @@ class RetrieveBFLossValidatorSpec extends UnitSpec {
   "retrieve validation" should {
     "return no errors" when {
       "supplied with a valid nino and a valid loss amount" in {
-        validator.validate(retrieveBFLossRawData(validNino, validLossId)) shouldBe List()
+        validator.validate(retrieveBFLossRawData(validNino, validLossId)) shouldBe empty
       }
     }
     "return a FORMAT_NINO error" when {
       "the provided nino is invalid" in {
         validator.validate(retrieveBFLossRawData(invalidNino, validLossId)) shouldBe List(NinoFormatError)
+      }
+    }
+    "return a FORMAT_LOSS_ID error" when {
+      "the provided lossId is invalid" in {
+        validator.validate(retrieveBFLossRawData(validNino, invalidLossId)) shouldBe List(LossIdFormatError)
       }
     }
     "return multiple errors" when {

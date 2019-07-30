@@ -19,11 +19,11 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{ DesOutcome, LossClaimConnector }
-import v1.models.des.CreateLossClaimResponse
+import v1.connectors.{DesOutcome, LossClaimConnector}
+import v1.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimResponse}
 import v1.models.requestData._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockLossClaimConnector extends MockFactory {
   val connector: LossClaimConnector = mock[LossClaimConnector]
@@ -33,6 +33,30 @@ trait MockLossClaimConnector extends MockFactory {
     def createLossClaim(request: CreateLossClaimRequest): CallHandler[Future[DesOutcome[CreateLossClaimResponse]]] = {
       (connector
         .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(request, *, *)
+    }
+
+    def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest): CallHandler[Future[DesOutcome[LossClaimResponse]]] = {
+      (connector
+        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(amendLossClaimRequest, *, *)
+    }
+
+    def retrieveLossClaim(request: RetrieveLossClaimRequest): CallHandler[Future[DesOutcome[LossClaimResponse]]] = {
+      (connector
+        .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(request, *, *)
+    }
+
+    def deleteLossClaim(deleteLossClaimRequest: DeleteLossClaimRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+      (connector
+        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(deleteLossClaimRequest, *, *)
+    }
+
+    def listLossClaims(request: ListLossClaimsRequest): CallHandler[Future[DesOutcome[ListLossClaimsResponse]]] = {
+      (connector
+        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
     }
   }

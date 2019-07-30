@@ -45,7 +45,7 @@ traits:
             type: types.errorResponse
             examples:
               formatTaxYear:
-                description: The provided tax year is invalid
+                description: The format of the supplied tax year field is not valid
                 value:
                   code: FORMAT_TAX_YEAR
   incorrectOrEmptyBody:
@@ -81,17 +81,17 @@ traits:
                 description: Tax year range exceeded. A tax year range of one year is required.
                 value:
                   code: RULE_TAX_YEAR_RANGE_EXCEEDED
-  ruleInvalidIncomeSourceId:
+  ruleNoChangeTypeOfClaim:
     responses:
       403:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              ruleInvalidIncomeSourceId:
-                description: The supplied income source ID is invalid.
+              ruleNoChangeTypeOfClaim:
+                description: The remote endpoint has indicated that the requested type of claim is already active.
                 value:
-                  code: RULES_INVALID_INCOME_SOURCE_ID
+                  code: RULE_NO_CHANGE
   formatLossType:
     responses:
       400:
@@ -122,7 +122,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleSelfEmploymentId:
-                description: A self-employment ID should be supplied for a self-employment business type.
+                description: A self-employment ID can only be supplied for a self-employment business type
                 value:
                   code: RULE_SELF_EMPLOYMENT_ID
   formatLossId:
@@ -180,6 +180,17 @@ traits:
                 description: The type of claim supplied is not valid.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
+  rulePeriodNotEnded:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              rulePeriodNotEnded:
+                description: The loss claim has been made too soon.
+                value:
+                  code: RULE_PERIOD_NOT_ENDED
   formatClaimId:
     responses:
       400:
@@ -224,3 +235,14 @@ traits:
                 description: The remote endpoint has indicated that the requested resource has been locked.
                 value:
                   code: RULE_DELETE_AFTER_CRYSTALLISATION
+  ruleNoChangeLossAmount:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNoChangeLossAmount:
+                description: The loss amount supplied is the same as the existing stored loss amount.
+                value:
+                  code: RULE_NO_CHANGE

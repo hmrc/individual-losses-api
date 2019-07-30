@@ -19,19 +19,13 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendBFLossControllerISpec extends IntegrationBaseSpec {
-
-  def generateBFLoss(selfEmploymentId: Option[String], typeOfLoss: String, taxYear: String, lossAmount: BigDecimal): JsObject =
-    Json.obj("selfEmploymentId" -> selfEmploymentId,
-      "typeOfLoss" -> typeOfLoss,
-      "taxYear" -> taxYear,
-      "lossAmount" -> lossAmount)
 
   val lossAmount = 531.99
 
@@ -41,7 +35,8 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |    "selfEmploymentId": "XKIS00000000988",
        |    "typeOfLoss": "self-employment",
        |    "taxYear": "2019-20",
-       |    "lossAmount": $lossAmount
+       |    "lossAmount": $lossAmount,
+       |    "lastModified": "2018-07-13T12:13:48.763Z"
        |}
       """.stripMargin)
 
@@ -114,7 +109,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson(531.99)))
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
-
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -131,6 +126,10 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
       amendErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
     }
 
+    "return 409 CONFLICT" when {
+      amendErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleLossAmountNotChanged)
+    }
+
     def amendErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
       s"des returns an $desCode error" in new AmendBFLossControllerTest {
 
@@ -144,6 +143,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson(531.99)))
         response.status shouldBe expectedStatus
         response.json shouldBe Json.toJson(expectedBody)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 

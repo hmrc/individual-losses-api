@@ -17,7 +17,7 @@
 package v1.services
 
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.connectors.MockDesConnector
+import v1.mocks.connectors.MockBFLossConnector
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.DeleteBFLossRequest
@@ -31,18 +31,18 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
   val nino = Nino("AA123456A")
   val lossId = "AAZZ1234567890a"
 
-  trait Test extends MockDesConnector {
+  trait Test extends MockBFLossConnector {
     lazy val service = new DeleteBFLossService(connector)
   }
 
   lazy val request = DeleteBFLossRequest(nino, lossId)
 
-  "delete bf loss" should {
+  "Delete BF Loss" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val desResponse = DesResponse(correlationId, ())
         val expected = DesResponse(correlationId, ())
-        MockedDesConnector.deleteBFLoss(request).returns(Future.successful(Right(desResponse)))
+        MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Right(desResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Right(expected)
       }
@@ -52,7 +52,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       "the connector returns an outbound error" in new Test {
         val someError = MtdError("SOME_CODE", "some message")
         val desResponse = DesResponse(correlationId, OutboundError(someError))
-        MockedDesConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
+        MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
       }
@@ -62,14 +62,14 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       "the connector call returns a single downstream error" in new Test {
         val desResponse = DesResponse(correlationId, SingleError(DownstreamError))
         val expected = ErrorWrapper(Some(correlationId), DownstreamError, None)
-        MockedDesConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
+        MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Left(expected)
       }
       "the connector call returns multiple errors including a downstream error" in new Test {
         val desResponse = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
         val expected = ErrorWrapper(Some(correlationId), DownstreamError, None)
-        MockedDesConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
+        MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Left(expected)
       }
@@ -87,7 +87,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       case(k, v) =>
         s"return a ${v.code} error" when {
           s"the connector call returns $k" in new Test {
-            MockedDesConnector.deleteBFLoss(request).returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
+            MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
 
             await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

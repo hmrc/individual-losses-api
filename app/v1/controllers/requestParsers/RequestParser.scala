@@ -16,8 +16,20 @@
 
 package v1.controllers.requestParsers
 
-import v1.models.errors.ErrorWrapper
+import v1.controllers.requestParsers.validators.Validator
+import v1.models.errors.{ BadRequestError, ErrorWrapper }
+import v1.models.requestData.RawData
 
-trait RequestParser[Raw, Request] {
-  def parseRequest(data: Raw): Either[ErrorWrapper, Request]
+trait RequestParser[Raw <: RawData, Request] {
+  val validator: Validator[Raw]
+
+  protected def requestFor(data: Raw): Request
+
+  def parseRequest(data: Raw): Either[ErrorWrapper, Request] = {
+    validator.validate(data) match {
+      case Nil        => Right(requestFor(data))
+      case err :: Nil => Left(ErrorWrapper(None, err, None))
+      case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
+    }
+  }
 }

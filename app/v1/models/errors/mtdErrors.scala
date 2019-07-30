@@ -19,7 +19,8 @@ package v1.models.errors
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object AmountFormatError extends MtdError("FORMAT_LOSS_AMOUNT", "The format of the loss amount is invalid")
-object LossIdFormatError extends MtdError("FORMAT_LOSS_ID", "The format of the supplied loss ID is not valid")
+object LossIdFormatError extends MtdError("FORMAT_LOSS_ID", "The provided loss ID is invalid")
+object ClaimIdFormatError extends MtdError("FORMAT_CLAIM_ID", "The provided claim ID is invalid")
 object SelfEmploymentIdFormatError extends MtdError("FORMAT_SELF_EMPLOYMENT_ID", "The supplied self-employment ID format is invalid")
 object TypeOfLossFormatError extends MtdError("FORMAT_TYPE_OF_LOSS", "The supplied type of loss format is invalid")
 object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The supplied type of claim format is invalid or the type of claim is not recognised")
@@ -30,12 +31,15 @@ object RuleTaxYearNotSupportedError extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTE
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 object RuleTaxYearRangeExceededError extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required")
-object RuleSelfEmploymentId extends MtdError("RULE_SELF_EMPLOYMENT_ID", "A self-employment ID should be supplied for a self-employment business type")
+object RuleSelfEmploymentId extends MtdError("RULE_SELF_EMPLOYMENT_ID", "A self-employment ID can only be supplied for a self-employment business type")
 object RuleInvalidLossAmount extends MtdError("RULE_LOSS_AMOUNT", "Amount should be a positive number less than 99999999999.99 with up to 2 decimal places")
 object RuleDuplicateSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "A brought forward loss already exists for this income source")
 object RuleDuplicateClaimSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "This claim matches a previous submission")
 object RuleDeleteAfterCrystallisationError extends MtdError("RULE_DELETE_AFTER_CRYSTALLISATION", "This loss cannot be deleted after crystallisation")
-object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The type of Claim requested is not available for this type of loss")
+object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The claim type selected is not available for this type of loss")
+object RuleClaimTypeNotChanged extends MtdError("RULE_NO_CHANGE", "The type of claim has not changed")
+object RulePeriodNotEnded extends MtdError("RULE_PERIOD_NOT_ENDED", "The remote endpoint has indicated that the relevant accounting period has not yet ended")
+object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

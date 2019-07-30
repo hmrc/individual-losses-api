@@ -102,7 +102,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the retrieve BFLoss endpoint" should {
+  "Calling the ListBFLosses endpoint" should {
 
     "return a 200 status code" when {
 
@@ -118,6 +118,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for property" in new Test {
@@ -135,6 +136,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "querying for self-employment" in new Test {
@@ -152,6 +154,41 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+
+      "querying for selfEmploymentId with no typeOfLoss" in new Test {
+        override val taxYear: Option[String]          = None
+        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceId" -> "XKIS00000000988"), Status.OK, desResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+
+      "querying for self-employment with no selfEmploymentId" in new Test {
+        override val taxYear: Option[String]          = None
+        override val typeOfLoss: Option[String]       = Some("self-employment")
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomeSourceType" -> "01"), Status.OK, desResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "query with taxYear" in new Test {
@@ -169,6 +206,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
       "query with taxYear only" in new Test {
@@ -184,6 +222,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -201,6 +240,8 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().get())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
+
         }
       }
 

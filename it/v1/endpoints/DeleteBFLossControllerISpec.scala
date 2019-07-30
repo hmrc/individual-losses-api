@@ -57,7 +57,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 
   "Calling the delete BFLoss endpoint" should {
 
-    "return a 201 status code" when {
+    "return a 204 status code" when {
 
       "any valid request is made" in new Test {
 
@@ -70,7 +70,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().delete())
         response.status shouldBe Status.NO_CONTENT
-
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -88,6 +88,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().delete())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
         }
       }
 
