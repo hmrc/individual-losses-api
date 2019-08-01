@@ -42,6 +42,7 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServi
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "DUPLICATE"                 -> RuleDuplicateSubmissionError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
       "NOT_FOUND_INCOME_SOURCE"   -> NotFoundError,
       "INVALID_PAYLOAD"           -> DownstreamError,
       "SERVER_ERROR"              -> DownstreamError,

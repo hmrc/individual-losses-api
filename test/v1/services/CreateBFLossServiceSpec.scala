@@ -77,6 +77,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
       "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
       "DUPLICATE"                  -> RuleDuplicateSubmissionError,
       "NOT_FOUND_INCOME_SOURCE"    -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
       "INVALID_PAYLOAD"            -> DownstreamError,
       "SERVER_ERROR"               -> DownstreamError,
       "SERVICE_UNAVAILABLE"        -> DownstreamError,
