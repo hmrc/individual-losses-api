@@ -44,6 +44,7 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
       "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
       "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
       "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
+      "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
       "INVALID_PAYLOAD"             -> DownstreamError,
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError

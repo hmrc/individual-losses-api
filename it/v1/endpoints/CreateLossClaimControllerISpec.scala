@@ -128,6 +128,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
     "return 400 (Bad Request)" when {
 
       createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
     }
 
     "return 403 FORBIDDEN" when {

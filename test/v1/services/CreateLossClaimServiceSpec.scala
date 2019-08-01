@@ -79,6 +79,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
       "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
       "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
       "INVALID_PAYLOAD"             -> DownstreamError,
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError,
