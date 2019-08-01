@@ -177,7 +177,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleTypeOfClaim:
-                description: The type of claim supplied is not valid.
+                description: The claim type selected is not available for this type of loss.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
   ruleTypeOfClaim403:
@@ -257,3 +257,14 @@ traits:
                 description: The loss amount supplied is the same as the existing stored loss amount.
                 value:
                   code: RULE_NO_CHANGE
+  ruleAccountingPeriodNotActive:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleAccountingPeriodNotActive:
+                description: For the year of the claim there is no active accounting period.
+                value:
+                  code: RULE_ACCOUNTING_PERIOD_NOT_ACTIVE

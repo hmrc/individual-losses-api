@@ -30,4 +30,10 @@
             <td><p>Simulates the scenario where the remote endpoint has indicated that the relevant accounting period has not yet ended</p></td>
         </tr>            
     </tbody>
+    <tbody>
+        <tr>
+            <td><p>ACCOUNTING_PERIOD_NOT_ACTIVE</p></td>
+            <td><p>Simulates the scenario where there is no active accounting period for the year of the claim</p></td>
+        </tr>            
+    </tbody>
 </table>

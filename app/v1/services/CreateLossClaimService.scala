@@ -45,8 +45,14 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
       "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
       "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
       "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
+      "NO_ACTIVE_ACCOUNTING_PERIOD" -> RuleAccountingPeriodNotActive,
       "INVALID_PAYLOAD"             -> DownstreamError,
       "SERVER_ERROR"                -> DownstreamError,
-      "SERVICE_UNAVAILABLE"         -> DownstreamError
+      "SERVICE_UNAVAILABLE"         -> DownstreamError,
+      // Likely to be removed as they do not exist in the latest swagger 01/08/2019
+      "INVALID_TAX_YEAR"            -> DownstreamError,
+      "INCOME_SOURCE_NOT_ACTIVE"    -> DownstreamError,
+      // Error is Des Spec but related to brought forward losses
+      "TAX_YEAR_NOT_ENDED"          -> DownstreamError
     )
 }
