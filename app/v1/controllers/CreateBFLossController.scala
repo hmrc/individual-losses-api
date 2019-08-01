@@ -69,7 +69,8 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
            | SelfEmploymentIdFormatError
            | RuleSelfEmploymentId
            | AmountFormatError
-           | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))
+           | RuleInvalidLossAmount
+           | RuleTaxYearNotEndedError => BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

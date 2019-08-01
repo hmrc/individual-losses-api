@@ -78,6 +78,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
       "DUPLICATE"                  -> RuleDuplicateSubmissionError,
       "NOT_FOUND_INCOME_SOURCE"    -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+      "TAX_YEAR_NOT_ENDED"         -> RuleTaxYearNotEndedError,
       "INVALID_PAYLOAD"            -> DownstreamError,
       "SERVER_ERROR"               -> DownstreamError,
       "SERVICE_UNAVAILABLE"        -> DownstreamError,
