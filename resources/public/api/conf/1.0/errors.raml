@@ -81,6 +81,17 @@ traits:
                 description: Tax year range exceeded. A tax year range of one year is required.
                 value:
                   code: RULE_TAX_YEAR_RANGE_EXCEEDED
+  ruleTaxYearNotEnded:
+      responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                ruleTaxYearRangeExceeded:
+                  description: The tax year for this brought forward loss has not yet ended.
+                  value:
+                    code: RULE_TAX_YEAR_NOT_ENDED
   ruleNoChangeTypeOfClaim:
     responses:
       403:
