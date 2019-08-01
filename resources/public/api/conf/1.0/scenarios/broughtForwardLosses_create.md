@@ -24,4 +24,10 @@
             <td><p>Simulates the scenario where no data can be found</p></td>
         </tr>
     </tbody>
+    <tbody>
+            <tr>
+                <td><p>TAX_YEAR_NOT_ENDED</p></td>
+                <td><p>Simulates the scenario where a tax year for the current year is supplied</p></td>
+            </tr>
+        </tbody>
 </table>

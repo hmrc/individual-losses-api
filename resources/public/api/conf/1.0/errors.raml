@@ -88,8 +88,8 @@ traits:
             application/json:
               type: types.errorResponse
               examples:
-                ruleTaxYearRangeExceeded:
-                  description: The tax year for this brought forward loss has not yet ended.
+                ruleTaxYearNotEnded:
+                  description: A brought forward loss is entered before the end of the tax year in which it was generated.
                   value:
                     code: RULE_TAX_YEAR_NOT_ENDED
   ruleNoChangeTypeOfClaim:
