@@ -142,7 +142,8 @@ class CreateBFLossControllerSpec
         SelfEmploymentIdFormatError,
         RuleSelfEmploymentId,
         AmountFormatError,
-        RuleInvalidLossAmount
+        RuleInvalidLossAmount,
+        RuleTaxYearNotEndedError
       )
 
     badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))

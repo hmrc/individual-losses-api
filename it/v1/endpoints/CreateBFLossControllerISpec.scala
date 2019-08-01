@@ -130,6 +130,11 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       createErrorTest(Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError)
     }
 
+    "return 400 BAD REQUEST" when {
+      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_ENDED", Status.BAD_REQUEST, RuleTaxYearNotEndedError)
+    }
+
     def createErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
       s"des returns an $desCode error" in new CreateBFLossControllerTest {
 
