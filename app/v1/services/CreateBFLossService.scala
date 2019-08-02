@@ -38,20 +38,18 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServi
     }
   }
 
-  private def mappingDesToMtdError: Map[String, MtdError] =
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "DUPLICATE"                 -> RuleDuplicateSubmissionError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
-      "NOT_FOUND_INCOME_SOURCE"   -> NotFoundError,
-      "TAX_YEAR_NOT_ENDED"        -> RuleTaxYearNotEndedError,
-      "INVALID_PAYLOAD"           -> DownstreamError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError,
-      "INVALID_TAX_YEAR"          -> DownstreamError,
-      "INCOME_SOURCE_NOT_ACTIVE"  -> DownstreamError,
-      "ACCOUNTING_PERIOD_NOT_ENDED" -> DownstreamError,
-      "INVALID_CLAIM_TYPE"        -> DownstreamError,
-      "NO_ACTIVE_ACCOUNTING_PERIOD" -> DownstreamError
-    )
+  private def mappingDesToMtdError: PartialFunction[String, MtdError] = {
+    case "INVALID_TAXABLE_ENTITY_ID" => NinoFormatError
+    case "DUPLICATE" => RuleDuplicateSubmissionError
+    case "TAX_YEAR_NOT_SUPPORTED" => RuleTaxYearNotSupportedError
+    case "NOT_FOUND_INCOME_SOURCE" => NotFoundError
+    case "TAX_YEAR_NOT_ENDED" => RuleTaxYearNotEndedError
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
+    case error@("INVALID_TAX_YEAR" | "INCOME_SOURCE_NOT_ACTIVE") => // Likely to be removed as they do not exist in the latest swagger 01/08/2019
+      logger.info(s"[$serviceName] [Unexpected error: $error]")
+      DownstreamError
+    case error@("NO_ACTIVE_ACCOUNTING_PERIOD" | "INVALID_CLAIM_TYPE" | "ACCOUNTING_PERIOD_NOT_ENDED") =>
+      logger.info(s"[$serviceName] [Unexpected error: $error]")
+      DownstreamError
+  }
 }
