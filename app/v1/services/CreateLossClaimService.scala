@@ -37,22 +37,20 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
     }
   }
 
-  private def mappingDesToMtdError: Map[String, MtdError] =
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
-      "DUPLICATE"                   -> RuleDuplicateClaimSubmissionError,
-      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-      "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
-      "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
-      "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
-      "NO_ACTIVE_ACCOUNTING_PERIOD" -> RuleAccountingPeriodNotActive,
-      "INVALID_PAYLOAD"             -> DownstreamError,
-      "SERVER_ERROR"                -> DownstreamError,
-      "SERVICE_UNAVAILABLE"         -> DownstreamError,
-      // Likely to be removed as they do not exist in the latest swagger 01/08/2019
-      "INVALID_TAX_YEAR"            -> DownstreamError,
-      "INCOME_SOURCE_NOT_ACTIVE"    -> DownstreamError,
-      // Error is Des Spec but related to brought forward losses
-      "TAX_YEAR_NOT_ENDED"          -> DownstreamError
-    )
+  private def mappingDesToMtdError: PartialFunction[String, MtdError] =
+     {
+       case "INVALID_TAXABLE_ENTITY_ID"   => NinoFormatError
+       case "DUPLICATE"                   => RuleDuplicateClaimSubmissionError
+       case "NOT_FOUND_INCOME_SOURCE"     => NotFoundError
+       case "ACCOUNTING_PERIOD_NOT_ENDED" => RulePeriodNotEnded
+       case "INVALID_CLAIM_TYPE"          => RuleTypeOfClaimInvalid
+       case "TAX_YEAR_NOT_SUPPORTED"      => RuleTaxYearNotSupportedError
+       case "NO_ACTIVE_ACCOUNTING_PERIOD" => RuleAccountingPeriodNotActive
+       case "INVALID_PAYLOAD" | "SERVER_ERROR"  | "SERVICE_UNAVAILABLE" => DownstreamError
+      // Likely to be removed as they do not exist in the latest swagger 01/08/2019 or are pertaining to brought forward losses
+       case error@("INVALID_TAX_YEAR" | "INCOME_SOURCE_NOT_ACTIVE" | "TAX_YEAR_NOT_ENDED") =>
+         print(s"[$serviceName] [Unexpected error: $error]")
+         logger.info(s"[$serviceName] [Unexpected error: $error]")
+         DownstreamError
+    }
 }
