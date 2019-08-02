@@ -47,6 +47,11 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServi
       "TAX_YEAR_NOT_ENDED"        -> RuleTaxYearNotEndedError,
       "INVALID_PAYLOAD"           -> DownstreamError,
       "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError
+      "SERVICE_UNAVAILABLE"       -> DownstreamError,
+      "INVALID_TAX_YEAR"          -> DownstreamError,
+      "INCOME_SOURCE_NOT_ACTIVE"  -> DownstreamError,
+      "ACCOUNTING_PERIOD_NOT_ENDED" -> DownstreamError,
+      "INVALID_CLAIM_TYPE"        -> DownstreamError,
+      "NO_ACTIVE_ACCOUNTING_PERIOD" -> DownstreamError
     )
 }
