@@ -82,7 +82,12 @@ class CreateBFLossServiceSpec extends ServiceSpec {
       "INVALID_PAYLOAD"            -> DownstreamError,
       "SERVER_ERROR"               -> DownstreamError,
       "SERVICE_UNAVAILABLE"        -> DownstreamError,
-      "UNEXPECTED_ERROR"           -> DownstreamError
+      "UNEXPECTED_ERROR"           -> DownstreamError,
+      "INVALID_TAX_YEAR"          -> DownstreamError,
+      "INCOME_SOURCE_NOT_ACTIVE"  -> DownstreamError,
+      "ACCOUNTING_PERIOD_NOT_ENDED" -> DownstreamError,
+      "INVALID_CLAIM_TYPE"        -> DownstreamError,
+      "NO_ACTIVE_ACCOUNTING_PERIOD" -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
