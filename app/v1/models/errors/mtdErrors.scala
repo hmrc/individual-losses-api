@@ -28,7 +28,6 @@ object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The supp
 // Rule Errors
 object RuleTaxYearNotSupportedError extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED",
   "Tax year not supported, because it precedes the earliest allowable tax year")
-
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 object RuleTaxYearRangeExceededError extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required")
 object RuleTaxYearNotEndedError extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The tax year for this brought forward loss has not yet ended")
@@ -41,6 +40,7 @@ object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "Th
 object RuleClaimTypeNotChanged extends MtdError("RULE_NO_CHANGE", "The type of claim has not changed")
 object RulePeriodNotEnded extends MtdError("RULE_PERIOD_NOT_ENDED", "The relevant accounting period has not yet ended")
 object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed")
+object RuleAccountingPeriodNotActive extends MtdError("RULE_ACCOUNTING_PERIOD_NOT_ACTIVE", "For the year of the claim there is no active accounting period.")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

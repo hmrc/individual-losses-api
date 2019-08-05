@@ -80,10 +80,16 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
       "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
+      "NO_ACTIVE_ACCOUNTING_PERIOD" -> RuleAccountingPeriodNotActive,
       "INVALID_PAYLOAD"             -> DownstreamError,
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError,
-      "UNEXPECTED_ERROR"            -> DownstreamError
+      "UNEXPECTED_ERROR"            -> DownstreamError,
+      // Likely to be removed as they do not exist in the latest swagger 01/08/2019
+      "INVALID_TAX_YEAR"            -> DownstreamError,
+      "INCOME_SOURCE_NOT_ACTIVE"    -> DownstreamError,
+      // Error is Des Spec but related to brought forward losses
+      "TAX_YEAR_NOT_ENDED"          -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
