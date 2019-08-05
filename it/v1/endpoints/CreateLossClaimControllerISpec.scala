@@ -134,6 +134,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
     "return 403 FORBIDDEN" when {
       createErrorTest(Status.CONFLICT, "DUPLICATE", Status.FORBIDDEN, RuleDuplicateClaimSubmissionError)
       createErrorTest(Status.FORBIDDEN, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
+      createErrorTest(Status.FORBIDDEN, "NO_ACTIVE_ACCOUNTING_PERIOD", Status.FORBIDDEN, RuleAccountingPeriodNotActive)
     }
 
     "return 404 NOT FOUND" when {
