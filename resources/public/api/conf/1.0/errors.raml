@@ -15,6 +15,46 @@ traits:
               description: The matching resource is not found.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundIncomeSource:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that the given income source could not be found
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundNino:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that no data can be found for the given NINO
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundLossId:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that no data can be found for the given loss ID
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundClaimId:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that no data can be found for the given claim ID
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
     responses:
       403:
