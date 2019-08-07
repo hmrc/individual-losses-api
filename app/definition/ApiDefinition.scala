@@ -18,7 +18,6 @@ package definition
 
 import play.api.libs.json.{Format, Json, OFormat}
 import utils.enums.Enums
-import v1.models.domain.TypeOfClaim
 
 case class Access(`type`: String, whitelistedApplicationIds: Seq[String])
 
