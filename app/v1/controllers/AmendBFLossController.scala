@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -37,29 +39,34 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
   extends AuthorisedController(cc) with BaseController {
 
 
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "AmendBFLossController", endpointName = "Amend a Brought Forward Loss Amount")
+
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+      val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
+      val result =
+        for {
+          parsedRequest <- EitherT.fromEither[Future](amendBFLossParser.parseRequest(rawData))
+          vendorResponse <- EitherT(amendBFLossService.amendBFLoss(parsedRequest))
+        } yield {
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-      amendBFLossParser.parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))) match {
-        case Right(amendBFLossRequest) =>
-          amendBFLossService.amendBFLoss(amendBFLossRequest).map {
-            case Right(desResponse) =>
-              logger.info(s"[AmendBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-              Ok(Json.toJson(desResponse.responseData))
-                .withApiHeaders(desResponse.correlationId)
-                .as(MimeTypes.JSON)
+          Ok(Json.toJson(vendorResponse.responseData))
+            .withApiHeaders(vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
+        }
 
-            case Left(errorWrapper) =>
-              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-              result
-          }
-        case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-          Future.successful(result)
-      }
+      result.leftMap { errorWrapper =>
+        val correlationId = getCorrelationId(errorWrapper)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        result
+      }.merge
     }
 
-  private def processError(errorWrapper: ErrorWrapper) = {
+  private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
       case BadRequestError
            | NinoFormatError
@@ -67,11 +74,9 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
            | LossIdFormatError
            | AmountFormatError
            | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))
-
       case RuleLossAmountNotChanged => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
-
 }

@@ -17,6 +17,7 @@
 package v1.controllers
 
 import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -45,8 +46,8 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
       val rawData = CreateLossClaimRawData(nino, AnyContentAsJson(request.body))
       val result =
         for {
-          parsedRequest <- EitherT.fromEither(createLossClaimParser.parseRequest(rawData))
-          vendorResponse <- EitherT(createLossClaimService.createLossClaim(parsedRequest))
+          parsedRequest <- EitherT.fromEither[Future](createLossClaimParser.parseRequest(rawData))
+          vendorResponse <-EitherT(createLossClaimService.createLossClaim(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -63,13 +64,22 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
         result
       }.merge
     }
+
   private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | RuleIncorrectOrEmptyBodyError | RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeExceededError | TypeOfLossFormatError | SelfEmploymentIdFormatError | RuleSelfEmploymentId |
-           RuleTypeOfClaimInvalid | TypeOfClaimFormatError =>
+      case BadRequestError
+           | NinoFormatError
+           | TaxYearFormatError
+           | RuleIncorrectOrEmptyBodyError
+           | RuleTaxYearNotSupportedError
+           | RuleTaxYearRangeExceededError
+           | TypeOfLossFormatError
+           | SelfEmploymentIdFormatError
+           | RuleSelfEmploymentId
+           | RuleTypeOfClaimInvalid
+           | TypeOfClaimFormatError =>
         BadRequest(Json.toJson(errorWrapper))
-      case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
+      case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded | RuleAccountingPeriodNotActive => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }

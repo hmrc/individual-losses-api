@@ -16,8 +16,8 @@
 
 package v1.controllers
 
-import java.util.UUID
-
+import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -38,34 +38,41 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
-  def amend(nino: String, lossId: String): Action[JsValue] =
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "AmendLossClaimController", endpointName = "Amend a Loss Claim")
+
+  def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+      val rawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(request.body))
+      val result =
+        for {
+          parsedRequest <- EitherT.fromEither[Future](amendLossClaimParser.parseRequest(rawData))
+          vendorResponse <- EitherT(amendLossClaimService.amendLossClaim(parsedRequest))
+        } yield {
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-      amendLossClaimParser.parseRequest(AmendLossClaimRawData(nino, lossId, AnyContentAsJson(request.body))) match {
-        case Right(amendLossClaimRequest) => amendLossClaimService.amendLossClaim(amendLossClaimRequest).map {
-          case Right(desResponse) =>
-            logger.info(s"[AmendLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
-            Ok(Json.toJson(desResponse.responseData))
-              .withApiHeaders(desResponse.correlationId).as(MimeTypes.JSON)
-
-          case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-            result
+          Ok(Json.toJson(vendorResponse.responseData))
+            .withApiHeaders(vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
-        case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-          Future.successful(result)
-      }
+
+      result.leftMap { errorWrapper =>
+        val correlationId = getCorrelationId(errorWrapper)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        result
+      }.merge
     }
 
-  private def processError(errorWrapper: ErrorWrapper) = {
+  private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
       case BadRequestError
            | NinoFormatError
            | RuleIncorrectOrEmptyBodyError
            | ClaimIdFormatError
            | TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid   => Forbidden(Json.toJson(errorWrapper))
+      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
