@@ -33,13 +33,13 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
       scopes = Seq(
         Scope(
           key = readScope,
-          name = "View your Losses information",
-          description = "Allow read access to losses data"
+          name = "View your Self Assessment information",
+          description = "Allow read access to self assessment data"
         ),
         Scope(
           key = writeScope,
-          name = "Change your Losses information",
-          description = "Allow write access to losses data"
+          name = "Change your Self Assessment information",
+          description = "Allow write access to self assessment data"
         )
       ),
       api = APIDefinition(

@@ -21,14 +21,16 @@ import v1.models.audit.AuditError
 
 case class ErrorWrapper(correlationId: Option[String], error: MtdError, errors: Option[Seq[MtdError]] = None) {
 
-  private def allErrors: Seq[MtdError] = errors match {
-    case Some(seq) => seq
-    case None      => Seq(error)
-  }
 
-  def auditErrors: Seq[AuditError] =
-    allErrors.map(error => AuditError(error.code))
+private def allErrors: Seq[MtdError] = errors match {
+case Some(seq) => seq
+case None      => Seq(error)
 }
+
+def auditErrors: Seq[AuditError] =
+allErrors.map(error => AuditError(error.code))
+}
+
 object ErrorWrapper {
   implicit val writes: Writes[ErrorWrapper] = new Writes[ErrorWrapper] {
     override def writes(errorResponse: ErrorWrapper): JsValue = {
