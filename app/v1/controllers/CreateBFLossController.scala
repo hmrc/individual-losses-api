@@ -79,5 +79,3 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
   }
 
 }
-
-
