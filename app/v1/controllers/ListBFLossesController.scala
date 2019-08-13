@@ -45,19 +45,19 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
             case Right(desResponse) if desResponse.responseData.losses.isEmpty =>
               logger.info(s"[ListBFLossesController] Empty response received with correlationId: ${desResponse.correlationId}")
               NotFound(Json.toJson(NotFoundError))
-                .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
+                .withApiHeaders(desResponse.correlationId)
 
             case Right(desResponse) =>
               logger.info(s"[ListBFLossesController] Success response received with correlationId: ${desResponse.correlationId}")
               Ok(Json.toJson(desResponse.responseData))
-                .withApiHeaders("X-CorrelationId" -> desResponse.correlationId)
+                .withApiHeaders(desResponse.correlationId)
 
             case Left(errorWrapper) =>
-              val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
               result
           }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }

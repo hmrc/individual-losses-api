@@ -41,18 +41,20 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
     authorisedAction(nino).async(parse.json) { implicit request =>
 
       createLossClaimParser.parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(request.body))) match {
-        case Right(createLossClaimRequest) => createLossClaimService.createLossClaim(createLossClaimRequest).map {
-          case Right(desResponse) =>
-            logger.info(s"[CreateLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
-            Created(Json.toJson(desResponse.responseData))
-              .withApiHeaders("X-CorrelationId" -> desResponse.correlationId).as(MimeTypes.JSON)
+        case Right(createLossClaimRequest) =>
+          createLossClaimService.createLossClaim(createLossClaimRequest).map {
+            case Right(desResponse) =>
+              logger.info(s"[CreateLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
+              Created(Json.toJson(desResponse.responseData))
+                .withApiHeaders(desResponse.correlationId)
+                .as(MimeTypes.JSON)
 
-          case Left(errorWrapper) =>
-            val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
-            result
-        }
+            case Left(errorWrapper) =>
+              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
+              result
+          }
         case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders("X-CorrelationId" -> getCorrelationId(errorWrapper))
+          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
           Future.successful(result)
       }
     }
