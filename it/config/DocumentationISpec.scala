@@ -28,13 +28,13 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |  "scopes":[
       |    {
       |      "key":"read:self-assessment",
-      |      "name":"View your Losses information",
-      |      "description":"Allow read access to losses data"
+      |      "name":"View your Self Assessment information",
+      |      "description":"Allow read access to self assessment data"
       |    },
       |    {
       |      "key":"write:self-assessment",
-      |      "name":"Change your Losses information",
-      |      "description":"Allow write access to losses data"
+      |      "name":"Change your Self Assessment information",
+      |      "description":"Allow write access to self assessment data"
       |    }
       |  ],
       |  "api":{
