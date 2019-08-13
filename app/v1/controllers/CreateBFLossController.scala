@@ -16,10 +16,12 @@
 
 package v1.controllers
 
-import javax.inject.{ Inject, Singleton }
+import cats.data.EitherT
+import cats.implicits._
+import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.CreateBFLossParser
 import v1.models.errors._
 import v1.models.requestData.CreateBFLossRawData
@@ -36,45 +38,46 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "CreateBFLossController", endpointName = "Create a Brought Forward Loss")
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      createBFLossParser.parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(request.body))) match {
-        case Right(createBFLossRequest) =>
-          createBFLossService.createBFLoss(createBFLossRequest).map {
-            case Right(desResponse) =>
-              logger.info(s"[CreateBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-              Created(Json.toJson(desResponse.responseData))
-                .withApiHeaders(desResponse.correlationId)
-                .as(MimeTypes.JSON)
+      val rawData = CreateBFLossRawData(nino, AnyContentAsJson(request.body))
+      val result =
+        for {
+          parsedRequest <- EitherT.fromEither[Future](createBFLossParser.parseRequest(rawData))
+          vendorResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
+        } yield {
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-            case Left(errorWrapper) =>
-              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-              result
-          }
-        case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-          Future.successful(result)
-      }
+          Created(Json.toJson(vendorResponse.responseData))
+            .withApiHeaders(vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
+        }
+
+      result.leftMap { errorWrapper =>
+        val correlationId = getCorrelationId(errorWrapper)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        result
+      }.merge
     }
 
-  private def processError(errorWrapper: ErrorWrapper) = {
+
+  private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError
-           | NinoFormatError
-           | TaxYearFormatError
-           | RuleIncorrectOrEmptyBodyError
-           | RuleTaxYearNotSupportedError
-           | RuleTaxYearRangeExceededError
-           | TypeOfLossFormatError
-           | SelfEmploymentIdFormatError
-           | RuleSelfEmploymentId
-           | AmountFormatError
-           | RuleInvalidLossAmount
-           | RuleTaxYearNotEndedError => BadRequest(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | TaxYearFormatError | RuleIncorrectOrEmptyBodyError | RuleTaxYearNotSupportedError |
+           RuleTaxYearRangeExceededError | TypeOfLossFormatError | SelfEmploymentIdFormatError | RuleSelfEmploymentId | AmountFormatError |
+           RuleInvalidLossAmount | RuleTaxYearNotEndedError =>
+        BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
+
 }
+
+
