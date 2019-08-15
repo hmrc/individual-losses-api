@@ -26,6 +26,6 @@ object MtdTaxYearValidation {
 
     val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
 
-    if (desTaxYear >= minTaxYear || TaxYearValidation.validate(taxYear) != Nil) NoValidationErrors else List(RuleTaxYearNotSupportedError)
+    if (desTaxYear >= minTaxYear && TaxYearValidation.validate(taxYear) == Nil) NoValidationErrors else List(RuleTaxYearNotSupportedError)
   }
 }
