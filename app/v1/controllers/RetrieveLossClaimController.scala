@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
@@ -33,35 +35,42 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
                                             retrieveLossClaimParser: RetrieveLossClaimParser,
                                             auditService: AuditService,
                                             cc: ControllerComponents)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with BaseController {
+  extends AuthorisedController(cc) with BaseController {
 
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "RetrieveLossClaimController", endpointName = "Retrieve a Loss Claim")
 
-  def retrieve(nino: String, lossId: String): Action[AnyContent] =
+  def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      retrieveLossClaimParser.parseRequest(RetrieveLossClaimRawData(nino, lossId)) match {
-        case Right(retrieveLossClaimRequest) =>
-          retrieveLossClaimService.retrieveLossClaim(retrieveLossClaimRequest).map {
-            case Right(desResponse) =>
-              logger.info(s"[RetrieveLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
-              Ok(Json.toJson(desResponse.responseData))
-                .withApiHeaders(desResponse.correlationId)
 
-            case Left(errorWrapper) =>
-              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-              result
-          }
-        case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-          Future.successful(result)
-      }
+      val rawData = RetrieveLossClaimRawData(nino, claimId)
+      val result =
+        for {
+          parsedRequest <- EitherT.fromEither[Future](retrieveLossClaimParser.parseRequest(rawData))
+          vendorResponse <- EitherT(retrieveLossClaimService.retrieveLossClaim(parsedRequest))
+        } yield {
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+
+          Ok(Json.toJson(vendorResponse.responseData))
+            .withApiHeaders(vendorResponse.correlationId)
+        }
+
+      result.leftMap { errorWrapper =>
+        val correlationId = getCorrelationId(errorWrapper)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        result
+      }.merge
     }
 
-  private def processError(errorWrapper: ErrorWrapper) = {
+  private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError                                        => InternalServerError(Json.toJson(errorWrapper))
+      case BadRequestError
+           | NinoFormatError
+           | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 }

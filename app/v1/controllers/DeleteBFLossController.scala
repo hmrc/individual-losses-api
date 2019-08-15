@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
@@ -35,29 +37,35 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "DeleteBFLossController", endpointName = "Delete a Brought Forward Loss")
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
 
-      deleteBFLossParser.parseRequest(DeleteBFLossRawData(nino, lossId)) match {
-        case Right(deleteBFLossRequest) =>
-          deleteBFLossService.deleteBFLoss(deleteBFLossRequest).map {
-            case Right(desResponse) =>
-              logger.info(s"[DeleteBFLossController] Success response received with correlationId: ${desResponse.correlationId}")
-              NoContent
-                .withApiHeaders(desResponse.correlationId)
+      val rawData = DeleteBFLossRawData(nino, lossId)
+      val result =
+        for {
+          parsedRequest <- EitherT.fromEither[Future](deleteBFLossParser.parseRequest(rawData))
+          vendorResponse <- EitherT(deleteBFLossService.deleteBFLoss(parsedRequest))
+        } yield {
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-            case Left(errorWrapper) =>
-              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-              result
-          }
-        case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-          Future.successful(result)
-      }
+          NoContent
+            .withApiHeaders(vendorResponse.correlationId)
+        }
+
+      result.leftMap { errorWrapper =>
+        val correlationId = getCorrelationId(errorWrapper)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        result
+      }.merge
     }
 
-  private def processError(errorWrapper: ErrorWrapper) = {
+
+  private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
       case BadRequestError
            | NinoFormatError
@@ -67,5 +75,4 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
-
 }

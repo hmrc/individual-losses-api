@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
@@ -33,41 +35,56 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
                                        listBFLossesParser: ListBFLossesParser,
                                        auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with BaseController {
+  extends AuthorisedController(cc) with BaseController {
 
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "LisBFLossesController", endpointName = "List Brought Forward Losses")
 
   def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], selfEmploymentId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      listBFLossesParser.parseRequest(ListBFLossesRawData(nino, taxYear = taxYear, typeOfLoss = typeOfLoss, selfEmploymentId = selfEmploymentId)) match {
-        case Right(listBFLossesRequest) =>
-          listBFLossesService.listBFLosses(listBFLossesRequest).map {
-            case Right(desResponse) if desResponse.responseData.losses.isEmpty =>
-              logger.info(s"[ListBFLossesController] Empty response received with correlationId: ${desResponse.correlationId}")
-              NotFound(Json.toJson(NotFoundError))
-                .withApiHeaders(desResponse.correlationId)
 
-            case Right(desResponse) =>
-              logger.info(s"[ListBFLossesController] Success response received with correlationId: ${desResponse.correlationId}")
-              Ok(Json.toJson(desResponse.responseData))
-                .withApiHeaders(desResponse.correlationId)
+      val rawData = ListBFLossesRawData(nino, taxYear = taxYear, typeOfLoss = typeOfLoss, selfEmploymentId = selfEmploymentId)
+      val result =
+        for {
+          parsedRequest <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))
+          vendorResponse <- EitherT(listBFLossesService.listBFLosses(parsedRequest))
+        } yield {
+          if (vendorResponse.responseData.losses.isEmpty) {
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Empty response received with correlationId: ${vendorResponse.correlationId}")
 
-            case Left(errorWrapper) =>
-              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-              result
+            NotFound(Json.toJson(NotFoundError))
+              .withApiHeaders(vendorResponse.correlationId)
+        }
+          else {
+            logger.info(
+              s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+                s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+
+            Ok(Json.toJson(vendorResponse.responseData))
+              .withApiHeaders(vendorResponse.correlationId)
           }
-        case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-          Future.successful(result)
-      }
+        }
+
+      result.leftMap { errorWrapper =>
+        val correlationId = getCorrelationId(errorWrapper)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        result
+      }.merge
     }
 
-  private def processError(errorWrapper: ErrorWrapper) = {
+  private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | SelfEmploymentIdFormatError | RuleSelfEmploymentId |
-          RuleTaxYearNotSupportedError | RuleTaxYearRangeExceededError =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
+      case BadRequestError
+           | NinoFormatError
+           | TaxYearFormatError
+           | TypeOfLossFormatError
+           | SelfEmploymentIdFormatError
+           | RuleSelfEmploymentId
+           | RuleTaxYearNotSupportedError
+           | RuleTaxYearRangeExceededError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }

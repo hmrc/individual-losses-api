@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -36,30 +38,34 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
                                           cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "CreateLossClaimController", endpointName = "Create a Loss Claim")
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+      val rawData = CreateLossClaimRawData(nino, AnyContentAsJson(request.body))
+      val result =
+        for {
+          parsedRequest <- EitherT.fromEither[Future](createLossClaimParser.parseRequest(rawData))
+          vendorResponse <-EitherT(createLossClaimService.createLossClaim(parsedRequest))
+        } yield {
+          logger.info(
+            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-      createLossClaimParser.parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(request.body))) match {
-        case Right(createLossClaimRequest) =>
-          createLossClaimService.createLossClaim(createLossClaimRequest).map {
-            case Right(desResponse) =>
-              logger.info(s"[CreateLossClaimController] Success response received with correlationId: ${desResponse.correlationId}")
-              Created(Json.toJson(desResponse.responseData))
-                .withApiHeaders(desResponse.correlationId)
-                .as(MimeTypes.JSON)
+          Created(Json.toJson(vendorResponse.responseData))
+            .withApiHeaders(vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
+        }
 
-            case Left(errorWrapper) =>
-              val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-              result
-          }
-        case Left(errorWrapper) =>
-          val result = processError(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
-          Future.successful(result)
-      }
+      result.leftMap { errorWrapper =>
+        val correlationId = getCorrelationId(errorWrapper)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        result
+      }.merge
     }
 
-  private def processError(errorWrapper: ErrorWrapper) = {
+  private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
       case BadRequestError
            | NinoFormatError
@@ -71,7 +77,8 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | SelfEmploymentIdFormatError
            | RuleSelfEmploymentId
            | RuleTypeOfClaimInvalid
-           | TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
+           | TypeOfClaimFormatError =>
+        BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded | RuleAccountingPeriodNotActive => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
