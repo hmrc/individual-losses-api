@@ -34,7 +34,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
 
   private def postFormatValidation: ListLossClaimsRawData => List[List[MtdError]] = { data =>
     List(
-      data.taxYear.map(MtdTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil),
+      data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
         case Some(lossType) => SelfEmploymentIdValidation.validate(lossType, data.selfEmploymentId, idOptional = true)
         case None           => Nil
