@@ -34,8 +34,9 @@ trait AppConfig {
 
   def apiStatus(version: String): String
 
-
   def featureSwitch: Option[Configuration]
+
+  def endpointsEnabled: Boolean
 }
 
 @Singleton
@@ -51,6 +52,8 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
   def apiStatus(version: String): String = config.getString(s"api.$version.status")
 
   def featureSwitch: Option[Configuration] = configuration.getOptional[Configuration](s"feature-switch")
+
+  val endpointsEnabled: Boolean = config.getBoolean("api-definitions.endpoints.enabled")
 }
 
 trait FixedConfig {
