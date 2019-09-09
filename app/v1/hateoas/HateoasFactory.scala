@@ -17,16 +17,19 @@
 package v1.hateoas
 
 import javax.inject.Inject
-import v1.models.des.CreateBFLossResponse
+import v1.models.des.{BFLossResponse, CreateBFLossResponse}
 import v1.models.hateoas.RelType._
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 
 class HateoasFactory @Inject()() extends Hateoas {
 
-  //Create -> Get, Amend, Delete
-  def wrap(nino: String, lossId: String, payload: DesResponse[CreateBFLossResponse]): DesResponse[HateoasWrapper[CreateBFLossResponse]] = {
-    payload.copy(responseData = HateoasWrapper(payload.responseData, linksForCreateBFLoss(nino, lossId)))
+  // Create -> Get, Amend, Delete
+  def wrap[A](nino: String, lossId: String, payload: DesResponse[A]): DesResponse[HateoasWrapper[A]] = {
+    payload.responseData match {
+      case _: CreateBFLossResponse => payload.copy(responseData = HateoasWrapper(payload.responseData, linksForCreateBFLoss(nino, lossId)))
+      case _: BFLossResponse => payload.copy(responseData = HateoasWrapper(payload.responseData, linksForAmendBFLoss(nino, lossId)))
+    }
   }
 
 }
@@ -43,5 +46,6 @@ trait Hateoas {
   private def deleteBfLoss(nino: String, lossId: String): Link = Link(href = bfLossUri(nino, lossId), method = "DELETE", rel = DELETE_BF_LOSS)
 
   def linksForCreateBFLoss(nino: String, lossId: String): Seq[Link] = Seq(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
+  def linksForAmendBFLoss(nino: String, lossId: String): Seq[Link] = linksForCreateBFLoss(nino, lossId)
 
 }

@@ -18,12 +18,16 @@ package hateoas
 
 import support.UnitSpec
 import v1.hateoas.HateoasFactory
-import v1.models.hateoas.Link
+import v1.models.des.{BFLossResponse, CreateBFLossResponse}
+import v1.models.domain.TypeOfLoss
+import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.outcomes.DesResponse
 
 class HateoasFactorySpec extends UnitSpec {
 
   private val nino = "AA111111A"
   private val lossId = "123456789"
+  private val correlationId = "123456789"
 
   val hateoasFactory = new HateoasFactory
 
@@ -55,4 +59,35 @@ class HateoasFactorySpec extends UnitSpec {
       }
     }
   }
+  "linksForAmendBFLoss" should {
+    "return the correct links" when {
+      "supplied a nino and lossId" in {
+        hateoasFactory.linksForAmendBFLoss(nino, lossId) shouldBe Seq(getLink, amendLink, deleteLink)
+      }
+    }
+  }
+
+  "wrap" should {
+    "return the correct response in a HateoasWrapper" when {
+
+      "supplied a CreateBFLossResponse" in {
+        val createBFLossResponse = DesResponse(correlationId, CreateBFLossResponse(lossId))
+        hateoasFactory.wrap[CreateBFLossResponse](nino, lossId, createBFLossResponse) shouldBe
+          DesResponse(correlationId, HateoasWrapper(createBFLossResponse.responseData, Seq(getLink, amendLink, deleteLink)))
+      }
+
+      "supplied an BFLossResponse" in {
+        val bfLossResponse = DesResponse(correlationId, BFLossResponse(
+          Some("XKIS00000000988"),
+          TypeOfLoss.`self-employment`,
+          256.78,
+          "2019-20",
+          "2018-07-13T12:13:48.763Z"
+        ))
+        hateoasFactory.wrap[BFLossResponse](nino, lossId, bfLossResponse) shouldBe
+          DesResponse(correlationId, HateoasWrapper(bfLossResponse.responseData, Seq(getLink, amendLink, deleteLink)))
+      }
+    }
+  }
+
 }
