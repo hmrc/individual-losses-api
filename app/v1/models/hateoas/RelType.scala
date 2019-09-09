@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.models.hateoas
 
-import play.api.libs.json._
-
-case class CreateBFLossResponse(id: String)
-
-object CreateBFLossResponse {
-  implicit val writes: OWrites[CreateBFLossResponse] = Json.writes[CreateBFLossResponse]
-
-  implicit val desToMtdReads: Reads[CreateBFLossResponse] =
-  (__ \ "lossId").read[String].map(CreateBFLossResponse.apply)
-
+object RelType {
+  val GET_BF_LOSS = "get-brought-forward-loss"
+  val DELETE_BF_LOSS = "delete-brought-forward-loss"
+  val AMEND_BF_LOSS = "amend-brought-forward-loss"
+  val CREATE_BF_LOSS = "create-brought-forward-loss"
 }

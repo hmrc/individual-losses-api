@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.models.hateoas
 
-import play.api.libs.json._
+import play.api.libs.json.{ Json, Writes }
 
-case class CreateBFLossResponse(id: String)
+case class Link(
+                 href: String,
+                 method: String, // FIXME use enum/sealed trait to reduce errs
+                 rel: String
+               )
 
-object CreateBFLossResponse {
-  implicit val writes: OWrites[CreateBFLossResponse] = Json.writes[CreateBFLossResponse]
-
-  implicit val desToMtdReads: Reads[CreateBFLossResponse] =
-  (__ \ "lossId").read[String].map(CreateBFLossResponse.apply)
-
+object Link {
+  implicit val writes: Writes[Link] = Json.writes[Link]
 }

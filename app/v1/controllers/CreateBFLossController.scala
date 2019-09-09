@@ -23,6 +23,7 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.CreateBFLossParser
+import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.requestData.CreateBFLossRawData
 import v1.services._
@@ -34,6 +35,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        createBFLossService: CreateBFLossService,
                                        createBFLossParser: CreateBFLossParser,
+                                       hateoasFactory: HateoasFactory,
                                        auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
@@ -48,13 +50,14 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
         for {
           parsedRequest <- EitherT.fromEither[Future](createBFLossParser.parseRequest(rawData))
           vendorResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
+          hateoasResponse <- EitherT.fromEither[Future]( hateoasFactory.wrap(nino, vendorResponse.responseData.id, vendorResponse).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+              s"Success response received with CorrelationId: ${hateoasResponse.correlationId}")
 
-          Created(Json.toJson(vendorResponse.responseData))
-            .withApiHeaders(vendorResponse.correlationId)
+          Created(Json.toJson(hateoasResponse.responseData))
+            .withApiHeaders(hateoasResponse.correlationId)
             .as(MimeTypes.JSON)
         }
 
