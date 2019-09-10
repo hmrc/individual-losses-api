@@ -22,23 +22,13 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
+import v1.hateoas.Hateoas
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
   val lossAmount = 531.99
-
-  val responseJson: JsValue = Json.parse(
-    s"""
-       |{
-       |    "selfEmploymentId": "XKIS00000000988",
-       |    "typeOfLoss": "self-employment",
-       |    "taxYear": "2019-20",
-       |    "lossAmount": $lossAmount,
-       |    "lastModified": "2018-07-13T12:13:48.763Z"
-       |}
-      """.stripMargin)
 
   val desResponseJson: JsValue = Json.parse(
     s"""
@@ -67,6 +57,8 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |      }
       """.stripMargin
 
+  object Hateoas extends Hateoas
+
   private trait Test {
 
     val nino = "AA123456A"
@@ -75,6 +67,19 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
     val selfEmploymentId = "XKIS00000000988"
     val taxYear = "2019-20"
     val typeOfLoss = "self-employment"
+    val hateoasLinks: JsValue = Json.toJson(Hateoas.linksForAmendBFLoss(nino, lossId))
+
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |    "selfEmploymentId": "XKIS00000000988",
+         |    "typeOfLoss": "self-employment",
+         |    "taxYear": "2019-20",
+         |    "lossAmount": $lossAmount,
+         |    "lastModified": "2018-07-13T12:13:48.763Z",
+         |    "links": $hateoasLinks
+         |}
+      """.stripMargin)
 
     def setupStubs(): StubMapping
 

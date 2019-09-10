@@ -20,11 +20,13 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v1.mocks.services._
 import v1.models.des.BFLossResponse
 import v1.models.domain.{AmendBFLoss, TypeOfLoss}
 import v1.models.errors.{AmountFormatError, LossIdFormatError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, _}
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
 
@@ -37,6 +39,7 @@ class AmendBFLossControllerSpec
     with MockMtdIdLookupService
     with MockAmendBFLossService
     with MockAmendBFLossRequestDataParser
+    with MockHateoasFactory
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -52,6 +55,7 @@ class AmendBFLossControllerSpec
     lossAmount = lossAmount,
     taxYear = "2019-20",
     lastModified = "2018-07-13T12:13:48.763Z")
+  val testHateoasLink = Link(href = "/foo/bar", method = "GET", rel="test-relationship")
 
   val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
 
@@ -62,7 +66,14 @@ class AmendBFLossControllerSpec
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2019-20",
       |    "lossAmount": $lossAmount,
-      |    "lastModified": "2018-07-13T12:13:48.763Z"
+      |    "lastModified": "2018-07-13T12:13:48.763Z",
+      |    "links" : [
+      |     {
+      |       "href": "/foo/bar",
+      |       "method": "GET",
+      |       "rel": "test-relationship"
+      |     }
+      |  ]
       |}
     """.stripMargin)
 
@@ -80,6 +91,7 @@ class AmendBFLossControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       amendBFLossService = mockAmendBFLossService,
+      hateoasFactory = mockHateoasFactory,
       amendBFLossParser = mockAmendBFLossRequestDataParser,
       auditService = mockAuditService,
       cc = cc
@@ -100,6 +112,10 @@ class AmendBFLossControllerSpec
         MockAmendBFLossService
           .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
           .returns(Future.successful(Right(DesResponse(correlationId, amendBFLossResponse))))
+
+        MockHateoasFactory
+          .wrap(nino, lossId, DesResponse(correlationId, amendBFLossResponse))
+          .returns(DesResponse(correlationId, HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink))))
 
         val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
         status(result) shouldBe OK

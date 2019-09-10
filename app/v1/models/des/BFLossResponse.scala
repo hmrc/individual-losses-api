@@ -28,7 +28,7 @@ case class BFLossResponse(selfEmploymentId: Option[String],
                           lastModified: String)
 
 object BFLossResponse {
-  implicit val writes: Writes[BFLossResponse] = Json.writes[BFLossResponse]
+  implicit val writes: OWrites[BFLossResponse] = Json.writes[BFLossResponse]
 
   implicit val desToMtdReads: Reads[BFLossResponse] = (
     (__ \ "incomeSourceId").readNullable[String] and
