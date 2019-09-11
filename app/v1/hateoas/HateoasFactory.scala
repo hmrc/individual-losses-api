@@ -17,21 +17,20 @@
 package v1.hateoas
 
 import javax.inject.Inject
-import v1.models.des.{BFLossResponse, CreateBFLossResponse}
+import Endpoints.{AmendBFLoss, CreateBFLoss, Endpoint, GetBFLoss}
 import v1.models.hateoas.RelType._
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 
 class HateoasFactory @Inject()() extends Hateoas {
 
-  // Create -> Get, Amend, Delete
-  def wrap[A](nino: String, lossId: String, payload: DesResponse[A]): DesResponse[HateoasWrapper[A]] = {
-    payload.responseData match {
-      case _: CreateBFLossResponse => payload.copy(responseData = HateoasWrapper(payload.responseData, linksForCreateBFLoss(nino, lossId)))
-      case _: BFLossResponse => payload.copy(responseData = HateoasWrapper(payload.responseData, linksForAmendBFLoss(nino, lossId)))
+  def wrap[A](nino: String, lossId: String, payload: DesResponse[A], endpoint: Endpoint): DesResponse[HateoasWrapper[A]] = {
+    endpoint match {
+      case CreateBFLoss => payload.copy(responseData = HateoasWrapper(payload.responseData, linksForCreateBFLoss(nino, lossId)))
+      case AmendBFLoss => payload.copy(responseData = HateoasWrapper(payload.responseData, linksForAmendBFLoss(nino, lossId)))
+      case GetBFLoss => payload.copy(responseData = HateoasWrapper(payload.responseData, linksForGetBFLoss(nino, lossId)))
     }
   }
-
 }
 
 trait Hateoas {
@@ -45,7 +44,8 @@ trait Hateoas {
   private def amendBfLoss(nino: String, lossId: String): Link = Link(href = bfLossChangeRequest(nino, lossId), method = "POST", rel = AMEND_BF_LOSS)
   private def deleteBfLoss(nino: String, lossId: String): Link = Link(href = bfLossUri(nino, lossId), method = "DELETE", rel = DELETE_BF_LOSS)
 
-  def linksForCreateBFLoss(nino: String, lossId: String): Seq[Link] = Seq(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
-  def linksForAmendBFLoss(nino: String, lossId: String): Seq[Link] = linksForCreateBFLoss(nino, lossId)
+  def linksForGetBFLoss(nino: String, lossId: String): List[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
+  def linksForCreateBFLoss(nino: String, lossId: String): List[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
+  def linksForAmendBFLoss(nino: String, lossId: String): List[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
 
 }

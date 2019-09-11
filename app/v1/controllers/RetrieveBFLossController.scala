@@ -22,6 +22,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.RetrieveBFLossParser
+import v1.hateoas.Endpoints.GetBFLoss
+import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.requestData.RetrieveBFLossRawData
 import v1.services._
@@ -33,6 +35,7 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                          val lookupService: MtdIdLookupService,
                                          retrieveBFLossService: RetrieveBFLossService,
                                          retrieveBFLossParser: RetrieveBFLossParser,
+                                         hateoasFactory: HateoasFactory,
                                          auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
@@ -47,7 +50,8 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](retrieveBFLossParser.parseRequest(rawData))
-          vendorResponse <- EitherT(retrieveBFLossService.retrieveBFLoss(parsedRequest))
+          serviceResponse <- EitherT(retrieveBFLossService.retrieveBFLoss(parsedRequest))
+          vendorResponse <- EitherT.fromEither[Future](hateoasFactory.wrap(nino, lossId, serviceResponse, GetBFLoss).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +

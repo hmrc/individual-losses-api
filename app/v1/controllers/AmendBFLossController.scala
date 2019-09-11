@@ -23,10 +23,9 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.AmendBFLossParser
+import v1.hateoas.Endpoints._
 import v1.hateoas.HateoasFactory
-import v1.models.des.BFLossResponse
 import v1.models.errors._
-import v1.models.hateoas.HateoasWrapper
 import v1.models.requestData.AmendBFLossRawData
 import v1.services._
 
@@ -42,7 +41,6 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
-
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendBFLossController", endpointName = "Amend a Brought Forward Loss Amount")
 
@@ -53,7 +51,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
         for {
           parsedRequest <- EitherT.fromEither[Future](amendBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendBFLossService.amendBFLoss(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](hateoasFactory.wrap(nino, lossId, serviceResponse).asRight[ErrorWrapper])
+          vendorResponse <- EitherT.fromEither[Future](hateoasFactory.wrap(nino, lossId, serviceResponse, AmendBFLoss).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +

@@ -23,6 +23,7 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.CreateBFLossParser
+import v1.hateoas.Endpoints.CreateBFLoss
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.requestData.CreateBFLossRawData
@@ -49,15 +50,17 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](createBFLossParser.parseRequest(rawData))
-          vendorResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
-          hateoasResponse <- EitherT.fromEither[Future](hateoasFactory.wrap(nino, vendorResponse.responseData.id, vendorResponse).asRight[ErrorWrapper])
+          serviceResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
+          vendorResponse <- EitherT.fromEither[Future](
+            hateoasFactory.wrap(nino, serviceResponse.responseData.id, serviceResponse, CreateBFLoss).asRight[ErrorWrapper]
+          )
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${hateoasResponse.correlationId}")
+              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-          Created(Json.toJson(hateoasResponse.responseData))
-            .withApiHeaders(hateoasResponse.correlationId)
+          Created(Json.toJson(vendorResponse.responseData))
+            .withApiHeaders(vendorResponse.correlationId)
             .as(MimeTypes.JSON)
         }
 

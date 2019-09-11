@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.hateoas.Endpoints
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v1.mocks.services._
@@ -55,6 +56,7 @@ class AmendBFLossControllerSpec
     lossAmount = lossAmount,
     taxYear = "2019-20",
     lastModified = "2018-07-13T12:13:48.763Z")
+
   val testHateoasLink = Link(href = "/foo/bar", method = "GET", rel="test-relationship")
 
   val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
@@ -114,7 +116,7 @@ class AmendBFLossControllerSpec
           .returns(Future.successful(Right(DesResponse(correlationId, amendBFLossResponse))))
 
         MockHateoasFactory
-          .wrap(nino, lossId, DesResponse(correlationId, amendBFLossResponse))
+          .wrap(nino, lossId, DesResponse(correlationId, amendBFLossResponse), Endpoints.AmendBFLoss)
           .returns(DesResponse(correlationId, HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink))))
 
         val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
