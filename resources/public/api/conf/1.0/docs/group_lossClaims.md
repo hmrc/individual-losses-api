@@ -1,4 +1,4 @@
-These resources allow software packages to provide a taxpayer's financial data for their loss claims.
+These resources allow software packages to provide a taxpayers' financial data for their loss claims.
 Here the developer can:
 
 * Provide a list of loss claims

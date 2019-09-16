@@ -1,4 +1,4 @@
-These resources allow software packages to provide a taxpayer's financial data for their brought forward losses.
+These resources allow software packages to provide a taxpayers' financial data for their brought forward losses.
 Here the developer can:
  
 * Provide a list of brought forward losses
