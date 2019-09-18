@@ -32,8 +32,8 @@
     </tbody>
     <tbody>
         <tr>
-            <td><p>ACCOUNTING_PERIOD_NOT_ACTIVE</p></td>
-            <td><p>Simulates the scenario where there is no active accounting period for the year of the claim</p></td>
+            <td><p>NO_ACCOUNTING_PERIOD</p></td>
+            <td><p>Simulates the scenario where there is no accounting period for the year of the claim</p></td>
         </tr>            
     </tbody>
 </table>

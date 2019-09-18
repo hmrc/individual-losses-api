@@ -1,0 +1,1085 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 109051904 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Zero Based Compressed Oops mode in which the Java heap is
+#     placed in the first 32GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 32GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2757), pid=27505, tid=0x00007f918d8a2700
+#
+# JRE version: OpenJDK Runtime Environment (8.0_222-b10) (build 1.8.0_222-8u222-b10-1ubuntu1~16.04.1-b10)
+# Java VM: OpenJDK 64-Bit Server VM (25.222-b10 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f91a408e000):  VMThread [stack: 0x00007f918d7a2000,0x00007f918d8a3000] [id=27518]
+
+Stack: [0x00007f918d7a2000,0x00007f918d8a3000],  sp=0x00007f918d8a14c0,  free space=1021k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xa7787b]
+V  [libjvm.so+0x4caa8c]
+V  [libjvm.so+0x8c5da8]
+V  [libjvm.so+0x8bd3ee]
+V  [libjvm.so+0x93b476]
+V  [libjvm.so+0x93c7a3]
+V  [libjvm.so+0x938e84]
+V  [libjvm.so+0x931ce9]
+V  [libjvm.so+0x44da03]
+V  [libjvm.so+0xa78e19]
+V  [libjvm.so+0xa7e587]
+V  [libjvm.so+0xa7bde7]
+V  [libjvm.so+0xa7d0cf]
+V  [libjvm.so+0xa7d5f2]
+V  [libjvm.so+0x8c3102]
+
+VM_Operation (0x00007f91845f8bd0): CollectForMetadataAllocation, mode: safepoint, requested by thread 0x00007f91a50c5800
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f911c7c0800 JavaThread "pool-3-thread-1" [_thread_blocked, id=27725, stack(0x00007f917d2d0000,0x00007f917d3d1000)]
+  0x00007f911d89d000 JavaThread "com.google.common.base.internal.Finalizer" daemon [_thread_blocked, id=27696, stack(0x00007f917d7d1000,0x00007f917d8d2000)]
+  0x00007f911d254800 JavaThread "application-akka.actor.default-dispatcher-4" [_thread_blocked, id=27676, stack(0x00007f917d8d2000,0x00007f917d9d3000)]
+  0x00007f911d252800 JavaThread "application-akka.actor.default-dispatcher-3" [_thread_blocked, id=27674, stack(0x00007f917d9d3000,0x00007f917dad4000)]
+  0x00007f911d236800 JavaThread "application-akka.actor.default-dispatcher-2" [_thread_blocked, id=27666, stack(0x00007f917dad4000,0x00007f917dbd5000)]
+  0x00007f911d1cc000 JavaThread "application-scheduler-1" [_thread_blocked, id=27665, stack(0x00007f917ddd5000,0x00007f917ded6000)]
+  0x00007f911cbe1000 JavaThread "qtp174140715-21" [_thread_blocked, id=27618, stack(0x00007f917e8d6000,0x00007f917e9d7000)]
+  0x00007f911cbdf800 JavaThread "qtp174140715-20" [_thread_blocked, id=27617, stack(0x00007f917e9d7000,0x00007f917ead8000)]
+  0x00007f911cbdd800 JavaThread "qtp174140715-19" [_thread_blocked, id=27616, stack(0x00007f917ead8000,0x00007f917ebd9000)]
+  0x00007f911cbdc000 JavaThread "qtp174140715-18" [_thread_blocked, id=27615, stack(0x00007f917ebd9000,0x00007f917ecda000)]
+  0x00007f911cbda800 JavaThread "qtp174140715-17-acceptor-1@29473279-NetworkTrafficServerConnector@6fb91b63{HTTP/1.1}{0.0.0.0:11112}" [_thread_blocked, id=27614, stack(0x00007f917ecda000,0x00007f917eddb000)]
+  0x00007f911cbd8800 JavaThread "qtp174140715-16-acceptor-0@3bc41b6d-NetworkTrafficServerConnector@6fb91b63{HTTP/1.1}{0.0.0.0:11112}" [_thread_in_native, id=27613, stack(0x00007f917eddb000,0x00007f917eedc000)]
+  0x00007f911cbd1800 JavaThread "qtp174140715-15-selector-ServerConnectorManager@1cbe8214/1" [_thread_in_native, id=27612, stack(0x00007f917eedc000,0x00007f917efdd000)]
+  0x00007f911cbd4000 JavaThread "qtp174140715-14-selector-ServerConnectorManager@1cbe8214/0" [_thread_in_native, id=27611, stack(0x00007f917fcff000,0x00007f917fe00000)]
+  0x00007f91a50c5800 JavaThread "pool-1-thread-1" [_thread_blocked, id=27566, stack(0x00007f91844fc000,0x00007f91845fd000)]
+  0x00007f91a50ae800 JavaThread "Timer-0" [_thread_blocked, id=27565, stack(0x00007f91845fd000,0x00007f91846fe000)]
+  0x00007f91a46d8000 JavaThread "ScalaTest-dispatcher" [_thread_blocked, id=27564, stack(0x00007f91846fe000,0x00007f91847ff000)]
+  0x00007f91a40e0800 JavaThread "Service Thread" daemon [_thread_blocked, id=27526, stack(0x00007f918ccc2000,0x00007f918cdc3000)]
+  0x00007f91a40d5800 JavaThread "C1 CompilerThread3" daemon [_thread_blocked, id=27525, stack(0x00007f918cdc3000,0x00007f918cec4000)]
+  0x00007f91a40d3000 JavaThread "C2 CompilerThread2" daemon [_thread_blocked, id=27524, stack(0x00007f918cec4000,0x00007f918cfc5000)]
+  0x00007f91a40d1800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=27523, stack(0x00007f918cfc5000,0x00007f918d0c6000)]
+  0x00007f91a40ce800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=27522, stack(0x00007f918d0c6000,0x00007f918d1c7000)]
+  0x00007f91a40cc800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=27521, stack(0x00007f918d1c7000,0x00007f918d2c8000)]
+  0x00007f91a409a000 JavaThread "Finalizer" daemon [_thread_blocked, id=27520, stack(0x00007f918d5a0000,0x00007f918d6a1000)]
+  0x00007f91a4097800 JavaThread "Reference Handler" daemon [_thread_blocked, id=27519, stack(0x00007f918d6a1000,0x00007f918d7a2000)]
+  0x00007f91a4018000 JavaThread "main" [_thread_blocked, id=27509, stack(0x00007f91ac5b3000,0x00007f91ac6b4000)]
+
+Other Threads:
+=>0x00007f91a408e000 VMThread [stack: 0x00007f918d7a2000,0x00007f918d8a3000] [id=27518]
+  0x00007f91a40e3000 WatcherThread [stack: 0x00007f918cbc1000,0x00007f918ccc2000] [id=27527]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007f91a4014650] Threads_lock - owner thread: 0x00007f91a408e000
+[0x00007f91a4014b50] Heap_lock - owner thread: 0x00007f91a50c5800
+
+heap address: 0x00000006c7c00000, size: 3972 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x00000007c0000000
+
+Heap:
+ PSYoungGen      total 349696K, used 17895K [0x000000076d400000, 0x0000000787a80000, 0x00000007c0000000)
+  eden space 331776K, 0% used [0x000000076d400000,0x000000076d400000,0x0000000781800000)
+  from space 17920K, 99% used [0x0000000781800000,0x0000000782979d68,0x0000000782980000)
+  to   space 13824K, 0% used [0x0000000782980000,0x0000000782980000,0x0000000783700000)
+ ParOldGen       total 137216K, used 18889K [0x00000006c7c00000, 0x00000006d0200000, 0x000000076d400000)
+  object space 137216K, 13% used [0x00000006c7c00000,0x00000006c8e72790,0x00000006d0200000)
+ Metaspace       used 58271K, capacity 58578K, committed 59028K, reserved 1099776K
+  class space    used 7964K, capacity 8089K, committed 8192K, reserved 1048576K
+
+Card table byte_map: [0x00007f91a8497000,0x00007f91a8c5a000] byte_map_base: 0x00007f91a4e59000
+
+Marking Bits: (ParMarkBitMap*) 0x00007f91ab87b540
+ Begin Bits: [0x00007f91503e0000, 0x00007f91541f0000)
+ End Bits:   [0x00007f91541f0000, 0x00007f9158000000)
+
+Polling page: 0x00007f91ac6ce000
+
+CodeCache: size=245760Kb used=14485Kb max_used=14496Kb free=231274Kb
+ bounds [0x00007f9195000000, 0x00007f9195e40000, 0x00007f91a4000000]
+ total_blobs=5145 nmethods=4584 adapters=473
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 7.214 Thread 0x00007f91a40d5800 nmethod 4596 0x00007f9195e316d0 code [0x00007f9195e31860, 0x00007f9195e31cd8]
+Event: 7.215 Thread 0x00007f91a40d5800 4595       3       scala.collection.immutable.List::length (5 bytes)
+Event: 7.215 Thread 0x00007f91a40d5800 nmethod 4595 0x00007f9195e30e90 code [0x00007f9195e31040, 0x00007f9195e31538]
+Event: 7.215 Thread 0x00007f91a40d5800 4597       1       akka.stream.impl.CompositeTraversalBuilder::inSlots (5 bytes)
+Event: 7.215 Thread 0x00007f91a40d5800 nmethod 4597 0x00007f9195e30bd0 code [0x00007f9195e30d20, 0x00007f9195e30e30]
+Event: 7.221 Thread 0x00007f91a40d5800 4598       3       scala.collection.immutable.List::iterator (5 bytes)
+Event: 7.222 Thread 0x00007f91a40d5800 nmethod 4598 0x00007f9195e30410 code [0x00007f9195e305a0, 0x00007f9195e30990]
+Event: 7.222 Thread 0x00007f91a40d5800 4599       3       scala.collection.LinearSeqLike$class::iterator (9 bytes)
+Event: 7.223 Thread 0x00007f91a40d5800 nmethod 4599 0x00007f9195e2fd50 code [0x00007f9195e2fee0, 0x00007f9195e30250]
+Event: 7.225 Thread 0x00007f91a40d1800 nmethod 4590 0x00007f9195e2fb50 code [0x00007f9195e2fca0, 0x00007f9195e2fcf8]
+
+GC Heap History (10 events):
+Event: 1.356 GC heap after
+Heap after GC invocations=4 (full 1):
+ PSYoungGen      total 139264K, used 0K [0x000000076d400000, 0x000000077e400000, 0x00000007c0000000)
+  eden space 129024K, 0% used [0x000000076d400000,0x000000076d400000,0x0000000775200000)
+  from space 10240K, 0% used [0x0000000775200000,0x0000000775200000,0x0000000775c00000)
+  to   space 10240K, 0% used [0x000000077da00000,0x000000077da00000,0x000000077e400000)
+ ParOldGen       total 94720K, used 8184K [0x00000006c7c00000, 0x00000006cd880000, 0x000000076d400000)
+  object space 94720K, 8% used [0x00000006c7c00000,0x00000006c83fe378,0x00000006cd880000)
+ Metaspace       used 20904K, capacity 21038K, committed 21248K, reserved 1067008K
+  class space    used 3139K, capacity 3209K, committed 3328K, reserved 1048576K
+}
+Event: 2.351 GC heap before
+{Heap before GC invocations=5 (full 1):
+ PSYoungGen      total 139264K, used 129024K [0x000000076d400000, 0x000000077e400000, 0x00000007c0000000)
+  eden space 129024K, 100% used [0x000000076d400000,0x0000000775200000,0x0000000775200000)
+  from space 10240K, 0% used [0x0000000775200000,0x0000000775200000,0x0000000775c00000)
+  to   space 10240K, 0% used [0x000000077da00000,0x000000077da00000,0x000000077e400000)
+ ParOldGen       total 94720K, used 8184K [0x00000006c7c00000, 0x00000006cd880000, 0x000000076d400000)
+  object space 94720K, 8% used [0x00000006c7c00000,0x00000006c83fe378,0x00000006cd880000)
+ Metaspace       used 32939K, capacity 33192K, committed 33536K, reserved 1077248K
+  class space    used 4625K, capacity 4750K, committed 4864K, reserved 1048576K
+Event: 2.359 GC heap after
+Heap after GC invocations=5 (full 1):
+ PSYoungGen      total 219136K, used 10221K [0x000000076d400000, 0x000000077e400000, 0x00000007c0000000)
+  eden space 208896K, 0% used [0x000000076d400000,0x000000076d400000,0x000000077a000000)
+  from space 10240K, 99% used [0x000000077da00000,0x000000077e3fb518,0x000000077e400000)
+  to   space 10240K, 0% used [0x000000077d000000,0x000000077d000000,0x000000077da00000)
+ ParOldGen       total 94720K, used 10501K [0x00000006c7c00000, 0x00000006cd880000, 0x000000076d400000)
+  object space 94720K, 11% used [0x00000006c7c00000,0x00000006c86414f8,0x00000006cd880000)
+ Metaspace       used 32939K, capacity 33192K, committed 33536K, reserved 1077248K
+  class space    used 4625K, capacity 4750K, committed 4864K, reserved 1048576K
+}
+Event: 2.511 GC heap before
+{Heap before GC invocations=6 (full 1):
+ PSYoungGen      total 219136K, used 38359K [0x000000076d400000, 0x000000077e400000, 0x00000007c0000000)
+  eden space 208896K, 13% used [0x000000076d400000,0x000000076ef7a768,0x000000077a000000)
+  from space 10240K, 99% used [0x000000077da00000,0x000000077e3fb518,0x000000077e400000)
+  to   space 10240K, 0% used [0x000000077d000000,0x000000077d000000,0x000000077da00000)
+ ParOldGen       total 94720K, used 10501K [0x00000006c7c00000, 0x00000006cd880000, 0x000000076d400000)
+  object space 94720K, 11% used [0x00000006c7c00000,0x00000006c86414f8,0x00000006cd880000)
+ Metaspace       used 35037K, capacity 35272K, committed 35416K, reserved 1079296K
+  class space    used 4857K, capacity 4974K, committed 4992K, reserved 1048576K
+Event: 2.515 GC heap after
+Heap after GC invocations=6 (full 1):
+ PSYoungGen      total 268288K, used 6719K [0x000000076d400000, 0x0000000783700000, 0x00000007c0000000)
+  eden space 258048K, 0% used [0x000000076d400000,0x000000076d400000,0x000000077d000000)
+  from space 10240K, 65% used [0x000000077d000000,0x000000077d68fdb0,0x000000077da00000)
+  to   space 13824K, 0% used [0x0000000782980000,0x0000000782980000,0x0000000783700000)
+ ParOldGen       total 94720K, used 10509K [0x00000006c7c00000, 0x00000006cd880000, 0x000000076d400000)
+  object space 94720K, 11% used [0x00000006c7c00000,0x00000006c86434f8,0x00000006cd880000)
+ Metaspace       used 35037K, capacity 35272K, committed 35416K, reserved 1079296K
+  class space    used 4857K, capacity 4974K, committed 4992K, reserved 1048576K
+}
+Event: 2.515 GC heap before
+{Heap before GC invocations=7 (full 2):
+ PSYoungGen      total 268288K, used 6719K [0x000000076d400000, 0x0000000783700000, 0x00000007c0000000)
+  eden space 258048K, 0% used [0x000000076d400000,0x000000076d400000,0x000000077d000000)
+  from space 10240K, 65% used [0x000000077d000000,0x000000077d68fdb0,0x000000077da00000)
+  to   space 13824K, 0% used [0x0000000782980000,0x0000000782980000,0x0000000783700000)
+ ParOldGen       total 94720K, used 10509K [0x00000006c7c00000, 0x00000006cd880000, 0x000000076d400000)
+  object space 94720K, 11% used [0x00000006c7c00000,0x00000006c86434f8,0x00000006cd880000)
+ Metaspace       used 35037K, capacity 35272K, committed 35416K, reserved 1079296K
+  class space    used 4857K, capacity 4974K, committed 4992K, reserved 1048576K
+Event: 2.541 GC heap after
+Heap after GC invocations=7 (full 2):
+ PSYoungGen      total 268288K, used 0K [0x000000076d400000, 0x0000000783700000, 0x00000007c0000000)
+  eden space 258048K, 0% used [0x000000076d400000,0x000000076d400000,0x000000077d000000)
+  from space 10240K, 0% used [0x000000077d000000,0x000000077d000000,0x000000077da00000)
+  to   space 13824K, 0% used [0x0000000782980000,0x0000000782980000,0x0000000783700000)
+ ParOldGen       total 137216K, used 13053K [0x00000006c7c00000, 0x00000006d0200000, 0x000000076d400000)
+  object space 137216K, 9% used [0x00000006c7c00000,0x00000006c88bf4e0,0x00000006d0200000)
+ Metaspace       used 35037K, capacity 35272K, committed 35416K, reserved 1079296K
+  class space    used 4857K, capacity 4974K, committed 4992K, reserved 1048576K
+}
+Event: 4.274 GC heap before
+{Heap before GC invocations=8 (full 2):
+ PSYoungGen      total 268288K, used 258048K [0x000000076d400000, 0x0000000783700000, 0x00000007c0000000)
+  eden space 258048K, 100% used [0x000000076d400000,0x000000077d000000,0x000000077d000000)
+  from space 10240K, 0% used [0x000000077d000000,0x000000077d000000,0x000000077da00000)
+  to   space 13824K, 0% used [0x0000000782980000,0x0000000782980000,0x0000000783700000)
+ ParOldGen       total 137216K, used 13053K [0x00000006c7c00000, 0x00000006d0200000, 0x000000076d400000)
+  object space 137216K, 9% used [0x00000006c7c00000,0x00000006c88bf4e0,0x00000006d0200000)
+ Metaspace       used 48179K, capacity 48488K, committed 48984K, reserved 1091584K
+  class space    used 6580K, capacity 6710K, committed 6784K, reserved 1048576K
+Event: 4.293 GC heap after
+Heap after GC invocations=8 (full 2):
+ PSYoungGen      total 345600K, used 13820K [0x000000076d400000, 0x0000000787a80000, 0x00000007c0000000)
+  eden space 331776K, 0% used [0x000000076d400000,0x000000076d400000,0x0000000781800000)
+  from space 13824K, 99% used [0x0000000782980000,0x00000007836ff1a8,0x0000000783700000)
+  to   space 17920K, 0% used [0x0000000781800000,0x0000000781800000,0x0000000782980000)
+ ParOldGen       total 137216K, used 17129K [0x00000006c7c00000, 0x00000006d0200000, 0x000000076d400000)
+  object space 137216K, 12% used [0x00000006c7c00000,0x00000006c8cba488,0x00000006d0200000)
+ Metaspace       used 48179K, capacity 48488K, committed 48984K, reserved 1091584K
+  class space    used 6580K, capacity 6710K, committed 6784K, reserved 1048576K
+}
+Event: 7.232 GC heap before
+{Heap before GC invocations=9 (full 2):
+ PSYoungGen      total 345600K, used 143665K [0x000000076d400000, 0x0000000787a80000, 0x00000007c0000000)
+  eden space 331776K, 39% used [0x000000076d400000,0x00000007752cd270,0x0000000781800000)
+  from space 13824K, 99% used [0x0000000782980000,0x00000007836ff1a8,0x0000000783700000)
+  to   space 17920K, 0% used [0x0000000781800000,0x0000000781800000,0x0000000782980000)
+ ParOldGen       total 137216K, used 17129K [0x00000006c7c00000, 0x00000006d0200000, 0x000000076d400000)
+  object space 137216K, 12% used [0x00000006c7c00000,0x00000006c8cba488,0x00000006d0200000)
+ Metaspace       used 58271K, capacity 58578K, committed 59028K, reserved 1099776K
+  class space    used 7964K, capacity 8089K, committed 8192K, reserved 1048576K
+
+Deoptimization events (10 events):
+Event: 4.709 Thread 0x00007f91a50c5800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f91957dd410 method=java.util.regex.Pattern$BmpCharProperty.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 11
+Event: 4.712 Thread 0x00007f91a50c5800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f91957dd410 method=java.util.regex.Pattern$BmpCharProperty.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 11
+Event: 4.720 Thread 0x00007f91a50c5800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f91957dd410 method=java.util.regex.Pattern$BmpCharProperty.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 11
+Event: 4.720 Thread 0x00007f91a50c5800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f91957dd410 method=java.util.regex.Pattern$BmpCharProperty.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 11
+Event: 4.891 Thread 0x00007f91a50c5800 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f91954a5124 method=scala.collection.IndexedSeqOptimized$class.foreach(Lscala/collection/IndexedSeqOptimized;Lscala/Function1;)V @ 3
+Event: 5.053 Thread 0x00007f91a50c5800 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f9195d27efc method=java.util.regex.Matcher.match(II)Z @ 86
+Event: 5.054 Thread 0x00007f91a50c5800 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f9195d27efc method=java.util.regex.Matcher.match(II)Z @ 86
+Event: 5.062 Thread 0x00007f91a50c5800 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f9195d27efc method=java.util.regex.Matcher.match(II)Z @ 86
+Event: 5.064 Thread 0x00007f91a50c5800 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f9195d27efc method=java.util.regex.Matcher.match(II)Z @ 86
+Event: 5.340 Thread 0x00007f91a50c5800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f9195c0df04 method=java.lang.AbstractStringBuilder.append(I)Ljava/lang/AbstractStringBuilder; @ 16
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 1.714 Thread 0x00007f91a46d8000 Exception <a 'java/lang/NoSuchMethodError': <clinit>> (0x0000000770a50e90) thrown at [/build/openjdk-8-g3XteX/openjdk-8-8u222-b10/src/hotspot/src/share/vm/prims/jni.cpp, line 1615]
+Event: 1.715 Thread 0x00007f91a46d8000 Exception <a 'java/lang/NoSuchMethodError': <clinit>> (0x0000000770a5e298) thrown at [/build/openjdk-8-g3XteX/openjdk-8-8u222-b10/src/hotspot/src/share/vm/prims/jni.cpp, line 1615]
+Event: 1.716 Thread 0x00007f91a46d8000 Exception <a 'java/lang/NoSuchMethodError': <clinit>> (0x0000000770a63de0) thrown at [/build/openjdk-8-g3XteX/openjdk-8-8u222-b10/src/hotspot/src/share/vm/prims/jni.cpp, line 1615]
+Event: 1.781 Thread 0x00007f91a50c5800 Exception <a 'java/io/FileNotFoundException'> (0x0000000771157998) thrown at [/build/openjdk-8-g3XteX/openjdk-8-8u222-b10/src/hotspot/src/share/vm/prims/jni.cpp, line 710]
+Event: 2.011 Thread 0x00007f91a50c5800 Implicit null exception at 0x00007f9195205ab5 to 0x00007f9195205e71
+Event: 2.336 Thread 0x00007f91a50c5800 Exception <a 'java/lang/NoSuchMethodError': org.slf4j.impl.StaticMDCBinder.getSingleton()Lorg/slf4j/impl/StaticMDCBinder;> (0x000000077504d010) thrown at [/build/openjdk-8-g3XteX/openjdk-8-8u222-b10/src/hotspot/src/share/vm/interpreter/linkResolver.cpp, l
+Event: 2.588 Thread 0x00007f91a50c5800 Implicit null exception at 0x00007f91951e8bf6 to 0x00007f91951e8fb5
+Event: 4.436 Thread 0x00007f91a50c5800 Exception <a 'java/lang/NoSuchMethodError': org.slf4j.impl.StaticMarkerBinder.getSingleton()Lorg/slf4j/impl/StaticMarkerBinder;> (0x000000076d9a5cb8) thrown at [/build/openjdk-8-g3XteX/openjdk-8-8u222-b10/src/hotspot/src/share/vm/interpreter/linkResolver.
+Event: 4.559 Thread 0x00007f91a50c5800 Implicit null exception at 0x00007f91959d744f to 0x00007f91959d7751
+Event: 5.221 Thread 0x00007f91a50c5800 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.lambda$static$0(Lplay/shaded/ahc/org/asynchttpclient/uri/Uri;)Lplay/shaded/ahc/org/asynchttpclient/proxy/ProxyServer;> (0x000000076f7f7540) thrown at [/build/openjdk-8-g3XteX/openjdk-8-8u222-b10
+
+Events (10 events):
+Event: 7.221 loading class akka/http/impl/engine/server/HttpAttributes$
+Event: 7.221 loading class akka/http/impl/engine/server/HttpAttributes$ done
+Event: 7.222 loading class akka/http/scaladsl/HttpsConnectionContext
+Event: 7.222 loading class akka/http/scaladsl/HttpsConnectionContext done
+Event: 7.223 loading class akka/http/javadsl/HttpsConnectionContext
+Event: 7.223 loading class akka/http/javadsl/HttpsConnectionContext done
+Event: 7.224 loading class akka/stream/scaladsl/TLSPlacebo$
+Event: 7.224 loading class akka/stream/scaladsl/TLSPlacebo$ done
+Event: 7.225 loading class sun/security/ssl/SSLEngineImpl
+Event: 7.230 Executing VM operation: CollectForMetadataAllocation
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 fd:01 6294908                            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+00600000-00601000 r--p 00000000 fd:01 6294908                            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+00601000-00602000 rw-p 00001000 fd:01 6294908                            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+00caa000-00ccb000 rw-p 00000000 00:00 0                                  [heap]
+6c7c00000-6d0200000 rw-p 00000000 00:00 0 
+6d0200000-76d400000 ---p 00000000 00:00 0 
+76d400000-787a80000 rw-p 00000000 00:00 0 
+78e280000-7c0000000 ---p 00000000 00:00 0 
+7c0000000-7c0800000 rw-p 00000000 00:00 0 
+7c0800000-800000000 ---p 00000000 00:00 0 
+7f90e4000000-7f90e4021000 rw-p 00000000 00:00 0 
+7f90e4021000-7f90e8000000 ---p 00000000 00:00 0 
+7f90ec000000-7f90ec021000 rw-p 00000000 00:00 0 
+7f90ec021000-7f90f0000000 ---p 00000000 00:00 0 
+7f90f0000000-7f90f0021000 rw-p 00000000 00:00 0 
+7f90f0021000-7f90f4000000 ---p 00000000 00:00 0 
+7f90f4000000-7f90f4021000 rw-p 00000000 00:00 0 
+7f90f4021000-7f90f8000000 ---p 00000000 00:00 0 
+7f90f8000000-7f90f8021000 rw-p 00000000 00:00 0 
+7f90f8021000-7f90fc000000 ---p 00000000 00:00 0 
+7f90fc000000-7f90fc021000 rw-p 00000000 00:00 0 
+7f90fc021000-7f9100000000 ---p 00000000 00:00 0 
+7f9100000000-7f9100021000 rw-p 00000000 00:00 0 
+7f9100021000-7f9104000000 ---p 00000000 00:00 0 
+7f9104000000-7f9104021000 rw-p 00000000 00:00 0 
+7f9104021000-7f9108000000 ---p 00000000 00:00 0 
+7f9108000000-7f9108021000 rw-p 00000000 00:00 0 
+7f9108021000-7f910c000000 ---p 00000000 00:00 0 
+7f910c000000-7f910c021000 rw-p 00000000 00:00 0 
+7f910c021000-7f9110000000 ---p 00000000 00:00 0 
+7f9110000000-7f9110021000 rw-p 00000000 00:00 0 
+7f9110021000-7f9114000000 ---p 00000000 00:00 0 
+7f9114000000-7f9114021000 rw-p 00000000 00:00 0 
+7f9114021000-7f9118000000 ---p 00000000 00:00 0 
+7f9118000000-7f9118021000 rw-p 00000000 00:00 0 
+7f9118021000-7f911c000000 ---p 00000000 00:00 0 
+7f911c000000-7f911d97c000 rw-p 00000000 00:00 0 
+7f911d97c000-7f9120000000 ---p 00000000 00:00 0 
+7f9120000000-7f9120021000 rw-p 00000000 00:00 0 
+7f9120021000-7f9124000000 ---p 00000000 00:00 0 
+7f9124000000-7f9124058000 rw-p 00000000 00:00 0 
+7f9124058000-7f9128000000 ---p 00000000 00:00 0 
+7f9128000000-7f9128021000 rw-p 00000000 00:00 0 
+7f9128021000-7f912c000000 ---p 00000000 00:00 0 
+7f912c000000-7f912c021000 rw-p 00000000 00:00 0 
+7f912c021000-7f9130000000 ---p 00000000 00:00 0 
+7f9130000000-7f9130021000 rw-p 00000000 00:00 0 
+7f9130021000-7f9134000000 ---p 00000000 00:00 0 
+7f9134000000-7f9135676000 rw-p 00000000 00:00 0 
+7f9135676000-7f9138000000 ---p 00000000 00:00 0 
+7f9138000000-7f9138763000 rw-p 00000000 00:00 0 
+7f9138763000-7f913c000000 ---p 00000000 00:00 0 
+7f913c000000-7f913e003000 rw-p 00000000 00:00 0 
+7f913e003000-7f9140000000 ---p 00000000 00:00 0 
+7f9140000000-7f9140f37000 rw-p 00000000 00:00 0 
+7f9140f37000-7f9144000000 ---p 00000000 00:00 0 
+7f9144000000-7f9144021000 rw-p 00000000 00:00 0 
+7f9144021000-7f9148000000 ---p 00000000 00:00 0 
+7f9148000000-7f9148021000 rw-p 00000000 00:00 0 
+7f9148021000-7f914c000000 ---p 00000000 00:00 0 
+7f914c000000-7f914c021000 rw-p 00000000 00:00 0 
+7f914c021000-7f9150000000 ---p 00000000 00:00 0 
+7f91503e0000-7f9158000000 rw-p 00000000 00:00 0 
+7f9158000000-7f9158021000 rw-p 00000000 00:00 0 
+7f9158021000-7f915c000000 ---p 00000000 00:00 0 
+7f915c000000-7f915c021000 rw-p 00000000 00:00 0 
+7f915c021000-7f9160000000 ---p 00000000 00:00 0 
+7f9160000000-7f9160021000 rw-p 00000000 00:00 0 
+7f9160021000-7f9164000000 ---p 00000000 00:00 0 
+7f9168000000-7f9168021000 rw-p 00000000 00:00 0 
+7f9168021000-7f916c000000 ---p 00000000 00:00 0 
+7f9170000000-7f9170021000 rw-p 00000000 00:00 0 
+7f9170021000-7f9174000000 ---p 00000000 00:00 0 
+7f9178000000-7f9178021000 rw-p 00000000 00:00 0 
+7f9178021000-7f917c000000 ---p 00000000 00:00 0 
+7f917ced0000-7f917d07f000 rw-p 00000000 00:00 0 
+7f917d07f000-7f917d0d0000 ---p 00000000 00:00 0 
+7f917d0d0000-7f917d2d0000 rw-p 00000000 00:00 0 
+7f917d2d0000-7f917d2d3000 ---p 00000000 00:00 0 
+7f917d2d3000-7f917d5d1000 rw-p 00000000 00:00 0 
+7f917d5d1000-7f917d7d1000 rw-p 00000000 00:00 0 
+7f917d7d1000-7f917d7d4000 ---p 00000000 00:00 0 
+7f917d7d4000-7f917d8d2000 rw-p 00000000 00:00 0 
+7f917d8d2000-7f917d8d5000 ---p 00000000 00:00 0 
+7f917d8d5000-7f917d9d3000 rw-p 00000000 00:00 0 
+7f917d9d3000-7f917d9d6000 ---p 00000000 00:00 0 
+7f917d9d6000-7f917dad4000 rw-p 00000000 00:00 0 
+7f917dad4000-7f917dad7000 ---p 00000000 00:00 0 
+7f917dad7000-7f917ddd5000 rw-p 00000000 00:00 0 
+7f917ddd5000-7f917ddd8000 ---p 00000000 00:00 0 
+7f917ddd8000-7f917e0d6000 rw-p 00000000 00:00 0 
+7f917e0d6000-7f917e2d6000 rw-p 00000000 00:00 0 
+7f917e2d6000-7f917e4d6000 rw-p 00000000 00:00 0 
+7f917e4d6000-7f917e6d6000 rw-p 00000000 00:00 0 
+7f917e6d6000-7f917e8d6000 rw-p 00000000 00:00 0 
+7f917e8d6000-7f917e8d9000 ---p 00000000 00:00 0 
+7f917e8d9000-7f917e9d7000 rw-p 00000000 00:00 0 
+7f917e9d7000-7f917e9da000 ---p 00000000 00:00 0 
+7f917e9da000-7f917ead8000 rw-p 00000000 00:00 0 
+7f917ead8000-7f917eadb000 ---p 00000000 00:00 0 
+7f917eadb000-7f917ebd9000 rw-p 00000000 00:00 0 
+7f917ebd9000-7f917ebdc000 ---p 00000000 00:00 0 
+7f917ebdc000-7f917ecda000 rw-p 00000000 00:00 0 
+7f917ecda000-7f917ecdd000 ---p 00000000 00:00 0 
+7f917ecdd000-7f917eddb000 rw-p 00000000 00:00 0 
+7f917eddb000-7f917edde000 ---p 00000000 00:00 0 
+7f917edde000-7f917eedc000 rw-p 00000000 00:00 0 
+7f917eedc000-7f917eedf000 ---p 00000000 00:00 0 
+7f917eedf000-7f917f1d3000 rw-p 00000000 00:00 0 
+7f917f1d3000-7f917f1dd000 ---p 00000000 00:00 0 
+7f917f1dd000-7f917f1e6000 r-xp 00000000 fd:01 6294987                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f917f1e6000-7f917f3e5000 ---p 00009000 fd:01 6294987                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f917f3e5000-7f917f3e6000 r--p 00008000 fd:01 6294987                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f917f3e6000-7f917f3e7000 rw-p 00009000 fd:01 6294987                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7f917f3e7000-7f917f5e7000 rw-p 00000000 00:00 0 
+7f917f5e7000-7f917f60f000 r-xp 00000000 fd:01 6294996                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7f917f60f000-7f917f80e000 ---p 00028000 fd:01 6294996                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7f917f80e000-7f917f812000 r--p 00027000 fd:01 6294996                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7f917f812000-7f917f813000 rw-p 0002b000 fd:01 6294996                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7f917f813000-7f917f824000 r-xp 00000000 fd:01 6295099                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7f917f824000-7f917fa23000 ---p 00011000 fd:01 6295099                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7f917fa23000-7f917fa24000 r--p 00010000 fd:01 6295099                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7f917fa24000-7f917fa25000 rw-p 00011000 fd:01 6295099                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7f917fa25000-7f917fc25000 rw-p 00000000 00:00 0 
+7f917fcff000-7f917fd02000 ---p 00000000 00:00 0 
+7f917fd02000-7f9180000000 rw-p 00000000 00:00 0 
+7f9180000000-7f9180021000 rw-p 00000000 00:00 0 
+7f9180021000-7f9184000000 ---p 00000000 00:00 0 
+7f91840fc000-7f91842fc000 rw-p 00000000 00:00 0 
+7f91842fc000-7f91844fc000 rw-p 00000000 00:00 0 
+7f91844fc000-7f91844ff000 ---p 00000000 00:00 0 
+7f91844ff000-7f91845fd000 rw-p 00000000 00:00 0 
+7f91845fd000-7f9184600000 ---p 00000000 00:00 0 
+7f9184600000-7f91846fe000 rw-p 00000000 00:00 0 
+7f91846fe000-7f9184701000 ---p 00000000 00:00 0 
+7f9184701000-7f91849ff000 rw-p 00000000 00:00 0 
+7f91849ff000-7f9184bff000 rw-p 00000000 00:00 0 
+7f9184bff000-7f9184dff000 rw-p 00000000 00:00 0 
+7f9184dff000-7f9184fff000 rw-p 00000000 00:00 0 
+7f9184fff000-7f9188000000 rw-p 00000000 00:00 0 
+7f9188000000-7f9188021000 rw-p 00000000 00:00 0 
+7f9188021000-7f918c000000 ---p 00000000 00:00 0 
+7f918c07b000-7f918c07d000 r--s 00016000 fd:01 6294961                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jce.jar
+7f918c07d000-7f918c07e000 r--p 00000000 fd:01 8130288                    /usr/share/locale-langpack/en_GB/LC_MESSAGES/libc.mo
+7f918c07e000-7f918c080000 r--s 00002000 fd:01 29753951                   /home/harryb/.sbt/boot/scala-2.10.7/org.scala-sbt/sbt/0.13.18/test-interface-1.0.jar
+7f918c080000-7f918c280000 rw-p 00000000 00:00 0 
+7f918c280000-7f918c285000 r--s 000a3000 fd:01 6295115                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jsse.jar
+7f918c285000-7f918c29b000 r-xp 00000000 fd:01 6294992                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7f918c29b000-7f918c49b000 ---p 00016000 fd:01 6294992                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7f918c49b000-7f918c49c000 r--p 00016000 fd:01 6294992                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7f918c49c000-7f918c49d000 rw-p 00017000 fd:01 6294992                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7f918c49d000-7f918c49e000 r--s 00005000 fd:01 29753915                   /home/harryb/.sbt/boot/scala-2.10.7/org.scala-sbt/sbt/0.13.18/test-agent-0.13.18.jar
+7f918c49e000-7f918c49f000 r--s 00002000 fd:01 2229189                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.github.jknack/handlebars-helpers/handlebars-helpers-4.0.7.jar
+7f918c49f000-7f918c4a6000 r--s 0004c000 fd:01 2228980                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.antlr/antlr4-runtime/antlr4-runtime-4.7.1.jar
+7f918c4a6000-7f918c4ad000 r--s 0004f000 fd:01 2229049                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.github.jknack/handlebars/handlebars-4.0.7.jar
+7f918c4ad000-7f918c4af000 r--s 00006000 fd:01 2229126                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.flipkart.zjsonpatch/zjsonpatch/zjsonpatch-0.4.4.jar
+7f918c4af000-7f918c4b7000 r--s 00072000 fd:01 2228778                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.apache.commons/commons-lang3/commons-lang3-3.7.jar
+7f918c4b7000-7f918c4ba000 r--s 00011000 fd:01 2228775                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.sf.jopt-simple/jopt-simple/jopt-simple-5.0.3.jar
+7f918c4ba000-7f918c4bc000 r--s 0001a000 fd:01 2228883                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.ow2.asm/asm/asm-7.0.jar
+7f918c4bc000-7f918c4be000 r--s 00006000 fd:01 2229117                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/net.minidev/accessors-smart/accessors-smart-1.2.jar
+7f918c4be000-7f918c4c1000 r--s 0001b000 fd:01 2229115                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/net.minidev/json-smart/json-smart-2.3.jar
+7f918c4c1000-7f918c4c7000 r--s 00031000 fd:01 2229182                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.jayway.jsonpath/json-path/json-path-2.4.0.jar
+7f918c4c7000-7f918c4c9000 r--s 00001000 fd:01 2228944                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.xmlunit/xmlunit-placeholders/xmlunit-placeholders-2.6.2.jar
+7f918c4c9000-7f918c4cd000 r--s 0001c000 fd:01 2228843                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.xmlunit/xmlunit-legacy/xmlunit-legacy-2.6.2.jar
+7f918c4cd000-7f918c4d1000 r--s 00025000 fd:01 2229012                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.xmlunit/xmlunit-core/xmlunit-core-2.6.2.jar
+7f918c4d1000-7f918c4d8000 r--s 00049000 fd:01 2228855                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.apache.httpcomponents/httpcore/httpcore-4.4.10.jar
+7f918c4d8000-7f918c4e5000 r--s 000af000 fd:01 2229191                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.apache.httpcomponents/httpclient/httpclient-4.5.6.jar
+7f918c4e5000-7f918c4f7000 r--s 00137000 fd:01 2229183                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.fasterxml.jackson.core/jackson-databind/jackson-databind-2.9.8.jar
+7f918c4f7000-7f918c4fa000 r--s 0000e000 fd:01 2228920                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.fasterxml.jackson.core/jackson-annotations/jackson-annotations-2.9.8.jar
+7f918c4fa000-7f918c4fe000 r--s 0004c000 fd:01 2228802                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.fasterxml.jackson.core/jackson-core/jackson-core-2.9.8.jar
+7f918c4fe000-7f918c4ff000 r--s 0000a000 fd:01 2228792                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-xml/jetty-xml-9.2.24.v20180105.jar
+7f918c4ff000-7f918c501000 r--s 00019000 fd:01 2229185                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-webapp/jetty-webapp-9.2.24.v20180105.jar
+7f918c501000-7f918c502000 r--s 00003000 fd:01 2229060                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-continuation/jetty-continuation-9.2.24.v20180105.jar
+7f918c502000-7f918c505000 r--s 0001c000 fd:01 2228989                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-servlets/jetty-servlets-9.2.24.v20180105.jar
+7f918c505000-7f918c508000 r--s 00015000 fd:01 2228801                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-security/jetty-security-9.2.24.v20180105.jar
+7f918c508000-7f918c50b000 r--s 0001a000 fd:01 2229067                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-servlet/jetty-servlet-9.2.24.v20180105.jar
+7f918c50b000-7f918c511000 r--s 00061000 fd:01 2229112                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-server/jetty-server-9.2.24.v20180105.jar
+7f918c511000-7f918c522000 r--s 002ce000 fd:01 2229129                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.github.tomakehurst/wiremock/wiremock-2.22.0.jar
+7f918c522000-7f918c523000 r--s 00002000 fd:01 2228892                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.codeborne/phantomjsdriver/phantomjsdriver-1.4.3.jar
+7f918c523000-7f918c526000 r--s 00015000 fd:01 2228970                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/javax.servlet/javax.servlet-api/javax.servlet-api-3.1.0.jar
+7f918c526000-7f918c529000 r--s 0001d000 fd:01 2228927                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-http/jetty-http-9.2.24.v20180105.jar
+7f918c529000-7f918c52e000 r--s 00036000 fd:01 2228999                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-client/jetty-client-9.2.24.v20180105.jar
+7f918c52e000-7f918c52f000 r--s 00001000 fd:01 2229029                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-safari-driver/selenium-safari-driver-3.5.3.jar
+7f918c52f000-7f918c530000 r--s 00001000 fd:01 2228925                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-opera-driver/selenium-opera-driver-3.5.3.jar
+7f918c530000-7f918c531000 r--s 00003000 fd:01 2228985                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-ie-driver/selenium-ie-driver-3.5.3.jar
+7f918c531000-7f918c532000 r--s 00001000 fd:01 2229110                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-edge-driver/selenium-edge-driver-3.5.3.jar
+7f918c532000-7f918c533000 r--s 00002000 fd:01 2228977                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-chrome-driver/selenium-chrome-driver-3.5.3.jar
+7f918c533000-7f918c534000 r--s 00000000 fd:01 2229151                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-java/selenium-java-3.5.3.jar
+7f918c534000-7f918c538000 r--s 00034000 fd:01 2228835                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.scalatestplus.play/scalatestplus-play_2.11/scalatestplus-play_2.11-3.1.2.jar
+7f918c538000-7f918c53a000 r--s 0000c000 fd:01 2228983                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.objenesis/objenesis/objenesis-2.6.jar
+7f918c53a000-7f918c53c000 r--s 00009000 fd:01 2229039                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.bytebuddy/byte-buddy-agent/byte-buddy-agent-1.9.3.jar
+7f918c53c000-7f918c582000 r--s 002d1000 fd:01 2228901                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.bytebuddy/byte-buddy/byte-buddy-1.9.3.jar
+7f918c582000-7f918c592000 r--s 0007a000 fd:01 2229163                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.mockito/mockito-core/mockito-core-2.23.4.jar
+7f918c592000-7f918c593000 r--s 0000a000 fd:01 2229071                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.ow2.asm/asm-util/asm-util-5.0.3.jar
+7f918c593000-7f918c594000 r--s 00004000 fd:01 2228887                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.ow2.asm/asm-analysis/asm-analysis-5.0.3.jar
+7f918c594000-7f918c596000 r--s 00006000 fd:01 2229090                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.ow2.asm/asm-tree/asm-tree-5.0.3.jar
+7f918c596000-7f918c59b000 r--s 00029000 fd:01 2229041                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.parboiled/parboiled-core/parboiled-core-1.1.7.jar
+7f918c59b000-7f918c59d000 r--s 00010000 fd:01 2228898                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.parboiled/parboiled-java/parboiled-java-1.1.7.jar
+7f918c59d000-7f918c5a0000 r--s 00011000 fd:01 2228953                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.pegdown/pegdown/pegdown-1.6.0.jar
+7f918c5a0000-7f918c5ae000 r--s 000e0000 fd:01 2229058                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.scalamock/scalamock_2.11/scalamock_2.11-4.2.0.jar
+7f918c5ae000-7f918c5b8000 r--s 000ac000 fd:01 2229140                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/org.scalactic/scalactic_2.11/scalactic_2.11-3.0.5.jar
+7f918c5b8000-7f918c663000 r--s 00948000 fd:01 2229206                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/org.scalatest/scalatest_2.11/scalatest_2.11-3.0.5.jar
+7f918c663000-7f918c665000 r--s 000c2000 fd:01 2229187                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-firefox-driver/selenium-firefox-driver-3.5.3.jar
+7f918c665000-7f918c667000 r--s 00009000 fd:01 2228852                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty.websocket/websocket-api/websocket-api-9.2.24.v20180105.jar
+7f918c667000-7f918c66c000 r--s 00028000 fd:01 2229027                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty.websocket/websocket-common/websocket-common-9.2.24.v20180105.jar
+7f918c66c000-7f918c66f000 r--s 00018000 fd:01 2228790                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-io/jetty-io-9.2.24.v20180105.jar
+7f918c66f000-7f918c676000 r--s 00057000 fd:01 2229149                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty/jetty-util/jetty-util-9.2.24.v20180105.jar
+7f918c676000-7f918c677000 r--s 00008000 fd:01 2229147                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.eclipse.jetty.websocket/websocket-client/websocket-client-9.2.24.v20180105.jar
+7f918c677000-7f918c678000 r--s 00003000 fd:01 2229046                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.w3c.css/sac/sac-1.3.jar
+7f918c678000-7f918c67c000 r--s 0005a000 fd:01 2228908                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.sourceforge.cssparser/cssparser/cssparser-0.9.23.jar
+7f918c67c000-7f918c685000 r--s 0002d000 fd:01 2228967                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/xml-apis/xml-apis/xml-apis-1.4.01.jar
+7f918c685000-7f918c69e000 r--s 00135000 fd:01 2228787                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/xerces/xercesImpl/xercesImpl-2.11.0.jar
+7f918c69e000-7f918c6a1000 r--s 0001d000 fd:01 2228972                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.sourceforge.htmlunit/neko-htmlunit/neko-htmlunit-2.27.jar
+7f918c6a1000-7f918c6af000 r--s 0011b000 fd:01 2229167                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.sourceforge.htmlunit/htmlunit-core-js/htmlunit-core-js-2.27.jar
+7f918c6af000-7f918c6b1000 r--s 00009000 fd:01 2229004                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.apache.httpcomponents/httpmime/httpmime-4.5.3.jar
+7f918c6b1000-7f918c6b5000 r--s 00040000 fd:01 2228861                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/xalan/serializer/serializer-2.7.2.jar
+7f918c6b5000-7f918c6da000 r--s 002de000 fd:01 2228940                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/xalan/xalan/xalan-2.7.2.jar
+7f918c6da000-7f918c701000 r--s 001c3000 fd:01 2228811                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.sourceforge.htmlunit/htmlunit/htmlunit-2.27.jar
+7f918c701000-7f918c703000 r--s 00010000 fd:01 2229086                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/htmlunit-driver/htmlunit-driver-2.27.jar
+7f918c703000-7f918c707000 r--s 0002f000 fd:01 2229055                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/commons-io/commons-io/commons-io-2.5.jar
+7f918c707000-7f918c708000 r--s 00007000 fd:01 2229083                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.atteo.classindex/classindex/classindex-3.4.jar
+7f918c708000-7f918c719000 r--s 00155000 fd:01 2228932                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.java.dev.jna/jna-platform/jna-platform-4.1.0.jar
+7f918c719000-7f918c71d000 r--s 000dc000 fd:01 2229001                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.java.dev.jna/jna/jna-4.1.0.jar
+7f918c71d000-7f918c722000 r--s 00034000 fd:01 2228923                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.google.code.gson/gson/gson-2.8.0.jar
+7f918c722000-7f918c724000 r--s 0000e000 fd:01 2229179                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/commons-logging/commons-logging/commons-logging-1.2.jar
+7f918c724000-7f918c726000 r--s 0000c000 fd:01 2228869                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.apache.commons/commons-exec/commons-exec-1.3.jar
+7f918c726000-7f918c72d000 r--s 0004f000 fd:01 2229017                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/cglib/cglib-nodep/cglib-nodep-3.2.4.jar
+7f918c72d000-7f918c733000 r--s 00049000 fd:01 2229155                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-remote-driver/selenium-remote-driver-3.5.3.jar
+7f918c733000-7f918c737000 r--s 00018000 fd:01 2228991                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-api/selenium-api-3.5.3.jar
+7f918c737000-7f918c73c000 r--s 00020000 fd:01 2228880                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.seleniumhq.selenium/selenium-support/selenium-support-3.5.3.jar
+7f918c73c000-7f918c746000 r--s 00052000 fd:01 2228947                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.fluentlenium/fluentlenium-core/fluentlenium-core-3.3.0.jar
+7f918c746000-7f918c748000 r--s 00003000 fd:01 2228784                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.google.code.findbugs/jsr305/jsr305-3.0.2.jar
+7f918c748000-7f918c74a000 r--s 00002000 fd:01 2229137                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.scala-sbt/test-interface/test-interface-1.0.jar
+7f918c74a000-7f918c74c000 r--s 00006000 fd:01 2229134                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.novocode/junit-interface/junit-interface-0.11.jar
+7f918c74c000-7f918c74e000 r--s 00009000 fd:01 2229160                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.hamcrest/hamcrest-core/hamcrest-core-1.3.jar
+7f918c74e000-7f918c756000 r--s 00045000 fd:01 2228918                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/junit/junit/junit-4.12.jar
+7f918c756000-7f918c759000 r--s 00026000 fd:01 2228997                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-test_2.11/play-test_2.11-2.6.20.jar
+7f918c759000-7f918c777000 r--s 002f1000 fd:01 2228950                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.typelevel/cats-kernel_2.11/cats-kernel_2.11-1.6.0.jar
+7f918c777000-7f918c778000 r--s 00008000 fd:01 2229119                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.typelevel/machinist_2.11/machinist_2.11-0.6.6.jar
+7f918c778000-7f918c779000 r--s 00001000 fd:01 2229169                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.typelevel/cats-macros_2.11/cats-macros_2.11-1.6.0.jar
+7f918c779000-7f918c7d2000 r--s 00520000 fd:01 2228960                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.typelevel/cats-core_2.11/cats-core_2.11-1.6.0.jar
+7f918c7d2000-7f918c7d5000 r--s 00014000 fd:01 2228766                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/play-hmrc-api_2.11/play-hmrc-api_2.11-3.4.0-play-26.jar
+7f918c7d5000-7f918c7de000 r--s 0005c000 fd:01 2229106                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-functional_2.11/play-functional_2.11-2.6.13.jar
+7f918c7de000-7f918c7fe000 r--s 00142000 fd:01 2228804                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-json_2.11/play-json_2.11-2.6.13.jar
+7f918c7fe000-7f918c803000 r--s 00039000 fd:01 2228934                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/domain_2.11/domain_2.11-5.6.0-play-26.jar
+7f918c803000-7f918c806000 r--s 00016000 fd:01 2229173                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/jackson-datatype-jsr310-2.9.7.jar
+7f918c806000-7f918c808000 r--s 00007000 fd:01 2228948                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/jackson-datatype-jdk8-2.9.7.jar
+7f918c808000-7f918c809000 r--s 0000b000 fd:01 2229153                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/play-health_2.11/play-health_2.11-3.8.0-play-26.jar
+7f918c809000-7f918c80e000 r--s 0002e000 fd:01 2228818                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.github.nscala-time/nscala-time_2.11/nscala-time_2.11-2.16.0.jar
+7f918c80e000-7f918c80f000 r--s 00007000 fd:01 2228871                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/time_2.11/time_2.11-3.2.0.jar
+7f918c80f000-7f918c813000 r--s 00028000 fd:01 2228913                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/play-auditing_2.11/play-auditing_2.11-3.13.0-play-26.jar
+7f918c813000-7f918c814000 r--s 00003000 fd:01 2229080                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/logback-json-logger_2.11/logback-json-logger_2.11-4.0.0.jar
+7f918c814000-7f918c815000 r--s 00001000 fd:01 2229088                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/http-verbs-play-25_2.11/http-verbs-play-25_2.11-1.0.0.jar
+7f918c815000-7f918c816000 r--s 00001000 fd:01 2229035                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/http-core_2.11/http-core_2.11-2.0.0.jar
+7f918c816000-7f918c81e000 r--s 0004c000 fd:01 2229014                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/http-verbs_2.11/http-verbs_2.11-9.0.0-play-26.jar
+7f918c81e000-7f918c876000 r--s 003a7000 fd:01 2228864                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.bouncycastle/bcprov-jdk15on/bcprov-jdk15on-1.60.jar
+7f918c876000-7f918c878000 r--s 00006000 fd:01 2229105                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/secure_2.11/secure_2.11-7.4.0.jar
+7f918c878000-7f918c87a000 r--s 00013000 fd:01 2229073                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/crypto_2.11/crypto_2.11-5.1.0.jar
+7f918c87a000-7f918c87e000 r--s 00018000 fd:01 2229198                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/net.ceedubs/ficus_2.11/ficus_2.11-1.1.2.jar
+7f918c87e000-7f918c885000 r--s 00052000 fd:01 2228840                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/auth-client_2.11/auth-client_2.11-2.11.0-play-26.jar
+7f918c885000-7f918c889000 r--s 0001e000 fd:01 2229200                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/io.dropwizard.metrics/metrics-core/metrics-core-3.2.5.jar
+7f918c889000-7f918c88b000 r--s 00004000 fd:01 2229193                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/io.dropwizard.metrics/metrics-graphite/metrics-graphite-3.2.5.jar
+7f918c88b000-7f918c88d000 r--s 00009000 fd:01 2229093                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.google.inject.extensions/guice-assistedinject/guice-assistedinject-4.1.0.jar
+7f918c88d000-7f918c88f000 r--s 00000000 fd:01 2229172                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/aopalliance/aopalliance/aopalliance-1.0.jar
+7f918c88f000-7f918c89d000 r--s 00097000 fd:01 2229025                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.google.inject/guice/guice-4.1.0.jar
+7f918c89d000-7f918c8a0000 r--s 00019000 fd:01 2229037                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-guice_2.11/play-guice_2.11-2.6.20.jar
+7f918c8a0000-7f918c8a2000 r--s 00000000 fd:01 2229033                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/io.dropwizard.metrics/metrics-logback/metrics-logback-3.2.4.jar
+7f918c8a2000-7f918c8a4000 r--s 00008000 fd:01 2228975                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/io.dropwizard.metrics/metrics-jvm/metrics-jvm-3.2.4.jar
+7f918c8a4000-7f918c8a5000 r--s 00003000 fd:01 2229131                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/io.dropwizard.metrics/metrics-json/metrics-json-3.2.4.jar
+7f918c8a5000-7f918c8a6000 r--s 00005000 fd:01 2228826                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.kenshoo/metrics-play_2.11/metrics-play_2.11-2.6.6_0.6.2.jar
+7f918c8a6000-7f918c8b1000 r--s 0006a000 fd:01 2228942                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/uk.gov.hmrc/bootstrap-play-26_2.11/bootstrap-play-26_2.11-0.34.0.jar
+7f918c8b1000-7f918c8b4000 r--s 0000a000 fd:01 2228838                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/javax.cache/cache-api/cache-api-1.0.0.jar
+7f918c8b4000-7f918c8b7000 r--s 00015000 fd:01 2229043                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/shaded-oauth/shaded-oauth-1.1.10.jar
+7f918c8b7000-7f918c8ee000 r--s 0027f000 fd:01 2229176                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/shaded-asynchttpclient/shaded-asynchttpclient-1.1.10.jar
+7f918c8ee000-7f918c8f2000 r--s 00019000 fd:01 2229145                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.joda/joda-convert/joda-convert-1.9.2.jar
+7f918c8f2000-7f918c8fe000 r--s 00068000 fd:01 2228936                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/org.scala-lang.modules/scala-parser-combinators_2.11/scala-parser-combinators_2.11-1.1.0.jar
+7f918c8fe000-7f918c907000 r--s 00046000 fd:01 2228958                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/cachecontrol_2.11/cachecontrol_2.11-1.1.3.jar
+7f918c907000-7f918c90e000 r--s 00055000 fd:01 2229019                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-ahc-ws-standalone_2.11/play-ahc-ws-standalone_2.11-1.1.10.jar
+7f918c90e000-7f918c90f000 r--s 00002000 fd:01 2228962                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-ws-standalone-json_2.11/play-ws-standalone-json_2.11-1.1.10.jar
+7f918c90f000-7f918c910000 r--s 00003000 fd:01 2229123                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-ws-standalone-xml_2.11/play-ws-standalone-xml_2.11-1.1.10.jar
+7f918c910000-7f918c913000 r--s 00018000 fd:01 2228806                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-ws-standalone_2.11/play-ws-standalone_2.11-1.1.10.jar
+7f918c913000-7f918c915000 r--s 00005000 fd:01 2229031                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-ws_2.11/play-ws_2.11-2.6.20.jar
+7f918c915000-7f918c917000 r--s 00014000 fd:01 2229062                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-ahc-ws_2.11/play-ahc-ws_2.11-2.6.20.jar
+7f918c917000-7f918c925000 r--s 000e5000 fd:01 2228964                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.akka/akka-parsing_2.11/akka-parsing_2.11-10.0.14.jar
+7f918c925000-7f918c968000 r--s 00377000 fd:01 2229142                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.akka/akka-http-core_2.11/akka-http-core_2.11-10.0.14.jar
+7f918c968000-7f918c96c000 r--s 00023000 fd:01 2229108                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-akka-http-server_2.11/play-akka-http-server_2.11-2.6.20.jar
+7f918c96c000-7f918c977000 r--s 00069000 fd:01 2229203                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/ch.qos.logback/logback-core/logback-core-1.2.3.jar
+7f918c977000-7f918c97d000 r--s 00041000 fd:01 2228911                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/ch.qos.logback/logback-classic/logback-classic-1.2.3.jar
+7f918c97d000-7f918c97e000 r--s 00004000 fd:01 2228769                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-logback_2.11/play-logback_2.11-2.6.20.jar
+7f918c97e000-7f918c988000 r--s 0005f000 fd:01 2228830                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/filters-helpers_2.11/filters-helpers_2.11-2.6.20.jar
+7f918c988000-7f918c989000 r--s 00000000 fd:01 2229078                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/javax.inject/javax.inject/javax.inject-1.jar
+7f918c989000-7f918c98a000 r--s 00003000 fd:01 2228895                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/javax.transaction/jta/jta-1.1.jar
+7f918c98a000-7f918c98e000 r--s 0001b000 fd:01 2229103                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/javax.xml.bind/jaxb-api/jaxb-api-2.3.0.jar
+7f918c98e000-7f918c992000 r--s 00018000 fd:01 2228823                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/io.jsonwebtoken/jjwt/jjwt-0.7.0.jar
+7f918c992000-7f918c993000 r--s 00000000 fd:01 2229100                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.codehaus.mojo/animal-sniffer-annotations/animal-sniffer-annotations-1.14.jar
+7f918c993000-7f918c995000 r--s 00001000 fd:01 2228781                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.google.j2objc/j2objc-annotations/j2objc-annotations-1.1.jar
+7f918c995000-7f918c996000 r--s 00002000 fd:01 2229097                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.google.errorprone/error_prone_annotations/error_prone_annotations-2.0.18.jar
+7f918c996000-7f918c9c6000 r--s 00245000 fd:01 2228904                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.google.guava/guava/guava-22.0.jar
+7f918c9c6000-7f918c9d7000 r--s 0008a000 fd:01 2229065                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/joda-time/joda-time/joda-time-2.9.9.jar
+7f918c9d7000-7f918c9d8000 r--s 00000000 fd:01 2228772                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.typelevel/macro-compat_2.11/macro-compat_2.11-1.1.1.jar
+7f918c9d8000-7f918ca25000 r--s 0041c000 fd:01 2228987                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.scala-lang/scala-reflect/scala-reflect-2.11.12.jar
+7f918ca25000-7f918ca2c000 r--s 0003f000 fd:01 2228858                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/commons-codec/commons-codec/commons-codec-1.10.jar
+7f918ca2c000-7f918ca2e000 r--s 00004000 fd:01 2228815                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.akka/akka-slf4j_2.11/akka-slf4j_2.11-2.5.17.jar
+7f918ca2e000-7f918ca36000 r--s 00053000 fd:01 2229010                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.typesafe/ssl-config-core_2.11/ssl-config-core_2.11-0.2.4.jar
+7f918ca36000-7f918ca3d000 r--s 00070000 fd:01 2228820                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.akka/akka-protobuf_2.11/akka-protobuf_2.11-2.5.17.jar
+7f918ca3d000-7f918ca54000 r--s 00112000 fd:01 2228889                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/org.scala-lang.modules/scala-java8-compat_2.11/scala-java8-compat_2.11-0.8.0.jar
+7f918ca54000-7f918ca59000 r--s 00041000 fd:01 2229157                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/com.typesafe/config/config-1.3.3.jar
+7f918ca59000-7f918ca91000 r--s 00382000 fd:01 2228799                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.akka/akka-actor_2.11/akka-actor_2.11-2.5.17.jar
+7f918ca91000-7f918cae3000 r--s 0045c000 fd:01 2229195                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.akka/akka-stream_2.11/akka-stream_2.11-2.5.17.jar
+7f918cae3000-7f918cae4000 r--s 00000000 fd:01 2229022                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.reactivestreams/reactive-streams/reactive-streams-1.0.2.jar
+7f918cae4000-7f918cae8000 r--s 00020000 fd:01 2228885                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-streams_2.11/play-streams_2.11-2.6.20.jar
+7f918cae8000-7f918caea000 r--s 00003000 fd:01 2228846                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.slf4j/jcl-over-slf4j/jcl-over-slf4j-1.7.25.jar
+7f918caea000-7f918caec000 r--s 00000000 fd:01 2228915                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.slf4j/jul-to-slf4j/jul-to-slf4j-1.7.25.jar
+7f918caec000-7f918cb43000 r--s 003e1000 fd:01 2229069                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play_2.11/play_2.11-2.6.20.jar
+7f918cb43000-7f918cb4d000 r--s 0009a000 fd:01 2228938                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/org.scala-lang.modules/scala-xml_2.11/scala-xml_2.11-1.0.6.jar
+7f918cb4d000-7f918cba6000 r--s 00523000 fd:01 2228929                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.scala-lang/scala-library/scala-library-2.11.12.jar
+7f918cba6000-7f918cbc1000 r--s 00394000 fd:01 6294971                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/cldrdata.jar
+7f918cbc1000-7f918cbc2000 ---p 00000000 00:00 0 
+7f918cbc2000-7f918ccc2000 rw-p 00000000 00:00 0 
+7f918ccc2000-7f918ccc5000 ---p 00000000 00:00 0 
+7f918ccc5000-7f918cdc3000 rw-p 00000000 00:00 0 
+7f918cdc3000-7f918cdc6000 ---p 00000000 00:00 0 
+7f918cdc6000-7f918cec4000 rw-p 00000000 00:00 0 
+7f918cec4000-7f918cec7000 ---p 00000000 00:00 0 
+7f918cec7000-7f918cfc5000 rw-p 00000000 00:00 0 
+7f918cfc5000-7f918cfc8000 ---p 00000000 00:00 0 
+7f918cfc8000-7f918d0c6000 rw-p 00000000 00:00 0 
+7f918d0c6000-7f918d0c9000 ---p 00000000 00:00 0 
+7f918d0c9000-7f918d1c7000 rw-p 00000000 00:00 0 
+7f918d1c7000-7f918d1ca000 ---p 00000000 00:00 0 
+7f918d1ca000-7f918d2c8000 rw-p 00000000 00:00 0 
+7f918d2c8000-7f918d5a0000 r--p 00000000 fd:01 6298459                    /usr/lib/locale/locale-archive
+7f918d5a0000-7f918d5a3000 ---p 00000000 00:00 0 
+7f918d5a3000-7f918d6a1000 rw-p 00000000 00:00 0 
+7f918d6a1000-7f918d6a4000 ---p 00000000 00:00 0 
+7f918d6a4000-7f918d7a2000 rw-p 00000000 00:00 0 
+7f918d7a2000-7f918d7a3000 ---p 00000000 00:00 0 
+7f918d7a3000-7f9190000000 rw-p 00000000 00:00 0 
+7f9190000000-7f9190021000 rw-p 00000000 00:00 0 
+7f9190021000-7f9194000000 ---p 00000000 00:00 0 
+7f9194000000-7f9194002000 r--s 00009000 fd:01 2229075                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.slf4j/slf4j-api/slf4j-api-1.7.25.jar
+7f9194002000-7f9194009000 r--s 00045000 fd:01 2228808                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-server_2.11/play-server_2.11-2.6.20.jar
+7f9194009000-7f9194500000 rw-p 00000000 00:00 0 
+7f9194500000-7f91946d0000 r--s 03c5c000 fd:01 6294952                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar
+7f91946d0000-7f91946d1000 ---p 00000000 00:00 0 
+7f91946d1000-7f91947d1000 rw-p 00000000 00:00 0 
+7f91947d1000-7f91947d2000 ---p 00000000 00:00 0 
+7f91947d2000-7f91948d2000 rw-p 00000000 00:00 0 
+7f91948d2000-7f91948d3000 ---p 00000000 00:00 0 
+7f91948d3000-7f91949d3000 rw-p 00000000 00:00 0 
+7f91949d3000-7f91949d4000 ---p 00000000 00:00 0 
+7f91949d4000-7f9194b17000 rw-p 00000000 00:00 0 
+7f9194b17000-7f9195000000 ---p 00000000 00:00 0 
+7f9195000000-7f9195e40000 rwxp 00000000 00:00 0 
+7f9195e40000-7f91a4000000 ---p 00000000 00:00 0 
+7f91a4000000-7f91a516a000 rw-p 00000000 00:00 0 
+7f91a516a000-7f91a8000000 ---p 00000000 00:00 0 
+7f91a8000000-7f91a8002000 r--s 00000000 fd:01 2229165                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-exceptions/play-exceptions-2.6.20.jar
+7f91a8002000-7f91a801d000 r--s 001d6000 fd:01 6294968                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/nashorn.jar
+7f91a801d000-7f91a8093000 rw-p 00000000 00:00 0 
+7f91a8093000-7f91a8094000 ---p 00000000 00:00 0 
+7f91a8094000-7f91a8194000 rw-p 00000000 00:00 0 
+7f91a8194000-7f91a8195000 ---p 00000000 00:00 0 
+7f91a8195000-7f91a8295000 rw-p 00000000 00:00 0 
+7f91a8295000-7f91a8296000 ---p 00000000 00:00 0 
+7f91a8296000-7f91a8396000 rw-p 00000000 00:00 0 
+7f91a8396000-7f91a8397000 ---p 00000000 00:00 0 
+7f91a8397000-7f91a84da000 rw-p 00000000 00:00 0 
+7f91a84da000-7f91a89c3000 ---p 00000000 00:00 0 
+7f91a89c3000-7f91a8a97000 rw-p 00000000 00:00 0 
+7f91a8a97000-7f91a8c59000 ---p 00000000 00:00 0 
+7f91a8c59000-7f91a8c93000 rw-p 00000000 00:00 0 
+7f91a8c93000-7f91a901a000 ---p 00000000 00:00 0 
+7f91a901a000-7f91a9022000 r-xp 00000000 fd:01 6295034                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7f91a9022000-7f91a9221000 ---p 00008000 fd:01 6295034                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7f91a9221000-7f91a9222000 r--p 00007000 fd:01 6295034                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7f91a9222000-7f91a9223000 rw-p 00008000 fd:01 6295034                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7f91a9223000-7f91a922e000 r-xp 00000000 fd:01 11277804                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f91a922e000-7f91a942d000 ---p 0000b000 fd:01 11277804                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f91a942d000-7f91a942e000 r--p 0000a000 fd:01 11277804                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f91a942e000-7f91a942f000 rw-p 0000b000 fd:01 11277804                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f91a942f000-7f91a9435000 rw-p 00000000 00:00 0 
+7f91a9435000-7f91a9440000 r-xp 00000000 fd:01 11277797                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f91a9440000-7f91a963f000 ---p 0000b000 fd:01 11277797                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f91a963f000-7f91a9640000 r--p 0000a000 fd:01 11277797                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f91a9640000-7f91a9641000 rw-p 0000b000 fd:01 11277797                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f91a9641000-7f91a9657000 r-xp 00000000 fd:01 11277802                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f91a9657000-7f91a9856000 ---p 00016000 fd:01 11277802                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f91a9856000-7f91a9857000 r--p 00015000 fd:01 11277802                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f91a9857000-7f91a9858000 rw-p 00016000 fd:01 11277802                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f91a9858000-7f91a985a000 rw-p 00000000 00:00 0 
+7f91a985a000-7f91a9862000 r-xp 00000000 fd:01 11277808                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f91a9862000-7f91a9a61000 ---p 00008000 fd:01 11277808                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f91a9a61000-7f91a9a62000 r--p 00007000 fd:01 11277808                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f91a9a62000-7f91a9a63000 rw-p 00008000 fd:01 11277808                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f91a9a63000-7f91a9a8c000 r-xp 00000000 fd:01 6294991                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7f91a9a8c000-7f91a9c8b000 ---p 00029000 fd:01 6294991                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7f91a9c8b000-7f91a9c8c000 r--p 00028000 fd:01 6294991                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7f91a9c8c000-7f91a9c8e000 rw-p 00029000 fd:01 6294991                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7f91a9c8e000-7f91a9c9d000 r-xp 00000000 fd:01 6295098                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7f91a9c9d000-7f91a9e9c000 ---p 0000f000 fd:01 6295098                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7f91a9e9c000-7f91a9e9e000 r--p 0000e000 fd:01 6295098                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7f91a9e9e000-7f91a9e9f000 rw-p 00010000 fd:01 6295098                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7f91a9e9f000-7f91a9ea6000 r-xp 00000000 fd:01 11276756                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f91a9ea6000-7f91aa0a5000 ---p 00007000 fd:01 11276756                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f91aa0a5000-7f91aa0a6000 r--p 00006000 fd:01 11276756                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f91aa0a6000-7f91aa0a7000 rw-p 00007000 fd:01 11276756                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f91aa0a7000-7f91aa0bd000 r-xp 00000000 fd:01 11276896                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f91aa0bd000-7f91aa2bc000 ---p 00016000 fd:01 11276896                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f91aa2bc000-7f91aa2bd000 rw-p 00015000 fd:01 11276896                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f91aa2bd000-7f91aa3c5000 r-xp 00000000 fd:01 11277810                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f91aa3c5000-7f91aa5c4000 ---p 00108000 fd:01 11277810                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f91aa5c4000-7f91aa5c5000 r--p 00107000 fd:01 11277810                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f91aa5c5000-7f91aa5c6000 rw-p 00108000 fd:01 11277810                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f91aa5c6000-7f91aa738000 r-xp 00000000 fd:01 6291644                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f91aa738000-7f91aa938000 ---p 00172000 fd:01 6291644                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f91aa938000-7f91aa942000 r--p 00172000 fd:01 6291644                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f91aa942000-7f91aa944000 rw-p 0017c000 fd:01 6291644                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f91aa944000-7f91aa948000 rw-p 00000000 00:00 0 
+7f91aa948000-7f91ab5ac000 r-xp 00000000 fd:01 6295108                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f91ab5ac000-7f91ab7ab000 ---p 00c64000 fd:01 6295108                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f91ab7ab000-7f91ab83f000 r--p 00c63000 fd:01 6295108                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f91ab83f000-7f91ab868000 rw-p 00cf7000 fd:01 6295108                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7f91ab868000-7f91ab898000 rw-p 00000000 00:00 0 
+7f91ab898000-7f91ab8b0000 r-xp 00000000 fd:01 11277794                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f91ab8b0000-7f91abaaf000 ---p 00018000 fd:01 11277794                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f91abaaf000-7f91abab0000 r--p 00017000 fd:01 11277794                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f91abab0000-7f91abab1000 rw-p 00018000 fd:01 11277794                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f91abab1000-7f91abab5000 rw-p 00000000 00:00 0 
+7f91abab5000-7f91abab8000 r-xp 00000000 fd:01 11276979                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f91abab8000-7f91abcb7000 ---p 00003000 fd:01 11276979                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f91abcb7000-7f91abcb8000 r--p 00002000 fd:01 11276979                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f91abcb8000-7f91abcb9000 rw-p 00003000 fd:01 11276979                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f91abcb9000-7f91abcd2000 r-xp 00000000 fd:01 11277049                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f91abcd2000-7f91abed1000 ---p 00019000 fd:01 11277049                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f91abed1000-7f91abed2000 r--p 00018000 fd:01 11277049                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f91abed2000-7f91abed3000 rw-p 00019000 fd:01 11277049                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f91abed3000-7f91ac093000 r-xp 00000000 fd:01 11277807                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f91ac093000-7f91ac293000 ---p 001c0000 fd:01 11277807                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f91ac293000-7f91ac297000 r--p 001c0000 fd:01 11277807                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f91ac297000-7f91ac299000 rw-p 001c4000 fd:01 11277807                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f91ac299000-7f91ac29d000 rw-p 00000000 00:00 0 
+7f91ac29d000-7f91ac2aa000 r-xp 00000000 fd:01 6295000                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f91ac2aa000-7f91ac4a9000 ---p 0000d000 fd:01 6295000                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f91ac4a9000-7f91ac4aa000 r--p 0000c000 fd:01 6295000                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f91ac4aa000-7f91ac4ab000 rw-p 0000d000 fd:01 6295000                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7f91ac4ab000-7f91ac4d1000 r-xp 00000000 fd:01 11276980                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f91ac4d1000-7f91ac4d2000 r--s 00004000 fd:01 2228993                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-netty-utils/play-netty-utils-2.6.20.jar
+7f91ac4d2000-7f91ac4d3000 r--s 00000000 fd:01 2228813                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/build-link/build-link-2.6.20.jar
+7f91ac4d3000-7f91ac4d5000 r--s 00011000 fd:01 2228828                    /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/twirl-api_2.11/twirl-api_2.11-1.3.15.jar
+7f91ac4d5000-7f91ac4d7000 r--s 00001000 fd:01 6294972                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/dnsns.jar
+7f91ac4d7000-7f91ac4d8000 r--s 0000d000 fd:01 6294966                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunec.jar
+7f91ac4d8000-7f91ac4d9000 r--s 0000a000 fd:01 6294969                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/jaccess.jar
+7f91ac4d9000-7f91ac4da000 r--s 00010000 fd:01 6294974                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/zipfs.jar
+7f91ac4da000-7f91ac4dd000 r--s 00039000 fd:01 6294970                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunpkcs11.jar
+7f91ac4dd000-7f91ac4e2000 r--s 0003c000 fd:01 6294973                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunjce_provider.jar
+7f91ac4e2000-7f91ac5b3000 rw-p 00000000 00:00 0 
+7f91ac5b3000-7f91ac5b6000 ---p 00000000 00:00 0 
+7f91ac5b6000-7f91ac6b8000 rw-p 00000000 00:00 0 
+7f91ac6b8000-7f91ac6c2000 r--s 00116000 fd:01 6294975                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/localedata.jar
+7f91ac6c2000-7f91ac6c5000 r--s 0000f000 fd:01 6294967                    /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/icedtea-sound.jar
+7f91ac6c5000-7f91ac6cd000 rw-s 00000000 fd:01 28575175                   /tmp/hsperfdata_harryb/27505
+7f91ac6cd000-7f91ac6ce000 rw-p 00000000 00:00 0 
+7f91ac6ce000-7f91ac6cf000 ---p 00000000 00:00 0 
+7f91ac6cf000-7f91ac6d0000 rw-p 00000000 00:00 0 
+7f91ac6d0000-7f91ac6d1000 r--p 00025000 fd:01 11276980                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f91ac6d1000-7f91ac6d2000 rw-p 00026000 fd:01 11276980                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f91ac6d2000-7f91ac6d3000 rw-p 00000000 00:00 0 
+7ffe87d86000-7ffe87dae000 rw-p 00000000 00:00 0                          [stack]
+7ffe87db7000-7ffe87dba000 r--p 00000000 00:00 0                          [vvar]
+7ffe87dba000-7ffe87dbc000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Dtest.name=v1.endpoints.AmendLossClaimControllerISpec -Dlogger.resource=logback-test.xml 
+java_command: sbt.ForkMain 41511
+java_class_path (initial): /home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/target/scala-2.11/it-classes:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/target/scala-2.11/classes:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/target/web/classes/main:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.scala-lang/scala-library/scala-library-2.11.12.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/twirl-api_2.11/twirl-api_2.11-1.3.15.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/bundles/org.scala-lang.modules/scala-xml_2.11/scala-xml_2.11-1.0.6.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-server_2.11/play-server_2.11-2.6.20.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play_2.11/play_2.11-2.6.20.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/build-link/build-link-2.6.20.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-exceptions/play-exceptions-2.6.20.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/com.typesafe.play/play-netty-utils/play-netty-utils-2.6.20.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.slf4j/slf4j-api/slf4j-api-1.7.25.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/org.slf4j/jul-to-slf4j/jul-to-slf4j-1.7.25.jar:/home/harryb/Applications/hmrc-development-environment/hmrc/individual-losses-api/lib_managed/jars/or
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+PATH=/home/harryb/bin:/home/harryb/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xa783e0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xa783e0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x8c0e10], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x8c0e10], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x8c0e10], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x8c0e10], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x8c0cc0], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x8c1350], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: [libjvm.so+0x8c1350], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGTERM: [libjvm.so+0x8c1350], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x8c1350], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.6 LTS"
+
+uname:Linux 4.15.0-62-generic #69~16.04.1-Ubuntu SMP Fri Sep 6 02:43:35 UTC 2019 x86_64
+libc:glibc 2.23 NPTL 2.23 
+rlimit: STACK 8192k, CORE 0k, NPROC 62979, NOFILE 1048576, AS infinity
+load average:5.52 2.46 1.59
+
+/proc/meminfo:
+MemTotal:       16267952 kB
+MemFree:          406192 kB
+MemAvailable:     290832 kB
+Buffers:            1008 kB
+Cached:          1603044 kB
+SwapCached:        13036 kB
+Active:         14084384 kB
+Inactive:        1349484 kB
+Active(anon):   14083584 kB
+Inactive(anon):  1307604 kB
+Active(file):        800 kB
+Inactive(file):    41880 kB
+Unevictable:         112 kB
+Mlocked:             112 kB
+SwapTotal:       1003516 kB
+SwapFree:            180 kB
+Dirty:               332 kB
+Writeback:             0 kB
+AnonPages:      13819412 kB
+Mapped:           487884 kB
+Shmem:           1560764 kB
+Slab:             180332 kB
+SReclaimable:      81124 kB
+SUnreclaim:        99208 kB
+KernelStack:       31920 kB
+PageTables:        99364 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     9137492 kB
+Committed_AS:   28153292 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      524584 kB
+DirectMap2M:    15046656 kB
+DirectMap1G:     3145728 kB
+
+container (cgroup) information:
+container_type: cgroupv1
+cpu_cpuset_cpus: 0-7
+cpu_memory_nodes: 0
+active_processor_count: 8
+cpu_quota: -1
+cpu_period: 100000
+cpu_shares: -1
+memory_limit_in_bytes: -1
+memory_and_swap_limit_in_bytes: -2
+memory_soft_limit_in_bytes: -1
+memory_usage_in_bytes: 15806828544
+memory_max_usage_in_bytes: 9216000
+
+
+CPU:total 8 (initial active 8) (4 cores per cpu, 2 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, adx
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 2990.510
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 3000.002
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 3000.003
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 2999.991
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 3000.011
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 2998.498
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 3000.001
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xcc
+cpu MHz		: 3000.008
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 5184.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 16267952k(389392k free), swap 1003516k(12k free)
+
+vm_info: OpenJDK 64-Bit Server VM (25.222-b10) for linux-amd64 JRE (1.8.0_222-8u222-b10-1ubuntu1~16.04.1-b10), built on Jul 18 2019 20:25:18 by "buildd" with gcc 5.4.0 20160609
+
+time: Wed Sep 18 13:57:36 2019
+timezone: BST
+elapsed time: 7 seconds (0d 0h 0m 7s)
+

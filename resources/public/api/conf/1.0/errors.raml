@@ -308,14 +308,14 @@ traits:
                 description: The loss amount supplied is the same as the existing stored loss amount.
                 value:
                   code: RULE_NO_CHANGE
-  ruleAccountingPeriodNotActive:
+  ruleNoAccountingPeriod:
     responses:
       403:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              ruleAccountingPeriodNotActive:
-                description: There is no active accounting period for the year of the claim.
+              ruleNoAccountingPeriod:
+                description: There is no accounting period for the year of the claim.
                 value:
-                  code: RULE_ACCOUNTING_PERIOD_NOT_ACTIVE
+                  code: RULE_NO_ACCOUNTING_PERIOD

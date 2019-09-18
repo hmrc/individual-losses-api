@@ -79,7 +79,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | RuleTypeOfClaimInvalid
            | TypeOfClaimFormatError =>
         BadRequest(Json.toJson(errorWrapper))
-      case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded | RuleAccountingPeriodNotActive => Forbidden(Json.toJson(errorWrapper))
+      case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded | RuleNoAccountingPeriod => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
