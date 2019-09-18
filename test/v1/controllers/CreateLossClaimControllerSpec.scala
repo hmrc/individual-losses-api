@@ -172,6 +172,6 @@ class CreateLossClaimControllerSpec
     errorsFromServiceTester(NotFoundError, NOT_FOUND)
     errorsFromServiceTester(RuleTypeOfClaimInvalid, BAD_REQUEST)
     errorsFromServiceTester(RulePeriodNotEnded, FORBIDDEN)
-    errorsFromServiceTester(RuleAccountingPeriodNotActive, FORBIDDEN)
+    errorsFromServiceTester(RuleNoAccountingPeriod, FORBIDDEN)
   }
 }
