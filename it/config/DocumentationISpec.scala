@@ -40,7 +40,7 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |  "api":{
       |    "name":"Individual Losses (MTD)",
       |    "description":"An API for providing individual losses data",
-      |    "context":"individual/losses",
+      |    "context":"individuals/losses",
       |    "versions":[
       |      {
       |        "version":"1.0",
