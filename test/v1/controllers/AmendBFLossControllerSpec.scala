@@ -20,14 +20,13 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.hateoas.Endpoints
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v1.mocks.services._
 import v1.models.des.BFLossResponse
 import v1.models.domain.{AmendBFLoss, TypeOfLoss}
-import v1.models.errors.{AmountFormatError, LossIdFormatError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleInvalidLossAmount, _}
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.errors._
+import v1.models.hateoas.{AmendBFLossHateoasData, HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
 
@@ -116,7 +115,7 @@ class AmendBFLossControllerSpec
           .returns(Future.successful(Right(DesResponse(correlationId, amendBFLossResponse))))
 
         MockHateoasFactory
-          .wrap(nino, lossId, DesResponse(correlationId, amendBFLossResponse), Endpoints.AmendBFLoss)
+          .wrap(AmendBFLossHateoasData(nino, lossId, DesResponse(correlationId, amendBFLossResponse)))
           .returns(DesResponse(correlationId, HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink))))
 
         val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))

@@ -22,7 +22,10 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.ListBFLossesParser
+import v1.hateoas.HateoasFactory
+import v1.models.des.{ListBFLossesHateoasResponse, ListBFLossesResponse}
 import v1.models.errors._
+import v1.models.hateoas.ListBFLossHateoasData
 import v1.models.requestData.ListBFLossesRawData
 import v1.services._
 
@@ -33,6 +36,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        listBFLossesService: ListBFLossesService,
                                        listBFLossesParser: ListBFLossesParser,
+                                       hateoasFactory: HateoasFactory,
                                        auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
@@ -47,9 +51,12 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))
-          vendorResponse <- EitherT(listBFLossesService.listBFLosses(parsedRequest))
+          serviceResponse <- EitherT(listBFLossesService.listBFLosses(parsedRequest))
+          vendorResponse <- EitherT.fromEither[Future](
+            hateoasFactory.wrapList[ListBFLossesResponse, ListBFLossesHateoasResponse](ListBFLossHateoasData(nino, serviceResponse)).asRight[ErrorWrapper]
+          )
         } yield {
-          if (vendorResponse.responseData.losses.isEmpty) {
+          if (vendorResponse.responseData.payload.losses.isEmpty) {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Empty response received with correlationId: ${vendorResponse.correlationId}")

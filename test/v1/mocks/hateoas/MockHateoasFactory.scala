@@ -18,9 +18,9 @@ package v1.mocks.hateoas
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.hateoas.Endpoints.Endpoint
 import v1.hateoas.HateoasFactory
-import v1.models.hateoas.HateoasWrapper
+import v1.models.des.ListBFLossesHateoasResponse
+import v1.models.hateoas.{HateoasData, HateoasWrapper}
 import v1.models.outcomes.DesResponse
 
 trait MockHateoasFactory extends MockFactory {
@@ -28,9 +28,14 @@ trait MockHateoasFactory extends MockFactory {
   val mockHateoasFactory: HateoasFactory = mock[HateoasFactory]
 
   object MockHateoasFactory {
-    def wrap[A](nino: String, lossId: String, payload: DesResponse[A], endpoint: Endpoint): CallHandler[DesResponse[HateoasWrapper[A]]] = {
-      (mockHateoasFactory.wrap(_: String, _: String, _: DesResponse[A], _: Endpoint))
-        .expects(nino, lossId, payload, endpoint)
+    def wrap[A](data: HateoasData[A]): CallHandler[DesResponse[HateoasWrapper[A]]] = {
+      (mockHateoasFactory.wrap(_: HateoasData[A]))
+        .expects(data)
+    }
+
+     def wrapList[A,B](data: HateoasData[A]): CallHandler[DesResponse[HateoasWrapper[ListBFLossesHateoasResponse]]] = {
+      (mockHateoasFactory.wrapList[A,B](_: HateoasData[A]))
+        .expects(data)
     }
   }
 }

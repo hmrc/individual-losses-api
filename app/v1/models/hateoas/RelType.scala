@@ -21,4 +21,5 @@ object RelType {
   val DELETE_BF_LOSS = "delete-brought-forward-loss"
   val AMEND_BF_LOSS = "amend-brought-forward-loss"
   val CREATE_BF_LOSS = "create-brought-forward-loss"
+  val SELF = "self"
 }

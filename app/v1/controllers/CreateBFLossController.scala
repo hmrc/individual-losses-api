@@ -23,9 +23,9 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.CreateBFLossParser
-import v1.hateoas.Endpoints.CreateBFLoss
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
+import v1.models.hateoas.CreateBFLossHateoasData
 import v1.models.requestData.CreateBFLossRawData
 import v1.services._
 
@@ -52,7 +52,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
           parsedRequest <- EitherT.fromEither[Future](createBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(nino, serviceResponse.responseData.id, serviceResponse, CreateBFLoss).asRight[ErrorWrapper]
+            hateoasFactory.wrap(CreateBFLossHateoasData(nino, serviceResponse.responseData.id, serviceResponse)).asRight[ErrorWrapper]
           )
         } yield {
           logger.info(

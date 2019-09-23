@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.hateoas.Endpoints.CreateBFLoss
+import v1.models.hateoas.CreateBFLossHateoasData
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -109,7 +109,7 @@ class CreateBFLossControllerSpec
           .returns(Future.successful(Right(DesResponse(correlationId, createBFLossResponse))))
 
         MockHateoasFactory
-          .wrap(nino, lossId, DesResponse(correlationId, createBFLossResponse), CreateBFLoss)
+          .wrap(CreateBFLossHateoasData(nino, lossId, DesResponse(correlationId, createBFLossResponse)))
           .returns(DesResponse(correlationId, HateoasWrapper(createBFLossResponse, Seq(testHateoasLink))))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
