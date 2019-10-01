@@ -97,6 +97,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
@@ -115,6 +116,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
+          response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
@@ -141,6 +143,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().get())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
