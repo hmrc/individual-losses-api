@@ -40,8 +40,8 @@
            <td><p>Simulates the scenario where no data is found</p></td>
         </tr>     
         <tr>
-           <td><p>NO_CHANGE</p></td>
-           <td><p>Simulates the scenario where the back end detects that no change has been made</p></td>
+           <td><p>ALREADY_EXISTS</p></td>
+           <td><p>Simulates the scenario where the back end detects that the requested type of claim is already active</p></td>
         </tr>     
         <tr>
            <td><p>INVALID_CLAIM_TYPE</p></td>
