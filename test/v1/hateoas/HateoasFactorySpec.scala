@@ -19,7 +19,7 @@ package v1.hateoas
 import support.UnitSpec
 import v1.models.des._
 import v1.models.domain.TypeOfLoss
-import v1.models.hateoas.{ HateoasWrapper, Link, ListBFLossHateoasData }
+import v1.models.hateoas.{ HateoasWrapper, Link }
 import v1.models.outcomes.DesResponse
 
 class HateoasFactorySpec extends UnitSpec {
@@ -81,7 +81,7 @@ class HateoasFactorySpec extends UnitSpec {
   "linksForListBFLoss" should {
     "return the correct links" when {
       "supplied a nino" in {
-        hateoasFactory.linksForListBFLoss(nino) shouldBe List(createLink)
+        ListBFLossesResponse.links(nino) shouldBe List(createLink)
       }
     }
   }

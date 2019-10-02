@@ -16,18 +16,18 @@
 
 package v1.controllers
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v1.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService }
-import v1.models.des.{ BFLossId, ListBFLossesHateoasResponse, ListBFLossesResponse }
-import v1.models.errors.{ NotFoundError, _ }
-import v1.models.hateoas.{ HateoasWrapper, Link, ListBFLossHateoasData }
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
+import v1.models.des.{BFLossId, ListBFLossHateoasData, ListBFLossesHateoasResponse, ListBFLossesResponse}
+import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{ DesTaxYear, ListBFLossesRawData, ListBFLossesRequest }
+import v1.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

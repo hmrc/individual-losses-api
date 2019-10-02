@@ -17,7 +17,8 @@
 package v1.models.des
 
 import play.api.libs.json._
-import v1.models.hateoas.HateoasWrapper
+import v1.hateoas.{Hateoas, HateoasLinksFactory}
+import v1.models.hateoas.{HateoasData, HateoasWrapper, Link}
 
 case class BFLossId(id: String)
 
@@ -41,10 +42,21 @@ object ListBFLossesHateoasResponse {
   implicit val reads: Reads[ListBFLossesHateoasResponse] = implicitly[Reads[Seq[HateoasWrapper[BFLossId]]]].map(ListBFLossesHateoasResponse(_))
 }
 
-object ListBFLossesResponse {
+object ListBFLossesResponse extends Hateoas {
   implicit val writes: OWrites[ListBFLossesResponse] =
     Json.writes[ListBFLossesResponse]
 
   implicit val reads: Reads[ListBFLossesResponse] =
     implicitly[Reads[Seq[BFLossId]]].map(ListBFLossesResponse(_))
+
+  def links(nino: String): Seq[Link] = List(createBfLoss(nino))
+
+  implicit object LinkFactory extends HateoasLinksFactory[ListBFLossesResponse, ListBFLossHateoasData] {
+    override def links(data: ListBFLossHateoasData): Seq[Link] = {
+      import data._
+      ListBFLossesResponse.links(nino)
+    }
+  }
 }
+
+case class ListBFLossHateoasData(nino: String) extends HateoasData

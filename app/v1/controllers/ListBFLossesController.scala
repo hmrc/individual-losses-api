@@ -18,18 +18,17 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.ListBFLossesParser
 import v1.hateoas.HateoasFactory
-import v1.models.des.{ ListBFLossesHateoasResponse, ListBFLossesResponse }
+import v1.models.des.{ListBFLossHateoasData, ListBFLossesHateoasResponse, ListBFLossesResponse}
 import v1.models.errors._
-import v1.models.hateoas.ListBFLossHateoasData
 import v1.models.requestData.ListBFLossesRawData
 import v1.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,

@@ -30,11 +30,7 @@ object CreateBFLossResponse extends Hateoas {
     (__ \ "lossId").read[String].map(CreateBFLossResponse.apply)
 
   def links(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
-}
 
-case class CreateBFLossHateoasData(nino: String, lossId: String) extends HateoasData
-
-object CreateBFLossHateoasData {
   implicit object LinkFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
     override def links(data: CreateBFLossHateoasData): Seq[Link] = {
       import data._
@@ -42,3 +38,5 @@ object CreateBFLossHateoasData {
     }
   }
 }
+
+case class CreateBFLossHateoasData(nino: String, lossId: String) extends HateoasData

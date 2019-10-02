@@ -38,28 +38,22 @@ object BFLossResponse extends Hateoas {
   )(BFLossResponse.apply _)
 
   def links(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
-}
 
-case class AmendBFLossHateoasData(nino: String, lossId: String) extends HateoasData
-
-object AmendBFLossHateoasData {
-  implicit object  LinkFactory extends HateoasLinksFactory[BFLossResponse, AmendBFLossHateoasData] {
+  // TODO do these need to be different ^^^ >>>>
+  implicit object LinkFactory1 extends HateoasLinksFactory[BFLossResponse, AmendBFLossHateoasData] {
     override def links(data: AmendBFLossHateoasData): Seq[Link] = {
       import data._
       BFLossResponse.links(nino, lossId)
     }
   }
-}
-
-// TODO do these need to be different ^^^ >>>>
-case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData
-
-object GetBFLossHateoasData {
-
-  implicit object  LinkFactory extends HateoasLinksFactory[BFLossResponse, GetBFLossHateoasData] {
+  implicit object LinkFactory2 extends HateoasLinksFactory[BFLossResponse, GetBFLossHateoasData] {
     override def links(data: GetBFLossHateoasData): Seq[Link] = {
       import data._
       BFLossResponse.links(nino, lossId)
     }
   }
 }
+
+case class AmendBFLossHateoasData(nino: String, lossId: String) extends HateoasData
+
+case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData

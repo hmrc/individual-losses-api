@@ -17,7 +17,7 @@
 package v1.hateoas
 
 import javax.inject.Inject
-import v1.models.des.{BFLossId, ListBFLossesHateoasResponse, ListBFLossesResponse}
+import v1.models.des.{ BFLossId, ListBFLossHateoasData, ListBFLossesHateoasResponse, ListBFLossesResponse }
 import v1.models.hateoas.RelType._
 import v1.models.hateoas._
 
@@ -39,7 +39,8 @@ class HateoasFactory @Inject()() extends Hateoas {
         }
         val response: ListBFLossesHateoasResponse = ListBFLossesHateoasResponse(hateoasList)
 
-        HateoasWrapper(response, linksForListBFLoss(data.nino))
+        val links = implicitly[HateoasLinksFactory[ListBFLossesResponse, ListBFLossHateoasData]].links(data)
+        HateoasWrapper(response, links)
     }
   }
 }
@@ -63,5 +64,4 @@ trait Hateoas {
 
   //Links for responses
   def selfLink(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId).copy(rel = "self"))
-  def linksForListBFLoss(nino: String): Seq[Link]       = List(createBfLoss(nino))
 }

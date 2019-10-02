@@ -18,4 +18,3 @@ package v1.models.hateoas
 
 trait HateoasData
 
-case class ListBFLossHateoasData(nino: String) extends HateoasData
