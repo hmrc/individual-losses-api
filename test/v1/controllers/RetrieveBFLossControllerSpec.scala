@@ -20,11 +20,10 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.hateoas.GetBFLossHateoasData
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
-import v1.models.des.BFLossResponse
+import v1.models.des.{BFLossResponse, GetBFLossHateoasData}
 import v1.models.domain.TypeOfLoss
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.{HateoasWrapper, Link}

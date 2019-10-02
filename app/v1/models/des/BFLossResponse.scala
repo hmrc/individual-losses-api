@@ -18,16 +18,15 @@ package v1.models.des
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import v1.hateoas.{Hateoas, HateoasLinksFactory}
 import v1.models.domain.TypeOfLoss
+import v1.models.hateoas.{HateoasData, Link}
+import v1.models.outcomes.DesResponse
 import v1.models.requestData.DesTaxYear
 
-case class BFLossResponse(selfEmploymentId: Option[String],
-                          typeOfLoss: TypeOfLoss,
-                          lossAmount: BigDecimal,
-                          taxYear: String,
-                          lastModified: String)
+case class BFLossResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)
 
-object BFLossResponse {
+object BFLossResponse extends Hateoas {
   implicit val writes: OWrites[BFLossResponse] = Json.writes[BFLossResponse]
 
   implicit val desToMtdReads: Reads[BFLossResponse] = (
@@ -38,4 +37,33 @@ object BFLossResponse {
       (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]
   )(BFLossResponse.apply _)
+
+  def links(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
+}
+
+case class AmendBFLossHateoasData(nino: String, lossId: String, payload: DesResponse[BFLossResponse]) extends HateoasData {
+  type A = BFLossResponse
+}
+
+object AmendBFLossHateoasData {
+  implicit val linkFactory: HateoasLinksFactory[AmendBFLossHateoasData] = new HateoasLinksFactory[AmendBFLossHateoasData] {
+    override def links(data: AmendBFLossHateoasData): Seq[Link] = {
+      import data._
+      BFLossResponse.links(nino, lossId)
+    }
+  }
+}
+
+// TODO do these need to be different ^^^ >>>>
+case class GetBFLossHateoasData(nino: String, lossId: String, payload: DesResponse[BFLossResponse]) extends HateoasData {
+  type A = BFLossResponse
+}
+
+object GetBFLossHateoasData {
+  implicit val linkFactory: HateoasLinksFactory[GetBFLossHateoasData] = new HateoasLinksFactory[GetBFLossHateoasData] {
+    override def links(data: GetBFLossHateoasData): Seq[Link] = {
+      import data._
+      BFLossResponse.links(nino, lossId)
+    }
+  }
 }

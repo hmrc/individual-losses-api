@@ -19,12 +19,13 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
 import v1.hateoas.Hateoas
+import v1.models.des.BFLossResponse
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
 
 class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -34,8 +35,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
   object Hateoas extends Hateoas
 
-  val desResponseJson: JsValue = Json.parse(
-    s"""
+  val desResponseJson: JsValue = Json.parse(s"""
        |{
        |"incomeSourceId": "XKIS00000000988",
        |"lossType": "INCOME",
@@ -51,10 +51,9 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    val hateoasLinks: JsValue = Json.toJson(Hateoas.linksForGetBFLoss(nino, lossId))
+    val hateoasLinks: JsValue = Json.toJson(BFLossResponse.links(nino, lossId))
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "selfEmploymentId": "XKIS00000000988",
          |    "typeOfLoss": "self-employment",

@@ -23,6 +23,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.hateoas.Hateoas
+import v1.models.des.CreateBFLossResponse
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
@@ -65,7 +66,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val hateoasLinks: JsValue = Json.toJson(Hateoas.linksForCreateBFLoss(nino, lossId))
+    val hateoasLinks: JsValue = Json.toJson(CreateBFLossResponse.links(nino, lossId))
 
     val desResponseJson: JsValue = Json.parse(
       """
