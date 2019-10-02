@@ -18,10 +18,10 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
 import v1.controllers.requestParsers.AmendBFLossParser
 import v1.hateoas.HateoasFactory
 import v1.models.des.AmendBFLossHateoasData
@@ -29,7 +29,7 @@ import v1.models.errors._
 import v1.models.requestData.AmendBFLossRawData
 import v1.services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -39,7 +39,8 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       hateoasFactory: HateoasFactory,
                                       auditService: AuditService,
                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController {
+    extends AuthorisedController(cc)
+    with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendBFLossController", endpointName = "Amend a Brought Forward Loss Amount")
@@ -49,37 +50,34 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
       val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](amendBFLossParser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](amendBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendBFLossService.amendBFLoss(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](hateoasFactory.wrap(AmendBFLossHateoasData(nino, lossId, serviceResponse)).asRight[ErrorWrapper])
+          vendorResponse <- EitherT.fromEither[Future](
+            hateoasFactory.wrap(serviceResponse.responseData, AmendBFLossHateoasData(nino, lossId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse.responseData))
-            .withApiHeaders(vendorResponse.correlationId)
+          Ok(Json.toJson(vendorResponse))
+            .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
         result
       }.merge
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError
-           | NinoFormatError
-           | RuleIncorrectOrEmptyBodyError
-           | LossIdFormatError
-           | AmountFormatError
-           | RuleInvalidLossAmount => BadRequest(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | RuleIncorrectOrEmptyBodyError | LossIdFormatError | AmountFormatError | RuleInvalidLossAmount =>
+        BadRequest(Json.toJson(errorWrapper))
       case RuleLossAmountNotChanged => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case NotFoundError            => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError          => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 }

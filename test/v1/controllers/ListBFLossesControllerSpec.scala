@@ -16,18 +16,18 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
-import v1.models.des.{BFLossId, ListBFLossesHateoasResponse, ListBFLossesResponse}
-import v1.models.errors.{NotFoundError, _}
-import v1.models.hateoas.{HateoasWrapper, Link, ListBFLossHateoasData}
+import v1.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService }
+import v1.models.des.{ BFLossId, ListBFLossesHateoasResponse, ListBFLossesResponse }
+import v1.models.errors.{ NotFoundError, _ }
+import v1.models.hateoas.{ HateoasWrapper, Link, ListBFLossHateoasData }
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
+import v1.models.requestData.{ DesTaxYear, ListBFLossesRawData, ListBFLossesRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,23 +45,19 @@ class ListBFLossesControllerSpec
   val correlationId    = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino             = "AA123456A"
   val taxYear          = "2018-19"
-  val selfEmployment = "self-employment"
+  val selfEmployment   = "self-employment"
   val selfEmploymentId = "selfEmploymentId"
 
   val rawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
   val request = ListBFLossesRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
 
-  val testHateoasLink = Link(href = "/foo/bar", method = "GET", rel="test-relationship")
-  val testCreateHateoasLink = Link(href = "/foo/bar", method = "POST", rel="test-create-relationship")
+  val testHateoasLink       = Link(href = "/foo/bar", method = "GET", rel = "test-relationship")
+  val testCreateHateoasLink = Link(href = "/foo/bar", method = "POST", rel = "test-create-relationship")
 
   val response = ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))
-  val hateoasResponse = ListBFLossesHateoasResponse(
-    Seq(
-      HateoasWrapper(
-        BFLossId("000000123456789"), Seq(testHateoasLink)),
-      HateoasWrapper(
-        BFLossId("000000123456790"), Seq(testHateoasLink))))
 
+  val hateoasResponse = ListBFLossesHateoasResponse(
+    Seq(HateoasWrapper(BFLossId("000000123456789"), Seq(testHateoasLink)), HateoasWrapper(BFLossId("000000123456790"), Seq(testHateoasLink))))
 
   val responseJson: JsValue = Json.parse("""
       |{
@@ -127,8 +123,8 @@ class ListBFLossesControllerSpec
           .returns(Future.successful(Right(DesResponse(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(ListBFLossHateoasData(nino, DesResponse(correlationId, response)))
-          .returns(DesResponse(correlationId, HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink))))
+          .wrapList(response, ListBFLossHateoasData(nino))
+          .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe OK
@@ -149,8 +145,8 @@ class ListBFLossesControllerSpec
           .returns(Future.successful(Right(DesResponse(correlationId, ListBFLossesResponse(Nil)))))
 
         MockHateoasFactory
-          .wrapList(ListBFLossHateoasData(nino, DesResponse(correlationId, ListBFLossesResponse(Nil))))
-          .returns(DesResponse(correlationId, HateoasWrapper(ListBFLossesHateoasResponse(Nil), Seq(testCreateHateoasLink))))
+          .wrapList( ListBFLossesResponse(Nil), ListBFLossHateoasData(nino))
+          .returns(HateoasWrapper(ListBFLossesHateoasResponse(Nil), Seq(testCreateHateoasLink)))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe NOT_FOUND
@@ -183,7 +179,7 @@ class ListBFLossesControllerSpec
       errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearRangeExceededError, BAD_REQUEST)
-     }
+    }
 
     "handle non-mdtp validation errors as per spec" when {
       def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {

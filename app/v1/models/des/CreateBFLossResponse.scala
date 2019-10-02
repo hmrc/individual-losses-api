@@ -17,8 +17,8 @@
 package v1.models.des
 
 import play.api.libs.json._
-import v1.hateoas.{Hateoas, HateoasLinksFactory}
-import v1.models.hateoas.{HateoasData, Link}
+import v1.hateoas.{ Hateoas, HateoasLinksFactory }
+import v1.models.hateoas.{ HateoasData, Link }
 import v1.models.outcomes.DesResponse
 
 case class CreateBFLossResponse(id: String)
@@ -32,12 +32,10 @@ object CreateBFLossResponse extends Hateoas {
   def links(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
 }
 
-case class CreateBFLossHateoasData(nino: String, lossId: String, payload: DesResponse[CreateBFLossResponse]) extends HateoasData {
-  type A = CreateBFLossResponse
-}
+case class CreateBFLossHateoasData(nino: String, lossId: String) extends HateoasData
 
 object CreateBFLossHateoasData {
-  implicit val linkFactory: HateoasLinksFactory[CreateBFLossHateoasData] = new HateoasLinksFactory[CreateBFLossHateoasData] {
+  implicit object LinkFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
     override def links(data: CreateBFLossHateoasData): Seq[Link] = {
       import data._
       CreateBFLossResponse.links(nino, lossId)

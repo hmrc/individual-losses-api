@@ -16,13 +16,6 @@
 
 package v1.models.hateoas
 
-import v1.models.des.{ BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
-import v1.models.outcomes.DesResponse
+trait HateoasData
 
-trait HateoasData {
-  type A
-  def payload: DesResponse[A]
-}
-case class ListBFLossHateoasData(nino: String, payload: DesResponse[ListBFLossesResponse]) extends HateoasData {
-  type A = ListBFLossesResponse
-}
+case class ListBFLossHateoasData(nino: String) extends HateoasData

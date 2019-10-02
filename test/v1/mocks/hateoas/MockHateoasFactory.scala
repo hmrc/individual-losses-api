@@ -16,14 +16,11 @@
 
 package v1.mocks.hateoas
 
-import org.scalamock.function.MockFunction2
 import org.scalamock.handlers.CallHandler
-import org.scalamock.proxy.MockFunction
 import org.scalamock.scalatest.MockFactory
-import v1.hateoas.{ HateoasFactory, HateoasLinksFactory }
-import v1.models.des.ListBFLossesHateoasResponse
-import v1.models.hateoas.{ HateoasData, HateoasWrapper }
-import v1.models.outcomes.DesResponse
+import v1.hateoas.{HateoasFactory, HateoasLinksFactory}
+import v1.models.des.{ListBFLossesHateoasResponse, ListBFLossesResponse}
+import v1.models.hateoas.{HateoasData, HateoasWrapper}
 
 trait MockHateoasFactory extends MockFactory {
 
@@ -31,17 +28,16 @@ trait MockHateoasFactory extends MockFactory {
 
   object MockHateoasFactory {
 
-    def wrap[D <: HateoasData: HateoasLinksFactory](data: D): CallHandler[DesResponse[HateoasWrapper[data.A]]] = {
-      val function: MockFunction2[D, HateoasLinksFactory[D], DesResponse[HateoasWrapper[_]]] = mockHateoasFactory
-        .wrap(_: D)(_: HateoasLinksFactory[D])
-
-      function.expects(data, *).asInstanceOf[CallHandler[DesResponse[HateoasWrapper[data.A]]]]
+    def wrap[A, D <: HateoasData](a: A, data: D)(implicit lf: HateoasLinksFactory[A, D]): CallHandler[HateoasWrapper[A]] = {
+      (mockHateoasFactory
+        .wrap(_: A, _: D)(_: HateoasLinksFactory[A, D]))
+        .expects(a, data, *)
     }
 
-    def wrapList[A, B](data: HateoasData): CallHandler[DesResponse[HateoasWrapper[ListBFLossesHateoasResponse]]] = {
+    def wrapList[A, B](a: ListBFLossesResponse, data: HateoasData): CallHandler[HateoasWrapper[ListBFLossesHateoasResponse]] = {
       (mockHateoasFactory
-        .wrapList[A, B](_: HateoasData))
-        .expects(data)
+        .wrapList[A, B](_: ListBFLossesResponse, _: HateoasData))
+        .expects(a, data)
     }
   }
 }

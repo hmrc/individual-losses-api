@@ -108,8 +108,8 @@ class CreateBFLossControllerSpec
           .returns(Future.successful(Right(DesResponse(correlationId, createBFLossResponse))))
 
         MockHateoasFactory
-          .wrap(CreateBFLossHateoasData(nino, lossId, DesResponse(correlationId, createBFLossResponse)))
-          .returns(DesResponse(correlationId, HateoasWrapper(createBFLossResponse, Seq(testHateoasLink))))
+          .wrap(createBFLossResponse, CreateBFLossHateoasData(nino, lossId))
+          .returns(HateoasWrapper(createBFLossResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe CREATED
