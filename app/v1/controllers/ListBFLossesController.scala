@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.ListBFLossesParser
 import v1.hateoas.HateoasFactory
-import v1.models.des.{ListBFLossHateoasData, ListBFLossesHateoasResponse, ListBFLossesResponse}
+import v1.models.des.{ListBFLossHateoasData, ListBFLossesResponse}
 import v1.models.errors._
 import v1.models.requestData.ListBFLossesRawData
 import v1.services._
@@ -53,7 +53,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
           serviceResponse <- EitherT(listBFLossesService.listBFLosses(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrapList[ListBFLossesResponse, ListBFLossesHateoasResponse](serviceResponse.responseData, ListBFLossHateoasData(nino))
+              .wrapList(serviceResponse.responseData, ListBFLossHateoasData(nino))
               .asRight[ErrorWrapper]
           )
         } yield {

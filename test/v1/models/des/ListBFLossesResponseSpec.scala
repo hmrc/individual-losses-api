@@ -86,7 +86,7 @@ class ListBFLossesResponseSpec extends UnitSpec {
            |
         """.stripMargin)
 
-      desResponseJson.as[ListBFLossesResponse] shouldBe
+      desResponseJson.as[ListBFLossesResponse[BFLossId]] shouldBe
         ListBFLossesResponse(
           Seq(BFLossId("000000000000001"), BFLossId("000000000000002"), BFLossId("000000000000008"), BFLossId("000000000000003"), BFLossId("000000000000004")))
     }

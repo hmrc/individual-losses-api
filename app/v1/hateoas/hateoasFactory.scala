@@ -16,10 +16,12 @@
 
 package v1.hateoas
 
+import cats.Functor
 import javax.inject.Inject
-import v1.models.des.{ BFLossId, ListBFLossHateoasData, ListBFLossesHateoasResponse, ListBFLossesResponse }
 import v1.models.hateoas.RelType._
 import v1.models.hateoas._
+
+import scala.language.higherKinds
 
 class HateoasFactory @Inject()() extends Hateoas {
 
@@ -29,23 +31,19 @@ class HateoasFactory @Inject()() extends Hateoas {
     HateoasWrapper(payload, links)
   }
 
-  //TODO: Make return type generic.  Resolve casting -> B issues within returned HateoasWrapper
-  def wrapList[A, B](payload: ListBFLossesResponse, data: HateoasData): HateoasWrapper[ListBFLossesHateoasResponse] = {
-    data match {
-      case data: ListBFLossHateoasData =>
-        val list: Seq[BFLossId] = payload.losses
-        val hateoasList: Seq[HateoasWrapper[BFLossId]] = list.map { loss =>
-          HateoasWrapper(loss, selfLink(data.nino, loss.id))
-        }
-        val response: ListBFLossesHateoasResponse = ListBFLossesHateoasResponse(hateoasList)
+  def wrapList[A[_]: Functor, I, D](payload: A[I], data: D)(implicit lf: HateoasListLinksFactory[A, I, D]): HateoasWrapper[A[HateoasWrapper[I]]] = {
+   val hateoasList =  Functor[A].map(payload)(i => HateoasWrapper(i, lf.itemLinks(data, i)))
 
-        val links = implicitly[HateoasLinksFactory[ListBFLossesResponse, ListBFLossHateoasData]].links(data)
-        HateoasWrapper(response, links)
-    }
+    HateoasWrapper(hateoasList, lf.links(data))
   }
 }
 
 trait HateoasLinksFactory[A, D] {
+  def links(data: D): Seq[Link]
+}
+
+trait HateoasListLinksFactory[A[_], I, D] {
+  def itemLinks(data: D, item: I): Seq[Link]
   def links(data: D): Seq[Link]
 }
 

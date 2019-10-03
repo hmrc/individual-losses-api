@@ -249,7 +249,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     def listBFLossesResult(connector: BFLossConnector,
                            taxYear: Option[DesTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
-                           selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse] = {
+                           selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse[BFLossId]] = {
       await(
         connector.listBFLosses(
           ListBFLossesRequest(

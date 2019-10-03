@@ -19,8 +19,7 @@ package v1.hateoas
 import support.UnitSpec
 import v1.models.des._
 import v1.models.domain.TypeOfLoss
-import v1.models.hateoas.{ HateoasWrapper, Link }
-import v1.models.outcomes.DesResponse
+import v1.models.hateoas.{HateoasWrapper, Link}
 
 class HateoasFactorySpec extends UnitSpec {
 
@@ -94,15 +93,12 @@ class HateoasFactorySpec extends UnitSpec {
 
         val result = hateoasFactory.wrapList(response, ListBFLossHateoasData(nino))
         result shouldBe
-          DesResponse(
-            correlationId,
-            HateoasWrapper(
-              ListBFLossesHateoasResponse(
-                Seq(HateoasWrapper(BFLossId(lossId), List(getLink, amendLink, deleteLink)),
-                    HateoasWrapper(BFLossId(lossId), List(getLink, amendLink, deleteLink)))
-              ),
-              List(createLink)
-            )
+          HateoasWrapper(
+            ListBFLossesResponse(
+              Seq(HateoasWrapper(BFLossId(lossId), List(getLink, amendLink, deleteLink)),
+                  HateoasWrapper(BFLossId(lossId), List(getLink, amendLink, deleteLink)))
+            ),
+            List(createLink)
           )
       }
 

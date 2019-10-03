@@ -16,9 +16,10 @@
 
 package v1.models.des
 
+import cats.Functor
 import play.api.libs.json._
-import v1.hateoas.{Hateoas, HateoasLinksFactory}
-import v1.models.hateoas.{HateoasData, HateoasWrapper, Link}
+import v1.hateoas.{ Hateoas, HateoasListLinksFactory }
+import v1.models.hateoas.{ HateoasData, Link }
 
 case class BFLossId(id: String)
 
@@ -28,32 +29,31 @@ object BFLossId {
   implicit val reads: Reads[BFLossId] = (JsPath \ "lossId").read[String].map(BFLossId(_))
 }
 
-case class ListBFLossesResponse(losses: Seq[BFLossId])
+case class ListBFLossesResponse[I](losses: Seq[I])
 
 object ListBFLossesResponse extends Hateoas {
-  implicit val writes: OWrites[ListBFLossesResponse] =
-    Json.writes[ListBFLossesResponse]
+  implicit def writes[I: Writes]: OWrites[ListBFLossesResponse[I]] =
+    Json.writes[ListBFLossesResponse[I]]
 
-  implicit val reads: Reads[ListBFLossesResponse] =
-    implicitly[Reads[Seq[BFLossId]]].map(ListBFLossesResponse(_))
+  implicit def reads[I: Reads]: Reads[ListBFLossesResponse[I]] =
+    implicitly[Reads[Seq[I]]].map(ListBFLossesResponse(_))
 
   def links(nino: String): Seq[Link] = List(createBfLoss(nino))
 
-  implicit object LinkFactory extends HateoasLinksFactory[ListBFLossesResponse, ListBFLossHateoasData] {
+  implicit object LinksFactory extends HateoasListLinksFactory[ListBFLossesResponse, BFLossId, ListBFLossHateoasData] {
     override def links(data: ListBFLossHateoasData): Seq[Link] = ListBFLossesResponse.links(data.nino)
+
+    override def itemLinks(data: ListBFLossHateoasData, item: BFLossId): Seq[Link] = {
+      // TODO or ...
+//      BFLossResponse.links(data.nino, item.id)
+      selfLink(data.nino, item.id)
+    }
   }
-}
 
-case class ListBFLossesHateoasResponse(losses: Seq[HateoasWrapper[BFLossId]])
-
-object ListBFLossesHateoasResponse {
-
-//  implicit val rds = Reads.seq[HateoasWrapper[BFLossId]]
-
-  implicit val writes: OWrites[ListBFLossesHateoasResponse] =
-    Json.writes[ListBFLossesHateoasResponse]
-
-  implicit val reads: Reads[ListBFLossesHateoasResponse] = implicitly[Reads[Seq[HateoasWrapper[BFLossId]]]].map(ListBFLossesHateoasResponse(_))
+  implicit object ResponseFunctor extends Functor[ListBFLossesResponse] {
+    override def map[A, B](fa: ListBFLossesResponse[A])(f: A => B): ListBFLossesResponse[B] =
+      ListBFLossesResponse(fa.losses.map(f))
+  }
 }
 
 case class ListBFLossHateoasData(nino: String) extends HateoasData

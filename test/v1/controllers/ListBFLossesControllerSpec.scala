@@ -16,18 +16,18 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
-import v1.models.des.{BFLossId, ListBFLossHateoasData, ListBFLossesHateoasResponse, ListBFLossesResponse}
-import v1.models.errors.{NotFoundError, _}
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService }
+import v1.models.des.{ BFLossId, ListBFLossHateoasData, ListBFLossesResponse }
+import v1.models.errors.{ NotFoundError, _ }
+import v1.models.hateoas.{ HateoasWrapper, Link }
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
+import v1.models.requestData.{ DesTaxYear, ListBFLossesRawData, ListBFLossesRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -56,7 +56,7 @@ class ListBFLossesControllerSpec
 
   val response = ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))
 
-  val hateoasResponse = ListBFLossesHateoasResponse(
+  val hateoasResponse = ListBFLossesResponse(
     Seq(HateoasWrapper(BFLossId("000000123456789"), Seq(testHateoasLink)), HateoasWrapper(BFLossId("000000123456790"), Seq(testHateoasLink))))
 
   val responseJson: JsValue = Json.parse("""
@@ -145,8 +145,8 @@ class ListBFLossesControllerSpec
           .returns(Future.successful(Right(DesResponse(correlationId, ListBFLossesResponse(Nil)))))
 
         MockHateoasFactory
-          .wrapList( ListBFLossesResponse(Nil), ListBFLossHateoasData(nino))
-          .returns(HateoasWrapper(ListBFLossesHateoasResponse(Nil), Seq(testCreateHateoasLink)))
+          .wrapList(ListBFLossesResponse(List.empty[BFLossId]), ListBFLossHateoasData(nino))
+          .returns(HateoasWrapper(ListBFLossesResponse(List.empty[HateoasWrapper[BFLossId]]), Seq(testCreateHateoasLink)))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe NOT_FOUND

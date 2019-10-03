@@ -31,7 +31,7 @@ object CreateBFLossResponse extends Hateoas {
 
   def links(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
 
-  implicit object LinkFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
+  implicit object LinksFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
     override def links(data: CreateBFLossHateoasData): Seq[Link] = {
       import data._
       CreateBFLossResponse.links(nino, lossId)
