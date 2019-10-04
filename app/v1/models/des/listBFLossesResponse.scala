@@ -18,7 +18,7 @@ package v1.models.des
 
 import cats.Functor
 import play.api.libs.json._
-import v1.hateoas.{ Hateoas, HateoasListLinksFactory }
+import v1.hateoas.{ HateoasLinks, HateoasListLinksFactory }
 import v1.models.hateoas.{ HateoasData, Link }
 
 case class BFLossId(id: String)
@@ -31,7 +31,7 @@ object BFLossId {
 
 case class ListBFLossesResponse[I](losses: Seq[I])
 
-object ListBFLossesResponse extends Hateoas {
+object ListBFLossesResponse extends HateoasLinks {
   implicit def writes[I: Writes]: OWrites[ListBFLossesResponse[I]] =
     Json.writes[ListBFLossesResponse[I]]
 

@@ -13,41 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package v1.hateoas
 
-import cats.Functor
-import javax.inject.Inject
-import v1.models.hateoas.RelType._
-import v1.models.hateoas._
+import v1.models.hateoas.Link
+import v1.models.hateoas.RelType.{AMEND_BF_LOSS, CREATE_BF_LOSS, DELETE_BF_LOSS, GET_BF_LOSS}
 
-import scala.language.higherKinds
-
-class HateoasFactory @Inject()() extends Hateoas {
-
-  def wrap[A, D <: HateoasData](payload: A, data: D)(implicit lf: HateoasLinksFactory[A, D]): HateoasWrapper[A] = {
-    val links = lf.links(data)
-
-    HateoasWrapper(payload, links)
-  }
-
-  def wrapList[A[_]: Functor, I, D](payload: A[I], data: D)(implicit lf: HateoasListLinksFactory[A, I, D]): HateoasWrapper[A[HateoasWrapper[I]]] = {
-   val hateoasList =  Functor[A].map(payload)(i => HateoasWrapper(i, lf.itemLinks(data, i)))
-
-    HateoasWrapper(hateoasList, lf.links(data))
-  }
-}
-
-trait HateoasLinksFactory[A, D] {
-  def links(data: D): Seq[Link]
-}
-
-trait HateoasListLinksFactory[A[_], I, D] {
-  def itemLinks(data: D, item: I): Seq[Link]
-  def links(data: D): Seq[Link]
-}
-
-trait Hateoas {
+trait HateoasLinks {
 
   //Domain URIs
   private val collectionUri: String => String                 = nino => s"/individuals/losses/$nino/brought-forward-losses"

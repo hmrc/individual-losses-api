@@ -41,8 +41,18 @@ class HateoasWrapperSpec extends UnitSpec {
       |    "rel": "thing",
       |    "method": "GET"
       |  }
-      |]}
-      |
+      | ]
+      |}
+      """.stripMargin)
+    }
+
+    "not write links array if there are no links" in {
+      Json.toJson(HateoasWrapper(TestMtdResponse("value1", 123), Nil)) shouldBe
+        Json.parse("""
+                     |{
+                     |"field1": "value1",
+                     |"field2": 123
+                     |}
     """.stripMargin)
     }
   }

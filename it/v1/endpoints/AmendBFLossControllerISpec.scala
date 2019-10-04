@@ -22,7 +22,7 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import v1.hateoas.Hateoas
+import v1.hateoas.HateoasLinks
 import v1.models.des.BFLossResponse
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
@@ -58,7 +58,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |      }
       """.stripMargin
 
-  object Hateoas extends Hateoas
+  object Hateoas extends HateoasLinks
 
   private trait Test {
 

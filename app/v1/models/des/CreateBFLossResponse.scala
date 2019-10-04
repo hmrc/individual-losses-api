@@ -17,13 +17,13 @@
 package v1.models.des
 
 import play.api.libs.json._
-import v1.hateoas.{ Hateoas, HateoasLinksFactory }
+import v1.hateoas.{ HateoasLinks, HateoasLinksFactory }
 import v1.models.hateoas.{ HateoasData, Link }
 import v1.models.outcomes.DesResponse
 
 case class CreateBFLossResponse(id: String)
 
-object CreateBFLossResponse extends Hateoas {
+object CreateBFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[CreateBFLossResponse] = Json.writes[CreateBFLossResponse]
 
   implicit val desToMtdReads: Reads[CreateBFLossResponse] =

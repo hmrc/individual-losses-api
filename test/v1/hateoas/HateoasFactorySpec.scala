@@ -53,6 +53,12 @@ class HateoasFactorySpec extends UnitSpec {
     rel = "delete-brought-forward-loss"
   )
 
+  val selfLink = Link(
+    href = s"/individuals/losses/$nino/brought-forward-losses/$lossId",
+    method = "GET",
+    rel = "self"
+  )
+
   "linksForCreateBFLoss" should {
     "these tests are now in wrong place" in { fail }
     "the factory tests should now be generic (not losses or endpoint specific)" in { fail }
@@ -95,8 +101,8 @@ class HateoasFactorySpec extends UnitSpec {
         result shouldBe
           HateoasWrapper(
             ListBFLossesResponse(
-              Seq(HateoasWrapper(BFLossId(lossId), List(getLink, amendLink, deleteLink)),
-                  HateoasWrapper(BFLossId(lossId), List(getLink, amendLink, deleteLink)))
+              Seq(HateoasWrapper(BFLossId(lossId), List(selfLink)),
+                  HateoasWrapper(BFLossId(lossId), List(selfLink)))
             ),
             List(createLink)
           )

@@ -18,14 +18,14 @@ package v1.models.des
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v1.hateoas.{ Hateoas, HateoasLinksFactory }
+import v1.hateoas.{ HateoasLinks, HateoasLinksFactory }
 import v1.models.domain.TypeOfLoss
 import v1.models.hateoas.{ HateoasData, Link }
 import v1.models.requestData.DesTaxYear
 
 case class BFLossResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)
 
-object BFLossResponse extends Hateoas {
+object BFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[BFLossResponse] = Json.writes[BFLossResponse]
 
   implicit val desToMtdReads: Reads[BFLossResponse] = (
