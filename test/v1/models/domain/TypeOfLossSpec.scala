@@ -17,10 +17,19 @@
 package v1.models.domain
 
 import support.UnitSpec
-import v1.models.des.{IncomeSourceType, LossType}
+import utils.enums.EnumJsonSpecSupport
+import v1.models.des.{ IncomeSourceType, LossType, ReliefClaimed }
 import v1.models.domain.TypeOfLoss._
 
-class TypeOfLossSpec extends UnitSpec {
+class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
+
+  testRoundTrip[TypeOfLoss](
+    ("self-employment", `self-employment`),
+    ("self-employment-class4", `self-employment-class4`),
+    ("uk-property-non-fhl", `uk-property-non-fhl`),
+    ("uk-property-fhl", `uk-property-fhl`)
+  )
+
   "TypeOfLoss" when {
     "getting DES LossType" must {
       "work" in {

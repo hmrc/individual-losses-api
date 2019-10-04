@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package v1.models.des
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v1.models.des.ReliefClaimed._
-import v1.models.domain.TypeOfClaim
+import v1.models.des.IncomeSourceType._
 
-class ReliefClaimedSpec extends UnitSpec with EnumJsonSpecSupport {
+class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
-  testRoundTrip[ReliefClaimed](("CF", `CF`), ("CSGI", `CSGI`), ("CFCSGI", `CFCSGI`), ("CSFHL", `CSFHL`))
-
-  "TypeOfClaim" when {
-    "getting DES reliefClaimed" must {
-      "work" in {
-        `CF`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward`
-        `CSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways`
-        `CFCSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward-to-carry-sideways`
-        `CSFHL`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways-fhl`
-      }
-    }
-  }
+  testRoundTrip[IncomeSourceType](("01", `01`), ("02", `02`), ("04", `04`))
 }
