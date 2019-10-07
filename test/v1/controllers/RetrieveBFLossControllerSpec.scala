@@ -16,19 +16,20 @@
 
 package v1.controllers
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
-import v1.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService }
-import v1.models.des.{ BFLossResponse, GetBFLossHateoasData }
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
+import v1.models.des.{BFLossResponse, GetBFLossHateoasData}
 import v1.models.domain.TypeOfLoss
-import v1.models.errors.{ NotFoundError, _ }
-import v1.models.hateoas.{ HateoasWrapper, Link }
+import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.Method.GET
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{ RetrieveBFLossRawData, RetrieveBFLossRequest }
+import v1.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -55,7 +56,7 @@ class RetrieveBFLossControllerSpec
                                 lossAmount = 100.00,
                                 lastModified = "2018-07-13T12:13:48.763Z")
 
-  val testHateoasLink = Link(href = "/foo/bar", method = "GET", rel = "test-relationship")
+  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   val responseJson: JsValue = Json.parse("""
       |{

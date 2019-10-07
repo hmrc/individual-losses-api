@@ -26,6 +26,7 @@ import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolme
 import v1.models.des.{CreateBFLossHateoasData, CreateBFLossResponse}
 import v1.models.domain.{BFLoss, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
@@ -50,7 +51,7 @@ class CreateBFLossControllerSpec
   val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
   val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
-  val testHateoasLink = Link(href = "/foo/bar", method = "GET", rel="test-relationship")
+  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel="test-relationship")
 
   val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
 

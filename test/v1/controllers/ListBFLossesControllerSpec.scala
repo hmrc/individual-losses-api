@@ -16,18 +16,19 @@
 
 package v1.controllers
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v1.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService }
-import v1.models.des.{ BFLossId, ListBFLossHateoasData, ListBFLossesResponse }
-import v1.models.errors.{ NotFoundError, _ }
-import v1.models.hateoas.{ HateoasWrapper, Link }
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
+import v1.models.des.{BFLossId, ListBFLossHateoasData, ListBFLossesResponse}
+import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.Method.{GET, POST}
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{ DesTaxYear, ListBFLossesRawData, ListBFLossesRequest }
+import v1.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -51,8 +52,8 @@ class ListBFLossesControllerSpec
   val rawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
   val request = ListBFLossesRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
 
-  val testHateoasLink       = Link(href = "/foo/bar", method = "GET", rel = "test-relationship")
-  val testCreateHateoasLink = Link(href = "/foo/bar", method = "POST", rel = "test-create-relationship")
+  val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
   val response = ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))
 

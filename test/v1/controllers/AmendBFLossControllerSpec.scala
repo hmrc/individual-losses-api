@@ -16,19 +16,20 @@
 
 package v1.controllers
 
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v1.mocks.services._
-import v1.models.des.{ AmendBFLossHateoasData, BFLossResponse }
-import v1.models.domain.{ AmendBFLoss, TypeOfLoss }
+import v1.models.des.{AmendBFLossHateoasData, BFLossResponse}
+import v1.models.domain.{AmendBFLoss, TypeOfLoss}
 import v1.models.errors._
-import v1.models.hateoas.{ HateoasWrapper, Link }
+import v1.models.hateoas.Method.GET
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{ AmendBFLossRawData, AmendBFLossRequest }
+import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,7 +58,7 @@ class AmendBFLossControllerSpec
     lastModified = "2018-07-13T12:13:48.763Z"
   )
 
-  val testHateoasLink = Link(href = "/foo/bar", method = "GET", rel = "test-relationship")
+  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
 

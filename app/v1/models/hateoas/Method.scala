@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package v1.models.hateoas
 
-import play.api.libs.json.{ Json, Reads, Writes }
+import play.api.libs.json.Format
+import utils.enums.Enums
 
-case class Link(
-    href: String,
-    method: Method,
-    rel: String
-)
+sealed trait Method
 
-object Link {
-  implicit val writes: Writes[Link] = Json.writes[Link]
-  implicit val reads: Reads[Link]   = Json.reads[Link]
+object Method {
+  case object GET extends Method
+  case object POST extends Method
+  case object DELETE extends Method
+
+  implicit val formats: Format[Method] = Enums.format[Method]
 }

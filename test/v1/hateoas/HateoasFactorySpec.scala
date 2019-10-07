@@ -18,7 +18,8 @@ package v1.hateoas
 
 import cats.Functor
 import support.UnitSpec
-import v1.models.hateoas.{ HateoasData, HateoasWrapper, Link }
+import v1.models.hateoas.Method.GET
+import v1.models.hateoas.{HateoasData, HateoasWrapper, Link}
 
 class HateoasFactorySpec extends UnitSpec {
 
@@ -37,19 +38,19 @@ class HateoasFactorySpec extends UnitSpec {
   "wrap" should {
 
     implicit object LinksFactory1 extends HateoasLinksFactory[Response, Data1] {
-      override def links(data: Data1) = Seq(Link(s"path/${data.id}", "GET", "rel1"))
+      override def links(data: Data1) = Seq(Link(s"path/${data.id}", GET, "rel1"))
     }
 
     implicit object LinksFactory2 extends HateoasLinksFactory[Response, Data2] {
-      override def links(data: Data2) = Seq(Link(s"path/${data.id}", "GET", "rel2"))
+      override def links(data: Data2) = Seq(Link(s"path/${data.id}", GET, "rel2"))
     }
 
     "use the response specific links" in {
-      hateoasFactory.wrap(response, Data1("id")) shouldBe HateoasWrapper(response, Seq(Link("path/id", "GET", "rel1")))
+      hateoasFactory.wrap(response, Data1("id")) shouldBe HateoasWrapper(response, Seq(Link("path/id", GET, "rel1")))
     }
 
     "use the endpoint HateoasData specific links" in {
-      hateoasFactory.wrap(response, Data2("id")) shouldBe HateoasWrapper(response, Seq(Link("path/id", "GET", "rel2")))
+      hateoasFactory.wrap(response, Data2("id")) shouldBe HateoasWrapper(response, Seq(Link("path/id", GET, "rel2")))
     }
   }
 
@@ -62,14 +63,14 @@ class HateoasFactorySpec extends UnitSpec {
       }
 
       implicit object LinksFactory extends HateoasListLinksFactory[ListResponse, Response, Data1] {
-        override def itemLinks(data: Data1, item: Response) = Seq(Link(s"path/${data.id}/${item.foo}", "GET", "item"))
+        override def itemLinks(data: Data1, item: Response) = Seq(Link(s"path/${data.id}/${item.foo}", GET, "item"))
 
-        override def links(data: Data1) = Seq(Link(s"path/${data.id}", "GET", "rel"))
+        override def links(data: Data1) = Seq(Link(s"path/${data.id}", GET, "rel"))
       }
 
       hateoasFactory.wrapList(ListResponse(Seq(response)), Data1("id")) shouldBe
-        HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("path/id/X", "GET", "item"))))),
-          Seq(Link("path/id", "GET", "rel"))
+        HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("path/id/X", GET, "item"))))),
+          Seq(Link("path/id", GET, "rel"))
         )
     }
   }

@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package v1.models.hateoas
 
-import play.api.libs.json.{ Json, Reads, Writes }
+import support.UnitSpec
+import utils.enums.EnumJsonSpecSupport
+import v1.models.hateoas.Method._
 
-case class Link(
-    href: String,
-    method: Method,
-    rel: String
-)
-
-object Link {
-  implicit val writes: Writes[Link] = Json.writes[Link]
-  implicit val reads: Reads[Link]   = Json.reads[Link]
+class MethodSpec extends UnitSpec with EnumJsonSpecSupport {
+  testRoundTrip[Method](("GET", GET), ("POST", POST), ("DELETE", DELETE))
 }

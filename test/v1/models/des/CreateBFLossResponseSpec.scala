@@ -19,6 +19,7 @@ package v1.models.des
 import play.api.libs.json.Json
 import support.UnitSpec
 import v1.hateoas.HateoasFactory
+import v1.models.hateoas.Method.{DELETE, GET, POST}
 import v1.models.hateoas.{HateoasWrapper, Link}
 
 class CreateBFLossResponseSpec extends UnitSpec {
@@ -67,9 +68,9 @@ class CreateBFLossResponseSpec extends UnitSpec {
         HateoasWrapper(
           lossIdResponse,
           Seq(
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "GET", "self"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "DELETE", "delete-brought-forward-loss"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId/change-loss-amount", "POST", "amend-brought-forward-loss")
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", GET, "self"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", DELETE, "delete-brought-forward-loss"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId/change-loss-amount", POST, "amend-brought-forward-loss")
           )
         )
     }

@@ -18,7 +18,7 @@ package v1.models.hateoas
 
 import play.api.libs.json.{Json, OWrites}
 import support.UnitSpec
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.GET
 
 class HateoasWrapperSpec extends UnitSpec {
 
@@ -30,7 +30,7 @@ class HateoasWrapperSpec extends UnitSpec {
 
   "HateoasWrapper writes" must {
     "place links alongside wrapped object fields" in {
-      Json.toJson(HateoasWrapper(TestMtdResponse("value1", 123), Seq(Link("/some/resource", "GET", "thing")))) shouldBe
+      Json.toJson(HateoasWrapper(TestMtdResponse("value1", 123), Seq(Link("/some/resource", GET, "thing")))) shouldBe
         Json.parse("""
       |{
       |"field1": "value1",

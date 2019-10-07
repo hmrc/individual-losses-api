@@ -16,6 +16,7 @@
 package v1.hateoas
 
 import v1.models.hateoas.Link
+import v1.models.hateoas.Method._
 import v1.models.hateoas.RelType._
 
 trait HateoasLinks {
@@ -26,10 +27,10 @@ trait HateoasLinks {
   private val bfLossChangeRequest: (String, String) => String = (nino, lossId) => bfLossUri(nino, lossId) + "/change-loss-amount"
 
   //API resource links
-  def createBfLoss(nino: String): Link                 = Link(href = collectionUri(nino), method = "POST", rel = CREATE_BF_LOSS)
-  def getBFLoss(nino: String, lossId: String): Link    = Link(href = bfLossUri(nino, lossId), method = "GET", rel = SELF)
-  def amendBfLoss(nino: String, lossId: String): Link  = Link(href = bfLossChangeRequest(nino, lossId), method = "POST", rel = AMEND_BF_LOSS)
-  def deleteBfLoss(nino: String, lossId: String): Link = Link(href = bfLossUri(nino, lossId), method = "DELETE", rel = DELETE_BF_LOSS)
-  def listBfLoss(nino: String): Link = Link(href = collectionUri(nino), method = "GET", rel = SELF)
+  def createBfLoss(nino: String): Link                 = Link(href = collectionUri(nino), method = POST, rel = CREATE_BF_LOSS)
+  def getBFLoss(nino: String, lossId: String): Link    = Link(href = bfLossUri(nino, lossId), method = GET, rel = SELF)
+  def amendBfLoss(nino: String, lossId: String): Link  = Link(href = bfLossChangeRequest(nino, lossId), method = POST, rel = AMEND_BF_LOSS)
+  def deleteBfLoss(nino: String, lossId: String): Link = Link(href = bfLossUri(nino, lossId), method = DELETE, rel = DELETE_BF_LOSS)
+  def listBfLoss(nino: String): Link = Link(href = collectionUri(nino), method = GET, rel = SELF)
 
 }
