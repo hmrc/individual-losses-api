@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.hateaos
+package v1.models.hateoas
 
 import play.api.libs.json.{Json, OWrites}
 import support.UnitSpec
