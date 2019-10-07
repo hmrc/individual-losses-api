@@ -18,6 +18,8 @@ package v1.models.des
 
 import play.api.libs.json.Json
 import support.UnitSpec
+import v1.hateoas.HateoasFactory
+import v1.models.hateoas.{HateoasWrapper, Link}
 
 class CreateBFLossResponseSpec extends UnitSpec {
 
@@ -52,6 +54,24 @@ class CreateBFLossResponseSpec extends UnitSpec {
       "return a valid LossIdResponse JSON" in {
         Json.toJson(lossIdResponse) shouldBe lossIdJson
       }
+    }
+  }
+
+  "HateoasFactory" must {
+    val hateoasFactory = new HateoasFactory
+    val nino   = "someNino"
+    val lossId = "lossId"
+
+    "expose the correct links for create" in {
+      hateoasFactory.wrap(lossIdResponse, CreateBFLossHateoasData(nino, lossId)) shouldBe
+        HateoasWrapper(
+          lossIdResponse,
+          Seq(
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "GET", "self"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "DELETE", "delete-brought-forward-loss"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId/change-loss-amount", "POST", "amend-brought-forward-loss")
+          )
+        )
     }
   }
 }

@@ -16,15 +16,16 @@
 
 package v1.models.des
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
+import v1.hateoas.HateoasFactory
 import v1.models.domain.TypeOfLoss
+import v1.models.hateoas.{ HateoasWrapper, Link }
 
 class BFLossResponseSpec extends UnitSpec {
 
-  "Json Reads" should {
-    def desPropertyJson(incomeSourceType: String): JsValue = {
-      Json.parse(s"""
+  def desPropertyJson(incomeSourceType: String): JsValue = {
+    Json.parse(s"""
            |{
            |  "incomeSourceId": "000000000000001",
            |  "incomeSourceType": "$incomeSourceType",
@@ -33,10 +34,10 @@ class BFLossResponseSpec extends UnitSpec {
            |  "submissionDate": "2018-07-13T12:13:48.763Z"
            |}
       """.stripMargin)
-    }
+  }
 
-    def desEmploymentJson(lossType: String): JsValue = {
-      Json.parse(s"""
+  def desEmploymentJson(lossType: String): JsValue = {
+    Json.parse(s"""
            |{
            |  "incomeSourceId": "000000000000001",
            |  "lossType": "$lossType",
@@ -45,17 +46,26 @@ class BFLossResponseSpec extends UnitSpec {
            |  "submissionDate": "2018-07-13T12:13:48.763Z"
            |}
       """.stripMargin)
-    }
+  }
 
-    def desToModel: TypeOfLoss => BFLossResponse =
-      typeOfLoss =>
-        BFLossResponse(
-          selfEmploymentId = Some("000000000000001"),
-          typeOfLoss = typeOfLoss,
-          lossAmount = 99999999999.99,
-          taxYear = "2019-20",
-          lastModified = "2018-07-13T12:13:48.763Z")
+  def desToModel: TypeOfLoss => BFLossResponse =
+    typeOfLoss =>
+      BFLossResponse(selfEmploymentId = Some("000000000000001"),
+                     typeOfLoss = typeOfLoss,
+                     lossAmount = 99999999999.99,
+                     taxYear = "2019-20",
+                     lastModified = "2018-07-13T12:13:48.763Z")
 
+  val bfLossResponse =
+    BFLossResponse(
+      selfEmploymentId = Some("000000000000001"),
+      typeOfLoss = TypeOfLoss.`self-employment`,
+      lossAmount = 99999999999.99,
+      taxYear = "2019-20",
+      lastModified = "2018-07-13T12:13:48.763Z"
+    )
+
+  "Json Reads" should {
     "convert property JSON from DES into a valid model for property type 02" in {
       desPropertyJson("02").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
     }
@@ -73,13 +83,6 @@ class BFLossResponseSpec extends UnitSpec {
     }
   }
   "Json Writes" should {
-    val model =
-      BFLossResponse(selfEmploymentId = Some("000000000000001"),
-                          typeOfLoss = TypeOfLoss.`self-employment`,
-                          lossAmount = 99999999999.99,
-                          taxYear = "2019-20",
-                          lastModified = "2018-07-13T12:13:48.763Z"
-      )
     val mtdJson = Json.parse("""{
         |  "selfEmploymentId": "000000000000001",
         |  "typeOfLoss": "self-employment",
@@ -89,7 +92,35 @@ class BFLossResponseSpec extends UnitSpec {
         |}
       """.stripMargin)
     "convert a valid model into MTD JSON" in {
-      Json.toJson(model) shouldBe mtdJson
+      Json.toJson(bfLossResponse) shouldBe mtdJson
+    }
+  }
+
+  "HateoasFactory" must {
+      val hateoasFactory = new HateoasFactory
+      val nino   = "someNino"
+      val lossId = "lossId"
+
+    "expose the correct links for retrieve" in {
+      hateoasFactory.wrap(bfLossResponse, GetBFLossHateoasData(nino, lossId)) shouldBe
+        HateoasWrapper(
+          bfLossResponse,
+          Seq(
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "GET", "self"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "DELETE", "delete-brought-forward-loss"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId/change-loss-amount", "POST", "amend-brought-forward-loss")
+          )
+        )
+    }
+
+    "expose the correct links for amend" in {
+      hateoasFactory.wrap(bfLossResponse, AmendBFLossHateoasData(nino, lossId)) shouldBe
+        HateoasWrapper(
+          bfLossResponse,
+          Seq(
+            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "GET", "self")
+          )
+        )
     }
   }
 }

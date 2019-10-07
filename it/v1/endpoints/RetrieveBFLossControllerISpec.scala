@@ -51,8 +51,6 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    val hateoasLinks: JsValue = Json.toJson(BFLossResponse.links(nino, lossId))
-
     val responseJson: JsValue = Json.parse(s"""
          |{
          |    "selfEmploymentId": "XKIS00000000988",
@@ -60,7 +58,21 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
          |    "taxYear": "2019-20",
          |    "lossAmount": $lossAmount,
          |    "lastModified":"2018-07-13T12:13:48.763Z",
-         |    "links" : $hateoasLinks
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "DELETE",
+         |      "rel": "delete-brought-forward-loss"
+         |    },{
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+         |      "method": "POST",
+         |      "rel": "amend-brought-forward-loss"
+         |    }
+         |    ]
          |}
       """.stripMargin)
 

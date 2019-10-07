@@ -23,7 +23,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.hateoas.HateoasLinks
-import v1.models.des.BFLossResponse
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
@@ -68,7 +67,6 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
     val selfEmploymentId = "XKIS00000000988"
     val taxYear = "2019-20"
     val typeOfLoss = "self-employment"
-    val hateoasLinks: JsValue = Json.toJson(BFLossResponse.links(nino, lossId))
 
     val responseJson: JsValue = Json.parse(
       s"""
@@ -78,7 +76,12 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
          |    "taxYear": "2019-20",
          |    "lossAmount": $lossAmount,
          |    "lastModified": "2018-07-13T12:13:48.763Z",
-         |    "links": $hateoasLinks
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    }
+         |    ]
          |}
       """.stripMargin)
 

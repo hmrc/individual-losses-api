@@ -37,20 +37,17 @@ object BFLossResponse extends HateoasLinks {
       (__ \ "submissionDate").read[String]
   )(BFLossResponse.apply _)
 
-  def links(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
-
-  // TODO do these need to be different instances >>>>
   implicit object AmendLinksFactory extends HateoasLinksFactory[BFLossResponse, AmendBFLossHateoasData] {
     override def links(data: AmendBFLossHateoasData): Seq[Link] = {
       import data._
-      BFLossResponse.links(nino, lossId)
+      Seq(getBFLoss(nino, lossId))
     }
   }
 
   implicit object GetLinksFactory extends HateoasLinksFactory[BFLossResponse, GetBFLossHateoasData] {
     override def links(data: GetBFLossHateoasData): Seq[Link] = {
       import data._
-      BFLossResponse.links(nino, lossId)
+      Seq(getBFLoss(nino, lossId), deleteBfLoss(nino, lossId), amendBfLoss(nino, lossId))
     }
   }
 }

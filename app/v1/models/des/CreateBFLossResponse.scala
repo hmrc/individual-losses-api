@@ -29,12 +29,10 @@ object CreateBFLossResponse extends HateoasLinks {
   implicit val desToMtdReads: Reads[CreateBFLossResponse] =
     (__ \ "lossId").read[String].map(CreateBFLossResponse.apply)
 
-  def links(nino: String, lossId: String): Seq[Link] = List(getBFLoss(nino, lossId), amendBfLoss(nino, lossId), deleteBfLoss(nino, lossId))
-
   implicit object LinksFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
     override def links(data: CreateBFLossHateoasData): Seq[Link] = {
       import data._
-      CreateBFLossResponse.links(nino, lossId)
+      Seq(getBFLoss(nino, lossId), deleteBfLoss(nino, lossId), amendBfLoss(nino, lossId))
     }
   }
 }

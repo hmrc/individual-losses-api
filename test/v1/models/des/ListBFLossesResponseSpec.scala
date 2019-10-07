@@ -18,8 +18,10 @@ package v1.models.des
 
 import play.api.libs.json.Json
 import support.UnitSpec
+import v1.hateoas.{ HateoasFactory, HateoasLinks }
+import v1.models.hateoas.{ HateoasWrapper, Link }
 
-class ListBFLossesResponseSpec extends UnitSpec {
+class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 
   "json writes" must {
     "output as per spec" in {
@@ -88,7 +90,28 @@ class ListBFLossesResponseSpec extends UnitSpec {
 
       desResponseJson.as[ListBFLossesResponse[BFLossId]] shouldBe
         ListBFLossesResponse(
-          Seq(BFLossId("000000000000001"), BFLossId("000000000000002"), BFLossId("000000000000008"), BFLossId("000000000000003"), BFLossId("000000000000004")))
+          Seq(BFLossId("000000000000001"),
+              BFLossId("000000000000002"),
+              BFLossId("000000000000008"),
+              BFLossId("000000000000003"),
+              BFLossId("000000000000004")))
+    }
+  }
+
+  "HateoasFactory" must {
+    val hateoasFactory = new HateoasFactory
+    val nino           = "someNino"
+
+    "expose the correct links for list" in {
+      hateoasFactory.wrapList(ListBFLossesResponse(Seq(BFLossId("lossId"))), ListBFLossHateoasData(nino)) shouldBe
+        HateoasWrapper(
+          ListBFLossesResponse(
+            Seq(HateoasWrapper(BFLossId("lossId"), Seq(Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", "GET", "self"))))),
+          Seq(
+            Link(s"/individuals/losses/$nino/brought-forward-losses", "GET", "self"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses", "POST", "create-brought-forward-loss")
+          )
+        )
     }
   }
 

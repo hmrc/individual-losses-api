@@ -38,16 +38,12 @@ object ListBFLossesResponse extends HateoasLinks {
   implicit def reads[I: Reads]: Reads[ListBFLossesResponse[I]] =
     implicitly[Reads[Seq[I]]].map(ListBFLossesResponse(_))
 
-  def links(nino: String): Seq[Link] = List(createBfLoss(nino))
-
   implicit object LinksFactory extends HateoasListLinksFactory[ListBFLossesResponse, BFLossId, ListBFLossHateoasData] {
-    override def links(data: ListBFLossHateoasData): Seq[Link] = ListBFLossesResponse.links(data.nino)
+    override def links(data: ListBFLossHateoasData): Seq[Link] =
+      Seq(listBfLoss(data.nino), createBfLoss(data.nino))
 
-    override def itemLinks(data: ListBFLossHateoasData, item: BFLossId): Seq[Link] = {
-      // TODO or ...
-//      BFLossResponse.links(data.nino, item.id)
-      selfLink(data.nino, item.id)
-    }
+    override def itemLinks(data: ListBFLossHateoasData, item: BFLossId): Seq[Link] =
+      Seq(getBFLoss(data.nino, item.id))
   }
 
   implicit object ResponseFunctor extends Functor[ListBFLossesResponse] {

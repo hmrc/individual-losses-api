@@ -18,11 +18,12 @@ package v1.models.des
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v1.hateoas.HateoasFactory
+import v1.models.hateoas.{HateoasWrapper, Link}
 
 class CreateLossClaimResponseSpec extends UnitSpec {
 
   val createClaimsResponse = CreateLossClaimResponse(id = "AAZZ1234567890a")
-
 
   val createClaimsResponseJson: JsValue = Json.parse(
     """

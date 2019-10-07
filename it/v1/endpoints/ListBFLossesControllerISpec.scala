@@ -91,6 +91,11 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
          |    "links": [
          |      {
          |        "href": "/individuals/losses$uri",
+         |        "rel": "self",
+         |        "method": "GET"
+         |      },
+         |      {
+         |        "href": "/individuals/losses$uri",
          |        "rel": "create-brought-forward-loss",
          |        "method": "POST"
          |      }
