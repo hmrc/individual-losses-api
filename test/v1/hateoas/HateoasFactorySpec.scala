@@ -16,7 +16,9 @@
 
 package v1.hateoas
 
+import cats.Functor
 import support.UnitSpec
+import v1.models.hateoas.{ HateoasData, HateoasWrapper, Link }
 
 class HateoasFactorySpec extends UnitSpec {
 
@@ -25,16 +27,50 @@ class HateoasFactorySpec extends UnitSpec {
 
   val hateoasFactory = new HateoasFactory
 
+  case class Response(foo: String)
+
+  case class Data1(id: String) extends HateoasData
+  case class Data2(id: String) extends HateoasData
+
+  val response = Response("X")
+
   "wrap" should {
-    "work" in {
-      fail
+
+    implicit object LinksFactory1 extends HateoasLinksFactory[Response, Data1] {
+      override def links(data: Data1) = Seq(Link(s"path/${data.id}", "GET", "rel1"))
+    }
+
+    implicit object LinksFactory2 extends HateoasLinksFactory[Response, Data2] {
+      override def links(data: Data2) = Seq(Link(s"path/${data.id}", "GET", "rel2"))
+    }
+
+    "use the response specific links" in {
+      hateoasFactory.wrap(response, Data1("id")) shouldBe HateoasWrapper(response, Seq(Link("path/id", "GET", "rel1")))
+    }
+
+    "use the endpoint HateoasData specific links" in {
+      hateoasFactory.wrap(response, Data2("id")) shouldBe HateoasWrapper(response, Seq(Link("path/id", "GET", "rel2")))
     }
   }
 
   "wrapList" should {
     "work" in {
-      fail
+      case class ListResponse[A](items: Seq[A])
+
+      implicit object ListResponseFunctor extends Functor[ListResponse] {
+        override def map[A, B](fa: ListResponse[A])(f: A => B) = ListResponse(fa.items.map(f))
+      }
+
+      implicit object LinksFactory extends HateoasListLinksFactory[ListResponse, Response, Data1] {
+        override def itemLinks(data: Data1, item: Response) = Seq(Link(s"path/${data.id}/${item.foo}", "GET", "item"))
+
+        override def links(data: Data1) = Seq(Link(s"path/${data.id}", "GET", "rel"))
+      }
+
+      hateoasFactory.wrapList(ListResponse(Seq(response)), Data1("id")) shouldBe
+        HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("path/id/X", "GET", "item"))))),
+          Seq(Link("path/id", "GET", "rel"))
+        )
     }
   }
-
 }
