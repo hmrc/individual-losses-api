@@ -15,6 +15,7 @@
  */
 package v1.hateoas
 
+import config.AppConfig
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 import v1.models.hateoas.RelType._
@@ -22,15 +23,28 @@ import v1.models.hateoas.RelType._
 trait HateoasLinks {
 
   //Domain URIs
-  private val collectionUri: String => String                 = nino => s"/individuals/losses/$nino/brought-forward-losses"
-  private val bfLossUri: (String, String) => String           = (nino, lossId) => collectionUri(nino) + s"/$lossId"
-  private val bfLossChangeRequest: (String, String) => String = (nino, lossId) => bfLossUri(nino, lossId) + "/change-loss-amount"
+  private def collectionUri(appConfig: AppConfig, nino: String): String =
+    s"/${appConfig.apiGatewayContext}/$nino/brought-forward-losses"
+
+  private def bfLossUri(appConfig: AppConfig, nino: String, lossId: String): String =
+    collectionUri(appConfig, nino) + s"/$lossId"
+
+  private def bfLossChangeRequest(appConfig: AppConfig, nino: String, lossId: String): String =
+    bfLossUri(appConfig, nino, lossId) + "/change-loss-amount"
 
   //API resource links
-  def createBfLoss(nino: String): Link                 = Link(href = collectionUri(nino), method = POST, rel = CREATE_BF_LOSS)
-  def getBFLoss(nino: String, lossId: String): Link    = Link(href = bfLossUri(nino, lossId), method = GET, rel = SELF)
-  def amendBfLoss(nino: String, lossId: String): Link  = Link(href = bfLossChangeRequest(nino, lossId), method = POST, rel = AMEND_BF_LOSS)
-  def deleteBfLoss(nino: String, lossId: String): Link = Link(href = bfLossUri(nino, lossId), method = DELETE, rel = DELETE_BF_LOSS)
-  def listBfLoss(nino: String): Link = Link(href = collectionUri(nino), method = GET, rel = SELF)
+  def createBfLoss(appConfig: AppConfig, nino: String): Link =
+    Link(href = collectionUri(appConfig, nino), method = POST, rel = CREATE_BF_LOSS)
+
+  def getBFLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
+    Link(href = bfLossUri(appConfig, nino, lossId), method = GET, rel = SELF)
+
+  def amendBfLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
+    Link(href = bfLossChangeRequest(appConfig, nino, lossId), method = POST, rel = AMEND_BF_LOSS)
+
+  def deleteBfLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
+    Link(href = bfLossUri(appConfig, nino, lossId), method = DELETE, rel = DELETE_BF_LOSS)
+
+  def listBfLoss(appConfig: AppConfig, nino: String): Link = Link(href = collectionUri(appConfig, nino), method = GET, rel = SELF)
 
 }

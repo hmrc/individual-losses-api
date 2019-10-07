@@ -16,12 +16,13 @@
 
 package v1.models.des
 
-import play.api.libs.json.{JsValue, Json}
+import mocks.MockAppConfig
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 import v1.hateoas.HateoasFactory
 import v1.models.domain.TypeOfLoss
-import v1.models.hateoas.Method.{DELETE, GET, POST}
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.{ DELETE, GET, POST }
+import v1.models.hateoas.{ HateoasWrapper, Link }
 
 class BFLossResponseSpec extends UnitSpec {
 
@@ -98,11 +99,14 @@ class BFLossResponseSpec extends UnitSpec {
   }
 
   "HateoasFactory" must {
-      val hateoasFactory = new HateoasFactory
-      val nino   = "someNino"
-      val lossId = "lossId"
+    class Test extends MockAppConfig {
+      val hateoasFactory = new HateoasFactory(mockAppConfig)
+      val nino           = "someNino"
+      val lossId         = "lossId"
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+    }
 
-    "expose the correct links for retrieve" in {
+    "expose the correct links for retrieve" in new Test {
       hateoasFactory.wrap(bfLossResponse, GetBFLossHateoasData(nino, lossId)) shouldBe
         HateoasWrapper(
           bfLossResponse,
@@ -114,7 +118,7 @@ class BFLossResponseSpec extends UnitSpec {
         )
     }
 
-    "expose the correct links for amend" in {
+    "expose the correct links for amend" in new Test {
       hateoasFactory.wrap(bfLossResponse, AmendBFLossHateoasData(nino, lossId)) shouldBe
         HateoasWrapper(
           bfLossResponse,

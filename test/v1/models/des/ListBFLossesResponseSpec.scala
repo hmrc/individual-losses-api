@@ -16,11 +16,12 @@
 
 package v1.models.des
 
+import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.hateoas.{HateoasFactory, HateoasLinks}
-import v1.models.hateoas.Method.{GET, POST}
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.hateoas.{ HateoasFactory, HateoasLinks }
+import v1.models.hateoas.Method.{ GET, POST }
+import v1.models.hateoas.{ HateoasWrapper, Link }
 
 class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 
@@ -100,10 +101,13 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
   }
 
   "HateoasFactory" must {
-    val hateoasFactory = new HateoasFactory
-    val nino           = "someNino"
+    class Test extends MockAppConfig {
+      val hateoasFactory = new HateoasFactory(mockAppConfig)
+      val nino           = "someNino"
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+    }
 
-    "expose the correct links for list" in {
+    "expose the correct links for list" in new Test {
       hateoasFactory.wrapList(ListBFLossesResponse(Seq(BFLossId("lossId"))), ListBFLossHateoasData(nino)) shouldBe
         HateoasWrapper(
           ListBFLossesResponse(

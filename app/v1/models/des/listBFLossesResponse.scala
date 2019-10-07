@@ -17,6 +17,7 @@
 package v1.models.des
 
 import cats.Functor
+import config.AppConfig
 import play.api.libs.json._
 import v1.hateoas.{ HateoasLinks, HateoasListLinksFactory }
 import v1.models.hateoas.{ HateoasData, Link }
@@ -39,11 +40,11 @@ object ListBFLossesResponse extends HateoasLinks {
     implicitly[Reads[Seq[I]]].map(ListBFLossesResponse(_))
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListBFLossesResponse, BFLossId, ListBFLossHateoasData] {
-    override def links(data: ListBFLossHateoasData): Seq[Link] =
-      Seq(listBfLoss(data.nino), createBfLoss(data.nino))
+    override def links(appConfig: AppConfig, data: ListBFLossHateoasData): Seq[Link] =
+      Seq(listBfLoss(appConfig, data.nino), createBfLoss(appConfig, data.nino))
 
-    override def itemLinks(data: ListBFLossHateoasData, item: BFLossId): Seq[Link] =
-      Seq(getBFLoss(data.nino, item.id))
+    override def itemLinks(appConfig: AppConfig, data: ListBFLossHateoasData, item: BFLossId): Seq[Link] =
+      Seq(getBFLoss(appConfig, data.nino, item.id))
   }
 
   implicit object ResponseFunctor extends Functor[ListBFLossesResponse] {

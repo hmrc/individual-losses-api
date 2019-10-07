@@ -16,6 +16,7 @@
 
 package v1.models.des
 
+import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v1.hateoas.{ HateoasLinks, HateoasLinksFactory }
@@ -38,16 +39,16 @@ object BFLossResponse extends HateoasLinks {
   )(BFLossResponse.apply _)
 
   implicit object AmendLinksFactory extends HateoasLinksFactory[BFLossResponse, AmendBFLossHateoasData] {
-    override def links(data: AmendBFLossHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: AmendBFLossHateoasData): Seq[Link] = {
       import data._
-      Seq(getBFLoss(nino, lossId))
+      Seq(getBFLoss(appConfig, nino, lossId))
     }
   }
 
   implicit object GetLinksFactory extends HateoasLinksFactory[BFLossResponse, GetBFLossHateoasData] {
-    override def links(data: GetBFLossHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: GetBFLossHateoasData): Seq[Link] = {
       import data._
-      Seq(getBFLoss(nino, lossId), deleteBfLoss(nino, lossId), amendBfLoss(nino, lossId))
+      Seq(getBFLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId))
     }
   }
 }
