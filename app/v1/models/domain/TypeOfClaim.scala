@@ -16,7 +16,8 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{JsString, JsonValidationError, Reads, Writes}
+import play.api.libs.json.Format
+import utils.enums.Enums
 import v1.models.des.ReliefClaimed
 
 sealed trait TypeOfClaim {
@@ -42,15 +43,7 @@ object TypeOfClaim {
     override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CSFHL`
   }
 
+  implicit val format: Format[TypeOfClaim] = Enums.format[TypeOfClaim]
 
-  val parser: PartialFunction[String, TypeOfClaim] = {
-    case "carry-forward"    => `carry-forward`
-    case "carry-sideways"    => `carry-sideways`
-    case "carry-forward-to-carry-sideways" => `carry-forward-to-carry-sideways`
-    case "carry-sideways-fhl" => `carry-sideways-fhl`
-  }
-
-  implicit val reads: Reads[TypeOfClaim] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.typeOfClaim"))(parser)
-
-  implicit val writes: Writes[TypeOfClaim] = Writes[TypeOfClaim](ts => JsString(ts.toString))
+  val parser: PartialFunction[String, TypeOfClaim] = Enums.parser[TypeOfClaim]
 }
