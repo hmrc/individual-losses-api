@@ -17,10 +17,14 @@
 package v1.models.des
 
 import support.UnitSpec
+import utils.enums.EnumJsonSpecSupport
 import v1.models.des.ReliefClaimed._
 import v1.models.domain.TypeOfClaim
 
-class ReliefClaimedSpec extends UnitSpec {
+class ReliefClaimedSpec extends UnitSpec with EnumJsonSpecSupport {
+
+  testRoundTrip[ReliefClaimed](("CF", `CF`), ("CSGI", `CSGI`), ("CFCSGI", `CFCSGI`), ("CSFHL", `CSFHL`))
+
   "TypeOfClaim" when {
     "getting DES reliefClaimed" must {
       "work" in {

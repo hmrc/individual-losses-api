@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package v1.models.des
 
-import play.api.libs.json._
-import utils.enums.Enums
-import v1.models.domain.TypeOfLoss
+import support.UnitSpec
+import utils.enums.EnumJsonSpecSupport
+import v1.models.des.LossType.{CLASS4, INCOME}
 
-sealed trait LossType {
-  def toTypeOfLoss: TypeOfLoss
-}
+class LossTypeSpec  extends UnitSpec with EnumJsonSpecSupport {
 
-object LossType {
-  case object INCOME extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
-  }
-  case object CLASS4 extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment-class4`
-  }
-
-  implicit val format: Format[LossType] = Enums.format[LossType]
+  testRoundTrip[LossType](
+    ("INCOME", INCOME),
+    ("CLASS4", CLASS4))
 }

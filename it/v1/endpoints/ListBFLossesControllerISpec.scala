@@ -147,6 +147,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "querying for property" in new Test {
@@ -165,6 +166,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "querying for self-employment" in new Test {
@@ -183,6 +185,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "querying for selfEmploymentId with no typeOfLoss" in new Test {
@@ -200,6 +203,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "querying for self-employment with no selfEmploymentId" in new Test {
@@ -217,6 +221,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "query with taxYear" in new Test {
@@ -235,6 +240,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "query with taxYear only" in new Test {
@@ -251,6 +257,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseJson
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
@@ -269,7 +276,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
-
+          response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
@@ -305,6 +312,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().get())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 

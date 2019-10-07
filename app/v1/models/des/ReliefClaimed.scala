@@ -17,6 +17,7 @@
 package v1.models.des
 
 import play.api.libs.json._
+import utils.enums.Enums
 import v1.models.domain.TypeOfClaim
 
 sealed trait ReliefClaimed {
@@ -41,14 +42,5 @@ object ReliefClaimed {
     override def toTypeOfClaim: TypeOfClaim = TypeOfClaim.`carry-sideways-fhl`
   }
 
-  val parser: PartialFunction[String, ReliefClaimed] = {
-    case "CF" => `CF`
-    case "CSGI" => `CSGI`
-    case "CFCSGI" => `CFCSGI`
-    case "CSFHL" => `CSFHL`
-  }
-
-  implicit val reads: Reads[ReliefClaimed] = implicitly[Reads[String]].collect(JsonValidationError("error.expected.reliefClaimed"))(parser)
-
-  implicit val writes: Writes[ReliefClaimed] = Writes[ReliefClaimed](ts => JsString(ts.toString))
+  implicit val format: Format[ReliefClaimed] = Enums.format[ReliefClaimed]
 }

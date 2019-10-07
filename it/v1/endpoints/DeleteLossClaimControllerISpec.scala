@@ -89,6 +89,7 @@ class DeleteLossClaimControllerISpec extends IntegrationBaseSpec {
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
+          response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
@@ -115,6 +116,7 @@ class DeleteLossClaimControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().delete())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
