@@ -16,7 +16,7 @@
 
 package v1.models.hateoas
 
-import play.api.libs.json.{ JsObject, Json, OWrites, Reads, Writes }
+import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 
 object HateoasWrapper {
   implicit def writes[A: OWrites]: Writes[HateoasWrapper[A]] = Writes { w =>
@@ -32,8 +32,6 @@ object HateoasWrapper {
         }
     }
   }
-  implicit val linkReads: Reads[Seq[Link]]               = Reads.seq[Link]
-  implicit def reads[B: Reads]: Reads[HateoasWrapper[B]] = Json.reads[HateoasWrapper[B]]
 }
 
 case class HateoasWrapper[A](payload: A, links: Seq[Link])
