@@ -1,3 +1,20 @@
 {
-    "id": "1234568790ABCDE"
+    "id":"1234568790ABCDE",
+    "links":[
+        {
+            "href":"/individuals/TC663795B/income-tax/losses-brought-forward/1234568790ABCDE",
+            "rel":"self",
+            "method":"GET"
+        },
+        {
+            "href":"/individuals/TC663795B/income-tax/losses-brought-forward/1234568790ABCDE",
+            "rel":"delete-brought-forward-loss",
+            "method":"DELETE"
+        },
+        {
+            "href":"/individuals/TC663795B/income-tax/losses-brought-forward/1234568790ABCDE/change-loss-amount",
+            "rel":"amend-brought-forward-loss",
+            "method":"POST"
+        }
+    ]
 }
