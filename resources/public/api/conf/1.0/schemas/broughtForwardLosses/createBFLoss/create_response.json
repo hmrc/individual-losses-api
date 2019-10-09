@@ -19,20 +19,18 @@
             "href": {
               "description": "The href of the link",
               "type": "string",
-              "pattern": "[-a-zA-Z0-9\\=]{1,256}$",
-              "example": "/individuals/{nino}/income-tax/losses-brought-forward"
+              "pattern": "^[-a-zA-Z0-9\\=]{1,256}$",
+              "example": "/individuals/{nino}/income-tax/losses-brought-forward/{lossId}"
             },
             "rel": {
               "description": "The relative name of the link",
               "type": "string",
-              "pattern": "[-a-z]{4,27}$",
               "enum": ["self", "amend-brought-forward-loss", "delete-brought-forward-loss"]
             },
             "method": {
               "description": "The method of the link",
               "type": "string",
-              "pattern": "[A-Z]{3,7}$",
-              "enum": ["GET", "DELETE", "POST"]
+              "enum": ["GET", "POST", "DELETE"]
             }
           },
           "required": ["href", "rel", "method"]
