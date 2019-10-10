@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v1.controllers.requestParsers.ListBFLossesParser
 import v1.hateoas.HateoasFactory
-import v1.models.des.{ListBFLossHateoasData, ListBFLossesResponse}
+import v1.models.des.ListBFLossHateoasData
 import v1.models.errors._
 import v1.models.requestData.ListBFLossesRawData
 import v1.services._
