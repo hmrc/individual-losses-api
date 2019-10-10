@@ -51,8 +51,7 @@
           }
         },
         "required": [
-          "id",
-          "links"
+          "id"
         ]
       }
     },
