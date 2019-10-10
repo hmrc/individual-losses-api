@@ -15,11 +15,65 @@
             "type": "string",
             "pattern": "^[A-Za-z0-9]{15}$",
             "example": "A2Za0911235813z"
+          },
+          "links": {
+            "type": "array",
+            "description": "A list of endpoint links that indicate possible actions related to the current item in the list",
+            "items": {
+              "$ref": "#/definitions/link"
+            }
           }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
+      }
+    },
+    "links": {
+      "type": "array",
+      "description": "A list of endpoint links that indicate possible actions related to the current resource",
+      "items": {
+        "$ref": "#/definitions/link"
       }
     }
   },
-  "required": ["claims"]
+  "required": [
+    "claims"
+  ],
+  "definitions": {
+    "link": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "description": "The relative url of the endpoint",
+          "type": "string",
+          "example": "/individuals/losses/{nino}/loss-claims/{claimId}"
+        },
+        "rel": {
+          "description": "A label for the endpoint, which describes how it is related to the current resource\nThe rel will be `self` where the action is retrieval of the same resource",
+          "type": "string",
+          "enum": [
+            "self",
+            "create-loss-claim",
+            "delete-loss-claim",
+            "amend-loss-claim"
+          ]
+        },
+        "method": {
+          "description": "The HTTP method type for the endpoint",
+          "type": "string",
+          "enum": [
+            "GET",
+            "DELETE",
+            "POST"
+          ]
+        }
+      },
+      "required": [
+        "href",
+        "rel",
+        "method"
+      ]
+    }
+  }
 }
