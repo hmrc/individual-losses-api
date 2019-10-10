@@ -41,7 +41,6 @@
                     "href": {
                         "description": "The href of the link",
                         "type": "string",
-                        "pattern": "^[-a-zA-Z0-9\\=]{1,256}$",
                         "example": "/individuals/{nino}/income-tax/losses-brought-forward/{lossId}"
                     },
                     "rel": {
