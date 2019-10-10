@@ -16,8 +16,9 @@
 
 package v1.connectors
 
+import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.{MockAppConfig, MockHttpClient}
+import v1.mocks.MockHttpClient
 import v1.models.des._
 import v1.models.domain.{AmendBFLoss, BFLoss, TypeOfLoss}
 import v1.models.errors._
@@ -249,7 +250,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     def listBFLossesResult(connector: BFLossConnector,
                            taxYear: Option[DesTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
-                           selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse] = {
+                           selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse[BFLossId]] = {
       await(
         connector.listBFLosses(
           ListBFLossesRequest(

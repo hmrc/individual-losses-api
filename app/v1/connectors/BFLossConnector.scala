@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
+import v1.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v1.models.domain.{AmendBFLoss, BFLoss}
 import v1.models.requestData._
 
@@ -76,7 +76,7 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListBFLossesResponse]] = {
+  def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListBFLossesResponse[BFLossId]]] = {
     val nino = request.nino.nino
     val pathParameters =
       Map("taxYear"          -> request.taxYear.map(_.value),
@@ -85,8 +85,8 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
         case (key, Some(value)) => key -> value
       }
 
-    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListBFLossesResponse]] = {
-      http.GET[DesOutcome[ListBFLossesResponse]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino", pathParameters.toSeq)
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListBFLossesResponse[BFLossId]]] = {
+      http.GET[DesOutcome[ListBFLossesResponse[BFLossId]]](s"${appConfig.desBaseUrl}/income-tax/brought-forward-losses/$nino", pathParameters.toSeq)
     }
 
     doIt(desHeaderCarrier(appConfig))

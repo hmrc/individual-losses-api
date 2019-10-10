@@ -16,19 +16,18 @@
 
 package v1.models.des
 
+import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import v1.hateoas.{ HateoasLinks, HateoasLinksFactory }
 import v1.models.domain.TypeOfLoss
+import v1.models.hateoas.{ HateoasData, Link }
 import v1.models.requestData.DesTaxYear
 
-case class BFLossResponse(selfEmploymentId: Option[String],
-                          typeOfLoss: TypeOfLoss,
-                          lossAmount: BigDecimal,
-                          taxYear: String,
-                          lastModified: String)
+case class BFLossResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)
 
-object BFLossResponse {
-  implicit val writes: Writes[BFLossResponse] = Json.writes[BFLossResponse]
+object BFLossResponse extends HateoasLinks {
+  implicit val writes: OWrites[BFLossResponse] = Json.writes[BFLossResponse]
 
   implicit val desToMtdReads: Reads[BFLossResponse] = (
     (__ \ "incomeSourceId").readNullable[String] and
@@ -38,4 +37,22 @@ object BFLossResponse {
       (__ \ "taxYear").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]
   )(BFLossResponse.apply _)
+
+  implicit object AmendLinksFactory extends HateoasLinksFactory[BFLossResponse, AmendBFLossHateoasData] {
+    override def links(appConfig: AppConfig, data: AmendBFLossHateoasData): Seq[Link] = {
+      import data._
+      Seq(getBFLoss(appConfig, nino, lossId))
+    }
+  }
+
+  implicit object GetLinksFactory extends HateoasLinksFactory[BFLossResponse, GetBFLossHateoasData] {
+    override def links(appConfig: AppConfig, data: GetBFLossHateoasData): Seq[Link] = {
+      import data._
+      Seq(getBFLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId))
+    }
+  }
 }
+
+case class AmendBFLossHateoasData(nino: String, lossId: String) extends HateoasData
+
+case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData

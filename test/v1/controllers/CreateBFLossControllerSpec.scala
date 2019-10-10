@@ -20,11 +20,14 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.des.CreateBFLossResponse
+import v1.models.des.{CreateBFLossHateoasData, CreateBFLossResponse}
 import v1.models.domain.{BFLoss, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.Method.GET
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
 
@@ -37,6 +40,7 @@ class CreateBFLossControllerSpec
     with MockMtdIdLookupService
     with MockCreateBFLossService
     with MockCreateBFLossRequestDataParser
+    with MockHateoasFactory
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -47,6 +51,7 @@ class CreateBFLossControllerSpec
   val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
   val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
+  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel="test-relationship")
 
   val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
 
@@ -63,7 +68,14 @@ class CreateBFLossControllerSpec
   val responseBody: JsValue = Json.parse(
     """
       |{
-      |  "id": "AAZZ1234567890a"
+      |  "id": "AAZZ1234567890a",
+      |  "links" : [
+      |     {
+      |       "href": "/foo/bar",
+      |       "method": "GET",
+      |       "rel": "test-relationship"
+      |     }
+      |  ]
       |}
     """.stripMargin)
 
@@ -75,6 +87,7 @@ class CreateBFLossControllerSpec
       lookupService = mockMtdIdLookupService,
       createBFLossService = mockCreateBFLossService,
       createBFLossParser = mockCreateBFLossRequestDataParser,
+      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc
     )
@@ -94,6 +107,10 @@ class CreateBFLossControllerSpec
         MockCreateBFLossService
           .create(CreateBFLossRequest(Nino(nino), bfLoss))
           .returns(Future.successful(Right(DesResponse(correlationId, createBFLossResponse))))
+
+        MockHateoasFactory
+          .wrap(createBFLossResponse, CreateBFLossHateoasData(nino, lossId))
+          .returns(HateoasWrapper(createBFLossResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe CREATED

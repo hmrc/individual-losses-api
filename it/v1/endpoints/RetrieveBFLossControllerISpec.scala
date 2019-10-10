@@ -19,11 +19,13 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
+import v1.hateoas.HateoasLinks
+import v1.models.des.BFLossResponse
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
 
 class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -31,19 +33,9 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
   val lossAmount = 531.99
 
-  val responseJson: JsValue = Json.parse(
-    s"""
-       |{
-       |    "selfEmploymentId": "XKIS00000000988",
-       |    "typeOfLoss": "self-employment",
-       |    "taxYear": "2019-20",
-       |    "lossAmount": $lossAmount,
-       |    "lastModified":"2018-07-13T12:13:48.763Z"
-       |}
-      """.stripMargin)
+  object Hateoas extends HateoasLinks
 
-  val desResponseJson: JsValue = Json.parse(
-    s"""
+  val desResponseJson: JsValue = Json.parse(s"""
        |{
        |"incomeSourceId": "XKIS00000000988",
        |"lossType": "INCOME",
@@ -58,6 +50,31 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
+
+    val responseJson: JsValue = Json.parse(s"""
+         |{
+         |    "selfEmploymentId": "XKIS00000000988",
+         |    "typeOfLoss": "self-employment",
+         |    "taxYear": "2019-20",
+         |    "lossAmount": $lossAmount,
+         |    "lastModified":"2018-07-13T12:13:48.763Z",
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "DELETE",
+         |      "rel": "delete-brought-forward-loss"
+         |    },{
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+         |      "method": "POST",
+         |      "rel": "amend-brought-forward-loss"
+         |    }
+         |    ]
+         |}
+      """.stripMargin)
 
     def uri: String    = s"/$nino/brought-forward-losses/$lossId"
     def desUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"

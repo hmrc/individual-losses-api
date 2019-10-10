@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.models.hateoas
 
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
-import v1.models.des.IncomeSourceType._
+import play.api.libs.json.Format
+import utils.enums.Enums
 
-class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
+sealed trait Method
 
-  testRoundTrip[IncomeSourceType](("01", `01`), ("02", `02`), ("04", `04`))
+object Method {
+  case object GET extends Method
+  case object POST extends Method
+  case object DELETE extends Method
+
+  implicit val formats: Format[Method] = Enums.format[Method]
 }

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.models.hateoas
 
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
-import v1.models.des.IncomeSourceType._
+import play.api.libs.json.{Json, Writes}
 
-class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
+case class Link(
+    href: String,
+    method: Method,
+    rel: String
+)
 
-  testRoundTrip[IncomeSourceType](("01", `01`), ("02", `02`), ("04", `04`))
+object Link {
+  implicit val writes: Writes[Link] = Json.writes[Link]
 }

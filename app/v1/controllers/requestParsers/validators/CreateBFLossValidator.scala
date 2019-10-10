@@ -55,7 +55,7 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
   private def otherBodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
-      MtdTaxYearValidation.validate(req.taxYear, minimumTaxYearBFLoss),
+      MinTaxYearValidation.validate(req.taxYear, minimumTaxYearBFLoss),
       SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
       AmountValidation.validate(req.lossAmount)
     )

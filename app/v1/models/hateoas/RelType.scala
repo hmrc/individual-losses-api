@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.models.hateoas
 
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
-import v1.models.des.IncomeSourceType._
-
-class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
-
-  testRoundTrip[IncomeSourceType](("01", `01`), ("02", `02`), ("04", `04`))
+object RelType {
+  val GET_BF_LOSS = "get-brought-forward-loss"
+  val DELETE_BF_LOSS = "delete-brought-forward-loss"
+  val AMEND_BF_LOSS = "amend-brought-forward-loss"
+  val CREATE_BF_LOSS = "create-brought-forward-loss"
+  val SELF = "self"
 }

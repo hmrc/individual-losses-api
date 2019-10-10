@@ -31,19 +31,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
 
   val lossAmount = 531.99
 
-  val responseJson: JsValue = Json.parse(s"""
-        |{
-        |    "losses": [
-        |        {
-        |            "id": "000000000000001"
-        |        },
-        |        {
-        |            "id": "000000000000002"
-        |        }
-        |    ]
-        |}
-     """.stripMargin)
-
   val desResponseJson: JsValue =
     Json.parse(s"""
        |[
@@ -73,7 +60,48 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
     val typeOfLoss: Option[String]       = None
     val selfEmploymentId: Option[String] = None
 
+
     def uri: String = s"/$nino/brought-forward-losses"
+
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |    "losses": [
+         |        {
+         |            "id": "000000000000001",
+         |            "links" : [
+         |             {
+         |               "href" : "/individuals/losses$uri/000000000000001",
+         |               "rel": "self",
+         |               "method": "GET"
+         |             }
+         |            ]
+         |        },
+         |        {
+         |            "id": "000000000000002",
+         |             "links" : [
+         |             {
+         |               "href" : "/individuals/losses$uri/000000000000002",
+         |               "rel": "self",
+         |               "method": "GET"
+         |             }
+         |           ]
+         |        }
+         |    ],
+         |    "links": [
+         |      {
+         |        "href": "/individuals/losses$uri",
+         |        "rel": "self",
+         |        "method": "GET"
+         |      },
+         |      {
+         |        "href": "/individuals/losses$uri",
+         |        "rel": "create-brought-forward-loss",
+         |        "method": "POST"
+         |      }
+         |    ]
+         |}
+     """.stripMargin)
 
     def queryParams: Seq[(String, String)] =
       Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "selfEmploymentId" -> selfEmploymentId)

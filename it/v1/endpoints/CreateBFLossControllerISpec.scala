@@ -22,6 +22,7 @@ import play.api.http.Status
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
+import v1.hateoas.HateoasLinks
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
@@ -40,6 +41,8 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
   val lossAmount = 256.78
   val typeOfLoss = "self-employment"
 
+  object Hateoas extends HateoasLinks
+
   private trait Test {
 
     val nino = "AA123456A"
@@ -54,10 +57,25 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val responseJson: JsValue = Json.parse(
-      """
+    lazy val responseJson: JsValue = Json.parse(
+      s"""
         |{
-        |    "id": "AAZZ1234567890a"
+        |    "id": "AAZZ1234567890a",
+        |    "links": [{
+        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+        |      "method": "GET",
+        |      "rel": "self"
+        |    },
+        |    {
+        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+        |      "method": "DELETE",
+        |      "rel": "delete-brought-forward-loss"
+        |    },{
+        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+        |      "method": "POST",
+        |      "rel": "amend-brought-forward-loss"
+        |    }
+        |    ]
         |}
       """.stripMargin)
 

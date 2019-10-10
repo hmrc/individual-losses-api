@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.des
+package v1.controllers.requestParsers.validators.validations
 
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
-import v1.models.des.IncomeSourceType._
+import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError}
+import v1.models.requestData.DesTaxYear
 
-class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
+object MinTaxYearValidation {
 
-  testRoundTrip[IncomeSourceType](("01", `01`), ("02", `02`), ("04", `04`))
+  // @param taxYear In format YYYY-YY
+  def validate(taxYear: String, minTaxYear: Int): List[MtdError] = {
+
+    val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
+
+    if (desTaxYear >= minTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
+  }
 }

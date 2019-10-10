@@ -20,11 +20,14 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
-import v1.models.des.BFLossResponse
+import v1.models.des.{BFLossResponse, GetBFLossHateoasData}
 import v1.models.domain.TypeOfLoss
 import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.Method.GET
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
@@ -32,33 +35,42 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveBFLossService
     with MockRetrieveBFLossRequestDataParser
+    with MockHateoasFactory
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino = "AA123456A"
-  val lossId = "AAZZ1234567890a"
+  val nino          = "AA123456A"
+  val lossId        = "AAZZ1234567890a"
 
   val rawData = RetrieveBFLossRawData(nino, lossId)
   val request = RetrieveBFLossRequest(Nino(nino), lossId)
 
   val response = BFLossResponse(taxYear = "2017-18",
-    typeOfLoss = TypeOfLoss.`uk-property-fhl`,
-    selfEmploymentId = None,
-    lossAmount = 100.00,
-    lastModified = "2018-07-13T12:13:48.763Z")
+                                typeOfLoss = TypeOfLoss.`uk-property-fhl`,
+                                selfEmploymentId = None,
+                                lossAmount = 100.00,
+                                lastModified = "2018-07-13T12:13:48.763Z")
 
-  val responseJson: JsValue = Json.parse(
-    """
+  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+
+  val responseJson: JsValue = Json.parse("""
       |{
       |    "taxYear": "2017-18",
       |    "typeOfLoss": "uk-property-fhl",
       |    "lossAmount": 100.00,
-      |    "lastModified": "2018-07-13T12:13:48.763Z"
+      |    "lastModified": "2018-07-13T12:13:48.763Z",
+      |    "links": [
+      |      {
+      |       "href": "/foo/bar",
+      |       "method": "GET",
+      |       "rel": "test-relationship"
+      |      }
+      |    ]
       |}
     """.stripMargin)
 
@@ -70,6 +82,7 @@ class RetrieveBFLossControllerSpec
       lookupService = mockMtdIdLookupService,
       retrieveBFLossService = mockRetrieveBFLossService,
       retrieveBFLossParser = mockRetrieveBFLossRequestDataParser,
+      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc
     )
@@ -89,6 +102,10 @@ class RetrieveBFLossControllerSpec
         MockRetrieveBFLossService
           .retrieve(request)
           .returns(Future.successful(Right(DesResponse(correlationId, response))))
+
+        MockHateoasFactory
+          .wrap(response, GetBFLossHateoasData(nino, lossId))
+          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
         status(result) shouldBe OK

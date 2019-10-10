@@ -18,59 +18,62 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import v1.controllers.requestParsers.RetrieveBFLossParser
+import v1.hateoas.HateoasFactory
+import v1.models.des.GetBFLossHateoasData
 import v1.models.errors._
 import v1.models.requestData.RetrieveBFLossRawData
 import v1.services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                          val lookupService: MtdIdLookupService,
                                          retrieveBFLossService: RetrieveBFLossService,
                                          retrieveBFLossParser: RetrieveBFLossParser,
+                                         hateoasFactory: HateoasFactory,
                                          auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController {
+    extends AuthorisedController(cc)
+    with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveBFLossController", endpointName = "Retrieve a Brought Forward Loss")
 
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       val rawData = RetrieveBFLossRawData(nino, lossId)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](retrieveBFLossParser.parseRequest(rawData))
-          vendorResponse <- EitherT(retrieveBFLossService.retrieveBFLoss(parsedRequest))
+          parsedRequest   <- EitherT.fromEither[Future](retrieveBFLossParser.parseRequest(rawData))
+          serviceResponse <- EitherT(retrieveBFLossService.retrieveBFLoss(parsedRequest))
+          vendorResponse <- EitherT.fromEither[Future](
+            hateoasFactory.wrap(serviceResponse.responseData, GetBFLossHateoasData(nino, lossId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse.responseData))
-            .withApiHeaders(vendorResponse.correlationId)
+          Ok(Json.toJson(vendorResponse))
+            .withApiHeaders(serviceResponse.correlationId)
         }
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
         result
       }.merge
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError
-           | NinoFormatError
-           | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError                                         => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError                                       => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 }
