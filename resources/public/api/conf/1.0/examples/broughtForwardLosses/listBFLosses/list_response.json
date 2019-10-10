@@ -4,7 +4,7 @@
       "id": "000000123456789",
       "links":[
         {
-          "href":"/individuals/TC663795B/income-tax/losses-brought-forward/000000123456789",
+          "href":"/individuals/losses/TC663795B/losses-brought-forward/000000123456789",
           "rel":"self",
           "method":"GET"
         }
@@ -14,7 +14,7 @@
       "id": "000000123456790",
       "links":[
         {
-          "href":"/individuals/TC663795B/income-tax/losses-brought-forward/000000123456790",
+          "href":"/individuals/losses/TC663795B/losses-brought-forward/000000123456790",
           "rel":"self",
           "method":"GET"
         }
@@ -23,12 +23,12 @@
   ],
   "links":[
     {
-      "href":"/individuals/TC663795B/income-tax/losses-brought-forward",
+      "href":"/individuals/losses/TC663795B/losses-brought-forward",
       "rel":"create-brought-forward-loss",
       "method":"POST"
     },
     {
-      "href":"/individuals/TC663795B/income-tax/losses-brought-forward",
+      "href":"/individuals/losses/TC663795B/losses-brought-forward",
       "rel":"self",
       "method":"GET"
     }
