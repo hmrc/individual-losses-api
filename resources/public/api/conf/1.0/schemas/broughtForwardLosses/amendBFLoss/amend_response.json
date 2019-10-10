@@ -46,7 +46,7 @@
           "href": {
             "description": "The relative url of the endpoint",
             "type": "string",
-            "example": "/individuals/{nino}/income-tax/losses-brought-forward/{lossId}"
+            "example": "/individuals/losses/{nino}losses-brought-forward/{lossId}"
           },
           "rel": {
             "description": "A label for the endpoint, which describes how it is related to the current resource\nThe rel will be self where the action is retrieval of the same resource",

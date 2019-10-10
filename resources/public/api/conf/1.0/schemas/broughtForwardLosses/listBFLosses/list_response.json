@@ -20,22 +20,22 @@
             "type": "array",
             "items": {
               "type": "object",
-              "description": "Array of links",
+              "description": "A list of endpoint links that indicate possible actions related to the current resource",
               "properties": {
                 "href": {
-                  "description": "The href of the link",
+                  "description": "The relative url of the endpoint",
                   "type": "string",
-                  "example": "/individuals/{nino}/income-tax/losses-brought-forward/{lossId}"
+                  "example": "/individuals/losses/{nino}/losses-brought-forward/{lossId}"
                 },
                 "rel": {
-                  "description": "The relative name of the link",
+                  "description": "A label for the endpoint, which describes how it is related to the current resource\nThe rel will be `self` where the action is retrieval of the same resource",
                   "type": "string",
                   "enum": [
                     "self"
                   ]
                 },
                 "method": {
-                  "description": "The method of the link",
+                  "description": "The HTTP method type for the endpoint",
                   "type": "string",
                   "enum": [
                     "GET"
@@ -65,7 +65,7 @@
           "href": {
             "description": "The relative url of the endpoint",
             "type": "string",
-            "example": "/individuals/{nino}/income-tax/losses-brought-forward"
+            "example": "/individuals/losses/{nino}/losses-brought-forward"
           },
           "rel": {
             "description": "A label for the endpoint, which describes how it is related to the current resource\nThe rel will be self where the action is retrieval of the same resource",
