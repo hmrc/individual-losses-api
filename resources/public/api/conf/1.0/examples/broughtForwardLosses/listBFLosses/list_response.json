@@ -2,35 +2,35 @@
   "losses": [
     {
       "id": "000000123456789",
-      "links":[
+      "links": [
         {
-          "href":"/individuals/losses/TC663795B/losses-brought-forward/000000123456789",
-          "rel":"self",
-          "method":"GET"
+          "href": "/individuals/losses/TC663795B/losses-brought-forward/000000123456789",
+          "rel": "self",
+          "method": "GET"
         }
       ]
     },
     {
       "id": "000000123456790",
-      "links":[
+      "links": [
         {
-          "href":"/individuals/losses/TC663795B/losses-brought-forward/000000123456790",
-          "rel":"self",
-          "method":"GET"
+          "href": "/individuals/losses/TC663795B/losses-brought-forward/000000123456790",
+          "rel": "self",
+          "method": "GET"
         }
       ]
     }
   ],
-  "links":[
+  "links": [
     {
-      "href":"/individuals/losses/TC663795B/losses-brought-forward",
-      "rel":"create-brought-forward-loss",
-      "method":"POST"
+      "href": "/individuals/losses/TC663795B/losses-brought-forward",
+      "rel": "create-brought-forward-loss",
+      "method": "POST"
     },
     {
-      "href":"/individuals/losses/TC663795B/losses-brought-forward",
-      "rel":"self",
-      "method":"GET"
+      "href": "/individuals/losses/TC663795B/losses-brought-forward",
+      "rel": "self",
+      "method": "GET"
     }
   ]
 }

@@ -28,10 +28,10 @@ body:
     examples:
       example-1:
         description: Self-employment claim
-        value: !include examples/lossClaims/createClaim/se.json
+        value: !include examples/lossClaims/createClaim/create_se_request.json
       example-2:
         description: UK Non-FHL Property claim
-        value: !include examples/lossClaims/createClaim/fhl.json
+        value: !include examples/lossClaims/createClaim/create_non_fhl_request.json
 responses:
   201:
     headers:
@@ -41,4 +41,4 @@ responses:
     body:
       application/json:
         type: !include schemas/lossClaims/createClaim/create_response.json
-        example: !include examples/lossClaims/createClaim/response.json
+        example: !include examples/lossClaims/createClaim/create_response.json
