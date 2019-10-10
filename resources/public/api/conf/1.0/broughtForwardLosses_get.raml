@@ -14,14 +14,14 @@ responses:
   200:
     body:
       application/json:
-        type: !include schemas/broughtForwardLosses/BroughtForwardLoss_response.json
+        type: !include schemas/broughtForwardLosses/retrieveBFLoss/retrieve_response.json
         examples:
           example-1:
             description: Self-employment Class 4 loss
-            value: !include examples/broughtForwardLosses/bfLoss_seClass4_response.json
+            value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_seClass4_response.json
           example-2:
             description: UK FHL property loss
-            value: !include examples/broughtForwardLosses/bfLoss_fhl_response.json
+            value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_fhl_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435

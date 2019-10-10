@@ -9,7 +9,33 @@
         "type": "string",
         "pattern": "^[A-Za-z0-9]{15}$",
         "example": "1234568790ABCDE"
+      },
+      "links": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "description": "Array of links",
+          "properties": {
+            "href": {
+              "description": "The href of the link",
+              "type": "string",
+              "pattern": "^[-a-zA-Z0-9\\=]{1,256}$",
+              "example": "/individuals/{nino}/income-tax/losses-brought-forward/{lossId}"
+            },
+            "rel": {
+              "description": "The relative name of the link",
+              "type": "string",
+              "enum": ["self", "amend-brought-forward-loss", "delete-brought-forward-loss"]
+            },
+            "method": {
+              "description": "The method of the link",
+              "type": "string",
+              "enum": ["GET", "POST", "DELETE"]
+            }
+          },
+          "required": ["href", "rel", "method"]
+        }
       }
     },
-    "required": ["id"]
+    "required": ["id", "links"]
 }

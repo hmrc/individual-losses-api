@@ -24,14 +24,14 @@ securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
     description: The brought forward loss information brought into MTD
-    type: !include schemas/broughtForwardLosses/BroughtForwardLoss.json
+    type: !include schemas/broughtForwardLosses/createBFLoss/create_request.json
     examples:
       example-1:
         description: Self-employment Class 4 loss
-        value: !include examples/broughtForwardLosses/bfLoss_seClass4.json
+        value: !include examples/broughtForwardLosses/createBFLoss/create_seClass4_request.json
       example-2:
         description: UK FHL Property loss
-        value: !include examples/broughtForwardLosses/bfLoss_fhl.json
+        value: !include examples/broughtForwardLosses/createBFLoss/create_fhl_request.json
 responses:
   201:
     headers:
@@ -41,4 +41,4 @@ responses:
     body:
       application/json:
         type: !include schemas/broughtForwardLosses/createBFLoss/create_response.json
-        example: !include examples/broughtForwardLosses/createBFLoss/response.json
+        example: !include examples/broughtForwardLosses/createBFLoss/create_response.json
