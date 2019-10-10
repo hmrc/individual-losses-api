@@ -16,22 +16,41 @@
 
 package v1.models.des
 
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import cats.Functor
+import config.AppConfig
+import play.api.libs.json._
+import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
 
 case class LossClaimId(id: String)
 
 object LossClaimId {
-  implicit val writes: Writes[LossClaimId] = Json.writes[LossClaimId]
+  implicit val writes: OWrites[LossClaimId] = Json.writes[LossClaimId]
 
   implicit val reads: Reads[LossClaimId] = (JsPath \ "claimId").read[String].map(LossClaimId(_))
 }
 
-case class ListLossClaimsResponse(claims: Seq[LossClaimId])
+case class ListLossClaimsResponse[I](claims: Seq[I])
 
-object ListLossClaimsResponse {
-  implicit val writes: Writes[ListLossClaimsResponse] =
-    Json.writes[ListLossClaimsResponse]
+object ListLossClaimsResponse extends HateoasLinks {
+  implicit def writes[I: Writes]: OWrites[ListLossClaimsResponse[I]] =
+    Json.writes[ListLossClaimsResponse[I]]
 
-  implicit val reads: Reads[ListLossClaimsResponse] =
-    implicitly[Reads[Seq[LossClaimId]]].map(ListLossClaimsResponse(_))
+  implicit def reads[I: Reads]: Reads[ListLossClaimsResponse[I]] =
+    implicitly[Reads[Seq[I]]].map(ListLossClaimsResponse(_))
+
+  implicit object LinksFactory extends HateoasListLinksFactory[ListLossClaimsResponse, LossClaimId, ListLossClaimsHateoasData] {
+    override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] =
+      Seq(listLossClaim(appConfig, data.nino), createLossClaim(appConfig, data.nino))
+
+    override def itemLinks(appConfig: AppConfig, data: ListLossClaimsHateoasData, item: LossClaimId): Seq[Link] =
+      Seq(getLossClaim(appConfig, data.nino, item.id))
+  }
+
+  implicit object ResponseFunctor extends Functor[ListLossClaimsResponse] {
+    override def map[A, B](fa: ListLossClaimsResponse[A])(f: A => B): ListLossClaimsResponse[B] =
+      ListLossClaimsResponse(fa.claims.map(f))
+  }
 }
+
+case class ListLossClaimsHateoasData(nino: String) extends HateoasData

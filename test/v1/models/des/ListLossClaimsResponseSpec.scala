@@ -16,8 +16,12 @@
 
 package v1.models.des
 
+import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
+import v1.hateoas.HateoasFactory
+import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.{GET, POST}
 
 class ListLossClaimsResponseSpec extends UnitSpec {
 
@@ -68,9 +72,29 @@ class ListLossClaimsResponseSpec extends UnitSpec {
            |
         """.stripMargin)
 
-      desResponseJson.as[ListLossClaimsResponse] shouldBe
+      desResponseJson.as[ListLossClaimsResponse[LossClaimId]] shouldBe
         ListLossClaimsResponse(
           Seq(LossClaimId("000000000000011"), LossClaimId("000000000000022"), LossClaimId("000000000000033")))
+    }
+  }
+
+  "HateoasFactory" must {
+    class Test extends MockAppConfig {
+      val hateoasFactory = new HateoasFactory(mockAppConfig)
+      val nino           = "someNino"
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+    }
+
+    "expose the correct links for list" in new Test {
+      hateoasFactory.wrapList(ListLossClaimsResponse(Seq(LossClaimId("claimid"))), ListLossClaimsHateoasData(nino)) shouldBe
+        HateoasWrapper(
+          ListLossClaimsResponse(
+            Seq(HateoasWrapper(LossClaimId("claimid"), Seq(Link(s"/individuals/losses/$nino/loss-claims/claimid", GET, "self"))))),
+          Seq(
+            Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
+            Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
+          )
+        )
     }
   }
 

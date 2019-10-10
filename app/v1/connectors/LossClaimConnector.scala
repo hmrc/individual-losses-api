@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.des.{LossClaimResponse, CreateLossClaimResponse, ListLossClaimsResponse}
+import v1.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
 import v1.models.domain.{AmendLossClaim, LossClaim}
 import v1.models.requestData._
 
@@ -65,7 +65,7 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListLossClaimsResponse]] = {
+  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
     val nino = request.nino.nino
     val pathParameters =
       Map("taxYear"          -> request.taxYear.map(_.value),
@@ -74,8 +74,8 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
         case (key, Some(value)) => key -> value
       }
 
-    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListLossClaimsResponse]] = {
-      http.GET[DesOutcome[ListLossClaimsResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino", pathParameters.toSeq)
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
+      http.GET[DesOutcome[ListLossClaimsResponse[LossClaimId]]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino", pathParameters.toSeq)
     }
 
     doIt(desHeaderCarrier(appConfig))
