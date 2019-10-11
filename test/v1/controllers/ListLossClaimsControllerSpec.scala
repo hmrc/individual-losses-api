@@ -20,10 +20,13 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListLossClaimsRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
-import v1.models.des.{LossClaimId, ListLossClaimsResponse}
+import v1.models.des.{ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId}
 import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.Method.{GET, POST}
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
@@ -36,29 +39,57 @@ class ListLossClaimsControllerSpec
     with MockMtdIdLookupService
     with MockListLossClaimsService
     with MockListLossClaimsRequestDataParser
+    with MockHateoasFactory
     with MockAuditService {
 
   // WLOG as request data parsing is mocked...
   val correlationId    = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino             = "AA123456A"
   val taxYear          = "2018-19"
-  val selfEmployment = "self-employment"
+  val selfEmployment   = "self-employment"
   val selfEmploymentId = "selfEmploymentId"
 
   val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
   val request = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
 
+  val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
+
   val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789"), LossClaimId("000000123456790")))
+
+  val hateoasResponse = ListLossClaimsResponse(
+    Seq(HateoasWrapper(LossClaimId("000000123456789"), Seq(testHateoasLink)), HateoasWrapper(LossClaimId("000000123456790"), Seq(testHateoasLink))))
 
   val responseJson: JsValue = Json.parse("""
       |{
       |    "claims": [
       |        {
-      |            "id": "000000123456789"
+      |            "id": "000000123456789",
+      |            "links" : [
+      |               {
+      |                 "href": "/foo/bar",
+      |                 "method": "GET",
+      |                 "rel": "test-relationship"
+      |               }
+      |            ]
       |        },
       |        {
-      |            "id": "000000123456790"
+      |            "id": "000000123456790",
+      |            "links" : [
+      |               {
+      |                 "href": "/foo/bar",
+      |                 "method": "GET",
+      |                 "rel": "test-relationship"
+      |               }
+      |            ]
       |        }
+      |    ],
+      |    "links" : [
+      |       {
+      |         "href": "/foo/bar",
+      |         "method": "POST",
+      |         "rel": "test-create-relationship"
+      |       }
       |    ]
       |}
     """.stripMargin)
@@ -71,6 +102,7 @@ class ListLossClaimsControllerSpec
       lookupService = mockMtdIdLookupService,
       listLossClaimsService = mockListLossClaimsService,
       listLossClaimsParser = mockListLossClaimsRequestDataParser,
+      mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc
     )
@@ -91,6 +123,10 @@ class ListLossClaimsControllerSpec
           .list(request)
           .returns(Future.successful(Right(DesResponse(correlationId, response))))
 
+        MockHateoasFactory
+          .wrapList(response, ListLossClaimsHateoasData(nino))
+          .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
+
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseJson
@@ -107,6 +143,10 @@ class ListLossClaimsControllerSpec
         MockListLossClaimsService
           .list(request)
           .returns(Future.successful(Right(DesResponse(correlationId, ListLossClaimsResponse(Nil)))))
+
+        MockHateoasFactory
+          .wrapList(ListLossClaimsResponse(List.empty[LossClaimId]), ListLossClaimsHateoasData(nino))
+          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[LossClaimId]]), Seq(testCreateHateoasLink)))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
         status(result) shouldBe NOT_FOUND
@@ -138,7 +178,7 @@ class ListLossClaimsControllerSpec
       errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
       errorsFromParserTester(SelfEmploymentIdFormatError, BAD_REQUEST)
-     }
+    }
 
     "handle non-mdtp validation errors as per spec" when {
       def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {

@@ -31,19 +31,6 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
 
   val lossAmount = 531.99
 
-  val responseJson: JsValue = Json.parse(s"""
-        |{
-        |    "claims": [
-        |        {
-        |            "id": "000000000000011"
-        |        },
-        |        {
-        |            "id": "000000000000022"
-        |        }
-        |    ]
-        |}
-     """.stripMargin)
-
   val desResponseJson: JsValue =
     Json.parse(s"""[
         |    {
@@ -73,6 +60,44 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/loss-claims"
 
+    val responseJson: JsValue = Json.parse(s"""
+                                              |{
+                                              |    "claims": [
+                                              |        {
+                                              |            "id": "000000000000011",
+                                              |            "links" : [
+                                              |             {
+                                              |               "href" : "/individuals/losses$uri/000000000000011",
+                                              |               "rel": "self",
+                                              |               "method": "GET"
+                                              |             }
+                                              |            ]
+                                              |        },
+                                              |        {
+                                              |            "id": "000000000000022",
+                                              |            "links" : [
+                                              |             {
+                                              |               "href" : "/individuals/losses$uri/000000000000022",
+                                              |               "rel": "self",
+                                              |               "method": "GET"
+                                              |             }
+                                              |            ]
+                                              |        }
+                                              |    ],
+                                              |    "links": [
+                                              |      {
+                                              |        "href": "/individuals/losses$uri",
+                                              |        "rel": "self",
+                                              |        "method": "GET"
+                                              |      },
+                                              |      {
+                                              |        "href": "/individuals/losses$uri",
+                                              |        "rel": "create-loss-claim",
+                                              |        "method": "POST"
+                                              |      }
+                                              |    ]
+                                              |}
+     """.stripMargin)
     def queryParams: Seq[(String, String)] =
       Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "selfEmploymentId" -> selfEmploymentId)
         .collect {

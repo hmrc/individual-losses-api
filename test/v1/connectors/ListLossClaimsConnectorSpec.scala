@@ -125,7 +125,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     def listLossClaimsResult(connector: LossClaimConnector,
                              taxYear: Option[DesTaxYear] = None,
                              incomeSourceType: Option[IncomeSourceType] = None,
-                             selfEmploymentId: Option[String] = None): DesOutcome[ListLossClaimsResponse] =
+                             selfEmploymentId: Option[String] = None): DesOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(
