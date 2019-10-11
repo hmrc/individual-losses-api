@@ -19,57 +19,60 @@ package v1.models.des
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.hateoas.HateoasFactory
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Link
 import v1.models.hateoas.Method.{GET, POST}
 
-class ListLossClaimsResponseSpec extends UnitSpec {
+class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
+
+  val nino = "AA123456A"
 
   "json writes" must {
     "output as per spec" in {
       Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("000000123456789"), LossClaimId("000000123456790")))) shouldBe
-        Json.parse("""
-          |{
-          |    "claims": [
-          |        {
-          |            "id": "000000123456789"
-          |        },
-          |        {
-          |            "id": "000000123456790"
-          |        }
-          |    ]
-          |}
-        """.stripMargin)
+        Json.parse(
+          """
+            |{
+            |    "claims": [
+            |        {
+            |            "id": "000000123456789"
+            |        },
+            |        {
+            |            "id": "000000123456790"
+            |        }
+            |    ]
+            |}
+          """.stripMargin)
     }
   }
   "json reads" must {
     "work for des response" in {
       // Note we ignore all but the claimId currently...
       val desResponseJson =
-        Json.parse("""[
-           |  {
-           |    "incomeSourceId": "000000000000001",
-           |    "reliefClaimed": "CF",
-           |    "taxYearClaimedFor": "2099",
-           |    "claimId": "000000000000011",
-           |    "submissionDate": "2019-07-13T12:13:48.763Z"
-           |  },
-           |  {
-           |    "incomeSourceId": "000000000000002",
-           |    "reliefClaimed": "CF",
-           |    "taxYearClaimedFor": "2020",
-           |    "claimId": "000000000000022",
-           |    "submissionDate": "2018-07-13T12:13:48.763Z"
-           |  },
-           |  {
-           |     "incomeSourceType": "02",
-           |     "reliefClaimed": "CSFHL",
-           |     "taxYearClaimedFor": "2020",
-           |     "claimId": "000000000000033",
-           |     "submissionDate": "2018-07-13T12:13:48.763Z"
-           |  }
-           |]
-           |
+        Json.parse(
+          """[
+            |  {
+            |    "incomeSourceId": "000000000000001",
+            |    "reliefClaimed": "CF",
+            |    "taxYearClaimedFor": "2099",
+            |    "claimId": "000000000000011",
+            |    "submissionDate": "2019-07-13T12:13:48.763Z"
+            |  },
+            |  {
+            |    "incomeSourceId": "000000000000002",
+            |    "reliefClaimed": "CF",
+            |    "taxYearClaimedFor": "2020",
+            |    "claimId": "000000000000022",
+            |    "submissionDate": "2018-07-13T12:13:48.763Z"
+            |  },
+            |  {
+            |     "incomeSourceType": "02",
+            |     "reliefClaimed": "CSFHL",
+            |     "taxYearClaimedFor": "2020",
+            |     "claimId": "000000000000033",
+            |     "submissionDate": "2018-07-13T12:13:48.763Z"
+            |  }
+            |]
+            |
         """.stripMargin)
 
       desResponseJson.as[ListLossClaimsResponse[LossClaimId]] shouldBe
@@ -78,22 +81,22 @@ class ListLossClaimsResponseSpec extends UnitSpec {
     }
   }
 
-  "HateoasFactory" must {
-    class Test extends MockAppConfig {
-      val hateoasFactory = new HateoasFactory(mockAppConfig)
-      val nino           = "someNino"
+  "Links Factory" should {
+
+    "expose the correct top level links for list" in {
       MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
+        Seq(
+          Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
+          Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
+        )
     }
 
-    "expose the correct links for list" in new Test {
-      hateoasFactory.wrapList(ListLossClaimsResponse(Seq(LossClaimId("claimid"))), ListLossClaimsHateoasData(nino)) shouldBe
-        HateoasWrapper(
-          ListLossClaimsResponse(
-            Seq(HateoasWrapper(LossClaimId("claimid"), Seq(Link(s"/individuals/losses/$nino/loss-claims/claimid", GET, "self"))))),
-          Seq(
-            Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
-            Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
-          )
+    "expose the correct item level links for list" in {
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      ListLossClaimsResponse.LinksFactory.itemLinks(mockAppConfig, ListLossClaimsHateoasData(nino), LossClaimId("claimId")) shouldBe
+        Seq(
+          Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self")
         )
     }
   }
