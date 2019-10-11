@@ -16,11 +16,24 @@
 
 package v1.models.des
 
+import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v1.hateoas.HateoasFactory
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
+import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.{DELETE, GET, POST}
 
 class LossClaimResponseSpec extends UnitSpec {
+
+  val lossClaimResponse =
+    LossClaimResponse(
+      selfEmploymentId = Some("000000000000001"),
+      typeOfLoss = TypeOfLoss.`self-employment`,
+      typeOfClaim = TypeOfClaim.`carry-forward`,
+      taxYear = "2019-20",
+      lastModified = ""
+    )
 
   "Json Reads" should {
     def desPropertyJson(incomeSourceType: String): JsValue = {
@@ -71,14 +84,6 @@ class LossClaimResponseSpec extends UnitSpec {
     }
   }
   "Json Writes" should {
-    val model =
-      LossClaimResponse(
-        selfEmploymentId = Some("000000000000001"),
-        typeOfLoss = TypeOfLoss.`self-employment`,
-        typeOfClaim = TypeOfClaim.`carry-forward`,
-        taxYear = "2019-20",
-        lastModified = ""
-      )
     val mtdJson = Json.parse("""{
                                |  "selfEmploymentId": "000000000000001",
                                |  "typeOfLoss": "self-employment",
@@ -88,7 +93,28 @@ class LossClaimResponseSpec extends UnitSpec {
                                |}
                              """.stripMargin)
     "convert a valid model into MTD JSON" in {
-      Json.toJson(model) shouldBe mtdJson
+      Json.toJson(lossClaimResponse) shouldBe mtdJson
+    }
+  }
+
+  "HateoasFactory" must {
+    class Test extends MockAppConfig {
+      val hateoasFactory = new HateoasFactory(mockAppConfig)
+      val nino           = "someNino"
+      val claimId         = "claimId"
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+    }
+
+    "expose the correct links for retrieve" in new Test {
+      hateoasFactory.wrap(lossClaimResponse, GetLossClaimHateoasData(nino, claimId)) shouldBe
+        HateoasWrapper(
+          lossClaimResponse,
+          Seq(
+            Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self"),
+            Link(s"/individuals/losses/$nino/loss-claims/claimId", DELETE, "delete-loss-claim"),
+            Link(s"/individuals/losses/$nino/loss-claims/claimId/change-type-of-claim", POST, "amend-loss-claim")
+          )
+        )
     }
   }
 }
