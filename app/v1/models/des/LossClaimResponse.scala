@@ -16,22 +16,39 @@
 
 package v1.models.des
 
+import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
+import v1.hateoas.HateoasLinksFactory
+import v1.models.des.BFLossResponse._
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
+import v1.models.hateoas.{HateoasData, Link}
 import v1.models.requestData.DesTaxYear
 
-case class LossClaimResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, taxYear: String, lastModified: String)
+case class LossClaimResponse(selfEmploymentId: Option[String],
+                             typeOfLoss: TypeOfLoss,
+                             typeOfClaim: TypeOfClaim,
+                             taxYear: String,
+                             lastModified: String)
 
 object LossClaimResponse {
   implicit val writes: OWrites[LossClaimResponse] = Json.writes[LossClaimResponse]
   implicit val reads: Reads[LossClaimResponse] = (
     (__ \ "incomeSourceId").readNullable[String] and
       ((__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
-        //For SE scenario where incomeSourceType doesn't exist
+      //For SE scenario where incomeSourceType doesn't exist
         orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (__ \ "taxYearClaimedFor").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]
-    ) (LossClaimResponse.apply _)
+  )(LossClaimResponse.apply _)
+
+  implicit object GetLinksFactory extends HateoasLinksFactory[LossClaimResponse, GetLossClaimHateoasData] {
+    override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
+      import data._
+      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaim(appConfig, nino, claimId))
+    }
+  }
 }
+
+case class GetLossClaimHateoasData(nino: String, claimId: String) extends HateoasData

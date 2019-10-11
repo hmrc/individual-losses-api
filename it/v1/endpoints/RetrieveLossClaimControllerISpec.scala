@@ -29,15 +29,6 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
 
   val correlationId = "X-123"
 
-  val responseJson: JsValue = Json.parse(s"""
-       |{
-       |    "selfEmploymentId": "XKIS00000000988",
-       |    "typeOfLoss": "self-employment",
-       |    "typeOfClaim": "carry-forward",
-       |    "taxYear": "2019-20",
-       |    "lastModified":"2018-07-13T12:13:48.763Z"
-       |}
-      """.stripMargin)
 
   val desResponseJson: JsValue = Json.parse(s"""
        |{
@@ -53,6 +44,32 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
 
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
+
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |    "selfEmploymentId": "XKIS00000000988",
+         |    "typeOfLoss": "self-employment",
+         |    "typeOfClaim": "carry-forward",
+         |    "taxYear": "2019-20",
+         |    "lastModified":"2018-07-13T12:13:48.763Z",
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "DELETE",
+         |      "rel": "delete-loss-claim"
+         |    },{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
+         |      "method": "POST",
+         |      "rel": "amend-loss-claim"
+         |    }
+         |    ]
+         |}
+      """.stripMargin)
 
     def uri: String    = s"/$nino/loss-claims/$claimId"
     def desUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
@@ -72,7 +89,6 @@ class RetrieveLossClaimControllerISpec extends IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
-
   }
 
   "Calling the retrieve LossClaim endpoint" should {
