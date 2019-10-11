@@ -16,17 +16,20 @@
 
 package v1.controllers
 
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v1.mocks.services._
-import v1.models.des.CreateLossClaimResponse
-import v1.models.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
-import v1.models.errors.{ NotFoundError, _ }
+import v1.models.des.{CreateLossClaimHateoasData, CreateLossClaimResponse}
+import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
+import v1.models.errors.{NotFoundError, _}
+import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.GET
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{ CreateLossClaimRawData, CreateLossClaimRequest }
+import v1.models.requestData.{CreateLossClaimRawData, CreateLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -37,15 +40,18 @@ class CreateLossClaimControllerSpec
     with MockMtdIdLookupService
     with MockCreateLossClaimService
     with MockCreateLossClaimRequestDataParser
+    with MockHateoasFactory
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val nino = "AA123456A"
+  val lossClaimId = "AAZZ1234567890a"
 
   val lossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, Some("XKIS00000000988"))
 
   val createLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
+  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel="test-relationship")
 
   val lossClaimRequest: CreateLossClaimRequest = CreateLossClaimRequest(Nino(nino), lossClaim)
 
@@ -60,7 +66,14 @@ class CreateLossClaimControllerSpec
 
   val responseBody: JsValue = Json.parse("""
       |{
-      |  "id": "AAZZ1234567890a"
+      |  "id": "AAZZ1234567890a",
+      |  "links" : [
+      |     {
+      |       "href": "/foo/bar",
+      |       "method": "GET",
+      |       "rel": "test-relationship"
+      |     }
+      |  ]
       |}
     """.stripMargin)
 
@@ -73,6 +86,7 @@ class CreateLossClaimControllerSpec
       createLossClaimService = mockCreateLossClaimService,
       createLossClaimParser = mockCreateLossClaimRequestDataParser,
       auditService = mockAuditService,
+      hateoasFactory = mockHateoasFactory,
       cc = cc
     )
 
@@ -91,6 +105,10 @@ class CreateLossClaimControllerSpec
         MockCreateLossClaimService
           .create(CreateLossClaimRequest(Nino(nino), lossClaim))
           .returns(Future.successful(Right(DesResponse(correlationId, createLossClaimResponse))))
+
+        MockHateoasFactory
+          .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
+          .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(result) shouldBe CREATED

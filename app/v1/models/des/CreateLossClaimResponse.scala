@@ -16,17 +16,27 @@
 
 package v1.models.des
 
-import play.api.libs.json.{Json, Reads, Writes, __}
+import config.AppConfig
+import play.api.libs.json._
+import v1.hateoas.HateoasLinksFactory
+import v1.models.des.CreateBFLossResponse._
+import v1.models.hateoas.{HateoasData, Link}
 
 case class CreateLossClaimResponse(id: String)
 
 object CreateLossClaimResponse {
-  implicit val writes: Writes[CreateLossClaimResponse] = Json.writes[CreateLossClaimResponse]
+  implicit val writes: OWrites[CreateLossClaimResponse] = Json.writes[CreateLossClaimResponse]
 
   implicit val desToMtdReads: Reads[CreateLossClaimResponse] =
     (__ \ "claimId").read[String].map(CreateLossClaimResponse.apply)
 
+  implicit object LinksFactory extends HateoasLinksFactory[CreateLossClaimResponse, CreateLossClaimHateoasData] {
+    override def links(appConfig: AppConfig, data: CreateLossClaimHateoasData): Seq[Link] = {
+      import data._
+      Seq(getLossClaim(appConfig, nino, lossId), deleteLossClaim(appConfig, nino, lossId), amendLossClaim(appConfig, nino, lossId))
+    }
+  }
+
 }
 
-
-
+case class CreateLossClaimHateoasData(nino: String, lossId: String) extends HateoasData

@@ -38,6 +38,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
   val taxYear = "2019-20"
   val typeOfClaim = "carry-forward"
   val typeOfLoss = "self-employment"
+  val claimId = "AAZZ1234567890a"
 
   private trait Test {
 
@@ -54,9 +55,24 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       """.stripMargin)
 
     val responseJson: JsValue = Json.parse(
-      """
+      s"""
         |{
-        |    "id": "AAZZ1234567890a"
+        |    "id": "AAZZ1234567890a",
+        |    "links": [{
+        |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+        |      "method": "GET",
+        |      "rel": "self"
+        |    },
+        |    {
+        |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+        |      "method": "DELETE",
+        |      "rel": "delete-loss-claim"
+        |    },{
+        |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
+        |      "method": "POST",
+        |      "rel": "amend-loss-claim"
+        |    }
+        |    ]
         |}
       """.stripMargin)
 
