@@ -19,12 +19,14 @@ package v1.models.des
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.hateoas.HateoasFactory
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.{DELETE, GET, POST}
 
-class LossClaimResponseSpec extends UnitSpec {
+class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
+
+  val nino: String = "AA123456A"
+  val claimId: String = "claimId"
 
   val lossClaimResponse =
     LossClaimResponse(
@@ -37,27 +39,29 @@ class LossClaimResponseSpec extends UnitSpec {
 
   "Json Reads" should {
     def desPropertyJson(incomeSourceType: String): JsValue = {
-      Json.parse(s"""
-                    |{
-                    |  "incomeSourceId": "000000000000001",
-                    |  "incomeSourceType": "$incomeSourceType",
-                    |  "reliefClaimed": "CSFHL",
-                    |  "taxYearClaimedFor": "2020",
-                    |  "claimId": "notUsed",
-                    |  "submissionDate": "20180708"
-                    |}
+      Json.parse(
+        s"""
+           |{
+           |  "incomeSourceId": "000000000000001",
+           |  "incomeSourceType": "$incomeSourceType",
+           |  "reliefClaimed": "CSFHL",
+           |  "taxYearClaimedFor": "2020",
+           |  "claimId": "notUsed",
+           |  "submissionDate": "20180708"
+           |}
       """.stripMargin)
     }
 
     def desEmploymentJson: JsValue = {
-      Json.parse(s"""
-                    |{
-                    |  "incomeSourceId": "000000000000001",
-                    |  "reliefClaimed": "CF",
-                    |  "taxYearClaimedFor": "2020",
-                    |  "claimId": "notUsed",
-                    |  "submissionDate": "20180708"
-                    |}
+      Json.parse(
+        s"""
+           |{
+           |  "incomeSourceId": "000000000000001",
+           |  "reliefClaimed": "CF",
+           |  "taxYearClaimedFor": "2020",
+           |  "claimId": "notUsed",
+           |  "submissionDate": "20180708"
+           |}
       """.stripMargin)
     }
 
@@ -69,7 +73,7 @@ class LossClaimResponseSpec extends UnitSpec {
           typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
           taxYear = "2019-20",
           lastModified = "20180708"
-      )
+        )
 
     "convert property JSON from DES into a valid model for property type 02" in {
       desPropertyJson("02").as[LossClaimResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
@@ -77,43 +81,44 @@ class LossClaimResponseSpec extends UnitSpec {
 
     "convert se json from DES into a valid model" in {
       desEmploymentJson.as[LossClaimResponse] shouldBe LossClaimResponse(Some("000000000000001"),
-                                                                                   TypeOfLoss.`self-employment`,
-                                                                                   TypeOfClaim.`carry-forward`,
-                                                                                   "2019-20",
-                                                                                   "20180708")
+        TypeOfLoss.`self-employment`,
+        TypeOfClaim.`carry-forward`,
+        "2019-20",
+        "20180708")
     }
   }
   "Json Writes" should {
-    val mtdJson = Json.parse("""{
-                               |  "selfEmploymentId": "000000000000001",
-                               |  "typeOfLoss": "self-employment",
-                               |  "typeOfClaim": "carry-forward",
-                               |  "taxYear": "2019-20",
-                               |  "lastModified" : ""
-                               |}
-                             """.stripMargin)
+    val mtdJson = Json.parse(
+      """{
+        |  "selfEmploymentId": "000000000000001",
+        |  "typeOfLoss": "self-employment",
+        |  "typeOfClaim": "carry-forward",
+        |  "taxYear": "2019-20",
+        |  "lastModified" : ""
+        |}
+      """.stripMargin)
     "convert a valid model into MTD JSON" in {
       Json.toJson(lossClaimResponse) shouldBe mtdJson
     }
   }
 
-  "HateoasFactory" must {
-    class Test extends MockAppConfig {
-      val hateoasFactory = new HateoasFactory(mockAppConfig)
-      val nino           = "someNino"
-      val claimId         = "claimId"
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-    }
+  "Links Factory" should {
 
-    "expose the correct links for retrieve" in new Test {
-      hateoasFactory.wrap(lossClaimResponse, GetLossClaimHateoasData(nino, claimId)) shouldBe
-        HateoasWrapper(
-          lossClaimResponse,
+    "expose the correct links for retrieve" in {
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      LossClaimResponse.GetLinksFactory.links(mockAppConfig, GetLossClaimHateoasData(nino, claimId)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self"),
             Link(s"/individuals/losses/$nino/loss-claims/claimId", DELETE, "delete-loss-claim"),
             Link(s"/individuals/losses/$nino/loss-claims/claimId/change-type-of-claim", POST, "amend-loss-claim")
           )
+    }
+
+    "expose the correct links for amend" in {
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      LossClaimResponse.AmendLinksFactory.links(mockAppConfig, AmendLossClaimHateoasData(nino, claimId)) shouldBe
+        Seq(
+          Link("/individuals/losses/AA123456A/loss-claims/claimId", GET, "self")
         )
     }
   }
