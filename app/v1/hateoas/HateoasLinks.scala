@@ -24,27 +24,27 @@ import v1.models.hateoas.RelType._
 trait HateoasLinks {
 
   //Domain URIs
-  private def collectionUri(appConfig: AppConfig, nino: String): String =
+  private def bfLossBaseUri(appConfig: AppConfig, nino: String): String =
     s"/${appConfig.apiGatewayContext}/$nino/brought-forward-losses"
 
   private def bfLossUri(appConfig: AppConfig, nino: String, lossId: String): String =
-    collectionUri(appConfig, nino) + s"/$lossId"
+    bfLossBaseUri(appConfig, nino) + s"/$lossId"
 
   private def bfLossChangeRequest(appConfig: AppConfig, nino: String, lossId: String): String =
     bfLossUri(appConfig, nino, lossId) + "/change-loss-amount"
 
-  private def lossClaimBaseUri(appConfig: AppConfig, nino: String): String =
+  private def lossClaimsBaseUri(appConfig: AppConfig, nino: String): String =
     s"/${appConfig.apiGatewayContext}/$nino/loss-claims"
 
   private def lossClaimUri(appConfig: AppConfig, nino: String, claimId: String): String =
-    lossClaimBaseUri(appConfig, nino) + s"/$claimId"
+    lossClaimsBaseUri(appConfig, nino) + s"/$claimId"
 
   private def lossClaimChangeRequest(appConfig: AppConfig, nino: String, lossId: String): String =
     lossClaimUri(appConfig, nino, lossId) + "/change-type-of-claim"
 
   //API resource links
   def createBfLoss(appConfig: AppConfig, nino: String): Link =
-    Link(href = collectionUri(appConfig, nino), method = POST, rel = CREATE_BF_LOSS)
+    Link(href = bfLossBaseUri(appConfig, nino), method = POST, rel = CREATE_BF_LOSS)
 
   def getBFLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
     Link(href = bfLossUri(appConfig, nino, lossId), method = GET, rel = SELF)
@@ -55,7 +55,7 @@ trait HateoasLinks {
   def deleteBfLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
     Link(href = bfLossUri(appConfig, nino, lossId), method = DELETE, rel = DELETE_BF_LOSS)
 
-  def listBfLoss(appConfig: AppConfig, nino: String): Link = Link(href =collectionUri(appConfig, nino), method = GET, rel = SELF)
+  def listBfLoss(appConfig: AppConfig, nino: String): Link = Link(href =bfLossBaseUri(appConfig, nino), method = GET, rel = SELF)
 
   def getLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = GET, rel = SELF)
