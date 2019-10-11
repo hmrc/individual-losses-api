@@ -20,11 +20,14 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendLossClaimRequestDataParser
 import v1.mocks.services._
-import v1.models.des.LossClaimResponse
+import v1.models.des.{AmendLossClaimHateoasData, LossClaimResponse}
 import v1.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, _}
+import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.GET
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
@@ -37,6 +40,7 @@ class AmendLossClaimControllerSpec
     with MockMtdIdLookupService
     with MockAmendLossClaimService
     with MockAmendLossClaimRequestDataParser
+    with MockHateoasFactory
     with MockAuditService {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -50,22 +54,31 @@ class AmendLossClaimControllerSpec
 
   val lossClaimRequest: AmendLossClaimRequest = AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim)
 
+  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+
   val responseBody: JsValue = Json.parse(
     s"""
-      |{
-      |    "selfEmploymentId": "XKIS00000000988",
-      |    "typeOfLoss": "self-employment",
-      |    "taxYear": "2019-20",
-      |    "typeOfClaim": "carry-forward",
-      |    "lastModified": "2018-07-13T12:13:48.763Z"
-      |}
+       |{
+       |    "selfEmploymentId": "XKIS00000000988",
+       |    "typeOfLoss": "self-employment",
+       |    "taxYear": "2019-20",
+       |    "typeOfClaim": "carry-forward",
+       |    "lastModified": "2018-07-13T12:13:48.763Z",
+       |    "links" : [
+       |     {
+       |       "href": "/foo/bar",
+       |       "method": "GET",
+       |       "rel": "test-relationship"
+       |     }
+       |    ]
+       |}
     """.stripMargin)
 
   val requestBody: JsValue = Json.parse(
     s"""
-      |{
-      |  "typeOfClaim": "carry-forward"
-      |}
+       |{
+       |  "typeOfClaim": "carry-forward"
+       |}
     """.stripMargin)
 
   trait Test {
@@ -77,6 +90,7 @@ class AmendLossClaimControllerSpec
       amendLossClaimService = mockAmendLossClaimService,
       amendLossClaimParser = mockAmendLossClaimRequestDataParser,
       auditService = mockAuditService,
+      hateoasFactory = mockHateoasFactory,
       cc = cc
     )
 
@@ -95,6 +109,10 @@ class AmendLossClaimControllerSpec
         MockAmendLossClaimService
           .amend(AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
           .returns(Future.successful(Right(DesResponse(correlationId, amendLossClaimResponse))))
+
+        MockHateoasFactory
+          .wrap(amendLossClaimResponse, AmendLossClaimHateoasData(nino, claimId))
+          .returns(HateoasWrapper(amendLossClaimResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
         status(result) shouldBe OK
@@ -177,7 +195,6 @@ class AmendLossClaimControllerSpec
       status(response) shouldBe expectedStatus
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
-
     }
   }
 }

@@ -29,16 +29,6 @@ class AmendLossClaimControllerISpec extends IntegrationBaseSpec {
 
   val correlationId = "X-123"
 
-  val responseJson: JsValue = Json.parse(s"""
-       |{
-       |    "selfEmploymentId": "XKIS00000000988",
-       |    "typeOfLoss": "self-employment",
-       |    "typeOfClaim": "carry-forward",
-       |    "taxYear": "2019-20",
-       |    "lastModified":"2018-07-13T12:13:48.763Z"
-       |}
-      """.stripMargin)
-
   val desResponseJson: JsValue = Json.parse(s"""
        |{
        |"incomeSourceId": "XKIS00000000988",
@@ -60,6 +50,23 @@ class AmendLossClaimControllerISpec extends IntegrationBaseSpec {
 
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
+
+    val responseJson: JsValue = Json.parse(s"""
+                                              |{
+                                              |    "selfEmploymentId": "XKIS00000000988",
+                                              |    "typeOfLoss": "self-employment",
+                                              |    "typeOfClaim": "carry-forward",
+                                              |    "taxYear": "2019-20",
+                                              |    "lastModified":"2018-07-13T12:13:48.763Z",
+                                              |    "links": [
+                                              |      {
+                                              |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+                                              |      "method": "GET",
+                                              |      "rel": "self"
+                                              |      }
+                                              |    ]
+                                              |}
+      """.stripMargin)
 
     def uri: String    = s"/$nino/loss-claims/$claimId/change-type-of-claim"
     def desUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
@@ -166,6 +173,5 @@ class AmendLossClaimControllerISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", "AAZZ1234567890a", invalidClaimTypeRequestJson,
         Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
-
   }
 }

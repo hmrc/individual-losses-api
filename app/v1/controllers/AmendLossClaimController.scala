@@ -23,6 +23,8 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.AmendLossClaimParser
+import v1.hateoas.HateoasFactory
+import v1.models.des.AmendLossClaimHateoasData
 import v1.models.errors._
 import v1.models.requestData.AmendLossClaimRawData
 import v1.services._
@@ -34,6 +36,7 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
                                          val lookupService: MtdIdLookupService,
                                          amendLossClaimService: AmendLossClaimService,
                                          amendLossClaimParser: AmendLossClaimParser,
+                                         hateoasFactory: HateoasFactory,
                                          auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
@@ -47,14 +50,16 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](amendLossClaimParser.parseRequest(rawData))
-          vendorResponse <- EitherT(amendLossClaimService.amendLossClaim(parsedRequest))
+          serviceResponse <- EitherT(amendLossClaimService.amendLossClaim(parsedRequest))
+          vendorResponse <- EitherT.fromEither[Future](
+            hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse.responseData))
-            .withApiHeaders(vendorResponse.correlationId)
+          Ok(Json.toJson(vendorResponse))
+            .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }
 
