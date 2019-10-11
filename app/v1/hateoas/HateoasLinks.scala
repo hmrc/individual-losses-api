@@ -55,7 +55,10 @@ trait HateoasLinks {
   def deleteBfLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
     Link(href = bfLossUri(appConfig, nino, lossId), method = DELETE, rel = DELETE_BF_LOSS)
 
-  def listBfLoss(appConfig: AppConfig, nino: String): Link = Link(href =bfLossBaseUri(appConfig, nino), method = GET, rel = SELF)
+  def listBfLoss(appConfig: AppConfig, nino: String): Link = Link(href = bfLossBaseUri(appConfig, nino), method = GET, rel = SELF)
+
+  def createLossClaim(appConfig: AppConfig, nino: String): Link =
+    Link(href = lossClaimsBaseUri(appConfig, nino), method = POST, rel = CREATE_LOSS_CLAIM)
 
   def getLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = GET, rel = SELF)
@@ -65,4 +68,6 @@ trait HateoasLinks {
 
   def deleteLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = DELETE, rel = DELETE_LOSS_CLAIM)
+
+  def listLossClaim(appConfig: AppConfig, nino: String): Link = Link(href = lossClaimsBaseUri(appConfig, nino), method = GET, rel = SELF)
 }
