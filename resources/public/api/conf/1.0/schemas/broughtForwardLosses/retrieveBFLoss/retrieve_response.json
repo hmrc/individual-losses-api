@@ -49,7 +49,7 @@
             "example": "/individuals/losses/{nino}/losses-brought-forward/{lossId}"
           },
           "rel": {
-            "description": "A label for the endpoint, which describes how it is related to the current resource\nThe rel will be self where the action is retrieval of the same resource",
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
             "type": "string",
             "enum": [
               "self",
