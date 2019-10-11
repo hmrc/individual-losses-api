@@ -14,14 +14,14 @@ responses:
   200:
     body:
       application/json:
-        type: !include schemas/lossClaims/LossClaim_response.json
+        type: !include schemas/lossClaims/retrieveClaim/retrieve_response.json
         examples:
           example-1:
             description: Self-employment claim
-            value: !include examples/lossClaims/claim_se.json
+            value: !include examples/lossClaims/retrieveClaim/retrieve_se_response.json
           example-2:
             description: UK Non-FHL property claim
-            value: !include examples/lossClaims/claim_non_fhl.json
+            value: !include examples/lossClaims/retrieveClaim/retrieve_non_fhl_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435

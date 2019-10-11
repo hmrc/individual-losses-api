@@ -24,7 +24,7 @@ description: This endpoint allows a user to create a Loss Claim against an incom
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
-    type: !include schemas/lossClaims/LossClaim.json
+    type: !include schemas/lossClaims/createClaim/create_request.json
     examples:
       example-1:
         description: Self-employment claim
