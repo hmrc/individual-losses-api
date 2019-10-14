@@ -16,4 +16,15 @@
 
 package v1.models.audit
 
-case class AuditEvent[T](auditType: String, transactionName: String, detail: T)
+import play.api.libs.json.{JsValue, Json, Writes}
+
+case class DeleteLossClaimAuditDetail(userType: String,
+                                      agentReferenceNumber: Option[String],
+                                      nino: String,
+                                      claimId: String,
+                                      `X-CorrelationId`: String,
+                                      response: AuditResponse)
+
+object DeleteLossClaimAuditDetail {
+  implicit val writes: Writes[DeleteLossClaimAuditDetail] = Json.writes[DeleteLossClaimAuditDetail]
+}
