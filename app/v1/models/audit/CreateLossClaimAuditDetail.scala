@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package v1.models.audit
 
-import play.api.libs.json.{JsValue, Json, OWrites}
+import play.api.libs.json.{ JsValue, Json, Writes }
 
-case class AuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body: Option[JsValue])
+case class CreateLossClaimAuditDetail(userType: String,
+                                      agentReferenceNumber: Option[String],
+                                      nino: String,
+                                      request: JsValue,
+                                      `X-CorrelationId`: String,
+                                      response: AuditResponse)
 
-object AuditResponse {
-  implicit val writes: OWrites[AuditResponse] = Json.writes[AuditResponse]
+object CreateLossClaimAuditDetail {
+  implicit val writes: Writes[CreateLossClaimAuditDetail] = Json.writes[CreateLossClaimAuditDetail]
 }
-
