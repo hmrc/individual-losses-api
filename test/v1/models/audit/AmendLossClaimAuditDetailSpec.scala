@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import support.UnitSpec
 import v1.models.errors.RuleTypeOfClaimInvalid
 
-class CreateLossClaimAuditDetailSpec extends UnitSpec {
+class AmendLossClaimAuditDetailSpec extends UnitSpec {
 
   val nino    = "ZG903729C"
   val claimId = "claimId"
@@ -32,6 +32,7 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
             |    "userType": "Agent",
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
+            |    "claimId" : "$claimId",
             |    "request": {
             |      "typeOfLoss":"self-employment",
             |      "selfEmploymentId":"X2IS12356589871",
@@ -42,62 +43,41 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
             |      "httpStatus": 201,
             |      "body":{
             |        "id": "$claimId",
-            |        "links":[
-            |        {
-            |            "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}",
-            |            "rel":"self",
-            |            "method":"GET"
-            |        },
-            |       {
-            |            "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}",
-            |            "rel":"delete-loss-claim",
-            |            "method":"DELETE"
-            |        },
-            |       {
-            |            "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}/change-type-of-claim",
-            |            "rel":"amend-loss-claim",
-            |            "method":"POST"
+            |        "links": [{
+            |          "href": "/individuals/losses/$nino/loss-claims/$claimId",
+            |          "method": "GET",
+            |          "rel": "self"
             |        }
-            |      ]
+            |        ]
             |     }
             |    },
             |    "X-CorrelationId": "a1e8057e-fbbc-47a8-a8b478d9f015c253"
             |}""".stripMargin)
 
         Json.toJson(
-          CreateLossClaimAuditDetail(
+          AmendLossClaimAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
+            claimId = claimId,
             request = Json.parse("""{
                       |      "typeOfLoss":"self-employment",
                       |      "selfEmploymentId":"X2IS12356589871",
                       |      "typeOfClaim":"carry-forward",
                       |      "taxYear": "2019-20"
-                      |    }""".stripMargin),
+                      |}""".stripMargin),
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
             response = AuditResponse(
               201,
               errors = None,
               body = Some(Json.parse(s"""{
-                          |     "id": "$claimId",
-                          |     "links":[
-                          |      {
-                          |         "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}",
-                          |          "rel":"self",
-                          |          "method":"GET"
-                          |      },
-                          |      {
-                          |         "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}",
-                          |          "rel":"delete-loss-claim",
-                          |          "method":"DELETE"
-                          |      },
-                          |      {
-                          |          "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}/change-type-of-claim",
-                          |           "rel":"amend-loss-claim",
-                          |           "method":"POST"
-                          |      }
-                          |      ]
+                          |        "id": "$claimId",
+                          |        "links": [{
+                          |          "href": "/individuals/losses/$nino/loss-claims/$claimId",
+                          |          "method": "GET",
+                          |          "rel": "self"
+                          |        }
+                          |        ]
                           |}""".stripMargin))
             )
           )) shouldBe json
@@ -111,6 +91,7 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
             |    "userType": "Agent",
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
+            |    "claimId" : "$claimId",
             |    "request": {
             |      "typeOfLoss":"self-employment",
             |      "selfEmploymentId":"X2IS12356589871",
@@ -130,10 +111,11 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
             |""".stripMargin)
 
         Json.toJson(
-          CreateLossClaimAuditDetail(
+          AmendLossClaimAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
+            claimId = claimId,
             request = Json.parse("""{
                       |      "typeOfLoss":"self-employment",
                       |      "selfEmploymentId":"X2IS12356589871",
