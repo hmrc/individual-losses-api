@@ -26,7 +26,7 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
 
   "writes" must {
     "work" when {
-      "success resposnse" in {
+      "success response" in {
         val json = Json.parse(s"""{
              |    "userType": "Agent",
              |    "agentReferenceNumber":"012345678",
@@ -83,7 +83,7 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
     }
 
     "work" when {
-      "error resposnse" in {
+      "error response" in {
         val json = Json.parse(s"""
             |{
             |    "userType": "Agent",
