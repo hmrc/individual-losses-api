@@ -65,7 +65,7 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
                                  |      "taxYear": "2019-20"
                                  |    }""".stripMargin),
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
-            response = CreateLossClaimAuditResponse(
+            response = AuditResponse(
               201,
               errors = None,
               body = Some(Json.parse(s"""{
@@ -119,11 +119,12 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
                                    |      "taxYear": "2019-20"
                                    |    }""".stripMargin),
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
-            response = CreateLossClaimAuditResponse(
+            response = AuditResponse(
               403,
               errors = Some(Seq(AuditError(RuleTypeOfClaimInvalid.code))),
               body = None
-          ))) shouldBe json
+            )
+          )) shouldBe json
       }
     }
   }

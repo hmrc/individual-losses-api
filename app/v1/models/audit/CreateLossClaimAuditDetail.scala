@@ -17,18 +17,12 @@ package v1.models.audit
 
 import play.api.libs.json.{ JsValue, Json, Writes }
 
-case class CreateLossClaimAuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body: Option[JsValue])
-
-object CreateLossClaimAuditResponse {
-  implicit val writes: Writes[CreateLossClaimAuditResponse] = Json.writes[CreateLossClaimAuditResponse]
-}
-
 case class CreateLossClaimAuditDetail(userType: String,
                                       agentReferenceNumber: Option[String],
                                       nino: String,
                                       request: JsValue,
                                       `X-CorrelationId`: String,
-                                      response: CreateLossClaimAuditResponse)
+                                      response: AuditResponse)
 
 object CreateLossClaimAuditDetail {
   implicit val writes: Writes[CreateLossClaimAuditDetail] = Json.writes[CreateLossClaimAuditDetail]
