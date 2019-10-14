@@ -22,7 +22,6 @@ case class DeleteLossClaimAuditDetail(userType: String,
                                       agentReferenceNumber: Option[String],
                                       nino: String,
                                       claimId: String,
-                                      request: JsValue,
                                       `X-CorrelationId`: String,
                                       response: AuditResponse)
 
