@@ -61,24 +61,24 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             nino = nino,
             claimId = claimId,
             request = Json.parse("""{
-                                 |      "typeOfLoss":"self-employment",
-                                 |      "selfEmploymentId":"X2IS12356589871",
-                                 |      "typeOfClaim":"carry-forward",
-                                 |      "taxYear": "2019-20"
-                                 |}""".stripMargin),
+                      |      "typeOfLoss":"self-employment",
+                      |      "selfEmploymentId":"X2IS12356589871",
+                      |      "typeOfClaim":"carry-forward",
+                      |      "taxYear": "2019-20"
+                      |}""".stripMargin),
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
             response = AuditResponse(
               201,
               errors = None,
               body = Some(Json.parse(s"""{
-                                      |        "id": "$claimId",
-                                      |        "links": [{
-                                      |          "href": "/individuals/losses/$nino/loss-claims/$claimId",
-                                      |          "method": "GET",
-                                      |          "rel": "self"
-                                      |        }
-                                      |        ]
-                                      |     }""".stripMargin))
+                          |        "id": "$claimId",
+                          |        "links": [{
+                          |          "href": "/individuals/losses/$nino/loss-claims/$claimId",
+                          |          "method": "GET",
+                          |          "rel": "self"
+                          |        }
+                          |        ]
+                          |}""".stripMargin))
             )
           )) shouldBe json
       }
@@ -117,11 +117,11 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             nino = nino,
             claimId = claimId,
             request = Json.parse("""{
-                                   |      "typeOfLoss":"self-employment",
-                                   |      "selfEmploymentId":"X2IS12356589871",
-                                   |      "typeOfClaim":"carry-forward",
-                                   |      "taxYear": "2019-20"
-                                   |    }""".stripMargin),
+                      |      "typeOfLoss":"self-employment",
+                      |      "selfEmploymentId":"X2IS12356589871",
+                      |      "typeOfClaim":"carry-forward",
+                      |      "taxYear": "2019-20"
+                      |    }""".stripMargin),
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
             response = AuditResponse(
               403,
