@@ -22,8 +22,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.requestParsers.AmendLossClaimParser
 import v1.hateoas.HateoasFactory
+import v1.models.audit.{AmendLossClaimAuditDetail, AuditEvent, AuditResponse}
+import v1.models.auth.UserDetails
 import v1.models.des.AmendLossClaimHateoasData
 import v1.models.errors._
 import v1.models.requestData.AmendLossClaimRawData
@@ -58,7 +61,11 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse))
+          val response = Json.toJson(vendorResponse)
+
+          auditSubmission(createAuditDetails(nino, claimId, OK, request.body, serviceResponse.correlationId, request.userDetails, None, Some(response)))
+
+          Ok(response)
             .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }
@@ -66,6 +73,9 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(createAuditDetails(nino, claimId, result.header.status, request.body, correlationId, request.userDetails, Some(errorWrapper), None))
+
         result
       }.merge
     }
@@ -81,5 +91,39 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+
+  private def createAuditDetails(nino: String,
+                                 claimId: String,
+                                 statusCode: Int,
+                                 request: JsValue,
+                                 correlationId: String,
+                                 userDetails: UserDetails,
+                                 errorWrapper: Option[ErrorWrapper] = None,
+                                 response: Option[JsValue]
+                                ) = {
+    val auditResponse =
+      errorWrapper
+        .map { wrapper =>
+          AuditResponse(statusCode, Some(wrapper.auditErrors), None)
+        }
+        .getOrElse(AuditResponse(statusCode, None, response))
+
+    AmendLossClaimAuditDetail(
+      userType = userDetails.userType,
+      agentReferenceNumber = userDetails.agentReferenceNumber,
+      nino = nino,
+      claimId = claimId,
+      request = request,
+      correlationId,
+      auditResponse)
+  }
+
+  private def auditSubmission(details: AmendLossClaimAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext) = {
+    val event = AuditEvent("amendLossClaim", "amend-loss-claim", details)
+    auditService.auditEvent(event)
   }
 }
