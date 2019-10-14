@@ -33,7 +33,6 @@ class DeleteLossClaimAuditDetailSpec extends UnitSpec {
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
             |    "claimId" : "$claimId",
-            |    "request": {},
             |    "response":{
             |      "httpStatus": 204
             |    },
@@ -46,7 +45,6 @@ class DeleteLossClaimAuditDetailSpec extends UnitSpec {
             agentReferenceNumber = Some("012345678"),
             nino = nino,
             claimId = claimId,
-            request = JsObject.empty,
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
             response = AuditResponse(
               204,
@@ -64,7 +62,6 @@ class DeleteLossClaimAuditDetailSpec extends UnitSpec {
              |    "agentReferenceNumber":"012345678",
              |    "nino": "notANino",
              |    "claimId" : "$claimId",
-             |    "request": {},
              |    "response": {
              |      "httpStatus": 400,
              |      "errors": [
@@ -82,7 +79,6 @@ class DeleteLossClaimAuditDetailSpec extends UnitSpec {
             agentReferenceNumber = Some("012345678"),
             nino = "notANino",
             claimId = claimId,
-            request = JsObject.empty,
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
             response = AuditResponse(
               400,
