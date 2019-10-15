@@ -23,9 +23,9 @@ case class AuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body:
 object AuditResponse {
   implicit val writes: OWrites[AuditResponse] = Json.writes[AuditResponse]
 
-  def apply(httpStatus: Int, response: Either[Seq[AuditError], JsValue]): AuditResponse =
+  def apply(httpStatus: Int, response: Either[Seq[AuditError], Option[JsValue]]): AuditResponse =
     response match {
-      case Right(body) => AuditResponse(httpStatus, None, Some(body))
+      case Right(body) => AuditResponse(httpStatus, None, body)
       case Left(errs)  => AuditResponse(httpStatus, Some(errs), None)
     }
 }

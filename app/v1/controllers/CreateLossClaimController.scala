@@ -66,7 +66,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
           val response = Json.toJson(vendorResponse)
 
           auditSubmission(CreateLossClaimAuditDetail(request.userDetails, nino, request.body,
-            serviceResponse.correlationId, AuditResponse(CREATED, Right(response))))
+            serviceResponse.correlationId, AuditResponse(CREATED, Right(Some(response)))))
 
           Created(response)
             .withApiHeaders(serviceResponse.correlationId)
