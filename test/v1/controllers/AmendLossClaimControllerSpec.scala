@@ -23,11 +23,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendLossClaimRequestDataParser
 import v1.mocks.services._
+import v1.models.audit.{AmendLossClaimAuditDetail, AuditError, AuditEvent, AuditResponse}
 import v1.models.des.{AmendLossClaimHateoasData, LossClaimResponse}
 import v1.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, _}
-import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
@@ -118,21 +119,15 @@ class AmendLossClaimControllerSpec
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val detail = AmendLossClaimAuditDetail(
+          "Individual", None, nino,  claimId, requestBody, correlationId,
+          AuditResponse(OK, None, Some(responseBody)))
+        val event = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
-    "return single error response with status 400" when {
-      "the request received failed the validation" in new Test() {
-
-        MockAmendLossClaimRequestDataParser.parseRequest(
-          AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(None, NinoFormatError, None)))
-
-        val result: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
-        status(result) shouldBe BAD_REQUEST
-        header("X-CorrelationId", result).nonEmpty shouldBe true
-      }
-    }
     "return a 400 Bad Request with a single error" when {
 
       val badRequestErrorsFromParser = List(
@@ -177,6 +172,11 @@ class AmendLossClaimControllerSpec
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
 
+      val detail = AmendLossClaimAuditDetail(
+        "Individual", None, nino, claimId, requestBody, correlationId,
+        AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
+      val event = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+      MockedAuditService.verifyAuditEvent(event).once
     }
   }
 
@@ -195,6 +195,12 @@ class AmendLossClaimControllerSpec
       status(response) shouldBe expectedStatus
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+      val detail = AmendLossClaimAuditDetail(
+        "Individual", None, nino, claimId, requestBody, correlationId,
+        AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
+      val event = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+      MockedAuditService.verifyAuditEvent(event).once
     }
   }
 }
