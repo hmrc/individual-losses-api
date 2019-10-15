@@ -19,23 +19,23 @@ package v1.models.audit
 import play.api.libs.json.{Json, Writes}
 import v1.models.auth.UserDetails
 
-case class DeleteBroughtForwardLossAuditDetail(userType: String,
-                                               agentReferenceNumber: Option[String],
-                                               nino: String,
-                                               lossId: String,
-                                               `X-CorrelationId`: String,
-                                               response: AuditResponse)
+case class DeleteBFLossAuditDetail(userType: String,
+                                   agentReferenceNumber: Option[String],
+                                   nino: String,
+                                   lossId: String,
+                                   `X-CorrelationId`: String,
+                                   response: AuditResponse)
 
-object DeleteBroughtForwardLossAuditDetail {
-  implicit val writes: Writes[DeleteBroughtForwardLossAuditDetail] = Json.writes[DeleteBroughtForwardLossAuditDetail]
+object DeleteBFLossAuditDetail {
+  implicit val writes: Writes[DeleteBFLossAuditDetail] = Json.writes[DeleteBFLossAuditDetail]
 
   def apply(userDetails: UserDetails,
             nino: String,
             lossId: String,
             `X-CorrelationId`: String,
-            auditResponse: AuditResponse): DeleteBroughtForwardLossAuditDetail = {
+            auditResponse: AuditResponse): DeleteBFLossAuditDetail = {
 
-    DeleteBroughtForwardLossAuditDetail(
+    DeleteBFLossAuditDetail(
       userType = userDetails.userType,
       agentReferenceNumber = userDetails.agentReferenceNumber,
       nino = nino,

@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import support.UnitSpec
 import v1.models.errors.NinoFormatError
 
-class DeleteBroughtForwardLossAuditDetailSpec extends UnitSpec {
+class DeleteBFLossAuditDetailSpec extends UnitSpec {
 
   val nino = "ZG903729C"
   val lossId = "lossId"
@@ -40,7 +40,7 @@ class DeleteBroughtForwardLossAuditDetailSpec extends UnitSpec {
             |}""".stripMargin)
 
         Json.toJson(
-          DeleteBroughtForwardLossAuditDetail(
+          DeleteBFLossAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
@@ -74,7 +74,7 @@ class DeleteBroughtForwardLossAuditDetailSpec extends UnitSpec {
              |}""".stripMargin)
 
         Json.toJson(
-          DeleteBroughtForwardLossAuditDetail(
+          DeleteBFLossAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = "notANino",
