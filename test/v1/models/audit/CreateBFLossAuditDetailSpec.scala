@@ -34,7 +34,7 @@ class CreateBFLossAuditDetailSpec extends UnitSpec {
             |    "nino": "$nino",
             |    "request": {
             |      "selfEmploymentId":"X2IS12356589871",
-            |      "typeOfClaim":"carry-forward",
+            |      "typeOfLoss":"self-employment-class4",
             |      "taxYear": "2019-20",
             |      "lossAmount": 100
             |    },
@@ -71,7 +71,7 @@ class CreateBFLossAuditDetailSpec extends UnitSpec {
             nino = nino,
             request = Json.parse("""{
                       |      "selfEmploymentId":"X2IS12356589871",
-                      |      "typeOfClaim":"carry-forward",
+                      |      "typeOfLoss":"self-employment-class4",
                       |      "taxYear": "2019-20",
                       |      "lossAmount": 100
                       |    }""".stripMargin),
@@ -112,7 +112,7 @@ class CreateBFLossAuditDetailSpec extends UnitSpec {
             |    "nino": "$nino",
             |    "request": {
             |      "selfEmploymentId":"X2IS12356589871",
-            |      "typeOfClaim":"carry-forward",
+            |      "typeOfLoss":"self-employment-class4",
             |      "taxYear": "2019-20",
             |      "lossAmount": -1
             |    },
@@ -135,7 +135,7 @@ class CreateBFLossAuditDetailSpec extends UnitSpec {
             nino = nino,
             request = Json.parse("""{
                       |      "selfEmploymentId":"X2IS12356589871",
-                      |      "typeOfClaim":"carry-forward",
+                      |      "typeOfLoss":"self-employment-class4",
                       |      "taxYear": "2019-20",
                       |      "lossAmount": -1
                       |    }""".stripMargin),
