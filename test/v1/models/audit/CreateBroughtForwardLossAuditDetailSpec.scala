@@ -32,7 +32,7 @@ class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
             |    "userType": "Agent",
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
-            |    "request": 
+            |    "request": {
             |      "selfEmploymentId":"X2IS12356589871",
             |      "typeOfClaim":"carry-forward",
             |      "taxYear": "2019-20",
