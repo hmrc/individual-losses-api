@@ -18,12 +18,12 @@ package v1.models.audit
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.errors.RuleTypeOfClaimInvalid
+import v1.models.errors.NinoFormatError
 
-class AmendLossClaimAuditDetailSpec extends UnitSpec {
+class AmendBFLossAuditDetailSpec extends UnitSpec {
 
-  val nino    = "ZG903729C"
-  val claimId = "claimId"
+  val nino   = "ZG903729C"
+  val lossId = "lossId"
 
   "writes" must {
     "work" when {
@@ -32,20 +32,20 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             |    "userType": "Agent",
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
-            |    "claimId" : "$claimId",
+            |    "lossId" : "$lossId",
             |    "request": {
-            |      "typeOfClaim":"carry-forward"
+            |      "lossAmount": 2000.99
             |    },
             |    "response":{
             |      "httpStatus": 201,
             |      "body":{
-            |        "typeOfLoss": "self-employment",
-            |        "selfEmploymentId": "X2IS12356589871",
-            |        "typeOfClaim": "carry-forward",
-            |        "taxYear": "2019-20",
-            |        "lastModified": "2020-07-13T12:13:48.763Z",
+            |        "taxYear":"2018-19",
+            |        "typeOfLoss":"self-employment",
+            |        "selfEmploymentId":"XGIS00000001319",
+            |        "lossAmount": 99999999999.99,
+            |        "lastModified":"2018-07-13T12:13:48.763Z",
             |        "links": [{
-            |          "href": "/individuals/losses/$nino/loss-claims/$claimId",
+            |          "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
             |          "method": "GET",
             |          "rel": "self"
             |        }
@@ -56,31 +56,30 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             |}""".stripMargin)
 
         Json.toJson(
-          AmendLossClaimAuditDetail(
+          AmendBFLossAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
-            claimId = claimId,
+            lossId = lossId,
             request = Json.parse("""{
-                      |  "typeOfClaim": "carry-forward"
+                      |      "lossAmount": 2000.99
                       |}""".stripMargin),
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
             response = AuditResponse(
               201,
-              errors = None,
-              body = Some(Json.parse(s"""{
-                          |        "typeOfLoss": "self-employment",
-                          |        "selfEmploymentId": "X2IS12356589871",
-                          |        "typeOfClaim": "carry-forward",
-                          |        "taxYear": "2019-20",
-                          |        "lastModified": "2020-07-13T12:13:48.763Z",
+              Right(Some(Json.parse(s"""{
+                          |        "taxYear":"2018-19",
+                          |        "typeOfLoss":"self-employment",
+                          |        "selfEmploymentId":"XGIS00000001319",
+                          |        "lossAmount": 99999999999.99,
+                          |        "lastModified":"2018-07-13T12:13:48.763Z",
                           |        "links": [{
-                          |          "href": "/individuals/losses/$nino/loss-claims/$claimId",
+                          |          "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
                           |          "method": "GET",
                           |          "rel": "self"
                           |        }
                           |        ]
-                          |}""".stripMargin))
+                          |}""".stripMargin)))
             )
           )) shouldBe json
       }
@@ -93,15 +92,15 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             |    "userType": "Agent",
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
-            |    "claimId" : "$claimId",
+            |    "lossId" : "$lossId",
             |    "request": {
-            |      "typeOfClaim":"carry-forward"
+            |      "lossAmount": 2000.99
             |    },
             |    "response": {
-            |      "httpStatus": 403,
+            |      "httpStatus": 400,
             |      "errors": [
             |        {
-            |          "errorCode":"RULE_TYPE_OF_CLAIM_INVALID"
+            |          "errorCode":"FORMAT_NINO"
             |        }
             |      ]
             |    },
@@ -110,20 +109,16 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             |""".stripMargin)
 
         Json.toJson(
-          AmendLossClaimAuditDetail(
+          AmendBFLossAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
-            claimId = claimId,
+            lossId = lossId,
             request = Json.parse("""{
-                      |      "typeOfClaim":"carry-forward"
-                      |    }""".stripMargin),
+                                   |     "lossAmount": 2000.99
+                                   |}""".stripMargin),
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
-            response = AuditResponse(
-              403,
-              errors = Some(Seq(AuditError(RuleTypeOfClaimInvalid.code))),
-              body = None
-            )
+            response = AuditResponse(400, Left(Seq(AuditError(NinoFormatError.code))))
           )) shouldBe json
       }
     }
