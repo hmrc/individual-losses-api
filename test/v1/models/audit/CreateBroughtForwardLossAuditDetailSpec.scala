@@ -32,8 +32,7 @@ class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
             |    "userType": "Agent",
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
-            |    "request": {
-            |      "typeOfLoss":"self-employment",
+            |    "request": 
             |      "selfEmploymentId":"X2IS12356589871",
             |      "typeOfClaim":"carry-forward",
             |      "taxYear": "2019-20",
@@ -71,7 +70,6 @@ class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
             agentReferenceNumber = Some("012345678"),
             nino = nino,
             request = Json.parse("""{
-                      |      "typeOfLoss":"self-employment",
                       |      "selfEmploymentId":"X2IS12356589871",
                       |      "typeOfClaim":"carry-forward",
                       |      "taxYear": "2019-20",
@@ -113,7 +111,6 @@ class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
             |    "agentReferenceNumber":"012345678",
             |    "nino": "$nino",
             |    "request": {
-            |      "typeOfLoss":"self-employment",
             |      "selfEmploymentId":"X2IS12356589871",
             |      "typeOfClaim":"carry-forward",
             |      "taxYear": "2019-20",
@@ -137,7 +134,6 @@ class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
             agentReferenceNumber = Some("012345678"),
             nino = nino,
             request = Json.parse("""{
-                      |      "typeOfLoss":"self-employment",
                       |      "selfEmploymentId":"X2IS12356589871",
                       |      "typeOfClaim":"carry-forward",
                       |      "taxYear": "2019-20",
