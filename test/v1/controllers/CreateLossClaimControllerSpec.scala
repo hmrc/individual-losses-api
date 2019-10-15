@@ -23,11 +23,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v1.mocks.services._
+import v1.models.audit.{AuditError, AuditEvent, AuditResponse, CreateLossClaimAuditDetail}
 import v1.models.des.{CreateLossClaimHateoasData, CreateLossClaimResponse}
 import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
-import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{CreateLossClaimRawData, CreateLossClaimRequest}
 
@@ -114,19 +115,12 @@ class CreateLossClaimControllerSpec
         status(result) shouldBe CREATED
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
-      }
-    }
 
-    "return single error response with status 400" when {
-      "the request received failed the validation" in new Test() {
-
-        MockCreateLossClaimRequestDataParser
-          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(None, NinoFormatError, None)))
-
-        val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
-        status(result) shouldBe BAD_REQUEST
-        header("X-CorrelationId", result).nonEmpty shouldBe true
+        val detail = CreateLossClaimAuditDetail(
+          "Individual", None, nino,  requestBody, correlationId,
+          AuditResponse(CREATED, None, Some(responseBody)))
+        val event = AuditEvent("createLossClaim", "create-loss-claim", detail)
+        MockedAuditService.verifyAuditEvent(event).once
       }
     }
   }
@@ -144,6 +138,12 @@ class CreateLossClaimControllerSpec
         status(response) shouldBe expectedStatus
         contentAsJson(response) shouldBe Json.toJson(error)
         header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+        val detail = CreateLossClaimAuditDetail(
+          "Individual", None, nino,  requestBody, correlationId,
+          AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
+        val event = AuditEvent("createLossClaim", "create-loss-claim", detail)
+        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
@@ -180,6 +180,12 @@ class CreateLossClaimControllerSpec
         status(response) shouldBe expectedStatus
         contentAsJson(response) shouldBe Json.toJson(error)
         header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+        val detail = CreateLossClaimAuditDetail(
+          "Individual", None, nino,  requestBody, correlationId,
+          AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
+        val event = AuditEvent("createLossClaim", "create-loss-claim", detail)
+        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 

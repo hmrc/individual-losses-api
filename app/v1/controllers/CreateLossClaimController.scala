@@ -22,11 +22,12 @@ import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.requestParsers.CreateLossClaimParser
 import v1.hateoas.HateoasFactory
+import v1.models.audit.{AuditEvent, AuditResponse, CreateLossClaimAuditDetail}
 import v1.models.des.CreateLossClaimHateoasData
 import v1.models.errors._
-import v1.models.hateoas.HateoasWrapper
 import v1.models.requestData.CreateLossClaimRawData
 import v1.services._
 
@@ -62,7 +63,12 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Created(Json.toJson(vendorResponse))
+          val response = Json.toJson(vendorResponse)
+
+          auditSubmission(CreateLossClaimAuditDetail(request.userDetails, nino, request.body,
+            serviceResponse.correlationId, AuditResponse(CREATED, Right(response))))
+
+          Created(response)
             .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }
@@ -70,6 +76,10 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(CreateLossClaimAuditDetail(request.userDetails, nino, request.body,
+          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+
         result
       }.merge
     }
@@ -92,5 +102,12 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: CreateLossClaimAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext) = {
+    val event = AuditEvent("createLossClaim", "create-loss-claim", details)
+    auditService.auditEvent(event)
   }
 }
