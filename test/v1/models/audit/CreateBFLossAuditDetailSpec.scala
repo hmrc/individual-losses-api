@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import support.UnitSpec
 import v1.models.errors.{RuleInvalidLossAmount, RuleTypeOfClaimInvalid}
 
-class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
+class CreateBFLossAuditDetailSpec extends UnitSpec {
 
   val nino    = "ZG903729C"
   val lossId = "lossId"
@@ -65,7 +65,7 @@ class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
             |}""".stripMargin)
 
         Json.toJson(
-          CreateLossClaimAuditDetail(
+          CreateBFLossAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
@@ -129,7 +129,7 @@ class CreateBroughtForwardLossAuditDetailSpec extends UnitSpec {
             |""".stripMargin)
 
         Json.toJson(
-          CreateLossClaimAuditDetail(
+          CreateBFLossAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
