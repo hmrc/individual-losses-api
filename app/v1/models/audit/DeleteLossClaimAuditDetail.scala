@@ -16,7 +16,8 @@
 
 package v1.models.audit
 
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{Json, Writes}
+import v1.models.auth.UserDetails
 
 case class DeleteLossClaimAuditDetail(userType: String,
                                       agentReferenceNumber: Option[String],
@@ -27,4 +28,19 @@ case class DeleteLossClaimAuditDetail(userType: String,
 
 object DeleteLossClaimAuditDetail {
   implicit val writes: Writes[DeleteLossClaimAuditDetail] = Json.writes[DeleteLossClaimAuditDetail]
+
+  def apply(userDetails: UserDetails,
+            nino: String,
+            claimId: String,
+            `X-CorrelationId`: String,
+            auditResponse: AuditResponse): DeleteLossClaimAuditDetail = {
+
+    DeleteLossClaimAuditDetail(
+      userType = userDetails.userType,
+      agentReferenceNumber = userDetails.agentReferenceNumber,
+      nino = nino,
+      claimId = claimId,
+      `X-CorrelationId`,
+      auditResponse)
+  }
 }

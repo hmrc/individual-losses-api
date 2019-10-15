@@ -19,9 +19,11 @@ package v1.controllers
 import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.requestParsers.DeleteLossClaimParser
+import v1.models.audit.{AuditEvent, AuditResponse, DeleteLossClaimAuditDetail}
 import v1.models.errors._
 import v1.models.requestData.DeleteLossClaimRawData
 import v1.services._
@@ -53,6 +55,9 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
+         auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
+           vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(JsObject.empty))))
+
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
         }
@@ -60,6 +65,10 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
+          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+
         result
       }.merge
     }
@@ -72,5 +81,12 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: DeleteLossClaimAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext) = {
+    val event = AuditEvent("deleteLossClaim", "delete-loss-claim", details)
+    auditService.auditEvent(event)
   }
 }
