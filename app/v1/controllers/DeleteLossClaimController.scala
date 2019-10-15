@@ -19,7 +19,7 @@ package v1.controllers
 import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.requestParsers.DeleteLossClaimParser
@@ -55,8 +55,9 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-         auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
-           vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(None))))
+          auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
+            vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(None))))
+
 
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
