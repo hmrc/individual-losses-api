@@ -21,7 +21,9 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.requestParsers.DeleteBFLossParser
+import v1.models.audit.{AuditEvent, AuditResponse, DeleteBFLossAuditDetail}
 import v1.models.errors._
 import v1.models.requestData.DeleteBFLossRawData
 import v1.services._
@@ -53,6 +55,9 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
+          auditSubmission(DeleteBFLossAuditDetail(request.userDetails, nino, lossId,
+            vendorResponse.correlationId, AuditResponse(NO_CONTENT, None, None)))
+
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
         }
@@ -60,6 +65,10 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(DeleteBFLossAuditDetail(request.userDetails, nino, lossId,
+          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+
         result
       }.merge
     }
@@ -74,5 +83,12 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: DeleteBFLossAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext) = {
+    val event = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", details)
+    auditService.auditEvent(event)
   }
 }

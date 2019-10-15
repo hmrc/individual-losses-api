@@ -22,6 +22,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockDeleteBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.audit.{AuditError, AuditEvent, AuditResponse, DeleteBFLossAuditDetail}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
@@ -76,6 +77,11 @@ class DeleteBFLossControllerSpec
         val result: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val detail = DeleteBFLossAuditDetail(
+          "Individual", None, nino,  lossId, correlationId, AuditResponse(NO_CONTENT, None, None))
+        val event = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", detail)
+        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
@@ -92,6 +98,12 @@ class DeleteBFLossControllerSpec
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+          val detail = DeleteBFLossAuditDetail(
+            "Individual", None, nino, lossId, correlationId,
+            AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
+          val event = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", detail)
+          MockedAuditService.verifyAuditEvent(event).once
         }
       }
 
@@ -118,6 +130,12 @@ class DeleteBFLossControllerSpec
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+          val detail = DeleteBFLossAuditDetail(
+            "Individual", None, nino, lossId, correlationId,
+            AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
+          val event = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", detail)
+          MockedAuditService.verifyAuditEvent(event).once
         }
       }
 
