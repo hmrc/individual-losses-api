@@ -63,7 +63,7 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
           val response = Json.toJson(vendorResponse)
 
           auditSubmission(AmendLossClaimAuditDetail(request.userDetails, nino, claimId, request.body,
-            serviceResponse.correlationId, AuditResponse(OK, Right(response))))
+            serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
             .withApiHeaders(serviceResponse.correlationId)

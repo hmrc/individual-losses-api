@@ -56,7 +56,7 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
          auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
-           vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(JsObject.empty))))
+           vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(None))))
 
           NoContent
             .withApiHeaders(vendorResponse.correlationId)

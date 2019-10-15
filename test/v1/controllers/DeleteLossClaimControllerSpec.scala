@@ -80,7 +80,7 @@ class DeleteLossClaimControllerSpec
 
         val detail = DeleteLossClaimAuditDetail(
           "Individual", None, nino,  claimId, correlationId,
-          AuditResponse(NO_CONTENT, None, Some(JsObject.empty)))
+          AuditResponse(NO_CONTENT, None, None))
         val event = AuditEvent("deleteLossClaim", "delete-loss-claim", detail)
         MockedAuditService.verifyAuditEvent(event).once
       }
