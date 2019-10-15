@@ -18,18 +18,20 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.requestParsers.CreateBFLossParser
 import v1.hateoas.HateoasFactory
+import v1.models.audit.{AuditEvent, AuditResponse, CreateBFLossAuditDetail}
 import v1.models.des.CreateBFLossHateoasData
 import v1.models.errors._
 import v1.models.requestData.CreateBFLossRawData
 import v1.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -62,7 +64,12 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Created(Json.toJson(vendorResponse))
+          val response = Json.toJson(vendorResponse)
+
+          auditSubmission(CreateBFLossAuditDetail(request.userDetails, nino, request.body,
+            serviceResponse.correlationId, AuditResponse(CREATED, Right(Some(response)))))
+
+          Created(response)
             .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }
@@ -70,6 +77,10 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(CreateBFLossAuditDetail(request.userDetails, nino, request.body,
+          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+
         result
       }.merge
     }
@@ -84,5 +95,12 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError                => NotFound(Json.toJson(errorWrapper))
       case DownstreamError              => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: CreateBFLossAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext) = {
+    val event = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", details)
+    auditService.auditEvent(event)
   }
 }
