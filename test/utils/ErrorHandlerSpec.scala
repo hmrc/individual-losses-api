@@ -54,7 +54,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
     when(auditConnector.sendEvent(any[DataEvent]())(any[HeaderCarrier](), any[ExecutionContext]()))
       .thenReturn(Future.successful(Success))
 
-    val configuration = Configuration("appName" -> "myApp")
+    val configuration = Configuration("appName" -> "myApp", "bootstrap.errorHandler.warnOnly.statusCodes" -> List(200))
     val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
   }
 
