@@ -67,7 +67,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     List(
       MinTaxYearValidation.validate(req.taxYear, minimumTaxYearLossClaim),
       SelfEmploymentIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
-      TypeOfClaimValidation.checkClaim(req.typeOfClaim, req.typeOfLoss)
+      TypeOfClaimValidation.checkClaimCompatibility(req.typeOfClaim, req.typeOfLoss)
     )
   }
 
