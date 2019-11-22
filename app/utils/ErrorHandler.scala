@@ -16,7 +16,6 @@
 
 package utils
 
-import definition.Versions
 import javax.inject.{Inject, Singleton}
 import play.api.http.Status._
 import play.api.libs.json.Json

@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers.validators.validations
 import v1.models.domain.TypeOfClaim._
 import v1.models.domain.TypeOfLoss._
-import v1.models.domain.{ TypeOfClaim, TypeOfLoss }
-import v1.models.errors.{ MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
+import v1.models.domain.{TypeOfClaim, TypeOfLoss}
+import v1.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 object TypeOfClaimValidation {
 
@@ -26,12 +26,11 @@ object TypeOfClaimValidation {
     if (TypeOfClaim.parser.isDefinedAt(typeOfClaim)) NoValidationErrors else List(TypeOfClaimFormatError)
   }
 
-  def checkClaimCompatibility(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] =
+  def checkClaim(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] =
     (typeOfLoss, typeOfClaim) match {
-      case (`uk-property-non-fhl`, `carry-forward`) => List(RuleTypeOfClaimInvalid)
-      case (`uk-property-non-fhl`, _)               => NoValidationErrors
-      case (`self-employment`, `carry-forward`)     => NoValidationErrors
-      case (`self-employment`, `carry-sideways`)    => NoValidationErrors
-      case (_, _)                                   => List(RuleTypeOfClaimInvalid)
+      case (`uk-property-non-fhl`, _) => NoValidationErrors
+      case (`self-employment`, `carry-forward`) => NoValidationErrors
+      case (`self-employment`, `carry-sideways`) => NoValidationErrors
+      case (_,_) => List(RuleTypeOfClaimInvalid)
     }
 }
