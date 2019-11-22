@@ -19,8 +19,19 @@ package v1.models.des
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v1.models.des.IncomeSourceType._
+import v1.models.domain.TypeOfLoss
 
 class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
   testRoundTrip[IncomeSourceType](("01", `01`), ("02", `02`), ("04", `04`))
+
+  "IncomeSourceType" when {
+    "getting DES IncomeSourceType" must {
+      "work" in {
+        `01`.toTypeOfLoss shouldBe TypeOfLoss.`self-employment`
+        `02`.toTypeOfLoss shouldBe TypeOfLoss.`uk-property-non-fhl`
+        `04`.toTypeOfLoss shouldBe TypeOfLoss.`uk-property-fhl`
+      }
+    }
+  }
 }

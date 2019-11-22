@@ -16,14 +16,13 @@
 
 package utils
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
-import org.scalatest.mockito._
+import org.joda.time.DateTime
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
 import play.api.http.Status.UNSUPPORTED_MEDIA_TYPE
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, RequestHeader, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.UnitSpec
@@ -39,22 +38,36 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NoStackTrace
 
-class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSuite {
+class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
 
   def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
 
   class Test() {
     val method = "some-method"
 
-    val requestHeader = FakeRequest().withHeaders(versionHeader)
+    val requestHeader: FakeRequest[AnyContent] = FakeRequest().withHeaders(versionHeader)
 
-    val auditConnector = MockitoSugar.mock[AuditConnector]
-    val httpAuditEvent = MockitoSugar.mock[HttpAuditEvent]
+    val auditConnector: AuditConnector = mock[AuditConnector]
+    val httpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]
 
-    when(auditConnector.sendEvent(any[DataEvent]())(any[HeaderCarrier](), any[ExecutionContext]()))
-      .thenReturn(Future.successful(Success))
+    val eventTags = Map("transactionName" -> "event.transactionName")
 
-    val configuration = Configuration("appName" -> "myApp", "bootstrap.errorHandler.warnOnly.statusCodes" -> List(200))
+    val dataEvent = DataEvent(
+      auditSource = "auditSource",
+      auditType = "event.auditType",
+      eventId = "",
+      tags = eventTags,
+      detail = Map("test" -> "test"),
+      generatedAt = DateTime.now()
+    )
+
+    (httpAuditEvent.dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String])(_: HeaderCarrier)).expects(*, *, *, *, *)
+      .returns(dataEvent)
+
+    (auditConnector.sendEvent(_ : DataEvent)(_: HeaderCarrier, _: ExecutionContext)).expects(*, *, *)
+      .returns(Future.successful(Success))
+
+    val configuration = Configuration("appName" -> "myApp", "bootstrap.errorHandler.warnOnly.statusCodes" -> List(OK))
     val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
   }
 
@@ -62,7 +75,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
     "return 404 with error body" when {
       s"URI not found" in new Test() {
 
-        val result = handler.onClientError(requestHeader, Status.NOT_FOUND, "test")
+        val result: Future[Result] = handler.onClientError(requestHeader, Status.NOT_FOUND, "test")
         status(result) shouldBe Status.NOT_FOUND
 
         contentAsJson(result) shouldBe Json.toJson(NotFoundError)
@@ -71,7 +84,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 400 with error body" when {
       "JsValidationException thrown and header is supplied" in new Test() {
-        val result = handler.onClientError(requestHeader, BAD_REQUEST, "test")
+        val result: Future[Result] = handler.onClientError(requestHeader, BAD_REQUEST, "test")
         status(result) shouldBe BAD_REQUEST
 
         contentAsJson(result) shouldBe Json.toJson(BadRequestError)
@@ -80,7 +93,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 401 with error body" when {
       "unauthorised and header is supplied" in new Test() {
-        val result = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
+        val result: Future[Result] = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
         status(result) shouldBe UNAUTHORIZED
 
         contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
@@ -89,7 +102,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 415 with error body" when {
       "unsupported body and header is supplied" in new Test() {
-        val result = handler.onClientError(requestHeader, UNSUPPORTED_MEDIA_TYPE, "test")
+        val result: Future[Result] = handler.onClientError(requestHeader, UNSUPPORTED_MEDIA_TYPE, "test")
         status(result) shouldBe UNSUPPORTED_MEDIA_TYPE
 
         contentAsJson(result) shouldBe Json.toJson(InvalidBodyTypeError)
@@ -98,7 +111,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 405 with error body" when {
       "invalid method type" in new Test() {
-        val result = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
+        val result: Future[Result] = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
         status(result) shouldBe METHOD_NOT_ALLOWED
 
         contentAsJson(result) shouldBe Json.toJson(MtdError("INVALID_REQUEST", "test"))
@@ -110,7 +123,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 404 with error body" when {
       "NotFoundException thrown" in new Test() {
-        val result = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
+        val result: Future[Result] = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
         status(result) shouldBe NOT_FOUND
 
         contentAsJson(result) shouldBe Json.toJson(NotFoundError)
@@ -119,7 +132,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 401 with error body" when {
       "AuthorisationException thrown" in new Test() {
-        val result = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
+        val result: Future[Result] = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
         status(result) shouldBe UNAUTHORIZED
 
         contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
@@ -128,7 +141,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 400 with error body" when {
       "JsValidationException thrown" in new Test() {
-        val result = handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
+        val result: Future[Result] = handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
         status(result) shouldBe BAD_REQUEST
 
         contentAsJson(result) shouldBe Json.toJson(BadRequestError)
@@ -137,7 +150,7 @@ class ErrorHandlerSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSui
 
     "return 500 with error body" when {
       "other exception thrown" in new Test() {
-        val result = handler.onServerError(requestHeader, new Exception with NoStackTrace)
+        val result: Future[Result] = handler.onServerError(requestHeader, new Exception with NoStackTrace)
         status(result) shouldBe INTERNAL_SERVER_ERROR
 
         contentAsJson(result) shouldBe Json.toJson(DownstreamError)
