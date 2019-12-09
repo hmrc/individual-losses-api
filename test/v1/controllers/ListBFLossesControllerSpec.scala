@@ -179,7 +179,7 @@ class ListBFLossesControllerSpec
       errorsFromParserTester(SelfEmploymentIdFormatError, BAD_REQUEST)
       errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearRangeExceededError, BAD_REQUEST)
+      errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
     }
 
     "handle non-mdtp validation errors as per spec" when {

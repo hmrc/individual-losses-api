@@ -186,7 +186,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       createLossClaimValidationErrorTest("AA123456A",
         generateLossClaim(Some(selfEmploymentId), typeOfLoss, "2011-12", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(selfEmploymentId), typeOfLoss, "2019-25", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearRangeExceededError)
+        generateLossClaim(Some(selfEmploymentId), typeOfLoss, "2019-25", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
       createLossClaimValidationErrorTest("AA123456A",
         generateLossClaim(None, "self-employment-class", "2019-20", "carry-forward"), Status.BAD_REQUEST, TypeOfLossFormatError)
       createLossClaimValidationErrorTest("AA123456A",

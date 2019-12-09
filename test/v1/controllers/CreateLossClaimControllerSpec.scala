@@ -153,7 +153,7 @@ class CreateLossClaimControllerSpec
       TaxYearFormatError,
       RuleIncorrectOrEmptyBodyError,
       RuleTaxYearNotSupportedError,
-      RuleTaxYearRangeExceededError,
+      RuleTaxYearRangeInvalid,
       TypeOfLossFormatError,
       SelfEmploymentIdFormatError,
       RuleSelfEmploymentId,

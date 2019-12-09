@@ -112,7 +112,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2019-21")))) shouldBe
-          List(RuleTaxYearRangeExceededError)
+          List(RuleTaxYearRangeInvalid)
       }
     }
 
