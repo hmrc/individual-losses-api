@@ -174,7 +174,7 @@ class ListLossClaimsControllerSpec
       errorsFromParserTester(NinoFormatError, BAD_REQUEST)
       errorsFromParserTester(TaxYearFormatError, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearRangeExceededError, BAD_REQUEST)
+      errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
       errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
       errorsFromParserTester(SelfEmploymentIdFormatError, BAD_REQUEST)

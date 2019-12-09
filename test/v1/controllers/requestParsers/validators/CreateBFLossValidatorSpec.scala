@@ -94,7 +94,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in {
         validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2017-19")))) shouldBe
-          List(RuleTaxYearRangeExceededError)
+          List(RuleTaxYearRangeInvalid)
       }
     }
 

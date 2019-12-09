@@ -75,7 +75,7 @@ class ListBFLossesValidatorSpec extends UnitSpec {
         validator.validate(ListBFLossesRawData(nino = validNino,
           taxYear = Some("2018-20"),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some(validSEId))) shouldBe List(RuleTaxYearRangeExceededError)
+          selfEmploymentId = Some(validSEId))) shouldBe List(RuleTaxYearRangeInvalid)
       }
     }
 
