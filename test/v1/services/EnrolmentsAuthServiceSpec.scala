@@ -27,7 +27,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.auth.UserDetails
 import v1.models.errors.{DownstreamError, UnauthorisedError}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentsAuthServiceSpec extends ServiceSpec {
@@ -138,7 +137,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec {
       "return a valid AgentReferenceNumber" when {
         "a valid agent Enrolment is supplied" in new Test{
           val expectedArn = "123567890"
-          val actualArn = target.getAgentReferenceFromEnrolments(Enrolments(
+          val actualArn: Option[String] = target.getAgentReferenceFromEnrolments(Enrolments(
             Set(
               Enrolment(
                 "HMRC-AS-AGENT",
