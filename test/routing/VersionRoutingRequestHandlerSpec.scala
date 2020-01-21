@@ -22,7 +22,8 @@ import com.typesafe.config.ConfigFactory
 import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{Inside, Matchers}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.Inside
 import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.{HttpConfiguration, HttpFilters}
@@ -52,13 +53,13 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
 
   private val routingMap = new VersionRoutingMap {
     override val defaultRouter: Router = test.defaultRouter
-    override val map = Map("1.0" -> v1Router, "2.0" -> v2Router, "3.0" -> v3Router)
+    override val map: Map[String, Router] = Map("1.0" -> v1Router, "2.0" -> v2Router, "3.0" -> v3Router)
   }
 
   class Test(implicit acceptHeader: Option[String]) {
     val httpConfiguration = HttpConfiguration("context")
-    val auditConnector = mock[AuditConnector]
-    val httpAuditEvent = mock[HttpAuditEvent]
+    val auditConnector: AuditConnector = mock[AuditConnector]
+    val httpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]
     val configuration = Configuration("appName" -> "myApp", "bootstrap.errorHandler.warnOnly.statusCodes" -> Seq.empty[Int])
 
     private val errorHandler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)

@@ -24,7 +24,7 @@ import v1.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 trait MockDeleteLossClaimRequestDataParser extends MockFactory {
 
-  val mockDeleteLossClaimRequestDataParser = mock[DeleteLossClaimParser]
+  val mockDeleteLossClaimRequestDataParser: DeleteLossClaimParser = mock[DeleteLossClaimParser]
 
   object MockDeleteLossClaimRequestDataParser {
     def parseRequest(data: DeleteLossClaimRawData): CallHandler[Either[ErrorWrapper, DeleteLossClaimRequest]] = {

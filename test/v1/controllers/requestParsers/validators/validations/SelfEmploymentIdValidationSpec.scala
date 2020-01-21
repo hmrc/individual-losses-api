@@ -23,7 +23,7 @@ import v1.models.errors.{RuleSelfEmploymentId, SelfEmploymentIdFormatError}
 class SelfEmploymentIdValidationSpec extends UnitSpec {
 
   val validId    = "XAIS01234567890"
-  val invalidIds = Seq("AAIS01234567890", "X%IS01234567890", "XAAB01234567890", "XAIS0123456789", "XAIS012345678900", "XAIS012345A7890")
+  val invalidIds: Seq[String] = Seq("AAIS01234567890", "X%IS01234567890", "XAAB01234567890", "XAIS0123456789", "XAIS012345678900", "XAIS012345A7890")
 
   "validate" should {
 

@@ -50,7 +50,7 @@ class EnumsSpec extends UnitSpec with Inspectors {
       `enum-two`.toString shouldBe "enum-two"
     }
 
-    def json(value: Enum) = Json.parse(s"""
+    def json(value: Enum): JsValue = Json.parse(s"""
             |{
             | "someField": "$value"
             |}
@@ -88,13 +88,13 @@ class EnumsSpec extends UnitSpec with Inspectors {
 
       object Enum2 {
         case object `enum-one` extends Enum2 {
-          override def altName = "one"
+          override def altName: String = "one"
         }
         case object `enum-two` extends Enum2 {
-          override def altName = "two"
+          override def altName: String = "two"
         }
         case object `enum-three` extends Enum2 {
-          override def altName = "three"
+          override def altName: String = "three"
         }
 
         implicit val show: Show[Enum2]     = Show.show[Enum2](_.altName)

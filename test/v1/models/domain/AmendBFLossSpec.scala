@@ -16,19 +16,19 @@
 
 package v1.models.domain
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class AmendBFLossSpec extends UnitSpec {
 
-  val mtdJson = Json.parse(
+  val mtdJson: JsValue = Json.parse(
     """
       |{
       |  "lossAmount": 1000.99
       |}
     """.stripMargin)
   val model = AmendBFLoss(1000.99)
-  val desJson = Json.parse(
+  val desJson: JsValue = Json.parse(
     """
       |{
       |  "updatedBroughtForwardLossAmount": 1000.99

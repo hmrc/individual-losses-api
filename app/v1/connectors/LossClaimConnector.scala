@@ -65,7 +65,9 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
+  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext):
+  Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
+
     val nino = request.nino.nino
     val pathParameters =
       Map("taxYear"          -> request.taxYear.map(_.value),

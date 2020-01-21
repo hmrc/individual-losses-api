@@ -50,7 +50,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
     val auditConnector: AuditConnector = mock[AuditConnector]
     val httpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]
 
-    val eventTags = Map("transactionName" -> "event.transactionName")
+    val eventTags: Map[String, String] = Map("transactionName" -> "event.transactionName")
 
     val dataEvent = DataEvent(
       auditSource = "auditSource",

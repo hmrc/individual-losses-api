@@ -35,7 +35,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val levelOneValidationOne = new MockFunctionObject("Level: 1    Validation 1")
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
 
-        def levelOneValidations: TestRawData => List[List[MtdError]] = (data: TestRawData) => {
+        def levelOneValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
             levelOneValidationOne.validate(shouldError = false, None),
             levelOneValidationTwo.validate(shouldError = false, None)
@@ -45,7 +45,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val validationSet = List(levelOneValidations)
 
         val inputData = TestRawData("ABCDEF", "12345")
-        val result    = validator.run(validationSet, inputData)
+        val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe true
         levelOneValidationOne.called shouldBe 1
         levelOneValidationTwo.called shouldBe 1
@@ -60,7 +60,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
         val mockError             = MtdError("MOCK", "SOME ERROR")
 
-        def levelOneValidations: TestRawData => List[List[MtdError]] = (data: TestRawData) => {
+        def levelOneValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
             levelOneValidationOne.validate(shouldError = false, None),
             levelOneValidationTwo.validate(shouldError = true, Some(mockError))
@@ -70,7 +70,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val validationSet = List(levelOneValidations)
 
         val inputData = TestRawData("ABCDEF", "12345")
-        val result    = validator.run(validationSet, inputData)
+        val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1
         result.head shouldBe mockError
@@ -88,14 +88,14 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val levelTwoValidationTwo = new MockFunctionObject("Level: 2    Validation 2")
         val mockError             = MtdError("MOCK", "SOME ERROR ON LEVEL 2")
 
-        def levelOneValidations: TestRawData => List[List[MtdError]] = (data: TestRawData) => {
+        def levelOneValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
             levelOneValidationOne.validate(shouldError = false, None),
             levelOneValidationTwo.validate(shouldError = false, None)
           )
         }
 
-        def levelTwoValidations: TestRawData => List[List[MtdError]] = (data: TestRawData) => {
+        def levelTwoValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
             levelTwoValidationOne.validate(shouldError = false, None),
             levelTwoValidationTwo.validate(shouldError = true, Some(mockError))
@@ -105,7 +105,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val validationSet = List(levelOneValidations, levelTwoValidations)
 
         val inputData = TestRawData("ABCDEF", "12345")
-        val result    = validator.run(validationSet, inputData)
+        val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1
         result.head shouldBe mockError

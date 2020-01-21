@@ -25,9 +25,6 @@ import v1.models.hateoas.{ HateoasData, HateoasWrapper, Link }
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
-  private val nino   = "AA111111A"
-  private val lossId = "123456789"
-
   val hateoasFactory = new HateoasFactory(mockAppConfig)
 
   case class Response(foo: String)
@@ -45,11 +42,11 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   "wrap" should {
 
     implicit object LinksFactory1 extends HateoasLinksFactory[Response, Data1] {
-      override def links(appConfig: AppConfig, data: Data1) = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel1"))
+      override def links(appConfig: AppConfig, data: Data1): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel1"))
     }
 
     implicit object LinksFactory2 extends HateoasLinksFactory[Response, Data2] {
-      override def links(appConfig: AppConfig, data: Data2) = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel2"))
+      override def links(appConfig: AppConfig, data: Data2): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel2"))
     }
 
     "use the response specific links" in new Test {
@@ -64,14 +61,14 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   "wrapList" should {
 
     implicit object ListResponseFunctor extends Functor[ListResponse] {
-      override def map[A, B](fa: ListResponse[A])(f: A => B) = ListResponse(fa.items.map(f))
+      override def map[A, B](fa: ListResponse[A])(f: A => B): ListResponse[B] = ListResponse(fa.items.map(f))
     }
 
     implicit object LinksFactory extends HateoasListLinksFactory[ListResponse, Response, Data1] {
-      override def itemLinks(appConfig: AppConfig, data: Data1, item: Response) =
+      override def itemLinks(appConfig: AppConfig, data: Data1, item: Response): Seq[Link] =
         Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}/${item.foo}", GET, "item"))
 
-      override def links(appConfig: AppConfig, data: Data1) = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel"))
+      override def links(appConfig: AppConfig, data: Data1): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel"))
     }
 
     "work" in new Test {
