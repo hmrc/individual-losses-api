@@ -16,7 +16,7 @@
 
 package v1.models.audit
 
-import play.api.libs.json.{ JsValue, Json, Writes }
+import play.api.libs.json.{JsValue, Json, Writes}
 import v1.models.auth.UserDetails
 
 case class AmendBFLossAuditDetail(userType: String,

@@ -20,7 +20,7 @@ import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Link
 import v1.models.hateoas.Method.{DELETE, GET, POST}
 
 class LossClaimResponseSpec extends UnitSpec with MockAppConfig {

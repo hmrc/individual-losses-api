@@ -18,7 +18,7 @@ package v1.models.audit
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.errors.{RuleInvalidLossAmount, RuleTypeOfClaimInvalid}
+import v1.models.errors.RuleInvalidLossAmount
 
 class CreateBFLossAuditDetailSpec extends UnitSpec {
 

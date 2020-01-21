@@ -16,7 +16,7 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import play.api.libs.json.{Json, Reads, Writes}
 import v1.models.requestData.DesTaxYear
 
 case class LossClaim(taxYear: String,

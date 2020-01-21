@@ -19,8 +19,8 @@ package v1.models.des
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json._
-import v1.hateoas.{ HateoasLinks, HateoasListLinksFactory }
-import v1.models.hateoas.{ HateoasData, Link }
+import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
 
 case class BFLossId(id: String)
 

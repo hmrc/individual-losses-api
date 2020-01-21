@@ -21,7 +21,7 @@ import config.AppConfig
 import mocks.MockAppConfig
 import support.UnitSpec
 import v1.models.hateoas.Method.GET
-import v1.models.hateoas.{ HateoasData, HateoasWrapper, Link }
+import v1.models.hateoas.{HateoasData, HateoasWrapper, Link}
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 

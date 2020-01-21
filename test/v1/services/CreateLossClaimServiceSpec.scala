@@ -19,7 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.CreateLossClaimResponse
-import v1.models.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
+import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.CreateLossClaimRequest

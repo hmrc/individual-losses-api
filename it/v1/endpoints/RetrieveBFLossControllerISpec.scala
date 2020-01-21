@@ -19,13 +19,12 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{ JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.hateoas.HateoasLinks
-import v1.models.des.BFLossResponse
 import v1.models.errors._
-import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
+import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 

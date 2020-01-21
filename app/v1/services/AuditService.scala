@@ -17,8 +17,8 @@
 package v1.services
 
 import javax.inject.{Inject, Singleton}
-import play.api.{Configuration, Logger}
 import play.api.libs.json.{Json, Writes}
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}

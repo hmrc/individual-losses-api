@@ -22,7 +22,7 @@ import v1.connectors.LossClaimConnector
 import v1.models.errors._
 import v1.models.requestData.RetrieveLossClaimRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
 

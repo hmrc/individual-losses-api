@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import v1.models.domain.TypeOfLoss
-import v1.models.errors.{ MtdError, RuleSelfEmploymentId, SelfEmploymentIdFormatError }
+import v1.models.errors.{MtdError, RuleSelfEmploymentId, SelfEmploymentIdFormatError}
 
 object SelfEmploymentIdValidation {
 

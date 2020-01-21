@@ -22,8 +22,8 @@ import com.typesafe.config.ConfigFactory
 import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.Inside
+import org.scalatest.matchers.should.Matchers
 import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.{HttpConfiguration, HttpFilters}

@@ -16,7 +16,7 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{JsObject, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 case class AmendLossClaim(typeOfClaim: TypeOfClaim)
 
