@@ -16,7 +16,7 @@
 
 package v1.models.domain
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.utils.JsonErrorValidators
 
@@ -29,7 +29,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     selfEmploymentId = Some("X2IS12356589871")
   )
 
-  val lossClaimEmploymentJson = Json.parse(
+  val lossClaimEmploymentJson: JsValue = Json.parse(
     """
       |{
       |    "typeOfLoss": "self-employment",
@@ -39,7 +39,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimEmploymentDesJson = Json.parse(
+  val lossClaimEmploymentDesJson: JsValue = Json.parse(
     """
       |{
       |    "incomeSourceId": "X2IS12356589871",
@@ -55,7 +55,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     selfEmploymentId = None
   )
 
-  val lossClaimPropertyJson = Json.parse(
+  val lossClaimPropertyJson: JsValue = Json.parse(
     """
       |{
       |    "typeOfLoss": "uk-property-non-fhl",
@@ -64,7 +64,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimPropertyDesJson = Json.parse(
+  val lossClaimPropertyDesJson: JsValue = Json.parse(
     """
       |{
       |    "incomeSourceType": "02",

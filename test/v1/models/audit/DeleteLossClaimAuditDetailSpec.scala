@@ -16,7 +16,7 @@
 
 package v1.models.audit
 
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import support.UnitSpec
 import v1.models.errors.NinoFormatError
 

@@ -76,7 +76,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "return a single error if there are multiple errors" in new Test {
         val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
-        val result = await(service.amendBFLoss(request))
+        val result: AmendBFLossOutcome = await(service.amendBFLoss(request))
         result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
       }
     }

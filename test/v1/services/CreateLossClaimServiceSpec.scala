@@ -19,7 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.CreateLossClaimResponse
-import v1.models.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
+import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.CreateLossClaimRequest
@@ -68,7 +68,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "return a single error if there are multiple errors" in new Test {
         val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
-        val result = await(service.createLossClaim(request))
+        val result: CreateLossClaimOutcome = await(service.createLossClaim(request))
         result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
       }
     }

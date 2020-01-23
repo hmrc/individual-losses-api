@@ -27,21 +27,18 @@ case class BFLoss(typeOfLoss: TypeOfLoss,
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-  implicit val writes: Writes[BFLoss] = new Writes[BFLoss] {
-    override def writes(loss: BFLoss): JsValue =
-      if (loss.typeOfLoss.isProperty) {
-        Json.obj(
-          "incomeSourceType"         -> loss.typeOfLoss.toIncomeSourceType,
-          "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
-          "broughtForwardLossAmount" -> loss.lossAmount
-        )
-      } else {
-        Json.obj(
-          "incomeSourceId"           -> loss.selfEmploymentId,
-          "lossType"                 -> loss.typeOfLoss.toLossType,
-          "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
-          "broughtForwardLossAmount" -> loss.lossAmount
-        )
-      }
+  implicit val writes: Writes[BFLoss] = (loss: BFLoss) => if (loss.typeOfLoss.isProperty) {
+    Json.obj(
+      "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
+      "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+      "broughtForwardLossAmount" -> loss.lossAmount
+    )
+  } else {
+    Json.obj(
+      "incomeSourceId" -> loss.selfEmploymentId,
+      "lossType" -> loss.typeOfLoss.toLossType,
+      "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+      "broughtForwardLossAmount" -> loss.lossAmount
+    )
   }
 }

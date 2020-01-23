@@ -19,9 +19,9 @@ package v1.models.des
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.hateoas.{ HateoasFactory, HateoasLinks }
-import v1.models.hateoas.Method.{ GET, POST }
-import v1.models.hateoas.{ HateoasWrapper, Link }
+import v1.hateoas.{HateoasFactory, HateoasLinks}
+import v1.models.hateoas.Method.{GET, POST}
+import v1.models.hateoas.{HateoasWrapper, Link}
 
 class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 

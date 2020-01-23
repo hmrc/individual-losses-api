@@ -299,9 +299,9 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String     = requestNino
-          override val taxYear          = requestTaxYear
-          override val typeOfLoss       = requestTypeOfLoss
-          override val selfEmploymentId = requestSelfEmploymentId
+          override val taxYear: Option[String] = requestTaxYear
+          override val typeOfLoss: Option[String] = requestTypeOfLoss
+          override val selfEmploymentId: Option[String] = requestSelfEmploymentId
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()

@@ -87,7 +87,7 @@ class StandardDesHttpParserSpec extends UnitSpec {
     handleUnexpectedResponse(httpReads)
   }
 
-  val singleErrorJson = Json.parse(
+  val singleErrorJson: JsValue = Json.parse(
     """
       |{
       |   "code": "CODE",
@@ -96,7 +96,7 @@ class StandardDesHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val multipleErrorsJson = Json.parse(
+  val multipleErrorsJson: JsValue = Json.parse(
     """
       |{
       |   "failures": [
@@ -113,7 +113,7 @@ class StandardDesHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val malformedErrorJson = Json.parse(
+  val malformedErrorJson: JsValue = Json.parse(
     """
       |{
       |   "coed": "CODE",

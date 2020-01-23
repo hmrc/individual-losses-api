@@ -30,24 +30,16 @@ object StandardDesHttpParser extends HttpParser {
 
   // Return Right[DesResponse[Unit]] as success response has no body - no need to assign it a value
   implicit val readsEmpty: HttpReads[DesOutcome[Unit]] =
-    new HttpReads[DesOutcome[Unit]] {
-
-      override def read(method: String, url: String, response: HttpResponse): DesOutcome[Unit] =
-        doRead(NO_CONTENT, url, response) { correlationId =>
-          Right(DesResponse(correlationId, ()))
-        }
+    (_: String, url: String, response: HttpResponse) => doRead(NO_CONTENT, url, response) { correlationId =>
+      Right(DesResponse(correlationId, ()))
     }
 
   implicit def reads[A: Reads]: HttpReads[DesOutcome[A]] =
-    new HttpReads[DesOutcome[A]] {
-
-      override def read(method: String, url: String, response: HttpResponse): DesOutcome[A] =
-        doRead(OK, url, response) { correlationId =>
-          response.validateJson[A] match {
-            case Some(ref) => Right(DesResponse(correlationId, ref))
-            case None => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
-          }
-        }
+    (_: String, url: String, response: HttpResponse) => doRead(OK, url, response) { correlationId =>
+      response.validateJson[A] match {
+        case Some(ref) => Right(DesResponse(correlationId, ref))
+        case None => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
+      }
     }
 
   private def doRead[A](successStatusCode: Int, url: String, response: HttpResponse)(

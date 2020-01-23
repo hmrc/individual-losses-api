@@ -18,7 +18,7 @@ package v1.models.domain
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v1.models.des.{ IncomeSourceType, LossType, ReliefClaimed }
+import v1.models.des.{IncomeSourceType, LossType}
 import v1.models.domain.TypeOfLoss._
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {

@@ -24,7 +24,7 @@ import v1.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
 
 trait MockAmendBFLossRequestDataParser extends MockFactory {
 
-  val mockAmendBFLossRequestDataParser = mock[AmendBFLossParser]
+  val mockAmendBFLossRequestDataParser: AmendBFLossParser = mock[AmendBFLossParser]
 
   object MockAmendBFLossRequestDataParser {
     def parseRequest(data: AmendBFLossRawData): CallHandler[Either[ErrorWrapper, AmendBFLossRequest]] = {

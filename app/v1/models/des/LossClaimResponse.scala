@@ -20,7 +20,6 @@ import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.des.BFLossResponse._
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 import v1.models.hateoas.{HateoasData, Link}
 import v1.models.requestData.DesTaxYear

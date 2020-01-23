@@ -16,16 +16,14 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{JsObject, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 case class AmendLossClaim(typeOfClaim: TypeOfClaim)
 
 object AmendLossClaim {
   implicit val reads: Reads[AmendLossClaim] = Json.reads[AmendLossClaim]
-  implicit val writes: OWrites[AmendLossClaim] = new OWrites[AmendLossClaim] {
-    override def writes(o: AmendLossClaim): JsObject = Json.obj(
-      "updatedReliefClaimedType" -> o.typeOfClaim.toReliefClaimed
-    )
-  }
+  implicit val writes: OWrites[AmendLossClaim] = (o: AmendLossClaim) => Json.obj(
+    "updatedReliefClaimedType" -> o.typeOfClaim.toReliefClaimed
+  )
 
 }

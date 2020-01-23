@@ -17,7 +17,6 @@
 package config
 
 import com.google.inject.AbstractModule
-import play.api.http.HttpRequestHandler
 
 class DIModule extends AbstractModule {
 

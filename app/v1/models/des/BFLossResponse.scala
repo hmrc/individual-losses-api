@@ -19,9 +19,9 @@ package v1.models.des
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v1.hateoas.{ HateoasLinks, HateoasLinksFactory }
+import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.domain.TypeOfLoss
-import v1.models.hateoas.{ HateoasData, Link }
+import v1.models.hateoas.{HateoasData, Link}
 import v1.models.requestData.DesTaxYear
 
 case class BFLossResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)

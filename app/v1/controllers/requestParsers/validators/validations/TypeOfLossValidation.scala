@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import v1.models.domain.TypeOfLoss
-import v1.models.errors.{ MtdError, TypeOfLossFormatError }
+import v1.models.errors.{MtdError, TypeOfLossFormatError}
 
 object TypeOfLossValidation {
   private val lossClaimLossTypeNames = List(TypeOfLoss.`self-employment`, TypeOfLoss.`uk-property-non-fhl`).map(_.toString)

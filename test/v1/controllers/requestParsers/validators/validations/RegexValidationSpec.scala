@@ -25,7 +25,7 @@ class RegexValidationSpec extends UnitSpec {
 
   object TestValidator extends RegexValidation {
     override protected val regexFormat = "[a-z]{3}[0-9]{3}"
-    override protected val error       = TestError
+    override protected val error: TestError.type = TestError
   }
 
   "RegexValidation" when {

@@ -16,7 +16,7 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import play.api.libs.json.{Json, Reads, Writes}
 import v1.models.requestData.DesTaxYear
 
 case class LossClaim(taxYear: String,
@@ -26,23 +26,21 @@ case class LossClaim(taxYear: String,
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
-  implicit val writes: Writes[LossClaim] = new Writes[LossClaim] {
-    override  def writes(claim: LossClaim): JsValue = {
+  implicit val writes: Writes[LossClaim] = (claim: LossClaim) => {
 
-      if (claim.typeOfLoss.isProperty) {
-        Json.obj(
-          "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
-        )
-      }
-      else {
-        Json.obj(
-          "incomeSourceId" -> claim.selfEmploymentId,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
-        )
-      }
+    if (claim.typeOfLoss.isProperty) {
+      Json.obj(
+        "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
+        "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
+        "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+      )
+    }
+    else {
+      Json.obj(
+        "incomeSourceId" -> claim.selfEmploymentId,
+        "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
+        "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+      )
     }
   }
 }

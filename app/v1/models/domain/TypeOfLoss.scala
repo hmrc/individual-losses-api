@@ -18,7 +18,7 @@ package v1.models.domain
 
 import play.api.libs.json.Format
 import utils.enums.Enums
-import v1.models.des.{ IncomeSourceType, LossType }
+import v1.models.des.{IncomeSourceType, LossType}
 
 sealed trait TypeOfLoss {
   def isProperty: Boolean                          = false

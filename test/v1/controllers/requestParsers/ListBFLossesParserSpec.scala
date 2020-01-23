@@ -44,7 +44,14 @@ class ListBFLossesParserSpec extends UnitSpec {
           .returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(ListBFLossesRequest(Nino(nino), taxYear = Some(DesTaxYear("2018")), incomeSourceType = Some(IncomeSourceType.`04`), selfEmploymentId = Some(selfEmploymentId)))
+          Right(
+              ListBFLossesRequest(
+                nino = Nino(nino),
+                taxYear = Some(DesTaxYear("2018")),
+                incomeSourceType = Some(IncomeSourceType.`04`),
+                selfEmploymentId = Some(selfEmploymentId)
+              )
+          )
       }
 
       "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
@@ -56,7 +63,13 @@ class ListBFLossesParserSpec extends UnitSpec {
           .returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(ListBFLossesRequest(Nino(nino), taxYear = Some(DesTaxYear("2018")), incomeSourceType = Some(IncomeSourceType.`02`), selfEmploymentId = Some(selfEmploymentId)))
+          Right(
+            ListBFLossesRequest(
+              nino = Nino(nino),
+              taxYear = Some(DesTaxYear("2018")),
+              incomeSourceType = Some(IncomeSourceType.`02`),
+              selfEmploymentId = Some(selfEmploymentId))
+          )
       }
 
       "map missing parameters to None" in new Test {

@@ -17,23 +17,23 @@
 package v1.models.des
 
 import mocks.MockAppConfig
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.hateoas.HateoasFactory
-import v1.models.hateoas.Method.{ DELETE, GET, POST }
-import v1.models.hateoas.{ HateoasWrapper, Link }
+import v1.models.hateoas.Method.{DELETE, GET, POST}
+import v1.models.hateoas.{HateoasWrapper, Link}
 
 class CreateBFLossResponseSpec extends UnitSpec {
 
   val lossIdResponse = CreateBFLossResponse(id = "AAZZ1234567890a")
 
-  val lossIdJson = Json.parse("""
+  val lossIdJson: JsValue = Json.parse("""
       |{
       |   "id": "AAZZ1234567890a"
       |}
     """.stripMargin)
 
-  val lossIdDesJson = Json.parse("""
+  val lossIdDesJson: JsValue = Json.parse("""
       |{
       |   "lossId": "AAZZ1234567890a"
       |}
