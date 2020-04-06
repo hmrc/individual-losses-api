@@ -32,4 +32,9 @@ traits:
         description: 'Unique identifier of the income source the claim relates to. <b>Must conform to the regular expression <ul><li>`^X[A-Z0-9]{1}IS[0-9]{11}$` </b>'
         example: 'XGIS00000001319'
         required: false
+  claimType:
+    queryParameters:
+      claimType:
+        description: 'The type of loss claim. Limited to the following possible values: <b><ul><li>`carry-sideways`</b>'
+        required: false
         

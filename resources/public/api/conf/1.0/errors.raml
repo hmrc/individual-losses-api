@@ -319,3 +319,14 @@ traits:
                 description: There is no accounting period for the year of the claim.
                 value:
                   code: RULE_NO_ACCOUNTING_PERIOD
+  formatClaimType:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimType:
+                description: The format of the supplied claim type is not valid
+                value:
+                  code: FORMAT_CLAIM_TYPE
