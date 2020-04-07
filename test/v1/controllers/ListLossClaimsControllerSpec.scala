@@ -180,6 +180,7 @@ class ListLossClaimsControllerSpec
       errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
       errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
+      errorsFromParserTester(ClaimTypeFormatError, BAD_REQUEST)
       errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
       errorsFromParserTester(SelfEmploymentIdFormatError, BAD_REQUEST)
     }
@@ -208,6 +209,7 @@ class ListLossClaimsControllerSpec
       errorsFromServiceTester(TaxYearFormatError, BAD_REQUEST)
       errorsFromServiceTester(SelfEmploymentIdFormatError, BAD_REQUEST)
       errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
+      errorsFromServiceTester(ClaimTypeFormatError, BAD_REQUEST)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     }

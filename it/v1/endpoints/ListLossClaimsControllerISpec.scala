@@ -38,14 +38,16 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
         |        "reliefClaimed": "CF",
         |        "taxYearClaimedFor": "2099",
         |        "claimId": "000000000000011",
-        |        "submissionDate": "2019-07-13T12:13:48.763Z"
+        |        "submissionDate": "2019-07-13T12:13:48.763Z",
+        |        "sequence": 1
         |    },
         |    {
         |        "incomeSourceId": "000000000000002",
         |        "reliefClaimed": "CF",
         |        "taxYearClaimedFor": "2020",
         |        "claimId": "000000000000022",
-        |        "submissionDate": "2018-07-13T12:13:48.763Z"
+        |        "submissionDate": "2018-07-13T12:13:48.763Z",
+        |        "sequence": 2
         |    }
         |]
         |
@@ -57,6 +59,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
     val taxYear: Option[String]          = None
     val typeOfLoss: Option[String]       = None
     val selfEmploymentId: Option[String] = None
+    val claimType: Option[String]        = None
 
     def uri: String = s"/$nino/loss-claims"
 
@@ -65,6 +68,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                                               |    "claims": [
                                               |        {
                                               |            "id": "000000000000011",
+                                              |            "sequence": 1,
                                               |            "links" : [
                                               |             {
                                               |               "href" : "/individuals/losses$uri/000000000000011",
@@ -75,6 +79,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                                               |        },
                                               |        {
                                               |            "id": "000000000000022",
+                                              |            "sequence": 2,
                                               |            "links" : [
                                               |             {
                                               |               "href" : "/individuals/losses$uri/000000000000022",
@@ -99,7 +104,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                                               |}
      """.stripMargin)
     def queryParams: Seq[(String, String)] =
-      Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "selfEmploymentId" -> selfEmploymentId)
+      Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "selfEmploymentId" -> selfEmploymentId, "claimType" -> claimType)
         .collect {
           case (k, Some(v)) => (k, v)
         }
@@ -274,6 +279,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIMTYPE", Status.BAD_REQUEST, ClaimTypeFormatError)
     }
 
     "handle validation errors according to spec" when {
@@ -281,6 +287,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                               requestTaxYear: Option[String],
                               requestTypeOfLoss: Option[String],
                               requestSelfEmploymentId: Option[String],
+                              requestclaimType: Option[String],
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
@@ -289,6 +296,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
           override val taxYear: Option[String] = requestTaxYear
           override val typeOfLoss: Option[String] = requestTypeOfLoss
           override val selfEmploymentId: Option[String] = requestSelfEmploymentId
+          override val claimType: Option[String] = requestclaimType
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -303,13 +311,14 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", None, None, None, Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", Some("XXXX-YY"), None, None, Status.BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", Some("2018-19"), None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-      validationErrorTest("AA123456A", Some("2019-21"), None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
-      validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, Status.BAD_REQUEST, TypeOfLossFormatError)
-      validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), Status.BAD_REQUEST, SelfEmploymentIdFormatError)
-      validationErrorTest("AA123456A", None, Some("uk-property-non-fhl"), Some("XA01234556790"), Status.BAD_REQUEST, RuleSelfEmploymentId)
+      validationErrorTest("BADNINO", None, None, None, None, Status.BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", Some("XXXX-YY"), None, None, None, Status.BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", Some("2018-19"), None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", Some("2019-21"), None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
+      validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError)
+      validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), None, Status.BAD_REQUEST, SelfEmploymentIdFormatError)
+      validationErrorTest("AA123456A", None, Some("uk-property-non-fhl"), Some("XA01234556790"), None, Status.BAD_REQUEST, RuleSelfEmploymentId)
+      validationErrorTest("AA123456A", None, None, None, Some("bad-claim-type"), Status.BAD_REQUEST, ClaimTypeFormatError)
     }
 
   }
