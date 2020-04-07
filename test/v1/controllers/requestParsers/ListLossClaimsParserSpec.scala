@@ -20,6 +20,7 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockListLossClaimsValidator
 import v1.models.des.IncomeSourceType
+import v1.models.domain.ClaimType
 import v1.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v1.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
@@ -27,6 +28,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
   val nino             = "AA123456B"
   val taxYear          = "2017-18"
   val selfEmploymentId = "XAIS01234567890"
+  val claimType        = "carry-sideways"
 
   trait Test extends MockListLossClaimsValidator {
     lazy val parser = new ListLossClaimsParser(mockValidator)
@@ -37,7 +39,12 @@ class ListLossClaimsParserSpec extends UnitSpec {
 
       "convert uk-property-fhl to incomeSourceType 04" in new Test {
         val inputData =
-          ListLossClaimsRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-fhl"), selfEmploymentId = Some(selfEmploymentId))
+          ListLossClaimsRawData(nino,
+            taxYear = Some(taxYear),
+            typeOfLoss = Some("uk-property-fhl"),
+            selfEmploymentId = Some(selfEmploymentId),
+            claimType = Some(claimType)
+          )
 
         MockValidator
           .validate(inputData)
@@ -49,14 +56,21 @@ class ListLossClaimsParserSpec extends UnitSpec {
               nino = Nino(nino),
               taxYear = Some(DesTaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`04`),
-              selfEmploymentId = Some(selfEmploymentId)
+              selfEmploymentId = Some(selfEmploymentId),
+              claimType = Some(ClaimType.`carry-sideways`)
             )
           )
       }
 
       "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
         val inputData =
-          ListLossClaimsRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-non-fhl"), selfEmploymentId = Some(selfEmploymentId))
+          ListLossClaimsRawData(
+            nino,
+            taxYear = Some(taxYear),
+            typeOfLoss = Some("uk-property-non-fhl"),
+            selfEmploymentId = Some(selfEmploymentId),
+            claimType = Some(claimType)
+          )
 
         MockValidator
           .validate(inputData)
@@ -68,27 +82,28 @@ class ListLossClaimsParserSpec extends UnitSpec {
               nino = Nino(nino),
               taxYear = Some(DesTaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`02`),
-              selfEmploymentId = Some(selfEmploymentId)
+              selfEmploymentId = Some(selfEmploymentId),
+              claimType = Some(ClaimType.`carry-sideways`)
             )
           )
       }
 
       "map missing parameters to None" in new Test {
         val inputData =
-          ListLossClaimsRawData(nino, None, None, None)
+          ListLossClaimsRawData(nino, None, None, None, None)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(ListLossClaimsRequest(Nino(nino), None, None, None))
+          Right(ListLossClaimsRequest(Nino(nino), None, None, None, None))
       }
     }
 
     "invalid input" should {
       // WLOG - validation is mocked
-      val inputData = ListLossClaimsRawData("nino", None, None, None)
+      val inputData = ListLossClaimsRawData("nino", None, None, None, None)
 
       "handle a single error" in new Test {
         MockValidator

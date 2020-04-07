@@ -24,6 +24,7 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListLossClaimsRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
 import v1.models.des.{ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId}
+import v1.models.domain.ClaimType
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.Method.{GET, POST}
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -48,23 +49,25 @@ class ListLossClaimsControllerSpec
   val taxYear          = "2018-19"
   val selfEmployment   = "self-employment"
   val selfEmploymentId = "selfEmploymentId"
+  val claimType        = "carry-sideways"
 
-  val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
-  val request = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
+  val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))
+  val request = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId), Some(ClaimType.`carry-sideways`))
 
   val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789"), LossClaimId("000000123456790")))
+  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", 1), LossClaimId("000000123456790", 2)))
 
   val hateoasResponse = ListLossClaimsResponse(
-    Seq(HateoasWrapper(LossClaimId("000000123456789"), Seq(testHateoasLink)), HateoasWrapper(LossClaimId("000000123456790"), Seq(testHateoasLink))))
+    Seq(HateoasWrapper(LossClaimId("000000123456789", 1), Seq(testHateoasLink)), HateoasWrapper(LossClaimId("000000123456790", 2), Seq(testHateoasLink))))
 
   val responseJson: JsValue = Json.parse("""
       |{
       |    "claims": [
       |        {
       |            "id": "000000123456789",
+      |            "sequence": 1,
       |            "links" : [
       |               {
       |                 "href": "/foo/bar",
@@ -75,6 +78,7 @@ class ListLossClaimsControllerSpec
       |        },
       |        {
       |            "id": "000000123456790",
+      |            "sequence": 2,
       |            "links" : [
       |               {
       |                 "href": "/foo/bar",
@@ -127,7 +131,7 @@ class ListLossClaimsControllerSpec
           .wrapList(response, ListLossClaimsHateoasData(nino))
           .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
-        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
+        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))(fakeRequest)
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseJson
       }
@@ -148,7 +152,7 @@ class ListLossClaimsControllerSpec
           .wrapList(ListLossClaimsResponse(List.empty[LossClaimId]), ListLossClaimsHateoasData(nino))
           .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[LossClaimId]]), Seq(testCreateHateoasLink)))
 
-        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
+        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))(fakeRequest)
         status(result) shouldBe NOT_FOUND
         contentAsJson(result) shouldBe Json.toJson(NotFoundError)
       }
@@ -162,7 +166,7 @@ class ListLossClaimsControllerSpec
             .parseRequest(rawData)
             .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
-          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
+          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))(fakeRequest)
 
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
@@ -192,7 +196,7 @@ class ListLossClaimsControllerSpec
             .list(request)
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
-          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
+          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))(fakeRequest)
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)

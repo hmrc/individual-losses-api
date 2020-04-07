@@ -21,13 +21,18 @@ import config.AppConfig
 import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
+import play.api.libs.functional.syntax._
 
-case class LossClaimId(id: String)
+
+case class LossClaimId(id: String, sequence: Int)
 
 object LossClaimId {
   implicit val writes: OWrites[LossClaimId] = Json.writes[LossClaimId]
 
-  implicit val reads: Reads[LossClaimId] = (JsPath \ "claimId").read[String].map(LossClaimId(_))
+  implicit val reads: Reads[LossClaimId] = (
+    (JsPath \ "claimId").read[String] and
+      (JsPath \ "sequence").read[Int]
+    )(LossClaimId.apply _)
 }
 
 case class ListLossClaimsResponse[I](claims: Seq[I])

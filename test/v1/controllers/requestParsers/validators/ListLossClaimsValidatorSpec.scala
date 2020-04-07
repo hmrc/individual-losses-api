@@ -26,6 +26,7 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
   private val validTaxYear  = "2021-22"
   private val validLossType = "self-employment"
   private val validSEId     = "XAIS01234567890"
+  private val claimType     = "carry-sideways"
 
   val validator = new ListLossClaimsValidator
 
@@ -35,20 +36,23 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some(validSEId))) shouldBe Nil
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe Nil
       }
       "a self employment id is not supplied for a loss type of self-employment" in {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("self-employment"),
-          selfEmploymentId = None)) shouldBe Nil
+          selfEmploymentId = None,
+          claimType = Some(claimType))) shouldBe Nil
       }
 
       "a self employment id is supplied and no loss type is supplied" in {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = None,
-          selfEmploymentId = Some(validSEId))) shouldBe Nil
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe Nil
       }
     }
 
@@ -57,7 +61,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = "badNino",
           taxYear = Some(validTaxYear),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some(validSEId))) shouldBe List(NinoFormatError)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(NinoFormatError)
       }
     }
 
@@ -66,7 +71,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some("XXXX"),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some(validSEId))) shouldBe List(TaxYearFormatError)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(TaxYearFormatError)
       }
     }
 
@@ -75,7 +81,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some("2018-20"),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some(validSEId))) shouldBe List(RuleTaxYearRangeInvalid)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(RuleTaxYearRangeInvalid)
       }
     }
 
@@ -84,7 +91,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some("2018-19"),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some(validSEId))) shouldBe List(RuleTaxYearNotSupportedError)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(RuleTaxYearNotSupportedError)
       }
     }
 
@@ -93,7 +101,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("badLossType"),
-          selfEmploymentId = Some(validSEId))) shouldBe List(TypeOfLossFormatError)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
       }
 
       // Because DES does not distinguish self-employment types for its query...
@@ -101,14 +110,16 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("self-employment-class4"),
-          selfEmploymentId = Some(validSEId))) shouldBe List(TypeOfLossFormatError)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
       }
 
       "the loss type in an fhl property" in {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("uk-property-fhl"),
-          selfEmploymentId = Some(validSEId))) shouldBe List(TypeOfLossFormatError)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
       }
     }
 
@@ -117,7 +128,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some("badSEId"))) shouldBe List(SelfEmploymentIdFormatError)
+          selfEmploymentId = Some("badSEId"),
+          claimType = Some(claimType))) shouldBe List(SelfEmploymentIdFormatError)
       }
     }
 
@@ -126,7 +138,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("uk-property-non-fhl"),
-          selfEmploymentId = Some(validSEId))) shouldBe List(RuleSelfEmploymentId)
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(RuleSelfEmploymentId)
       }
     }
 
@@ -135,13 +148,15 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("uk-property-non-fhl"),
-          selfEmploymentId = None)) shouldBe Nil
+          selfEmploymentId = None,
+          claimType = Some(claimType))) shouldBe Nil
       }
       "a self employment id is supplied for a loss type of self-employment" in {
         validator.validate(ListLossClaimsRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("self-employment"),
-          selfEmploymentId = Some(validSEId))) shouldBe Nil
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe Nil
       }
     }
 
@@ -150,8 +165,8 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
         validator.validate(ListLossClaimsRawData(nino = "badNino",
           taxYear = Some("badTaxYear"),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some(validSEId))) shouldBe List(NinoFormatError, TaxYearFormatError) }
+          selfEmploymentId = Some(validSEId),
+          claimType = Some(claimType))) shouldBe List(NinoFormatError, TaxYearFormatError) }
     }
   }
-
 }
