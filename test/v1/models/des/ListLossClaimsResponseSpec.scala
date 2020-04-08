@@ -28,7 +28,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   "json writes" must {
     "output as per spec" in {
-      Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("000000123456789", 1), LossClaimId("000000123456790", 2)))) shouldBe
+      Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1)), LossClaimId("000000123456790", Some(2))))) shouldBe
         Json.parse(
           """
             |{
@@ -82,7 +82,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
       desResponseJson.as[ListLossClaimsResponse[LossClaimId]] shouldBe
         ListLossClaimsResponse(
-          Seq(LossClaimId("000000000000011", 1), LossClaimId("000000000000022", 2), LossClaimId("000000000000033", 3)))
+          Seq(LossClaimId("000000000000011", Some(1)), LossClaimId("000000000000022", Some(2)), LossClaimId("000000000000033", Some(3))))
     }
   }
 
@@ -99,7 +99,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
     "expose the correct item level links for list" in {
       MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-      ListLossClaimsResponse.LinksFactory.itemLinks(mockAppConfig, ListLossClaimsHateoasData(nino), LossClaimId("claimId", 1)) shouldBe
+      ListLossClaimsResponse.LinksFactory.itemLinks(mockAppConfig, ListLossClaimsHateoasData(nino), LossClaimId("claimId", Some(1))) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self")
         )

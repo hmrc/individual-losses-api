@@ -57,10 +57,10 @@ class ListLossClaimsControllerSpec
   val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", 1), LossClaimId("000000123456790", 2)))
+  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1)), LossClaimId("000000123456790", Some(2))))
 
   val hateoasResponse = ListLossClaimsResponse(
-    Seq(HateoasWrapper(LossClaimId("000000123456789", 1), Seq(testHateoasLink)), HateoasWrapper(LossClaimId("000000123456790", 2), Seq(testHateoasLink))))
+    Seq(HateoasWrapper(LossClaimId("000000123456789", Some(1)), Seq(testHateoasLink)), HateoasWrapper(LossClaimId("000000123456790", Some(2)), Seq(testHateoasLink))))
 
   val responseJson: JsValue = Json.parse("""
       |{

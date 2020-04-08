@@ -24,14 +24,14 @@ import v1.models.hateoas.{HateoasData, Link}
 import play.api.libs.functional.syntax._
 
 
-case class LossClaimId(id: String, sequence: Int)
+case class LossClaimId(id: String, sequence: Option[Int])
 
 object LossClaimId {
   implicit val writes: OWrites[LossClaimId] = Json.writes[LossClaimId]
 
   implicit val reads: Reads[LossClaimId] = (
     (JsPath \ "claimId").read[String] and
-      (JsPath \ "sequence").read[Int]
+      (JsPath \ "sequence").readNullable[Int]
     )(LossClaimId.apply _)
 }
 

@@ -33,7 +33,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "a valid request is supplied with no query parameters" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, 1), LossClaimId(claimId2, 2)))))
+        val expected = Right(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1)), LossClaimId(claimId2, Some(2))))))
 
         MockedHttpClient
           .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(), desRequestHeaders: _*)
@@ -45,7 +45,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a tax year parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, 1), LossClaimId(claimId2, 2)))))
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1)), LossClaimId(claimId2, Some(2))))))
 
         MockedHttpClient
           .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("taxYear", "2019")), desRequestHeaders: _*)
@@ -57,7 +57,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a income source id parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, 1), LossClaimId(claimId2, 2)))))
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1)), LossClaimId(claimId2, Some(2))))))
 
         MockedHttpClient
           .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("incomeSourceId", "testId")), desRequestHeaders: _*)
@@ -69,7 +69,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a income source type parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, 1), LossClaimId(claimId2, 2)))))
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1)), LossClaimId(claimId2, Some(2))))))
 
         MockedHttpClient
           .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("incomeSourceType", "02")), desRequestHeaders: _*)
@@ -81,7 +81,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a claim type parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, 1), LossClaimId(claimId2, 2)))))
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1)), LossClaimId(claimId2, Some(2))))))
 
         MockedHttpClient
           .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("claimType", "carry-sideways")), desRequestHeaders: _*)
@@ -93,7 +93,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with all parameters" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, 1), LossClaimId(claimId2, 2)))))
+        val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1)), LossClaimId(claimId2, Some(2))))))
 
         MockedHttpClient
           .parameterGet(

@@ -32,17 +32,11 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) ext
       incomeSourceType <- typeOfLoss.toIncomeSourceType
     } yield incomeSourceType
 
-    val claimType = for {
-      claimTypeString <- data.claimType
-      claimType       <- ClaimType.parser.lift(claimTypeString)
-    } yield claimType
-
     ListLossClaimsRequest(
       Nino(data.nino),
       taxYear.map(DesTaxYear.fromMtd),
       incomeSourceType,
       data.selfEmploymentId,
-      claimType
-    )
+      data.claimType.flatMap(ClaimType.parser.lift)    )
   }
 }

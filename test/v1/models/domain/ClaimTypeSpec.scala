@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.domain
 
-import v1.models.domain.ClaimType
-import v1.models.errors.{ClaimTypeFormatError, MtdError}
+import support.UnitSpec
+import utils.enums.EnumJsonSpecSupport
+import v1.models.domain.TypeOfClaim.`carry-forward`
 
-import scala.util.{Failure, Success, Try}
+class ClaimTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
-object ClaimTypeValidation {
-  def validate(claimType: String): List[MtdError] =
-    if (ClaimType.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
+  testRoundTrip[TypeOfClaim](
+    ("carry-forward", `carry-forward`),
+  )
 }
