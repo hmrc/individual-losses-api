@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.domain
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.des.IncomeSourceType
-import v1.models.domain.ClaimType
+import support.UnitSpec
+import utils.enums.EnumJsonSpecSupport
+import v1.models.domain.TypeOfClaim.`carry-forward`
 
-case class ListLossClaimsRequest(nino: Nino,
-                                 taxYear: Option[DesTaxYear],
-                                 incomeSourceType: Option[IncomeSourceType],
-                                 selfEmploymentId: Option[String],
-                                 claimType: Option[ClaimType])
+class ClaimTypeSpec extends UnitSpec with EnumJsonSpecSupport {
+
+  testRoundTrip[TypeOfClaim](
+    ("carry-forward", `carry-forward`),
+  )
+}

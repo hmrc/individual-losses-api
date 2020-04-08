@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.controllers.requestParsers.validators.validations
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.des.IncomeSourceType
 import v1.models.domain.ClaimType
+import v1.models.errors.{ClaimTypeFormatError, MtdError}
 
-case class ListLossClaimsRequest(nino: Nino,
-                                 taxYear: Option[DesTaxYear],
-                                 incomeSourceType: Option[IncomeSourceType],
-                                 selfEmploymentId: Option[String],
-                                 claimType: Option[ClaimType])
+import scala.util.{Failure, Success, Try}
+
+object ClaimTypeValidation {
+  def validate(claimType: String): List[MtdError] =
+    if (ClaimType.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
+}

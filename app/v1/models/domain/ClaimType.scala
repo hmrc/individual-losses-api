@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.domain
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.des.IncomeSourceType
-import v1.models.domain.ClaimType
+import play.api.libs.json.Format
+import utils.enums.Enums
 
-case class ListLossClaimsRequest(nino: Nino,
-                                 taxYear: Option[DesTaxYear],
-                                 incomeSourceType: Option[IncomeSourceType],
-                                 selfEmploymentId: Option[String],
-                                 claimType: Option[ClaimType])
+sealed trait ClaimType
+
+object ClaimType {
+  case object `carry-sideways` extends ClaimType
+
+  implicit val format: Format[ClaimType] = Enums.format[ClaimType]
+  val parser: PartialFunction[String, ClaimType] = Enums.parser[ClaimType]
+}

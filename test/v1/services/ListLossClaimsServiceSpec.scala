@@ -36,12 +36,12 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
     lazy val service = new ListLossClaimsService(connector)
   }
 
-  lazy val request = ListLossClaimsRequest(nino, None, None, None)
+  lazy val request = ListLossClaimsRequest(nino, None, None, None, None)
 
   "retrieve the list of bf losses" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val desResponse = DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId("testId"), LossClaimId("testId2"))))
+        val desResponse = DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId("testId", Some(1)), LossClaimId("testId2", Some(2)))))
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(desResponse)))
 
         await(service.listLossClaims(request)) shouldBe Right(desResponse)
@@ -81,6 +81,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
       "INVALID_TAXYEAR" -> TaxYearFormatError,
       "INVALID_INCOMESOURCEID" -> SelfEmploymentIdFormatError,
       "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
+      "INVALID_CLAIMTYPE" -> ClaimTypeFormatError,
       "NOT_FOUND" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError

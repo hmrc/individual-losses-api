@@ -70,9 +70,10 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
 
     val nino = request.nino.nino
     val pathParameters =
-      Map("taxYear"          -> request.taxYear.map(_.value),
+      Map("taxYear"        -> request.taxYear.map(_.value),
         "incomeSourceId"   -> request.selfEmploymentId,
-        "incomeSourceType" -> request.incomeSourceType.map(_.toString)).collect {
+        "incomeSourceType" -> request.incomeSourceType.map(_.toString),
+        "claimType"        -> request.claimType.map(_.toString)).collect {
         case (key, Some(value)) => key -> value
       }
 

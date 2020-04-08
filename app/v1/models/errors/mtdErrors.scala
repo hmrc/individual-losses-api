@@ -24,6 +24,7 @@ object ClaimIdFormatError extends MtdError("FORMAT_CLAIM_ID", "The provided clai
 object SelfEmploymentIdFormatError extends MtdError("FORMAT_SELF_EMPLOYMENT_ID", "The supplied self-employment ID format is invalid")
 object TypeOfLossFormatError extends MtdError("FORMAT_TYPE_OF_LOSS", "The supplied type of loss format is invalid")
 object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The supplied type of claim format is invalid or the type of claim is not recognised")
+object ClaimTypeFormatError extends MtdError("FORMAT_CLAIM_TYPE", "The provided claim type is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED",

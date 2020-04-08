@@ -28,16 +28,18 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   "json writes" must {
     "output as per spec" in {
-      Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("000000123456789"), LossClaimId("000000123456790")))) shouldBe
+      Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1)), LossClaimId("000000123456790", Some(2))))) shouldBe
         Json.parse(
           """
             |{
             |    "claims": [
             |        {
-            |            "id": "000000123456789"
+            |            "id": "000000123456789",
+            |            "sequence": 1
             |        },
             |        {
-            |            "id": "000000123456790"
+            |            "id": "000000123456790",
+            |            "sequence": 2
             |        }
             |    ]
             |}
@@ -55,21 +57,24 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
             |    "reliefClaimed": "CF",
             |    "taxYearClaimedFor": "2099",
             |    "claimId": "000000000000011",
-            |    "submissionDate": "2019-07-13T12:13:48.763Z"
+            |    "submissionDate": "2019-07-13T12:13:48.763Z",
+            |    "sequence": 1
             |  },
             |  {
             |    "incomeSourceId": "000000000000002",
             |    "reliefClaimed": "CF",
             |    "taxYearClaimedFor": "2020",
             |    "claimId": "000000000000022",
-            |    "submissionDate": "2018-07-13T12:13:48.763Z"
+            |    "submissionDate": "2018-07-13T12:13:48.763Z",
+            |    "sequence": 2
             |  },
             |  {
             |     "incomeSourceType": "02",
             |     "reliefClaimed": "CSFHL",
             |     "taxYearClaimedFor": "2020",
             |     "claimId": "000000000000033",
-            |     "submissionDate": "2018-07-13T12:13:48.763Z"
+            |     "submissionDate": "2018-07-13T12:13:48.763Z",
+            |     "sequence": 3
             |  }
             |]
             |
@@ -77,7 +82,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
       desResponseJson.as[ListLossClaimsResponse[LossClaimId]] shouldBe
         ListLossClaimsResponse(
-          Seq(LossClaimId("000000000000011"), LossClaimId("000000000000022"), LossClaimId("000000000000033")))
+          Seq(LossClaimId("000000000000011", Some(1)), LossClaimId("000000000000022", Some(2)), LossClaimId("000000000000033", Some(3))))
     }
   }
 
@@ -94,7 +99,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
     "expose the correct item level links for list" in {
       MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-      ListLossClaimsResponse.LinksFactory.itemLinks(mockAppConfig, ListLossClaimsHateoasData(nino), LossClaimId("claimId")) shouldBe
+      ListLossClaimsResponse.LinksFactory.itemLinks(mockAppConfig, ListLossClaimsHateoasData(nino), LossClaimId("claimId", Some(1))) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self")
         )
