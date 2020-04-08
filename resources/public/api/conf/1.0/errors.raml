@@ -231,6 +231,17 @@ traits:
                 description: The type of claim supplied is not valid.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
+  formatClaimType:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimType:
+                description: The format of the supplied claim type is not valid
+                value:
+                  code: FORMAT_CLAIM_TYPE
   ruleTypeOfClaim403:
     responses:
       403:
