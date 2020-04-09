@@ -17,7 +17,7 @@
             "example": "A2Za0911235813z"
           },
           "sequence":  {
-            "description": "A number used to order a loss, the value must be between 1 and 99",
+            "description": "[This field is only available in Sandbox]\nA number used to order a loss, the value must be between 1 and 99",
             "type": "integer",
             "example" : "12"
           },
