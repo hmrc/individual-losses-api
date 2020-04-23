@@ -16,8 +16,54 @@
 
 package v1.models.domain
 
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class LossClaimsListSpec extends UnitSpec {
 
+  val lossClaimsList = LossClaimsList(
+    claimType = ClaimType.`carry-sideways`,
+    listOfLossClaims = Seq(Claim(
+      id = "234568790ABCDE",
+      sequence = 1
+    ),
+      Claim(
+        id = "234568790ABCFE",
+        sequence = 2
+      )
+    )
+  )
+
+  val lossClaimsListJson : JsValue = Json.parse("""
+    |{
+    |   "claimType" : "carry-sideways",
+    |   "listOfLossClaims": [
+    |      {
+    |      "id": "234568790ABCDE",
+    |      "sequence":1
+    |      },
+    |      {
+    |      "id": "234568790ABCFE",
+    |      "sequence":2
+    |      }
+    |   ]
+    |}
+    |""".stripMargin
+  )
+
+
+  "reads" when {
+    "passed valid JSON" should {
+      "return a valid model" in {
+        lossClaimsList shouldBe lossClaimsListJson.as[LossClaimsList]
+      }
+    }
+  }
+  "writes" when {
+    "passed valid model" should {
+      "return valid json" in {
+        Json.toJson(lossClaimsList) shouldBe lossClaimsListJson
+      }
+    }
+  }
 }

@@ -18,7 +18,7 @@ package v1.models.domain
 
 import play.api.libs.json.{Json, Reads, Writes}
 
-case class LossClaimsList(claims: Seq[Claim])
+case class LossClaimsList(claimType: ClaimType, listOfLossClaims: Seq[Claim])
 
 object LossClaimsList {
   implicit val reads: Reads[LossClaimsList] = Json.reads[LossClaimsList]

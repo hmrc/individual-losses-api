@@ -18,9 +18,8 @@ package v1.models.domain
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.utils.JsonErrorValidators
 
-class ClaimSpec extends UnitSpec with JsonErrorValidators {
+class ClaimSpec extends UnitSpec {
 
   val claim = Claim(
     id = "234568790ABCDE",
