@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.domain
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.AmendLossClaimsOrderRequestBody
+import play.api.libs.json.{Json, Reads, Writes}
 
-case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: Option[String], body: AmendLossClaimsOrderRequestBody)
+case class AmendLossClaimsOrderRequestBody(claimType: ClaimType, lossClaimsList: LossClaimsList)
+
+object AmendLossClaimsOrderRequestBody {
+  implicit val reads: Reads[AmendLossClaimsOrderRequestBody] = Json.reads[AmendLossClaimsOrderRequestBody]
+  implicit val writes: Writes[AmendLossClaimsOrderRequestBody] = Json.writes[AmendLossClaimsOrderRequestBody]
+}

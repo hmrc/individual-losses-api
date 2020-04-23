@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.domain
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.AmendLossClaimsOrderRequestBody
+import support.UnitSpec
 
-case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: Option[String], body: AmendLossClaimsOrderRequestBody)
+class LossClaimsListSpec extends UnitSpec {
+
+}
