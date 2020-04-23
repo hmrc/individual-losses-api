@@ -1,0 +1,30 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.formatClaimType
+  - errors.formatSequence
+  - errors.RuleInvalidSequenceStart
+  - errors.RuleSequenceOrderBroken
+  - errors.MissingMandatoryField
+  - errors.RuleLossClaimsMissing
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundClaimId
+  - queryParameters.taxYearForClaims
+displayName: Amend Loss Claims Order
+description: This endpoint allows the developer to change the sequence in which certain losses are used.
+(annotations.sandboxData): !include scenarios/lossClaimsOrder_amend.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/lossClaims/amendLossClaimsOrder/amend_request.json
+    example: !include examples/lossClaims/amendLossClaimsOrder/amend_request.json
+responses:
+  204:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
