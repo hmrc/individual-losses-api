@@ -16,12 +16,10 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.ClaimType
+import v1.models.domain.TypeOfClaim
 import v1.models.errors.{ClaimTypeFormatError, MtdError}
-
-import scala.util.{Failure, Success, Try}
 
 object ClaimTypeValidation {
   def validate(claimType: String): List[MtdError] =
-    if (ClaimType.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
+    if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
 }

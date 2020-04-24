@@ -18,11 +18,12 @@ package v1.models.domain
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v1.models.des.ReliefClaimed
 
 class LossClaimsListSpec extends UnitSpec {
 
   val lossClaimsList = LossClaimsList(
-    claimType = ClaimType.`carry-sideways`,
+    claimType = ReliefClaimed.`CSGI`,
     listOfLossClaims = Seq(Claim(
       id = "234568790ABCDE",
       sequence = 1
@@ -34,7 +35,7 @@ class LossClaimsListSpec extends UnitSpec {
     )
   )
 
-  val lossClaimsListJson : JsValue = Json.parse("""
+  val mtdLossClaimsListJson : JsValue = Json.parse("""
     |{
     |   "claimType" : "carry-sideways",
     |   "listOfLossClaims": [
@@ -52,17 +53,34 @@ class LossClaimsListSpec extends UnitSpec {
   )
 
 
+  val desLossClaimsListJson : JsValue = Json.parse("""
+    |{
+    |   "claimType" : "CSGI",
+    |   "listOfLossClaims": [
+    |      {
+    |      "id": "234568790ABCDE",
+    |      "sequence":1
+    |      },
+    |      {
+    |      "id": "234568790ABCFE",
+    |      "sequence":2
+    |      }
+    |   ]
+    |}
+    |""".stripMargin
+  )
+
   "reads" when {
     "passed valid JSON" should {
       "return a valid model" in {
-        lossClaimsList shouldBe lossClaimsListJson.as[LossClaimsList]
+        lossClaimsList shouldBe mtdLossClaimsListJson.as[LossClaimsList]
       }
     }
   }
   "writes" when {
     "passed valid model" should {
       "return valid json" in {
-        Json.toJson(lossClaimsList) shouldBe lossClaimsListJson
+        Json.toJson(lossClaimsList) shouldBe desLossClaimsListJson
       }
     }
   }

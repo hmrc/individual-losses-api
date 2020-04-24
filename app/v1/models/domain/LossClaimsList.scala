@@ -16,11 +16,17 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import play.api.libs.functional.syntax._
+import v1.models.des.ReliefClaimed
 
-case class LossClaimsList(claimType: ClaimType, listOfLossClaims: Seq[Claim])
+case class LossClaimsList(claimType: ReliefClaimed, listOfLossClaims: Seq[Claim])
 
 object LossClaimsList {
-  implicit val reads: Reads[LossClaimsList] = Json.reads[LossClaimsList]
+    implicit val reads: Reads[LossClaimsList] = (
+      (JsPath \ "claimType").read[TypeOfClaim].map(_.toReliefClaimed) and
+      (JsPath \ "listOfLossClaims").read[Seq[Claim]]
+    )(LossClaimsList.apply _)
+
   implicit val writes: Writes[LossClaimsList] = Json.writes[LossClaimsList]
 }
