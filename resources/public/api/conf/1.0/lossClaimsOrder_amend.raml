@@ -24,7 +24,12 @@ body:
     example: !include examples/lossClaims/amendLossClaimsOrder/amend_request.json
 responses:
   204:
+    body:
+      application/json:
+        type: !include schemas/lossClaims/amendLossClaimsOrder/amend_response.json
+        example: !include examples/lossClaims/amendLossClaimsOrder/amend_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
         description: Unique ID for operation tracking <br> String, 36 characters.
+

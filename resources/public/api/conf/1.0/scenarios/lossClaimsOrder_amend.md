@@ -8,16 +8,8 @@
     </thead>
     <tbody>
         <tr>
-            <td><p></p></td>
-            <td><p></p></td>
-        </tr>
-        <tr>
-            <td><p></p></td>
-            <td><p></p></td>
-        </tr>  
-        <tr>
-            <td><p></p></td>
-            <td><p></p></td>
+            <td><p>N/A - DEFAULT</p></td>
+            <td><p>Simulate list containing 1 loss claim</p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>
