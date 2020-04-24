@@ -24,7 +24,7 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListLossClaimsRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
 import v1.models.des.{ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId}
-import v1.models.domain.ClaimType
+import v1.models.domain.{ClaimType, TypeOfClaim}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.Method.{GET, POST}
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -57,10 +57,12 @@ class ListLossClaimsControllerSpec
   val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1)), LossClaimId("000000123456790", Some(2))))
+  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`),
+                                            LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`)))
 
   val hateoasResponse = ListLossClaimsResponse(
-    Seq(HateoasWrapper(LossClaimId("000000123456789", Some(1)), Seq(testHateoasLink)), HateoasWrapper(LossClaimId("000000123456790", Some(2)), Seq(testHateoasLink))))
+    Seq(HateoasWrapper(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink)),
+        HateoasWrapper(LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink))))
 
   val responseJson: JsValue = Json.parse("""
       |{
@@ -68,6 +70,7 @@ class ListLossClaimsControllerSpec
       |        {
       |            "id": "000000123456789",
       |            "sequence": 1,
+      |            "typeOfClaim": "carry-sideways",
       |            "links" : [
       |               {
       |                 "href": "/foo/bar",
@@ -79,6 +82,7 @@ class ListLossClaimsControllerSpec
       |        {
       |            "id": "000000123456790",
       |            "sequence": 2,
+      |            "typeOfClaim": "carry-sideways",
       |            "links" : [
       |               {
       |                 "href": "/foo/bar",
