@@ -18,10 +18,10 @@ package v1.models.requestData
 
 import uk.gov.hmrc.domain.Nino
 import v1.models.des.IncomeSourceType
-import v1.models.domain.ClaimType
+import v1.models.domain.TypeOfClaim
 
 case class ListLossClaimsRequest(nino: Nino,
                                  taxYear: Option[DesTaxYear],
                                  incomeSourceType: Option[IncomeSourceType],
                                  selfEmploymentId: Option[String],
-                                 claimType: Option[ClaimType])
+                                 claimType: Option[TypeOfClaim])

@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.requestData
 
-import v1.models.domain.TypeOfClaim
-import v1.models.errors.{ClaimTypeFormatError, MtdError}
+import play.api.mvc.AnyContentAsJson
 
-object ClaimTypeValidation {
-  def validate(claimType: String): List[MtdError] =
-    if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
-}
+case class AmendLossClaimsOrderRawData(nino: String, taxYear: Option[String], body: AnyContentAsJson) extends RawData
