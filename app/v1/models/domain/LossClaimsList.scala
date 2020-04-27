@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.domain
 
-import v1.models.domain.TypeOfClaim
-import v1.models.errors.{ClaimTypeFormatError, MtdError}
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import play.api.libs.functional.syntax._
+import v1.models.des.ReliefClaimed
 
-object ClaimTypeValidation {
-  def validate(claimType: String): List[MtdError] =
-    if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
+case class LossClaimsList(claimType: ReliefClaimed, listOfLossClaims: Seq[Claim])
+
+object LossClaimsList {
+    implicit val reads: Reads[LossClaimsList] = (
+      (JsPath \ "claimType").read[TypeOfClaim].map(_.toReliefClaimed) and
+      (JsPath \ "listOfLossClaims").read[Seq[Claim]]
+    )(LossClaimsList.apply _)
+
+  implicit val writes: Writes[LossClaimsList] = Json.writes[LossClaimsList]
 }

@@ -18,7 +18,8 @@ package v1.connectors
 
 import uk.gov.hmrc.domain.Nino
 import v1.models.des._
-import v1.models.domain.{ClaimType, TypeOfClaim}
+
+import v1.models.domain.TypeOfClaim
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData._
@@ -92,7 +93,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("claimType", "carry-sideways")), desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
-        listLossClaimsResult(connector, claimType = Some(ClaimType.`carry-sideways`)) shouldBe expected
+        listLossClaimsResult(connector, claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
     }
 
@@ -113,7 +114,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           taxYear = Some(DesTaxYear("2019")),
           selfEmploymentId = Some("testId"),
           incomeSourceType = Some(IncomeSourceType.`01`),
-          claimType = Some(ClaimType.`carry-sideways`)) shouldBe
+          claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe
           expected
       }
     }
@@ -146,7 +147,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                              taxYear: Option[DesTaxYear] = None,
                              incomeSourceType: Option[IncomeSourceType] = None,
                              selfEmploymentId: Option[String] = None,
-                             claimType: Option[ClaimType] = None): DesOutcome[ListLossClaimsResponse[LossClaimId]] =
+                             claimType: Option[TypeOfClaim] = None): DesOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(
