@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.requestData
 
-import v1.models.domain.TypeOfClaim
-import v1.models.errors.{ClaimTypeFormatError, MtdError}
+import uk.gov.hmrc.domain.Nino
+import v1.models.domain.LossClaimsList
 
-object ClaimTypeValidation {
-  def validate(claimType: String): List[MtdError] =
-    if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
-}
+case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: Option[String], body: LossClaimsList)

@@ -24,7 +24,7 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListLossClaimsRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
 import v1.models.des.{ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId}
-import v1.models.domain.ClaimType
+import v1.models.domain.TypeOfClaim
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.Method.{GET, POST}
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -52,7 +52,7 @@ class ListLossClaimsControllerSpec
   val claimType        = "carry-sideways"
 
   val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))
-  val request = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId), Some(ClaimType.`carry-sideways`))
+  val request = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId), Some(TypeOfClaim.`carry-sideways`))
 
   val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")

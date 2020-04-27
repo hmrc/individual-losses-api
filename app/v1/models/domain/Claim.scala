@@ -16,14 +16,11 @@
 
 package v1.models.domain
 
-import play.api.libs.json.Format
-import utils.enums.Enums
+import play.api.libs.json.{Json, Reads, Writes}
 
-sealed trait ClaimType
+case class Claim(id: String, sequence: Int)
 
-object ClaimType {
-  case object `carry-sideways` extends ClaimType
-
-  implicit val format: Format[ClaimType] = Enums.format[ClaimType]
-  val parser: PartialFunction[String, ClaimType] = Enums.parser[ClaimType]
+object Claim {
+  implicit val reads: Reads[Claim] = Json.reads[Claim]
+  implicit val writes: Writes[Claim] = Json.writes[Claim]
 }
