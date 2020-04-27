@@ -58,7 +58,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
           """[
             |  {
             |    "incomeSourceId": "000000000000001",
-            |    "reliefClaimed": "carry-",
+            |    "reliefClaimed": "CF",
             |    "taxYearClaimedFor": "2099",
             |    "claimId": "000000000000011",
             |    "submissionDate": "2019-07-13T12:13:48.763Z",

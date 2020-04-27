@@ -33,7 +33,7 @@ object LossClaimId {
   implicit val reads: Reads[LossClaimId] = (
     (JsPath \ "claimId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
-      (JsPath \ "reliefClaimed").read[TypeOfClaim]
+      (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim)
     )(LossClaimId.apply _)
 }
 
