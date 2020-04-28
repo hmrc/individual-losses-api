@@ -25,6 +25,7 @@ object SelfEmploymentIdFormatError extends MtdError("FORMAT_SELF_EMPLOYMENT_ID",
 object TypeOfLossFormatError extends MtdError("FORMAT_TYPE_OF_LOSS", "The supplied type of loss format is invalid")
 object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The supplied type of claim format is invalid or the type of claim is not recognised")
 object ClaimTypeFormatError extends MtdError("FORMAT_CLAIM_TYPE", "The provided claim type is invalid")
+object SequenceFormatError extends MtdError("FORMAT_SEQUENCE", "The provided sequence number is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED",
@@ -43,6 +44,7 @@ object RulePeriodNotEnded extends MtdError("RULE_PERIOD_NOT_ENDED", "The relevan
 object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed")
 object RuleNoAccountingPeriod extends MtdError("RULE_NO_ACCOUNTING_PERIOD", "For the year of the claim there is no accounting period")
 
+object MissingMandatoryFieldError extends MtdError("MISSING_MANDATORY_FIELD", "Mandatory fields are missing")
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 object DownstreamError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred")

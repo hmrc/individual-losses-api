@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.requestData
 
-import v1.models.domain.TypeOfClaim
-import v1.models.errors.{ClaimTypeFormatError, MtdError}
+import play.api.libs.json.{Json, OWrites, Reads}
+import v1.models.domain.Claim
 
-object ClaimTypeValidation {
-  def validate(claimType: String): List[MtdError] =
-    if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
+case class AmendLossClaimsOrderRequestBody(claimType: String, listOfLossClaims: Seq[Claim]) {
 
-  def checkClaim(typeOfClaim: String): List[MtdError] =
-    typeOfClaim match{
-      case "carry-sideways" => NoValidationErrors
-      case _ => List(ClaimTypeFormatError)
-    }
+}
+object AmendLossClaimsOrderRequestBody {
+  implicit val reads: Reads[AmendLossClaimsOrderRequestBody] = Json.reads[AmendLossClaimsOrderRequestBody]
+  implicit val writes: OWrites[AmendLossClaimsOrderRequestBody] = Json.writes[AmendLossClaimsOrderRequestBody]
 }

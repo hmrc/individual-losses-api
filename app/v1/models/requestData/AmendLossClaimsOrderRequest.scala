@@ -16,6 +16,7 @@
 
 package v1.models.requestData
 
+import play.api.libs.json.{Json, OWrites, Reads}
 import uk.gov.hmrc.domain.Nino
 import v1.models.domain.LossClaimsList
 

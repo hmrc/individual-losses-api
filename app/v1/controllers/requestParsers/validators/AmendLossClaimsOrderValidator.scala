@@ -16,33 +16,41 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations.{ClaimIdValidation, ClaimTypeValidation, JsonFormatValidation, JsonValidation, NinoValidation, TaxYearValidation}
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.controllers.requestParsers.validators.validations._
+import v1.models.domain.LossClaimsList
+import v1.models.errors.{MissingMandatoryFieldError, MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
 
-class AmendLossClaimsOrderValidator extends Validator[???] {
+class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] {
 
   val validationSet = List(parameterFormatValidation, bodyFieldValidator, bodyFormatValidator)
 
-  private def parameterFormatValidation: ??? => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
   List(
     NinoValidation.validate(data.nino),
-    TaxYearValidation.validate(???)
+    data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
   )
 }
 
-  private def bodyFormatValidator: ??? => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
   List(
-    JsonFormatValidation.validate[???](data.body.json, RuleIncorrectOrEmptyBodyError)
+    JsonFormatValidation.validate[LossClaimsList](data.body.json, MissingMandatoryFieldError)
   )
 }
 
-  private def bodyFieldValidator: ??? => List[List[MtdError]] = { data =>
-  List(
-    JsonValidation.validate[String](data.body.json \ "claimType")(ClaimTypeValidation.validate),
-    JsonValidation.validate[String](data.body.json \ "claim" \ "id")(ClaimIdValidation.validate),
-    JsonValidation.validate[String](data.body.json \ "claim" \ "sequence")(???.validate)
-  )
+  private def bodyFieldValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+  val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
+    val claimTypeValidation = List(
+      ClaimTypeValidation.validate(req.claimType),
+    )
+    val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
+      List(
+        ClaimIdValidation.validate(lossClaim.id),
+        SequenceValidation.validate(lossClaim.sequence)
+      )
+    }
+    claimTypeValidation ++ listOfLossClaimsValidator
 }
 
-  override def validate(data: ???): List[MtdError] = run(validationSet, data)
+  override def validate(data: AmendLossClaimsOrderRawData): List[MtdError] = run(validationSet, data)
 }

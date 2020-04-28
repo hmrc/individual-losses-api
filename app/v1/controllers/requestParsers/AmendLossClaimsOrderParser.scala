@@ -17,11 +17,15 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
+import uk.gov.hmrc.domain.Nino
+import v1.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
+import v1.models.domain.LossClaimsList
+import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest}
 
-class AmendLossClaimsOrderParser @Inject()(val validator: ???)
-  extends RequestsParser[???,???] {
+class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderValidator)
+  extends RequestParser[AmendLossClaimsOrderRawData,AmendLossClaimsOrderRequest] {
 
-  override protected def requestFor(data: ???): ??? =
-    ???(???, ???, ???)
+  override protected def requestFor(data: AmendLossClaimsOrderRawData): AmendLossClaimsOrderRequest =
+    AmendLossClaimsOrderRequest(Nino(data.nino), data.taxYear, data.body.json.as[LossClaimsList])
 
 }
