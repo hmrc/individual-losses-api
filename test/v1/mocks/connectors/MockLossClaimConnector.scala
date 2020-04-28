@@ -59,6 +59,11 @@ trait MockLossClaimConnector extends MockFactory {
         .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
     }
-  }
 
+    def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+      (connector
+        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(request, *, *)
+    }
+  }
 }
