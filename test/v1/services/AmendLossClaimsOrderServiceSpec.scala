@@ -20,8 +20,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.ReliefClaimed
 import v1.models.domain.{Claim, LossClaimsList}
-import v1.models.errors.{DownstreamError, ErrorWrapper, MtdError, MultipleErrors, NinoFormatError, NotFoundError,
-                        OutboundError, RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, SingleError, TaxYearFormatError}
+import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.AmendLossClaimsOrderRequest
 
