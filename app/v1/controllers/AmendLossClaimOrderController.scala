@@ -34,8 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendLossClaimOrderController @Inject()(val authService: EnrolmentsAuthService,
                                          val lookupService: MtdIdLookupService,
-                                         amendLossClaimOrderService: AmendLossClaimOrderService,
-                                         amendLossClaimOrderParser: AmendLossClaimOrderParser,
+                                         amendLossClaimsOrderService: AmendLossClaimsOrderService,
+                                         amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
                                          hateoasFactory: HateoasFactory,
                                          auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
@@ -48,8 +48,8 @@ class AmendLossClaimOrderController @Inject()(val authService: EnrolmentsAuthSer
       val rawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(request.body))
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](amendLossClaimOrderParser.parseRequest(rawData))
-          serviceResponse <- EitherT(amendLossClaimOrderService.amendLossClaimOrder(parsedRequest))
+          parsedRequest <- EitherT.fromEither[Future](amendLossClaimsOrderParser.parseRequest(rawData))
+          serviceResponse <- EitherT(amendLossClaimsOrderService.amendLossClaimsOrder(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
