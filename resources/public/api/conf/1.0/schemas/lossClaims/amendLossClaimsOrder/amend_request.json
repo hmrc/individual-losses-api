@@ -6,19 +6,19 @@
   "properties": {
     "claimType": {
       "type": "string",
-      "description": "The type of loss claims whose order is to be amended",
+      "description": "The type of loss claims whose order is to be amended.",
       "enum": [
         "carry-sideways"
       ]
     },
     "listOfLossClaims": {
       "type": "array",
-      "description": "A list of the claims to be amended - all of the claims for a given type and tax year must be included in the submission",
+      "description": "A list of the claims to be amended - all of the claims for a given type and tax year must be included in the submission.",
       "items": {
         "type": "object",
         "properties": {
           "id": {
-            "description": "The unique identifier for the loss claim must conform to the regular expression",
+            "description": "The unique identifier for the loss claim must conform to the regular expression: \n\r ^[A-Za-z0-9]{15}$",
             "type": "string",
             "example": "1234568790ABCDE"
           },

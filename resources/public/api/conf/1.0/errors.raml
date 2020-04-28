@@ -63,7 +63,7 @@ traits:
             type: types.errorResponse
             examples:
               clientOrAgentNotAuthorised:
-                description: 'The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
+                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf'
                 value:
                   code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
@@ -231,7 +231,7 @@ traits:
                 description: The type of claim supplied is not valid.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
-  formatClaimType:
+  formatClaimTypeSandboxOnly:
     responses:
       400:
         body:
@@ -240,6 +240,17 @@ traits:
             examples:
               formatClaimType:
                 description: '[This error is only available in Sandbox] The format of the supplied claim type is not valid'
+                value:
+                  code: FORMAT_CLAIM_TYPE
+  formatClaimType:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimType:
+                description: 'The format of the supplied claim type is not valid'
                 value:
                   code: FORMAT_CLAIM_TYPE
   ruleTypeOfClaim403:
