@@ -17,19 +17,18 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.domain.{AmendLossClaimsOrderRequestBody, LossClaimsList}
-import v1.models.errors.{MissingMandatoryFieldError, MtdError, RuleIncorrectOrEmptyBodyError}
-import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest}
+import v1.models.domain.AmendLossClaimsOrderRequestBody
+import v1.models.errors.{MissingMandatoryFieldError, MtdError}
+import v1.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] {
 
-  val validationSet = List(parameterFormatValidation, bodyFieldValidator, bodyFormatValidator)
+  val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldValidator)
 
   private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
-  print(data)
   List(
     NinoValidation.validate(data.nino),
-    data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
+    data.taxYear.map(ClaimOrderTaxYearValidation.validate).getOrElse(Nil)
   )
 }
 
