@@ -16,8 +16,8 @@ is:
 displayName: Amend Loss Claims Order
 description: This endpoint allows the developer to change the sequence in which certain losses are used.
 (annotations.sandboxData): !include scenarios/lossClaimsOrder_amend.md
-(annotations.scope): "read:self-assessment"
-securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
     type: !include schemas/lossClaims/amendLossClaimsOrder/amend_request.json
