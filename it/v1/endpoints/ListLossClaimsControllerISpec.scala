@@ -69,6 +69,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                                               |        {
                                               |            "id": "000000000000011",
                                               |            "sequence": 1,
+                                              |            "typeOfClaim": "carry-forward",
                                               |            "links" : [
                                               |             {
                                               |               "href" : "/individuals/losses$uri/000000000000011",
@@ -80,6 +81,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                                               |        {
                                               |            "id": "000000000000022",
                                               |            "sequence": 2,
+                                              |            "typeOfClaim": "carry-forward",
                                               |            "links" : [
                                               |             {
                                               |               "href" : "/individuals/losses$uri/000000000000022",

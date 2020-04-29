@@ -43,8 +43,9 @@ object RuleClaimTypeNotChanged extends MtdError("RULE_ALREADY_EXISTS", "The type
 object RulePeriodNotEnded extends MtdError("RULE_PERIOD_NOT_ENDED", "The relevant accounting period has not yet ended")
 object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed")
 object RuleNoAccountingPeriod extends MtdError("RULE_NO_ACCOUNTING_PERIOD", "For the year of the claim there is no accounting period")
-object RuleInvalidSequenceStart extends MtdError("RULE_INVALID_SEQUENCE_START", "The sequence must start with 1")
-object RuleSequenceOrderBroken extends MtdError("RULE_SEQUENCE_ORDER_BROKEN", "The sequence order must be continuous")
+object RuleInvalidSequenceStart extends MtdError( "RULE_INVALID_SEQUENCE_START", "The sequence does not begin with 1")
+object RuleSequenceOrderBroken extends MtdError( "RULE_SEQUENCE_ORDER_BROKEN", "The sequence is not continuous")
+object RuleLossClaimsMissing extends MtdError("RULE_LOSS_CLAIMS_MISSING", "Not all of the loss claims of this type for this tax year were included in the submission")
 
 object MissingMandatoryFieldError extends MtdError("MISSING_MANDATORY_FIELD", "Mandatory fields are missing")
 //Standard Errors
