@@ -3,6 +3,7 @@
         {
             "id": "1234568790ABCDE",
             "sequence": 1,
+            "typeOfClaim": "carry-sideways",
             "links":[
                 {
                     "href":"/individuals/losses/TC663795B/loss-claims/1234568790ABCDE",
@@ -13,7 +14,7 @@
         },
         {
             "id": "1234568790ABCDF",
-            "sequence": 2,
+            "typeOfClaim": "carry-forward",
             "links":[
                 {
                     "href":"/individuals/losses/TC663795B/loss-claims/1234568790ABCDF",
