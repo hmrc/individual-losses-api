@@ -34,13 +34,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimControllerSpec
-  extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
-    with MockAmendLossClaimService
-    with MockAmendLossClaimRequestDataParser
-    with MockHateoasFactory
-    with MockAuditService {
+extends ControllerBaseSpec
+with MockEnrolmentsAuthService
+with MockMtdIdLookupService
+with MockAmendLossClaimService
+with MockAmendLossClaimRequestDataParser
+with MockHateoasFactory
+with MockAuditService {
 
 
   val claimType = "carry-sideways"
