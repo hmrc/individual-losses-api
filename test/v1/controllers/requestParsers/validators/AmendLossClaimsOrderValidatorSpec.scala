@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.models.domain.Claim
-import v1.models.errors.{ClaimIdFormatError, ClaimTypeFormatError, NinoFormatError, SequenceFormatError, TaxYearFormatError, TypeOfClaimFormatError}
+import v1.models.errors._
 import v1.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
@@ -31,6 +31,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
   private val invalidTaxYearGap             = "2018-20"
   private val invalidTaxYearFormat          = "19-20"
   private val validId                       = "1234568790ABCDE"
+  //private val claimSequenceUpToHundred = Seq(Claim(validId, Range(1, 101))
 
   private def lossClaim(claimType: String, listOfLossClaims: List[Claim]) =
     AnyContentAsJson(Json.obj("claimType" -> claimType, "listOfLossClaims" -> listOfLossClaims))
@@ -68,8 +69,28 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
         validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim("1234", 1))))) shouldBe List(ClaimIdFormatError)
       }
 
+      "a mandatory field isn't provided" in {
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(Json.obj()))) shouldBe List(MissingMandatoryFieldError)
+      }
+
       "sequence format is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 101))))) shouldBe List(SequenceFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 1), Claim(validId, 101))))) shouldBe List(SequenceFormatError)
+      }
+
+      "sequence order is invalid" in {
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 1), Claim(validId, 3), Claim(validId, 5))))) shouldBe List(RuleSequenceOrderBroken)
+      }
+      "sequence start is invalid" in {
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 3), Claim(validId, 2), Claim(validId, 4))))) shouldBe List(RuleInvalidSequenceStart)
+      }
+    }
+    "return multiple errors" when {
+      "an invalid nino and tax year is provided" in {
+        validator.validate(AmendLossClaimsOrderRawData("Walrus", Some("13900"), lossClaim("carry-sideways", List(Claim(validId, 1))))) shouldBe List(NinoFormatError, TaxYearFormatError)
+      }
+      "invalid body fields are provided" in {
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-diagonal", List(Claim("Walrus", 2),Claim("Walrus", 8))))) shouldBe List(RuleInvalidSequenceStart, RuleSequenceOrderBroken, ClaimTypeFormatError, ClaimIdFormatError)
+
       }
     }
   }

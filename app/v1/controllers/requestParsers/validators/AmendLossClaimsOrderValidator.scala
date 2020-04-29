@@ -17,15 +17,16 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.domain.LossClaimsList
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, LossClaimsList}
 import v1.models.errors.{MissingMandatoryFieldError, MtdError, RuleIncorrectOrEmptyBodyError}
-import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
+import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest}
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] {
 
   val validationSet = List(parameterFormatValidation, bodyFieldValidator, bodyFormatValidator)
 
   private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+  print(data)
   List(
     NinoValidation.validate(data.nino),
     data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
@@ -34,7 +35,7 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
 
   private def bodyFormatValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
   List(
-    JsonFormatValidation.validate[LossClaimsList](data.body.json, MissingMandatoryFieldError)
+    JsonFormatValidation.validate[AmendLossClaimsOrderRequestBody](data.body.json, MissingMandatoryFieldError)
   )
 }
 
@@ -49,8 +50,10 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
         SequenceValidation.validate(lossClaim.sequence)
       )
     }
-    claimTypeValidation ++ listOfLossClaimsValidator
+    List(
+      SequenceSequentialValidation.validate(req.listOfLossClaims.map(_.sequence))
+    ) ++ claimTypeValidation ++ listOfLossClaimsValidator
 }
 
-  override def validate(data: AmendLossClaimsOrderRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: AmendLossClaimsOrderRawData): List[MtdError] = run(validationSet, data).distinct
 }

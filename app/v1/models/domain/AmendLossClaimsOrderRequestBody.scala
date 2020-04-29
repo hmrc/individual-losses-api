@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.domain
 
 import play.api.libs.json.{Json, OWrites, Reads}
-import v1.models.domain.Claim
 
 case class AmendLossClaimsOrderRequestBody(claimType: String, listOfLossClaims: Seq[Claim]) {
 
