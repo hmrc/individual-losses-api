@@ -1,0 +1,17 @@
+{
+  "claimType": "carry-sideways",
+  "listOfLossClaims": [
+    {
+      "id": "123456789ABCDE",
+      "sequence":2
+    },
+    {
+      "id": "123456789ABDE0",
+      "sequence":3
+    },
+    {
+      "id": "123456789ABEF1",
+      "sequence":1
+    }
+  ]
+}

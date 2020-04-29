@@ -1,0 +1,14 @@
+{
+  "links":[
+    {
+      "href":"/individuals/losses/TC663795B/loss-claims",
+      "rel":"list-loss-claims",
+      "method":"GET"
+    },
+    {
+      "href":"/individuals/losses/TC663795B/loss-claims/order",
+      "rel":"self",
+      "method":"PUT"
+    }
+  ]
+}

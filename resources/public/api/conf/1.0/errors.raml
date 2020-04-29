@@ -63,7 +63,7 @@ traits:
             type: types.errorResponse
             examples:
               clientOrAgentNotAuthorised:
-                description: 'The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
+                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf'
                 value:
                   code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
@@ -231,7 +231,7 @@ traits:
                 description: The type of claim supplied is not valid.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
-  formatClaimType:
+  formatClaimTypeSandboxOnly:
     responses:
       400:
         body:
@@ -240,6 +240,17 @@ traits:
             examples:
               formatClaimType:
                 description: '[This error is only available in Sandbox] The format of the supplied claim type is not valid'
+                value:
+                  code: FORMAT_CLAIM_TYPE
+  formatClaimType:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimType:
+                description: 'The format of the supplied claim type is not valid'
                 value:
                   code: FORMAT_CLAIM_TYPE
   ruleTypeOfClaim403:
@@ -330,3 +341,58 @@ traits:
                 description: There is no accounting period for the year of the claim.
                 value:
                   code: RULE_NO_ACCOUNTING_PERIOD
+  formatSequence:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatSequence:
+                description: The format of the supplied sequence number is not valid
+                value:
+                  code: FORMAT_SEQUENCE
+  RuleInvalidSequenceStart:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              RuleInvalidSequenceStart:
+                description: The sequence does not begin with 1
+                value:
+                  code: RULE_INVALID_SEQUENCE_START
+  RuleSequenceOrderBroken:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              RuleSequenceOrderBroken:
+                description: The sequence is not continuous
+                value:
+                  code: RULE_SEQUENCE_ORDER_BROKEN
+  MissingMandatoryField:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              MissingMandatoryField:
+                description: One or more mandatory values not provided
+                value:
+                  code: MISSING_MANDATORY_FIELD
+  RuleLossClaimsMissing:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              RuleLossClaimsMissing:
+                description: Not all of the loss claims of this type for this tax year were included in the submission
+                value:
+                  code: RULE_LOSS_CLAIMS_MISSING
