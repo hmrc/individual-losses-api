@@ -26,10 +26,10 @@ import scala.collection.immutable.Stream.Empty
 
 class AmendLossClaimValidatorSpec extends UnitSpec {
 
-  private val validNino                     = "AA123456A"
-  private val invalidNino                   = "AA123456"
-  private val validClaimId                   = "AAZZ1234567890a"
-  private val invalidClaimId                 = "AAZZ1234567890"
+  private val validNino = "AA123456A"
+  private val invalidNino = "AA123456"
+  private val validClaimId = "AAZZ1234567890a"
+  private val invalidClaimId = "AAZZ1234567890"
 
   private def claimType(claimType: String) = AnyContentAsJson(Json.obj("typeOfClaim" -> claimType))
 

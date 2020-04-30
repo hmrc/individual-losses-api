@@ -40,18 +40,18 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
 
   private def bodyFieldValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
   val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
-    val claimTypeValidation = List(
-      ClaimTypeValidation.validate(req.claimType),
-    )
-    val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
-      List(
-        ClaimIdValidation.validate(lossClaim.id),
-        SequenceValidation.validate(lossClaim.sequence)
-      )
-    }
+  val claimTypeValidation = List(
+    ClaimTypeValidation.validate(req.claimType),
+  )
+  val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
     List(
-      SequenceSequentialValidation.validate(req.listOfLossClaims.map(_.sequence))
-    ) ++ claimTypeValidation ++ listOfLossClaimsValidator
+      ClaimIdValidation.validate(lossClaim.id),
+      SequenceValidation.validate(lossClaim.sequence)
+    )
+  }
+  List(
+    SequenceSequentialValidation.validate(req.listOfLossClaims.map(_.sequence))
+  ) ++ claimTypeValidation ++ listOfLossClaimsValidator
 }
 
   override def validate(data: AmendLossClaimsOrderRawData): List[MtdError] = run(validationSet, data).distinct

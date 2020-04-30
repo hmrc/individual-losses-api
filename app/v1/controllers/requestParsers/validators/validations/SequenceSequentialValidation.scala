@@ -37,7 +37,10 @@ object SequenceSequentialValidation {
 
   private def sequenceInOrder(sortedSequence: Seq[Int]): List[MtdError] = {
     val inOrder = sortedSequence.sliding(2).collect { case a :: b :: Nil if b - a != 1 => (a, b) }.isEmpty
-    if (inOrder) {NoValidationErrors} else { List(RuleSequenceOrderBroken)
+    if (inOrder) {
+      NoValidationErrors
+    } else {
+      List(RuleSequenceOrderBroken)
     }
   }
 }
