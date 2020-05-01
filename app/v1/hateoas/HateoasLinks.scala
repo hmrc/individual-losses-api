@@ -39,6 +39,9 @@ trait HateoasLinks {
   private def lossClaimUri(appConfig: AppConfig, nino: String, claimId: String): String =
     lossClaimsBaseUri(appConfig, nino) + s"/$claimId"
 
+  private def lossClaimOrderUri(appConfig: AppConfig, nino: String): String =
+    lossClaimsBaseUri(appConfig, nino) + s"/order"
+
   private def lossClaimChangeRequest(appConfig: AppConfig, nino: String, lossId: String): String =
     lossClaimUri(appConfig, nino, lossId) + "/change-type-of-claim"
 
@@ -69,5 +72,7 @@ trait HateoasLinks {
   def deleteLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = DELETE, rel = DELETE_LOSS_CLAIM)
 
-  def listLossClaim(appConfig: AppConfig, nino: String): Link = Link(href = lossClaimsBaseUri(appConfig, nino), method = GET, rel = SELF)
+  def listLossClaim(appConfig: AppConfig, nino: String, rel: String = SELF): Link = Link(href = lossClaimsBaseUri(appConfig, nino), method = GET, rel = rel)
+
+  def reorderLossClaim(appConfig: AppConfig, nino: String, rel: String = SELF): Link = Link(href = lossClaimOrderUri(appConfig, nino), method = PUT, rel = rel)
 }
