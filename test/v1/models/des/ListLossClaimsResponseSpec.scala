@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import support.UnitSpec
 import v1.models.domain.TypeOfClaim
 import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{GET, POST}
+import v1.models.hateoas.Method.{GET, POST, PUT}
 
 class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
@@ -99,7 +99,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
       ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
-          Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
+          Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim"),
+          Link(s"/individuals/losses/$nino/loss-claims/order", PUT, "amend-loss-claim-order")
         )
     }
 

@@ -101,6 +101,11 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                                               |        "href": "/individuals/losses$uri",
                                               |        "rel": "create-loss-claim",
                                               |        "method": "POST"
+                                              |      },
+                                              |      {
+                                              |        "href": "/individuals/losses$uri/order",
+                                              |        "rel": "amend-loss-claim-order",
+                                              |        "method": "PUT"
                                               |      }
                                               |    ]
                                               |}

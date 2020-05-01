@@ -23,6 +23,7 @@ import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 import play.api.libs.functional.syntax._
 import v1.models.domain.TypeOfClaim
+import v1.models.hateoas.RelType.AMEND_LOSS_CLAIM_ORDER
 
 
 case class LossClaimId(id: String, sequence: Option[Int], typeOfClaim: TypeOfClaim)
@@ -48,7 +49,11 @@ object ListLossClaimsResponse extends HateoasLinks {
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListLossClaimsResponse, LossClaimId, ListLossClaimsHateoasData] {
     override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] =
-      Seq(listLossClaim(appConfig, data.nino), createLossClaim(appConfig, data.nino))
+      Seq(
+        listLossClaim(appConfig, data.nino),
+        createLossClaim(appConfig, data.nino),
+        reorderLossClaim(appConfig, data.nino, rel = AMEND_LOSS_CLAIM_ORDER)
+      )
 
     override def itemLinks(appConfig: AppConfig, data: ListLossClaimsHateoasData, item: LossClaimId): Seq[Link] =
       Seq(getLossClaim(appConfig, data.nino, item.id))
