@@ -21,24 +21,24 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockAmendLossClaimRequestDataParser
-import v1.mocks.services.{MockAmendLossClaimService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.audit.{AmendLossClaimAuditDetail, AuditEvent, AuditResponse}
-import v1.models.des.{AmendLossClaimHateoasData, ReliefClaimed}
+import v1.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
+import v1.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.audit.{AuditEvent, AuditResponse}
+import v1.models.des.ReliefClaimed
 import v1.models.domain.{Claim, LossClaimsList}
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest, AmendLossClaimsOrderRequest}
+import v1.models.requestData.{AmendLossClaimRawData, AmendLossClaimsOrderRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AmendLossClaimControllerSpec
+class AmendLossClaimsOrderControllerSpec
 extends ControllerBaseSpec
 with MockEnrolmentsAuthService
 with MockMtdIdLookupService
-with MockAmendLossClaimService
-with MockAmendLossClaimRequestDataParser
+with MockAmendLossClaimsOrderService
+with MockAmendLossClaimsOrderRequestDataParser
 with MockHateoasFactory
 with MockAuditService {
 
@@ -78,11 +78,11 @@ with MockAuditService {
   trait Test {
     val hc = HeaderCarrier()
 
-    val controller = new AmendLossClaimController(
+    val controller = new AmendLossClaimsOrderController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      amendLossClaimService = mockAmendLossClaimsOrderService,
-      amendLossClaimParser = mockAmendLossClaimsOrderRequestDataParser,
+      amendLossClaimsOrderService = mockAmendLossClaimsOrderService,
+      amendLossClaimsOrderParser = mockAmendLossClaimsOrderRequestDataParser,
       auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
       cc = cc
@@ -97,24 +97,24 @@ with MockAuditService {
       "the request received is valid" in new Test {
 
 
-        MockAmendLossClaimRequestDataParser.parseRequest(
+        MockAmendLossClaimsOrderRequestDataParser.parseRequest(
           AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
           .returns(Right(lossClaimRequest))
 
         MockAmendLossClaimService
-          .amend(AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
-          .returns(Future.successful(Right(DesResponse(correlationId, amendLossClaimResponse))))
+          .amend(AmendLossClaimsOrderRequest(Nino(nino), claimId, amendLossClaim))
+          .returns(Future.successful(Right(DesResponse(correlationId, amendLossClaimsOrderResponse))))
 
         MockHateoasFactory
-          .wrap(NoContent, AmendLossClaimHateoasData(nino, claimId))
-          .returns(HateoasWrapper(amendLossClaimResponse, Seq(testHateoasLink)))
+          .wrap(NoContent, AmendLossClaimsOrderHateoasData(nino, claimId))
+          .returns(HateoasWrapper(amendLossClaimsOrderResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val detail = AmendLossClaimAuditDetail(
+        val detail = AmendLossClaimsOrderAuditDetail(
           "Individual", None, nino,  claimId, requestBody, correlationId,
           AuditResponse(OK, None, Some(responseBody)))
         val event = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
@@ -123,5 +123,4 @@ with MockAuditService {
       }
     }
   }
-
 }

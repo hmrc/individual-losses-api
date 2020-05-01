@@ -24,15 +24,14 @@ import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.hateoas.HateoasFactory
 import v1.models.audit.{AmendLossClaimAuditDetail, AuditEvent, AuditResponse}
-import v1.models.des.AmendLossClaimHateoasData
 import v1.models.errors._
-import v1.models.requestData.AmendLossClaimRawData
-import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.models.requestData.AmendLossClaimsOrderRawData
+import v1.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendLossClaimOrderController @Inject()(val authService: EnrolmentsAuthService,
+class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthService,
                                          val lookupService: MtdIdLookupService,
                                          amendLossClaimsOrderService: AmendLossClaimsOrderService,
                                          amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
@@ -42,16 +41,16 @@ class AmendLossClaimOrderController @Inject()(val authService: EnrolmentsAuthSer
   extends AuthorisedController(cc) with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendLossClaimOrderController", endpointName = "Amend a Loss Claim Order")
+    EndpointLogContext(controllerName = "AmendLossClaimsOrderController", endpointName = "Amend a Loss Claim Order")
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      val rawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(request.body))
+      val rawData = AmendLossClaimsOrderRawData(nino, claimId, AnyContentAsJson(request.body))
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](amendLossClaimsOrderParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendLossClaimsOrderService.amendLossClaimsOrder(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
+            hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimsOrderHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -59,7 +58,7 @@ class AmendLossClaimOrderController @Inject()(val authService: EnrolmentsAuthSer
 
           val response = Json.toJson(vendorResponse)
 
-          auditSubmission(AmendLossClaimAuditDetail(request.userDetails, nino, claimId, request.body,
+          auditSubmission(AmendLossClaimsOrderAuditDetail(request.userDetails, nino, claimId, request.body,
             serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
@@ -71,7 +70,7 @@ class AmendLossClaimOrderController @Inject()(val authService: EnrolmentsAuthSer
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
 
-        auditSubmission(AmendLossClaimAuditDetail(request.userDetails, nino, claimId, request.body,
+        auditSubmission(AmendLossClaimsOrderAuditDetail(request.userDetails, nino, claimId, request.body,
           correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
