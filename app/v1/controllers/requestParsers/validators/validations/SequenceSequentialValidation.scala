@@ -35,8 +35,12 @@ object SequenceSequentialValidation {
     }
   }
 
+  def checkIfSequential: PartialFunction[Seq[Int], (Int, Int)] = {
+    case a :: b :: Nil if b - a != 1 => (a,b)
+  }
+
   private def sequenceInOrder(sortedSequence: Seq[Int]): List[MtdError] = {
-    val inOrder = sortedSequence.sliding(2).collect { case a :: b :: Nil if b - a != 1 => (a, b) }.isEmpty
+    val inOrder = sortedSequence.sliding(2).collect { checkIfSequential }.isEmpty
     if (inOrder) {
       NoValidationErrors
     } else {
