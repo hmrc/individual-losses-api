@@ -16,16 +16,26 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.TypeOfClaim
-import v1.models.errors.{ClaimTypeFormatError, MtdError}
+import v1.models.errors.{MtdError, RuleTaxYearRangeInvalid, TaxYearFormatError}
 
-object ClaimTypeValidation {
-  def validate(claimType: String): List[MtdError] =
-    if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
+object ClaimOrderTaxYearValidation {
 
-  def checkClaim(typeOfClaim: String): List[MtdError] =
-    typeOfClaim match{
-      case "carry-sideways" => NoValidationErrors
-      case _ => List(ClaimTypeFormatError)
+  val taxYearFormat = "20[1-9][0-9]\\-[1-9][0-9]"
+
+  def validate(taxYear: String): List[MtdError] = {
+    if (taxYear.matches(taxYearFormat)) {
+
+      val start = taxYear.substring(2, 4).toInt
+      val end   = taxYear.substring(5, 7).toInt
+
+      if (end - start == 1) {
+        NoValidationErrors
+      } else {
+        List(TaxYearFormatError)
+      }
+    } else {
+      List(TaxYearFormatError)
     }
+  }
+
 }

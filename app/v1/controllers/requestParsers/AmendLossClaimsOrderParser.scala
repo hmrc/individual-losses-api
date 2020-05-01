@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.controllers.requestParsers
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
+import v1.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
 import v1.models.domain.LossClaimsList
+import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest}
 
-case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: Option[String], body: LossClaimsList)
+class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderValidator)
+  extends RequestParser[AmendLossClaimsOrderRawData,AmendLossClaimsOrderRequest] {
+
+  override protected def requestFor(data: AmendLossClaimsOrderRawData): AmendLossClaimsOrderRequest =
+    AmendLossClaimsOrderRequest(Nino(data.nino), data.taxYear, data.body.json.as[LossClaimsList])
+
+}

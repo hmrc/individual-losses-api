@@ -16,16 +16,10 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.TypeOfClaim
-import v1.models.errors.{ClaimTypeFormatError, MtdError}
+import v1.models.errors.{MtdError, SequenceFormatError}
 
-object ClaimTypeValidation {
-  def validate(claimType: String): List[MtdError] =
-    if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
-
-  def checkClaim(typeOfClaim: String): List[MtdError] =
-    typeOfClaim match{
-      case "carry-sideways" => NoValidationErrors
-      case _ => List(ClaimTypeFormatError)
-    }
+object SequenceValidation {
+  def validate(sequence: Int): List[MtdError] = {
+    if (sequence < 1 || sequence > 99) { List(SequenceFormatError) } else { NoValidationErrors}
+  }
 }

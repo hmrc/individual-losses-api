@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.mocks.validators
 
-import play.api.libs.json._
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
 import v1.models.errors.MtdError
+import v1.models.requestData.AmendLossClaimsOrderRawData
 
-object JsonFormatValidation {
+class MockAmendLossClaimsOrderValidator extends MockFactory {
 
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A]): List[MtdError] = {
-    data.validate[A] match {
-      case JsSuccess(_, _) => NoValidationErrors
-      case _               => List(error)
+  val mockValidator: AmendLossClaimsOrderValidator = mock[AmendLossClaimsOrderValidator]
+
+  object MockValidator {
+    def validate(data: AmendLossClaimsOrderRawData): CallHandler1[AmendLossClaimsOrderRawData, List[MtdError]] = {
+      (mockValidator.validate(_: AmendLossClaimsOrderRawData))
+        .expects(data)
     }
-
   }
-
 }
