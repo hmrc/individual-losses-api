@@ -26,7 +26,7 @@ case class AmendLossClaimsOrderResponse()
 object AmendLossClaimsOrderResponse extends HateoasLinks {
   implicit val writes: OWrites[AmendLossClaimsOrderResponse] = Json.writes[AmendLossClaimsOrderResponse]
 
-  implicit object AmendOrderLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimsOrderHateoasData] {
+  implicit object AmendOrderLinksFactory extends HateoasLinksFactory[AmendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData] {
     override def links(appConfig: AppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
       import data._
       Seq(amendLossClaimOrder(appConfig, nino))
