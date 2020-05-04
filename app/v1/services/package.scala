@@ -42,7 +42,7 @@ package object services {
 
   type DeleteLossClaimOutcome = Either[ErrorWrapper, DesResponse[Unit]]
 
-  type AmendLossClaimsOrderOutcome = Either[ErrorWrapper, DesResponse[Unit]]
+  type AmendLossClaimsOrderOutcome = Either[ErrorWrapper, DesResponse[AmendLossClaimsOrderResponse]]
 
 
 }

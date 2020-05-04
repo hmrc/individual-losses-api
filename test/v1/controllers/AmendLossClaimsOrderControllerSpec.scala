@@ -109,7 +109,7 @@ with MockAuditService {
           .wrap(NoContent, AmendLossClaimsOrderHateoasData(nino, claimId))
           .returns(HateoasWrapper(amendLossClaimsOrderResponse, Seq(testHateoasLink)))
 
-        val result: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
+        val result: Future[Result] = controller.amendClaimsOrder(nino, claimId)(fakePostRequest(requestBody))
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)

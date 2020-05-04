@@ -24,6 +24,7 @@ object RelType {
   val AMEND_LOSS_CLAIM = "amend-loss-claim"
   val DELETE_LOSS_CLAIM = "delete-loss-claim"
   val CREATE_LOSS_CLAIM = "create-loss-claim"
+  val AMEND_LOSS_CLAIMS_ORDER = "amend-loss-claims-order"
 
   val SELF = "self"
 }
