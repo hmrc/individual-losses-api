@@ -57,8 +57,18 @@ object LossClaimResponse extends HateoasLinks {
     }
   }
 
+  implicit object AmendOrderLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimsOrderHateoasData] {
+    override def links(appConfig: AppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
+      import data._
+      Seq(amendLossClaimOrder(appConfig, nino))
+    }
+  }
 }
+
 
 case class GetLossClaimHateoasData(nino: String, claimId: String) extends HateoasData
 
 case class AmendLossClaimHateoasData(nino: String, claimId: String) extends HateoasData
+
+
+case class AmendLossClaimsOrderHateoasData(nino: String) extends HateoasData
