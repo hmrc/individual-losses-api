@@ -63,4 +63,32 @@ class FeatureSwitchSpec extends UnitSpec {
       }
     }
   }
+
+  "isAmendLossClaimsOrderRouteEnabled" must {
+    "return true" when {
+      "config set to true" in {
+        val featureSwitch = createFeatureSwitch(
+          """
+            |amend-loss-claim-order.enabled = true
+            |""".stripMargin)
+
+        featureSwitch.isAmendLossClaimsOrderRouteEnabled shouldBe true
+      }
+    }
+
+    "return false" when {
+      "config set to false" in {
+        val featureSwitch = createFeatureSwitch(
+          """
+            |amend-loss-claim-order.enabled = false
+            |""".stripMargin)
+
+        featureSwitch.isAmendLossClaimsOrderRouteEnabled shouldBe false
+      }
+      "config is missing" in {
+        val featureSwitch = FeatureSwitch(None)
+        featureSwitch.isAmendLossClaimsOrderRouteEnabled shouldBe false
+      }
+    }
+  }
 }
