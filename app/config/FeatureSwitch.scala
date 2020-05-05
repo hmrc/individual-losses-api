@@ -54,4 +54,11 @@ case class FeatureSwitch(value: Option[Configuration]) {
 
     enabled.getOrElse(false)
   }
+
+  def isAmendLossClaimsOrderRouteEnabled: Boolean = {
+    value match {
+      case Some(configuration) => configuration.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
+      case None => false
+    }
+  }
 }
