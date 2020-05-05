@@ -18,7 +18,7 @@ package v1.services
 
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
-import v1.models.des.ReliefClaimed
+import v1.models.des.{AmendLossClaimsOrderResponse, ReliefClaimed}
 import v1.models.domain.{Claim, LossClaimsList}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
@@ -53,7 +53,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
       "return a successful response with the correct correlationId" in new Test {
 
         val desResponse = DesResponse(correlationId, ())
-        val expected = DesResponse(correlationId, ())
+        val expected = DesResponse(correlationId, AmendLossClaimsOrderResponse())
 
         MockedLossClaimConnector.amendLossClaimsOrder(request)
           .returns(Future.successful(Right(desResponse)))

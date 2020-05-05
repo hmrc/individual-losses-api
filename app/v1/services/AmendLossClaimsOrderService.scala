@@ -19,7 +19,9 @@ package v1.services
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.LossClaimConnector
+import v1.models.des.AmendLossClaimsOrderResponse
 import v1.models.errors._
+import v1.models.outcomes.DesResponse
 import v1.models.requestData.AmendLossClaimsOrderRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,18 +34,22 @@ class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) exten
 
     connector.amendLossClaimsOrder(request).map {
       mapToVendorDirect("amendLossClaimsOrder", mappingDesToMtdError)
+    }.map {
+      case Left(errorWrapper) => Left(errorWrapper)
+      case Right(desResponse) => Right(DesResponse(desResponse.correlationId, AmendLossClaimsOrderResponse()))
     }
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAXYEAR"           -> TaxYearFormatError,
-    "CONFLICT_SEQUENCE_START"   -> RuleInvalidSequenceStart,
-    "CONFLICT_NOT_SEQUENTIAL"   -> RuleSequenceOrderBroken,
-    "CONFLICT_NOT_FULL_LIST"    -> RuleLossClaimsMissing,
-    "UNPROCESSABLE_ENTITY"      -> NotFoundError,
-    "INVALID_PAYLOAD"           -> DownstreamError,
-    "SERVER_ERROR"              -> DownstreamError,
-    "SERVICE_UNAVAILABLE"       -> DownstreamError
+    "INVALID_TAXYEAR" -> TaxYearFormatError,
+    "CONFLICT_SEQUENCE_START" -> RuleInvalidSequenceStart,
+    "CONFLICT_NOT_SEQUENTIAL" -> RuleSequenceOrderBroken,
+    "CONFLICT_NOT_FULL_LIST" -> RuleLossClaimsMissing,
+    "UNPROCESSABLE_ENTITY" -> NotFoundError,
+    "INVALID_PAYLOAD" -> DownstreamError,
+    "SERVER_ERROR" -> DownstreamError,
+    "SERVICE_UNAVAILABLE" -> DownstreamError
   )
 }
+

@@ -28,7 +28,7 @@ trait MockAmendLossClaimsOrderService extends MockFactory {
 
   val mockAmendLossClaimsOrderService: AmendLossClaimsOrderService = mock[AmendLossClaimsOrderService]
 
-  object MockAmendLossClaimService {
+  object MockAmendLossClaimsOrderService {
 
     def amend(requestData: AmendLossClaimsOrderRequest): CallHandler[Future[AmendLossClaimsOrderOutcome]] = {
       (mockAmendLossClaimsOrderService

@@ -25,6 +25,7 @@ import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.AmendLossClaimsOrderParser
 import v1.hateoas.HateoasFactory
 import v1.models.des.AmendLossClaimsOrderHateoasData
+import v1.models.errors
 import v1.models.errors._
 import v1.models.requestData.AmendLossClaimsOrderRawData
 import v1.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -77,8 +78,14 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
       case BadRequestError
            | NinoFormatError
            | RuleIncorrectOrEmptyBodyError
-           | TaxYearFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))
+           | TaxYearFormatError
+           | ClaimTypeFormatError
+           | SequenceFormatError
+           | RuleInvalidSequenceStart
+           | RuleSequenceOrderBroken
+           | MissingMandatoryFieldError
+           | RuleLossClaimsMissing => BadRequest(Json.toJson(errorWrapper))
+      case UnauthorisedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }

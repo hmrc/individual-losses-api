@@ -24,12 +24,13 @@ import v1.models.hateoas.{HateoasData, Link}
 case class AmendLossClaimsOrderResponse()
 
 object AmendLossClaimsOrderResponse extends HateoasLinks {
-  implicit val writes: OWrites[AmendLossClaimsOrderResponse] = Json.writes[AmendLossClaimsOrderResponse]
+  implicit val writes: OWrites[AmendLossClaimsOrderResponse] = OWrites[AmendLossClaimsOrderResponse](_ => Json.obj())
 
-  implicit object AmendOrderLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimsOrderHateoasData] {
+  implicit object AmendOrderLinksFactory extends HateoasLinksFactory[AmendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData] {
     override def links(appConfig: AppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
       import data._
-      Seq(amendLossClaimOrder(appConfig, nino))
+      Seq(amendLossClaimOrder(appConfig, nino),
+          listLossClaim(appConfig,nino))
     }
   }
 }
