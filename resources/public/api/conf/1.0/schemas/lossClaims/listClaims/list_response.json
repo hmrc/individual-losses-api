@@ -87,7 +87,8 @@
             "type": "string",
             "enum": [
               "self",
-              "create-loss-claim"
+              "create-loss-claim",
+              "amend-loss-claim-order"
             ]
           },
           "method": {
@@ -95,7 +96,8 @@
             "type": "string",
             "enum": [
               "GET",
-              "POST"
+              "POST",
+              "PUT"
             ]
           }
         },

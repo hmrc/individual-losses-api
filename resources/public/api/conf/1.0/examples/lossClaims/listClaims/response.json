@@ -34,6 +34,11 @@
             "href":"/individuals/losses/TC663795B/loss-claims",
             "rel":"create-loss-claim",
             "method":"POST"
+        },
+        {
+            "href":"/individuals/losses/TC663795B/loss-claims/order",
+            "rel":"amend-loss-claim-order",
+            "method":"PUT"
         }
     ]
 }

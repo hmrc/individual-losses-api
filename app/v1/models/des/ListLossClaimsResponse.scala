@@ -17,12 +17,13 @@
 package v1.models.des
 
 import cats.Functor
-import config.AppConfig
+import config.{AppConfig, FeatureSwitch}
 import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 import play.api.libs.functional.syntax._
 import v1.models.domain.TypeOfClaim
+import v1.models.hateoas.RelType.AMEND_LOSS_CLAIM_ORDER
 
 
 case class LossClaimId(id: String, sequence: Option[Int], typeOfClaim: TypeOfClaim)
@@ -47,8 +48,17 @@ object ListLossClaimsResponse extends HateoasLinks {
     implicitly[Reads[Seq[I]]].map(ListLossClaimsResponse(_))
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListLossClaimsResponse, LossClaimId, ListLossClaimsHateoasData] {
-    override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] =
-      Seq(listLossClaim(appConfig, data.nino), createLossClaim(appConfig, data.nino))
+    override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] = {
+      val featureSwitch = FeatureSwitch(appConfig.featureSwitch)
+      val baseLinks = Seq(
+        listLossClaim(appConfig, data.nino),
+        createLossClaim(appConfig, data.nino)
+      )
+
+      val extraLinks = if(featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(reorderLossClaim(appConfig, data.nino, rel = AMEND_LOSS_CLAIM_ORDER)) else Seq()
+
+      baseLinks ++ extraLinks
+    }
 
     override def itemLinks(appConfig: AppConfig, data: ListLossClaimsHateoasData, item: LossClaimId): Seq[Link] =
       Seq(getLossClaim(appConfig, data.nino, item.id))
