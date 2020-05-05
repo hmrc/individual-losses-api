@@ -20,13 +20,13 @@ import uk.gov.hmrc.domain.Nino
 import v1.models.des.ReliefClaimed
 import v1.models.domain.{Claim, LossClaimsList}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.AmendLossClaimsOrderRequest
+import v1.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
 
 import scala.concurrent.Future
 
 class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
 
-  val taxYear = Some("2019-20")
+  val taxYear = "2019-20"
 
   "amendLossClaimsOrder" when {
 
@@ -40,7 +40,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
         val expected = Right(DesResponse(correlationId, ()))
 
           MockedHttpClient
-          .put(s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/$taxYear", amendLossClaimsOrder, desRequestHeaders: _*)
+          .put(s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/${DesTaxYear.fromMtd(taxYear)}", amendLossClaimsOrder, desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
         amendLossClaimsOrderResult(connector) shouldBe expected
@@ -52,7 +52,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
         connector.amendLossClaimsOrder(
           AmendLossClaimsOrderRequest(
             nino = Nino(nino),
-            taxYear = taxYear,
+            taxYear = DesTaxYear.fromMtd(taxYear),
             body = amendLossClaimsOrder
           )))
   }

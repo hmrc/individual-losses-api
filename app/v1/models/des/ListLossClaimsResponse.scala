@@ -55,7 +55,7 @@ object ListLossClaimsResponse extends HateoasLinks {
         createLossClaim(appConfig, data.nino)
       )
 
-      val extraLinks = if(featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(reorderLossClaim(appConfig, data.nino, rel = AMEND_LOSS_CLAIM_ORDER)) else Seq()
+      val extraLinks = if(featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino, rel = AMEND_LOSS_CLAIM_ORDER)) else Seq()
 
       baseLinks ++ extraLinks
     }

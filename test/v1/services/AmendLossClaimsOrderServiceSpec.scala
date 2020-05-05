@@ -22,7 +22,7 @@ import v1.models.des.{AmendLossClaimsOrderResponse, ReliefClaimed}
 import v1.models.domain.{Claim, LossClaimsList}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.AmendLossClaimsOrderRequest
+import v1.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
 
 import scala.concurrent.Future
 
@@ -34,7 +34,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val nino   = Nino("AA123456A")
-  val taxYear = Some("2019-20")
+  val taxYear = DesTaxYear.fromMtd("2019-20")
 
   val lossClaimsOrder = LossClaimsList(ReliefClaimed.`CSGI`,
                             Seq(Claim("1234568790ABCDE", 1),

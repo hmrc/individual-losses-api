@@ -23,9 +23,11 @@ object ClaimTypeValidation {
   def validate(claimType: String): List[MtdError] =
     if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
 
-  def checkClaim(typeOfClaim: String): List[MtdError] =
-    typeOfClaim match{
-      case "carry-sideways" => NoValidationErrors
-      case _ => List(ClaimTypeFormatError)
+  def validateClaimIsCarrySideways(typeOfClaim: String): List[MtdError] =
+    if(typeOfClaim == TypeOfClaim.`carry-sideways`.toString) {
+      NoValidationErrors
+    }
+    else {
+      List(ClaimTypeFormatError)
     }
 }

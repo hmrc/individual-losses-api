@@ -19,6 +19,7 @@ package v1.models.des
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.hateoas.RelType.LIST_LOSS_CLAIMS
 import v1.models.hateoas.{HateoasData, Link}
 
 case class AmendLossClaimsOrderResponse()
@@ -29,8 +30,10 @@ object AmendLossClaimsOrderResponse extends HateoasLinks {
   implicit object AmendOrderLinksFactory extends HateoasLinksFactory[AmendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData] {
     override def links(appConfig: AppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
       import data._
-      Seq(amendLossClaimOrder(appConfig, nino),
-          listLossClaim(appConfig,nino))
+      Seq(
+        amendLossClaimOrder(appConfig, nino),
+        listLossClaim(appConfig, nino, rel = LIST_LOSS_CLAIMS)
+      )
     }
   }
 }

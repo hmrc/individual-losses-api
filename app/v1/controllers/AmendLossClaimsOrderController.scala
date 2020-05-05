@@ -25,7 +25,6 @@ import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v1.controllers.requestParsers.AmendLossClaimsOrderParser
 import v1.hateoas.HateoasFactory
 import v1.models.des.AmendLossClaimsOrderHateoasData
-import v1.models.errors
 import v1.models.errors._
 import v1.models.requestData.AmendLossClaimsOrderRawData
 import v1.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -80,6 +79,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
            | RuleIncorrectOrEmptyBodyError
            | TaxYearFormatError
            | ClaimTypeFormatError
+           | ClaimIdFormatError
            | SequenceFormatError
            | RuleInvalidSequenceStart
            | RuleSequenceOrderBroken

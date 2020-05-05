@@ -22,17 +22,24 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import play.api.http.HeaderNames.ACCEPT
-import v1.models.errors.{DownstreamError, MtdError, NinoFormatError, NotFoundError, TaxYearFormatError}
-import v1.stubs.{DesStub, MtdIdLookupStub}
+import v1.models.domain.{Claim, TypeOfClaim}
+import v1.models.errors._
+import v1.models.requestData.DesTaxYear
+import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
 
   val correlationId = "X-123"
 
-  val requestJson: JsValue = Json.parse(
-    s"""
+  val claim1 = Claim("1234567890ABEF1", 1)
+  val claim2 = Claim("1234567890ABCDE", 2)
+  val claim3 = Claim("1234567890ABDE0", 3)
+  val claimSeq = Seq(claim2, claim1, claim3)
+
+  def requestJson(claimType: String = TypeOfClaim.`carry-sideways`.toString, listOfLossClaims: Seq[Claim] = claimSeq): JsValue = Json.parse(s"""
        |{
-       |    "typeOfClaim": "carry-forward"
+       |   "claimType": "$claimType",
+       |   "listOfLossClaims": ${Json.toJson(listOfLossClaims)}
        |}
       """.stripMargin)
 
@@ -41,20 +48,25 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
     val nino    = "AA123456A"
     val taxYear = "2019-20"
 
-    val responseJson: JsValue = Json.parse(s"""
-                                              |{
-                                              |    "links": [
-                                              |      {
-                                              |      "href": "/individuals/losses/$nino/loss-claims/order",
-                                              |      "method": "GET",
-                                              |      "rel": "self"
-                                              |      }
-                                              |    ]
-                                              |}
-      """.stripMargin)
+    val responseJson: JsValue =
+      Json.parse(s"""
+        |{
+        |  "links": [
+        |    {
+        |      "href": "/individuals/losses/$nino/loss-claims/order",
+        |      "method": "PUT",
+        |      "rel": "self"
+        |    },
+        |    {
+        |      "href": "/individuals/losses/$nino/loss-claims",
+        |      "method": "GET",
+        |      "rel": "list-loss-claims"
+        |    }
+        |  ]
+        |}""".stripMargin)
 
     def uri: String    = s"/$nino/loss-claims/order"
-    def desUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/$taxYear"
+    def desUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DesTaxYear.fromMtd(taxYear)}"
 
     def errorBody(code: String): String =
       s"""
@@ -81,11 +93,31 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
       "any valid request is made" in new Test {
 
         override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUrl, Status.OK)
+          DesStub.onSuccess(DesStub.PUT, desUrl, Status.NO_CONTENT)
         }
 
-        val response: WSResponse = await(request().post(requestJson))
+        val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
+        response.status shouldBe Status.OK
+        response.json shouldBe responseJson
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "any valid request is made with no taxYear" in new Test {
+
+        override def desUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DesTaxYear.mostRecentTaxYear()}"
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.PUT, desUrl, Status.NO_CONTENT)
+        }
+
+        val response: WSResponse = await(request().put(requestJson()))
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -93,16 +125,18 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-    "handle errors according to spec" when {
+    "handle downstream errors according to spec" when {
       def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"des returns an $desCode error" in new Test {
 
           override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
             DesStub.onError(DesStub.PUT, desUrl, desStatus, errorBody(desCode))
           }
 
-          val response: WSResponse = await(request().post(requestJson))
+          val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -111,33 +145,47 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
       }
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXYEAR", Status.BAD_REQUEST, TaxYearFormatError)
+      serviceErrorTest(Status.CONFLICT, "CONFLICT_SEQUENCE_START", Status.BAD_REQUEST, RuleInvalidSequenceStart)
+      serviceErrorTest(Status.CONFLICT, "CONFLICT_NOT_SEQUENTIAL", Status.BAD_REQUEST, RuleSequenceOrderBroken)
+      serviceErrorTest(Status.CONFLICT, "CONFLICT_NOT_FULL_LIST", Status.BAD_REQUEST, RuleLossClaimsMissing)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "UNPROCESSABLE_ENTITY", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
 
     "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String, requestTaxYear: String, requestBody: JsValue,
-                              expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String,
+                              requestTaxYear: String,
+                              requestBody: JsValue,
+                              expectedStatus: Int,
+                              expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String     = requestNino
-          override val taxYear: String  = requestTaxYear
+          override val nino: String    = requestNino
+          override val taxYear: String = requestTaxYear
 
           override def setupStubs(): StubMapping = {
-            MtdIdLookupStub.ninoFound(requestNino)
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
           }
 
-          val response: WSResponse = await(request().post(requestBody))
+          val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestBody))
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
-      validationErrorTest("BADNINO", "2019-20", requestJson, Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BadDate", requestJson, Status.BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("BADNINO", "2019-20", requestJson(), Status.BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BadDate", requestJson(), Status.BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", "2019-20", requestJson(claimType = "carry-sideways-fhl"), Status.BAD_REQUEST, ClaimTypeFormatError)
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Range(1, 101).map(Claim("1234567890ABEF1", _))), Status.BAD_REQUEST, SequenceFormatError)
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim2, claim3)), Status.BAD_REQUEST, RuleInvalidSequenceStart)
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1, claim3)), Status.BAD_REQUEST, RuleSequenceOrderBroken)
+      validationErrorTest("AA123456A", "2019-20", Json.obj(), Status.BAD_REQUEST, MissingMandatoryFieldError)
     }
   }
 

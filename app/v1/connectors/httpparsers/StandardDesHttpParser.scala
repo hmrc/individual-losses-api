@@ -19,9 +19,9 @@ package v1.connectors.httpparsers
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Reads
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
 import v1.connectors.DesOutcome
-import v1.models.errors.{DownstreamError, OutboundError}
+import v1.models.errors.{ DownstreamError, OutboundError }
 import v1.models.outcomes.DesResponse
 
 object StandardDesHttpParser extends HttpParser {
@@ -30,20 +30,22 @@ object StandardDesHttpParser extends HttpParser {
 
   // Return Right[DesResponse[Unit]] as success response has no body - no need to assign it a value
   implicit val readsEmpty: HttpReads[DesOutcome[Unit]] =
-    (_: String, url: String, response: HttpResponse) => doRead(NO_CONTENT, url, response) { correlationId =>
-      Right(DesResponse(correlationId, ()))
+    (_: String, url: String, response: HttpResponse) =>
+      doRead(NO_CONTENT, url, response) { correlationId =>
+        Right(DesResponse(correlationId, ()))
     }
 
   implicit def reads[A: Reads]: HttpReads[DesOutcome[A]] =
-    (_: String, url: String, response: HttpResponse) => doRead(OK, url, response) { correlationId =>
-      response.validateJson[A] match {
-        case Some(ref) => Right(DesResponse(correlationId, ref))
-        case None => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
-      }
+    (_: String, url: String, response: HttpResponse) =>
+      doRead(OK, url, response) { correlationId =>
+        response.validateJson[A] match {
+          case Some(ref) => Right(DesResponse(correlationId, ref))
+          case None      => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
+        }
     }
 
   private def doRead[A](successStatusCode: Int, url: String, response: HttpResponse)(
-    successOutcomeFactory: String => DesOutcome[A]): DesOutcome[A] = {
+      successOutcomeFactory: String => DesOutcome[A]): DesOutcome[A] = {
 
     val correlationId = retrieveCorrelationId(response)
 
@@ -60,9 +62,9 @@ object StandardDesHttpParser extends HttpParser {
           "[StandardDesHttpParser][read] - " +
             s"Success response received from DES with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
-      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT => Left(DesResponse(correlationId, parseErrors(response)))
-      case INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE    => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
-      case _                                              => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
+      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY => Left(DesResponse(correlationId, parseErrors(response)))
+      case INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE                           => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
+      case _                                                                     => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
     }
   }
 }

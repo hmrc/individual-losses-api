@@ -29,7 +29,7 @@ import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.DesResponse
-import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest}
+import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -48,12 +48,12 @@ class AmendLossClaimsOrderControllerSpec
   val id = "1234568790ABCDE"
   val sequence = 1
   val nino = "AA123456A"
-  val taxYear = "01/01/2019"
+  val taxYear = "2019-20"
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val claim = Claim(id, sequence)
   val claimsList = LossClaimsList(ReliefClaimed.`CF`, Seq(claim))
-  val amendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(Nino(nino), Some(taxYear), claimsList)
+  val amendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), claimsList)
   val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
   val testHateoasLink = Link(href = s"/individuals/losses/${nino}/loss-claims/order", method = GET, rel = "self")
@@ -119,7 +119,7 @@ class AmendLossClaimsOrderControllerSpec
           .returns(Right(amendLossClaimsOrderRequest))
 
         MockAmendLossClaimsOrderService
-          .amend(AmendLossClaimsOrderRequest(Nino(nino), Some(taxYear), claimsList))
+          .amend(amendLossClaimsOrderRequest)
           .returns(Future.successful(Right(DesResponse(correlationId, amendLossClaimsOrderResponse))))
 
         MockHateoasFactory
@@ -190,7 +190,7 @@ class AmendLossClaimsOrderControllerSpec
           .returns(Right(amendLossClaimsOrderRequest))
 
         MockAmendLossClaimsOrderService
-          .amend(AmendLossClaimsOrderRequest(Nino(nino), Some(taxYear), claimsList))
+          .amend(amendLossClaimsOrderRequest)
           .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
         val response: Future[Result] = controller.amendClaimsOrder(nino, Some(taxYear))(fakePostRequest(requestBody))

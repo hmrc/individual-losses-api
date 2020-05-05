@@ -16,6 +16,9 @@
 
 package v1.models.requestData
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 /**
   * Represents a tax year for DES
   *
@@ -35,4 +38,13 @@ object DesTaxYear {
 
   def fromDes(taxYear: String): DesTaxYear =
     DesTaxYear((taxYear.toInt -1) + "-" + taxYear.drop(2))
+
+  def mostRecentTaxYear(date: LocalDate = LocalDate.now()): DesTaxYear = {
+    val limit = LocalDate.parse(s"${date.getYear}-04-05", DateTimeFormatter.ISO_DATE)
+    if(date.isBefore(limit)) {
+      DesTaxYear(s"${date.getYear - 1}")
+    } else {
+      DesTaxYear(s"${date.getYear}")
+    }
+  }
 }
