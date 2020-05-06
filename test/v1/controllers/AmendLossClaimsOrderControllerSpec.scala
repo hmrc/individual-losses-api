@@ -111,7 +111,7 @@ class AmendLossClaimsOrderControllerSpec
   }
 
   "amendLossClaimsOrder" should {
-    "return a successful response with header X-CorrelationId and a 204" when {
+    "return a successful response with header X-CorrelationId and a 200" when {
       "the request received is valid" in new Test {
 
         MockAmendLossClaimsOrderRequestDataParser.parseRequest(

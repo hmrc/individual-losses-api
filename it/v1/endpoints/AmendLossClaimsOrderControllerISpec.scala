@@ -86,7 +86,7 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the amend LossClaim endpoint" should {
+  "Calling the Amend Loss Claims Order endpoint" should {
 
     "return a 200 status code" when {
 
@@ -188,5 +188,4 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", "2019-20", Json.obj(), Status.BAD_REQUEST, MissingMandatoryFieldError)
     }
   }
-
 }

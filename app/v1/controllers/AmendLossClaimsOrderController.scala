@@ -76,10 +76,8 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
     (errorWrapper.error: @unchecked) match {
       case BadRequestError
            | NinoFormatError
-           | RuleIncorrectOrEmptyBodyError
            | TaxYearFormatError
            | ClaimTypeFormatError
-           | ClaimIdFormatError
            | SequenceFormatError
            | RuleInvalidSequenceStart
            | RuleSequenceOrderBroken
