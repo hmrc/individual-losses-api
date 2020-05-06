@@ -60,8 +60,8 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
         validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearFormat), lossClaim("carry-sideways", List(Claim(validId, 1))))) shouldBe List(TaxYearFormatError)
       }
 
-      "claimType format is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-backwards", List(Claim(validId, 1))))) shouldBe List(ClaimTypeFormatError)
+      "a non-carry-sideways claimType is provided" in {
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-forward", List(Claim(validId, 1))))) shouldBe List(ClaimTypeFormatError)
       }
 
       "Id format is invalid" in {

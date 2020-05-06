@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.AmendLossClaimsOrderRequestBody
-import v1.models.errors.{MissingMandatoryFieldError, MtdError}
+import v1.models.errors.{ MissingMandatoryFieldError, MtdError }
 import v1.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] {
@@ -26,33 +26,33 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
   val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldValidator)
 
   private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
-  List(
-    NinoValidation.validate(data.nino),
-    data.taxYear.map(ClaimOrderTaxYearValidation.validate).getOrElse(Nil)
-  )
-}
-
-  private def bodyFormatValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
-  List(
-    JsonFormatValidation.validate[AmendLossClaimsOrderRequestBody](data.body.json, MissingMandatoryFieldError)
-  )
-}
-
-  private def bodyFieldValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
-  val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
-  val claimTypeValidation = List(
-    ClaimTypeValidation.validate(req.claimType),
-  )
-  val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
     List(
-      ClaimIdValidation.validate(lossClaim.id),
-      SequenceValidation.validate(lossClaim.sequence)
+      NinoValidation.validate(data.nino),
+      data.taxYear.map(ClaimOrderTaxYearValidation.validate).getOrElse(Nil)
     )
   }
-  List(
-    SequenceSequentialValidation.validate(req.listOfLossClaims.map(_.sequence))
-  ) ++ claimTypeValidation ++ listOfLossClaimsValidator
-}
+
+  private def bodyFormatValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+    List(
+      JsonFormatValidation.validate[AmendLossClaimsOrderRequestBody](data.body.json, MissingMandatoryFieldError)
+    )
+  }
+
+  private def bodyFieldValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+    val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
+    val claimTypeValidation = List(
+      ClaimTypeValidation.validateClaimIsCarrySideways(req.claimType),
+    )
+    val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
+      List(
+        ClaimIdValidation.validate(lossClaim.id),
+        SequenceValidation.validate(lossClaim.sequence)
+      )
+    }
+    List(
+      SequenceSequentialValidation.validate(req.listOfLossClaims.map(_.sequence))
+    ) ++ claimTypeValidation ++ listOfLossClaimsValidator
+  }
 
   override def validate(data: AmendLossClaimsOrderRawData): List[MtdError] = run(validationSet, data).distinct
 }

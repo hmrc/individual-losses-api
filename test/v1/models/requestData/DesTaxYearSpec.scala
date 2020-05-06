@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models
+package v1.models.requestData
+
+import java.time.LocalDate
 
 import support.UnitSpec
-import v1.models.requestData.DesTaxYear
 
-class IndividualLossesSpec extends UnitSpec {
+class DesTaxYearSpec extends UnitSpec {
 
-  val taxYear = "2018-19"
+  val taxYear    = "2018-19"
   val desTaxYear = "2019"
-
 
   "DesTaxYear" should {
     "generate a des tax year" when {
@@ -32,13 +32,18 @@ class IndividualLossesSpec extends UnitSpec {
         year.value shouldBe desTaxYear
       }
     }
-
-    "DesTaxYear" should {
-      "generate an mtd tax year" when {
-        "given a year" in {
-          val year = DesTaxYear.fromDes(desTaxYear)
-          year.value shouldBe taxYear
-        }
+    "generate an mtd tax year" when {
+      "given a year" in {
+        val year = DesTaxYear.fromDes(desTaxYear)
+        year.value shouldBe taxYear
+      }
+    }
+    "generate the most recent tax year" when {
+      "the date is before XXXX-04-05" in {
+        DesTaxYear.mostRecentTaxYear(LocalDate.parse("2020-04-01")) shouldBe DesTaxYear("2019")
+      }
+      "the date is after XXXX-04-05" in {
+        DesTaxYear.mostRecentTaxYear(LocalDate.parse("2020-04-13")) shouldBe DesTaxYear("2020")
       }
     }
   }

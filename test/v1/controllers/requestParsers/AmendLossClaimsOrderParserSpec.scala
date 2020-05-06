@@ -24,7 +24,7 @@ import v1.mocks.validators.MockAmendLossClaimsOrderValidator
 import v1.models.des.ReliefClaimed
 import v1.models.domain.{Claim, LossClaimsList}
 import v1.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
-import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest}
+import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
 class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
@@ -41,9 +41,17 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
   "parse" should {
     "return an AmendLossClaimsOrderRequest" when {
-      "the validator returns no errors" in new Test {
+      "the validator returns no errors and a tax year is supplied" in new Test {
         MockValidator.validate(data).returns(List())
-        parser.parseRequest(data) shouldBe Right(AmendLossClaimsOrderRequest(Nino(nino), Some(taxYear), LossClaimsList(ReliefClaimed.`CSGI`, Seq(listOfLossClaims))))
+        parser.parseRequest(data) shouldBe {
+          Right(AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), LossClaimsList(ReliefClaimed.`CSGI`, Seq(listOfLossClaims))))
+        }
+      }
+      "the validator returns no errors and no tax year is supplied" in new Test {
+        MockValidator.validate(data).returns(List())
+        parser.parseRequest(data) shouldBe {
+          Right(AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.mostRecentTaxYear(), LossClaimsList(ReliefClaimed.`CSGI`, Seq(listOfLossClaims))))
+        }
       }
     }
     "return a single error" when {
