@@ -374,17 +374,6 @@ traits:
                 description: The sequence is not continuous
                 value:
                   code: RULE_SEQUENCE_ORDER_BROKEN
-  MissingMandatoryField:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              MissingMandatoryField:
-                description: One or more mandatory values not provided
-                value:
-                  code: MISSING_MANDATORY_FIELD
   RuleLossClaimsMissing:
     responses:
       400:
