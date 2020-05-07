@@ -139,6 +139,7 @@ class AmendLossClaimsOrderControllerSpec
         NinoFormatError,
         TaxYearFormatError,
         ClaimTypeFormatError,
+        ClaimIdFormatError,
         SequenceFormatError,
         RuleInvalidSequenceStart,
         RuleSequenceOrderBroken,

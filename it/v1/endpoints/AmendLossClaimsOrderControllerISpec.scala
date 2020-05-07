@@ -182,6 +182,7 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
       validationErrorTest("BADNINO", "2019-20", requestJson(), Status.BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BadDate", requestJson(), Status.BAD_REQUEST, TaxYearFormatError)
       validationErrorTest("AA123456A", "2019-20", requestJson(claimType = "carry-sideways-fhl"), Status.BAD_REQUEST, ClaimTypeFormatError)
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1.copy(id = "BadId"))), Status.BAD_REQUEST, ClaimIdFormatError)
       validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Range(1, 101).map(Claim("1234567890ABEF1", _))), Status.BAD_REQUEST, SequenceFormatError)
       validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim2, claim3)), Status.BAD_REQUEST, RuleInvalidSequenceStart)
       validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1, claim3)), Status.BAD_REQUEST, RuleSequenceOrderBroken)

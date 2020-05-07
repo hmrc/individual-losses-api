@@ -77,6 +77,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
       case BadRequestError
            | NinoFormatError
            | TaxYearFormatError
+           | ClaimIdFormatError
            | ClaimTypeFormatError
            | SequenceFormatError
            | RuleInvalidSequenceStart
