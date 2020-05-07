@@ -77,12 +77,12 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
       case BadRequestError
            | NinoFormatError
            | TaxYearFormatError
+           | RuleIncorrectOrEmptyBodyError
            | ClaimIdFormatError
            | ClaimTypeFormatError
            | SequenceFormatError
            | RuleInvalidSequenceStart
            | RuleSequenceOrderBroken
-           | MissingMandatoryFieldError
            | RuleLossClaimsMissing => BadRequest(Json.toJson(errorWrapper))
       case UnauthorisedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.domain.AmendLossClaimsOrderRequestBody
-import v1.models.errors.{ MissingMandatoryFieldError, MtdError }
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v1.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] {
@@ -34,7 +34,7 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
 
   private def bodyFormatValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[AmendLossClaimsOrderRequestBody](data.body.json, MissingMandatoryFieldError)
+      JsonFormatValidation.validate[AmendLossClaimsOrderRequestBody](data.body.json, RuleIncorrectOrEmptyBodyError)
     )
   }
 

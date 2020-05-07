@@ -136,14 +136,15 @@ class AmendLossClaimsOrderControllerSpec
     "return a 400 Bad Request with a single error" when {
 
       val badRequestErrorsFromParser = List(
+        BadRequestError,
         NinoFormatError,
         TaxYearFormatError,
+        RuleIncorrectOrEmptyBodyError,
         ClaimTypeFormatError,
         ClaimIdFormatError,
         SequenceFormatError,
         RuleInvalidSequenceStart,
-        RuleSequenceOrderBroken,
-        MissingMandatoryFieldError
+        RuleSequenceOrderBroken
       )
 
       val badRequestErrorsFromService = List(

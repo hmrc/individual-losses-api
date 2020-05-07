@@ -69,7 +69,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       }
 
       "a mandatory field isn't provided" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(Json.obj()))) shouldBe List(MissingMandatoryFieldError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(Json.obj()))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
 
       "sequence order is invalid" in {
