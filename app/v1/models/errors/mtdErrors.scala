@@ -46,7 +46,7 @@ object RuleNoAccountingPeriod extends MtdError("RULE_NO_ACCOUNTING_PERIOD", "For
 object RuleInvalidSequenceStart extends MtdError( "RULE_INVALID_SEQUENCE_START", "The sequence does not begin with 1")
 object RuleSequenceOrderBroken extends MtdError( "RULE_SEQUENCE_ORDER_BROKEN", "The sequence is not continuous")
 object RuleLossClaimsMissing extends MtdError("RULE_LOSS_CLAIMS_MISSING",
-  "Not all of the loss claims of this type for this tax year were included in the submission")
+  "One or more loss claims missing from this request")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
