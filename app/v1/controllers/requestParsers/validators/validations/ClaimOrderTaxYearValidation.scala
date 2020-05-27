@@ -25,8 +25,8 @@ object ClaimOrderTaxYearValidation {
   def validate(taxYear: String): List[MtdError] = {
     if (taxYear.matches(taxYearFormat)) {
 
-      val start = taxYear.substring(2, 4).toInt
-      val end   = taxYear.substring(5, 7).toInt
+      val start     = taxYear.substring(2, 4).toInt
+      val end       = taxYear.substring(5, 7).toInt
       val startYear = taxYear.substring(0, 4).toInt
 
       if (end - start == 1) {
