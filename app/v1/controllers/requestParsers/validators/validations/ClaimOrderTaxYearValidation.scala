@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, TaxYearFormatError}
+import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError, TaxYearFormatError}
 
 object ClaimOrderTaxYearValidation {
 
@@ -27,9 +27,15 @@ object ClaimOrderTaxYearValidation {
 
       val start = taxYear.substring(2, 4).toInt
       val end   = taxYear.substring(5, 7).toInt
+      val startYear = taxYear.substring(0,4).toInt
 
       if (end - start == 1) {
-        NoValidationErrors
+        if (startYear < 2019) {
+          print(startYear)
+          List(RuleTaxYearNotSupportedError)
+        } else {
+          NoValidationErrors
+        }
       } else {
         List(TaxYearFormatError)
       }
@@ -37,5 +43,4 @@ object ClaimOrderTaxYearValidation {
       List(TaxYearFormatError)
     }
   }
-
 }
