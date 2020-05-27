@@ -27,7 +27,7 @@ object ClaimOrderTaxYearValidation {
 
       val start = taxYear.substring(2, 4).toInt
       val end   = taxYear.substring(5, 7).toInt
-      val startYear = taxYear.substring(0,4).toInt
+      val startYear = taxYear.substring(0, 4).toInt
 
       if (end - start == 1) {
         if (startYear < 2019) {
