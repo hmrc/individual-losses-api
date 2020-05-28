@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.TaxYearFormatError
+import v1.models.errors.{RuleTaxYearNotSupportedError, TaxYearFormatError}
 import v1.models.utils.JsonErrorValidators
 
 class ClaimOrderTaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
@@ -26,7 +26,7 @@ class ClaimOrderTaxYearValidationSpec extends UnitSpec with JsonErrorValidators 
     "return no errors" when {
       "when a valid tax year is supplied" in {
 
-        val validTaxYear = "2018-19"
+        val validTaxYear = "2019-20"
         val validationResult = ClaimOrderTaxYearValidation.validate(validTaxYear)
         validationResult.isEmpty shouldBe true
 
@@ -82,6 +82,14 @@ class ClaimOrderTaxYearValidationSpec extends UnitSpec with JsonErrorValidators 
       validationResult.isEmpty shouldBe false
       validationResult.length shouldBe 1
       validationResult.head shouldBe TaxYearFormatError
+    }
+
+    "the tax year predates 2019-20" in {
+      val invalidTaxYear = "2018-19"
+      val validationResult = ClaimOrderTaxYearValidation.validate(invalidTaxYear)
+      validationResult.isEmpty shouldBe false
+      validationResult.length shouldBe 1
+      validationResult.head shouldBe RuleTaxYearNotSupportedError
     }
 
   }
