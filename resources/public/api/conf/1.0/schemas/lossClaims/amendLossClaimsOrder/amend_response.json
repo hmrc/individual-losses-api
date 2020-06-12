@@ -20,7 +20,7 @@
             "type": "string",
             "enum": [
               "self",
-              "list-loss-claims"
+              "amend-loss-claim-order"
             ]
           },
           "method": {

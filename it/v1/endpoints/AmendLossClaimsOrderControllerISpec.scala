@@ -55,12 +55,12 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
         |    {
         |      "href": "/individuals/losses/$nino/loss-claims/order",
         |      "method": "PUT",
-        |      "rel": "self"
+        |      "rel": "amend-loss-claim-order"
         |    },
         |    {
         |      "href": "/individuals/losses/$nino/loss-claims",
         |      "method": "GET",
-        |      "rel": "list-loss-claims"
+        |      "rel": "self"
         |    }
         |  ]
         |}""".stripMargin)
