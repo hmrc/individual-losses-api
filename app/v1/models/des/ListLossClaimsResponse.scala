@@ -23,7 +23,6 @@ import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 import play.api.libs.functional.syntax._
 import v1.models.domain.TypeOfClaim
-import v1.models.hateoas.RelType.AMEND_LOSS_CLAIM_ORDER
 
 
 case class LossClaimId(id: String, sequence: Option[Int], typeOfClaim: TypeOfClaim)
@@ -55,7 +54,7 @@ object ListLossClaimsResponse extends HateoasLinks {
         createLossClaim(appConfig, data.nino)
       )
 
-      val extraLinks = if(featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino, rel = AMEND_LOSS_CLAIM_ORDER)) else Seq()
+      val extraLinks = if(featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino)) else Seq()
 
       baseLinks ++ extraLinks
     }

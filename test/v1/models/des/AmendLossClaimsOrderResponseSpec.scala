@@ -39,8 +39,8 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
         MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
         AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(mockAppConfig, AmendLossClaimsOrderHateoasData(nino)) shouldBe
           Seq(
-            Link(s"/individuals/losses/$nino/loss-claims/order", PUT, "self"),
-              Link(s"/individuals/losses/$nino/loss-claims", GET, "list-loss-claims")
+            Link(s"/individuals/losses/$nino/loss-claims/order", PUT, "amend-loss-claim-order"),
+              Link(s"/individuals/losses/$nino/loss-claims", GET, "self")
           )
       }
     }
