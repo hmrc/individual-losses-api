@@ -1,0 +1,23 @@
+{
+    "typeOfLoss":"uk-property-non-fhl",
+    "typeOfClaim": "carry-sideways",
+    "taxYear": "2019-20",
+    "lastModified" : "2020-07-11T12:15:34.734Z",
+    "links": [
+        {
+            "href": "/individuals/losses/TC663795B/loss-claims/1234568790ABCDE",
+            "rel": "self",
+            "method": "GET"
+        },
+        {
+            "href": "/individuals/losses/TC663795B/loss-claims/1234568790ABCDE",
+            "rel": "delete-loss-claim",
+            "method": "DELETE"
+        },
+        {
+            "href": "/individuals/losses/TC663795B/loss-claims/1234568790ABCDE/change-type-of-claim",
+            "rel": "amend-loss-claim",
+            "method": "POST"
+        }
+    ]
+}

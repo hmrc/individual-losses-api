@@ -1,0 +1,37 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatClaimId
+  - errors.formatTypeOfClaim
+  - errors.ruleNoChangeTypeOfClaim
+  - errors.incorrectOrEmptyBody
+  - errors.ruleTypeOfClaim403
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundClaimId
+displayName: Amend a Loss Claim
+description: This endpoint allows the user to change the type of claim for an existing loss claim.
+(annotations.sandboxData): !include scenarios/lossClaims_amend.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/lossClaims/amendClaim/amend_request.json
+    example: !include examples/lossClaims/amendClaim/amend_request.json
+responses:
+  200:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
+    body:
+      application/json:
+        type: !include schemas/lossClaims/amendClaim/amend_response.json
+        examples:
+          example-1:
+            description: Self-employment claim
+            value: !include examples/lossClaims/amendClaim/retrieve_se_response.json
+          example-2:
+            description: UK Non-FHL property claim
+            value: !include examples/lossClaims/amendClaim/retrieve_non_fhl_response.json

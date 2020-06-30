@@ -1,0 +1,30 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeInvalid
+  - errors.ruleSelfEmploymentId
+  - errors.formatLossType
+  - errors.formatSelfEmploymentId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundNino
+  - queryParameters.taxYearForBFLosses
+  - queryParameters.typeOfLossForBFLosses
+  - queryParameters.selfEmploymentId
+displayName: List Brought Forward Losses
+description: This endpoint allows users to retrieve a list of all brought forward losses which they have incurred before joining MTD.
+(annotations.sandboxData): !include scenarios/broughtForwardLosses_list.md
+(annotations.scope): "read:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+responses:
+ 200:
+   body:
+     application/json:
+       type: !include schemas/broughtForwardLosses/listBFLosses/list_response.json
+       example: !include examples/broughtForwardLosses/listBFLosses/list_response.json
+   headers:
+     X-CorrelationId:
+       example: c75f40a6-a3df-4429-a697-471eeec46435
+       description: Unique ID for operation tracking <br> String, 36 characters.

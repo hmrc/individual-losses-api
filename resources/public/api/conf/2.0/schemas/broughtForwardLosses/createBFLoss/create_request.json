@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Brought Forward Loss",
+    "description": "Brought Forward Loss",
+    "type": "object",
+    "properties": {
+        "typeOfLoss" : {
+            "type" : "string",
+            "enum": ["self-employment", "self-employment-class4", "uk-property-fhl", "uk-property-non-fhl"],
+            "description": "The type of business the loss applies to."
+        },
+        "selfEmploymentId" : {
+            "type": "string",
+            "description": "An identifier for the self-employment business, unique to the customer.",
+            "example": "XGIS00000001319",
+            "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+        },
+        "lossAmount": {
+            "type": "number",
+            "description": "Brought Forward Loss amount related to UK property or self-employment business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "example": "12345.67"
+        },
+        "taxYear": {
+            "type": "string",
+            "description": "The tax year the data applies to, for example, 2018-19. The start year and end year must not span two tax years. No gaps are allowed, for example, 2018-20 is not valid. The minimum tax year is 2018-19.",
+            "example": "2018-19"
+        }
+    },
+    "required": ["typeOfLoss", "lossAmount", "taxYear"]
+}

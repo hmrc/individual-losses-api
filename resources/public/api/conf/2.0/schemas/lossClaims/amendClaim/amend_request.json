@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Amend a Loss Claim",
+  "description": "Amend a Loss Claim",
+  "type": "object",
+  "properties": {
+    "typeOfClaim": {
+      "type": "string",
+      "description": "The type of claim to be applied. A self employment loss claim can only be of type carry-forward or carry-sideways",
+      "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways"]
+    }
+  },
+  "required": ["typeOfClaim"]
+}

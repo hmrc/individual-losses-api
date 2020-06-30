@@ -1,0 +1,37 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatLossId
+  - errors.formatLossAmount
+  - errors.ruleLossAmount
+  - errors.incorrectOrEmptyBody
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundLossId
+  - errors.ruleNoChangeLossAmount
+displayName: Amend a Brought Forward Loss Amount
+description: This endpoint allows users to update an existing brought forward loss amount which they have previously populated.
+(annotations.sandboxData): !include scenarios/broughtForwardLosses_amend.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/broughtForwardLosses/amendBFLoss/amend_request.json
+    example: !include examples/broughtForwardLosses/amendBFLoss/amend_request.json
+responses:
+  200:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
+    body:
+      application/json:
+        type: !include schemas/broughtForwardLosses/amendBFLoss/amend_response.json
+        examples:
+          example-1:
+            description: Self-employment Class 4 loss
+            value: !include examples/broughtForwardLosses/amendBFLoss/amend_seClass4_response.json
+          example-2:
+            description: UK FHL property loss
+            value: !include examples/broughtForwardLosses/amendBFLoss/amend_fhl_response.json
