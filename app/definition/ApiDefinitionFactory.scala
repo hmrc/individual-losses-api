@@ -46,9 +46,10 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         description = "An API for providing individual losses data",
         context = appConfig.apiGatewayContext,
         versions = Seq(
-          APIVersion(version = VERSION_1, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_1), endpointsEnabled = appConfig.endpointsEnabled)
-          //          ,
-          //          APIVersion(version = VERSION_2, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_2), endpointsEnabled = true)
+          APIVersion(
+            version = VERSION_1, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_1), endpointsEnabled = appConfig.endpointsEnabled),
+          APIVersion(
+            version = VERSION_2, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_2), endpointsEnabled = appConfig.endpointsEnabled)
         ),
         requiresTrust = None
       )
