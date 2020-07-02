@@ -23,14 +23,14 @@ import v2.models.utils.JsonErrorValidators
 class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
 
   val broughtForwardLossEmployment =
-    BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, selfEmploymentId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
+    BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossProperty =
-    BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, selfEmploymentId = None, taxYear = "2019-20", lossAmount = 255.50)
+    BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, businessId = None, taxYear = "2019-20", lossAmount = 255.50)
 
   val broughtForwardLossEmploymentJson: JsValue = Json.parse("""
       |{
-      |    "selfEmploymentId": "XKIS00000000988",
+      |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2019-20",
       |    "lossAmount": 256.78

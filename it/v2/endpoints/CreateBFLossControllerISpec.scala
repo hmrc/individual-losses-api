@@ -28,15 +28,15 @@ import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class CreateBFLossControllerISpec extends IntegrationBaseSpec {
 
-  def generateBFLoss(selfEmploymentId: Option[String], typeOfLoss: String, taxYear: String, lossAmount: BigDecimal): JsObject =
-    Json.obj("selfEmploymentId" -> selfEmploymentId,
+  def generateBFLoss(businessId: Option[String], typeOfLoss: String, taxYear: String, lossAmount: BigDecimal): JsObject =
+    Json.obj("businessId" -> businessId,
       "typeOfLoss" -> typeOfLoss,
       "taxYear" -> taxYear,
       "lossAmount" -> lossAmount)
 
   val lossId = "AAZZ1234567890a"
   val correlationId = "X-123"
-  val selfEmploymentId = "XKIS00000000988"
+  val businessId = "XKIS00000000988"
   val taxYear = "2019-20"
   val lossAmount = 256.78
   val typeOfLoss = "self-employment"
@@ -50,7 +50,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
     val requestJson: JsValue = Json.parse(
       """
         |{
-        |    "selfEmploymentId": "XKIS00000000988",
+        |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
         |    "taxYear": "2019-20",
         |    "lossAmount": 256.78
@@ -173,24 +173,24 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
 
     "return 400 (Bad Request)" when {
 
-      createBFLossValidationErrorTest("BADNINO", generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear, lossAmount), Status.BAD_REQUEST, NinoFormatError)
+      createBFLossValidationErrorTest("BADNINO", generateBFLoss(Some(businessId), typeOfLoss, taxYear, lossAmount), Status.BAD_REQUEST, NinoFormatError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(selfEmploymentId), typeOfLoss, "20111", lossAmount) , Status.BAD_REQUEST, TaxYearFormatError)
+        generateBFLoss(Some(businessId), typeOfLoss, "20111", lossAmount) , Status.BAD_REQUEST, TaxYearFormatError)
       createBFLossValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(selfEmploymentId), typeOfLoss, "2011-12", lossAmount), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+        generateBFLoss(Some(businessId), typeOfLoss, "2011-12", lossAmount), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(selfEmploymentId), typeOfLoss, "2019-25", lossAmount), Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
+        generateBFLoss(Some(businessId), typeOfLoss, "2019-25", lossAmount), Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(None, "self-employment-class", "2019-20", lossAmount), Status.BAD_REQUEST, TypeOfLossFormatError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some("sdfsf"), typeOfLoss, "2019-20", lossAmount), Status.BAD_REQUEST, SelfEmploymentIdFormatError)
+        generateBFLoss(Some("sdfsf"), typeOfLoss, "2019-20", lossAmount), Status.BAD_REQUEST, BusinessIdFormatError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some("selfEmploymentId"), "uk-property-non-fhl", "2019-20", lossAmount), Status.BAD_REQUEST, RuleSelfEmploymentId)
+        generateBFLoss(Some("selfEmploymentId"), "uk-property-non-fhl", "2019-20", lossAmount), Status.BAD_REQUEST, RuleBusinessId)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,-3234.99), Status.BAD_REQUEST, RuleInvalidLossAmount)
+        generateBFLoss(Some(businessId), typeOfLoss, taxYear,-3234.99), Status.BAD_REQUEST, RuleInvalidLossAmount)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(selfEmploymentId), typeOfLoss, taxYear,99999999999.999), Status.BAD_REQUEST, AmountFormatError)
+        generateBFLoss(Some(businessId), typeOfLoss, taxYear,99999999999.999), Status.BAD_REQUEST, AmountFormatError)
     }
 
 

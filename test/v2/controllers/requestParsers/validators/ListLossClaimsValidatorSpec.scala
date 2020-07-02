@@ -129,7 +129,7 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
           taxYear = Some(validTaxYear),
           typeOfLoss = Some(validLossType),
           selfEmploymentId = Some("badSEId"),
-          claimType = Some(claimType))) shouldBe List(SelfEmploymentIdFormatError)
+          claimType = Some(claimType))) shouldBe List(BusinessIdFormatError)
       }
     }
 
@@ -139,7 +139,7 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("uk-property-non-fhl"),
           selfEmploymentId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(RuleSelfEmploymentId)
+          claimType = Some(claimType))) shouldBe List(RuleBusinessId)
       }
     }
 

@@ -93,8 +93,8 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | RuleTaxYearNotSupportedError
            | RuleTaxYearRangeInvalid
            | TypeOfLossFormatError
-           | SelfEmploymentIdFormatError
-           | RuleSelfEmploymentId
+           | BusinessIdFormatError
+           | RuleBusinessId
            | RuleTypeOfClaimInvalid
            | TypeOfClaimFormatError =>
         BadRequest(Json.toJson(errorWrapper))

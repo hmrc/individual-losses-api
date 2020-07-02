@@ -185,8 +185,8 @@ class ListLossClaimsControllerSpec
       errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
       errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromParserTester(ClaimTypeFormatError, BAD_REQUEST)
-      errorsFromParserTester(RuleSelfEmploymentId, BAD_REQUEST)
-      errorsFromParserTester(SelfEmploymentIdFormatError, BAD_REQUEST)
+      errorsFromParserTester(RuleBusinessId, BAD_REQUEST)
+      errorsFromParserTester(BusinessIdFormatError, BAD_REQUEST)
     }
 
     "handle non-mdtp validation errors as per spec" when {
@@ -211,7 +211,7 @@ class ListLossClaimsControllerSpec
       errorsFromServiceTester(BadRequestError, BAD_REQUEST)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromServiceTester(SelfEmploymentIdFormatError, BAD_REQUEST)
+      errorsFromServiceTester(RuleBusinessId, BAD_REQUEST)
       errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromServiceTester(ClaimTypeFormatError, BAD_REQUEST)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)

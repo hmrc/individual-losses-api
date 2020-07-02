@@ -110,7 +110,7 @@ class ListBFLossesValidatorSpec extends UnitSpec {
         validator.validate(ListBFLossesRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some(validLossType),
-          selfEmploymentId = Some("badSEId"))) shouldBe List(SelfEmploymentIdFormatError)
+          selfEmploymentId = Some("badSEId"))) shouldBe List(BusinessIdFormatError)
       }
     }
 
@@ -119,13 +119,13 @@ class ListBFLossesValidatorSpec extends UnitSpec {
         validator.validate(ListBFLossesRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("uk-property-non-fhl"),
-          selfEmploymentId = Some(validSEId))) shouldBe List(RuleSelfEmploymentId)
+          selfEmploymentId = Some(validSEId))) shouldBe List(RuleBusinessId)
       }
       "a self employment id is supplied for a loss type of fhl property" in {
         validator.validate(ListBFLossesRawData(nino = validNino,
           taxYear = Some(validTaxYear),
           typeOfLoss = Some("uk-property-fhl"),
-          selfEmploymentId = Some(validSEId))) shouldBe List(RuleSelfEmploymentId)
+          selfEmploymentId = Some(validSEId))) shouldBe List(RuleBusinessId)
       }
     }
 
