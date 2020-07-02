@@ -1,0 +1,387 @@
+#%RAML 1.0 Library
+
+uses:
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+
+
+traits:
+  notFound:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The matching resource is not found.
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundIncomeSource:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that the given income source could not be found
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundNino:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that no data can be found for the given NINO
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundLossId:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that no data can be found for the given loss ID
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  notFoundClaimId:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The remote endpoint has indicated that no data can be found for the given claim ID
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  clientOrAgentNotAuthorised:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              clientOrAgentNotAuthorised:
+                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf'
+                value:
+                  code: CLIENT_OR_AGENT_NOT_AUTHORISED
+  formatNino:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatNino:
+                description: The format of the supplied NINO field is not valid
+                value:
+                  code: FORMAT_NINO
+  formatTaxYear:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatTaxYear:
+                description: The format of the supplied tax year field is not valid
+                value:
+                  code: FORMAT_TAX_YEAR
+  incorrectOrEmptyBody:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              incorrectOrEmptyBody:
+                description: An empty or non-matching body was submitted
+                value:
+                  code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+  ruleTaxYearNotSupported:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              rule_TaxYearNotSupported:
+                description: The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
+                value:
+                  code: RULE_TAX_YEAR_NOT_SUPPORTED
+  ruleTaxYearRangeInvalid:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTaxYearRangeInvalid:
+                description: Tax year range invalid. A tax year range of one year is required
+                value:
+                  code: RULE_TAX_YEAR_RANGE_INVALID
+  ruleTaxYearNotEnded:
+      responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                ruleTaxYearNotEnded:
+                  description: A brought forward loss is entered before the end of the tax year in which it was generated.
+                  value:
+                    code: RULE_TAX_YEAR_NOT_ENDED
+  ruleNoChangeTypeOfClaim:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNoChangeTypeOfClaim:
+                description: The remote endpoint has indicated that the requested type of claim is already active.
+                value:
+                  code: RULE_ALREADY_EXISTS
+  formatLossType:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatLossType:
+                description: The format of the loss type is not valid.
+                value:
+                  code: FORMAT_TYPE_OF_LOSS
+  formatSelfEmploymentId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatSelfEmploymentId:
+                description: The format of the self-employment ID is not valid.
+                value:
+                  code: FORMAT_SELF_EMPLOYMENT_ID
+  ruleSelfEmploymentId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleSelfEmploymentId:
+                description: A self-employment ID can only be supplied for a self-employment business type
+                value:
+                  code: RULE_SELF_EMPLOYMENT_ID
+  formatLossId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatLossId:
+                description: The format of the loss ID is not valid.
+                value:
+                  code: FORMAT_LOSS_ID
+  formatLossAmount:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatLossAmount:
+                description: The format of the loss amount is not valid.
+                value:
+                  code: FORMAT_LOSS_AMOUNT
+  ruleLossAmount:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleLossAmount:
+                description: Amounts should be a positive number less than 99999999999.99 with up to 2 decimal places.
+                value:
+                  code: RULE_LOSS_AMOUNT
+  formatTypeOfClaim:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatTypeOfClaim:
+                description: The format of the type of claim is not valid.
+                value:
+                  code: FORMAT_TYPE_OF_CLAIM
+  ruleTypeOfClaim400:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTypeOfClaim:
+                description: The type of claim supplied is not valid.
+                value:
+                  code: RULE_TYPE_OF_CLAIM_INVALID
+  formatClaimTypeSandboxOnly:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimType:
+                description: '[This error is only available in Sandbox] The format of the supplied claim type is not valid'
+                value:
+                  code: FORMAT_CLAIM_TYPE
+  formatClaimType:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimType:
+                description: 'The format of the supplied claim type is not valid'
+                value:
+                  code: FORMAT_CLAIM_TYPE
+  ruleTypeOfClaim403:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTypeOfClaim:
+                description: The type of claim supplied is not valid.
+                value:
+                  code: RULE_TYPE_OF_CLAIM_INVALID
+  rulePeriodNotEnded:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              rulePeriodNotEnded:
+                description: The loss claim has been made too soon.
+                value:
+                  code: RULE_PERIOD_NOT_ENDED
+  formatClaimId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClaimId:
+                description: The format of the supplied claim ID is not valid.
+                value:
+                  code: FORMAT_CLAIM_ID
+  ruleDuplicateSubmission:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDuplicateSubmission:
+                description: A brought forward loss already exists for this income source.
+                value:
+                  code: RULE_DUPLICATE_SUBMISSION
+  ruleDuplicateClaimSubmission:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDuplicateSubmission:
+                description: The type of claim is the same as a previous submission.
+                value:
+                  code: RULE_DUPLICATE_SUBMISSION
+  ruleDeleteAfterCrystallisation:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDeleteAfterCrystallisation:
+                description: An existing brought forward loss cannot be deleted after it has been crystallised.  The requested resource is locked.
+                value:
+                  code: RULE_DELETE_AFTER_CRYSTALLISATION
+  ruleNoChangeLossAmount:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNoChangeLossAmount:
+                description: The loss amount supplied is the same as the existing stored loss amount.
+                value:
+                  code: RULE_NO_CHANGE
+  ruleNoAccountingPeriod:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNoAccountingPeriod:
+                description: There is no accounting period for the year of the claim.
+                value:
+                  code: RULE_NO_ACCOUNTING_PERIOD
+  formatSequence:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatSequence:
+                description: The format of the supplied sequence number is not valid
+                value:
+                  code: FORMAT_SEQUENCE
+  RuleInvalidSequenceStart:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              RuleInvalidSequenceStart:
+                description: The sequence does not begin with 1
+                value:
+                  code: RULE_INVALID_SEQUENCE_START
+  RuleSequenceOrderBroken:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              RuleSequenceOrderBroken:
+                description: The sequence is not continuous
+                value:
+                  code: RULE_SEQUENCE_ORDER_BROKEN
+  RuleLossClaimsMissing:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              RuleLossClaimsMissing:
+                description: Not all of the loss claims of this type for this tax year were included in the submission
+                value:
+                  code: RULE_LOSS_CLAIMS_MISSING

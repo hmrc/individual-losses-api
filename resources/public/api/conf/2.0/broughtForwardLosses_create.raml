@@ -1,0 +1,44 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.incorrectOrEmptyBody
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeInvalid
+  - errors.ruleTaxYearNotEnded
+  - errors.formatLossType
+  - errors.formatSelfEmploymentId
+  - errors.ruleSelfEmploymentId
+  - errors.formatLossAmount
+  - errors.ruleLossAmount
+  - errors.ruleDuplicateSubmission
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundIncomeSource
+displayName: Create a Brought Forward Loss
+description: This endpoint allows users to create a new brought forward loss which can be submitted against Self-employment, Self-employment class 4, UK FHL property and UK other (Non-FHL) property for the tax year prior to joining MTD.
+(annotations.sandboxData): !include scenarios/broughtForwardLosses_create.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    description: The brought forward loss information brought into MTD
+    type: !include schemas/broughtForwardLosses/createBFLoss/create_request.json
+    examples:
+      example-1:
+        description: Self-employment Class 4 loss
+        value: !include examples/broughtForwardLosses/createBFLoss/create_seClass4_request.json
+      example-2:
+        description: UK FHL Property loss
+        value: !include examples/broughtForwardLosses/createBFLoss/create_fhl_request.json
+responses:
+  201:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
+    body:
+      application/json:
+        type: !include schemas/broughtForwardLosses/createBFLoss/create_response.json
+        example: !include examples/broughtForwardLosses/createBFLoss/create_response.json

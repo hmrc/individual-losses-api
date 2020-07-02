@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "List of Loss Claims",
+  "description": "List of Loss Claims",
+  "type": "object",
+  "properties": {
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Array of loss claims",
+        "properties": {
+          "id": {
+            "description": "The unique identifier of the loss claim",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{15}$",
+            "example": "A2Za0911235813z"
+          },
+          "sequence":  {
+            "description": "[This field is only available in Sandbox]\nA number used to order a loss, the value must be between 1 and 99",
+            "type": "integer",
+            "example" : "12"
+          },
+          "typeOfClaim": {
+            "description": "The type of claim to be applied.",
+            "type": "string",
+            "enum": [
+              "carry-forward",
+              "carry-sideways",
+              "carry-sideways-fhl",
+              "carry-forward-to-carry-sideways-general-income"
+            ]
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "A list of endpoint links that indicate possible actions related to the current resource",
+              "properties": {
+                "href": {
+                  "description": "The relative url of the endpoint",
+                  "type": "string",
+                  "example": "/individuals/losses/{nino}/loss-claims/{claimId}"
+                },
+                "rel": {
+                  "description": "A label for the endpoint, which describes how it is related to the current resource\nThe rel will be `self` where the action is retrieval of the same resource",
+                  "type": "string",
+                  "enum": [
+                    "self"
+                  ]
+                },
+                "method": {
+                  "description": "The HTTP method type for the endpoint",
+                  "type": "string",
+                  "enum": [
+                    "GET"
+                  ]
+                }
+              },
+              "required": [
+                "href",
+                "rel",
+                "method"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "typeOfClaim"
+        ]
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A list of endpoint links that indicate possible actions related to the current resource",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint",
+            "type": "string",
+            "example": "/individuals/losses/{nino}/loss-claims"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource\nThe rel will be self where the action is retrieval of the same resource",
+            "type": "string",
+            "enum": [
+              "self",
+              "create-loss-claim",
+              "amend-loss-claim-order"
+            ]
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint",
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT"
+            ]
+          }
+        },
+        "required": [
+          "href",
+          "rel",
+          "method"
+        ]
+      }
+    }
+  },
+  "required": [
+    "claims"
+  ]
+}

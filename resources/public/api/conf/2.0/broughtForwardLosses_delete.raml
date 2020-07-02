@@ -1,0 +1,20 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatLossId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundLossId
+  - errors.ruleDeleteAfterCrystallisation
+displayName: Delete a Brought Forward Loss
+description: This endpoint allows users to delete an existing brought forward loss. The user should be aware that where a loss has been used as part of a successful crystallisation activity, deletion will be blocked and an error code will be returned. In such a case, the user can amend the loss amount to zero. If the user wants to delete any details, they need to create a new account for that business.
+(annotations.sandboxData): !include scenarios/broughtForwardLosses_delete.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+responses:
+  204:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

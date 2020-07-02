@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "List of Brought Forward Losses",
+  "description": "List of Brought Forward Losses",
+  "type": "object",
+  "properties": {
+    "losses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Array of losses",
+        "properties": {
+          "id": {
+            "description": "The unique identifier of the loss",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{15}$",
+            "example": "000000123456789"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "A list of endpoint links that indicate possible actions related to the current resource",
+              "properties": {
+                "href": {
+                  "description": "The relative url of the endpoint",
+                  "type": "string",
+                  "example": "/individuals/losses/{nino}/brought-forward-losses/{lossId}"
+                },
+                "rel": {
+                  "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+                  "type": "string",
+                  "enum": [
+                    "self"
+                  ]
+                },
+                "method": {
+                  "description": "The HTTP method type for the endpoint",
+                  "type": "string",
+                  "enum": [
+                    "GET"
+                  ]
+                }
+              },
+              "required": [
+                "href",
+                "rel",
+                "method"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A list of endpoint links that indicate possible actions related to the current resource",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint",
+            "type": "string",
+            "example": "/individuals/losses/{nino}/brought-forward-losses"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+            "type": "string",
+            "enum": [
+              "self",
+              "create-brought-forward-loss"
+            ]
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint",
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          }
+        },
+        "required": [
+          "href",
+          "rel",
+          "method"
+        ]
+      }
+    }
+  },
+  "required": [
+    "losses"
+  ]
+}
