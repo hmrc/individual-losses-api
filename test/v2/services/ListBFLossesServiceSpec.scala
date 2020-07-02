@@ -79,7 +79,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAXYEAR" -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID" -> SelfEmploymentIdFormatError,
+      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
       "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
       "NOT_FOUND" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,

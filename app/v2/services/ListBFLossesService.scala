@@ -37,7 +37,7 @@ class ListBFLossesService @Inject()(connector: BFLossConnector) extends DesServi
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_TAXYEAR" -> TaxYearFormatError,
-    "INVALID_INCOMESOURCEID" -> SelfEmploymentIdFormatError,
+    "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
     "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
     "NOT_FOUND" -> NotFoundError,
     "SERVER_ERROR" -> DownstreamError,

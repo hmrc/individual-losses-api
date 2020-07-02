@@ -59,7 +59,7 @@ class CreateBFLossControllerSpec
   val requestBody: JsValue = Json.parse(
     """
       |{
-      |    "selfEmploymentId": "XKIS00000000988",
+      |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2019-20",
       |    "lossAmount": 256.78
@@ -156,8 +156,8 @@ class CreateBFLossControllerSpec
         RuleTaxYearNotSupportedError,
         RuleTaxYearRangeInvalid,
         TypeOfLossFormatError,
-        SelfEmploymentIdFormatError,
-        RuleSelfEmploymentId,
+        BusinessIdFormatError,
+        RuleBusinessId,
         AmountFormatError,
         RuleInvalidLossAmount,
         RuleTaxYearNotEndedError

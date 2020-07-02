@@ -155,8 +155,8 @@ class CreateLossClaimControllerSpec
       RuleTaxYearNotSupportedError,
       RuleTaxYearRangeInvalid,
       TypeOfLossFormatError,
-      SelfEmploymentIdFormatError,
-      RuleSelfEmploymentId,
+      BusinessIdFormatError,
+      RuleBusinessId,
       RuleTypeOfClaimInvalid,
       TypeOfClaimFormatError
     )

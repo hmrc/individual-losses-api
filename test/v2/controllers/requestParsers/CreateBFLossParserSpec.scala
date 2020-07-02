@@ -32,7 +32,7 @@ class CreateBFLossParserSpec extends UnitSpec {
   private val requestBodyJson = Json.parse(
     s"""{
        |  "typeOfLoss" : "self-employment",
-       |  "selfEmploymentId" : "XAIS01234567890",
+       |  "businessId" : "XAIS01234567890",
        |  "taxYear" : "$taxYear",
        |  "lossAmount" : 1000
        |}""".stripMargin)

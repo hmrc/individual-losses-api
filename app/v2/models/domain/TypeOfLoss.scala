@@ -38,6 +38,16 @@ object TypeOfLoss {
     override def isProperty: Boolean                          = true
   }
 
+  case object `foreign-property-fhl-eea` extends TypeOfLoss {
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`03`)
+    override def isProperty: Boolean                          = true
+  }
+
+  case object `foreign-property` extends TypeOfLoss {
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`15`)
+    override def isProperty: Boolean                          = true
+  }
+
   case object `self-employment` extends TypeOfLoss {
     override def toLossType: Option[LossType] = Some(LossType.INCOME)
     override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`01`)

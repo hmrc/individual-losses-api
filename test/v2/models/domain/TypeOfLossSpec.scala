@@ -27,7 +27,10 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
     ("self-employment", `self-employment`),
     ("self-employment-class4", `self-employment-class4`),
     ("uk-property-non-fhl", `uk-property-non-fhl`),
-    ("uk-property-fhl", `uk-property-fhl`)
+    ("uk-property-fhl", `uk-property-fhl`),
+    ("foreign-property-fhl-eea", `foreign-property-fhl-eea`),
+    ("foreign-property", `foreign-property`)
+
   )
 
   "TypeOfLoss" when {
@@ -37,6 +40,8 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
         `self-employment-class4`.toLossType shouldBe Some(LossType.CLASS4)
         `uk-property-non-fhl`.toLossType shouldBe None
         `uk-property-fhl`.toLossType shouldBe None
+        `foreign-property-fhl-eea`.toLossType shouldBe None
+        `foreign-property`.toLossType shouldBe None
       }
     }
 
@@ -46,6 +51,8 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
         `uk-property-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`04`)
         `self-employment`.toIncomeSourceType shouldBe Some(IncomeSourceType.`01`)
         `self-employment-class4`.toIncomeSourceType shouldBe None
+        `foreign-property-fhl-eea`.toIncomeSourceType shouldBe Some(IncomeSourceType.`03`)
+        `foreign-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`15`)
       }
     }
   }

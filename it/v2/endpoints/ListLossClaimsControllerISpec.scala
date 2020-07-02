@@ -281,7 +281,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXYEAR", Status.BAD_REQUEST, TaxYearFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, SelfEmploymentIdFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
@@ -323,8 +323,8 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", Some("2018-19"), None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       validationErrorTest("AA123456A", Some("2019-21"), None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
       validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError)
-      validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), None, Status.BAD_REQUEST, SelfEmploymentIdFormatError)
-      validationErrorTest("AA123456A", None, Some("uk-property-non-fhl"), Some("XA01234556790"), None, Status.BAD_REQUEST, RuleSelfEmploymentId)
+      validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), None, Status.BAD_REQUEST, BusinessIdFormatError)
+      validationErrorTest("AA123456A", None, Some("uk-property-non-fhl"), Some("XA01234556790"), None, Status.BAD_REQUEST, RuleBusinessId)
       validationErrorTest("AA123456A", None, None, None, Some("bad-claim-type"), Status.BAD_REQUEST, ClaimTypeFormatError)
     }
 

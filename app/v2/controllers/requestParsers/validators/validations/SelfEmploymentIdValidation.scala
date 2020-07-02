@@ -17,25 +17,25 @@
 package v2.controllers.requestParsers.validators.validations
 
 import v2.models.domain.TypeOfLoss
-import v2.models.errors.{MtdError, RuleSelfEmploymentId, SelfEmploymentIdFormatError}
+import v2.models.errors.{BusinessIdFormatError, MtdError, RuleBusinessId}
 
 object SelfEmploymentIdValidation {
 
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
-  def validate(typeOfLoss: TypeOfLoss, selfEmploymentId: Option[String], idOptional: Boolean = false): List[MtdError] = {
-    if (typeOfLoss.isProperty) propertyValidation(selfEmploymentId) else selfEmployedValidation(selfEmploymentId, idOptional)
+  def validate(typeOfLoss: TypeOfLoss, businessId: Option[String], idOptional: Boolean = false): List[MtdError] = {
+    if (typeOfLoss.isProperty) propertyValidation(businessId) else selfEmployedValidation(businessId, idOptional)
   }
 
-  private def selfEmployedValidation(selfEmploymentId: Option[String], idOptional: Boolean): List[MtdError] = {
-    selfEmploymentId match {
+  private def selfEmployedValidation(businessId: Option[String], idOptional: Boolean): List[MtdError] = {
+    businessId match {
       case None if idOptional => Nil
-      case None               => List(RuleSelfEmploymentId)
-      case Some(id)           => if (id.matches(regex)) NoValidationErrors else List(SelfEmploymentIdFormatError)
+      case None               => List(RuleBusinessId)
+      case Some(id)           => if (id.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
     }
   }
 
-  private def propertyValidation(selfEmploymentId: Option[String]): List[MtdError] = {
-    if (selfEmploymentId.isEmpty) NoValidationErrors else List(RuleSelfEmploymentId)
+  private def propertyValidation(businessId: Option[String]): List[MtdError] = {
+    if (businessId.isEmpty) NoValidationErrors else List(RuleBusinessId)
   }
 }

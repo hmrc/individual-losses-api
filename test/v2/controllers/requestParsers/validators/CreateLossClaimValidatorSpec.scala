@@ -141,7 +141,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
     "return SelfEmploymentIdValidation error" when {
       "an invalid id is submitted" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(selfEmploymentId = Some("invalid"))))) shouldBe
-          List(SelfEmploymentIdFormatError)
+          List(BusinessIdFormatError)
       }
     }
 
@@ -150,7 +150,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(validNino,
             AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", selfEmploymentId = None)))) shouldBe
-          List(RuleSelfEmploymentId)
+          List(RuleBusinessId)
       }
     }
 
@@ -170,7 +170,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
           CreateLossClaimRawData(
             validNino,
             AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", selfEmploymentId = None, taxYear = "2010-11")))) shouldBe
-          List(RuleTaxYearNotSupportedError, RuleSelfEmploymentId)
+          List(RuleTaxYearNotSupportedError, RuleBusinessId)
       }
     }
 

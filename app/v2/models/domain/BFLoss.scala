@@ -20,7 +20,7 @@ import play.api.libs.json._
 import v2.models.requestData.DesTaxYear
 
 case class BFLoss(typeOfLoss: TypeOfLoss,
-                  selfEmploymentId: Option[String],
+                  businessId: Option[String],
                   taxYear: String,
                   lossAmount: BigDecimal)
 
@@ -35,7 +35,7 @@ object BFLoss {
     )
   } else {
     Json.obj(
-      "incomeSourceId" -> loss.selfEmploymentId,
+      "incomeSourceId" -> loss.businessId,
       "lossType" -> loss.typeOfLoss.toLossType,
       "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
       "broughtForwardLossAmount" -> loss.lossAmount
