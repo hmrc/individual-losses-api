@@ -27,27 +27,31 @@ case class BFLoss(typeOfLoss: TypeOfLoss,
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-  implicit val writes: Writes[BFLoss] = (loss: BFLoss) => if (loss.typeOfLoss.isUkProperty) {
-    Json.obj(
+
+  implicit val writes: Writes[BFLoss] = (loss: BFLoss) => {
+     loss.typeOfLoss.isUkProperty match {
+    case true => Json.obj(
       "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
       "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
       "broughtForwardLossAmount" -> loss.lossAmount
     )
-  }
-  else if (loss.typeOfLoss.isForeignProperty){
-    Json.obj(
-      "incomeSourceId" -> loss.businessId,
-      "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
-      "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
-      "broughtForwardLossAmount" -> loss.lossAmount
-    )
-  }
-  else{
-    Json.obj(
-      "incomeSourceId" -> loss.businessId,
-      "lossType" -> loss.typeOfLoss.toLossType,
-      "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
-      "broughtForwardLossAmount" -> loss.lossAmount
-    )
+    case _ => loss.typeOfLoss.isForeignProperty match {
+      case true => Json.obj(
+        "incomeSourceId" -> loss.businessId,
+        "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
+        "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+        "broughtForwardLossAmount" -> loss.lossAmount
+      )
+      case _ => Json.obj(
+        "incomeSourceId" -> loss.businessId,
+        "lossType" -> loss.typeOfLoss.toLossType,
+        "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+        "broughtForwardLossAmount" -> loss.lossAmount
+      )
+    }
+   }
   }
 }
+
+
+
