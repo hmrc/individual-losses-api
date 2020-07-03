@@ -25,6 +25,9 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
   val broughtForwardLossEmployment =
     BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
 
+  val broughtForwardLossForeignProperty =
+    BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
+
   val broughtForwardLossProperty =
     BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, businessId = None, taxYear = "2019-20", lossAmount = 255.50)
 
@@ -41,6 +44,24 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       |{
       |	  "incomeSourceId": "XKIS00000000988",
       |	  "lossType": "INCOME",
+      |	  "taxYear": "2020",
+      |	  "broughtForwardLossAmount": 256.78
+      |}
+    """.stripMargin)
+
+  val broughtForwardLossForeignPropertyJson: JsValue = Json.parse("""
+      |{
+      |  "businessId": "XKIS00000000988",
+      |  "typeOfLoss": "foreign-property",
+      |  "taxYear": "2019-20",
+      |  "lossAmount": 256.78
+      |}
+    """.stripMargin)
+
+  val broughtForwardLossForeignPropertyDesJson: JsValue = Json.parse("""
+      |{
+      |	  "incomeSourceId": "XKIS00000000988",
+      |	  "incomeSourceType": "15",
       |	  "taxYear": "2020",
       |	  "broughtForwardLossAmount": 256.78
       |}
@@ -94,6 +115,11 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
     "passed a valid BroughtForwardLoss Property model" should {
       "return a valid BroughtForwardLoss Property JSON" in {
         BFLoss.writes.writes(broughtForwardLossProperty) shouldBe broughtForwardLossPropertyDesJson
+      }
+    }
+    "passed a valid BroughtForwardLoss Foreign Property model" should {
+      "return a valid BroughtForwardLoss Foreign Property JSON" in {
+        BFLoss.writes.writes(broughtForwardLossForeignProperty) shouldBe broughtForwardLossForeignPropertyDesJson
       }
     }
   }

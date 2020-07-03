@@ -33,7 +33,16 @@ object BFLoss {
       "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
       "broughtForwardLossAmount" -> loss.lossAmount
     )
-  } else {
+  }
+  else if (loss.typeOfLoss.isForeignProperty){
+    Json.obj(
+      "incomeSourceId" -> loss.businessId,
+      "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
+      "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+      "broughtForwardLossAmount" -> loss.lossAmount
+    )
+  }
+  else{
     Json.obj(
       "incomeSourceId" -> loss.businessId,
       "lossType" -> loss.typeOfLoss.toLossType,
