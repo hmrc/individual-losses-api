@@ -18,11 +18,15 @@ package v2.models.des
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v2.models.des.LossType.{CLASS4, INCOME}
+import v2.models.des.LossType.{CLASS4, INCOME, `02`, `03`, `04`, `15`}
 
 class LossTypeSpec  extends UnitSpec with EnumJsonSpecSupport {
 
   testRoundTrip[LossType](
     ("INCOME", INCOME),
-    ("CLASS4", CLASS4))
+    ("CLASS4", CLASS4),
+    ("15",`15`),
+    ("03",`03`),
+    ("04",`04`),
+    ("02",`02`))
 }

@@ -52,7 +52,7 @@ class BFLossResponseSpec extends UnitSpec {
 
   def desToModel: TypeOfLoss => BFLossResponse =
     typeOfLoss =>
-      BFLossResponse(selfEmploymentId = Some("000000000000001"),
+      BFLossResponse(businessId = Some("000000000000001"),
                      typeOfLoss = typeOfLoss,
                      lossAmount = 99999999999.99,
                      taxYear = "2019-20",
@@ -60,7 +60,7 @@ class BFLossResponseSpec extends UnitSpec {
 
   val bfLossResponse =
     BFLossResponse(
-      selfEmploymentId = Some("000000000000001"),
+      businessId = Some("000000000000001"),
       typeOfLoss = TypeOfLoss.`self-employment`,
       lossAmount = 99999999999.99,
       taxYear = "2019-20",
@@ -70,10 +70,12 @@ class BFLossResponseSpec extends UnitSpec {
   "Json Reads" should {
     "convert property JSON from DES into a valid model for property type 02" in {
       desPropertyJson("02").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
+      desEmploymentJson("02").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
     }
 
     "convert property JSON from DES into a valid model for property type 04" in {
       desPropertyJson("04").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-fhl`)
+      desEmploymentJson("04").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-fhl`)
     }
 
     "convert employment JSON from DES into a valid model for property type INCOME" in {
@@ -83,10 +85,16 @@ class BFLossResponseSpec extends UnitSpec {
     "convert employment JSON from DES into a valid model for property type CLASS4" in {
       desEmploymentJson("CLASS4").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`self-employment-class4`)
     }
+    "convert employment JSON from DES into a valid model for property type 03" in {
+      desEmploymentJson("03").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`foreign-property-fhl-eea`)
+    }
+    "convert employment JSON from DES into a valid model for property type 15" in {
+      desEmploymentJson("15").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`foreign-property`)
+    }
   }
   "Json Writes" should {
     val mtdJson = Json.parse("""{
-        |  "selfEmploymentId": "000000000000001",
+        |  "businessId": "000000000000001",
         |  "typeOfLoss": "self-employment",
         |  "lossAmount": 99999999999.99,
         |  "taxYear": "2019-20",
