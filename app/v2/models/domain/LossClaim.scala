@@ -28,7 +28,7 @@ object LossClaim {
 
   implicit val writes: Writes[LossClaim] = (claim: LossClaim) => {
 
-    if (claim.typeOfLoss.isProperty) {
+    if (claim.typeOfLoss.isUkProperty) {
       Json.obj(
         "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
         "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
