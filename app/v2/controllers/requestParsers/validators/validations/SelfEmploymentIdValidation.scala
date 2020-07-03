@@ -24,7 +24,7 @@ object SelfEmploymentIdValidation {
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
   def validate(typeOfLoss: TypeOfLoss, businessId: Option[String], idOptional: Boolean = false): List[MtdError] = {
-    if (typeOfLoss.isProperty) propertyValidation(businessId) else selfEmployedValidation(businessId, idOptional)
+    if (typeOfLoss.isUkProperty) propertyValidation(businessId) else selfEmployedValidation(businessId, idOptional)
   }
 
   private def selfEmployedValidation(businessId: Option[String], idOptional: Boolean): List[MtdError] = {

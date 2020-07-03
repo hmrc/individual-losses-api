@@ -27,7 +27,7 @@ case class BFLoss(typeOfLoss: TypeOfLoss,
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-  implicit val writes: Writes[BFLoss] = (loss: BFLoss) => if (loss.typeOfLoss.isProperty) {
+  implicit val writes: Writes[BFLoss] = (loss: BFLoss) => if (loss.typeOfLoss.isUkProperty) {
     Json.obj(
       "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
       "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
