@@ -31,21 +31,6 @@ object LossType {
   case object CLASS4 extends LossType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment-class4`
   }
-  case object `15` extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`foreign-property`
-  }
-
-  case object `03` extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`foreign-property-fhl-eea`
-  }
-
-  case object `04` extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property-fhl`
-  }
-
-  case object `02` extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property-non-fhl`
-  }
 
   implicit val format: Format[LossType] = Enums.format[LossType]
 }

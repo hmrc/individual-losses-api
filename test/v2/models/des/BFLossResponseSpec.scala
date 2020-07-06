@@ -70,12 +70,10 @@ class BFLossResponseSpec extends UnitSpec {
   "Json Reads" should {
     "convert property JSON from DES into a valid model for property type 02" in {
       desPropertyJson("02").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
-      desEmploymentJson("02").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
     }
 
     "convert property JSON from DES into a valid model for property type 04" in {
       desPropertyJson("04").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-fhl`)
-      desEmploymentJson("04").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`uk-property-fhl`)
     }
 
     "convert employment JSON from DES into a valid model for property type INCOME" in {
@@ -86,10 +84,10 @@ class BFLossResponseSpec extends UnitSpec {
       desEmploymentJson("CLASS4").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`self-employment-class4`)
     }
     "convert employment JSON from DES into a valid model for property type 03" in {
-      desEmploymentJson("03").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`foreign-property-fhl-eea`)
+      desPropertyJson("03").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`foreign-property-fhl-eea`)
     }
     "convert employment JSON from DES into a valid model for property type 15" in {
-      desEmploymentJson("15").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`foreign-property`)
+      desPropertyJson("15").as[BFLossResponse] shouldBe desToModel(TypeOfLoss.`foreign-property`)
     }
   }
   "Json Writes" should {
