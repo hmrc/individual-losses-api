@@ -21,7 +21,8 @@ import utils.enums.Enums
 import v2.models.des.{IncomeSourceType, LossType}
 
 sealed trait TypeOfLoss {
-  def isProperty: Boolean                          = false
+  def isUkProperty: Boolean                        = false
+  def isForeignProperty: Boolean                   = false
   def toLossType: Option[LossType]                 = None
   def toIncomeSourceType: Option[IncomeSourceType] = None
 }
@@ -30,22 +31,22 @@ object TypeOfLoss {
 
   case object `uk-property-fhl` extends TypeOfLoss {
     override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`04`)
-    override def isProperty: Boolean                          = true
+    override def isUkProperty: Boolean                          = true
   }
 
   case object `uk-property-non-fhl` extends TypeOfLoss {
     override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
-    override def isProperty: Boolean                          = true
+    override def isUkProperty: Boolean                          = true
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfLoss {
     override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`03`)
-    override def isProperty: Boolean                          = true
+    override def isForeignProperty: Boolean                          = true
   }
 
   case object `foreign-property` extends TypeOfLoss {
     override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`15`)
-    override def isProperty: Boolean                          = true
+    override def isForeignProperty: Boolean                          = true
   }
 
   case object `self-employment` extends TypeOfLoss {
