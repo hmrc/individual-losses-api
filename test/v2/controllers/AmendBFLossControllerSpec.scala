@@ -62,10 +62,10 @@ class AmendBFLossControllerSpec
   val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
-  businessId
+
   val responseBody: JsValue = Json.parse(s"""
       |{
-      |    "": "XKIS00000000988",
+      |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2019-20",
       |    "lossAmount": $lossAmount,
