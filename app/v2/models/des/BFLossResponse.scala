@@ -24,7 +24,7 @@ import v2.models.domain.TypeOfLoss
 import v2.models.hateoas.{HateoasData, Link}
 import v2.models.requestData.DesTaxYear
 
-case class BFLossResponse(selfEmploymentId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)
+case class BFLossResponse(businessId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)
 
 object BFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[BFLossResponse] = Json.writes[BFLossResponse]

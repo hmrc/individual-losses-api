@@ -52,7 +52,7 @@ class RetrieveBFLossControllerSpec
 
   val response = BFLossResponse(taxYear = "2017-18",
                                 typeOfLoss = TypeOfLoss.`uk-property-fhl`,
-                                selfEmploymentId = None,
+                                businessId = None,
                                 lossAmount = 100.00,
                                 lastModified = "2018-07-13T12:13:48.763Z")
 
