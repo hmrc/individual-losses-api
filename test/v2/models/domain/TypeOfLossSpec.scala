@@ -38,6 +38,10 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
       "work" in {
         `self-employment`.toLossType shouldBe Some(LossType.INCOME)
         `self-employment-class4`.toLossType shouldBe Some(LossType.CLASS4)
+        `uk-property-non-fhl`.toLossType shouldBe None
+        `uk-property-fhl`.toLossType shouldBe None
+        `foreign-property-fhl-eea`.toLossType shouldBe None
+        `foreign-property`.toLossType shouldBe None
       }
     }
 
