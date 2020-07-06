@@ -4,9 +4,9 @@ is:
   - errors.formatNino
   - errors.formatLossId
   - errors.clientOrAgentNotAuthorised
-  - errors.notFoundLossId
+  - errors.notFound
 displayName: Retrieve a Brought Forward Loss
-description: This endpoint allows a user to retrieve a single brought forward loss.
+description: This endpoint allows the developer to retrieve an existing brought forward loss amount. A National Insurance number and Loss ID are required.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_get.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
@@ -21,6 +21,9 @@ responses:
             value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_seClass4_response.json
           example-2:
             description: UK FHL property loss
+            value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_fhl_response.json
+          example-3:
+            description: Foreign property Fhl Eea loss
             value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_fhl_response.json
     headers:
       X-CorrelationId:
