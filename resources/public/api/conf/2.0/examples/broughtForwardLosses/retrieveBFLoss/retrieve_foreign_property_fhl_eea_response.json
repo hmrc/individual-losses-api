@@ -1,22 +1,22 @@
 {
   "taxYear": "2019-20",
   "typeOfLoss": "foreign-property-fhl-eea",
-  "businessId": "1234568790ABCDE",
+  "businessId": "XAIS12345678910",
   "lossAmount": 100.00,
   "lastModified": "2020-07-13T12:13:48.763Z",
   "links": [
     {
-      "href": "/individuals/losses/TC663795B/brought-forward-losses/1234568790ABCDE",
+      "href": "/individuals/losses/TC663795B/brought-forward-losses/XAIS12345678910",
       "rel": "self",
       "method": "GET"
     },
     {
-      "href": "/individuals/losses/TC663795B/brought-forward-losses/1234568790ABCDE",
+      "href": "/individuals/losses/TC663795B/brought-forward-losses/XAIS12345678910",
       "rel": "delete-brought-forward-loss",
       "method": "DELETE"
     },
     {
-      "href": "/individuals/losses/TC663795B/brought-forward-losses/1234568790ABCDE/change-loss-amount",
+      "href": "/individuals/losses/TC663795B/brought-forward-losses/XAIS12345678910/change-loss-amount",
       "rel": "amend-brought-forward-loss",
       "method": "POST"
     }
