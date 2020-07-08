@@ -2,7 +2,7 @@ This API allows software packages to show and provide a taxpayers’ financial d
 For Brought forward losses a developer can:
 
 * provide a list of brought forward losses
-* create a new brought forward loss to submit against Self-employment, Self-employment Class 4, UK furnished holiday letting (FHL) property and UK other (Non-FHL) property
+* create a new brought forward loss to submit against Self-employment, Self-employment Class 4, UK Furnished Holiday Letting (FHL) property and UK other (Non-FHL) property
 * show a single brought forward loss
 * delete an existing brought forward loss
 * update an existing brought forward loss
