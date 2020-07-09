@@ -94,7 +94,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "amend BFLoss" when {
 
     val amendBFLossResponse =
-      BFLossResponse(selfEmploymentId = Some("XKIS00000000988"),
+      BFLossResponse(businessId = Some("XKIS00000000988"),
                           typeOfLoss = TypeOfLoss.`self-employment`,
                           lossAmount = 500.13,
                           taxYear = "2019-20",

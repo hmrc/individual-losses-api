@@ -52,7 +52,7 @@ class AmendBFLossControllerSpec
   val amendBFLoss = AmendBFLoss(lossAmount)
 
   val amendBFLossResponse = BFLossResponse(
-    selfEmploymentId = Some("XKIS00000000988"),
+    businessId = Some("XKIS00000000988"),
     typeOfLoss = TypeOfLoss.`self-employment`,
     lossAmount = lossAmount,
     taxYear = "2019-20",
@@ -65,7 +65,7 @@ class AmendBFLossControllerSpec
 
   val responseBody: JsValue = Json.parse(s"""
       |{
-      |    "selfEmploymentId": "XKIS00000000988",
+      |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2019-20",
       |    "lossAmount": $lossAmount,
