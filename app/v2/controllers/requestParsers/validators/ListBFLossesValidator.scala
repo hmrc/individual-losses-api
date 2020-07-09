@@ -17,7 +17,7 @@
 package v2.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v2.controllers.requestParsers.validators.validations.{MinTaxYearValidation, NinoValidation, SelfEmploymentIdValidation, TaxYearValidation}
+import v2.controllers.requestParsers.validators.validations.{MinTaxYearValidation, NinoValidation, BusinessIdValidation, TaxYearValidation}
 import v2.models.domain.TypeOfLoss
 import v2.models.domain.TypeOfLoss._
 import v2.models.errors.{MtdError, TypeOfLossFormatError}
@@ -42,7 +42,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
     List(
       data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => SelfEmploymentIdValidation.validate(lossType, data.selfEmploymentId, idOptional = true)
+        case Some(lossType) => BusinessIdValidation.validate(lossType, data.selfEmploymentId, idOptional = true)
         case None           => Nil
       }
     )

@@ -19,15 +19,15 @@ package v2.controllers.requestParsers.validators.validations
 import v2.models.domain.TypeOfLoss
 import v2.models.errors.{BusinessIdFormatError, MtdError, RuleBusinessId}
 
-object SelfEmploymentIdValidation {
+object BusinessIdValidation {
 
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
   def validate(typeOfLoss: TypeOfLoss, businessId: Option[String], idOptional: Boolean = false): List[MtdError] = {
-    if (typeOfLoss.isUkProperty) propertyValidation(businessId) else selfEmployedValidation(businessId, idOptional)
+    if (typeOfLoss.isUkProperty) propertyValidation(businessId) else businessIdValidation(businessId, idOptional)
   }
 
-  private def selfEmployedValidation(businessId: Option[String], idOptional: Boolean): List[MtdError] = {
+  private def businessIdValidation(businessId: Option[String], idOptional: Boolean): List[MtdError] = {
     businessId match {
       case None if idOptional => Nil
       case None               => List(RuleBusinessId)
