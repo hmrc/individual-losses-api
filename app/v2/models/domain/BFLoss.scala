@@ -27,15 +27,14 @@ case class BFLoss(typeOfLoss: TypeOfLoss,
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-
   implicit val writes: Writes[BFLoss] = (loss: BFLoss) => {
     (loss.typeOfLoss.isUkProperty,loss.typeOfLoss.isForeignProperty) match {
-    case (true,_) => Json.obj(
-      "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
-      "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
-      "broughtForwardLossAmount" -> loss.lossAmount
-    )
-    case (_,true) => Json.obj(
+      case (true,_) => Json.obj(
+        "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
+        "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
+        "broughtForwardLossAmount" -> loss.lossAmount
+      )
+      case (_,true) => Json.obj(
         "incomeSourceId" -> loss.businessId,
         "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
         "taxYear" -> DesTaxYear.fromMtd(loss.taxYear).toString,
@@ -48,8 +47,5 @@ object BFLoss {
         "broughtForwardLossAmount" -> loss.lossAmount
       )
     }
-   }
+  }
 }
-
-
-
