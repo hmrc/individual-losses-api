@@ -10,19 +10,21 @@
         "self-employment",
         "self-employment-class4",
         "uk-property-fhl",
-        "uk-property-non-fhl"
+        "uk-property-non-fhl",
+        "foreign-property-fhl-eea",
+        "foreign-property"
       ],
       "description": "The type of business the loss applies to."
     },
-    "selfEmploymentId": {
+    "businessId": {
       "type": "string",
-      "description": "An identifier for the self-employment business, unique to the customer.",
-      "example": "XGIS00000001319",
+      "description": "An identifier for the business, unique to the customer.",
+      "example": "XAIS12345678910",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
     },
     "lossAmount": {
       "type": "number",
-      "description": "Brought Forward Loss amount related to UK property or self-employment business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "Brought Forward Loss amount related to the type of loss, specified. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "12345.67"
     },
     "taxYear": {
@@ -41,15 +43,15 @@
       "type": "array",
       "items": {
         "type": "object",
-        "description": "A list of endpoint links that indicate possible actions related to the current resource",
+        "description": "A list of endpoint links that indicate possible actions related to the current resource.",
         "properties": {
           "href": {
-            "description": "The relative url of the endpoint",
+            "description": "The relative url of the endpoint.",
             "type": "string",
             "example": "/individuals/losses/{nino}/brought-forward-losses/{lossId}"
           },
           "rel": {
-            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
             "type": "string",
             "enum": [
               "self",
@@ -58,7 +60,7 @@
             ]
           },
           "method": {
-            "description": "The HTTP method type for the endpoint",
+            "description": "The HTTP method type for the endpoint.",
             "type": "string",
             "enum": [
               "GET",
