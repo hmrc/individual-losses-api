@@ -10,7 +10,7 @@ For Brought forward losses a developer can:
 For Loss claims a developer can:
 
 * provide a list of loss claims
-* create a Loss Claim against an income source for a specific tax year
+* create a loss claim against an income source for a specific tax year
 * show the detail of an existing loss claim
 * delete a previously entered loss claim
 * update a previously entered loss claim
