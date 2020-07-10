@@ -151,31 +151,31 @@ traits:
             type: types.errorResponse
             examples:
               formatLossType:
-                description: The format of the loss type is not valid.
+                description: The format of the supplied Type of loss field is not valid.
                 value:
                   code: FORMAT_TYPE_OF_LOSS
-  formatSelfEmploymentId:
+  formatBusinessId:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              formatSelfEmploymentId:
-                description: The format of the self-employment ID is not valid.
+              formatBusinessId:
+                description: The format of the supplied Business ID field is not valid.
                 value:
-                  code: FORMAT_SELF_EMPLOYMENT_ID
-  ruleSelfEmploymentId:
+                  code: FORMAT_BUSINESS_ID
+  ruleBusinessId:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              ruleSelfEmploymentId:
-                description: A self-employment ID can only be supplied for a self-employment business type.
+              ruleBusinessId:
+                description: A Business ID must be supplied for a self-employment or a foreign property business type.
                 value:
-                  code: RULE_SELF_EMPLOYMENT_ID
+                  code: RULE_BUSINESS_ID
   formatLossId:
     responses:
       400:
@@ -195,7 +195,7 @@ traits:
             type: types.errorResponse
             examples:
               formatLossAmount:
-                description: The format of the loss amount is not valid.
+                description: The format of the supplied Loss amount field is not valid.
                 value:
                   code: FORMAT_LOSS_AMOUNT
   ruleLossAmount:
