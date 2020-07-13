@@ -22,7 +22,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that the given income source could not be found
+              description: The remote endpoint has indicated that the given income source could not be found.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   notFoundNino:
@@ -32,7 +32,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given NINO
+              description: The remote endpoint has indicated that no data can be found for the given NINO.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   notFoundLossId:
@@ -42,7 +42,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given loss ID
+              description: The remote endpoint has indicated that no data can be found for the given loss ID.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   notFoundClaimId:
@@ -52,7 +52,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given claim ID
+              description: The remote endpoint has indicated that no data can be found for the given claim ID.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
@@ -74,7 +74,7 @@ traits:
             type: types.errorResponse
             examples:
               formatNino:
-                description: The format of the supplied NINO field is not valid
+                description: The format of the supplied NINO field is not valid.
                 value:
                   code: FORMAT_NINO
   formatTaxYear:
@@ -85,7 +85,7 @@ traits:
             type: types.errorResponse
             examples:
               formatTaxYear:
-                description: The format of the supplied tax year field is not valid
+                description: The format of the supplied tax year field is not valid.
                 value:
                   code: FORMAT_TAX_YEAR
   incorrectOrEmptyBody:
@@ -96,7 +96,7 @@ traits:
             type: types.errorResponse
             examples:
               incorrectOrEmptyBody:
-                description: An empty or non-matching body was submitted
+                description: An empty or non-matching body was submitted.
                 value:
                   code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
   ruleTaxYearNotSupported:
@@ -118,7 +118,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleTaxYearRangeInvalid:
-                description: Tax year range invalid. A tax year range of one year is required
+                description: Tax year range invalid. A tax year range of one year is required.
                 value:
                   code: RULE_TAX_YEAR_RANGE_INVALID
   ruleTaxYearNotEnded:
@@ -173,7 +173,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleSelfEmploymentId:
-                description: A self-employment ID can only be supplied for a self-employment business type
+                description: A self-employment ID can only be supplied for a self-employment business type.
                 value:
                   code: RULE_SELF_EMPLOYMENT_ID
   formatLossId:
@@ -349,7 +349,7 @@ traits:
             type: types.errorResponse
             examples:
               formatSequence:
-                description: The format of the supplied sequence number is not valid
+                description: The format of the supplied sequence number is not valid.
                 value:
                   code: FORMAT_SEQUENCE
   RuleInvalidSequenceStart:
@@ -360,7 +360,7 @@ traits:
             type: types.errorResponse
             examples:
               RuleInvalidSequenceStart:
-                description: The sequence does not begin with 1
+                description: The sequence does not begin with 1.
                 value:
                   code: RULE_INVALID_SEQUENCE_START
   RuleSequenceOrderBroken:
@@ -371,7 +371,7 @@ traits:
             type: types.errorResponse
             examples:
               RuleSequenceOrderBroken:
-                description: The sequence is not continuous
+                description: The sequence is not continuous.
                 value:
                   code: RULE_SEQUENCE_ORDER_BROKEN
   RuleLossClaimsMissing:
@@ -382,6 +382,6 @@ traits:
             type: types.errorResponse
             examples:
               RuleLossClaimsMissing:
-                description: Not all of the loss claims of this type for this tax year were included in the submission
+                description: Not all of the loss claims of this type for this tax year were included in the submission.
                 value:
                   code: RULE_LOSS_CLAIMS_MISSING
