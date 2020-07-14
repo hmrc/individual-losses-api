@@ -11,7 +11,7 @@ is:
   - errors.notFoundLossId
   - errors.ruleNoChangeLossAmount
 displayName: Amend a Brought Forward Loss Amount
-description: This endpoint allows users to update an existing brought forward loss amount which they have previously populated.
+description: This endpoint allows the developer to update an existing brought forward loss amount. A National Insurance number and Loss ID are required.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_amend.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
@@ -35,3 +35,6 @@ responses:
           example-2:
             description: UK FHL property loss
             value: !include examples/broughtForwardLosses/amendBFLoss/amend_fhl_response.json
+          example-3:
+            description: UK Foreign property loss
+            value: !include examples/broughtForwardLosses/amendBFLoss/amend_foreign_property_response.json
