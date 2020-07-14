@@ -14,10 +14,10 @@
       ],
       "description": "The type of business the loss applies to."
     },
-    "selfEmploymentId": {
+    "businessId": {
       "type": "string",
-      "description": "An identifier for the self-employment business, unique to the customer.",
-      "example": "XGIS00000001319",
+      "description": "An identifier for the business, unique to the customer.",
+      "example": "XAIS12345678910",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
     },
     "lossAmount": {
