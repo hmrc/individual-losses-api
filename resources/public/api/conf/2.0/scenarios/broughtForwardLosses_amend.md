@@ -29,11 +29,11 @@
         </tr>
         <tr>
             <td><p>FOREIGN_PROPERTY</p></td>
-                <td><p>Simulate success scenario for UK foreign-property </p></td>
+            <td><p>Simulates a success response with a Foreign property loss.</p></td>
         </tr>
         <tr>
             <td><p>FOREIGN_PROPERTY_FHL_EEA</p></td>
-            <td><p>Simulate success scenario for UK foreign-property-fhl-eea </p></td>
+            <td><p>Simulates a success resonse with a foreign-property-fhl-eea loss </p></td>
         </tr>     
         <tr>
             <td><p>NOT_FOUND</p></td>
