@@ -31,12 +31,14 @@
         "required": [
           "id",
           "sequence"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
   },
   "required": [
     "claimType",
     "listOfLossClaims"
-  ]
+  ],
+  "additionalProperties": false
 }

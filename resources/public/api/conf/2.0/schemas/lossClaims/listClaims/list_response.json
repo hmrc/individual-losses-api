@@ -61,14 +61,16 @@
                 "href",
                 "rel",
                 "method"
-              ]
+              ],
+              "additionalProperties": false
             }
           }
         },
         "required": [
           "id",
           "typeOfClaim"
-        ]
+        ],
+        "additionalProperties": false
       }
     },
     "links": {
@@ -105,11 +107,13 @@
           "href",
           "rel",
           "method"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
   },
   "required": [
     "claims"
-  ]
+  ],
+  "additionalProperties": false
 }

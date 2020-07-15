@@ -36,8 +36,10 @@
           "href",
           "rel",
           "method"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

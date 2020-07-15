@@ -46,13 +46,15 @@
                 "href",
                 "rel",
                 "method"
-              ]
+              ],
+              "additionalProperties": false
             }
           }
         },
         "required": [
           "id"
-        ]
+        ],
+        "additionalProperties": false
       }
     },
     "links": {
@@ -87,11 +89,13 @@
           "href",
           "rel",
           "method"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
   },
   "required": [
     "losses"
-  ]
+  ],
+  "additionalProperties": false
 }

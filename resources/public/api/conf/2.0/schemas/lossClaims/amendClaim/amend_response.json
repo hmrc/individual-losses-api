@@ -7,7 +7,10 @@
     "typeOfLoss": {
       "type": "string",
       "description": "The type of business the loss applies to.",
-      "oneOf": [{"enum": ["self-employment"]}, {"enum": ["uk-property-non-fhl"]}]
+      "enum": [
+        "self-employment",
+        "uk-property-non-fhl"
+      ]
     },
     "selfEmploymentId": {
       "type": "string",
@@ -17,7 +20,12 @@
     "typeOfClaim": {
       "type": "string",
       "description": "The type of claim to be applied. A self employment loss claim can only be of type carry-forward or carry-sideways.",
-      "oneOf": [{"enum": ["carry-forward"]}, {"enum": ["carry-sideways"]}, {"enum": ["carry-sideways-fhl"]}, {"enum": ["carry-forward-to-carry-sideways"]}]
+      "enum": [
+        "carry-forward",
+        "carry-sideways",
+        "carry-sideways-fhl",
+        "carry-forward-to-carry-sideways"
+      ]
     },
     "taxYear": {
       "type": "string",
@@ -59,9 +67,16 @@
           "href",
           "rel",
           "method"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
   },
-  "required": ["typeOfLoss", "typeOfClaim", "taxYear", "lastModified"]
+  "required": [
+    "typeOfLoss",
+    "typeOfClaim",
+    "taxYear",
+    "lastModified"
+  ],
+  "additionalProperties": false
 }
