@@ -10,19 +10,21 @@
         "self-employment",
         "self-employment-class4",
         "uk-property-fhl",
-        "uk-property-non-fhl"
+        "uk-property-non-fhl",
+        "foreign-property",
+        "foreign-property-fhl-eea"
       ],
       "description": "The type of business the loss applies to."
     },
-    "selfEmploymentId": {
+    "businessId": {
       "type": "string",
-      "description": "An identifier for the self-employment business, unique to the customer.",
-      "example": "XGIS00000001319",
+      "description": "An identifier for the business, unique to the customer.",
+      "example": "XAIS12345678910",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
     },
     "lossAmount": {
       "type": "number",
-      "description": "Brought Forward Loss amount related to UK property or self-employment business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "Brought Forward Loss amount related to the type of loss, specified. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "12345.67"
     },
     "taxYear": {

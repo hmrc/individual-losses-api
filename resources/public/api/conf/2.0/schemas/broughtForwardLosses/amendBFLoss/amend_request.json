@@ -6,7 +6,7 @@
   "properties": {
     "lossAmount": {
       "type": "number",
-      "description": "Brought Forward Loss amount related to UK property or self-employment business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "Brought Forward Loss amount related to a Business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "12345.67"
     }
   },
