@@ -26,14 +26,14 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    selfEmploymentId = Some("X2IS12356589871")
+    businessId = Some("X2IS12356589871")
   )
 
   val lossClaimEmploymentJson: JsValue = Json.parse(
     """
       |{
       |    "typeOfLoss": "self-employment",
-      |    "selfEmploymentId": "X2IS12356589871",
+      |    "businessId": "X2IS12356589871",
       |    "typeOfClaim": "carry-forward",
       |    "taxYear": "2019-20"
       |}
@@ -52,7 +52,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
     typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`,
-    selfEmploymentId = None
+    businessId = None
   )
 
   val lossClaimPropertyJson: JsValue = Json.parse(
@@ -69,6 +69,33 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |{
       |    "incomeSourceType": "02",
       |    "reliefClaimed": "CFCSGI",
+      |    "taxYear": "2020"
+      |}
+    """.stripMargin)
+
+  val lossClaimForeignProp = LossClaim(
+    taxYear = "2019-20",
+    typeOfLoss = TypeOfLoss.`foreign-property`,
+    typeOfClaim = TypeOfClaim.`carry-forward`,
+    businessId = Some("X2IS12356589871")
+  )
+
+  val lossClaimForeignPropJson: JsValue = Json.parse(
+    """
+      |{
+      |    "typeOfLoss": "foreign-property",
+      |    "businessId": "X2IS12356589871",
+      |    "typeOfClaim": "carry-forward",
+      |    "taxYear": "2019-20"
+      |}
+    """.stripMargin)
+
+  val lossClaimForeignPropDesJson: JsValue = Json.parse(
+    """
+      |{
+      |    "incomeSourceId": "X2IS12356589871",
+      |    "incomeSourceType": "15",
+      |    "reliefClaimed": "CF",
       |    "taxYear": "2020"
       |}
     """.stripMargin)
@@ -110,7 +137,10 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
         LossClaim.writes.writes(lossClaimProperty) shouldBe lossClaimPropertyDesJson
       }
     }
+    "passed a valid Loss Claim Foreign Property model" should {
+      "return a valid Loss Claim Foreign Property JSON" in {
+        LossClaim.writes.writes(lossClaimForeignProp) shouldBe lossClaimForeignPropDesJson
+      }
+    }
   }
-
-
 }

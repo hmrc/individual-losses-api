@@ -32,6 +32,8 @@ object TypeOfClaimValidation {
       case (`uk-property-non-fhl`, _) => NoValidationErrors
       case (`self-employment`, `carry-forward`) => NoValidationErrors
       case (`self-employment`, `carry-sideways`) => NoValidationErrors
+      case (`foreign-property`,`carry-forward`) => NoValidationErrors
+      case (`foreign-property`,`carry-sideways`) => NoValidationErrors
       case (_,_) => List(RuleTypeOfClaimInvalid)
     }
 }
