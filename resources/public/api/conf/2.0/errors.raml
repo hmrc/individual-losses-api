@@ -85,7 +85,7 @@ traits:
             type: types.errorResponse
             examples:
               formatTaxYear:
-                description: The format of the supplied tax year field is not valid.
+                description: The format of the supplied tax year is not valid.
                 value:
                   code: FORMAT_TAX_YEAR
   incorrectOrEmptyBody:
@@ -151,7 +151,7 @@ traits:
             type: types.errorResponse
             examples:
               formatLossType:
-                description: The format of the supplied Type of loss field is not valid.
+                description: The format of the supplied Type of loss is not valid.
                 value:
                   code: FORMAT_TYPE_OF_LOSS
   formatBusinessId:
@@ -162,7 +162,7 @@ traits:
             type: types.errorResponse
             examples:
               formatBusinessId:
-                description: The format of the supplied Business ID field is not valid.
+                description: The format of the supplied Business ID is not valid.
                 value:
                   code: FORMAT_BUSINESS_ID
   ruleBusinessId:
@@ -173,7 +173,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleBusinessId:
-                description: A Business ID must be supplied for a self-employment or a foreign property business type.
+                description: A Business ID can only be supplied for a self-employment or a foreign property business type.
                 value:
                   code: RULE_BUSINESS_ID
   formatLossId:

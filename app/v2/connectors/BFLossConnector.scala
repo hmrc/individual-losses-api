@@ -80,7 +80,7 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
     val nino = request.nino.nino
     val pathParameters =
       Map("taxYear"          -> request.taxYear.map(_.value),
-        "incomeSourceId"   -> request.selfEmploymentId,
+        "incomeSourceId"   -> request.businessId,
         "incomeSourceType" -> request.incomeSourceType.map(_.toString)).collect {
         case (key, Some(value)) => key -> value
       }

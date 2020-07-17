@@ -20,7 +20,7 @@ import v2.models.domain.TypeOfLoss
 import v2.models.errors.{MtdError, TypeOfLossFormatError}
 
 object TypeOfLossValidation {
-  private val lossClaimLossTypeNames = List(TypeOfLoss.`self-employment`, TypeOfLoss.`uk-property-non-fhl`).map(_.toString)
+  private val lossClaimLossTypeNames = List(TypeOfLoss.`self-employment`, TypeOfLoss.`uk-property-non-fhl`, TypeOfLoss.`foreign-property`).map(_.toString)
 
   def validate(typeOfLoss: String): List[MtdError] = {
     if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)

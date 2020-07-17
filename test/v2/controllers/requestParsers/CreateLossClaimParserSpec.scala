@@ -29,16 +29,35 @@ class CreateLossClaimParserSpec extends UnitSpec {
   val nino = "AA123456B"
   val taxYear = "2019-20"
 
-  private val requestBodyJson = Json.parse(
+  private val seRequestBodyJson = Json.parse(
     s"""{
        |  "typeOfLoss" : "self-employment",
-       |  "selfEmploymentId" : "XAIS01234567890",
+       |  "businessId" : "XAIS01234567890",
        |  "taxYear" : "$taxYear",
        |  "typeOfClaim" : "carry-forward"
        |}""".stripMargin)
 
-  val inputData =
-    CreateLossClaimRawData(nino, AnyContentAsJson(requestBodyJson))
+  private val fPropRequestBodyJson = Json.parse(
+    s"""{
+       |  "typeOfLoss" : "foreign-property",
+       |  "businessId" : "XAIS01234567890",
+       |  "taxYear" : "$taxYear",
+       |  "typeOfClaim" : "carry-forward"
+       |}""".stripMargin)
+
+  private val ukPropRequestBodyJson = Json.parse(
+    s"""{
+       |  "typeOfLoss" : "uk-property-non-fhl",
+       |  "taxYear" : "$taxYear",
+       |  "typeOfClaim" : "carry-forward"
+       |}""".stripMargin)
+
+  val seInputData =
+    CreateLossClaimRawData(nino, AnyContentAsJson(seRequestBodyJson))
+  val fPropInputData =
+    CreateLossClaimRawData(nino, AnyContentAsJson(fPropRequestBodyJson))
+  val ukPropInputData =
+    CreateLossClaimRawData(nino, AnyContentAsJson(ukPropRequestBodyJson))
 
   trait Test extends MockCreateLossClaimValidator {
     lazy val parser = new CreateLossClaimParser(mockValidator)
@@ -47,29 +66,41 @@ class CreateLossClaimParserSpec extends UnitSpec {
   "parse" should {
 
     "return a request object" when {
-      "valid request data is supplied" in new Test {
-        MockValidator.validate(inputData).returns(Nil)
+      "valid request data is supplied for self employment" in new Test {
+        MockValidator.validate(seInputData).returns(Nil)
 
-        parser.parseRequest(inputData) shouldBe
+        parser.parseRequest(seInputData) shouldBe
           Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XAIS01234567890"))))
+      }
+      "valid request data is supplied for foreign property" in new Test {
+        MockValidator.validate(fPropInputData).returns(Nil)
+
+        parser.parseRequest(fPropInputData) shouldBe
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`foreign-property`, TypeOfClaim.`carry-forward`, Some("XAIS01234567890"))))
+      }
+      "valid request data is supplied for uk property non fhl" in new Test {
+        MockValidator.validate(ukPropInputData).returns(Nil)
+
+        parser.parseRequest(ukPropInputData) shouldBe
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`uk-property-non-fhl`, TypeOfClaim.`carry-forward`, None)))
       }
     }
 
     "return an ErrorWrapper" when {
 
       "a single validation error occurs" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator.validate(seInputData)
           .returns(List(NinoFormatError))
 
-        parser.parseRequest(inputData) shouldBe
+        parser.parseRequest(seInputData) shouldBe
           Left(ErrorWrapper(None, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator.validate(seInputData)
           .returns(List(NinoFormatError, TaxYearFormatError))
 
-        parser.parseRequest(inputData) shouldBe
+        parser.parseRequest(seInputData) shouldBe
           Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
       }
     }

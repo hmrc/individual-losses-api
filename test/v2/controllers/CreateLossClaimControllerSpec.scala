@@ -55,7 +55,6 @@ class CreateLossClaimControllerSpec
   val testHateoasLink = Link(href = "/foo/bar", method = GET, rel="test-relationship")
 
   val lossClaimRequest: CreateLossClaimRequest = CreateLossClaimRequest(Nino(nino), lossClaim)
-
   val requestBody: JsValue = Json.parse("""
       |{
       |    "selfEmploymentId": "XKIS00000000988",

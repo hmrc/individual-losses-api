@@ -250,14 +250,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
     def listBFLossesResult(connector: BFLossConnector,
                            taxYear: Option[DesTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
-                           selfEmploymentId: Option[String] = None): DesOutcome[ListBFLossesResponse[BFLossId]] = {
+                           businessId: Option[String] = None): DesOutcome[ListBFLossesResponse[BFLossId]] = {
       await(
         connector.listBFLosses(
           ListBFLossesRequest(
             nino = Nino(nino),
             taxYear = taxYear,
             incomeSourceType = incomeSourceType,
-            selfEmploymentId = selfEmploymentId
+            businessId = businessId
           )))
     }
 
@@ -290,7 +290,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
           .parameterGet(s"$baseUrl/income-tax/brought-forward-losses/$nino", Seq(("incomeSourceId", "testId")), desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
-        listBFLossesResult(connector, selfEmploymentId = Some("testId")) shouldBe expected
+        listBFLossesResult(connector, businessId = Some("testId")) shouldBe expected
       }
 
       "provided with a income source type parameter" in new Test {
@@ -316,7 +316,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
         listBFLossesResult(connector,
                            taxYear = Some(DesTaxYear("2019")),
-                           selfEmploymentId = Some("testId"),
+                           businessId = Some("testId"),
                            incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe
           expected
       }

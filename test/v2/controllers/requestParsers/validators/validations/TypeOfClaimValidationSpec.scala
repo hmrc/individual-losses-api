@@ -88,6 +88,17 @@ class TypeOfClaimValidationSpec extends UnitSpec {
       }
     }
 
+    "return no errors when typeOfLoss is 'foreign-property' and" when {
+
+      "typeOfClaim is 'carry-forward'" in {
+        TypeOfClaimValidation.checkClaim(`carry-forward`, `foreign-property`).isEmpty shouldBe true
+      }
+
+      "provided with a string of 'carry-sideways'" in {
+        TypeOfClaimValidation.checkClaim(`carry-sideways`, `foreign-property`).isEmpty shouldBe true
+      }
+    }
+
     "return TypeOfClaimFormatError when typeOfLoss is 'self-employment' and" when {
 
       "typeOfClaim is 'carry-sideways-fhl" in {
