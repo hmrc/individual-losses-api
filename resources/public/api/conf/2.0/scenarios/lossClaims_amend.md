@@ -34,7 +34,15 @@
         <tr>
             <td><p>NONFHL_FORWARD_TO_SIDEWAYS</p></td>
             <td><p>Simulate success scenario for UK Non-FHL property loss claim with carry-forward-to-carry-sideways</p></td>
-        </tr>        
+        </tr>   
+         <tr>
+            <td><p>FP_FORWARD</p></td>
+            <td><p>Simulate success scenario for foreign-property loss claim with carry-forward</p></td>
+        </tr>
+        <tr>
+            <td><p>FP_SIDEWAYS</p></td>
+            <td><p>Simulate success scenario for foreign-property loss claim with carry-sideways</p></td>
+        </tr>     
         <tr>
            <td><p>NOT_FOUND</p></td>
            <td><p>Simulates the scenario where no data is found</p></td>

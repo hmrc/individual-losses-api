@@ -7,12 +7,12 @@
     "typeOfLoss": {
       "type": "string",
       "description": "The type of business the loss applies to.",
-      "oneOf": [{"enum": ["self-employment"]}, {"enum": ["uk-property-non-fhl"]}]
+      "oneOf": [{"enum": ["self-employment"]}, {"enum": ["uk-property-non-fhl"]}, {"enum": ["foreign-property"]}]
     },
-    "selfEmploymentId": {
+    "businessId": {
       "type": "string",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$",
-      "description": "An identifier for the self-employment business, unique to the customer."
+      "description": "An identifier for the business, unique to the customer."
     },
     "typeOfClaim": {
       "type": "string",
