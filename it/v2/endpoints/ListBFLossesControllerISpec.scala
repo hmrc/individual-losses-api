@@ -58,7 +58,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
     val nino                             = "AA123456A"
     val taxYear: Option[String]          = None
     val typeOfLoss: Option[String]       = None
-    val selfEmploymentId: Option[String] = None
+    val businessId: Option[String]       = None
 
 
     def uri: String = s"/$nino/brought-forward-losses"
@@ -104,7 +104,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
      """.stripMargin)
 
     def queryParams: Seq[(String, String)] =
-      Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "selfEmploymentId" -> selfEmploymentId)
+      Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
         .collect {
           case (k, Some(v)) => (k, v)
         }
@@ -153,7 +153,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
       "querying for property" in new Test {
         override val taxYear: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("uk-property-fhl")
-        override val selfEmploymentId: Option[String] = None
+        override val businessId: Option[String] = None
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -172,7 +172,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
       "querying for self-employment" in new Test {
         override val taxYear: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("self-employment")
-        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+        override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -190,7 +190,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
 
       "querying for selfEmploymentId with no typeOfLoss" in new Test {
         override val taxYear: Option[String]          = None
-        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+        override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -227,7 +227,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
       "query with taxYear" in new Test {
         override val taxYear: Option[String]          = Some("2018-19")
         override val typeOfLoss: Option[String]       = Some("self-employment")
-        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+        override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -293,7 +293,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
       def validationErrorTest(requestNino: String,
                               requestTaxYear: Option[String],
                               requestTypeOfLoss: Option[String],
-                              requestSelfEmploymentId: Option[String],
+                              requestBusinessId: Option[String],
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
@@ -301,7 +301,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
           override val nino: String     = requestNino
           override val taxYear: Option[String] = requestTaxYear
           override val typeOfLoss: Option[String] = requestTypeOfLoss
-          override val selfEmploymentId: Option[String] = requestSelfEmploymentId
+          override val businessId: Option[String] = requestBusinessId
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()

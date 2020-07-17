@@ -28,7 +28,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
   private val validationSet = List(formatValidation, postFormatValidation)
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
-  private val availableLossTypeNames = Seq(`uk-property-fhl`,`uk-property-non-fhl`,`self-employment`).map(_.toString)
+  private val availableLossTypeNames = Seq(`uk-property-fhl`,`uk-property-non-fhl`,`self-employment`,`foreign-property-fhl-eea`,`foreign-property`).map(_.toString)
 
   private def formatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(
@@ -42,7 +42,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
     List(
       data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => BusinessIdValidation.validate(lossType, data.selfEmploymentId, idOptional = true)
+        case Some(lossType) => BusinessIdValidation.validate(lossType, data.businessId, idOptional = true)
         case None           => Nil
       }
     )

@@ -19,4 +19,4 @@ package v2.models.requestData
 import uk.gov.hmrc.domain.Nino
 import v2.models.des.IncomeSourceType
 
-case class ListBFLossesRequest(nino: Nino, taxYear: Option[DesTaxYear], incomeSourceType: Option[IncomeSourceType], selfEmploymentId: Option[String])
+case class ListBFLossesRequest(nino: Nino, taxYear: Option[DesTaxYear], incomeSourceType: Option[IncomeSourceType], businessId: Option[String])
