@@ -152,6 +152,12 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
             AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = None)))) shouldBe
           List(RuleBusinessId)
       }
+      "a business id is not provided for a foreign-property loss type" in {
+        validator.validate(
+          CreateLossClaimRawData(validNino,
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "foreign-property", businessId = None)))) shouldBe
+          List(RuleBusinessId)
+      }
     }
 
     "return RuleTypeOfClaimInvalid error" when {
@@ -160,6 +166,27 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
           CreateLossClaimRawData(validNino,
             AnyContentAsJson(createRequestBodyJson(
               typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
+          List(RuleTypeOfClaimInvalid)
+      }
+      "an incorrect typeOfClaim(carry-sideways-fhl) is used for self-employment typeOfLoss" in {
+        validator.validate(
+          CreateLossClaimRawData(validNino,
+            AnyContentAsJson(createRequestBodyJson(
+              typeOfLoss = "self-employment", typeOfClaim = "carry-sideways-fhl")))) shouldBe
+          List(RuleTypeOfClaimInvalid)
+      }
+      "an incorrect typeOfClaim is used for foreign-property typeOfLoss" in {
+        validator.validate(
+          CreateLossClaimRawData(validNino,
+            AnyContentAsJson(createRequestBodyJson(
+              typeOfLoss = "foreign-property", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
+          List(RuleTypeOfClaimInvalid)
+      }
+      "an incorrect typeOfClaim(carry-sideways-fhl) is used for foreign-property typeOfLoss" in {
+        validator.validate(
+          CreateLossClaimRawData(validNino,
+            AnyContentAsJson(createRequestBodyJson(
+              typeOfLoss = "foreign-property", typeOfClaim = "carry-sideways-fhl")))) shouldBe
           List(RuleTypeOfClaimInvalid)
       }
     }
@@ -173,6 +200,5 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
           List(RuleTaxYearNotSupportedError, RuleBusinessId)
       }
     }
-
   }
 }
