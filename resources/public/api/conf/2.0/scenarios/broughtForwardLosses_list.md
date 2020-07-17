@@ -24,12 +24,12 @@
             <td><p>Simulates a list containing a single UK Non-FHL property loss.</p></td>
         </tr>
         <tr>
-            <td>FOREIGN_PROPERTY</td>
-            <td>Simulates a list containing a single Foreign Property Loss</td>
+            <td><p>FOREIGN_PROPERTY</p></td>
+            <td><p>Simulates a list containing a single Foreign Property Loss</p></td>
         </tr>
         <tr>
-            <td>FOREIGN_PROPERTY_FHL_EEA</td>
-            <td>Simulates a list containing a single Foreign-Property-FHL-EEA Loss</td>
+            <td><p>FOREIGN_PROPERTY_FHL_EEA</p></td>
+            <td><p>Simulates a list containing a single Foreign-Property-FHL-EEA Loss</p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>
