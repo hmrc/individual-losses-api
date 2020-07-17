@@ -17,7 +17,6 @@
 package v2.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v2.controllers.requestParsers.validators.validations.TypeOfLossValidation
 import v2.controllers.requestParsers.validators.validations._
 import v2.models.domain.LossClaim
 import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
