@@ -17,7 +17,7 @@
         },
         "typeOfClaim": {
             "type": "string",
-            "description": "The type of claim to be applied. Carry-sideways-fhl, carry-forward-to-carry-sideways-general-income are only permitted when the type of loss is set to uk-property-non-fhl",
+            "description": "The type of claim to be applied. Note that carry-sideways-fhl, carry-forward-to-carry-sideways-general-income are only permitted when the type of loss is set to uk-property-non-fhl.",
             "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways-general-income"]
         },
         "taxYear": {
