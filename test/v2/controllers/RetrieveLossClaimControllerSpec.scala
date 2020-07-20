@@ -52,7 +52,7 @@ class RetrieveLossClaimControllerSpec
 
   val response = LossClaimResponse(taxYear = "2017-18",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
-    selfEmploymentId = None,
+    businessId = None,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     lastModified = "2018-07-13T12:13:48.763Z")
 
