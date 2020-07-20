@@ -63,7 +63,7 @@ traits:
             type: types.errorResponse
             examples:
               clientOrAgentNotAuthorised:
-                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf'
+                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
                 value:
                   code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
@@ -173,7 +173,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleBusinessId:
-                description: A Business ID can only be supplied for a self-employment or a foreign property business type.
+                description: A Business ID must be supplied for a self-employment or a foreign property business type.
                 value:
                   code: RULE_BUSINESS_ID
   formatLossId:
@@ -272,7 +272,7 @@ traits:
             type: types.errorResponse
             examples:
               rulePeriodNotEnded:
-                description: The loss claim has been made too soon.
+                description: The Loss claim has been made too soon.
                 value:
                   code: RULE_PERIOD_NOT_ENDED
   formatClaimId:
@@ -305,7 +305,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDuplicateSubmission:
-                description: The type of claim is the same as a previous submission.
+                description: The Type of claim is the same as a previous submission for this income source.
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
   ruleDeleteAfterCrystallisation:

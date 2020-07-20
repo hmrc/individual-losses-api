@@ -7,18 +7,18 @@
         "typeOfLoss" : {
             "type" : "string",
             "description": "The type of business the loss applies to.",
-            "enum": ["self-employment", "uk-property-non-fhl"]
+            "enum": ["self-employment", "uk-property-non-fhl", "foreign-property"]
         },
-        "selfEmploymentId" : {
+        "businessId" : {
             "type": "string",
-            "description": "An identifier for the self-employment business, unique to the customer.",
+            "description": "The unique identifier of the income source the claim relates to. Must be provided for self-employment and foreign-property businesses.",
             "example": "XGIS00000001319",
             "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
         },
         "typeOfClaim": {
             "type": "string",
-            "description": "The type of claim to be applied.",
-            "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways"]
+            "description": "The type of claim to be applied. Note that carry-sideways-fhl, carry-forward-to-carry-sideways-general-income are only permitted when the type of loss is set to uk-property-non-fhl.",
+            "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways-general-income"]
         },
         "taxYear": {
             "type": "string",

@@ -9,7 +9,7 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success scenario</p></td>
+            <td><p>Simulates a success scenario</p></td>
         </tr>          
     </tbody>
     <tbody>
@@ -27,7 +27,7 @@
     <tbody>
         <tr>
             <td><p>PERIOD_NOT_ENDED</p></td>
-            <td><p>Simulates the scenario where the remote endpoint has indicated that the relevant accounting period has not yet ended</p></td>
+            <td><p>Simulates the scenario where the loss claim has been made too soon</p></td>
         </tr>            
     </tbody>
     <tbody>
