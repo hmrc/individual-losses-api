@@ -27,7 +27,7 @@
     <tbody>
         <tr>
             <td><p>PERIOD_NOT_ENDED</p></td>
-            <td><p>Simulates the scenario where the Loss claim has been made too soon</p></td>
+            <td><p>Simulates the scenario where the loss claim has been made too soon</p></td>
         </tr>            
     </tbody>
     <tbody>
