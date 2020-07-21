@@ -23,7 +23,7 @@ object LossIdFormatError extends MtdError("FORMAT_LOSS_ID", "The provided loss I
 object ClaimIdFormatError extends MtdError("FORMAT_CLAIM_ID", "The provided claim ID is invalid")
 object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid")
 object TypeOfLossFormatError extends MtdError("FORMAT_TYPE_OF_LOSS", "The provided Type of Loss is invalid")
-object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The supplied type of claim format is invalid or the type of claim is not recognised")
+object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The provided Type of claim is invalid")
 object ClaimTypeFormatError extends MtdError("FORMAT_CLAIM_TYPE", "The provided claim type is invalid")
 object SequenceFormatError extends MtdError("FORMAT_SEQUENCE", "The provided sequence number is invalid")
 
