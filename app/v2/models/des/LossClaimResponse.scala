@@ -24,7 +24,7 @@ import v2.models.domain.{TypeOfClaim, TypeOfLoss}
 import v2.models.hateoas.{HateoasData, Link}
 import v2.models.requestData.DesTaxYear
 
-case class LossClaimResponse(selfEmploymentId: Option[String],
+case class LossClaimResponse(businessId: Option[String],
                              typeOfLoss: TypeOfLoss,
                              typeOfClaim: TypeOfClaim,
                              taxYear: String,
