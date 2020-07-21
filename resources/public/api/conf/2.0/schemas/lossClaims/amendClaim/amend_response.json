@@ -7,21 +7,21 @@
     "typeOfLoss": {
       "type": "string",
       "description": "The type of business the loss applies to.",
-      "oneOf": [{"enum": ["self-employment"]}, {"enum": ["uk-property-non-fhl"]}]
+      "oneOf": [{"enum": ["self-employment"]}, {"enum": ["uk-property-non-fhl"]}, {"enum": ["foreign-property"]}]
     },
-    "selfEmploymentId": {
+    "businessId": {
       "type": "string",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$",
-      "description": "An identifier for the self-employment business, unique to the customer."
+      "description": "The unique identifier of the income source the claim relates to. Must be provided for self-employment and foreign-property businesses."
     },
     "typeOfClaim": {
       "type": "string",
-      "description": "The type of claim to be applied. A self employment loss claim can only be of type carry-forward or carry-sideways.",
-      "oneOf": [{"enum": ["carry-forward"]}, {"enum": ["carry-sideways"]}, {"enum": ["carry-sideways-fhl"]}, {"enum": ["carry-forward-to-carry-sideways"]}]
+      "description": "The type of claim to be applied. Note that carry-sideways-fhl, carry-forward-to-carry-sideways-general-income are only permitted when the type of loss is set to uk-property-non-fhl",
+      "oneOf": [{"enum": ["carry-forward"]}, {"enum": ["carry-sideways"]}, {"enum": ["carry-sideways-fhl"]}, {"enum": ["carry-forward-to-carry-sideways-general-income"]}]
     },
     "taxYear": {
       "type": "string",
-      "description": "The tax year the data applies to, for example, 2019-20. The tax year must not span more than one year for example, 2017-19 is not valid. The minimum tax year is 2019-20.",
+      "description": "The tax year the data applies to, for example 2019 to 2020. The start year and end year must not span two tax years. Gaps are not allowed, for example 2018 to 2020 is not valid. The minimum tax year is 2019 to 2020.",
       "pattern": "^2[0-9]{3}-[0-9]{2}$"
     },
     "lastModified": {
@@ -36,19 +36,19 @@
         "description": "A list of endpoint links that indicate possible actions related to the current resource",
         "properties": {
           "href": {
-            "description": "The relative url of the endpoint",
+            "description": "The relative url of the endpoint.",
             "type": "string",
             "example": "/individuals/losses/{nino}/loss-claims/{claimId}"
           },
           "rel": {
-            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
             "type": "string",
             "enum": [
               "self"
             ]
           },
           "method": {
-            "description": "The HTTP method type for the endpoint",
+            "description": "The HTTP method type for the endpoint.",
             "type": "string",
             "enum": [
               "GET"

@@ -20,6 +20,14 @@
             <td><p>Simulate successful retrieval of self-employment loss claim with carry-sideways </p></td>
         </tr>
         <tr>
+            <td><p>FP_FORWARD</p></td>
+            <td><p>Simulate successful retrieval of foreign-property loss claim with carry-forward </p></td>
+        </tr>  
+        <tr>
+            <td><p>FP_SIDEWAYS</p></td>
+            <td><p>Simulate successful retrieval of foreign-property loss claim with carry-sideways </p></td>
+        </tr>
+        <tr>
             <td><p>NONFHL_FORWARD</p></td>
             <td><p>Simulate successful retrieval of UK Non-FHL property loss claim with carry-forward </p></td>
         </tr>
