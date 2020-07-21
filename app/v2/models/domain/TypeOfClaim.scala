@@ -35,7 +35,7 @@ object TypeOfClaim {
     override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CSGI`
   }
 
-  case object `carry-forward-to-carry-sideways` extends TypeOfClaim {
+  case object `carry-forward-to-carry-sideways-general-income` extends TypeOfClaim {
     override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CFCSGI`
   }
 

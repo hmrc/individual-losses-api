@@ -51,7 +51,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
   val lossClaimProperty = LossClaim(
     taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
-    typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`,
+    typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways-general-income`,
     businessId = None
   )
 

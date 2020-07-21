@@ -30,7 +30,7 @@ class ReliefClaimedSpec extends UnitSpec with EnumJsonSpecSupport {
       "work" in {
         `CF`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward`
         `CSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways`
-        `CFCSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward-to-carry-sideways`
+        `CFCSGI`.toTypeOfClaim shouldBe TypeOfClaim.`carry-forward-to-carry-sideways-general-income`
         `CSFHL`.toTypeOfClaim shouldBe TypeOfClaim.`carry-sideways-fhl`
       }
     }
