@@ -69,5 +69,5 @@
             }
         }
     },
-    "required": ["typeOfLoss", "typeOfClaim", "taxYear"]
+    "required": ["typeOfLoss", "typeOfClaim", "taxYear", "lastModified"]
 }
