@@ -26,7 +26,7 @@ class TypeOfClaimSpec extends UnitSpec with EnumJsonSpecSupport {
   testRoundTrip[TypeOfClaim](
     ("carry-forward", `carry-forward`),
     ("carry-sideways", `carry-sideways`),
-    ("carry-forward-to-carry-sideways-general-income", `carry-forward-to-carry-sideways-general-income`),
+    ("carry-forward-to-carry-sideways", `carry-forward-to-carry-sideways`),
     ("carry-sideways-fhl", `carry-sideways-fhl`)
   )
 
@@ -35,7 +35,7 @@ class TypeOfClaimSpec extends UnitSpec with EnumJsonSpecSupport {
       "work" in {
         `carry-forward`.toReliefClaimed shouldBe ReliefClaimed.`CF`
         `carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CSGI`
-        `carry-forward-to-carry-sideways-general-income`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
+        `carry-forward-to-carry-sideways`.toReliefClaimed shouldBe ReliefClaimed.`CFCSGI`
         `carry-sideways-fhl`.toReliefClaimed shouldBe ReliefClaimed.`CSFHL`
       }
     }

@@ -53,7 +53,7 @@ class AmendLossClaimControllerISpec extends IntegrationBaseSpec {
 
     val responseJson: JsValue = Json.parse(s"""
                                               |{
-                                              |    "selfEmploymentId": "XKIS00000000988",
+                                              |    "businessId": "XKIS00000000988",
                                               |    "typeOfLoss": "self-employment",
                                               |    "typeOfClaim": "carry-forward",
                                               |    "taxYear": "2019-20",

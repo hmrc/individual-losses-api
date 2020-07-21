@@ -30,7 +30,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
   val lossClaimResponse =
     LossClaimResponse(
-      selfEmploymentId = Some("000000000000001"),
+      businessId = Some("000000000000001"),
       typeOfLoss = TypeOfLoss.`self-employment`,
       typeOfClaim = TypeOfClaim.`carry-forward`,
       taxYear = "2019-20",
@@ -68,7 +68,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
     def desToModel: TypeOfLoss => LossClaimResponse =
       typeOfLoss =>
         LossClaimResponse(
-          selfEmploymentId = Some("000000000000001"),
+          businessId = Some("000000000000001"),
           typeOfLoss = typeOfLoss,
           typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
           taxYear = "2019-20",
@@ -90,7 +90,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
   "Json Writes" should {
     val mtdJson = Json.parse(
       """{
-        |  "selfEmploymentId": "000000000000001",
+        |  "businessId": "000000000000001",
         |  "typeOfLoss": "self-employment",
         |  "typeOfClaim": "carry-forward",
         |  "taxYear": "2019-20",

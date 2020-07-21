@@ -165,7 +165,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(validNino,
             AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways-general-income")))) shouldBe
+              typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
           List(RuleTypeOfClaimInvalid)
       }
       "an incorrect typeOfClaim(carry-sideways-fhl) is used for self-employment typeOfLoss" in {
@@ -179,7 +179,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(validNino,
             AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "foreign-property", typeOfClaim = "carry-forward-to-carry-sideways-general-income")))) shouldBe
+              typeOfLoss = "foreign-property", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
           List(RuleTypeOfClaimInvalid)
       }
       "an incorrect typeOfClaim(carry-sideways-fhl) is used for foreign-property typeOfLoss" in {
