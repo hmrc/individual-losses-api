@@ -10,13 +10,13 @@ is:
   - errors.formatBusinessId
   - errors.formatClaimTypeSandboxOnly
   - errors.clientOrAgentNotAuthorised
-  - errors.notFoundNino
+  - errors.notFound
   - queryParameters.taxYearForClaims
   - queryParameters.typeOfLossForClaims
   - queryParameters.businessId
   - queryParameters.claimType
 displayName: List Loss Claims
-description: This endpoint allows the user to retrieve existing loss claims information.
+description: This endpoint allows a developer to retrieve existing loss claims information. A National Insurance number is required.
 (annotations.sandboxData): !include scenarios/lossClaims_list.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]

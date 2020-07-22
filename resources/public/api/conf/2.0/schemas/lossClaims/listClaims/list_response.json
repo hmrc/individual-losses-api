@@ -22,7 +22,7 @@
             "example" : "12"
           },
           "typeOfClaim": {
-            "description": "The type of claim to be applied.",
+            "description": "The type of claim to be applied. A self employment or a foreign property loss claim can only be of type carry-forward or carry-sideways",
             "type": "string",
             "enum": [
               "carry-forward",
