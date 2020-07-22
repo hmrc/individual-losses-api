@@ -10,5 +10,8 @@
       "example": "12345.67"
     }
   },
-  "required": ["lossAmount"]
+  "required": [
+    "lossAmount"
+  ],
+  "additionalProperties": false
 }

@@ -73,7 +73,8 @@
           "href",
           "rel",
           "method"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
   },
@@ -82,5 +83,6 @@
     "lossAmount",
     "taxYear",
     "lastModified"
-  ]
+  ],
+  "additionalProperties": false
 }

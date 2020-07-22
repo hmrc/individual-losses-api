@@ -1,73 +1,80 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Loss Claim",
-    "description": "Loss Claim",
-    "type": "object",
-    "properties": {
-        "typeOfLoss" : {
-            "type" : "string",
-            "description": "The type of business the loss applies to.",
-            "enum": ["self-employment", "uk-property-non-fhl", "foreign-property"]
-        },
-        "businessId" : {
-            "type": "string",
-            "description": "The unique identifier of the income source the claim relates to. Must be provided for self-employment and foreign-property businesses.",
-            "example": "XGIS00000001319",
-            "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
-        },
-        "typeOfClaim": {
-            "type": "string",
-            "description": "The type of claim to be applied. Note that carry-sideways-fhl, carry-forward-to-carry-sideways are only permitted when the type of loss is set to uk-property-non-fhl.",
-            "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways"]
-        },
-        "taxYear": {
-            "type": "string",
-            "description": "The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid. The minimum tax year is 2019-20.",
-            "example": "2019-20"
-        },
-        "lastModified": {
-            "type": "string",
-            "description": "The timestamp when the entry was created or last modified",
-            "example": "2020-07-11T12:13:48.763Z",
-            "pattern": "^2[0-9]{3}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{0,3}|)Z$"
-        },
-        "links": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "description": "A list of endpoint links that indicate possible actions related to the current resource",
-                "properties": {
-                    "href": {
-                        "description": "The relative url of the endpoint",
-                        "type": "string",
-                        "example": "/individuals/losses/{nino}/loss-claims/{claimId}"
-                    },
-                    "rel": {
-                        "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
-                        "type": "string",
-                        "enum": [
-                            "self",
-                            "amend-loss-claim",
-                            "delete-loss-claim"
-                        ]
-                    },
-                    "method": {
-                        "description": "The HTTP method type for the endpoint",
-                        "type": "string",
-                        "enum": [
-                            "GET",
-                            "POST",
-                            "DELETE"
-                        ]
-                    }
-                },
-                "required": [
-                    "href",
-                    "rel",
-                    "method"
-                ]
-            }
-        }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Loss Claim",
+  "description": "Loss Claim",
+  "type": "object",
+  "properties": {
+    "typeOfLoss" : {
+      "type" : "string",
+      "description": "The type of business the loss applies to.",
+      "enum": ["self-employment", "uk-property-non-fhl", "foreign-property"]
     },
-    "required": ["typeOfLoss", "typeOfClaim", "taxYear", "lastModified"]
+    "businessId" : {
+      "type": "string",
+      "description": "The unique identifier of the income source the claim relates to. Must be provided for self-employment and foreign-property businesses.",
+      "example": "XGIS00000001319",
+      "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+    },
+    "typeOfClaim": {
+      "type": "string",
+      "description": "The type of claim to be applied. Note that carry-sideways-fhl and carry-forward-to-carry-sideways are only permitted when the type of loss is set to uk-property-non-fhl.",
+      "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways"]
+    },
+    "taxYear": {
+      "type": "string",
+      "description": "The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid. The minimum tax year is 2019-20.",
+      "example": "2019-20"
+    },
+    "lastModified": {
+      "type": "string",
+      "description": "The timestamp when the entry was created or last modified",
+      "example": "2020-07-11T12:13:48.763Z",
+      "pattern": "^2[0-9]{3}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{0,3}|)Z$"
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A list of endpoint links that indicate possible actions related to the current resource",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint",
+            "type": "string",
+            "example": "/individuals/losses/{nino}/loss-claims/{claimId}"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+            "type": "string",
+            "enum": [
+              "self",
+              "amend-loss-claim",
+              "delete-loss-claim"
+            ]
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint",
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "DELETE"
+            ]
+          }
+        },
+        "required": [
+          "href",
+          "rel",
+          "method"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "typeOfLoss",
+    "typeOfClaim",
+    "taxYear",
+    "lastModified"
+  ],
+  "additionalProperties": false
 }

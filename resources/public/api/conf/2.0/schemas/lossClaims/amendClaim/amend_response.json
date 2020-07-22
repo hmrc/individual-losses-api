@@ -59,9 +59,16 @@
           "href",
           "rel",
           "method"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
   },
-  "required": ["typeOfLoss", "typeOfClaim", "taxYear", "lastModified"]
+  "required": [
+    "typeOfLoss",
+    "typeOfClaim",
+    "taxYear",
+    "lastModified"
+  ],
+  "additionalProperties": false
 }
