@@ -17,4 +17,4 @@
 package v2.models.requestData
 
 case class ListBFLossesRawData(nino: String, taxYear: Option[String],
-                               typeOfLoss:Option[String], selfEmploymentId: Option[String]) extends RawData
+                               typeOfLoss:Option[String], businessId: Option[String]) extends RawData

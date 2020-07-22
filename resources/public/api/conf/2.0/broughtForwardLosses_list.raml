@@ -9,12 +9,12 @@ is:
   - errors.formatLossType
   - errors.formatBusinessId
   - errors.clientOrAgentNotAuthorised
-  - errors.notFoundNino
+  - errors.notFound
   - queryParameters.taxYearForBFLosses
   - queryParameters.typeOfLossForBFLosses
-  - queryParameters.selfEmploymentId
+  - queryParameters.businessId
 displayName: List Brought Forward Losses
-description: This endpoint allows users to retrieve a list of all brought forward losses which they have incurred before joining MTD.
+description: This endpoint allows a developer to retrieve a list of all brought forward losses that have incurred before joining MTD. A National Insurance number is required.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_list.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]

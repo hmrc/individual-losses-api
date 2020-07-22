@@ -64,7 +64,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
     val nino = "AA123456A"
     val lossId = "AAZZ1234567890a"
     val correlationId = "X-123"
-    val selfEmploymentId = "XKIS00000000988"
+    val businessId = "XKIS00000000988"
     val taxYear = "2019-20"
     val typeOfLoss = "self-employment"
 

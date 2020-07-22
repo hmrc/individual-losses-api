@@ -40,6 +40,10 @@ class TypeOfLossValidationSpec extends UnitSpec {
       "provided with a string of 'uk-property-non-fhl'" in {
         TypeOfLossValidation.validate("uk-property-non-fhl").isEmpty shouldBe true
       }
+
+      "provided with a string of 'foreign-property'" in {
+        TypeOfLossValidation.validate("foreign-property").isEmpty shouldBe true
+      }
     }
 
     "return an error" when {

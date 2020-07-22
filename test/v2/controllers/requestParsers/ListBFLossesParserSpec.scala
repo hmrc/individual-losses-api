@@ -26,7 +26,7 @@ import v2.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesReque
 class ListBFLossesParserSpec extends UnitSpec {
   val nino             = "AA123456B"
   val taxYear          = "2017-18"
-  val selfEmploymentId = "XAIS01234567890"
+  val businessId = "XAIS01234567890"
 
   trait Test extends MockListBFLossesValidator {
     lazy val parser = new ListBFLossesParser(mockValidator)
@@ -37,7 +37,7 @@ class ListBFLossesParserSpec extends UnitSpec {
 
       "convert uk-property-fhl to incomeSourceType 04" in new Test {
         val inputData =
-          ListBFLossesRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-fhl"), selfEmploymentId = Some(selfEmploymentId))
+          ListBFLossesRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-fhl"), businessId = Some(businessId))
 
         MockValidator
           .validate(inputData)
@@ -49,14 +49,14 @@ class ListBFLossesParserSpec extends UnitSpec {
                 nino = Nino(nino),
                 taxYear = Some(DesTaxYear("2018")),
                 incomeSourceType = Some(IncomeSourceType.`04`),
-                selfEmploymentId = Some(selfEmploymentId)
+                businessId = Some(businessId)
               )
           )
       }
 
       "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
         val inputData =
-          ListBFLossesRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-non-fhl"), selfEmploymentId = Some(selfEmploymentId))
+          ListBFLossesRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-non-fhl"), businessId = Some(businessId))
 
         MockValidator
           .validate(inputData)
@@ -68,7 +68,7 @@ class ListBFLossesParserSpec extends UnitSpec {
               nino = Nino(nino),
               taxYear = Some(DesTaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`02`),
-              selfEmploymentId = Some(selfEmploymentId))
+              businessId = Some(businessId))
           )
       }
 

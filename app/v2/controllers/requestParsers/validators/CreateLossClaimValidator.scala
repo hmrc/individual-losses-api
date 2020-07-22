@@ -66,7 +66,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     val req = data.body.json.as[LossClaim]
     List(
       MinTaxYearValidation.validate(req.taxYear, minimumTaxYearLossClaim),
-      BusinessIdValidation.validate(req.typeOfLoss, req.selfEmploymentId),
+      BusinessIdValidation.validate(req.typeOfLoss, req.businessId),
       TypeOfClaimValidation.checkClaim(req.typeOfClaim, req.typeOfLoss)
     )
   }
