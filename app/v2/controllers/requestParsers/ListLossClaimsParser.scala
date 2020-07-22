@@ -36,7 +36,7 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) ext
       Nino(data.nino),
       taxYear.map(DesTaxYear.fromMtd),
       incomeSourceType,
-      data.selfEmploymentId,
+      data.businessId,
       data.claimType.flatMap(TypeOfClaim.parser.lift)    )
   }
 }

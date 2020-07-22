@@ -67,7 +67,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("incomeSourceId", "testId")), desRequestHeaders: _*)
           .returns(Future.successful(expected))
 
-        listLossClaimsResult(connector, selfEmploymentId = Some("testId")) shouldBe expected
+        listLossClaimsResult(connector, businessId = Some("testId")) shouldBe expected
       }
     }
 
@@ -112,7 +112,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
         listLossClaimsResult(connector,
           taxYear = Some(DesTaxYear("2019")),
-          selfEmploymentId = Some("testId"),
+          businessIdg = Some("testId"),
           incomeSourceType = Some(IncomeSourceType.`01`),
           claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe
           expected
@@ -146,7 +146,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     def listLossClaimsResult(connector: LossClaimConnector,
                              taxYear: Option[DesTaxYear] = None,
                              incomeSourceType: Option[IncomeSourceType] = None,
-                             selfEmploymentId: Option[String] = None,
+                             businessId: Option[String] = None,
                              claimType: Option[TypeOfClaim] = None): DesOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(
         connector.listLossClaims(
@@ -154,7 +154,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             nino = Nino(nino),
             taxYear = taxYear,
             incomeSourceType = incomeSourceType,
-            selfEmploymentId = selfEmploymentId,
+            businessId = businessId,
             claimType = claimType
           )))
   }
