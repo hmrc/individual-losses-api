@@ -27,7 +27,7 @@ import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsR
 class ListLossClaimsParserSpec extends UnitSpec {
   val nino             = "AA123456B"
   val taxYear          = "2017-18"
-  val selfEmploymentId = "XAIS01234567890"
+  val businessId = "XAIS01234567890"
   val claimType        = "carry-sideways"
 
   trait Test extends MockListLossClaimsValidator {
@@ -42,7 +42,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
           ListLossClaimsRawData(nino,
             taxYear = Some(taxYear),
             typeOfLoss = Some("uk-property-fhl"),
-            selfEmploymentId = Some(selfEmploymentId),
+            businessId = Some(businessId),
             claimType = Some(claimType)
           )
 
@@ -56,7 +56,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
               nino = Nino(nino),
               taxYear = Some(DesTaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`04`),
-              selfEmploymentId = Some(selfEmploymentId),
+              businessId = Some(businessId),
               claimType = Some(TypeOfClaim.`carry-sideways`)
             )
           )
@@ -68,7 +68,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
             nino,
             taxYear = Some(taxYear),
             typeOfLoss = Some("uk-property-non-fhl"),
-            selfEmploymentId = Some(selfEmploymentId),
+            businessId = Some(businessId),
             claimType = Some(claimType)
           )
 
@@ -82,7 +82,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
               nino = Nino(nino),
               taxYear = Some(DesTaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`02`),
-              selfEmploymentId = Some(selfEmploymentId),
+              businessId = Some(businessId),
               claimType = Some(TypeOfClaim.`carry-sideways`)
             )
           )

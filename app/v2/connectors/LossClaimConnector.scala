@@ -72,7 +72,7 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     val pathParameters =
       Map(
         "taxYear"          -> request.taxYear.map(_.value),
-        "incomeSourceId"   -> request.selfEmploymentId,
+        "incomeSourceId"   -> request.businessId,
         "incomeSourceType" -> request.incomeSourceType.map(_.toString),
         "claimType"        -> request.claimType.map(_.toString)
       ).collect {
