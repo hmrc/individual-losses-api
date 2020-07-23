@@ -112,7 +112,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
         listLossClaimsResult(connector,
           taxYear = Some(DesTaxYear("2019")),
-          businessIdg = Some("testId"),
+          businessId = Some("testId"),
           incomeSourceType = Some(IncomeSourceType.`01`),
           claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe
           expected

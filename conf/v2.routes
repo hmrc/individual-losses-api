@@ -12,5 +12,5 @@ POST       /:nino/loss-claims                                           v2.contr
 DELETE     /:nino/loss-claims/:claimId                                  v2.controllers.DeleteLossClaimController.delete(nino: String, claimId: String)
 GET        /:nino/loss-claims/:claimId                                  v2.controllers.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
 POST       /:nino/loss-claims/:claimId/change-type-of-claim             v2.controllers.AmendLossClaimController.amend(nino: String, claimId: String)
-GET        /:nino/loss-claims                                           v2.controllers.ListLossClaimsController.list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], selfEmploymentId: Option[String], claimType: Option[String])
+GET        /:nino/loss-claims                                           v2.controllers.ListLossClaimsController.list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], businessId: Option[String], claimType: Option[String])
 PUT        /:nino/loss-claims/order                                     v2.controllers.AmendLossClaimsOrderController.amendClaimsOrder(nino: String, taxYear:Option[String])

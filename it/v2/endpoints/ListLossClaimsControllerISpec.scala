@@ -58,7 +58,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
     val nino                             = "AA123456A"
     val taxYear: Option[String]          = None
     val typeOfLoss: Option[String]       = None
-    val selfEmploymentId: Option[String] = None
+    val businessId: Option[String]       = None
     val claimType: Option[String]        = None
 
     def uri: String = s"/$nino/loss-claims"
@@ -111,7 +111,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
                                               |}
      """.stripMargin)
     def queryParams: Seq[(String, String)] =
-      Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "selfEmploymentId" -> selfEmploymentId, "claimType" -> claimType)
+      Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "claimType" -> claimType)
         .collect {
           case (k, Some(v)) => (k, v)
         }
@@ -159,7 +159,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
       "querying for property" in new Test {
         override val taxYear: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("uk-property-non-fhl")
-        override val selfEmploymentId: Option[String] = None
+        override val businessId: Option[String] = None
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -177,7 +177,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
       "querying for self-employment" in new Test {
         override val taxYear: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("self-employment")
-        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+        override val businessId: Option[String]       = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -194,7 +194,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
 
       "querying for selfEmploymentId with no typeOfLoss" in new Test {
         override val taxYear: Option[String]          = None
-        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+        override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -229,7 +229,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
       "query with taxYear" in new Test {
         override val taxYear: Option[String]          = Some("2019-20")
         override val typeOfLoss: Option[String]       = Some("self-employment")
-        override val selfEmploymentId: Option[String] = Some("XKIS00000000988")
+        override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -302,7 +302,7 @@ class ListLossClaimsControllerISpec extends IntegrationBaseSpec {
           override val nino: String     = requestNino
           override val taxYear: Option[String] = requestTaxYear
           override val typeOfLoss: Option[String] = requestTypeOfLoss
-          override val selfEmploymentId: Option[String] = requestSelfEmploymentId
+          override val businessId : Option[String] = requestSelfEmploymentId
           override val claimType: Option[String] = requestclaimType
 
           override def setupStubs(): StubMapping = {
