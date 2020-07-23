@@ -25,11 +25,11 @@
         </tr>  
         <tr>
             <td><p>CARRY_SIDEWAYS</p></td>
-            <td><p>Simulates a list containing 2 carry-sideways loss claims</p></td>
+            <td><p>Simulates a list containing 2 carry-sideways loss claims.</p></td>
         </tr>
         <tr>
            <td><p>NOT_FOUND</p></td>
-           <td><p>Simulates the scenario where no data is found</p></td>
+           <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>           
     </tbody>
 </table>
