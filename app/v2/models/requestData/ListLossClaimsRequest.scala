@@ -23,5 +23,5 @@ import v2.models.domain.TypeOfClaim
 case class ListLossClaimsRequest(nino: Nino,
                                  taxYear: Option[DesTaxYear],
                                  incomeSourceType: Option[IncomeSourceType],
-                                 selfEmploymentId: Option[String],
+                                 businessId: Option[String],
                                  claimType: Option[TypeOfClaim])
