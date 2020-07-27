@@ -8,7 +8,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "description": "Array of loss claims",
+        "description": "An array of loss claim objects. An empty array is not returned, if no loss claims exist for the supplied NINO, a MATCHING_RESOURCE_NOT_FOUND error is returned.",
         "properties": {
           "id": {
             "description": "The unique identifier of the loss claim",
@@ -22,7 +22,7 @@
             "example" : "12"
           },
           "typeOfClaim": {
-            "description": "The type of claim to be applied. A self employment or a foreign property loss claim can only be of type carry-forward or carry-sideways",
+            "description": "The type of claim to be applied. A self employment or a foreign property loss claim can only be of type carry-forward or carry-sideways.",
             "type": "string",
             "enum": [
               "carry-forward",
