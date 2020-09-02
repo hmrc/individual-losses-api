@@ -18,15 +18,14 @@ package v1.models.domain
 
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
 import play.api.libs.functional.syntax._
-import v1.models.des.ReliefClaimed
 
-case class LossClaimsList(claimType: ReliefClaimed, claimsSequence: Seq[DesClaim])
+case class DesClaim(claimId: String, sequence: Int)
 
-object LossClaimsList {
-    implicit val reads: Reads[LossClaimsList] = (
-      (JsPath \ "claimType").read[TypeOfClaim].map(_.toReliefClaimed) and
-      (JsPath \ "listOfLossClaims").read[Seq[DesClaim]]
-    )(LossClaimsList.apply _)
-
-  implicit val writes: Writes[LossClaimsList] = Json.writes[LossClaimsList]
+object DesClaim {
+  implicit val reads: Reads[DesClaim] = (
+    (JsPath \ "id").read[String] and
+      (JsPath \ "sequence").read[Int]
+    )(DesClaim.apply _)
+  
+  implicit val writes: Writes[DesClaim] = Json.writes[DesClaim]
 }
