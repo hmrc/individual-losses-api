@@ -17,6 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
+import v1.models.domain.TypeOfClaim
 import v1.models.errors.ClaimTypeFormatError
 
 class ClaimTypeValidationSpec extends UnitSpec {
@@ -45,15 +46,12 @@ class ClaimTypeValidationSpec extends UnitSpec {
   "validateClaimIsCarrySideways" should {
     "return no errors" when {
       "provided with a string of 'carry-sideways'" in {
-        ClaimTypeValidation.validateClaimIsCarrySideways("carry-sideways").isEmpty shouldBe true
+        ClaimTypeValidation.validateClaimIsCarrySideways(TypeOfClaim.`carry-sideways`).isEmpty shouldBe true
       }
     }
     "return an error" when {
-      "provided with an empty string" in {
-        ClaimTypeValidation.validateClaimIsCarrySideways("") shouldBe List(ClaimTypeFormatError)
-      }
       "provided with a non-matching string" in {
-        ClaimTypeValidation.validateClaimIsCarrySideways("carry-forwards") shouldBe List(ClaimTypeFormatError)
+        ClaimTypeValidation.validateClaimIsCarrySideways(TypeOfClaim.`carry-forward`) shouldBe List(ClaimTypeFormatError)
       }
     }
   }

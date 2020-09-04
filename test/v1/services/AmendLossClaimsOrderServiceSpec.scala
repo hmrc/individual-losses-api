@@ -19,7 +19,7 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.{AmendLossClaimsOrderResponse, ReliefClaimed}
-import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList}
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList, TypeOfClaim}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
@@ -47,7 +47,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
   }
 
   "amend LossClaimsOrder" when {
-    lazy val request = AmendLossClaimsOrderRequest(nino, taxYear, AmendLossClaimsOrderRequestBody("carry-forwards", Seq(Claim("1234568790ABCDE", 1), Claim("1234568790ABCDF", 2))))
+    lazy val request = AmendLossClaimsOrderRequest(nino, taxYear, AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-forward`, Seq(Claim("1234568790ABCDE", 1), Claim("1234568790ABCDF", 2))))
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

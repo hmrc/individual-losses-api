@@ -21,7 +21,6 @@ import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendLossClaimsOrderValidator
-import v1.models.des.ReliefClaimed
 import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList, TypeOfClaim}
 import v1.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
 import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
@@ -45,13 +44,13 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
         MockValidator.validate(data).returns(List())
 
         parser.parseRequest(data) shouldBe {
-          Right(AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), AmendLossClaimsOrderRequestBody("carry-sideways", Seq(Claim("1234568790ABCDE", 1)))))
+          Right(AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }
       "the validator returns no errors and no tax year is supplied" in new Test {
         MockValidator.validate(data).returns(List())
         parser.parseRequest(data) shouldBe {
-          Right(AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.mostRecentTaxYear(), AmendLossClaimsOrderRequestBody("carry-sideways", Seq(Claim("1234568790ABCDE", 1)))))
+          Right(AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.mostRecentTaxYear(), AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }
     }
