@@ -34,6 +34,14 @@ class ClaimSpec extends UnitSpec {
     |""".stripMargin
   )
 
+  val desJson : JsValue = Json.parse("""
+    |{
+    | "claimId": "234568790ABCDE",
+    | "sequence": 1
+    |}
+    |""".stripMargin
+  )
+
   "reads" when {
     "passed valid JSON" should {
       "return a valid model" in {
@@ -44,7 +52,7 @@ class ClaimSpec extends UnitSpec {
   "writes" when {
     "passed valid model" should {
       "return valid json" in {
-        Json.toJson(claim) shouldBe claimJson
+        Json.toJson(claim) shouldBe desJson
       }
     }
   }

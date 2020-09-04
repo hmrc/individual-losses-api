@@ -33,6 +33,7 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
   }
 
   private def bodyFormatValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+    println(data.body)
     List(
       JsonFormatValidation.validate[AmendLossClaimsOrderRequestBody](data.body.json, RuleIncorrectOrEmptyBodyError)
     )

@@ -19,7 +19,6 @@ package v2.controllers.requestParsers.validators
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v2.models.domain.Claim
 import v2.models.errors._
 import v2.models.requestData.AmendLossClaimsOrderRawData
 
@@ -30,42 +29,140 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
   private val validTaxYear                  = "2019-20"
   private val invalidTaxYearGap             = "2018-20"
   private val invalidTaxYearFormat          = "19-20"
-  private val validId                       = "1234568790ABCDE"
 
-  private def lossClaim(claimType: String, listOfLossClaims: List[Claim]) =
-    AnyContentAsJson(Json.obj("claimType" -> claimType, "listOfLossClaims" -> listOfLossClaims))
+
+
+  private val mtdRequest = Json.parse(
+    """
+      |{
+      |  "claimType":"carry-sideways",
+      |  "listOfLossClaims":[
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":1
+      |     }
+      |   ]
+      |}
+      |""".stripMargin)
+
+  private val mtdRequestCarryForward = Json.parse(
+    """
+      |{
+      |  "claimType":"carry-forward",
+      |  "listOfLossClaims":[
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":1
+      |     }
+      |   ]
+      |}
+      |""".stripMargin)
+
+  private val mtdRequestIdIncorrect = Json.parse(
+    """
+      |{
+      |  "claimType":"carry-sideways",
+      |  "listOfLossClaims":[
+      |     {
+      |       "id":"1234",
+      |       "sequence":1
+      |     }
+      |   ]
+      |}
+      |""".stripMargin)
+
+  private val mtdRequestInvalidOrder = Json.parse(
+    """
+      |{
+      |  "claimType":"carry-sideways",
+      |  "listOfLossClaims":[
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":1
+      |     },
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":3
+      |     },
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":5
+      |     }
+      |   ]
+      |}
+      |""".stripMargin)
+
+  private val mtdRequestInvalidStart = Json.parse(
+    """
+      |{
+      |  "claimType":"carry-sideways",
+      |  "listOfLossClaims":[
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":3
+      |     },
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":2
+      |     },
+      |     {
+      |       "id":"AAZZ1234567890a",
+      |       "sequence":4
+      |     }
+      |   ]
+      |}
+      |""".stripMargin)
+
+  private val mtdRequestInvalidBody = Json.parse(
+    """
+      |{
+      |  "claimType":"carry-diagonal",
+      |  "listOfLossClaims":[
+      |     {
+      |       "id":"walrus",
+      |       "sequence":2
+      |     },
+      |     {
+      |       "id":"walrus",
+      |       "sequence":100
+      |     }
+      |   ]
+      |}
+      |""".stripMargin)
 
   val validator = new AmendLossClaimsOrderValidator()
+
+  //lossClaim("carry-sideways", List(Claim(validId, 1))))
 
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 1))))) shouldBe Nil
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequest))) shouldBe Nil
       }
       "no Tax year is supplied" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, None, lossClaim("carry-sideways", List(Claim("1234568790ABCDE", 1))))) shouldBe Nil
+        validator.validate(AmendLossClaimsOrderRawData(validNino, None, AnyContentAsJson(mtdRequest))) shouldBe Nil
       }
     }
 
     "return one error" when {
       "nino validation fails" in {
-        validator.validate(AmendLossClaimsOrderRawData(invalidNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 1))))) shouldBe List(NinoFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(invalidNino, Some(validTaxYear), AnyContentAsJson(mtdRequest))) shouldBe List(NinoFormatError)
       }
 
       "tax year gap is higher than 1" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearGap), lossClaim("carry-sideways", List(Claim(validId, 1))))) shouldBe List(TaxYearFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearGap), AnyContentAsJson(mtdRequest))) shouldBe List(TaxYearFormatError)
       }
 
       "tax year format is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearFormat), lossClaim("carry-sideways", List(Claim(validId, 1))))) shouldBe List(TaxYearFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearFormat), AnyContentAsJson(mtdRequest))) shouldBe List(TaxYearFormatError)
       }
 
       "a non-carry-sideways claimType is provided" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-forward", List(Claim(validId, 1))))) shouldBe List(ClaimTypeFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestCarryForward))) shouldBe List(ClaimTypeFormatError)
       }
 
       "Id format is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim("1234", 1))))) shouldBe List(ClaimIdFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestIdIncorrect))) shouldBe List(ClaimIdFormatError)
       }
 
       "a mandatory field isn't provided" in {
@@ -73,18 +170,18 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       }
 
       "sequence order is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 1), Claim(validId, 3), Claim(validId, 5))))) shouldBe List(RuleSequenceOrderBroken)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidOrder))) shouldBe List(RuleSequenceOrderBroken)
       }
       "sequence start is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-sideways", List(Claim(validId, 3), Claim(validId, 2), Claim(validId, 4))))) shouldBe List(RuleInvalidSequenceStart)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidStart))) shouldBe List(RuleInvalidSequenceStart)
       }
     }
     "return multiple errors" when {
       "an invalid nino and tax year is provided" in {
-        validator.validate(AmendLossClaimsOrderRawData("Walrus", Some("13900"), lossClaim("carry-sideways", List(Claim(validId, 1))))) shouldBe List(NinoFormatError, TaxYearFormatError)
+        validator.validate(AmendLossClaimsOrderRawData("Walrus", Some("13900"), AnyContentAsJson(mtdRequest))) shouldBe List(NinoFormatError, TaxYearFormatError)
       }
       "invalid body fields are provided" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), lossClaim("carry-diagonal", List(Claim("Walrus", 2),Claim("Walrus", 100))))) shouldBe List(RuleInvalidSequenceStart, RuleSequenceOrderBroken, ClaimTypeFormatError, ClaimIdFormatError, SequenceFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidBody))) shouldBe List(RuleInvalidSequenceStart, RuleSequenceOrderBroken, ClaimTypeFormatError, ClaimIdFormatError, SequenceFormatError)
       }
     }
   }
