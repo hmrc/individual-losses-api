@@ -101,7 +101,6 @@ class AmendLossClaimsOrderControllerSpec
       lookupService = mockMtdIdLookupService,
       amendLossClaimsOrderService = mockAmendLossClaimsOrderService,
       amendLossClaimsOrderParser = mockAmendLossClaimsRequestDataParser,
-      auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
       cc = cc
     )

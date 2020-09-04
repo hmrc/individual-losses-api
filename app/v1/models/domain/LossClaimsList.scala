@@ -16,7 +16,7 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import play.api.libs.json.{JsPath, Reads, Writes}
 import play.api.libs.functional.syntax._
 import v1.models.des.ReliefClaimed
 
@@ -28,5 +28,8 @@ object LossClaimsList {
       (JsPath \ "listOfLossClaims").read[Seq[Claim]]
     )(LossClaimsList.apply _)
 
-  implicit val writes: Writes[LossClaimsList] = Json.writes[LossClaimsList]
+  implicit val writes: Writes[LossClaimsList] = (
+    (JsPath \ "claimType").write[ReliefClaimed] and
+      (JsPath \ "claimsSequence").write[Seq[Claim]]
+    )(unlift(LossClaimsList.unapply))
 }

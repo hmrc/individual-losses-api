@@ -24,7 +24,7 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v1.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.des.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse, ReliefClaimed}
-import v1.models.domain.{Claim, LossClaimsList}
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList}
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -52,7 +52,7 @@ class AmendLossClaimsOrderControllerSpec
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val claim = Claim(id, sequence)
-  val claimsList = LossClaimsList(ReliefClaimed.`CF`, Seq(claim))
+  val claimsList = AmendLossClaimsOrderRequestBody("carry-forward", Seq(claim))
   val amendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), claimsList)
   val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
