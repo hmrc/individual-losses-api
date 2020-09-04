@@ -17,17 +17,16 @@
 package v2.controllers.requestParsers.validators.validations
 
 import v2.models.domain.TypeOfClaim
-import v2.models.errors.{ClaimTypeFormatError, MtdError}
+import v2.models.errors.{ ClaimTypeFormatError, MtdError }
 
 object ClaimTypeValidation {
+
   def validate(claimType: String): List[MtdError] =
     if (TypeOfClaim.parser.isDefinedAt(claimType)) NoValidationErrors else List(ClaimTypeFormatError)
 
-  def validateClaimIsCarrySideways(typeOfClaim: String): List[MtdError] =
-    if(typeOfClaim == TypeOfClaim.`carry-sideways`.toString) {
-      NoValidationErrors
-    }
-    else {
-      List(ClaimTypeFormatError)
+  def validateClaimIsCarrySideways(typeOfClaim: TypeOfClaim): List[MtdError] =
+    typeOfClaim match {
+      case TypeOfClaim.`carry-sideways` => NoValidationErrors
+      case _                            => List(ClaimTypeFormatError)
     }
 }

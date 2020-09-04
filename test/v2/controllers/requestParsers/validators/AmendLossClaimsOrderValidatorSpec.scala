@@ -116,7 +116,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
   private val mtdRequestInvalidBody = Json.parse(
     """
       |{
-      |  "claimType":"carry-diagonal",
+      |  "claimType":"carry-forward",
       |  "listOfLossClaims":[
       |     {
       |       "id":"walrus",
@@ -131,8 +131,6 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |""".stripMargin)
 
   val validator = new AmendLossClaimsOrderValidator()
-
-  //lossClaim("carry-sideways", List(Claim(validId, 1))))
 
   "running a validation" should {
     "return no errors" when {

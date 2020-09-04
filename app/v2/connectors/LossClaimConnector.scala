@@ -20,9 +20,10 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import v2.models.domain.AmendLossClaimsOrderRequestBody
 import v2.connectors.httpparsers.StandardDesHttpParser._
 import v2.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
-import v2.models.domain.{AmendLossClaim, LossClaim, LossClaimsList}
+import v2.models.domain.{AmendLossClaim, LossClaim}
 import v2.models.requestData._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -101,7 +102,7 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     val taxYear = request.taxYear
 
     def doIt(implicit hc: HeaderCarrier) =
-      http.PUT[LossClaimsList, DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/preferences/$taxYear", request.body)
+      http.PUT[AmendLossClaimsOrderRequestBody, DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/preferences/$taxYear", request.body)
 
     doIt(desHeaderCarrier(appConfig))
   }
