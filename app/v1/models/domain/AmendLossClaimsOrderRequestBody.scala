@@ -27,4 +27,5 @@ object AmendLossClaimsOrderRequestBody {
   implicit val writes: Writes[AmendLossClaimsOrderRequestBody] = (o: AmendLossClaimsOrderRequestBody) => Json.obj(
     "claimType" -> o.claimType.toReliefClaimed,
     "claimsSequence" -> o.listOfLossClaims
-  )}
+  )
+}

@@ -23,8 +23,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v1.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.des.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse, ReliefClaimed}
-import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList, TypeOfClaim}
+import v1.models.des.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}

@@ -17,15 +17,15 @@
 package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import play.api.http.HeaderNames.ACCEPT
+import v1.models.domain.{Claim, TypeOfClaim}
 import v1.models.errors._
 import v1.models.requestData.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
-import v1.models.domain.{Claim, TypeOfClaim}
 
 class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
 

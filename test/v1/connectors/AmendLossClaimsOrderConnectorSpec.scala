@@ -17,7 +17,7 @@
 package v1.connectors
 
 import uk.gov.hmrc.domain.Nino
-import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList, TypeOfClaim}
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
 

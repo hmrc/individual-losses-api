@@ -21,7 +21,7 @@ import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendLossClaimsOrderValidator
-import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList, TypeOfClaim}
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
 import v1.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
 import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
