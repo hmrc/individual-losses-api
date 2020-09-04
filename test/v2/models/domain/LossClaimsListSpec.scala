@@ -56,13 +56,13 @@ class LossClaimsListSpec extends UnitSpec {
   val desLossClaimsListJson : JsValue = Json.parse("""
     |{
     |   "claimType" : "CSGI",
-    |   "listOfLossClaims": [
+    |   "claimsSequence": [
     |      {
-    |      "id": "234568790ABCDE",
+    |      "claimId": "234568790ABCDE",
     |      "sequence":1
     |      },
     |      {
-    |      "id": "234568790ABCFE",
+    |      "claimId": "234568790ABCFE",
     |      "sequence":2
     |      }
     |   ]

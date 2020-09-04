@@ -17,6 +17,6 @@
 package v1.models.requestData
 
 import uk.gov.hmrc.domain.Nino
-import v1.models.domain.LossClaimsList
+import v1.models.domain.AmendLossClaimsOrderRequestBody
 
-case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: DesTaxYear, body: LossClaimsList)
+case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: DesTaxYear, body: AmendLossClaimsOrderRequestBody)

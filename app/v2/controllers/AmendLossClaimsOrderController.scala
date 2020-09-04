@@ -37,7 +37,6 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
                                          amendLossClaimsOrderService: AmendLossClaimsOrderService,
                                          amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
                                          hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 

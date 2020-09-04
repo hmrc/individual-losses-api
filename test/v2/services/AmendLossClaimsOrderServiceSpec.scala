@@ -18,8 +18,8 @@ package v2.services
 
 import uk.gov.hmrc.domain.Nino
 import v2.mocks.connectors.MockLossClaimConnector
-import v2.models.des.{AmendLossClaimsOrderResponse, ReliefClaimed}
-import v2.models.domain.{Claim, LossClaimsList}
+import v2.models.des.AmendLossClaimsOrderResponse
+import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
 import v2.models.errors._
 import v2.models.outcomes.DesResponse
 import v2.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
@@ -36,7 +36,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
   val nino   = Nino("AA123456A")
   val taxYear = DesTaxYear.fromMtd("2019-20")
 
-  val lossClaimsOrder = LossClaimsList(ReliefClaimed.`CSGI`,
+  val lossClaimsOrder = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`,
                             Seq(Claim("1234568790ABCDE", 1),
                                 Claim("1234568790ABCDF", 2)))
 

@@ -17,11 +17,11 @@
 package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import play.api.http.HeaderNames.ACCEPT
 import v1.models.domain.{Claim, TypeOfClaim}
 import v1.models.errors._
 import v1.models.requestData.DesTaxYear
@@ -36,12 +36,17 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
   val claim3 = Claim("1234567890ABDE0", 3)
   val claimSeq = Seq(claim2, claim1, claim3)
 
-  def requestJson(claimType: String = TypeOfClaim.`carry-sideways`.toString, listOfLossClaims: Seq[Claim] = claimSeq): JsValue = Json.parse(s"""
-       |{
-       |   "claimType": "$claimType",
-       |   "listOfLossClaims": ${Json.toJson(listOfLossClaims)}
-       |}
+  def requestJson(claimType: String = TypeOfClaim.`carry-sideways`.toString, listOfLossClaims: Seq[Claim] = claimSeq): JsValue = {
+    // resetting custom writes for Seq[Claim] so it doesn't use custom Writes defined in the model
+    def writes: OWrites[Claim] = Json.writes[Claim]
+    def writesSeq: Writes[Seq[Claim]] = Writes.traversableWrites[Claim](writes)
+    Json.parse(s"""
+                  |{
+                  |   "claimType": "$claimType",
+                  |   "listOfLossClaims": ${Json.toJson(listOfLossClaims)(writesSeq)}
+                  |}
       """.stripMargin)
+  }
 
   private trait Test {
 

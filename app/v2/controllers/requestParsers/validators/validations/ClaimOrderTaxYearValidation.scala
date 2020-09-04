@@ -31,7 +31,6 @@ object ClaimOrderTaxYearValidation {
 
       if (end - start == 1) {
         if (startYear < 2019) {
-          print(startYear)
           List(RuleTaxYearNotSupportedError)
         } else {
           NoValidationErrors
