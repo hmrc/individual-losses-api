@@ -22,8 +22,10 @@ import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.AmendLossClaimsOrderParser
 import v2.hateoas.HateoasFactory
+import v2.models.audit.{AmendLossClaimsOrderAuditDetail, AuditEvent, AuditResponse}
 import v2.models.des.AmendLossClaimsOrderHateoasData
 import v2.models.errors._
 import v2.models.requestData.AmendLossClaimsOrderRawData
@@ -37,6 +39,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
                                          amendLossClaimsOrderService: AmendLossClaimsOrderService,
                                          amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
                                          hateoasFactory: HateoasFactory,
+                                         auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
@@ -58,6 +61,9 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
           val response = Json.toJson(vendorResponse)
+
+          auditSubmission(AmendLossClaimsOrderAuditDetail(request.userDetails, nino, taxYear, request.body,
+            serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
             .withApiHeaders(serviceResponse.correlationId)
@@ -87,5 +93,12 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: AmendLossClaimsOrderAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext) = {
+    val event = AuditEvent("AmendLossClaimsOrder", "amend-loss-claims-order", details)
+    auditService.auditEvent(event)
   }
 }

@@ -21,8 +21,10 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.ListLossClaimsParser
 import v2.hateoas.HateoasFactory
+import v2.models.audit.{AuditEvent, AuditResponse, ListLossClaimsAuditDetail}
 import v2.models.des.ListLossClaimsHateoasData
 import v2.models.errors._
 import v2.models.requestData.ListLossClaimsRawData
@@ -69,7 +71,12 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
               s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
                 s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-            Ok(Json.toJson(vendorResponse))
+            val response = Json.toJson(vendorResponse)
+
+            auditSubmission(ListLossClaimsAuditDetail(request.userDetails, nino, taxYear, typeOfLoss, businessId, claimType,
+              serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
+
+            Ok(response)
               .withApiHeaders(serviceResponse.correlationId)
           }
         }
@@ -89,5 +96,12 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: ListLossClaimsAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext) = {
+    val event = AuditEvent("ListLossClaims", "list-loss-claims", details)
+    auditService.auditEvent(event)
   }
 }

@@ -102,6 +102,7 @@ class AmendLossClaimsOrderControllerSpec
       amendLossClaimsOrderService = mockAmendLossClaimsOrderService,
       amendLossClaimsOrderParser = mockAmendLossClaimsRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 
