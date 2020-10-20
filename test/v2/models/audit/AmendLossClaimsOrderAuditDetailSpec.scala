@@ -18,9 +18,7 @@ package v2.models.audit
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
-import v2.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
+import v2.models.domain.TypeOfClaim
 
 class AmendLossClaimsOrderAuditDetailSpec extends UnitSpec {
 
