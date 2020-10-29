@@ -77,7 +77,7 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"Error response received with CorrelationId: $resCorrelationId")
 
         auditSubmission(DeleteBFLossAuditDetail(request.userDetails, nino, lossId,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+          resCorrelationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge

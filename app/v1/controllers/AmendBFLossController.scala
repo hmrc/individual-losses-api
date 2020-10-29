@@ -86,7 +86,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"Error response received with CorrelationId: $resCorrelationId")
 
         auditSubmission(AmendBFLossAuditDetail(request.userDetails, nino, lossId, request.body,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+          resCorrelationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
