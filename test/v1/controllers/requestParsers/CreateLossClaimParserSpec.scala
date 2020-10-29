@@ -28,6 +28,7 @@ import v1.models.requestData._
 class CreateLossClaimParserSpec extends UnitSpec {
   val nino = "AA123456B"
   val taxYear = "2019-20"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   private val requestBodyJson = Json.parse(
     s"""{
@@ -37,7 +38,7 @@ class CreateLossClaimParserSpec extends UnitSpec {
        |  "typeOfClaim" : "carry-forward"
        |}""".stripMargin)
 
-  val inputData =
+  val inputData: CreateLossClaimRawData =
     CreateLossClaimRawData(nino, AnyContentAsJson(requestBodyJson))
 
   trait Test extends MockCreateLossClaimValidator {
@@ -62,7 +63,7 @@ class CreateLossClaimParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
@@ -70,7 +71,7 @@ class CreateLossClaimParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
       }
     }
   }

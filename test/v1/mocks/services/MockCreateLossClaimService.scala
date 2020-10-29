@@ -32,8 +32,8 @@ trait MockCreateLossClaimService extends MockFactory {
 
     def create(requestData: CreateLossClaimRequest): CallHandler[Future[CreateLossClaimOutcome]] = {
       (mockCreateLossClaimService
-        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 }

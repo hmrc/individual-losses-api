@@ -28,21 +28,19 @@ import scala.concurrent.Future
 
 class RetrieveLossClaimServiceSpec extends ServiceSpec {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino    = Nino("AA123456A")
+  val nino: Nino = Nino("AA123456A")
   val claimId = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new RetrieveLossClaimService(connector)
   }
 
-  lazy val request = RetrieveLossClaimRequest(nino, claimId)
+  lazy val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(nino, claimId)
 
   "retrieve loss claim" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val desResponse =
+        val desResponse: DesResponse[LossClaimResponse] =
           DesResponse(correlationId,
                       LossClaimResponse(Some("selfEmploymentId"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "time"))
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Right(desResponse)))
@@ -53,26 +51,26 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError   = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Left(desResponse)))
 
-        await(service.retrieveLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.retrieveLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val desResponse = DesResponse(correlationId, SingleError(DownstreamError))
-        val expected    = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: DesResponse[SingleError] = DesResponse(correlationId, SingleError(DownstreamError))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, DownstreamError, None)
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Left(desResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Left(expected)
       }
 
       "the connector call returns multiple errors including a downstream error" in new Test {
-        val desResponse = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
-        val expected    = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, DownstreamError, None)
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Left(desResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Left(expected)
@@ -93,7 +91,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
               .retrieveLossClaim(request)
               .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
 
-            await(service.retrieveLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.retrieveLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

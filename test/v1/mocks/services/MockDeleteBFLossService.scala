@@ -32,8 +32,8 @@ trait MockDeleteBFLossService extends MockFactory {
 
     def delete(requestData: DeleteBFLossRequest): CallHandler[Future[DeleteBFLossOutcome]] = {
       (mockDeleteBFLossService
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 }

@@ -22,6 +22,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import utils.IdGenerator
 import v1.controllers.requestParsers.AmendLossClaimsOrderParser
 import v1.hateoas.HateoasFactory
 import v1.models.des.AmendLossClaimsOrderHateoasData
@@ -33,12 +34,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthService,
-                                         val lookupService: MtdIdLookupService,
-                                         amendLossClaimsOrderService: AmendLossClaimsOrderService,
-                                         amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
-                                         hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
-                                         cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                               val lookupService: MtdIdLookupService,
+                                               val idGenerator: IdGenerator,
+                                               amendLossClaimsOrderService: AmendLossClaimsOrderService,
+                                               amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
+                                               hateoasFactory: HateoasFactory,
+                                               auditService: AuditService,
+                                               cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -46,6 +48,11 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
 
   def amendClaimsOrder(nino: String, taxYear: Option[String]): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
+
       val rawData = AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(request.body))
       val result =
         for {
@@ -66,8 +73,11 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
         result
       }.merge
     }

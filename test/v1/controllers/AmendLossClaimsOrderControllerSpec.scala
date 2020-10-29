@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v1.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -41,7 +42,8 @@ class AmendLossClaimsOrderControllerSpec
     with MockAmendLossClaimsOrderService
     with MockAmendLossClaimsOrderRequestDataParser
     with MockHateoasFactory
-    with MockAuditService {
+    with MockAuditService
+    with MockIdGenerator {
 
 
   val claimType = "carry-sideways"
@@ -51,12 +53,12 @@ class AmendLossClaimsOrderControllerSpec
   val taxYear = "2019-20"
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val claim = Claim(id, sequence)
-  val claimsList = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-forward`, Seq(claim))
-  val amendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), claimsList)
-  val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
+  private val claim = Claim(id, sequence)
+  private val claimsList = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-forward`, Seq(claim))
+  private val amendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), claimsList)
+  private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
-  val testHateoasLink = Link(href = s"/individuals/losses/${nino}/loss-claims/order", method = GET, rel = "self")
+  private val testHateoasLink = Link(href = s"/individuals/losses/$nino/loss-claims/order", method = GET, rel = "self")
 
   val requestBody: JsValue = Json.parse(
     """
@@ -94,7 +96,7 @@ class AmendLossClaimsOrderControllerSpec
 
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new AmendLossClaimsOrderController(
       authService = mockEnrolmentsAuthService,
@@ -103,9 +105,11 @@ class AmendLossClaimsOrderControllerSpec
       amendLossClaimsOrderParser = mockAmendLossClaimsRequestDataParser,
       auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
+    MockIdGenerator.getCorrelationId.returns(correlationId)
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
   }
@@ -173,7 +177,7 @@ class AmendLossClaimsOrderControllerSpec
       s"a ${error.code} error is returned from the parser" in new Test {
 
         MockAmendLossClaimsOrderRequestDataParser.parseRequest(AmendLossClaimsOrderRawData(nino, Some(taxYear), AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+          .returns(Left(ErrorWrapper(correlationId, error, None)))
 
         val response: Future[Result] = controller.amendClaimsOrder(nino, Some(taxYear))(fakePostRequest(requestBody))
 
@@ -193,7 +197,7 @@ class AmendLossClaimsOrderControllerSpec
 
         MockAmendLossClaimsOrderService
           .amend(amendLossClaimsOrderRequest)
-          .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
         val response: Future[Result] = controller.amendClaimsOrder(nino, Some(taxYear))(fakePostRequest(requestBody))
         status(response) shouldBe expectedStatus

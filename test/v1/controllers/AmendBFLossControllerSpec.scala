@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v1.mocks.services._
@@ -42,7 +43,8 @@ class AmendBFLossControllerSpec
     with MockAmendBFLossService
     with MockAmendBFLossRequestDataParser
     with MockHateoasFactory
-    with MockAuditService {
+    with MockAuditService
+    with MockIdGenerator {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
@@ -96,9 +98,11 @@ class AmendBFLossControllerSpec
       hateoasFactory = mockHateoasFactory,
       amendBFLossParser = mockAmendBFLossRequestDataParser,
       auditService = mockAuditService,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
+    MockIdGenerator.getCorrelationId.returns(correlationId)
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
   }
@@ -137,7 +141,7 @@ class AmendBFLossControllerSpec
 
         MockAmendBFLossRequestDataParser
           .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(None, NinoFormatError, None)))
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
         val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
         status(result) shouldBe BAD_REQUEST
@@ -176,7 +180,7 @@ class AmendBFLossControllerSpec
 
       MockAmendBFLossRequestDataParser
         .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-        .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+        .returns(Left(ErrorWrapper(correlationId, error, None)))
 
       val response: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
 
@@ -202,7 +206,7 @@ class AmendBFLossControllerSpec
 
       MockAmendBFLossService
         .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
-        .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+        .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
       val response: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
       status(response) shouldBe expectedStatus

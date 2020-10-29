@@ -31,7 +31,9 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServi
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def createBFLoss(request: CreateBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CreateBFLossOutcome] = {
+  def createBFLoss(request: CreateBFLossRequest)(implicit hc: HeaderCarrier,
+                                                 ec: ExecutionContext,
+                                                 correlationId: String): Future[CreateBFLossOutcome] = {
 
     connector.createBFLoss(request).map {
       mapToVendorDirect("createBFLoss", mappingDesToMtdError)

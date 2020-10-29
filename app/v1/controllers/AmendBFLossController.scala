@@ -23,6 +23,7 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.IdGenerator
 import v1.controllers.requestParsers.AmendBFLossParser
 import v1.hateoas.HateoasFactory
 import v1.models.audit.{AmendBFLossAuditDetail, AuditEvent, AuditResponse}
@@ -36,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       val lookupService: MtdIdLookupService,
+                                      val idGenerator: IdGenerator,
                                       amendBFLossService: AmendBFLossService,
                                       amendBFLossParser: AmendBFLossParser,
                                       hateoasFactory: HateoasFactory,
@@ -49,6 +51,11 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
+
       val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
       val result =
         for {
@@ -72,8 +79,11 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
 
         auditSubmission(AmendBFLossAuditDetail(request.userDetails, nino, lossId, request.body,
           correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))

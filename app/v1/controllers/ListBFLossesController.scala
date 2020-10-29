@@ -21,6 +21,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.IdGenerator
 import v1.controllers.requestParsers.ListBFLossesParser
 import v1.hateoas.HateoasFactory
 import v1.models.des.ListBFLossHateoasData
@@ -33,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
+                                       val idGenerator: IdGenerator,
                                        listBFLossesService: ListBFLossesService,
                                        listBFLossesParser: ListBFLossesParser,
                                        hateoasFactory: HateoasFactory,
@@ -46,6 +48,11 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
   def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], selfEmploymentId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
+
       val rawData = ListBFLossesRawData(nino, taxYear = taxYear, typeOfLoss = typeOfLoss, selfEmploymentId = selfEmploymentId)
       val result =
         for {
@@ -75,8 +82,12 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
+
         result
       }.merge
     }

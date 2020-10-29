@@ -22,6 +22,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utils.IdGenerator
 import v1.controllers.requestParsers.DeleteBFLossParser
 import v1.models.audit.{AuditEvent, AuditResponse, DeleteBFLossAuditDetail}
 import v1.models.errors._
@@ -33,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
+                                       val idGenerator: IdGenerator,
                                        deleteBFLossService: DeleteBFLossService,
                                        deleteBFLossParser: DeleteBFLossParser,
                                        auditService: AuditService,
@@ -44,6 +47,10 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
 
       val rawData = DeleteBFLossRawData(nino, lossId)
       val result =
@@ -63,8 +70,11 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
 
         auditSubmission(DeleteBFLossAuditDetail(request.userDetails, nino, lossId,
           correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
@@ -87,7 +97,7 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   private def auditSubmission(details: DeleteBFLossAuditDetail)
                              (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+                              ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", details)
     auditService.auditEvent(event)
   }

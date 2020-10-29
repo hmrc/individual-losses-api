@@ -28,14 +28,12 @@ import scala.concurrent.Future
 
 class AmendBFLossServiceSpec extends ServiceSpec {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino = Nino("AA123456A")
+  val nino: Nino = Nino("AA123456A")
   val lossId = "AAZZ1234567890a"
 
-  val bfLoss = AmendBFLoss(256.78)
+  val bfLoss: AmendBFLoss = AmendBFLoss(256.78)
 
-  val bfLossResponse = BFLossResponse(
+  val bfLossResponse: BFLossResponse = BFLossResponse(
     Some("XKIS00000000988"),
     TypeOfLoss.`self-employment`,
     256.78,
@@ -43,7 +41,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
     "2018-07-13T12:13:48.763Z"
   )
 
-  val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
+  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockBFLossConnector {
     lazy val service = new AmendBFLossService(connector)
@@ -64,20 +62,20 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(desResponse)))
 
-        await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
         val result: AmendBFLossOutcome = await(service.amendBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, DownstreamError, None))
       }
     }
 
@@ -98,7 +96,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
               .amendBFLoss(request)
               .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

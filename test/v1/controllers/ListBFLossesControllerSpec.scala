@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListBFLossesRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
@@ -40,7 +41,8 @@ class ListBFLossesControllerSpec
     with MockListBFLossesService
     with MockListBFLossesRequestDataParser
     with MockHateoasFactory
-    with MockAuditService {
+    with MockAuditService
+    with MockIdGenerator {
 
   // WLOG as request data parsing is mocked...
   val correlationId    = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -49,15 +51,15 @@ class ListBFLossesControllerSpec
   val selfEmployment   = "self-employment"
   val selfEmploymentId = "selfEmploymentId"
 
-  val rawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
-  val request = ListBFLossesRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
+  val rawData: ListBFLossesRawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))
+  val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId))
 
-  val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
+  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val response = ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))
+  val response: ListBFLossesResponse[BFLossId] = ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))
 
-  val hateoasResponse = ListBFLossesResponse(
+  val hateoasResponse: ListBFLossesResponse[HateoasWrapper[BFLossId]] = ListBFLossesResponse(
     Seq(HateoasWrapper(BFLossId("000000123456789"), Seq(testHateoasLink)), HateoasWrapper(BFLossId("000000123456790"), Seq(testHateoasLink))))
 
   val responseJson: JsValue = Json.parse("""
@@ -95,7 +97,7 @@ class ListBFLossesControllerSpec
     """.stripMargin)
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new ListBFLossesController(
       authService = mockEnrolmentsAuthService,
@@ -104,9 +106,11 @@ class ListBFLossesControllerSpec
       listBFLossesParser = mockListBFLossesRequestDataParser,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
+    MockIdGenerator.getCorrelationId.returns(correlationId)
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
   }
@@ -162,7 +166,7 @@ class ListBFLossesControllerSpec
 
           MockListBFLossesRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
 
@@ -192,7 +196,7 @@ class ListBFLossesControllerSpec
 
           MockListBFLossesService
             .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId))(fakeRequest)
           status(response) shouldBe expectedStatus

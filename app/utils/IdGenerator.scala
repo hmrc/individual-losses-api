@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package v1.connectors
+package utils
 
-import config.AppConfig
-import play.api.Logger
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
+import java.util.UUID
 
-trait DesConnector {
+import javax.inject.{Inject, Singleton}
 
-  val logger: Logger = Logger(this.getClass)
+@Singleton
+class IdGenerator @Inject()() {
 
-  def desHeaderCarrier(appConfig: AppConfig)(implicit hc: HeaderCarrier, correlationId: String): HeaderCarrier =
-    hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders("Environment" -> appConfig.desEnv, "CorrelationId" -> correlationId)
-
+  def getCorrelationId: String = UUID.randomUUID().toString
 }

@@ -28,14 +28,12 @@ import scala.concurrent.Future
 
 class CreateLossClaimServiceSpec extends ServiceSpec {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino    = Nino("AA123456A")
+  val nino: Nino = Nino("AA123456A")
   val claimId = "AAZZ1234567890a"
 
-  val lossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
+  val lossClaim: LossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
 
-  val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
+  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new CreateLossClaimService(connector)
@@ -56,20 +54,20 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError   = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(desResponse)))
 
-        await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
         val result: CreateLossClaimOutcome = await(service.createLossClaim(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, DownstreamError, None))
       }
     }
 
@@ -98,7 +96,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
               .createLossClaim(request)
               .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

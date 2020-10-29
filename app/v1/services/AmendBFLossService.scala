@@ -33,7 +33,8 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends DesServic
 
   def amendBFLoss(request: AmendBFLossRequest)(
       implicit hc: HeaderCarrier,
-      ec: ExecutionContext): Future[AmendBFLossOutcome] = {
+      ec: ExecutionContext,
+      correlationId: String): Future[AmendBFLossOutcome] = {
 
     connector.amendBFLoss(request).map {
       mapToVendorDirect("amendBFLoss", mappingDesToMtdError)

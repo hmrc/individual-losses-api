@@ -28,7 +28,9 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Des
 
   override val serviceName: String = this.getClass.getSimpleName
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[ListLossClaimsOutcome] = {
+  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier,
+                                                     ec: ExecutionContext,
+                                                     correlationId: String) : Future[ListLossClaimsOutcome] = {
     connector.listLossClaims(request).map {
       mapToVendorDirect("listLossClaims", mappingDesToMtdError)
     }

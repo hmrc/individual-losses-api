@@ -32,8 +32,8 @@ trait MockCreateBFLossService extends MockFactory {
 
     def create(requestData: CreateBFLossRequest): CallHandler[Future[CreateBFLossOutcome]] = {
       (mockCreateBFLossService
-        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 }

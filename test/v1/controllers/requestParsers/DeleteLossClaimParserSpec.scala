@@ -25,8 +25,9 @@ import v1.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 class DeleteLossClaimParserSpec extends UnitSpec{
   val nino = "AA123456B"
   val claimId = "someClaimId"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val inputData =
+  val inputData: DeleteLossClaimRawData =
     DeleteLossClaimRawData(nino, claimId)
 
   trait Test extends MockDeleteLossClaimValidator {
@@ -51,7 +52,7 @@ class DeleteLossClaimParserSpec extends UnitSpec{
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
@@ -59,7 +60,7 @@ class DeleteLossClaimParserSpec extends UnitSpec{
           .returns(List(NinoFormatError, ClaimIdFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, ClaimIdFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, ClaimIdFormatError))))
       }
     }
   }

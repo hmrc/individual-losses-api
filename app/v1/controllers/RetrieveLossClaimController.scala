@@ -21,6 +21,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.IdGenerator
 import v1.controllers.requestParsers.RetrieveLossClaimParser
 import v1.hateoas.HateoasFactory
 import v1.models.des.GetLossClaimHateoasData
@@ -33,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthService,
                                             val lookupService: MtdIdLookupService,
+                                            val idGenerator: IdGenerator,
                                             retrieveLossClaimService: RetrieveLossClaimService,
                                             retrieveLossClaimParser: RetrieveLossClaimParser,
                                             hateoasFactory: HateoasFactory,
@@ -46,6 +48,11 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
 
   def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
+
       val rawData = RetrieveLossClaimRawData(nino, claimId)
       val result =
         for {
@@ -63,8 +70,12 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
+
         result
       }.merge
     }
