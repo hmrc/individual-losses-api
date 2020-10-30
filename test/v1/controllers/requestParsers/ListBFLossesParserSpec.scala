@@ -27,6 +27,7 @@ class ListBFLossesParserSpec extends UnitSpec {
   val nino             = "AA123456B"
   val taxYear          = "2017-18"
   val selfEmploymentId = "XAIS01234567890"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockListBFLossesValidator {
     lazy val parser = new ListBFLossesParser(mockValidator)
@@ -36,7 +37,7 @@ class ListBFLossesParserSpec extends UnitSpec {
     "valid input" should {
 
       "convert uk-property-fhl to incomeSourceType 04" in new Test {
-        val inputData =
+        val inputData: ListBFLossesRawData =
           ListBFLossesRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-fhl"), selfEmploymentId = Some(selfEmploymentId))
 
         MockValidator
@@ -55,7 +56,7 @@ class ListBFLossesParserSpec extends UnitSpec {
       }
 
       "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
-        val inputData =
+        val inputData: ListBFLossesRawData =
           ListBFLossesRawData(nino, taxYear = Some(taxYear), typeOfLoss = Some("uk-property-non-fhl"), selfEmploymentId = Some(selfEmploymentId))
 
         MockValidator
@@ -73,7 +74,7 @@ class ListBFLossesParserSpec extends UnitSpec {
       }
 
       "map missing parameters to None" in new Test {
-        val inputData =
+        val inputData: ListBFLossesRawData =
           ListBFLossesRawData(nino, None, None, None)
 
         MockValidator
@@ -95,7 +96,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "handle multiple errors" in new Test {
@@ -104,7 +105,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, LossIdFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
       }
     }
   }

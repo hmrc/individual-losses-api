@@ -29,10 +29,6 @@ import scala.concurrent.Future
 
 class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
-
-
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
   val nino   = Nino("AA123456A")
   val taxYear = DesTaxYear.fromMtd("2019-20")
 
@@ -47,7 +43,8 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
   }
 
   "amend LossClaimsOrder" when {
-    lazy val request = AmendLossClaimsOrderRequest(nino, taxYear, AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-forward`, Seq(Claim("1234568790ABCDE", 1), Claim("1234568790ABCDF", 2))))
+    lazy val request = AmendLossClaimsOrderRequest(nino, taxYear,
+      AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-forward`, Seq(Claim("1234568790ABCDE", 1), Claim("1234568790ABCDF", 2))))
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {
@@ -68,7 +65,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         val desResponse = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(desResponse)))
 
-        await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
@@ -77,7 +74,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimsOrderOutcome = await(service.amendLossClaimsOrder(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, DownstreamError, None))
       }
     }
 
@@ -99,7 +96,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
               .amendLossClaimsOrder(request)
               .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

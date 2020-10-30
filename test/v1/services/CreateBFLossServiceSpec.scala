@@ -28,14 +28,12 @@ import scala.concurrent.Future
 
 class CreateBFLossServiceSpec extends ServiceSpec {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino = Nino("AA123456A")
+  val nino: Nino = Nino("AA123456A")
   val lossId = "AAZZ1234567890a"
 
-  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
+  val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
-  val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
+  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockBFLossConnector {
     lazy val service = new CreateBFLossService(connector)
@@ -56,20 +54,20 @@ class CreateBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(desResponse)))
 
-        await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(expected)))
         val result: CreateBFLossOutcome = await(service.createBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, DownstreamError, None))
       }
     }
 
@@ -96,7 +94,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
               .createBFLoss(request)
               .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

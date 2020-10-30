@@ -22,6 +22,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utils.IdGenerator
 import v1.controllers.requestParsers.DeleteLossClaimParser
 import v1.models.audit.{AuditEvent, AuditResponse, DeleteLossClaimAuditDetail}
 import v1.models.errors._
@@ -33,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService,
                                           val lookupService: MtdIdLookupService,
+                                          val idGenerator: IdGenerator,
                                           deleteLossClaimService: DeleteLossClaimService,
                                           deleteLossClaimParser: DeleteLossClaimParser,
                                           auditService: AuditService,
@@ -44,6 +47,10 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
 
       val rawData = DeleteLossClaimRawData(nino, claimId)
       val result =
@@ -64,11 +71,14 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
 
         auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+          resCorrelationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
@@ -86,7 +96,7 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   private def auditSubmission(details: DeleteLossClaimAuditDetail)
                              (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+                              ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("deleteLossClaim", "delete-loss-claim", details)
     auditService.auditEvent(event)
   }

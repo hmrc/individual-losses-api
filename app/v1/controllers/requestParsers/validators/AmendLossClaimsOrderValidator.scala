@@ -41,7 +41,7 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
   private def bodyFieldValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
     val claimTypeValidation = List(
-      ClaimTypeValidation.validateClaimIsCarrySideways(req.claimType),
+      ClaimTypeValidation.validateClaimIsCarrySideways(req.claimType)
     )
     val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
       List(

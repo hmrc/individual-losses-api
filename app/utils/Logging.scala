@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package v1.connectors
+package utils
 
-import config.AppConfig
 import play.api.Logger
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
 
-trait DesConnector {
-
-  val logger: Logger = Logger(this.getClass)
-
-  def desHeaderCarrier(appConfig: AppConfig)(implicit hc: HeaderCarrier, correlationId: String): HeaderCarrier =
-    hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders("Environment" -> appConfig.desEnv, "CorrelationId" -> correlationId)
-
+trait Logging {
+  lazy val logger: Logger = Logger(this.getClass)
 }

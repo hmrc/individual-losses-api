@@ -30,8 +30,9 @@ class AmendLossClaimParserSpec extends UnitSpec {
   private val nino                     = "AA123456A"
   private val claimId                   = "AAZZ1234567890a"
   private val lossClaim                 = TypeOfClaim.`carry-forward`
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val data = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim)))
+  val data: AmendLossClaimRawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim)))
 
   trait Test extends MockAmendLossClaimValidator {
     lazy val parser = new AmendLossClaimParser(mockValidator)
@@ -47,13 +48,13 @@ class AmendLossClaimParserSpec extends UnitSpec {
     "return a single error" when {
       "the validator returns a single error" in new Test {
         MockValidator.validate(data).returns(List(NinoFormatError))
-        parser.parseRequest(data) shouldBe Left(ErrorWrapper(None, NinoFormatError, None))
+        parser.parseRequest(data) shouldBe Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
     }
     "return multiple errors" when {
       "the validator returns multiple errors" in new Test {
         MockValidator.validate(data).returns(List(NinoFormatError, RuleIncorrectOrEmptyBodyError))
-        parser.parseRequest(data) shouldBe Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
+        parser.parseRequest(data) shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
       }
     }
   }

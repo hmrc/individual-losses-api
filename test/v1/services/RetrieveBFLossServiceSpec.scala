@@ -28,21 +28,19 @@ import scala.concurrent.Future
 
 class RetrieveBFLossServiceSpec extends ServiceSpec {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino   = Nino("AA123456A")
+  val nino: Nino = Nino("AA123456A")
   val lossId = "AAZZ1234567890a"
 
   trait Test extends MockBFLossConnector {
     lazy val service = new RetrieveBFLossService(connector)
   }
 
-  lazy val request = RetrieveBFLossRequest(nino, lossId)
+  lazy val request: RetrieveBFLossRequest = RetrieveBFLossRequest(nino, lossId)
 
   "retrieve bf loss" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val desResponse =
+        val desResponse: DesResponse[BFLossResponse] =
           DesResponse(correlationId, BFLossResponse(Some("selfEmploymentId"), TypeOfLoss.`self-employment`, 123.45, "2018-19", "time"))
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Right(desResponse)))
 
@@ -52,26 +50,26 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError   = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Left(desResponse)))
 
-        await(service.retrieveBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.retrieveBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val desResponse = DesResponse(correlationId, SingleError(DownstreamError))
-        val expected    = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: DesResponse[SingleError] = DesResponse(correlationId, SingleError(DownstreamError))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, DownstreamError, None)
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Left(expected)
       }
 
       "the connector call returns multiple errors including a downstream error" in new Test {
-        val desResponse = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
-        val expected    = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, DownstreamError, None)
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Left(expected)
@@ -92,7 +90,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
               .retrieveBFLoss(request)
               .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
 
-            await(service.retrieveBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.retrieveBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

@@ -31,7 +31,9 @@ class AmendLossClaimService @Inject()(connector: LossClaimConnector) extends Des
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendLossClaim(request: AmendLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendLossClaimOutcome] = {
+  def amendLossClaim(request: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                     ec: ExecutionContext,
+                                                     correlationId: String): Future[AmendLossClaimOutcome] = {
 
     connector.amendLossClaim(request).map {
       mapToVendorDirect("amendLossClaim", mappingDesToMtdError)

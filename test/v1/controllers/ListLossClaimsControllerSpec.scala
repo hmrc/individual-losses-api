@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListLossClaimsRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
@@ -41,7 +42,8 @@ class ListLossClaimsControllerSpec
     with MockListLossClaimsService
     with MockListLossClaimsRequestDataParser
     with MockHateoasFactory
-    with MockAuditService {
+    with MockAuditService
+    with MockIdGenerator {
 
   // WLOG as request data parsing is mocked...
   val correlationId    = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -51,16 +53,16 @@ class ListLossClaimsControllerSpec
   val selfEmploymentId = "selfEmploymentId"
   val claimType        = "carry-sideways"
 
-  val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))
-  val request = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId), Some(TypeOfClaim.`carry-sideways`))
+  val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))
+  val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId), Some(TypeOfClaim.`carry-sideways`))
 
-  val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
+  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val response = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`),
+  val response: ListLossClaimsResponse[LossClaimId] = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`),
                                             LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`)))
 
-  val hateoasResponse = ListLossClaimsResponse(
+  val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[LossClaimId]] = ListLossClaimsResponse(
     Seq(HateoasWrapper(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink)),
         HateoasWrapper(LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink))))
 
@@ -103,18 +105,20 @@ class ListLossClaimsControllerSpec
     """.stripMargin)
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       listLossClaimsService = mockListLossClaimsService,
       listLossClaimsParser = mockListLossClaimsRequestDataParser,
-      mockHateoasFactory,
+      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
+    MockIdGenerator.getCorrelationId.returns(correlationId)
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
   }
@@ -168,7 +172,7 @@ class ListLossClaimsControllerSpec
 
           MockListLossClaimsRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))(fakeRequest)
 
@@ -199,7 +203,7 @@ class ListLossClaimsControllerSpec
 
           MockListLossClaimsService
             .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))(fakeRequest)
           status(response) shouldBe expectedStatus

@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package v1.mocks.services
+package v1.mocks
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.requestData.RetrieveBFLossRequest
-import v1.services.{RetrieveBFLossOutcome, RetrieveBFLossService}
+import utils.IdGenerator
 
-import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveBFLossService extends MockFactory {
+trait MockIdGenerator extends MockFactory {
 
-  val mockRetrieveBFLossService: RetrieveBFLossService = mock[RetrieveBFLossService]
+  val mockIdGenerator: IdGenerator = mock[IdGenerator]
 
-  object MockRetrieveBFLossService {
-    def retrieve(retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[RetrieveBFLossOutcome]] = {
-      (mockRetrieveBFLossService.retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(retrieveBFLossRequest, *, *, *)
-    }
+  object MockIdGenerator {
+    def getCorrelationId: CallHandler[String] = (mockIdGenerator.getCorrelationId _).expects()
   }
 }

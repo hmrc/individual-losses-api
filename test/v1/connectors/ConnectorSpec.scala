@@ -29,4 +29,6 @@ trait ConnectorSpec extends UnitSpec
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+  implicit val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+
 }

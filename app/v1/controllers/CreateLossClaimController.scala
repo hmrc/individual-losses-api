@@ -23,6 +23,8 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utils.IdGenerator
 import v1.controllers.requestParsers.CreateLossClaimParser
 import v1.hateoas.HateoasFactory
 import v1.models.audit.{AuditEvent, AuditResponse, CreateLossClaimAuditDetail}
@@ -36,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService,
                                           val lookupService: MtdIdLookupService,
+                                          val idGenerator: IdGenerator,
                                           createLossClaimService: CreateLossClaimService,
                                           createLossClaimParser: CreateLossClaimParser,
                                           hateoasFactory: HateoasFactory,
@@ -48,6 +51,11 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
+
       val rawData = CreateLossClaimRawData(nino, AnyContentAsJson(request.body))
       val result =
         for {
@@ -74,11 +82,14 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
 
         auditSubmission(CreateLossClaimAuditDetail(request.userDetails, nino, request.body,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+          resCorrelationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
@@ -106,7 +117,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   private def auditSubmission(details: CreateLossClaimAuditDetail)
                              (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+                              ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("createLossClaim", "create-loss-claim", details)
     auditService.auditEvent(event)
   }

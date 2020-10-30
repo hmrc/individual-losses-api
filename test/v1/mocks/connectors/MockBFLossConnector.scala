@@ -32,32 +32,32 @@ trait MockBFLossConnector extends MockFactory {
 
     def createBFLoss(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[DesOutcome[CreateBFLossResponse]]] = {
       (connector
-        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(createBFLossRequest, *, *)
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(createBFLossRequest, *, *, *)
     }
 
     def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DesOutcome[BFLossResponse]]] = {
       (connector
-        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(amendBFLossRequest, *, *)
+        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(amendBFLossRequest, *, *, *)
     }
 
     def deleteBFLoss(deleteBFLossRequest: DeleteBFLossRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (connector
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(deleteBFLossRequest, *, *)
+        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(deleteBFLossRequest, *, *, *)
     }
 
     def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[DesOutcome[BFLossResponse]]] = {
       (connector
-        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(request, *, *)
+        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(request, *, *, *)
     }
 
     def listBFLosses(request: ListBFLossesRequest): CallHandler[Future[DesOutcome[ListBFLossesResponse[BFLossId]]]] = {
       (connector
-        .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(request, *, *)
+        .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(request, *, *, *)
     }
   }
 
