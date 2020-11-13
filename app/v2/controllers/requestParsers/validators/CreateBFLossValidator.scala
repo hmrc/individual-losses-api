@@ -17,6 +17,7 @@
 package v2.controllers.requestParsers.validators
 
 import config.FixedConfig
+import v2.controllers.requestParsers.validators.validations.TaxYearValidation
 import v2.controllers.requestParsers.validators.validations._
 import v2.models.domain.BFLoss
 import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
@@ -48,7 +49,9 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
   private def taxYearValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
-      TaxYearValidation.validate(req.taxYear)
+      TaxYearValidation.validate(req.taxYear).map(
+        _.copy(paths = Some(Seq(s"/taxYear")))
+      )
     )
   }
 

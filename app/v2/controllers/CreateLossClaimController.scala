@@ -23,6 +23,7 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
+import v2.models.errors.{CustomisedMtdError, RuleTaxYearRangeInvalid, TaxYearFormatError}
 import v2.controllers.requestParsers.CreateLossClaimParser
 import v2.hateoas.HateoasFactory
 import v2.models.audit.{AuditEvent, AuditResponse, CreateLossClaimAuditDetail}
@@ -96,7 +97,9 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | BusinessIdFormatError
            | RuleBusinessId
            | RuleTypeOfClaimInvalid
-           | TypeOfClaimFormatError =>
+           | TypeOfClaimFormatError
+           | CustomisedMtdError(TaxYearFormatError.code)
+           | CustomisedMtdError(RuleTaxYearRangeInvalid.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded | RuleNoAccountingPeriod => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

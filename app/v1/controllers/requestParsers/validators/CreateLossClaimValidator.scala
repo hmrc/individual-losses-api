@@ -58,7 +58,9 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
   private def taxYearValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[LossClaim]
     List(
-      TaxYearValidation.validate(req.taxYear)
+      TaxYearValidation.validate(req.taxYear).map(
+        _.copy(paths = Some(Seq(s"/taxYear")))
+      )
     )
   }
 

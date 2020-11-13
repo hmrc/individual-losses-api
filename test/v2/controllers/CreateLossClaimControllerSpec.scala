@@ -149,10 +149,10 @@ class CreateLossClaimControllerSpec
     val badRequestErrorsFromParser = List(
       BadRequestError,
       NinoFormatError,
-      TaxYearFormatError,
+      TaxYearFormatError.copy(paths = Some(List("/taxYear"))),
       RuleIncorrectOrEmptyBodyError,
       RuleTaxYearNotSupportedError,
-      RuleTaxYearRangeInvalid,
+      RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))),
       TypeOfLossFormatError,
       BusinessIdFormatError,
       RuleBusinessId,

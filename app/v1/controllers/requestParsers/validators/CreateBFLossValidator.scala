@@ -47,8 +47,11 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
 
   private def taxYearValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
+
     List(
-      TaxYearValidation.validate(req.taxYear)
+      TaxYearValidation.validate(req.taxYear).map(
+        _.copy(paths = Some(Seq(s"/taxYear")))
+      )
     )
   }
 
