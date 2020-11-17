@@ -107,7 +107,9 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | SelfEmploymentIdFormatError
            | RuleSelfEmploymentId
            | RuleTypeOfClaimInvalid
-           | TypeOfClaimFormatError =>
+           | TypeOfClaimFormatError
+           | CustomisedMtdError(TaxYearFormatError.code)
+           | CustomisedMtdError(RuleTaxYearRangeInvalid.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded | RuleNoAccountingPeriod => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

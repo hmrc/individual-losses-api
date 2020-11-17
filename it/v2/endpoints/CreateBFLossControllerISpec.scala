@@ -175,12 +175,12 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
 
       createBFLossValidationErrorTest("BADNINO", generateBFLoss(Some(businessId), typeOfLoss, taxYear, lossAmount), Status.BAD_REQUEST, NinoFormatError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(businessId), typeOfLoss, "20111", lossAmount) , Status.BAD_REQUEST, TaxYearFormatError)
+        generateBFLoss(Some(businessId), typeOfLoss, "20111", lossAmount) , Status.BAD_REQUEST, TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       createBFLossValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(Some(businessId), typeOfLoss, "2011-12", lossAmount), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(businessId), typeOfLoss, "2019-25", lossAmount), Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
+        generateBFLoss(Some(businessId), typeOfLoss, "2019-25", lossAmount), Status.BAD_REQUEST, RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
       createBFLossValidationErrorTest("AA123456A",
         generateBFLoss(None, "self-employment-class", "2019-20", lossAmount), Status.BAD_REQUEST, TypeOfLossFormatError)
       createBFLossValidationErrorTest("AA123456A",

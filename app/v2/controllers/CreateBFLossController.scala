@@ -23,6 +23,7 @@ import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
+import v2.models.errors.{CustomisedMtdError, RuleTaxYearRangeInvalid, TaxYearFormatError}
 import v2.controllers.requestParsers.CreateBFLossParser
 import v2.hateoas.HateoasFactory
 import v2.models.audit.{AuditEvent, AuditResponse, CreateBFLossAuditDetail}
@@ -89,7 +90,8 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleIncorrectOrEmptyBodyError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalid | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId | AmountFormatError |
-           RuleInvalidLossAmount | RuleTaxYearNotEndedError =>
+           RuleInvalidLossAmount | RuleTaxYearNotEndedError | CustomisedMtdError(TaxYearFormatError.code) |
+           CustomisedMtdError(RuleTaxYearRangeInvalid.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError                => NotFound(Json.toJson(errorWrapper))

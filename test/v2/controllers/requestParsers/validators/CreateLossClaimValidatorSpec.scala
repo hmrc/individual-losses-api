@@ -99,19 +99,19 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2016")))) shouldBe
-          List(TaxYearFormatError)
+          List(TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       }
 
       "a non-numeric tax year is supplied" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "XXXX-YY")))) shouldBe
-          List(TaxYearFormatError)
+          List(TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       }
     }
 
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2019-21")))) shouldBe
-          List(RuleTaxYearRangeInvalid)
+          List(RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
       }
     }
 

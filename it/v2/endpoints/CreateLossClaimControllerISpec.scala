@@ -181,12 +181,12 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       createLossClaimValidationErrorTest("BADNINO", generateLossClaim(Some(businessId), typeOfLoss, taxYear,
         "carry-forward"), Status.BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(businessId), typeOfLoss, "20111", "carry-forward") , Status.BAD_REQUEST, TaxYearFormatError)
+        generateLossClaim(Some(businessId), typeOfLoss, "20111", "carry-forward") , Status.BAD_REQUEST, TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       createLossClaimValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createLossClaimValidationErrorTest("AA123456A",
         generateLossClaim(Some(businessId), typeOfLoss, "2011-12", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(businessId), typeOfLoss, "2019-25", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
+        generateLossClaim(Some(businessId), typeOfLoss, "2019-25", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
       createLossClaimValidationErrorTest("AA123456A",
         generateLossClaim(None, "self-employment-class", "2019-20", "carry-forward"), Status.BAD_REQUEST, TypeOfLossFormatError)
       createLossClaimValidationErrorTest("AA123456A",

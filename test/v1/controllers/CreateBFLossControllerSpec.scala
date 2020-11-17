@@ -155,10 +155,10 @@ class CreateBFLossControllerSpec
 
       val badRequestErrorsFromParser = List(
         NinoFormatError,
-        TaxYearFormatError,
+        TaxYearFormatError.copy(paths = Some(List("/taxYear"))),
         RuleIncorrectOrEmptyBodyError,
         RuleTaxYearNotSupportedError,
-        RuleTaxYearRangeInvalid,
+        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))),
         TypeOfLossFormatError,
         SelfEmploymentIdFormatError,
         RuleSelfEmploymentId,
