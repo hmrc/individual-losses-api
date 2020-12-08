@@ -22,7 +22,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v2.connectors.httpparsers.StandardDesHttpParser._
 import v2.controllers.UserRequest
-import v2.models.auth.UserDetails
 import v2.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v2.models.domain.{AmendBFLoss, BFLoss}
 import v2.models.requestData._

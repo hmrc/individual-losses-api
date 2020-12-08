@@ -28,6 +28,6 @@ trait DesConnector {
 
   def desHeaderCarrier[A](appConfig: AppConfig)(implicit hc: HeaderCarrier, correlationId: String, request:UserRequest[A]): HeaderCarrier =
     hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders(request.headers.headers:_*)
+      .withExtraHeaders(request.headers.headers:_*).withExtraHeaders("CorrelationId" ->  correlationId)
 
 }

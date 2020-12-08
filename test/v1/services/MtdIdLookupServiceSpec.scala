@@ -16,10 +16,7 @@
 
 package v1.services
 
-import play.api.test.FakeRequest
-import v1.controllers.UserRequest
 import v1.mocks.connectors.MockMtdIdLookupConnector
-import v1.models.auth.UserDetails
 import v1.models.errors.{DownstreamError, NinoFormatError, UnauthorisedError}
 
 import scala.concurrent.Future
