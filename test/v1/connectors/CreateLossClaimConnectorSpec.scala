@@ -16,7 +16,10 @@
 
 package v1.connectors
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v1.controllers.UserRequest
+import v1.models.auth.UserDetails
 import v1.models.des._
 import v1.models.domain._
 import v1.models.errors._
@@ -65,12 +68,14 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def createLossClaimsResult(connector: LossClaimConnector): DesOutcome[CreateLossClaimResponse] =
+    def createLossClaimsResult(connector: LossClaimConnector): DesOutcome[CreateLossClaimResponse] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.createLossClaim(
           CreateLossClaimRequest(
             nino = Nino(nino),
             lossClaim
           )))
+    }
   }
 }

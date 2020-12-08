@@ -19,6 +19,7 @@ package v1.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.controllers.UserRequest
 import v1.models.requestData.DeleteLossClaimRequest
 import v1.services.{DeleteLossClaimOutcome, DeleteLossClaimService}
 
@@ -30,10 +31,10 @@ trait MockDeleteLossClaimService extends MockFactory {
 
   object MockDeleteLossClaimService {
 
-    def delete(requestData: DeleteLossClaimRequest): CallHandler[Future[DeleteLossClaimOutcome]] = {
+    def delete[A](requestData: DeleteLossClaimRequest): CallHandler[Future[DeleteLossClaimOutcome]] = {
       (mockDeleteLossClaimService
-        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.controllers.UserRequest
 import v1.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
 import v1.models.domain.{AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim}
 import v1.models.requestData._
@@ -30,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
 
-  def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
+  def createLossClaim[A](request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
                                                        ec: ExecutionContext,
-                                                       correlationId: String): Future[DesOutcome[CreateLossClaimResponse]] = {
+                                                       correlationId: String,ur:UserRequest[A]): Future[DesOutcome[CreateLossClaimResponse]] = {
     val nino = request.nino.nino
 
     def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[CreateLossClaimResponse]] =
@@ -41,9 +42,9 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
+  def amendLossClaim[A](amendLossClaimRequest: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
                                                                    ec: ExecutionContext,
-                                                                   correlationId: String): Future[DesOutcome[LossClaimResponse]] = {
+                                                                   correlationId: String, ur:UserRequest[A]): Future[DesOutcome[LossClaimResponse]] = {
 
     val nino    = amendLossClaimRequest.nino.nino
     val claimId = amendLossClaimRequest.claimId
@@ -55,9 +56,9 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier,
+  def retrieveLossClaim[A](request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier,
                                                            ec: ExecutionContext,
-                                                           correlationId: String): Future[DesOutcome[LossClaimResponse]] = {
+                                                           correlationId: String, ur:UserRequest[A]): Future[DesOutcome[LossClaimResponse]] = {
     val nino    = request.nino.nino
     val claimId = request.claimId
 
@@ -68,9 +69,9 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier,
+  def listLossClaims[A](request: ListLossClaimsRequest)(implicit hc: HeaderCarrier,
                                                      ec: ExecutionContext,
-                                                     correlationId: String): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
+                                                     correlationId: String, ur:UserRequest[A]): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
 
     val nino = request.nino.nino
     val pathParameters =
@@ -90,9 +91,9 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier,
+  def deleteLossClaim[A](request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier,
                                                        ec: ExecutionContext,
-                                                       correlationId: String): Future[DesOutcome[Unit]] = {
+                                                       correlationId: String, ur:UserRequest[A]): Future[DesOutcome[Unit]] = {
     val nino    = request.nino.nino
     val claimId = request.claimId
 
@@ -102,9 +103,9 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
+  def amendLossClaimsOrder[A](request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
                                                                  ec: ExecutionContext,
-                                                                 correlationId: String): Future[DesOutcome[Unit]] = {
+                                                                 correlationId: String, ur:UserRequest[A]): Future[DesOutcome[Unit]] = {
     val nino    = request.nino.nino
     val taxYear = request.taxYear
 

@@ -16,7 +16,10 @@
 
 package v2.services
 
+import play.api.test.FakeRequest
+import v2.controllers.UserRequest
 import v2.mocks.connectors.MockMtdIdLookupConnector
+import v2.models.auth.UserDetails
 import v2.models.errors.{DownstreamError, NinoFormatError, UnauthorisedError}
 
 import scala.concurrent.Future
@@ -24,6 +27,7 @@ import scala.concurrent.Future
 class MtdIdLookupServiceSpec extends ServiceSpec {
 
   trait Test extends MockMtdIdLookupConnector {
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
     lazy val target = new MtdIdLookupService(mockMtdIdLookupConnector)
   }
 

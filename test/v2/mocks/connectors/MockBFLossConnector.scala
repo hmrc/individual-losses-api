@@ -20,6 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.{BFLossConnector, DesOutcome}
+import v2.controllers.UserRequest
 import v2.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v2.models.requestData._
 
@@ -30,34 +31,34 @@ trait MockBFLossConnector extends MockFactory {
 
   object MockedBFLossConnector {
 
-    def createBFLoss(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[DesOutcome[CreateBFLossResponse]]] = {
+    def createBFLoss[A](createBFLossRequest: CreateBFLossRequest): CallHandler[Future[DesOutcome[CreateBFLossResponse]]] = {
       (connector
-        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(createBFLossRequest, *, *)
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(createBFLossRequest, *, *,*)
     }
 
-    def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DesOutcome[BFLossResponse]]] = {
+    def amendBFLoss[A](amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DesOutcome[BFLossResponse]]] = {
       (connector
-        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(amendBFLossRequest, *, *)
+        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(amendBFLossRequest, *, *, *)
     }
 
-    def deleteBFLoss(deleteBFLossRequest: DeleteBFLossRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+    def deleteBFLoss[A](deleteBFLossRequest: DeleteBFLossRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (connector
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(deleteBFLossRequest, *, *)
+        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(deleteBFLossRequest, *, *,*)
     }
 
-    def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[DesOutcome[BFLossResponse]]] = {
+    def retrieveBFLoss[A](request: RetrieveBFLossRequest): CallHandler[Future[DesOutcome[BFLossResponse]]] = {
       (connector
-        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(request, *, *)
+        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(request, *, *,*)
     }
 
-    def listBFLosses(request: ListBFLossesRequest): CallHandler[Future[DesOutcome[ListBFLossesResponse[BFLossId]]]] = {
+    def listBFLosses[A](request: ListBFLossesRequest): CallHandler[Future[DesOutcome[ListBFLossesResponse[BFLossId]]]] = {
       (connector
-        .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(request, *, *)
+        .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(request, *, *,*)
     }
   }
 

@@ -19,6 +19,7 @@ package v2.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v2.controllers.UserRequest
 import v2.models.requestData.ListLossClaimsRequest
 import v2.services.{ListLossClaimsOutcome, ListLossClaimsService}
 
@@ -30,10 +31,10 @@ trait MockListLossClaimsService extends MockFactory {
 
   object MockListLossClaimsService {
 
-    def list(listBFLossRequest: ListLossClaimsRequest): CallHandler[Future[ListLossClaimsOutcome]] = {
+    def list[A](listBFLossRequest: ListLossClaimsRequest): CallHandler[Future[ListLossClaimsOutcome]] = {
       (mockListLossClaimsService
-        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(listBFLossRequest, *, *)
+        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(listBFLossRequest, *, *, *)
     }
   }
 }

@@ -16,8 +16,11 @@
 
 package v2.services
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v2.controllers.UserRequest
 import v2.mocks.connectors.MockLossClaimConnector
+import v2.models.auth.UserDetails
 import v2.models.des.LossClaimResponse
 import v2.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
 import v2.models.errors._
@@ -42,6 +45,7 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new AmendLossClaimService(connector)
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
   }
 
   "amend LossClaim" when {

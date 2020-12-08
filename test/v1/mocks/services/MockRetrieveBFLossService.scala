@@ -19,6 +19,7 @@ package v1.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.controllers.UserRequest
 import v1.models.requestData.RetrieveBFLossRequest
 import v1.services.{RetrieveBFLossOutcome, RetrieveBFLossService}
 
@@ -29,9 +30,9 @@ trait MockRetrieveBFLossService extends MockFactory {
   val mockRetrieveBFLossService: RetrieveBFLossService = mock[RetrieveBFLossService]
 
   object MockRetrieveBFLossService {
-    def retrieve(retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[RetrieveBFLossOutcome]] = {
-      (mockRetrieveBFLossService.retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(retrieveBFLossRequest, *, *, *)
+    def retrieve[A](retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[RetrieveBFLossOutcome]] = {
+      (mockRetrieveBFLossService.retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(retrieveBFLossRequest, *, *, *, *)
     }
   }
 }

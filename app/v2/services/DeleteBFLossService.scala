@@ -19,6 +19,7 @@ package v2.services
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.BFLossConnector
+import v2.controllers.UserRequest
 import v2.models.errors._
 import v2.models.requestData.DeleteBFLossRequest
 
@@ -31,7 +32,7 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends DesServi
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteBFLossOutcome] = {
+  def deleteBFLoss[A](request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, ur:UserRequest[A]): Future[DeleteBFLossOutcome] = {
 
     connector.deleteBFLoss(request).map {
       mapToVendorDirect("deleteBFLoss", mappingDesToMtdError)

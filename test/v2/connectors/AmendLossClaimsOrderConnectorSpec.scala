@@ -16,7 +16,10 @@
 
 package v2.connectors
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v2.controllers.UserRequest
+import v2.models.auth.UserDetails
 import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
 import v2.models.outcomes.DesResponse
 import v2.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
@@ -46,7 +49,8 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def amendLossClaimsOrderResult(connector: LossClaimConnector): DesOutcome[Unit] =
+    def amendLossClaimsOrderResult(connector: LossClaimConnector): DesOutcome[Unit] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.amendLossClaimsOrder(
           AmendLossClaimsOrderRequest(
@@ -54,5 +58,6 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
             taxYear = DesTaxYear.fromMtd(taxYear),
             body = amendLossClaimsOrder
           )))
+    }
   }
 }

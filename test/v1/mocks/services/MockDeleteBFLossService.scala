@@ -19,6 +19,7 @@ package v1.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.controllers.UserRequest
 import v1.models.requestData.DeleteBFLossRequest
 import v1.services.{DeleteBFLossOutcome, DeleteBFLossService}
 
@@ -30,10 +31,10 @@ trait MockDeleteBFLossService extends MockFactory {
 
   object MockDeleteBFLossService {
 
-    def delete(requestData: DeleteBFLossRequest): CallHandler[Future[DeleteBFLossOutcome]] = {
+    def delete[A](requestData: DeleteBFLossRequest): CallHandler[Future[DeleteBFLossOutcome]] = {
       (mockDeleteBFLossService
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _: UserRequest[A]))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

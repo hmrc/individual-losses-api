@@ -19,6 +19,7 @@ package v2.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v2.controllers.UserRequest
 import v2.models.requestData.CreateLossClaimRequest
 import v2.services.{CreateLossClaimOutcome, CreateLossClaimService}
 
@@ -30,10 +31,10 @@ trait MockCreateLossClaimService extends MockFactory {
 
   object MockCreateLossClaimService {
 
-    def create(requestData: CreateLossClaimRequest): CallHandler[Future[CreateLossClaimOutcome]] = {
+    def create[A](requestData: CreateLossClaimRequest): CallHandler[Future[CreateLossClaimOutcome]] = {
       (mockCreateLossClaimService
-        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(requestData, *, *, *)
     }
   }
 }

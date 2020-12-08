@@ -21,6 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.BFLossConnector
 import v1.models.errors._
 import v1.models.requestData.AmendBFLossRequest
+import v1.controllers.UserRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,10 +32,10 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends DesServic
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendBFLoss(request: AmendBFLossRequest)(
+  def amendBFLoss[A](request: AmendBFLossRequest)(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[AmendBFLossOutcome] = {
+      correlationId: String, ur:UserRequest[A]): Future[AmendBFLossOutcome] = {
 
     connector.amendBFLoss(request).map {
       mapToVendorDirect("amendBFLoss", mappingDesToMtdError)

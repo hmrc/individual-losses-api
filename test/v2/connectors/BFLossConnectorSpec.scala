@@ -17,8 +17,11 @@
 package v2.connectors
 
 import mocks.MockAppConfig
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v2.controllers.UserRequest
 import v2.mocks.MockHttpClient
+import v2.models.auth.UserDetails
 import v2.models.des._
 import v2.models.domain.{AmendBFLoss, BFLoss, TypeOfLoss}
 import v2.models.errors._
@@ -82,13 +85,15 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def createBFLossResult(connector: BFLossConnector): DesOutcome[CreateBFLossResponse] =
+    def createBFLossResult(connector: BFLossConnector): DesOutcome[CreateBFLossResponse] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.createBFLoss(
           CreateBFLossRequest(
             nino = Nino(nino),
             bfLoss
           )))
+    }
   }
 
   "amend BFLoss" when {
@@ -138,7 +143,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def amendBFLossResult(connector: BFLossConnector): DesOutcome[BFLossResponse] =
+    def amendBFLossResult(connector: BFLossConnector): DesOutcome[BFLossResponse] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.amendBFLoss(
           AmendBFLossRequest(
@@ -146,6 +152,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
             lossId = lossId,
             amendBFLoss
           )))
+    }
   }
 
   "delete BFLoss" when {
@@ -186,19 +193,22 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def deleteBFLossResult(connector: BFLossConnector): DesOutcome[Unit] =
+    def deleteBFLossResult(connector: BFLossConnector): DesOutcome[Unit] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.deleteBFLoss(
           DeleteBFLossRequest(
             nino = Nino(nino),
             lossId = lossId
           )))
+    }
   }
 
   "retrieveBFLoss" should {
     val retrieveResponse = BFLossResponse(Some("fakeId"), TypeOfLoss.`self-employment`, 2000.25, "2018-19", "dateString")
 
     def retrieveBFLossResult(connector: BFLossConnector): DesOutcome[BFLossResponse] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.retrieveBFLoss(
           RetrieveBFLossRequest(
@@ -251,6 +261,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
                            taxYear: Option[DesTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
                            businessId: Option[String] = None): DesOutcome[ListBFLossesResponse[BFLossId]] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.listBFLosses(
           ListBFLossesRequest(

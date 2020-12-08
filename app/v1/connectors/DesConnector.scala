@@ -20,13 +20,14 @@ import config.AppConfig
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
+import v1.controllers.UserRequest
 
 trait DesConnector {
 
   val logger: Logger = Logger(this.getClass)
 
-  def desHeaderCarrier(appConfig: AppConfig)(implicit hc: HeaderCarrier, correlationId: String): HeaderCarrier =
+  def desHeaderCarrier[A](appConfig: AppConfig)(implicit hc: HeaderCarrier, correlationId: String, request:UserRequest[A]): HeaderCarrier =
     hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders("Environment" -> appConfig.desEnv, "CorrelationId" -> correlationId)
+      .withExtraHeaders(request.headers.headers:_*)
 
 }

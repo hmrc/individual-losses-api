@@ -19,6 +19,7 @@ package v2.services
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
+import v2.controllers.UserRequest
 import v2.models.errors._
 import v2.models.requestData.DeleteLossClaimRequest
 
@@ -31,7 +32,7 @@ class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends De
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteLossClaimOutcome] = {
+  def deleteLossClaim[A](request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, ur:UserRequest[A]): Future[DeleteLossClaimOutcome] = {
 
     connector.deleteLossClaim(request).map {
       mapToVendorDirect("deleteLossClaim", mappingDesToMtdError)

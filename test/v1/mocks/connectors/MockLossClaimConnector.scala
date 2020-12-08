@@ -20,6 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, LossClaimConnector}
+import v1.controllers.UserRequest
 import v1.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
 import v1.models.requestData._
 
@@ -30,40 +31,40 @@ trait MockLossClaimConnector extends MockFactory {
 
   object MockedLossClaimConnector {
 
-    def createLossClaim(request: CreateLossClaimRequest): CallHandler[Future[DesOutcome[CreateLossClaimResponse]]] = {
+    def createLossClaim[A](request: CreateLossClaimRequest): CallHandler[Future[DesOutcome[CreateLossClaimResponse]]] = {
       (connector
-        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
+        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(request, *, *, *, *)
     }
 
-    def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest): CallHandler[Future[DesOutcome[LossClaimResponse]]] = {
+    def amendLossClaim[A](amendLossClaimRequest: AmendLossClaimRequest): CallHandler[Future[DesOutcome[LossClaimResponse]]] = {
       (connector
-        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(amendLossClaimRequest, *, *, *)
+        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(amendLossClaimRequest, *, *, *,*)
     }
 
-    def retrieveLossClaim(request: RetrieveLossClaimRequest): CallHandler[Future[DesOutcome[LossClaimResponse]]] = {
+    def retrieveLossClaim[A](request: RetrieveLossClaimRequest): CallHandler[Future[DesOutcome[LossClaimResponse]]] = {
       (connector
-        .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
+        .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(request, *, *, *, *)
     }
 
-    def deleteLossClaim(deleteLossClaimRequest: DeleteLossClaimRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+    def deleteLossClaim[A](deleteLossClaimRequest: DeleteLossClaimRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (connector
-        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(deleteLossClaimRequest, *, *, *)
+        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String,_:UserRequest[A]))
+        .expects(deleteLossClaimRequest, *, *, *, *)
     }
 
-    def listLossClaims(request: ListLossClaimsRequest): CallHandler[Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]]] = {
+    def listLossClaims[A](request: ListLossClaimsRequest): CallHandler[Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]]] = {
       (connector
-        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
+        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(request, *, *, *, *)
     }
 
-    def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+    def amendLossClaimsOrder[A](request: AmendLossClaimsOrderRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (connector
-        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
+        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(request, *, *, *,*)
     }
   }
 }

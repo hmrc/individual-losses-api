@@ -19,6 +19,7 @@ package v2.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v2.controllers.UserRequest
 import v2.models.requestData.RetrieveLossClaimRequest
 import v2.services.{RetrieveLossClaimOutcome, RetrieveLossClaimService}
 
@@ -29,9 +30,9 @@ trait MockRetrieveLossClaimService extends MockFactory {
   val mockRetrieveLossClaimService: RetrieveLossClaimService = mock[RetrieveLossClaimService]
 
   object MockRetrieveLossClaimService {
-    def retrieve(retrieveLossClaimRequest: RetrieveLossClaimRequest): CallHandler[Future[RetrieveLossClaimOutcome]] = {
-      (mockRetrieveLossClaimService.retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(retrieveLossClaimRequest, *, *)
+    def retrieve[A](retrieveLossClaimRequest: RetrieveLossClaimRequest): CallHandler[Future[RetrieveLossClaimOutcome]] = {
+      (mockRetrieveLossClaimService.retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _:UserRequest[A]))
+        .expects(retrieveLossClaimRequest, *, *,*)
     }
   }
 }

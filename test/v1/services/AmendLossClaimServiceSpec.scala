@@ -16,8 +16,11 @@
 
 package v1.services
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v1.controllers.UserRequest
 import v1.mocks.connectors.MockLossClaimConnector
+import v1.models.auth.UserDetails
 import v1.models.des.LossClaimResponse
 import v1.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
 import v1.models.errors._
@@ -39,6 +42,7 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
   val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockLossClaimConnector {
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
     lazy val service = new AmendLossClaimService(connector)
   }
 

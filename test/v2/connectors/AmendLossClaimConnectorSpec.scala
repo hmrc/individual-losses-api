@@ -18,7 +18,10 @@ package v2.connectors
 
 import java.time.LocalDateTime
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v2.controllers.UserRequest
+import v2.models.auth.UserDetails
 import v2.models.des._
 import v2.models.domain._
 import v2.models.errors._
@@ -77,7 +80,8 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def amendLossClaimResult(connector: LossClaimConnector): DesOutcome[LossClaimResponse] =
+    def amendLossClaimResult(connector: LossClaimConnector): DesOutcome[LossClaimResponse] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.amendLossClaim(
           AmendLossClaimRequest(
@@ -85,5 +89,6 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
             claimId = claimId,
             amendLossClaim
           )))
+    }
   }
 }

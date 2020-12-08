@@ -19,6 +19,7 @@ package v1.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.controllers.UserRequest
 import v1.models.requestData.CreateBFLossRequest
 import v1.services.{CreateBFLossOutcome, CreateBFLossService}
 
@@ -30,10 +31,10 @@ trait MockCreateBFLossService extends MockFactory {
 
   object MockCreateBFLossService {
 
-    def create(requestData: CreateBFLossRequest): CallHandler[Future[CreateBFLossOutcome]] = {
+    def create[A](requestData: CreateBFLossRequest): CallHandler[Future[CreateBFLossOutcome]] = {
       (mockCreateBFLossService
-        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(requestData, *, *, *,*)
     }
   }
 }

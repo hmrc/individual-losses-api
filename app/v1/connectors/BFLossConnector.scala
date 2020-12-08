@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.controllers.UserRequest
 import v1.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v1.models.domain.{AmendBFLoss, BFLoss}
 import v1.models.requestData._
@@ -30,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
 
-  def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
+  def createBFLoss[A](createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
                                                              ec: ExecutionContext,
-                                                             correlationId: String): Future[DesOutcome[CreateBFLossResponse]] = {
+                                                             correlationId: String,ur:UserRequest[A]): Future[DesOutcome[CreateBFLossResponse]] = {
 
     val nino = createBFLossRequest.nino.nino
 
@@ -43,9 +44,9 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
+  def amendBFLoss[A](amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
                                                           ec: ExecutionContext,
-                                                          correlationId: String): Future[DesOutcome[BFLossResponse]] = {
+                                                          correlationId: String, ur:UserRequest[A]): Future[DesOutcome[BFLossResponse]] = {
 
     val nino = amendBFLossRequest.nino.nino
     val lossId = amendBFLossRequest.lossId
@@ -57,8 +58,8 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext,
-                                                 correlationId: String): Future[DesOutcome[Unit]] = {
+  def deleteBFLoss[A](request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext,
+                                                 correlationId: String, ur:UserRequest[A]): Future[DesOutcome[Unit]] = {
     val nino = request.nino.nino
     val lossId = request.lossId
 
@@ -68,8 +69,8 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext,
-                                                     correlationId: String): Future[DesOutcome[BFLossResponse]] = {
+  def retrieveBFLoss[A](request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext,
+                                                     correlationId: String,ur:UserRequest[A]): Future[DesOutcome[BFLossResponse]] = {
     val nino = request.nino.nino
     val lossId = request.lossId
 
@@ -80,8 +81,8 @@ class BFLossConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends 
     doIt(desHeaderCarrier(appConfig))
   }
 
-  def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext,
-                                                 correlationId: String): Future[DesOutcome[ListBFLossesResponse[BFLossId]]] = {
+  def listBFLosses[A](request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext,
+                                                 correlationId: String,ur:UserRequest[A]): Future[DesOutcome[ListBFLossesResponse[BFLossId]]] = {
     val nino = request.nino.nino
     val pathParameters =
       Map("taxYear"          -> request.taxYear.map(_.value),

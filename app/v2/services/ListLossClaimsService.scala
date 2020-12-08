@@ -19,6 +19,7 @@ package v2.services
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
+import v2.controllers.UserRequest
 import v2.models.errors._
 import v2.models.requestData.ListLossClaimsRequest
 
@@ -28,7 +29,7 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Des
 
   override val serviceName: String = this.getClass.getSimpleName
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[ListLossClaimsOutcome] = {
+  def listLossClaims[A](request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, ur:UserRequest[A]) : Future[ListLossClaimsOutcome] = {
     connector.listLossClaims(request).map {
       mapToVendorDirect("listLossClaims", mappingDesToMtdError)
     }

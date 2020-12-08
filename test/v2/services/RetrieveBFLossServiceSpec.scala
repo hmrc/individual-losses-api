@@ -16,8 +16,11 @@
 
 package v2.services
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v2.controllers.UserRequest
 import v2.mocks.connectors.MockBFLossConnector
+import v2.models.auth.UserDetails
 import v2.models.des.BFLossResponse
 import v2.models.domain.TypeOfLoss
 import v2.models.errors._
@@ -34,6 +37,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
   val lossId = "AAZZ1234567890a"
 
   trait Test extends MockBFLossConnector {
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
     lazy val service = new RetrieveBFLossService(connector)
   }
 

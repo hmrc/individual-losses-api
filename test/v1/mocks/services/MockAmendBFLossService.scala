@@ -21,6 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.requestData.AmendBFLossRequest
 import v1.services.{AmendBFLossOutcome, AmendBFLossService}
+import v1.controllers.UserRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,10 +31,10 @@ trait MockAmendBFLossService extends MockFactory {
 
   object MockAmendBFLossService {
 
-    def amend(requestData: AmendBFLossRequest): CallHandler[Future[AmendBFLossOutcome]] = {
+    def amend[A](requestData: AmendBFLossRequest): CallHandler[Future[AmendBFLossOutcome]] = {
       (mockAmendBFLossService
-        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

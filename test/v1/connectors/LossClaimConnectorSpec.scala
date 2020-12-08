@@ -17,7 +17,10 @@
 package v1.connectors
 
 import mocks.MockAppConfig
+import play.api.test.FakeRequest
+import v1.controllers.UserRequest
 import v1.mocks.MockHttpClient
+import v1.models.auth.UserDetails
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 
@@ -27,11 +30,11 @@ class LossClaimConnectorSpec extends ConnectorSpec {
   val claimId = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
     val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
   }
 }

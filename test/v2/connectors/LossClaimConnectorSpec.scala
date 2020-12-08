@@ -17,7 +17,10 @@
 package v2.connectors
 
 import mocks.MockAppConfig
+import play.api.test.FakeRequest
+import v2.controllers.UserRequest
 import v2.mocks.MockHttpClient
+import v2.models.auth.UserDetails
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 

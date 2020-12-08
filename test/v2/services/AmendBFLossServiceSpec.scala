@@ -16,8 +16,11 @@
 
 package v2.services
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v2.controllers.UserRequest
 import v2.mocks.connectors.MockBFLossConnector
+import v2.models.auth.UserDetails
 import v2.models.des.BFLossResponse
 import v2.models.domain.{AmendBFLoss, TypeOfLoss}
 import v2.models.errors._
@@ -46,6 +49,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockBFLossConnector {
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
     lazy val service = new AmendBFLossService(connector)
   }
 

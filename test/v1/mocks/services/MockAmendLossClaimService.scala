@@ -19,6 +19,7 @@ package v1.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.controllers.UserRequest
 import v1.models.requestData.AmendLossClaimRequest
 import v1.services.{AmendLossClaimOutcome, AmendLossClaimService}
 
@@ -30,10 +31,10 @@ trait MockAmendLossClaimService extends MockFactory {
 
   object MockAmendLossClaimService {
 
-    def amend(requestData: AmendLossClaimRequest): CallHandler[Future[AmendLossClaimOutcome]] = {
+    def amend[A](requestData: AmendLossClaimRequest): CallHandler[Future[AmendLossClaimOutcome]] = {
       (mockAmendLossClaimService
-        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String, _:UserRequest[A]))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

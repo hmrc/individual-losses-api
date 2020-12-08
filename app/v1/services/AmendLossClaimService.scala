@@ -21,6 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.LossClaimConnector
 import v1.models.errors._
 import v1.models.requestData.AmendLossClaimRequest
+import v1.controllers.UserRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +32,9 @@ class AmendLossClaimService @Inject()(connector: LossClaimConnector) extends Des
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendLossClaim(request: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
+  def amendLossClaim[A](request: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
                                                      ec: ExecutionContext,
-                                                     correlationId: String): Future[AmendLossClaimOutcome] = {
+                                                     correlationId: String, ur: UserRequest[A]): Future[AmendLossClaimOutcome] = {
 
     connector.amendLossClaim(request).map {
       mapToVendorDirect("amendLossClaim", mappingDesToMtdError)

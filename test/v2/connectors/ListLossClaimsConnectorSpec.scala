@@ -16,9 +16,11 @@
 
 package v2.connectors
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v2.controllers.UserRequest
+import v2.models.auth.UserDetails
 import v2.models.des._
-
 import v2.models.domain.TypeOfClaim
 import v2.models.errors._
 import v2.models.outcomes.DesResponse
@@ -147,7 +149,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                              taxYear: Option[DesTaxYear] = None,
                              incomeSourceType: Option[IncomeSourceType] = None,
                              businessId: Option[String] = None,
-                             claimType: Option[TypeOfClaim] = None): DesOutcome[ListLossClaimsResponse[LossClaimId]] =
+                             claimType: Option[TypeOfClaim] = None): DesOutcome[ListLossClaimsResponse[LossClaimId]] = {
+      implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(
@@ -157,5 +160,6 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             businessId = businessId,
             claimType = claimType
           )))
+    }
   }
 }

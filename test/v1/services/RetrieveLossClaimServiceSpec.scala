@@ -16,8 +16,11 @@
 
 package v1.services
 
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import v1.controllers.UserRequest
 import v1.mocks.connectors.MockLossClaimConnector
+import v1.models.auth.UserDetails
 import v1.models.des.LossClaimResponse
 import v1.models.domain.{TypeOfClaim, TypeOfLoss}
 import v1.models.errors._
@@ -32,6 +35,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
   val claimId = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
     lazy val service = new RetrieveLossClaimService(connector)
   }
 
