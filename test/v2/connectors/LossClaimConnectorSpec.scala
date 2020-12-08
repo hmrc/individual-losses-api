@@ -31,9 +31,10 @@ class LossClaimConnectorSpec extends ConnectorSpec {
   val claimId = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
+    implicit val ur = UserRequest(UserDetails("", "",None), FakeRequest())
     val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
+    val desRequestHeaders: Seq[(String, String)] = ur.request.headers.headers
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
