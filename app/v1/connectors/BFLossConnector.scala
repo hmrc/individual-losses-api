@@ -18,8 +18,7 @@ package v1.connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v1.models.domain.{AmendBFLoss, BFLoss}
