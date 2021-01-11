@@ -35,6 +35,7 @@
   },
   "required": [
     "typeOfLoss",
+    "businessId",
     "lossAmount",
     "taxYear"
   ],
