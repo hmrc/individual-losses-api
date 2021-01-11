@@ -42,8 +42,8 @@ lazy val microservice = Project(appName, file("."))
   .settings(CodeCoverageSettings.settings: _*)
   .settings(defaultSettings(): _*)
   .configs(ItTest)
-  .settings(inConfig(ItTest)(Defaults.itSettings): _*)
   .settings(
+    inConfig(ItTest)(Defaults.itSettings ++ headerSettings(ItTest) ++ automateHeaderSettings(ItTest)),
     fork in ItTest := true,
     unmanagedSourceDirectories in ItTest := Seq((baseDirectory in ItTest).value / "it"),
     unmanagedClasspath in ItTest += baseDirectory.value / "resources",
