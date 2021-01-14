@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
     val req = data.body.json.as[BFLoss]
     List(
       MinTaxYearValidation.validate(req.taxYear, minimumTaxYearBFLoss),
-      BusinessIdValidation.validate(req.typeOfLoss, req.businessId),
+      CreateBusinessIdValidation.validate(req.typeOfLoss, req.businessId),
       AmountValidation.validate(req.lossAmount)
     )
   }

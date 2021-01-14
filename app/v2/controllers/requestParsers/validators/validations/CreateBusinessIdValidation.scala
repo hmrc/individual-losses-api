@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v2.controllers.requestParsers.validators.validations
 
-import play.api.mvc.AnyContentAsJson
+import v2.models.domain.TypeOfLoss
+import v2.models.errors.{BusinessIdFormatError, MtdError}
 
-case class CreateLossClaimRawData(nino: String, body: AnyContentAsJson) extends RawData
+object CreateBusinessIdValidation {
+
+  private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
+
+  def validate(typeOfLoss: TypeOfLoss, businessId: String): List[MtdError] = {
+    createBusinessIdValidation(businessId)
+  }
+
+  private def createBusinessIdValidation(businessId: String): List[MtdError] = {
+    businessId match {
+      case id => if (id.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
+    }
+  }
+}

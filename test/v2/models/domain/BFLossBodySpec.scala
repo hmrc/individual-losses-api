@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import v2.models.utils.JsonErrorValidators
 class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
 
   val broughtForwardLossEmployment =
-    BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
+    BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossForeignProperty =
-    BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
+    BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossProperty =
-    BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, businessId = None, taxYear = "2019-20", lossAmount = 255.50)
+    BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 255.50)
 
   val broughtForwardLossEmploymentJson: JsValue = Json.parse("""
       |{

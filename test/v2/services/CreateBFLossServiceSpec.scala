@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   val nino = Nino("AA123456A")
   val lossId = "AAZZ1234567890a"
 
-  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
+  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
@@ -74,20 +74,21 @@ class CreateBFLossServiceSpec extends ServiceSpec {
     }
 
     Map(
-      "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-      "DUPLICATE"                  -> RuleDuplicateSubmissionError,
-      "NOT_FOUND_INCOME_SOURCE"    -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
-      "TAX_YEAR_NOT_ENDED"         -> RuleTaxYearNotEndedError,
-      "INVALID_PAYLOAD"            -> DownstreamError,
-      "SERVER_ERROR"               -> DownstreamError,
-      "SERVICE_UNAVAILABLE"        -> DownstreamError,
-      "UNEXPECTED_ERROR"           -> DownstreamError,
-      "INVALID_TAX_YEAR"          -> DownstreamError,
-      "INCOME_SOURCE_NOT_ACTIVE"  -> DownstreamError,
+      "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
+      "DUPLICATE"                   -> RuleDuplicateSubmissionError,
+      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
+      "TAX_YEAR_NOT_ENDED"          -> RuleTaxYearNotEndedError,
+      "INVALID_PAYLOAD"             -> DownstreamError,
+      "SERVER_ERROR"                -> DownstreamError,
+      "SERVICE_UNAVAILABLE"         -> DownstreamError,
+      "UNEXPECTED_ERROR"            -> DownstreamError,
+      "INVALID_TAX_YEAR"            -> DownstreamError,
+      "INCOME_SOURCE_NOT_ACTIVE"    -> DownstreamError,
       "ACCOUNTING_PERIOD_NOT_ENDED" -> DownstreamError,
-      "INVALID_CLAIM_TYPE"        -> DownstreamError,
-      "NO_ACTIVE_ACCOUNTING_PERIOD" -> DownstreamError
+      "INVALID_CLAIM_TYPE"          -> DownstreamError,
+      "NO_ACCOUNTING_PERIOD"        -> DownstreamError,
+      "INCOMESOURCE_ID_REQUIRED"    -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
