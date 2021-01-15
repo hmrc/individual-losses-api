@@ -22,18 +22,18 @@ import v2.models.requestData.DesTaxYear
 case class LossClaim(taxYear: String,
                      typeOfLoss: TypeOfLoss,
                      typeOfClaim: TypeOfClaim,
-                     businessId: Option[String])
+                     businessId: String)
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
   implicit val writes: Writes[LossClaim] = (claim: LossClaim) => {
-    (claim.typeOfLoss.isUkProperty,claim.typeOfLoss.isForeignProperty) match {
+    val jsObject = (claim.typeOfLoss.isUkProperty, claim.typeOfLoss.isForeignProperty) match {
       case (true,_) =>
-      Json.obj(
-        "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
-        "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-        "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
-      )
+        Json.obj(
+          "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
+          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
+          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+        )
       case (_,true) =>
         Json.obj(
           "incomeSourceId" -> claim.businessId,
@@ -43,10 +43,11 @@ object LossClaim {
         )
       case (_,_) =>
         Json.obj(
-        "incomeSourceId" -> claim.businessId,
-        "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-        "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
-      )
+          "incomeSourceId" -> claim.businessId,
+          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
+          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+        )
     }
+    if(claim.typeOfLoss == TypeOfLoss.`uk-property-non-fhl`) jsObject - "businessId" else jsObject
   }
 }

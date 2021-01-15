@@ -42,7 +42,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
     List(
       data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => BusinessIdValidation.validate(lossType, data.businessId, idOptional = true)
+        case Some(lossType) => BusinessIdValidation.validateOptional(lossType, data.businessId, idOptional = true)
         case None           => Nil
       }
     )

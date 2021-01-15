@@ -26,7 +26,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    businessId = Some("X2IS12356589871")
+    businessId = "X2IS12356589871"
   )
 
   val lossClaimEmploymentJson: JsValue = Json.parse(
@@ -48,14 +48,14 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimProperty = LossClaim(
+  val lossClaimPropertyNonFhl = LossClaim(
     taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
     typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`,
-    businessId = None
+    businessId = "X2IS12356589871"
   )
 
-  val lossClaimPropertyJson: JsValue = Json.parse(
+  val lossClaimPropertyNonFhlJson: JsValue = Json.parse(
     """
       |{
       |    "typeOfLoss": "uk-property-non-fhl",
@@ -64,7 +64,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimPropertyDesJson: JsValue = Json.parse(
+  val lossClaimPropertyNonFhlDesJson: JsValue = Json.parse(
     """
       |{
       |    "incomeSourceType": "02",
@@ -77,7 +77,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     taxYear = "2019-20",
     typeOfLoss = TypeOfLoss.`foreign-property`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    businessId = Some("X2IS12356589871")
+    businessId = "X2IS12356589871"
   )
 
   val lossClaimForeignPropJson: JsValue = Json.parse(
@@ -134,7 +134,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     }
     "passed a valid Loss Claim Property model" should {
       "return a valid Loss Claim Property JSON" in {
-        LossClaim.writes.writes(lossClaimProperty) shouldBe lossClaimPropertyDesJson
+        LossClaim.writes.writes(lossClaimPropertyNonFhl) shouldBe lossClaimPropertyNonFhlDesJson
       }
     }
     "passed a valid Loss Claim Foreign Property model" should {
