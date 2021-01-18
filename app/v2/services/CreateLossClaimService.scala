@@ -46,7 +46,7 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
        case "INVALID_CLAIM_TYPE"          => RuleTypeOfClaimInvalid
        case "TAX_YEAR_NOT_SUPPORTED"      => RuleTaxYearNotSupportedError
        case "NO_ACCOUNTING_PERIOD"        => RuleNoAccountingPeriod
-       case "INVALID_PAYLOAD" | "SERVER_ERROR"  | "SERVICE_UNAVAILABLE" => DownstreamError
+       case "INVALID_PAYLOAD" | "SERVER_ERROR"  | "SERVICE_UNAVAILABLE" | "INCOMESOURCE_ID_REQUIRED" => DownstreamError
       // Likely to be removed as they do not exist in the latest swagger 01/08/2019 or are pertaining to brought forward losses
        case error@("INVALID_TAX_YEAR" | "INCOME_SOURCE_NOT_ACTIVE" | "TAX_YEAR_NOT_ENDED") =>
          logger.info(s"[$serviceName] [Unexpected error: $error]")

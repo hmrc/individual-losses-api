@@ -85,6 +85,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError,
       "UNEXPECTED_ERROR"            -> DownstreamError,
+      "INCOMESOURCE_ID_REQUIRED"    -> DownstreamError,
       // Likely to be removed as they do not exist in the latest swagger 01/08/2019
       "INVALID_TAX_YEAR"            -> DownstreamError,
       "INCOME_SOURCE_NOT_ACTIVE"    -> DownstreamError,

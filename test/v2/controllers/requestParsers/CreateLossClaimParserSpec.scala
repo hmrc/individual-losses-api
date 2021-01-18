@@ -52,12 +52,22 @@ class CreateLossClaimParserSpec extends UnitSpec {
        |  "typeOfClaim" : "carry-forward"
        |}""".stripMargin)
 
+  private val ukPropNonFhlRequestBodyDesJson = Json.parse(
+    s"""{
+       |  "typeOfLoss" : "uk-property-non-fhl",
+       |  "taxYear" : "$taxYear",
+       |  "typeOfClaim" : "carry-forward",
+       |  "businessId" : "X2IS12356589871"
+       |}""".stripMargin)
+
   val seInputData =
     CreateLossClaimRawData(nino, AnyContentAsJson(seRequestBodyJson))
   val fPropInputData =
     CreateLossClaimRawData(nino, AnyContentAsJson(fPropRequestBodyJson))
   val ukPropInputData =
     CreateLossClaimRawData(nino, AnyContentAsJson(ukPropNonFhlRequestBodyJson))
+  val ukPropDesData =
+    CreateLossClaimRawData(nino, AnyContentAsJson(ukPropNonFhlRequestBodyDesJson))
 
   trait Test extends MockCreateLossClaimValidator {
     lazy val parser = new CreateLossClaimParser(mockValidator)
@@ -79,10 +89,10 @@ class CreateLossClaimParserSpec extends UnitSpec {
           Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`foreign-property`, TypeOfClaim.`carry-forward`, "XAIS01234567890")))
       }
       "valid request data is supplied for uk property non fhl" in new Test {
-        MockValidator.validate(ukPropInputData).returns(Nil)
+        MockValidator.validate(ukPropDesData).returns(Nil)
 
-        parser.parseRequest(ukPropInputData) shouldBe
-          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`uk-property-non-fhl`, TypeOfClaim.`carry-forward`, "")))
+        parser.parseRequest(ukPropDesData) shouldBe
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`uk-property-non-fhl`, TypeOfClaim.`carry-forward`, "X2IS12356589871")))
       }
     }
 
