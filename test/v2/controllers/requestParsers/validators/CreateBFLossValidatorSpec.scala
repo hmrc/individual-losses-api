@@ -25,10 +25,10 @@ import v2.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidatorSpec extends UnitSpec {
 
-  private val validNino             = "AA123456A"
-  private val validTaxYear          = "2018-19"
-  private val validTypeOfLoss       = "self-employment"
-  private val validBuinessId = "XAIS01234567890"
+  private val validNino = "AA123456A"
+  private val validTaxYear = "2018-19"
+  private val validTypeOfLoss = "self-employment"
+  private val validBusinessId = "XAIS01234567890"
 
   val emptyBody: JsValue = Json.parse(
     s"""{
@@ -38,22 +38,15 @@ class CreateBFLossValidatorSpec extends UnitSpec {
   )
 
   def createRequestBodyJson(typeOfLoss: String = validTypeOfLoss,
-                            businessId: Option[String] = Some(validBuinessId),
+                            businessId: String = validBusinessId,
                             taxYear: String = validTaxYear,
                             lossAmount: BigDecimal = 1000): JsValue = Json.parse(
-    businessId match {
-      case Some(id) => s"""{
-                          |  "typeOfLoss" : "$typeOfLoss",
-                          |  "businessId" : "$id",
-                          |  "taxYear" : "$taxYear",
-                          |  "lossAmount" : $lossAmount
-                          |}""".stripMargin
-      case None     => s"""{
-                      |  "typeOfLoss" : "$typeOfLoss",
-                      |  "taxYear" : "$taxYear",
-                      |  "lossAmount" : $lossAmount
-                      |}""".stripMargin
-    }
+    s"""{
+       |  "typeOfLoss" : "$typeOfLoss",
+       |  "businessId" : "$businessId",
+       |  "taxYear" : "$taxYear",
+       |  "lossAmount" : $lossAmount
+       |}""".stripMargin
   )
 
   val validator = new CreateBFLossValidator
@@ -109,7 +102,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       "an invalid loss type is submitted" in {
         validator.validate(
           requestData
-            .CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = None)))) shouldBe
+            .CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
           List(TypeOfLossFormatError)
       }
 
@@ -117,14 +110,14 @@ class CreateBFLossValidatorSpec extends UnitSpec {
         validator.validate(
           requestData.CreateBFLossRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = Some(validBuinessId))))) shouldBe
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
           List(TypeOfLossFormatError)
       }
     }
 
     "return SelfEmploymentIdValidation error" when {
       "an invalid id is submitted" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = Some("invalid"))))) shouldBe
+        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
           List(BusinessIdFormatError)
       }
     }
@@ -137,20 +130,12 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
-    "return RuleSelfEmploymentId error" when {
-      "a self-employment is not provided for a self-employment loss type" in {
+    "return BusinessIdFormatError error" when {
+      "an invalid business id is provided" in {
         validator.validate(
           requestData.CreateBFLossRawData(validNino,
-                                          AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = None)))) shouldBe
-          List(RuleBusinessId)
-      }
-
-      "a self-employment is not provided for a self-employment-class4 loss type" in {
-        validator.validate(
-          requestData.CreateBFLossRawData(
-            validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment-class4", businessId = None)))) shouldBe
-          List(RuleBusinessId)
+            AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
+          List(BusinessIdFormatError)
       }
     }
 
@@ -159,8 +144,8 @@ class CreateBFLossValidatorSpec extends UnitSpec {
         validator.validate(
           requestData.CreateBFLossRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment-class4", businessId = None, taxYear = "2010-11")))) shouldBe
-          List(RuleTaxYearNotSupportedError, RuleBusinessId)
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment-class4", businessId = "wrong", taxYear = "2010-11")))) shouldBe
+          List(RuleTaxYearNotSupportedError, BusinessIdFormatError)
       }
     }
   }

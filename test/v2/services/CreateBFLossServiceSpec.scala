@@ -33,7 +33,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   val nino = Nino("AA123456A")
   val lossId = "AAZZ1234567890a"
 
-  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
+  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
