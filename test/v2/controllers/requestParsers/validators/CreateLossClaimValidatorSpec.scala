@@ -176,14 +176,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(validNino,
             AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "foreign-property", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
-          List(RuleTypeOfClaimInvalid)
-      }
-      "an incorrect typeOfClaim(carry-sideways-fhl) is used for foreign-property typeOfLoss" in {
-        validator.validate(
-          CreateLossClaimRawData(validNino,
-            AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "foreign-property", typeOfClaim = "carry-sideways-fhl")))) shouldBe
+              typeOfLoss = "foreign-property", typeOfClaim = "carry-forward")))) shouldBe
           List(RuleTypeOfClaimInvalid)
       }
     }
