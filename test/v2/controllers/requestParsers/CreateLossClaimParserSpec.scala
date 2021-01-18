@@ -45,14 +45,14 @@ class CreateLossClaimParserSpec extends UnitSpec {
        |  "typeOfClaim" : "carry-forward"
        |}""".stripMargin)
 
-  private val ukPropNonFhlRequestBodyJson = Json.parse(
+  private val ukPropNonFhlRequestBodyDesJson = Json.parse(
     s"""{
        |  "typeOfLoss" : "uk-property-non-fhl",
        |  "taxYear" : "$taxYear",
        |  "typeOfClaim" : "carry-forward"
        |}""".stripMargin)
 
-  private val ukPropNonFhlRequestBodyDesJson = Json.parse(
+  private val ukPropNonFhlRequestBodyJson = Json.parse(
     s"""{
        |  "typeOfLoss" : "uk-property-non-fhl",
        |  "taxYear" : "$taxYear",
@@ -65,9 +65,9 @@ class CreateLossClaimParserSpec extends UnitSpec {
   val fPropInputData =
     CreateLossClaimRawData(nino, AnyContentAsJson(fPropRequestBodyJson))
   val ukPropInputData =
-    CreateLossClaimRawData(nino, AnyContentAsJson(ukPropNonFhlRequestBodyJson))
-  val ukPropDesData =
     CreateLossClaimRawData(nino, AnyContentAsJson(ukPropNonFhlRequestBodyDesJson))
+  val ukPropDesData =
+    CreateLossClaimRawData(nino, AnyContentAsJson(ukPropNonFhlRequestBodyJson))
 
   trait Test extends MockCreateLossClaimValidator {
     lazy val parser = new CreateLossClaimParser(mockValidator)

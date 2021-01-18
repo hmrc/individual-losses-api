@@ -29,14 +29,6 @@ class BusinessIdValidationSpec extends UnitSpec {
 
     "return no errors" when {
 
-      "provided with an fhl property loss without an id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`uk-property-fhl`, "").isEmpty shouldBe true
-      }
-
-      "provided with an other property loss without an id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`uk-property-non-fhl`, "").isEmpty shouldBe true
-      }
-
       "provided with a self employment loss with a valid id" in {
         BusinessIdValidation.validate(TypeOfLoss.`self-employment`, validId).isEmpty shouldBe true
       }
@@ -51,7 +43,6 @@ class BusinessIdValidationSpec extends UnitSpec {
       "provided with a property loss with a valid id" in {
         BusinessIdValidation.validate(TypeOfLoss.`uk-property-non-fhl`, validId) shouldBe List(RuleBusinessId)
       }
-
 
       invalidIds.foreach { badId =>
         s"provided with a self employment loss with an invalid id '$badId'" in {

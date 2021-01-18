@@ -136,7 +136,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
     "return TypeOfLossValidation error" when {
       "an invalid loss type is submitted" in {
         validator.validate(
-          CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = "z")))) shouldBe
+          CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
           List(TypeOfLossFormatError)
       }
 
@@ -186,7 +186,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = "", taxYear = "2010-11")))) shouldBe
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = "invalid", taxYear = "2010-11")))) shouldBe
           List(RuleTaxYearNotSupportedError, BusinessIdFormatError)
       }
     }
