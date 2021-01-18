@@ -42,6 +42,6 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Des
     "NOT_FOUND" -> NotFoundError,
     "SERVER_ERROR" -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError,
-    "INVALID_CLAIMTYPE" -> ClaimTypeFormatError
+    "INVALID_CLAIM_TYPE" -> ClaimTypeFormatError
   )
 }
