@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ resolvers += Resolver.url("hmrc-sbt-plugin-releases", url("https://dl.bintray.co
 resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/"
 resolvers += "HMRC Releases" at "https://dl.bintray.com/hmrc/releases"
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "2.11.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "2.13.0")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-git-versioning" % "2.2.0")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-artifactory" % "1.9.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-artifactory" % "1.13.0")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-distributables" % "2.1.0")
 
