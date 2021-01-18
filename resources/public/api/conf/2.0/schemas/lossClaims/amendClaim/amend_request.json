@@ -6,7 +6,7 @@
   "properties": {
     "typeOfClaim": {
       "type": "string",
-      "description": "The type of claim to be applied. Note that carry-sideways-fhl and carry-forward-to-carry-sideways are only permitted when the type of loss is set to uk-property-non-fhl",
+      "description": "The type of claim to be applied.  Permitted values for \"self-employment\": carry-forward, carry-sideways.  Permitted values for \"uk-property-non-fhl\" and \"foreign-property\": carry-sideways, carry-sideways-fhl, carry-forward-to-carry-sideways.",
       "enum": ["carry-forward", "carry-sideways", "carry-sideways-fhl", "carry-forward-to-carry-sideways"]
     }
   },
