@@ -23,8 +23,8 @@ object BusinessIdValidation {
 
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
-  def validate(typeOfLoss: TypeOfLoss, businessId: String): List[MtdError] = {
-    if (typeOfLoss.isUkProperty) propertyValidation(businessId) else businessIdValidation(businessId)
+  def validate(businessId: String): List[MtdError] = {
+     businessIdValidation(businessId)
   }
 
   def validateOptional(typeOfLoss: TypeOfLoss, businessId: Option[String], idOptional: Boolean = false): List[MtdError] = {
@@ -47,7 +47,4 @@ object BusinessIdValidation {
     if (businessId.isEmpty) NoValidationErrors else List(RuleBusinessId)
   }
 
-  private def propertyValidation(businessId: String): List[MtdError] = {
-    if (businessId.isEmpty) NoValidationErrors else List(RuleBusinessId)
-  }
 }
