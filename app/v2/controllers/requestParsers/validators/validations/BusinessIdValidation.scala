@@ -24,7 +24,7 @@ object BusinessIdValidation {
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
   def validate(businessId: String): List[MtdError] = {
-     businessIdValidation(businessId)
+    if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
   }
 
   def validateOptional(typeOfLoss: TypeOfLoss, businessId: Option[String], idOptional: Boolean = false): List[MtdError] = {
@@ -39,9 +39,6 @@ object BusinessIdValidation {
     }
   }
 
-  def businessIdValidation(businessId: String): List[MtdError] = {
-    if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
-  }
 
   private def propertyValidationOptional(businessId: Option[String]): List[MtdError] = {
     if (businessId.isEmpty) NoValidationErrors else List(RuleBusinessId)

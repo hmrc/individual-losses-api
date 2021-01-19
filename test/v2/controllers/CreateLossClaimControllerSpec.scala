@@ -155,7 +155,6 @@ class CreateLossClaimControllerSpec
       RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))),
       TypeOfLossFormatError,
       BusinessIdFormatError,
-      RuleBusinessId,
       RuleTypeOfClaimInvalid,
       TypeOfClaimFormatError
     )
