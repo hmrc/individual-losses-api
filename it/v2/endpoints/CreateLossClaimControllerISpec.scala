@@ -27,7 +27,7 @@ import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
 
-  def generateLossClaim(businessId: Option[String], typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
+  def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId,
       "typeOfLoss" -> typeOfLoss,
       "taxYear" -> taxYear,
@@ -178,25 +178,25 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
 
     "return 400 (Bad Request)" when {
 
-      createLossClaimValidationErrorTest("BADNINO", generateLossClaim(Some(businessId), typeOfLoss, taxYear,
+      createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear,
         "carry-forward"), Status.BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(businessId), typeOfLoss, "20111", "carry-forward") , Status.BAD_REQUEST, TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
+        generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward") , Status.BAD_REQUEST, TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       createLossClaimValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(businessId), typeOfLoss, "2011-12", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+        generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(businessId), typeOfLoss, "2019-25", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
+        generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(None, "self-employment-class", "2019-20", "carry-forward"), Status.BAD_REQUEST, TypeOfLossFormatError)
+        generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"), Status.BAD_REQUEST, TypeOfLossFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some("sdfsf"), typeOfLoss, "2019-20", "carry-forward"), Status.BAD_REQUEST, BusinessIdFormatError)
+        generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"), Status.BAD_REQUEST, BusinessIdFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some("selfEmploymentId"), "uk-property-non-fhl", "2019-20", "carry-forward"), Status.BAD_REQUEST, RuleBusinessId)
+        generateLossClaim("selfEmploymentId", "uk-property-non-fhl", "2019-20", "carry-sideways"), Status.BAD_REQUEST, RuleBusinessId)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(businessId), typeOfLoss, taxYear,"carry-sideways-fhl"), Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
+        generateLossClaim(businessId, typeOfLoss, taxYear,"carry-sideways-fhl"), Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(Some(businessId), typeOfLoss, taxYear,"carry-forward-type"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+        generateLossClaim(businessId, typeOfLoss, taxYear,"carry-forward-type"), Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
 
 

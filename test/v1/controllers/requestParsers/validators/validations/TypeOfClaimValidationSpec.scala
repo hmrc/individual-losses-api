@@ -60,10 +60,6 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
     "return no errors when typeOfLoss is 'uk-property-non-fhl' and" when {
 
-      "typeOfClaim is 'carry-forward'" in {
-        TypeOfClaimValidation.checkClaim(`carry-forward`, `uk-property-non-fhl`).isEmpty shouldBe true
-      }
-
       "provided with a string of 'carry-sideways'" in {
         TypeOfClaimValidation.checkClaim(`carry-sideways`, `uk-property-non-fhl`).isEmpty shouldBe true
       }
@@ -96,6 +92,13 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
       "typeOfClaim is 'carry-forward-to-carry-sideways" in {
         TypeOfClaimValidation.checkClaim(`carry-forward-to-carry-sideways`, `self-employment`) shouldBe List(RuleTypeOfClaimInvalid)
+      }
+    }
+
+    "return TypeOfClaimFormatError when typeOfLoss is 'uk-property-non-fhl' and" when {
+
+      "typeOfClaim is 'carry-forward'" in {
+        TypeOfClaimValidation.checkClaim(`carry-forward`, `uk-property-non-fhl`) shouldBe List(RuleTypeOfClaimInvalid)
       }
     }
   }

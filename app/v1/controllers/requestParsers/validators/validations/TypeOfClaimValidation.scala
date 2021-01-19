@@ -28,7 +28,9 @@ object TypeOfClaimValidation {
 
   def checkClaim(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] =
     (typeOfLoss, typeOfClaim) match {
-      case (`uk-property-non-fhl`, _) => NoValidationErrors
+      case (`uk-property-non-fhl`, `carry-sideways`) => NoValidationErrors
+      case (`uk-property-non-fhl`, `carry-sideways-fhl`) => NoValidationErrors
+      case (`uk-property-non-fhl`, `carry-forward-to-carry-sideways`) => NoValidationErrors
       case (`self-employment`, `carry-forward`) => NoValidationErrors
       case (`self-employment`, `carry-sideways`) => NoValidationErrors
       case (_,_) => List(RuleTypeOfClaimInvalid)

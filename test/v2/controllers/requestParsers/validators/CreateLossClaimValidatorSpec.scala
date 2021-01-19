@@ -37,25 +37,36 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
        |}""".stripMargin
   )
 
+  val requestBodyJsonNoId = Json.parse(
+    s"""{
+      |  "typeOfLoss" : "$validTypeOfLoss",
+      |  "typeOfClaim" : "$validTypeOfClaim",
+      |  "taxYear" : "$validTaxYear"
+      |}""".stripMargin
+  )
+
   def createRequestBodyJson(typeOfLoss: String = validTypeOfLoss,
-                            businessId: Option[String] = Some(validBusinessId),
+                            businessId: String = validBusinessId,
                             typeOfClaim: String = validTypeOfClaim,
                             taxYear: String = validTaxYear
                            ): JsValue = Json.parse(
-    businessId match {
-      case Some(id) => s"""{
-                          |  "typeOfLoss" : "$typeOfLoss",
-                          |  "businessId" : "$id",
-                          |  "typeOfClaim" : "$typeOfClaim",
-                          |  "taxYear" : "$taxYear"
-                          |}""".stripMargin
+    s"""{
+       |  "typeOfLoss" : "$typeOfLoss",
+       |  "businessId" : "$businessId",
+       |  "typeOfClaim" : "$typeOfClaim",
+       |  "taxYear" : "$taxYear"
+       |}""".stripMargin
+  )
 
-      case None => s"""{
-                      |  "typeOfLoss" : "$typeOfLoss",
-                      |  "typeOfClaim" : "$typeOfClaim",
-                      |  "taxYear" : "$taxYear"
-                      |}""".stripMargin
-    }
+  def createRequestUkPropertyNonFhlBodyJson(typeOfLoss: String = validTypeOfLoss,
+                                            typeOfClaim: String = validTypeOfClaim,
+                                            taxYear: String = validTaxYear
+                                           ): JsValue = Json.parse(
+    s"""{
+       |  "typeOfLoss" : "$typeOfLoss",
+       |  "typeOfClaim" : "$typeOfClaim",
+       |  "taxYear" : "$taxYear"
+       |}""".stripMargin
   )
 
   val validator = new CreateLossClaimValidator
@@ -71,13 +82,13 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
       "a valid property request is supplied" in {
         validator.validate(CreateLossClaimRawData(validNino,
           AnyContentAsJson(createRequestBodyJson(
-            typeOfLoss = "uk-property-non-fhl", typeOfClaim = "carry-sideways", businessId = None)))) shouldBe Nil
+            typeOfLoss = "self-employment", typeOfClaim = "carry-sideways")))) shouldBe Nil
       }
 
       "a valid property request with 'carry-sideways-fhl' is supplied" in {
         validator.validate(CreateLossClaimRawData(validNino,
-          AnyContentAsJson(createRequestBodyJson(typeOfLoss = "uk-property-non-fhl",
-            typeOfClaim = "carry-sideways-fhl", businessId = None)))) shouldBe Nil
+          AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment",
+            typeOfClaim = "carry-sideways")))) shouldBe Nil
       }
     }
 
@@ -125,7 +136,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
     "return TypeOfLossValidation error" when {
       "an invalid loss type is submitted" in {
         validator.validate(
-          CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = None)))) shouldBe
+          CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
           List(TypeOfLossFormatError)
       }
 
@@ -133,32 +144,18 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = Some(validBusinessId))))) shouldBe
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
           List(TypeOfLossFormatError)
       }
     }
 
     "return BusinessIdValidation error" when {
       "an invalid id is submitted" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = Some("invalid"))))) shouldBe
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
           List(BusinessIdFormatError)
       }
     }
 
-    "return RuleBusinessId error" when {
-      "a business id is not provided for a self-employment loss type" in {
-        validator.validate(
-          CreateLossClaimRawData(validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = None)))) shouldBe
-          List(RuleBusinessId)
-      }
-      "a business id is not provided for a foreign-property loss type" in {
-        validator.validate(
-          CreateLossClaimRawData(validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "foreign-property", businessId = None)))) shouldBe
-          List(RuleBusinessId)
-      }
-    }
 
     "return RuleTypeOfClaimInvalid error" when {
       "an incorrect typeOfClaim is used for self-employment typeOfLoss" in {
@@ -179,14 +176,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(validNino,
             AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "foreign-property", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
-          List(RuleTypeOfClaimInvalid)
-      }
-      "an incorrect typeOfClaim(carry-sideways-fhl) is used for foreign-property typeOfLoss" in {
-        validator.validate(
-          CreateLossClaimRawData(validNino,
-            AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "foreign-property", typeOfClaim = "carry-sideways-fhl")))) shouldBe
+              typeOfLoss = "foreign-property", typeOfClaim = "carry-forward")))) shouldBe
           List(RuleTypeOfClaimInvalid)
       }
     }
@@ -196,8 +186,8 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
         validator.validate(
           CreateLossClaimRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = None, taxYear = "2010-11")))) shouldBe
-          List(RuleTaxYearNotSupportedError, RuleBusinessId)
+            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = "invalid", taxYear = "2010-11")))) shouldBe
+          List(RuleTaxYearNotSupportedError, BusinessIdFormatError)
       }
     }
   }

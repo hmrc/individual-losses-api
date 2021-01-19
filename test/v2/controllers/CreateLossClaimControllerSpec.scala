@@ -49,7 +49,7 @@ class CreateLossClaimControllerSpec
   val nino = "AA123456A"
   val lossClaimId = "AAZZ1234567890a"
 
-  val lossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, Some("XKIS00000000988"))
+  val lossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
 
   val createLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
   val testHateoasLink = Link(href = "/foo/bar", method = GET, rel="test-relationship")

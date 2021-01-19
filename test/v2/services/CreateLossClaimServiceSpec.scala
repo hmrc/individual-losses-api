@@ -33,7 +33,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
   val nino    = Nino("AA123456A")
   val claimId = "AAZZ1234567890a"
 
-  val lossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
+  val lossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
 
   val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
@@ -85,6 +85,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError,
       "UNEXPECTED_ERROR"            -> DownstreamError,
+      "INCOMESOURCE_ID_REQUIRED"    -> DownstreamError,
       // Likely to be removed as they do not exist in the latest swagger 01/08/2019
       "INVALID_TAX_YEAR"            -> DownstreamError,
       "INCOME_SOURCE_NOT_ACTIVE"    -> DownstreamError,

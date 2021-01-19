@@ -29,36 +29,24 @@ class BusinessIdValidationSpec extends UnitSpec {
 
     "return no errors" when {
 
-      "provided with an fhl property loss without an id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`uk-property-fhl`, None).isEmpty shouldBe true
-      }
-
-      "provided with an other property loss without an id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`uk-property-non-fhl`, None).isEmpty shouldBe true
-      }
-
       "provided with a self employment loss with a valid id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`self-employment`, Some(validId)).isEmpty shouldBe true
+        BusinessIdValidation.validate(TypeOfLoss.`self-employment`, validId).isEmpty shouldBe true
       }
 
       "provided with a class 4 self employment loss with a valid id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`self-employment-class4`, Some(validId)).isEmpty shouldBe true
+        BusinessIdValidation.validate(TypeOfLoss.`self-employment-class4`, validId).isEmpty shouldBe true
       }
     }
 
     "return an error" when {
 
       "provided with a property loss with a valid id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`uk-property-non-fhl`, Some(validId)) shouldBe List(RuleBusinessId)
-      }
-
-      "provided with a self employment loss without any id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`self-employment`, None) shouldBe List(RuleBusinessId)
+        BusinessIdValidation.validate(TypeOfLoss.`uk-property-non-fhl`, validId) shouldBe List(RuleBusinessId)
       }
 
       invalidIds.foreach { badId =>
         s"provided with a self employment loss with an invalid id '$badId'" in {
-          BusinessIdValidation.validate(TypeOfLoss.`self-employment`, Some(badId)) shouldBe List(BusinessIdFormatError)
+          BusinessIdValidation.validate(TypeOfLoss.`self-employment`, badId) shouldBe List(BusinessIdFormatError)
         }
       }
     }
