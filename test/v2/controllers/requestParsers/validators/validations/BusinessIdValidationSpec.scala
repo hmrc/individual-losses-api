@@ -17,8 +17,7 @@
 package v2.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v2.models.domain.TypeOfLoss
-import v2.models.errors.{BusinessIdFormatError, RuleBusinessId}
+import v2.models.errors.BusinessIdFormatError
 
 class BusinessIdValidationSpec extends UnitSpec {
 
@@ -30,23 +29,19 @@ class BusinessIdValidationSpec extends UnitSpec {
     "return no errors" when {
 
       "provided with a self employment loss with a valid id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`self-employment`, validId).isEmpty shouldBe true
+        BusinessIdValidation.validate(validId).isEmpty shouldBe true
       }
 
       "provided with a class 4 self employment loss with a valid id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`self-employment-class4`, validId).isEmpty shouldBe true
+        BusinessIdValidation.validate(validId).isEmpty shouldBe true
       }
     }
 
     "return an error" when {
 
-      "provided with a property loss with a valid id" in {
-        BusinessIdValidation.validate(TypeOfLoss.`uk-property-non-fhl`, validId) shouldBe List(RuleBusinessId)
-      }
-
       invalidIds.foreach { badId =>
         s"provided with a self employment loss with an invalid id '$badId'" in {
-          BusinessIdValidation.validate(TypeOfLoss.`self-employment`, badId) shouldBe List(BusinessIdFormatError)
+          BusinessIdValidation.validate(badId) shouldBe List(BusinessIdFormatError)
         }
       }
     }

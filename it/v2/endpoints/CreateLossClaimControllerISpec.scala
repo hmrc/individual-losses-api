@@ -192,8 +192,6 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       createLossClaimValidationErrorTest("AA123456A",
         generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"), Status.BAD_REQUEST, BusinessIdFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim("selfEmploymentId", "uk-property-non-fhl", "2019-20", "carry-sideways"), Status.BAD_REQUEST, RuleBusinessId)
-      createLossClaimValidationErrorTest("AA123456A",
         generateLossClaim(businessId, typeOfLoss, taxYear,"carry-sideways-fhl"), Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
       createLossClaimValidationErrorTest("AA123456A",
         generateLossClaim(businessId, typeOfLoss, taxYear,"carry-forward-type"), Status.BAD_REQUEST, TypeOfClaimFormatError)

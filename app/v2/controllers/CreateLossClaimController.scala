@@ -95,7 +95,6 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | RuleTaxYearRangeInvalid
            | TypeOfLossFormatError
            | BusinessIdFormatError
-           | RuleBusinessId
            | RuleTypeOfClaimInvalid
            | TypeOfClaimFormatError
            | CustomisedMtdError(TaxYearFormatError.code)
