@@ -33,11 +33,11 @@ trait RequestParser[Raw <: RawData, Request] extends Logging {
           s"Validation successful for the request with correlationId : $correlationId")
         Right(requestFor(data))
       case err :: Nil =>
-        logger.info(message = "[RequestParser][parseRequest] " +
+        logger.warn(message = "[RequestParser][parseRequest] " +
           s"Validation failed with ${err.code} error for the request with correlationId : $correlationId")
         Left(ErrorWrapper(correlationId, err, None))
       case errs =>
-        logger.info("[RequestParser][parseRequest] " +
+        logger.warn("[RequestParser][parseRequest] " +
           s"Validation failed with ${errs.map(_.code).mkString(",")} error for the request with correlationId : $correlationId")
         Left(ErrorWrapper(correlationId, BadRequestError, Some(errs)))
     }

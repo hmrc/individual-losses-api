@@ -52,7 +52,7 @@ trait DesServiceSupport {
       desOutcome: DesOutcome[D]): VendorOutcome[V] = {
 
     lazy val defaultErrorMapping: String => MtdError = { code =>
-      logger.info(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
+      logger.warn(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
       DownstreamError
     }
 
@@ -63,7 +63,7 @@ trait DesServiceSupport {
         val mtdErrors = errors.map(error => errorMap.applyOrElse(error.code, defaultErrorMapping))
 
         if (mtdErrors.contains(DownstreamError)) {
-          logger.info(
+          logger.warn(
             s"[$serviceName] [$endpointName] [CorrelationId - $correlationId]" +
               s" - downstream returned ${errors.map(_.code).mkString(",")}. Revert to ISE")
           Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
