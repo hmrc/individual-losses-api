@@ -6,7 +6,7 @@
   "properties": {
     "typeOfClaim": {
       "type": "string",
-      "description": "The type of claim to be applied. A self employment loss claim can only be of type carry-forward or carry-sideways",
+      "description": "The type of claim to be applied.  Permitted values for \"self-employment\": carry-forward, carry-sideways.  Permitted values for \"uk-property-non-fhl\": carry-sideways, carry-sideways-fhl, carry-forward-to-carry-sideways.",
       "enum": [
         "carry-forward",
         "carry-sideways",

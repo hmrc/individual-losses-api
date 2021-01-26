@@ -9,7 +9,7 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulates a success scenario</p></td>
+            <td><p>Simulates a success scenario.</p></td>
         </tr>
         <tr>
             <td><p>SE_FORWARD</p></td>
