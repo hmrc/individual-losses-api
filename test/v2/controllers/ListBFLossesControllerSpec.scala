@@ -177,7 +177,6 @@ class ListBFLossesControllerSpec
       errorsFromParserTester(TaxYearFormatError, BAD_REQUEST)
       errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromParserTester(BusinessIdFormatError, BAD_REQUEST)
-      errorsFromParserTester(RuleBusinessId, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
       errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
     }

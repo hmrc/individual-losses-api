@@ -322,7 +322,6 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", Some("2019-21"), None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
       validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, Status.BAD_REQUEST, TypeOfLossFormatError)
       validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), Status.BAD_REQUEST, BusinessIdFormatError)
-      validationErrorTest("AA123456A", None, Some("uk-property-fhl"), Some("XA01234556790"), Status.BAD_REQUEST, RuleBusinessId)
     }
 
   }
