@@ -31,6 +31,9 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
   val broughtForwardLossProperty =
     BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 255.50)
 
+  val broughtForwardLossPropertyNonFhl =
+    BFLoss(typeOfLoss = TypeOfLoss.`uk-property-non-fhl`, businessId = None, taxYear = "2019-20", lossAmount = 255.50)
+
   val broughtForwardLossEmploymentJson: JsValue = Json.parse("""
       |{
       |    "businessId": "XKIS00000000988",
@@ -83,6 +86,14 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
+  val broughtForwardLossPropertyNonFhlDesJson: JsValue = Json.parse("""
+      |{
+      |	  "incomeSourceType":"02",
+      |	  "taxYear": "2020",
+      |	  "broughtForwardLossAmount": 255.50
+      |}
+    """.stripMargin)
+
   "reads" when {
     "passed valid BroughtForwardLoss JSON" should {
       "return a valid model" in {
@@ -112,9 +123,14 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
         BFLoss.writes.writes(broughtForwardLossEmployment) shouldBe broughtForwardLossEmploymentDesJson
       }
     }
-    "passed a valid BroughtForwardLoss Property model" should {
-      "return a valid BroughtForwardLoss Property JSON" in {
+    "passed a valid BroughtForwardLoss Property model when typeOfBusiness = \"uk-property-fhl\"" should {
+      "return a valid BroughtForwardLoss Property JSON where incomeSourceId is not populated with businessId" in {
         BFLoss.writes.writes(broughtForwardLossProperty) shouldBe broughtForwardLossPropertyDesJson
+      }
+    }
+    "passed a valid BroughtForwardLoss Property model when typeOfBusiness = \"uk-property-non-fhl\"" should {
+      "return a valid BroughtForwardLoss Property JSON where incomeSourceId is not populated with businessId" in {
+        BFLoss.writes.writes(broughtForwardLossPropertyNonFhl) shouldBe broughtForwardLossPropertyNonFhlDesJson
       }
     }
     "passed a valid BroughtForwardLoss Foreign Property model" should {
