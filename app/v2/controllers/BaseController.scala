@@ -42,12 +42,12 @@ trait BaseController {
 
   protected def getCorrelationId(errorWrapper: ErrorWrapper): String = {
     errorWrapper.correlationId match {
-      case Some(correlationId) => logger.info(s"[${logger.underlyingLogger}] - " +
+      case Some(correlationId) => logger.warn(s"[${logger.underlyingLogger}] - " +
         s"Error received from DES ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
       case None =>
         val correlationId = UUID.randomUUID().toString
-        logger.info(s"[${getClass.getSimpleName}] -" +
+        logger.warn(s"[${getClass.getSimpleName}] -" +
           s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
     }

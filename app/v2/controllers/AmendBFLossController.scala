@@ -49,6 +49,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
       val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
       val result =
         for {

@@ -48,10 +48,10 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServi
     case "TAX_YEAR_NOT_ENDED" => RuleTaxYearNotEndedError
     case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
     case error@("INVALID_TAX_YEAR" | "INCOME_SOURCE_NOT_ACTIVE") => // Likely to be removed as they do not exist in the latest swagger 01/08/2019
-      logger.info(s"[$serviceName] [Unexpected error: $error]")
+      logger.warn(s"[$serviceName] [Unexpected error: $error]")
       DownstreamError
     case error@("NO_ACCOUNTING_PERIOD" | "INVALID_CLAIM_TYPE" | "ACCOUNTING_PERIOD_NOT_ENDED") =>
-      logger.info(s"[$serviceName] [Unexpected error: $error]")
+      logger.warn(s"[$serviceName] [Unexpected error: $error]")
       DownstreamError
   }
 }

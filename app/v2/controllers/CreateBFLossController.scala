@@ -50,6 +50,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
       val rawData = CreateBFLossRawData(nino, AnyContentAsJson(request.body))
       val result =
         for {

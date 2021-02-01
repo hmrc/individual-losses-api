@@ -48,6 +48,7 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
 
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
       val rawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(request.body))
       val result =
         for {
