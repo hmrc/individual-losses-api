@@ -32,7 +32,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         MockedAppConfig.featureSwitch returns None anyNumberOfTimes()
         MockedAppConfig.apiStatus("1.0") returns ""
         MockedAppConfig.apiStatus("2.0") returns ""
-        MockedAppConfig.endpointsEnabled returns true anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled("1") returns true anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled("2") returns true anyNumberOfTimes()
 
         factory.definition shouldBe Definition(
           scopes = Seq(
@@ -68,7 +69,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         MockedAppConfig.featureSwitch returns Some(Configuration("white-list.enabled" -> false)) anyNumberOfTimes()
         MockedAppConfig.apiStatus("1.0") returns "BETA"
         MockedAppConfig.apiStatus("2.0") returns "BETA"
-        MockedAppConfig.endpointsEnabled returns true anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled("1") returns true anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled("2") returns true anyNumberOfTimes()
 
         factory.definition shouldBe Definition(
           scopes = Seq(
@@ -107,7 +109,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         )) anyNumberOfTimes()
         MockedAppConfig.apiStatus("1.0") returns "BETA"
         MockedAppConfig.apiStatus("2.0") returns "BETA"
-        MockedAppConfig.endpointsEnabled returns true anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled("1") returns true anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled("2") returns true anyNumberOfTimes()
 
         factory.definition shouldBe Definition(
           scopes = Seq(
