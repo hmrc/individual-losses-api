@@ -53,7 +53,7 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
 
   def featureSwitch: Option[Configuration] = configuration.getOptional[Configuration](s"feature-switch")
 
-  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api-definitions.$version.endpoints.enabled")
+  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"feature-switch.version-$version.enabled")
 }
 
 trait FixedConfig {
