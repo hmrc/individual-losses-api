@@ -27,15 +27,16 @@ object BusinessIdValidation {
     if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
   }
 
-  def validateOptional(typeOfLoss: TypeOfLoss, businessId: Option[String], idOptional: Boolean = false): List[MtdError] = {
-    if (typeOfLoss.isUkProperty) propertyValidationOptional(businessId) else businessIdValidationOptional(businessId, idOptional)
+  def validateOptional(typeOfLoss: TypeOfLoss, businessId: Option[String], idOptional: Boolean = false, noRuleBusinessIdError: Boolean = false): List[MtdError] = {
+    if (typeOfLoss.isUkProperty && !noRuleBusinessIdError) propertyValidationOptional(businessId) else businessIdValidationOptional(businessId, idOptional, noRuleBusinessIdError)
   }
 
-  private def businessIdValidationOptional(businessId: Option[String], idOptional: Boolean): List[MtdError] = {
+  private def businessIdValidationOptional(businessId: Option[String], idOptional: Boolean, noRuleBusinessIdError: Boolean): List[MtdError] = {
     businessId match {
-      case None if idOptional => Nil
-      case None               => List(RuleBusinessId)
-      case Some(id)           => if (id.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
+      case None if idOptional             => Nil
+      case None if !noRuleBusinessIdError => List(RuleBusinessId)
+      case None if noRuleBusinessIdError  => Nil
+      case Some(id)                       => if (id.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
     }
   }
 

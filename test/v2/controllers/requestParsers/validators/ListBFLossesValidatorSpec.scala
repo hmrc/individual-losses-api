@@ -114,22 +114,7 @@ class ListBFLossesValidatorSpec extends UnitSpec {
       }
     }
 
-    "return RuleBusinessId" when {
-      "a self employment id is supplied for a loss type of non-fhl property" in {
-        validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("uk-property-non-fhl"),
-          businessId = Some(validBusinessId))) shouldBe List(RuleBusinessId)
-      }
-      "a self employment id is supplied for a loss type of fhl property" in {
-        validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("uk-property-fhl"),
-          businessId = Some(validBusinessId))) shouldBe List(RuleBusinessId)
-      }
-    }
-
-    "not return a RuleBusinessId" when {
+    "not return an error" when {
       "a self employment id is not supplied for a loss type of non-fhl property" in {
         validator.validate(ListBFLossesRawData(nino = validNino,
           taxYear = Some(validTaxYear),
