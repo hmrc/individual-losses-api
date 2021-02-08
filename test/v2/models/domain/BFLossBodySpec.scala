@@ -28,9 +28,6 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
   val broughtForwardLossForeignProperty =
     BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 256.78)
 
-  val broughtForwardLossProperty =
-    BFLoss(typeOfLoss = TypeOfLoss.`uk-property-fhl`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 255.50)
-
   val broughtForwardLossEmploymentJson: JsValue = Json.parse("""
       |{
       |    "businessId": "XKIS00000000988",
@@ -67,22 +64,6 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val broughtForwardLossPropertyJson: JsValue = Json.parse("""
-      |{
-      |	  "typeOfLoss": "uk-property-fhl",
-      |	  "taxYear": "2019-20",
-      |	  "lossAmount": 255.50
-      |}
-    """.stripMargin)
-
-  val broughtForwardLossPropertyDesJson: JsValue = Json.parse("""
-      |{
-      |	  "incomeSourceType":"04",
-      |	  "taxYear": "2020",
-      |	  "broughtForwardLossAmount": 255.50
-      |}
-    """.stripMargin)
-
   "reads" when {
     "passed valid BroughtForwardLoss JSON" should {
       "return a valid model" in {
@@ -112,10 +93,19 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
         BFLoss.writes.writes(broughtForwardLossEmployment) shouldBe broughtForwardLossEmploymentDesJson
       }
     }
-    "passed a valid BroughtForwardLoss Property model" should {
-      "return a valid BroughtForwardLoss Property JSON" in {
-        BFLoss.writes.writes(broughtForwardLossProperty) shouldBe broughtForwardLossPropertyDesJson
-      }
+    "passed a valid BroughtForwardLoss UK Property model" should {
+      Seq(TypeOfLoss.`uk-property-fhl`, TypeOfLoss.`uk-property-non-fhl`).foreach(
+        typeOfLoss =>
+          s"return valid JSON without a businessId for $typeOfLoss" in {
+            val model         = BFLoss(typeOfLoss = typeOfLoss, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 255.50)
+            val json: JsValue = Json.parse(s"""{
+                                              |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType.get}",
+                                              |	  "taxYear": "2020",
+                                              |	  "broughtForwardLossAmount": 255.50
+                                              |}""".stripMargin)
+            BFLoss.writes.writes(model) shouldBe json
+          }
+      )
     }
     "passed a valid BroughtForwardLoss Foreign Property model" should {
       "return a valid BroughtForwardLoss Foreign Property JSON" in {
