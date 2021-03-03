@@ -16,14 +16,19 @@
 
 package definition
 
+
+import config.ConfidenceLevelConfig
 import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
   class Test {
     val factory = new ApiDefinitionFactory(mockAppConfig)
   }
+
+  private val confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
 
   "definition" when {
     "there is no appConfig.apiStatus" should {
@@ -34,18 +39,21 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         MockedAppConfig.apiStatus("2.0") returns ""
         MockedAppConfig.endpointsEnabled("1") returns true anyNumberOfTimes()
         MockedAppConfig.endpointsEnabled("2") returns true anyNumberOfTimes()
+        MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
 
         factory.definition shouldBe Definition(
           scopes = Seq(
                      Scope(
                          key = "read:self-assessment",
                          name = "View your Self Assessment information",
-                         description = "Allow read access to self assessment data"
+                         description = "Allow read access to self assessment data",
+                         confidenceLevel
                  ),
                  Scope(
                      key = "write:self-assessment",
                      name = "Change your Self Assessment information",
-                     description = "Allow write access to self assessment data"
+                     description = "Allow write access to self assessment data",
+                     confidenceLevel
                  )
                ),
                api = APIDefinition(
@@ -65,24 +73,28 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     }
     "featureSwitch.isWhiteListingEnabled is false" should {
       "have no access" in new Test {
-        MockedAppConfig.apiGatewayContext returns "my/context"
-        MockedAppConfig.featureSwitch returns Some(Configuration("white-list.enabled" -> false)) anyNumberOfTimes()
-        MockedAppConfig.apiStatus("1.0") returns "BETA"
-        MockedAppConfig.apiStatus("2.0") returns "BETA"
-        MockedAppConfig.endpointsEnabled("1") returns true anyNumberOfTimes()
-        MockedAppConfig.endpointsEnabled("2") returns true anyNumberOfTimes()
+          MockedAppConfig.apiGatewayContext returns "my/context"
+          MockedAppConfig.featureSwitch returns Some(Configuration("white-list.enabled" -> false)) anyNumberOfTimes()
+          MockedAppConfig.apiStatus("1.0") returns "BETA"
+          MockedAppConfig.apiStatus("2.0") returns "BETA"
+          MockedAppConfig.endpointsEnabled("1") returns true anyNumberOfTimes()
+          MockedAppConfig.endpointsEnabled("2") returns true anyNumberOfTimes()
+          MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
+
 
         factory.definition shouldBe Definition(
           scopes = Seq(
                      Scope(
                          key = "read:self-assessment",
                          name = "View your Self Assessment information",
-                         description = "Allow read access to self assessment data"
+                         description = "Allow read access to self assessment data",
+                         confidenceLevel
                  ),
                  Scope(
                      key = "write:self-assessment",
                      name = "Change your Self Assessment information",
-                     description = "Allow write access to self assessment data"
+                     description = "Allow write access to self assessment data",
+                     confidenceLevel
                  )
                ),
                api = APIDefinition(
@@ -100,6 +112,22 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         )
       }
     }
+
+    "confidenceLevel" when {
+      Seq(
+        (true, ConfidenceLevel.L200),
+        (false, ConfidenceLevel.L50)
+      ).foreach {
+        case (definitionEnabled, cl) =>
+          s"confidence-level-check.definition.enabled is $definitionEnabled in config" should {
+            s"return $cl" in new Test {
+              MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = definitionEnabled, authValidationEnabled = true)
+              factory.confidenceLevel shouldBe cl
+            }
+          }
+      }
+    }
+
     "featureSwitch.isWhiteListingEnabled is true" should {
       "return an access" in new Test {
         MockedAppConfig.apiGatewayContext returns "my/context"
@@ -111,18 +139,21 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         MockedAppConfig.apiStatus("2.0") returns "BETA"
         MockedAppConfig.endpointsEnabled("1") returns true anyNumberOfTimes()
         MockedAppConfig.endpointsEnabled("2") returns true anyNumberOfTimes()
+        MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
 
         factory.definition shouldBe Definition(
           scopes = Seq(
                      Scope(
                          key = "read:self-assessment",
                          name = "View your Self Assessment information",
-                         description = "Allow read access to self assessment data"
+                         description = "Allow read access to self assessment data",
+                         confidenceLevel
                  ),
                  Scope(
                      key = "write:self-assessment",
                      name = "Change your Self Assessment information",
-                     description = "Allow write access to self assessment data"
+                     description = "Allow write access to self assessment data",
+                     confidenceLevel
                  )
                ),
                api = APIDefinition(
