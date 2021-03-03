@@ -16,7 +16,7 @@
 
 package v1.services
 
-import javax.inject.{Inject, Singleton}
+import config.AppConfig
 import play.api.Logger
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
@@ -29,10 +29,11 @@ import v1.models.auth.UserDetails
 import v1.models.errors.{DownstreamError, UnauthorisedError}
 import v1.models.outcomes.AuthOutcome
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentsAuthService @Inject()(val connector: AuthConnector) {
+class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfig: AppConfig) {
 
   private val authFunction: AuthorisedFunctions = new AuthorisedFunctions {
     override def authConnector: AuthConnector = connector
@@ -43,8 +44,13 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector) {
     .flatMap(_.getIdentifier("AgentReferenceNumber"))
     .map(_.value)
 
+  def buildPredicate(predicate: Predicate): Predicate =
+    if (appConfig.confidenceLevelConfig.authValidationEnabled) {
+      predicate and ((Individual and ConfidenceLevel.L200) or Organisation or Agent)
+    } else predicate
+
   def authorised(predicate: Predicate)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuthOutcome] = {
-    authFunction.authorised(predicate).retrieve(affinityGroup and authorisedEnrolments) {
+    authFunction.authorised(buildPredicate(predicate)).retrieve(affinityGroup and authorisedEnrolments) {
       case Some(Individual) ~ _ =>
         val user = UserDetails("", "Individual", None)
         Future.successful(Right(user))
@@ -75,5 +81,7 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector) {
         case _ ~ enrolments =>
           Future.successful(getAgentReferenceFromEnrolments(enrolments))
         case _ => Future.successful(None)
+        case _ ~ enrolments => Future.successful(getAgentReferenceFromEnrolments(enrolments))
+        case _              => Future.successful(None)
       }
 }
