@@ -35,6 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfig: AppConfig) {
 
+  private val logger: Logger = Logger(this.getClass)
+
   private val authFunction: AuthorisedFunctions = new AuthorisedFunctions {
     override def authConnector: AuthConnector = connector
   }
@@ -63,14 +65,14 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
             val user: AuthOutcome = Right(UserDetails("", "Agent", arn))
             user
           case None =>
-            Logger.warn(s"[EnrolmentsAuthService][authorised] No AgentReferenceNumber defined on agent enrolment.")
+            logger.warn(s"[EnrolmentsAuthService][authorised] No AgentReferenceNumber defined on agent enrolment.")
             Left(DownstreamError)
         }
     } recoverWith {
       case _: MissingBearerToken => Future.successful(Left(UnauthorisedError))
       case _: AuthorisationException => Future.successful(Left(UnauthorisedError))
       case error =>
-        Logger.warn(s"[EnrolmentsAuthService][authorised] An unexpected error occurred: $error")
+        logger.warn(s"[EnrolmentsAuthService][authorised] An unexpected error occurred: $error")
         Future.successful(Left(DownstreamError))
     }
   }
