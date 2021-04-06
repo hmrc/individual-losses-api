@@ -19,7 +19,6 @@ package definition
 import play.api.http.HeaderNames.ACCEPT
 import play.api.test.FakeRequest
 import support.UnitSpec
-import uk.gov.hmrc.http.HeaderCarrier
 
 class VersionSpec extends UnitSpec {
 
