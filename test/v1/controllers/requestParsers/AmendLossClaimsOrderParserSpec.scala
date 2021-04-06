@@ -29,7 +29,7 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
   private val nino = "AA123456A"
   private val claimType = "carry-sideways"
-  private val taxYear = "2019-20"
+  private val taxYear = "2020-21"
   private val claim = Json.obj("id" -> "1234568790ABCDE", "sequence" -> 1)
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
