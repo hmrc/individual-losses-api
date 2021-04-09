@@ -35,6 +35,9 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
   val data: AmendLossClaimsOrderRawData = AmendLossClaimsOrderRawData(nino, Some(taxYear), AnyContentAsJson(Json.obj("claimType" -> claimType, "listOfLossClaims" -> Seq(claim))))
 
+  val dataNoTaxYear = AmendLossClaimsOrderRawData(nino, None, AnyContentAsJson(Json.obj("claimType" -> claimType, "listOfLossClaims" -> Seq(claim))))
+
+
   trait Test extends MockAmendLossClaimsOrderValidator {
     lazy val parser = new AmendLossClaimsOrderParser(mockValidator)
   }
@@ -49,8 +52,8 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
         }
       }
       "the validator returns no errors and no tax year is supplied" in new Test {
-        MockValidator.validate(data).returns(List())
-        parser.parseRequest(data) shouldBe {
+        MockValidator.validate(dataNoTaxYear).returns(List())
+        parser.parseRequest(dataNoTaxYear) shouldBe {
           Right(AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.mostRecentTaxYear(), AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }
