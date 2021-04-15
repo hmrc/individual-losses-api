@@ -18,8 +18,8 @@ package v2.controllers.requestParsers.validators.validations
 
 import v2.models.domain.TypeOfClaim._
 import v2.models.domain.TypeOfLoss._
-import v2.models.domain.{TypeOfClaim, TypeOfLoss}
-import v2.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
+import v2.models.domain.{ TypeOfClaim, TypeOfLoss }
+import v2.models.errors.{ MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
 
 object TypeOfClaimValidation {
 
@@ -29,14 +29,14 @@ object TypeOfClaimValidation {
 
   def checkClaim(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] =
     (typeOfLoss, typeOfClaim) match {
-      case (`uk-property-non-fhl`, `carry-sideways`) => NoValidationErrors
-      case (`uk-property-non-fhl`, `carry-sideways-fhl`) => NoValidationErrors
+      case (`uk-property-non-fhl`, `carry-sideways`)                  => NoValidationErrors
+      case (`uk-property-non-fhl`, `carry-sideways-fhl`)              => NoValidationErrors
       case (`uk-property-non-fhl`, `carry-forward-to-carry-sideways`) => NoValidationErrors
-      case (`self-employment`, `carry-forward`) => NoValidationErrors
-      case (`self-employment`, `carry-sideways`) => NoValidationErrors
-      case (`foreign-property`,`carry-sideways`) => NoValidationErrors
-      case (`foreign-property`,`carry-sideways-fhl`) => NoValidationErrors
-      case (`foreign-property`,`carry-forward-to-carry-sideways`) => NoValidationErrors
-      case (_,_) => List(RuleTypeOfClaimInvalid)
+      case (`self-employment`, `carry-forward`)                       => NoValidationErrors
+      case (`self-employment`, `carry-sideways`)                      => NoValidationErrors
+      case (`foreign-property`, `carry-sideways`)                     => NoValidationErrors
+      case (`foreign-property`, `carry-sideways-fhl`)                 => NoValidationErrors
+      case (`foreign-property`, `carry-forward-to-carry-sideways`)    => NoValidationErrors
+      case (_, _)                                                     => List(RuleTypeOfClaimInvalid)
     }
 }

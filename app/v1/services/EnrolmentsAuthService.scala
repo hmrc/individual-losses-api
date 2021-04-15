@@ -18,7 +18,7 @@ package v1.services
 
 import config.AppConfig
 import play.api.Logger
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
+import uk.gov.hmrc.auth.core.AffinityGroup.{ Agent, Individual, Organisation }
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -26,11 +26,11 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.auth.UserDetails
-import v1.models.errors.{DownstreamError, UnauthorisedError}
+import v1.models.errors.{ DownstreamError, UnauthorisedError }
 import v1.models.outcomes.AuthOutcome
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfig: AppConfig) {
@@ -41,10 +41,11 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
     override def authConnector: AuthConnector = connector
   }
 
-  def getAgentReferenceFromEnrolments(enrolments: Enrolments): Option[String] = enrolments
-    .getEnrolment("HMRC-AS-AGENT")
-    .flatMap(_.getIdentifier("AgentReferenceNumber"))
-    .map(_.value)
+  def getAgentReferenceFromEnrolments(enrolments: Enrolments): Option[String] =
+    enrolments
+      .getEnrolment("HMRC-AS-AGENT")
+      .flatMap(_.getIdentifier("AgentReferenceNumber"))
+      .map(_.value)
 
   def buildPredicate(predicate: Predicate): Predicate =
     if (appConfig.confidenceLevelConfig.authValidationEnabled) {
@@ -61,7 +62,7 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
         Future.successful(Right(user))
       case Some(Agent) ~ _ =>
         retrieveAgentDetails() map {
-          case arn@Some(_) =>
+          case arn @ Some(_) =>
             val user: AuthOutcome = Right(UserDetails("", "Agent", arn))
             user
           case None =>
@@ -69,7 +70,7 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
             Left(DownstreamError)
         }
     } recoverWith {
-      case _: MissingBearerToken => Future.successful(Left(UnauthorisedError))
+      case _: MissingBearerToken     => Future.successful(Left(UnauthorisedError))
       case _: AuthorisationException => Future.successful(Left(UnauthorisedError))
       case error =>
         logger.warn(s"[EnrolmentsAuthService][authorised] An unexpected error occurred: $error")
@@ -78,11 +79,9 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
   }
 
   private def retrieveAgentDetails()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
-    authFunction.authorised(AffinityGroup.Agent and Enrolment("HMRC-AS-AGENT"))
+    authFunction
+      .authorised(AffinityGroup.Agent and Enrolment("HMRC-AS-AGENT"))
       .retrieve(Retrievals.agentCode and Retrievals.authorisedEnrolments) {
-        case _ ~ enrolments =>
-          Future.successful(getAgentReferenceFromEnrolments(enrolments))
-        case _ => Future.successful(None)
         case _ ~ enrolments => Future.successful(getAgentReferenceFromEnrolments(enrolments))
         case _              => Future.successful(None)
       }

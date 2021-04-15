@@ -80,19 +80,19 @@ class CreateLossClaimParserSpec extends UnitSpec {
         MockValidator.validate(seInputData).returns(Nil)
 
         parser.parseRequest(seInputData) shouldBe
-          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XAIS01234567890")))
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XAIS01234567890"))))
       }
       "valid request data is supplied for foreign property" in new Test {
         MockValidator.validate(fPropInputData).returns(Nil)
 
         parser.parseRequest(fPropInputData) shouldBe
-          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`foreign-property`, TypeOfClaim.`carry-forward`, "XAIS01234567890")))
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`foreign-property`, TypeOfClaim.`carry-forward`, Some("XAIS01234567890"))))
       }
       "valid request data is supplied for uk property non fhl" in new Test {
         MockValidator.validate(ukPropDesData).returns(Nil)
 
         parser.parseRequest(ukPropDesData) shouldBe
-          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`uk-property-non-fhl`, TypeOfClaim.`carry-forward`, "X2IS12356589871")))
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim("2019-20", TypeOfLoss.`uk-property-non-fhl`, TypeOfClaim.`carry-forward`, Some("X2IS12356589871"))))
       }
     }
 

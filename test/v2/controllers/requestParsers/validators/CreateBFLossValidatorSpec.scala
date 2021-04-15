@@ -19,6 +19,7 @@ package v2.controllers.requestParsers.validators
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
+import v2.models.domain.TypeOfLoss
 import v2.models.errors._
 import v2.models.requestData
 import v2.models.requestData.CreateBFLossRawData
@@ -31,10 +32,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
   private val validBusinessId = "XAIS01234567890"
 
   val emptyBody: JsValue = Json.parse(
-    s"""{
-       |
-       |
-       |}""".stripMargin
+    s"""{}""".stripMargin
   )
 
   def createRequestBodyJson(typeOfLoss: String = validTypeOfLoss,
@@ -112,6 +110,52 @@ class CreateBFLossValidatorSpec extends UnitSpec {
             validNino,
             AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
           List(TypeOfLossFormatError)
+      }
+    }
+
+    "return RuleBusinessId error" when {
+      Seq[TypeOfLoss](
+        TypeOfLoss.`uk-property-fhl`,
+        TypeOfLoss.`uk-property-non-fhl`
+      ).foreach {
+        typeOfLoss => s"passed in $typeOfLoss with a valid businessId" in {
+          validator.validate(
+            requestData.CreateBFLossRawData(
+              validNino,
+              AnyContentAsJson(Json.parse(
+                s"""
+                  |{
+                  |  "typeOfLoss" : "$typeOfLoss",
+                  |  "businessId" : "$validBusinessId",
+                  |  "taxYear" : "$validTaxYear",
+                  |  "lossAmount" : 1000
+                  |}
+                  |""".stripMargin))
+            )
+          ) shouldBe List(RuleBusinessId)
+        }
+      }
+      Seq[TypeOfLoss](
+        TypeOfLoss.`self-employment`,
+        TypeOfLoss.`self-employment-class4`,
+        TypeOfLoss.`foreign-property-fhl-eea`,
+        TypeOfLoss.`foreign-property`
+      ).foreach {
+        typeOfLoss => s"passed in $typeOfLoss with no businessId" in {
+          validator.validate(
+            requestData.CreateBFLossRawData(
+              validNino,
+              AnyContentAsJson(Json.parse(
+                s"""
+                  |{
+                  |  "typeOfLoss" : "$typeOfLoss",
+                  |  "taxYear" : "$validTaxYear",
+                  |  "lossAmount" : 1000
+                  |}
+                  |""".stripMargin))
+            )
+          ) shouldBe List(RuleBusinessId)
+        }
       }
     }
 

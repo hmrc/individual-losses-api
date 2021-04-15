@@ -20,7 +20,7 @@ import play.api.libs.json._
 import v2.models.requestData.DesTaxYear
 
 case class BFLoss(typeOfLoss: TypeOfLoss,
-                  businessId: String,
+                  businessId: Option[String],
                   taxYear: String,
                   lossAmount: BigDecimal)
 

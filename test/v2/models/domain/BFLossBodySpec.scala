@@ -23,10 +23,10 @@ import v2.models.utils.JsonErrorValidators
 class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
 
   val broughtForwardLossEmployment =
-    BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 256.78)
+    BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossForeignProperty =
-    BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 256.78)
+    BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossEmploymentJson: JsValue = Json.parse("""
       |{
@@ -97,7 +97,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       Seq(TypeOfLoss.`uk-property-fhl`, TypeOfLoss.`uk-property-non-fhl`).foreach(
         typeOfLoss =>
           s"return valid JSON without a businessId for $typeOfLoss" in {
-            val model         = BFLoss(typeOfLoss = typeOfLoss, businessId = "XKIS00000000988", taxYear = "2019-20", lossAmount = 255.50)
+            val model         = BFLoss(typeOfLoss = typeOfLoss, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 255.50)
             val json: JsValue = Json.parse(s"""{
                                               |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType.get}",
                                               |	  "taxYear": "2020",

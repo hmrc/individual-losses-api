@@ -142,12 +142,6 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_ENDED", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
 
-    "return 400 (Bad Request)" when {
-
-      createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-    }
-
     "return 403 FORBIDDEN" when {
       createErrorTest(Status.CONFLICT, "DUPLICATE", Status.FORBIDDEN, RuleDuplicateClaimSubmissionError)
       createErrorTest(Status.FORBIDDEN, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
@@ -158,26 +152,57 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
       createErrorTest(Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError)
     }
 
-    def createErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-      s"des returns an $desCode error" in new CreateLossClaimControllerTest {
+    "return 400 (Bad Request)" when {
+
+      Seq("uk-property-non-fhl").foreach(typeOfLoss => s"$typeOfLoss is supplied with a businessId" in new CreateLossClaimControllerTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onError(DesStub.POST, desUrl, desStatus, errorBody(desCode))
         }
 
+        override val requestJson: JsValue = Json.parse(
+          s"""
+            |{
+            |    "businessId": "XKIS00000000988",
+            |    "typeOfLoss": "$typeOfLoss",
+            |    "taxYear": "2019-20",
+            |    "typeOfClaim": "carry-forward"
+            |}
+      """.stripMargin)
+
         val response: WSResponse = await(request().post(requestJson))
-        response.status shouldBe expectedStatus
-        response.json shouldBe Json.toJson(expectedBody)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.status shouldBe Status.BAD_REQUEST
+        response.json shouldBe Json.toJson(RuleBusinessId)
         response.header("Content-Type") shouldBe Some("application/json")
-      }
-    }
+      })
 
-    "return 400 (Bad Request)" when {
+      Seq("self-employment", "foreign-property").foreach(typeOfLoss => s"$typeOfLoss is supplied without a businessId" in new CreateLossClaimControllerTest {
 
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+        }
+
+        override val requestJson: JsValue = Json.parse(
+          s"""
+            |{
+            |    "typeOfLoss": "$typeOfLoss",
+            |    "taxYear": "2019-20",
+            |    "typeOfClaim": "carry-forward"
+            |}
+      """.stripMargin)
+
+        val response: WSResponse = await(request().post(requestJson))
+        response.status shouldBe Status.BAD_REQUEST
+        response.json shouldBe Json.toJson(RuleBusinessId)
+        response.header("Content-Type") shouldBe Some("application/json")
+      })
+
+      createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear,
         "carry-forward"), Status.BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest("AA123456A",
@@ -197,6 +222,23 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
         generateLossClaim(businessId, typeOfLoss, taxYear,"carry-forward-type"), Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
 
+    def createErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      s"des returns an $desCode error" in new CreateLossClaimControllerTest {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onError(DesStub.POST, desUrl, desStatus, errorBody(desCode))
+        }
+
+        val response: WSResponse = await(request().post(requestJson))
+        response.status shouldBe expectedStatus
+        response.json shouldBe Json.toJson(expectedBody)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+    }
 
     def createLossClaimValidationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
       s"validation fails with ${expectedBody.code} error" in new CreateLossClaimControllerTest {
