@@ -18,7 +18,7 @@
     },
     "businessId": {
       "type": "string",
-      "description": "An identifier for the business, unique to the customer.",
+      "description": "An identifier for the business, unique to the customer. Must be supplied for any Self-employment or Foreign Property typeOfLoss. Must not be supplied for either UK Property typeOfLoss.",
       "example": "XGIS00000001319",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
     },
@@ -35,7 +35,6 @@
   },
   "required": [
     "typeOfLoss",
-    "businessId",
     "lossAmount",
     "taxYear"
   ],
