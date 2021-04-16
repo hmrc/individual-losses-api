@@ -11,7 +11,7 @@
         },
         "businessId" : {
             "type": "string",
-            "description": "The unique identifier of the income source the claim relates to.",
+            "description": "The unique identifier of the income source the claim relates to. Must be supplied for self-employment or foreign-property typeOfLoss. Must not be supplied for uk-property-non-fhl typeOfLoss.",
             "example": "XGIS00000001319",
             "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
         },
@@ -29,8 +29,7 @@
   "required": [
     "typeOfLoss",
     "typeOfClaim",
-    "taxYear",
-    "businessId"
+    "taxYear"
   ],
   "additionalProperties": false
 }
