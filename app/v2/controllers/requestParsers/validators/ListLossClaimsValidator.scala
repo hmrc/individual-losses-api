@@ -36,7 +36,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
     List(
       data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => BusinessIdValidation.validateOptional(lossType, data.businessId, idOptional = true)
+        case Some(lossType) => BusinessIdValidation.validateOptionalWithTypeOfLoss(lossType, data.businessId, idOptional = true)
         case None           => Nil
       },
       data.claimType.map(ClaimTypeValidation.validate).getOrElse(Nil)

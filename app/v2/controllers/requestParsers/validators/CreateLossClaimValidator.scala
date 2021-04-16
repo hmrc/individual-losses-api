@@ -22,12 +22,17 @@ import v2.models.domain.LossClaim
 import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v2.models.requestData.CreateLossClaimRawData
 
+class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {
 
-class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig{
-
-  private val validationSet = List(parameterFormatValidation, typeOfLossValidator, typeOfClaimValidator,
-    bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
-
+  private val validationSet = List(
+    parameterFormatValidation,
+    typeOfLossValidator,
+    typeOfClaimValidator,
+    bodyFormatValidator,
+    typeOfLossBusinessIdValidator,
+    taxYearValidator,
+    otherBodyFieldsValidator
+  )
 
   private def parameterFormatValidation: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     List(
@@ -58,9 +63,18 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
   private def taxYearValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[LossClaim]
     List(
-      TaxYearValidation.validate(req.taxYear).map(
-        _.copy(paths = Some(Seq(s"/taxYear")))
-      )
+      TaxYearValidation
+        .validate(req.taxYear)
+        .map(
+          _.copy(paths = Some(Seq(s"/taxYear")))
+        )
+    )
+  }
+
+  private def typeOfLossBusinessIdValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+    val req = data.body.json.as[LossClaim]
+    List(
+      TypeOfLossBusinessIdValidation.validate(req.typeOfLoss, req.businessId)
     )
   }
 
@@ -68,7 +82,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     val req = data.body.json.as[LossClaim]
     List(
       MinTaxYearValidation.validate(req.taxYear, minimumTaxYearLossClaim),
-      BusinessIdValidation.validate(req.businessId),
+      req.businessId.map(BusinessIdValidation.validate).getOrElse(NoValidationErrors),
       TypeOfClaimValidation.checkClaim(req.typeOfClaim, req.typeOfLoss)
     )
   }

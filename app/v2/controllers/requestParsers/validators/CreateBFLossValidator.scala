@@ -17,15 +17,19 @@
 package v2.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v2.controllers.requestParsers.validators.validations.TaxYearValidation
-import v2.controllers.requestParsers.validators.validations._
+import v2.controllers.requestParsers.validators.validations.{TaxYearValidation, _}
 import v2.models.domain.BFLoss
 import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v2.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedConfig {
 
-  private val validationSet = List(parameterFormatValidation, typeOfLossValidator, bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
+  private val validationSet = List(parameterFormatValidation,
+                                   typeOfLossValidator,
+                                   bodyFormatValidator,
+                                   typeOfLossBusinessIdValidator,
+                                   taxYearValidator,
+                                   otherBodyFieldsValidator)
 
   private def parameterFormatValidation: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
@@ -49,9 +53,18 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
   private def taxYearValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
-      TaxYearValidation.validate(req.taxYear).map(
-        _.copy(paths = Some(Seq(s"/taxYear")))
-      )
+      TaxYearValidation
+        .validate(req.taxYear)
+        .map(
+          _.copy(paths = Some(Seq(s"/taxYear")))
+        )
+    )
+  }
+
+  private def typeOfLossBusinessIdValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+    val req = data.body.json.as[BFLoss]
+    List(
+      TypeOfLossBusinessIdValidation.validate(req.typeOfLoss, req.businessId)
     )
   }
 
@@ -59,7 +72,7 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
     val req = data.body.json.as[BFLoss]
     List(
       MinTaxYearValidation.validate(req.taxYear, minimumTaxYearBFLoss),
-      BusinessIdValidation.validate(req.businessId),
+      req.businessId.map(BusinessIdValidation.validate).getOrElse(NoValidationErrors),
       AmountValidation.validate(req.lossAmount)
     )
   }

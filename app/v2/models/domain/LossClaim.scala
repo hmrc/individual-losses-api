@@ -22,7 +22,7 @@ import v2.models.requestData.DesTaxYear
 case class LossClaim(taxYear: String,
                      typeOfLoss: TypeOfLoss,
                      typeOfClaim: TypeOfClaim,
-                     businessId: String)
+                     businessId: Option[String])
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 

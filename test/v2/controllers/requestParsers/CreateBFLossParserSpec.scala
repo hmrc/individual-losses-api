@@ -51,7 +51,7 @@ class CreateBFLossParserSpec extends UnitSpec {
         MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(CreateBFLossRequest(Nino(nino), BFLoss(TypeOfLoss.`self-employment`, "XAIS01234567890", taxYear, 1000)))
+          Right(CreateBFLossRequest(Nino(nino), BFLoss(TypeOfLoss.`self-employment`, Some("XAIS01234567890"), taxYear, 1000)))
       }
     }
 

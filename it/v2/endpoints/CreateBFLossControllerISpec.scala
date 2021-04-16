@@ -19,27 +19,24 @@ package v2.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsObject, JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
 import v2.hateoas.HateoasLinks
 import v2.models.errors._
-import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v2.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
 
 class CreateBFLossControllerISpec extends IntegrationBaseSpec {
 
   def generateBFLoss(businessId: Option[String], typeOfLoss: String, taxYear: String, lossAmount: BigDecimal): JsObject =
-    Json.obj("businessId" -> businessId,
-      "typeOfLoss" -> typeOfLoss,
-      "taxYear" -> taxYear,
-      "lossAmount" -> lossAmount)
+    Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYear" -> taxYear, "lossAmount" -> lossAmount)
 
-  val lossId = "AAZZ1234567890a"
+  val lossId        = "AAZZ1234567890a"
   val correlationId = "X-123"
-  val businessId = "XKIS00000000988"
-  val taxYear = "2019-20"
-  val lossAmount = 256.78
-  val typeOfLoss = "self-employment"
+  val businessId    = "XKIS00000000988"
+  val taxYear       = "2019-20"
+  val lossAmount    = 256.78
+  val typeOfLoss    = "self-employment"
 
   object Hateoas extends HateoasLinks
 
@@ -47,8 +44,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
 
     val nino = "AA123456A"
 
-    val requestJson: JsValue = Json.parse(
-      """
+    val requestJson: JsValue = Json.parse("""
         |{
         |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
@@ -57,8 +53,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    lazy val responseJson: JsValue = Json.parse(
-      s"""
+    lazy val responseJson: JsValue = Json.parse(s"""
         |{
         |    "id": "AAZZ1234567890a",
         |    "links": [{
@@ -79,8 +74,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val desResponseJson: JsValue = Json.parse(
-      """
+    val desResponseJson: JsValue = Json.parse("""
         |{
         |    "lossId": "AAZZ1234567890a"
         |}
@@ -109,7 +103,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
   "Calling the create BFLoss endpoint" should {
 
     trait CreateBFLossControllerTest extends Test {
-      def uri: String = s"/$nino/brought-forward-losses"
+      def uri: String    = s"/$nino/brought-forward-losses"
       def desUrl: String = s"/income-tax/brought-forward-losses/$nino"
     }
 
@@ -131,7 +125,6 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-
     "return 500 (Internal Server Error)" when {
 
       createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
@@ -148,9 +141,94 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
       createErrorTest(Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError)
     }
 
-    "return 400 BAD REQUEST" when {
+    "return 400 (Bad Request)" when {
+
+      Seq("uk-property-fhl", "uk-property-non-fhl").foreach(
+        typeOfLoss =>
+          s"$typeOfLoss is supplied with a businessId" in new CreateBFLossControllerTest {
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+            }
+
+            override val requestJson: JsValue = Json.parse(s"""
+            |{
+            |    "businessId": "XKIS00000000988",
+            |    "typeOfLoss": "$typeOfLoss",
+            |    "taxYear": "2019-20",
+            |    "lossAmount": 256.78
+            |}
+      """.stripMargin)
+
+            val response: WSResponse = await(request().post(requestJson))
+            response.status shouldBe Status.BAD_REQUEST
+            response.json shouldBe Json.toJson(RuleBusinessId)
+            response.header("Content-Type") shouldBe Some("application/json")
+        }
+      )
+
+      Seq("self-employment", "self-employment-class4", "foreign-property-fhl-eea", "foreign-property").foreach(
+        typeOfLoss =>
+          s"$typeOfLoss is supplied without a businessId" in new CreateBFLossControllerTest {
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+            }
+
+            override val requestJson: JsValue = Json.parse(s"""
+            |{
+            |    "typeOfLoss": "$typeOfLoss",
+            |    "taxYear": "2019-20",
+            |    "lossAmount": 256.78
+            |}
+      """.stripMargin)
+
+            val response: WSResponse = await(request().post(requestJson))
+            response.status shouldBe Status.BAD_REQUEST
+            response.json shouldBe Json.toJson(RuleBusinessId)
+            response.header("Content-Type") shouldBe Some("application/json")
+        }
+      )
+
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_ENDED", Status.BAD_REQUEST, RuleTaxYearNotEndedError)
+      createBFLossValidationErrorTest("BADNINO",
+                                      generateBFLoss(Some(businessId), typeOfLoss, taxYear, lossAmount),
+                                      Status.BAD_REQUEST,
+                                      NinoFormatError)
+      createBFLossValidationErrorTest("AA123456A",
+                                      generateBFLoss(Some(businessId), typeOfLoss, "20111", lossAmount),
+                                      Status.BAD_REQUEST,
+                                      TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
+      createBFLossValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      createBFLossValidationErrorTest("AA123456A",
+                                      generateBFLoss(Some(businessId), typeOfLoss, "2011-12", lossAmount),
+                                      Status.BAD_REQUEST,
+                                      RuleTaxYearNotSupportedError)
+      createBFLossValidationErrorTest(
+        "AA123456A",
+        generateBFLoss(Some(businessId), typeOfLoss, "2019-25", lossAmount),
+        Status.BAD_REQUEST,
+        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear")))
+      )
+      createBFLossValidationErrorTest("AA123456A",
+                                      generateBFLoss(None, "self-employment-class", "2019-20", lossAmount),
+                                      Status.BAD_REQUEST,
+                                      TypeOfLossFormatError)
+      createBFLossValidationErrorTest("AA123456A",
+                                      generateBFLoss(Some("sdfsf"), typeOfLoss, "2019-20", lossAmount),
+                                      Status.BAD_REQUEST,
+                                      BusinessIdFormatError)
+      createBFLossValidationErrorTest("AA123456A",
+                                      generateBFLoss(Some(businessId), typeOfLoss, taxYear, -3234.99),
+                                      Status.BAD_REQUEST,
+                                      RuleInvalidLossAmount)
+      createBFLossValidationErrorTest("AA123456A",
+                                      generateBFLoss(Some(businessId), typeOfLoss, taxYear, 99999999999.999),
+                                      Status.BAD_REQUEST,
+                                      AmountFormatError)
     }
 
     def createErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
@@ -170,27 +248,6 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
-
-    "return 400 (Bad Request)" when {
-
-      createBFLossValidationErrorTest("BADNINO", generateBFLoss(Some(businessId), typeOfLoss, taxYear, lossAmount), Status.BAD_REQUEST, NinoFormatError)
-      createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(businessId), typeOfLoss, "20111", lossAmount) , Status.BAD_REQUEST, TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
-      createBFLossValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(businessId), typeOfLoss, "2011-12", lossAmount), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-      createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(businessId), typeOfLoss, "2019-25", lossAmount), Status.BAD_REQUEST, RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
-      createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(None, "self-employment-class", "2019-20", lossAmount), Status.BAD_REQUEST, TypeOfLossFormatError)
-      createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some("sdfsf"), typeOfLoss, "2019-20", lossAmount), Status.BAD_REQUEST, BusinessIdFormatError)
-      createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(businessId), typeOfLoss, taxYear,-3234.99), Status.BAD_REQUEST, RuleInvalidLossAmount)
-      createBFLossValidationErrorTest("AA123456A",
-        generateBFLoss(Some(businessId), typeOfLoss, taxYear,99999999999.999), Status.BAD_REQUEST, AmountFormatError)
-    }
-
 
     def createBFLossValidationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
       s"validation fails with ${expectedBody.code} error" in new CreateBFLossControllerTest {

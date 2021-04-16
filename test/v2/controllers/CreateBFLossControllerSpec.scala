@@ -49,7 +49,7 @@ class CreateBFLossControllerSpec
   val nino = "AA123456A"
   val lossId = "AAZZ1234567890a"
 
-  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
   val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
   val testHateoasLink = Link(href = "/foo/bar", method = GET, rel="test-relationship")

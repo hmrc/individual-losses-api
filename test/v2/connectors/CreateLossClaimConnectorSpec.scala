@@ -28,7 +28,7 @@ import scala.concurrent.Future
 class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
   "create LossClaim" when {
-    val lossClaim = LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
+    val lossClaim = LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
         val expected = Right(DesResponse(correlationId, CreateLossClaimResponse(claimId)))
