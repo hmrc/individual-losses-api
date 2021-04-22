@@ -1,8 +1,8 @@
-This API allows software packages to show and provide a taxpayers’ financial data for their Brought Forward Losses and Loss Claims. 
+This API allows taxpayers to provide financial data for their Brought Forward Losses and Loss Claims. 
 For Brought forward losses a developer can:
 
 * provide a list of brought forward losses
-* create a new brought forward loss to submit against Self-employment, Self-employment Class 4, UK Furnished Holiday Letting (FHL) property and UK other (Non-FHL) property
+* create a new brought forward loss 
 * show a single brought forward loss
 * delete an existing brought forward loss
 * update an existing brought forward loss
@@ -14,3 +14,5 @@ For Loss claims a developer can:
 * show the detail of an existing loss claim
 * delete a previously entered loss claim
 * update a previously entered loss claim
+
+For information on how to connect to this API [see the Income Tax MTD end-to-end service guide](https://developer.service.hmrc.gov.uk/guides/income-tax-mtd-end-to-end-service-guide/).
