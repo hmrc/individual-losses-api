@@ -18,7 +18,6 @@ package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
@@ -26,7 +25,7 @@ import v1.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v1.mocks.services._
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, CreateLossClaimAuditDetail}
 import v1.models.des.{CreateLossClaimHateoasData, CreateLossClaimResponse}
-import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
+import v1.models.domain.{LossClaim, Nino, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -37,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateLossClaimControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateLossClaimService
@@ -46,28 +45,31 @@ class CreateLossClaimControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino = "AA123456A"
-  val lossClaimId = "AAZZ1234567890a"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val lossClaimId: String = "AAZZ1234567890a"
 
   val lossClaim: LossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, Some("XKIS00000000988"))
 
   val createLossClaimResponse: CreateLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
+
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel="test-relationship")
 
   val lossClaimRequest: CreateLossClaimRequest = CreateLossClaimRequest(Nino(nino), lossClaim)
 
-  val requestBody: JsValue = Json.parse("""
+  val requestBody: JsValue = Json.parse(
+    """
       |{
       |    "selfEmploymentId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
       |    "taxYear": "2017-18",
       |    "typeOfClaim": "carry-forward"
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
-  val responseBody: JsValue = Json.parse("""
+  val responseBody: JsValue = Json.parse(
+    """
       |{
       |  "id": "AAZZ1234567890a",
       |  "links" : [
@@ -78,7 +80,8 @@ class CreateLossClaimControllerSpec
       |     }
       |  ]
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -95,8 +98,8 @@ class CreateLossClaimControllerSpec
     )
 
     MockIdGenerator.getCorrelationId.returns(correlationId)
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "create" should {

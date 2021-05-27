@@ -17,18 +17,18 @@
 package v2.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.validators.MockListLossClaimsValidator
 import v2.models.des.IncomeSourceType
-import v2.models.domain.TypeOfClaim
+import v2.models.domain.{Nino, TypeOfClaim}
 import v2.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
 class ListLossClaimsParserSpec extends UnitSpec {
-  val nino             = "AA123456B"
-  val taxYear          = "2017-18"
-  val businessId = "XAIS01234567890"
-  val claimType        = "carry-sideways"
+
+  private val nino        = "AA123456B"
+  private val taxYear     = "2017-18"
+  private val businessId  = "XAIS01234567890"
+  private val claimType   = "carry-sideways"
 
   trait Test extends MockListLossClaimsValidator {
     lazy val parser = new ListLossClaimsParser(mockValidator)
@@ -38,8 +38,9 @@ class ListLossClaimsParserSpec extends UnitSpec {
     "valid input" should {
 
       "convert uk-property-fhl to incomeSourceType 04" in new Test {
-        val inputData =
-          ListLossClaimsRawData(nino,
+        val inputData: ListLossClaimsRawData =
+          ListLossClaimsRawData(
+            nino = nino,
             taxYear = Some(taxYear),
             typeOfLoss = Some("uk-property-fhl"),
             businessId = Some(businessId),
@@ -63,9 +64,9 @@ class ListLossClaimsParserSpec extends UnitSpec {
       }
 
       "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
-        val inputData =
+        val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
-            nino,
+            nino = nino,
             taxYear = Some(taxYear),
             typeOfLoss = Some("uk-property-non-fhl"),
             businessId = Some(businessId),
@@ -89,7 +90,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
       }
 
       "map missing parameters to None" in new Test {
-        val inputData =
+        val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(nino, None, None, None, None)
 
         MockValidator

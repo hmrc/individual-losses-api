@@ -18,14 +18,13 @@ package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListLossClaimsRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
 import v1.models.des.{ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId}
-import v1.models.domain.TypeOfClaim
+import v1.models.domain.{Nino, TypeOfClaim}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.Method.{GET, POST}
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -36,7 +35,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockListLossClaimsService
@@ -45,16 +44,16 @@ class ListLossClaimsControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  // WLOG as request data parsing is mocked...
-  val correlationId    = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino             = "AA123456A"
-  val taxYear          = "2018-19"
-  val selfEmployment   = "self-employment"
-  val selfEmploymentId = "selfEmploymentId"
-  val claimType        = "carry-sideways"
+  val correlationId: String    = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String             = "AA123456A"
+  val taxYear: String          = "2018-19"
+  val selfEmployment: String   = "self-employment"
+  val selfEmploymentId: String = "selfEmploymentId"
+  val claimType: String        = "carry-sideways"
 
   val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(selfEmploymentId), Some(claimType))
-  val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId), Some(TypeOfClaim.`carry-sideways`))
+  val request: ListLossClaimsRequest =
+    ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(selfEmploymentId), Some(TypeOfClaim.`carry-sideways`))
 
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
@@ -66,7 +65,8 @@ class ListLossClaimsControllerSpec
     Seq(HateoasWrapper(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink)),
         HateoasWrapper(LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink))))
 
-  val responseJson: JsValue = Json.parse("""
+  val responseJson: JsValue = Json.parse(
+    """
       |{
       |    "claims": [
       |        {
@@ -102,7 +102,8 @@ class ListLossClaimsControllerSpec
       |       }
       |    ]
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -119,8 +120,8 @@ class ListLossClaimsControllerSpec
     )
 
     MockIdGenerator.getCorrelationId.returns(correlationId)
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "list" should {

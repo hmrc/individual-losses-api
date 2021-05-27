@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockRetrieveLossClaimValidator
+import v1.models.domain.Nino
 import v1.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
 import v1.models.requestData.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
 
@@ -53,5 +53,4 @@ class RetrieveLossClaimParserSpec extends UnitSpec {
       }
     }
   }
-
 }

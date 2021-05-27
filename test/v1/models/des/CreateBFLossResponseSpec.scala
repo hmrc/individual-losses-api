@@ -25,19 +25,23 @@ import v1.models.hateoas.{HateoasWrapper, Link}
 
 class CreateBFLossResponseSpec extends UnitSpec {
 
-  val lossIdResponse = CreateBFLossResponse(id = "AAZZ1234567890a")
+  val lossIdResponse: CreateBFLossResponse = CreateBFLossResponse(id = "AAZZ1234567890a")
 
-  val lossIdJson: JsValue = Json.parse("""
+  val lossIdJson: JsValue = Json.parse(
+    """
       |{
       |   "id": "AAZZ1234567890a"
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
-  val lossIdDesJson: JsValue = Json.parse("""
+  val lossIdDesJson: JsValue = Json.parse(
+    """
       |{
       |   "lossId": "AAZZ1234567890a"
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   "reads" when {
     "passed valid LossIdResponse JSON" should {
@@ -61,7 +65,7 @@ class CreateBFLossResponseSpec extends UnitSpec {
       val hateoasFactory = new HateoasFactory(mockAppConfig)
       val nino           = "someNino"
       val lossId         = "lossId"
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
     }
 
     "expose the correct links for create" in new Test {

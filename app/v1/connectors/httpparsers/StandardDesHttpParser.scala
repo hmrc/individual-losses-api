@@ -16,7 +16,6 @@
 
 package v1.connectors.httpparsers
 
-import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
@@ -25,8 +24,6 @@ import v1.models.errors.{ DownstreamError, OutboundError }
 import v1.models.outcomes.DesResponse
 
 object StandardDesHttpParser extends HttpParser {
-
-  val logger = Logger(getClass)
 
   // Return Right[DesResponse[Unit]] as success response has no body - no need to assign it a value
   implicit val readsEmpty: HttpReads[DesOutcome[Unit]] =

@@ -19,24 +19,27 @@ package v1.controllers.requestParsers
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockCreateLossClaimValidator
-import v1.models.domain.{LossClaim, TypeOfClaim, TypeOfLoss}
+import v1.models.domain.{LossClaim, Nino, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.requestData._
 
 class CreateLossClaimParserSpec extends UnitSpec {
-  val nino = "AA123456B"
-  val taxYear = "2019-20"
+
+  private val nino = "AA123456B"
+  private val taxYear = "2019-20"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   private val requestBodyJson = Json.parse(
-    s"""{
+    s"""
+       |{
        |  "typeOfLoss" : "self-employment",
        |  "selfEmploymentId" : "XAIS01234567890",
        |  "taxYear" : "$taxYear",
        |  "typeOfClaim" : "carry-forward"
-       |}""".stripMargin)
+       |}
+     """.stripMargin
+  )
 
   val inputData: CreateLossClaimRawData =
     CreateLossClaimRawData(nino, AnyContentAsJson(requestBodyJson))

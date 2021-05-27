@@ -18,14 +18,13 @@ package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveLossClaimRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveLossClaimService}
 import v1.models.des.{GetLossClaimHateoasData, LossClaimResponse}
-import v1.models.domain.{TypeOfClaim, TypeOfLoss}
+import v1.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -45,9 +44,9 @@ class RetrieveLossClaimControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino = "AA123456A"
-  val claimId = "AAZZ1234567890a"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   val rawData: RetrieveLossClaimRawData = RetrieveLossClaimRawData(nino, claimId)
   val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(Nino(nino), claimId)
@@ -75,7 +74,8 @@ class RetrieveLossClaimControllerSpec
       |      }
       |    ]
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -92,8 +92,8 @@ class RetrieveLossClaimControllerSpec
     )
 
     MockIdGenerator.getCorrelationId.returns(correlationId)
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "retrieve" should {

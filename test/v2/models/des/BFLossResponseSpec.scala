@@ -27,27 +27,31 @@ import v2.models.hateoas.{HateoasWrapper, Link}
 class BFLossResponseSpec extends UnitSpec {
 
   def desPropertyJson(incomeSourceType: String): JsValue = {
-    Json.parse(s"""
-           |{
-           |  "incomeSourceId": "000000000000001",
-           |  "incomeSourceType": "$incomeSourceType",
-           |  "broughtForwardLossAmount": 99999999999.99,
-           |  "taxYear": "2020",
-           |  "submissionDate": "2018-07-13T12:13:48.763Z"
-           |}
-      """.stripMargin)
+    Json.parse(
+      s"""
+        |{
+        |  "incomeSourceId": "000000000000001",
+        |  "incomeSourceType": "$incomeSourceType",
+        |  "broughtForwardLossAmount": 99999999999.99,
+        |  "taxYear": "2020",
+        |  "submissionDate": "2018-07-13T12:13:48.763Z"
+        |}
+      """.stripMargin
+    )
   }
 
   def desEmploymentJson(lossType: String): JsValue = {
-    Json.parse(s"""
-           |{
-           |  "incomeSourceId": "000000000000001",
-           |  "lossType": "$lossType",
-           |  "broughtForwardLossAmount": 99999999999.99,
-           |  "taxYear": "2020",
-           |  "submissionDate": "2018-07-13T12:13:48.763Z"
-           |}
-      """.stripMargin)
+    Json.parse(
+      s"""
+        |{
+        |  "incomeSourceId": "000000000000001",
+        |  "lossType": "$lossType",
+        |  "broughtForwardLossAmount": 99999999999.99,
+        |  "taxYear": "2020",
+        |  "submissionDate": "2018-07-13T12:13:48.763Z"
+        |}
+      """.stripMargin
+    )
   }
 
   def desToModel: TypeOfLoss => BFLossResponse =
@@ -58,14 +62,13 @@ class BFLossResponseSpec extends UnitSpec {
                      taxYear = "2019-20",
                      lastModified = "2018-07-13T12:13:48.763Z")
 
-  val bfLossResponse =
-    BFLossResponse(
-      businessId = Some("000000000000001"),
-      typeOfLoss = TypeOfLoss.`self-employment`,
-      lossAmount = 99999999999.99,
-      taxYear = "2019-20",
-      lastModified = "2018-07-13T12:13:48.763Z"
-    )
+  val bfLossResponse: BFLossResponse = BFLossResponse(
+    businessId = Some("000000000000001"),
+    typeOfLoss = TypeOfLoss.`self-employment`,
+    lossAmount = 99999999999.99,
+    taxYear = "2019-20",
+    lastModified = "2018-07-13T12:13:48.763Z"
+  )
 
   "Json Reads" should {
     "convert property JSON from DES into a valid model for property type 02" in {
@@ -91,14 +94,17 @@ class BFLossResponseSpec extends UnitSpec {
     }
   }
   "Json Writes" should {
-    val mtdJson = Json.parse("""{
+    val mtdJson = Json.parse(
+      """
+        |{
         |  "businessId": "000000000000001",
         |  "typeOfLoss": "self-employment",
         |  "lossAmount": 99999999999.99,
         |  "taxYear": "2019-20",
         |  "lastModified": "2018-07-13T12:13:48.763Z"
         |}
-      """.stripMargin)
+      """.stripMargin
+    )
     "convert a valid model into MTD JSON" in {
       Json.toJson(bfLossResponse) shouldBe mtdJson
     }
@@ -109,7 +115,7 @@ class BFLossResponseSpec extends UnitSpec {
       val hateoasFactory = new HateoasFactory(mockAppConfig)
       val nino           = "someNino"
       val lossId         = "lossId"
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
     }
 
     "expose the correct links for retrieve" in new Test {

@@ -28,7 +28,8 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
   "json writes" must {
     "output as per spec" in {
       Json.toJson(ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))) shouldBe
-        Json.parse("""
+        Json.parse(
+        """
           |{
           |    "losses": [
           |        {
@@ -39,14 +40,15 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
           |        }
           |    ]
           |}
-        """.stripMargin)
+        """.stripMargin
+        )
     }
   }
   "json reads" must {
     "work for des response" in {
       // Note we ignore all but the lossId currently...
-      val desResponseJson =
-        Json.parse("""
+      val desResponseJson = Json.parse(
+        """
            |[
            |  {
            |   "incomeSourceId": "000000000000000",
@@ -87,8 +89,8 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
            |   "submissionDate": "2018-07-13T12:13:48.763Z"
            |  }
            |]
-           |
-        """.stripMargin)
+         """.stripMargin
+        )
 
       desResponseJson.as[ListBFLossesResponse[BFLossId]] shouldBe
         ListBFLossesResponse(
@@ -104,7 +106,7 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
     class Test extends MockAppConfig {
       val hateoasFactory = new HateoasFactory(mockAppConfig)
       val nino           = "someNino"
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
     }
 
     "expose the correct links for list" in new Test {
@@ -119,5 +121,4 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
         )
     }
   }
-
 }

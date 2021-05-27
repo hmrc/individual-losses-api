@@ -17,9 +17,8 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
-import v1.models.domain.AmendLossClaimsOrderRequestBody
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, Nino}
 import v1.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
 class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderValidator)
@@ -34,7 +33,4 @@ class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderVa
 
     AmendLossClaimsOrderRequest(Nino(data.nino), taxYear, data.body.json.as[AmendLossClaimsOrderRequestBody])
   }
-
-
-
 }

@@ -18,7 +18,6 @@ package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
@@ -26,7 +25,7 @@ import v1.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, CreateBFLossAuditDetail}
 import v1.models.des.{CreateBFLossHateoasData, CreateBFLossResponse}
-import v1.models.domain.{BFLoss, TypeOfLoss}
+import v1.models.domain.{BFLoss, Nino, TypeOfLoss}
 import v1.models.errors.{NotFoundError, _}
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -46,14 +45,14 @@ class CreateBFLossControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino = "AA123456A"
-  val lossId = "AAZZ1234567890a"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
   val createBFLossResponse: CreateBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
+
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel="test-relationship")
 
   val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
@@ -66,7 +65,8 @@ class CreateBFLossControllerSpec
       |    "taxYear": "2019-20",
       |    "lossAmount": 256.78
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   val responseBody: JsValue = Json.parse(
     """
@@ -80,7 +80,8 @@ class CreateBFLossControllerSpec
       |     }
       |  ]
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -97,8 +98,8 @@ class CreateBFLossControllerSpec
     )
 
     MockIdGenerator.getCorrelationId.returns(correlationId)
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "create" should {

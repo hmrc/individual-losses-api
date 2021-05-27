@@ -18,27 +18,23 @@ import play.core.PlayVersion
 import play.sbt.PlayImport._
 import sbt._
 
-
 object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-backend-play-26" % "3.4.0",
-    "uk.gov.hmrc" %% "domain" % "5.11.0-play-26",
-    "org.typelevel" %% "cats-core" % "2.3.0",
-    compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.0" cross CrossVersion.full),
-    "com.github.ghik" % "silencer-lib" % "1.7.0" % Provided cross CrossVersion.full,
-    "com.chuusai" %% "shapeless" % "2.4.0-M1"
+    "uk.gov.hmrc"   %% "bootstrap-backend-play-28" % "5.3.0",
+    "org.typelevel" %% "cats-core"                 % "2.6.1",
+    "com.chuusai"   %% "shapeless"                 % "2.4.0-M1"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % "3.2.3" % scope,
-    "org.scalacheck" %% "scalacheck" % "1.15.1" % scope,
-    "com.vladsch.flexmark" % "flexmark-all" % "0.36.8" % scope,
-    "org.scalamock" %% "scalamock" % "5.1.0" % scope,
-    "org.pegdown" % "pegdown" % "1.6.0" % scope,
-    "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.3" % scope,
-    "com.github.tomakehurst" % "wiremock-jre8" % "2.27.2" % scope
+    "org.scalatest"          %% "scalatest"          % "3.2.9"             % scope,
+    "org.scalacheck"         %% "scalacheck"         % "1.15.4"            % scope,
+    "com.vladsch.flexmark"   % "flexmark-all"        % "0.36.8"            % scope,
+    "org.scalamock"          %% "scalamock"          % "5.1.0"             % scope,
+    "org.pegdown"            % "pegdown"             % "1.6.0"             % scope,
+    "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope,
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"             % scope,
+    "com.github.tomakehurst" % "wiremock-jre8"       % "2.27.2"            % scope
   )
 }

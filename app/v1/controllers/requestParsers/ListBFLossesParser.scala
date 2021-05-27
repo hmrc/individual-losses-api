@@ -17,12 +17,12 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.ListBFLossesValidator
-import v1.models.domain.TypeOfLoss
+import v1.models.domain.{Nino, TypeOfLoss}
 import v1.models.requestData._
 
-class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
+class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator)
+  extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
 
   override protected def requestFor(data: ListBFLossesRawData): ListBFLossesRequest = {
     val taxYear = data.taxYear
@@ -33,9 +33,11 @@ class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends
       incomeSourceType <- typeOfLoss.toIncomeSourceType
     } yield incomeSourceType
 
-    ListBFLossesRequest(Nino(data.nino),
-        taxYear = taxYear.map(DesTaxYear.fromMtd),
-        incomeSourceType = incomeSourceType,
-        selfEmploymentId = data.selfEmploymentId)
+    ListBFLossesRequest(
+      nino = Nino(data.nino),
+      taxYear = taxYear.map(DesTaxYear.fromMtd),
+      incomeSourceType = incomeSourceType,
+      selfEmploymentId = data.selfEmploymentId
+    )
   }
 }

@@ -16,10 +16,9 @@
 
 package v1.services
 
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockBFLossConnector
 import v1.models.des.BFLossResponse
-import v1.models.domain.{AmendBFLoss, TypeOfLoss}
+import v1.models.domain.{AmendBFLoss, Nino, TypeOfLoss}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.AmendBFLossRequest
@@ -28,8 +27,8 @@ import scala.concurrent.Future
 
 class AmendBFLossServiceSpec extends ServiceSpec {
 
-  val nino: Nino = Nino("AA123456A")
-  val lossId = "AAZZ1234567890a"
+  val nino: String = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   val bfLoss: AmendBFLoss = AmendBFLoss(256.78)
 
@@ -48,7 +47,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
   }
 
   "amend BFLoss" when {
-    lazy val request = AmendBFLossRequest(nino, lossId, bfLoss)
+    lazy val request = AmendBFLossRequest(Nino(nino), lossId, bfLoss)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

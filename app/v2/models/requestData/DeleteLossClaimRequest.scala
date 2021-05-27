@@ -16,6 +16,6 @@
 
 package v2.models.requestData
 
-import uk.gov.hmrc.domain.Nino
+import v2.models.domain.Nino
 
 case class DeleteLossClaimRequest(nino: Nino, claimId: String)

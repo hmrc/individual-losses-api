@@ -17,16 +17,17 @@
 package v2.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.validators.MockDeleteLossClaimValidator
+import v2.models.domain.Nino
 import v2.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
 import v2.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 class DeleteLossClaimParserSpec extends UnitSpec{
-  val nino = "AA123456B"
-  val claimId = "someClaimId"
 
-  val inputData =
+  private val nino = "AA123456B"
+  private val claimId = "someClaimId"
+
+  val inputData: DeleteLossClaimRawData =
     DeleteLossClaimRawData(nino, claimId)
 
   trait Test extends MockDeleteLossClaimValidator {

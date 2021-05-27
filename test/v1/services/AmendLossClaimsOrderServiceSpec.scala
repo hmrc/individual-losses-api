@@ -16,41 +16,40 @@
 
 package v1.services
 
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.{AmendLossClaimsOrderResponse, ReliefClaimed}
-import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList, TypeOfClaim}
+import v1.models.domain.{AmendLossClaimsOrderRequestBody, Claim, LossClaimsList, Nino, TypeOfClaim}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
 
 import scala.concurrent.Future
 
-
 class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
-  val nino   = Nino("AA123456A")
-  val taxYear = DesTaxYear.fromMtd("2019-20")
+  val nino: String = "AA123456A"
+  val taxYear: DesTaxYear = DesTaxYear.fromMtd("2019-20")
 
-  val lossClaimsOrder = LossClaimsList(ReliefClaimed.`CSGI`,
-                            Seq(Claim("1234568790ABCDE", 1),
-                                Claim("1234568790ABCDF", 2)))
+  val lossClaimsOrder: LossClaimsList = LossClaimsList(
+    ReliefClaimed.`CSGI`,
+    Seq(Claim("1234568790ABCDE", 1), Claim("1234568790ABCDF", 2))
+  )
 
-  val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
+  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new AmendLossClaimsOrderService(connector)
   }
 
   "amend LossClaimsOrder" when {
-    lazy val request = AmendLossClaimsOrderRequest(nino, taxYear,
+    lazy val request = AmendLossClaimsOrderRequest(Nino(nino), taxYear,
       AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-forward`, Seq(Claim("1234568790ABCDE", 1), Claim("1234568790ABCDF", 2))))
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {
 
-        val desResponse = DesResponse(correlationId, ())
-        val expected = DesResponse(correlationId, AmendLossClaimsOrderResponse())
+        val desResponse: DesResponse[Unit] = DesResponse(correlationId, ())
+        val expected: DesResponse[AmendLossClaimsOrderResponse] = DesResponse(correlationId, AmendLossClaimsOrderResponse())
 
         MockedLossClaimConnector.amendLossClaimsOrder(request)
           .returns(Future.successful(Right(desResponse)))
@@ -61,8 +60,8 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError   = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError   = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(desResponse)))
 
         await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
@@ -71,7 +70,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimsOrderOutcome = await(service.amendLossClaimsOrder(request))
         result shouldBe Left(ErrorWrapper(correlationId, DownstreamError, None))
@@ -101,5 +100,4 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         }
     }
   }
-
 }

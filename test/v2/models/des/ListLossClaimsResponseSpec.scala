@@ -27,7 +27,7 @@ import v2.models.hateoas.Method.{GET, POST, PUT}
 
 class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
-  val nino = "AA123456A"
+  val nino: String = "AA123456A"
 
   "json writes" must {
     "output as per spec" in {
@@ -49,7 +49,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
             |        }
             |    ]
             |}
-          """.stripMargin)
+          """.stripMargin
+        )
     }
   }
   "json reads" must {
@@ -57,7 +58,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
       // Note we ignore all but the claimId currently...
       val desResponseJson =
         Json.parse(
-          """[
+          """
+            |[
             |  {
             |    "incomeSourceId": "000000000000001",
             |    "reliefClaimed": "CF",
@@ -83,8 +85,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
             |     "sequence": 3
             |  }
             |]
-            |
-        """.stripMargin)
+          """.stripMargin
+        )
 
       desResponseJson.as[ListLossClaimsResponse[LossClaimId]] shouldBe
         ListLossClaimsResponse(
@@ -98,8 +100,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
     "expose the correct top level links for list" when {
       "amend-loss-claim-order.enabled = true" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-        MockedAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = true")))).anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+        MockAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = true")))).anyNumberOfTimes
         ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
@@ -108,8 +110,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
           )
       }
       "amend-loss-claim-order.enabled = false" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-        MockedAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = false")))).anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+        MockAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = false")))).anyNumberOfTimes
         ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
@@ -119,7 +121,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
     }
 
     "expose the correct item level links for list" in {
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
       ListLossClaimsResponse.LinksFactory.itemLinks(mockAppConfig, ListLossClaimsHateoasData(nino),
         LossClaimId("claimId", Some(1), TypeOfClaim.`carry-sideways`)) shouldBe
         Seq(
@@ -127,5 +129,4 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
         )
     }
   }
-
 }

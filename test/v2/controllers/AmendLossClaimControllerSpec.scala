@@ -18,14 +18,13 @@ package v2.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockAmendLossClaimRequestDataParser
 import v2.mocks.services._
 import v2.models.audit.{AmendLossClaimAuditDetail, AuditError, AuditEvent, AuditResponse}
 import v2.models.des.{AmendLossClaimHateoasData, LossClaimResponse}
-import v2.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{AmendLossClaim, Nino, TypeOfClaim, TypeOfLoss}
 import v2.models.errors.{NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, _}
 import v2.models.hateoas.Method.GET
 import v2.models.hateoas.{HateoasWrapper, Link}
@@ -44,46 +43,48 @@ class AmendLossClaimControllerSpec
     with MockHateoasFactory
     with MockAuditService {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
-  val nino = "AA123456A"
-  val claimId = "AAZZ1234567890a"
-  val amendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
+  val amendLossClaim: AmendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
 
-  val amendLossClaimResponse =
+  val amendLossClaimResponse: LossClaimResponse =
     LossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "2018-07-13T12:13:48.763Z")
 
   val lossClaimRequest: AmendLossClaimRequest = AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim)
 
-  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   val responseBody: JsValue = Json.parse(
-    s"""
-       |{
-       |    "businessId": "XKIS00000000988",
-       |    "typeOfLoss": "self-employment",
-       |    "taxYear": "2019-20",
-       |    "typeOfClaim": "carry-forward",
-       |    "lastModified": "2018-07-13T12:13:48.763Z",
-       |    "links" : [
-       |     {
-       |       "href": "/foo/bar",
-       |       "method": "GET",
-       |       "rel": "test-relationship"
-       |     }
-       |    ]
-       |}
-    """.stripMargin)
+    """
+      |{
+      |    "businessId": "XKIS00000000988",
+      |    "typeOfLoss": "self-employment",
+      |    "taxYear": "2019-20",
+      |    "typeOfClaim": "carry-forward",
+      |    "lastModified": "2018-07-13T12:13:48.763Z",
+      |    "links" : [
+      |      {
+      |        "href": "/foo/bar",
+      |        "method": "GET",
+      |        "rel": "test-relationship"
+      |      }
+      |    ]
+      |}
+   """.stripMargin
+  )
 
   val requestBody: JsValue = Json.parse(
-    s"""
-       |{
-       |  "typeOfClaim": "carry-forward"
-       |}
-    """.stripMargin)
+    """
+      |{
+      |  "typeOfClaim": "carry-forward"
+      |}
+   """.stripMargin
+  )
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new AmendLossClaimController(
       authService = mockEnrolmentsAuthService,
@@ -95,8 +96,8 @@ class AmendLossClaimControllerSpec
       cc = cc
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "amend" should {
@@ -120,10 +121,10 @@ class AmendLossClaimControllerSpec
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val detail = AmendLossClaimAuditDetail(
+        val detail: AmendLossClaimAuditDetail = AmendLossClaimAuditDetail(
           "Individual", None, nino,  claimId, requestBody, correlationId,
           AuditResponse(OK, None, Some(responseBody)))
-        val event = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+        val event: AuditEvent[AmendLossClaimAuditDetail] = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
         MockedAuditService.verifyAuditEvent(event).once
       }
     }
@@ -172,10 +173,10 @@ class AmendLossClaimControllerSpec
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-      val detail = AmendLossClaimAuditDetail(
+      val detail: AmendLossClaimAuditDetail = AmendLossClaimAuditDetail(
         "Individual", None, nino, claimId, requestBody, correlationId,
         AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-      val event = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+      val event: AuditEvent[AmendLossClaimAuditDetail] = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
       MockedAuditService.verifyAuditEvent(event).once
     }
   }
@@ -196,10 +197,10 @@ class AmendLossClaimControllerSpec
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-      val detail = AmendLossClaimAuditDetail(
+      val detail: AmendLossClaimAuditDetail = AmendLossClaimAuditDetail(
         "Individual", None, nino, claimId, requestBody, correlationId,
         AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-      val event = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+      val event: AuditEvent[AmendLossClaimAuditDetail] = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
       MockedAuditService.verifyAuditEvent(event).once
     }
   }

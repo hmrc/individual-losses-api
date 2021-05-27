@@ -18,7 +18,6 @@ package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
@@ -26,7 +25,7 @@ import v1.mocks.requestParsers.MockAmendLossClaimRequestDataParser
 import v1.mocks.services._
 import v1.models.audit.{AmendLossClaimAuditDetail, AuditError, AuditEvent, AuditResponse}
 import v1.models.des.{AmendLossClaimHateoasData, LossClaimResponse}
-import v1.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
+import v1.models.domain.{AmendLossClaim, Nino, TypeOfClaim, TypeOfLoss}
 import v1.models.errors.{NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, _}
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -46,10 +45,10 @@ class AmendLossClaimControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
-  val nino = "AA123456A"
-  val claimId = "AAZZ1234567890a"
   val amendLossClaim: AmendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
 
   val amendLossClaimResponse: LossClaimResponse =
@@ -60,29 +59,31 @@ class AmendLossClaimControllerSpec
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   val responseBody: JsValue = Json.parse(
-    s"""
-       |{
-       |    "selfEmploymentId": "XKIS00000000988",
-       |    "typeOfLoss": "self-employment",
-       |    "taxYear": "2019-20",
-       |    "typeOfClaim": "carry-forward",
-       |    "lastModified": "2018-07-13T12:13:48.763Z",
-       |    "links" : [
-       |     {
-       |       "href": "/foo/bar",
-       |       "method": "GET",
-       |       "rel": "test-relationship"
-       |     }
-       |    ]
-       |}
-    """.stripMargin)
+    """
+      |{
+      |    "selfEmploymentId": "XKIS00000000988",
+      |    "typeOfLoss": "self-employment",
+      |    "taxYear": "2019-20",
+      |    "typeOfClaim": "carry-forward",
+      |    "lastModified": "2018-07-13T12:13:48.763Z",
+      |    "links" : [
+      |      {
+      |        "href": "/foo/bar",
+      |        "method": "GET",
+      |        "rel": "test-relationship"
+      |      }
+      |    ]
+      |}
+   """.stripMargin
+  )
 
   val requestBody: JsValue = Json.parse(
-    s"""
-       |{
-       |  "typeOfClaim": "carry-forward"
-       |}
-    """.stripMargin)
+    """
+      |{
+      |  "typeOfClaim": "carry-forward"
+      |}
+    """.stripMargin
+  )
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -99,8 +100,8 @@ class AmendLossClaimControllerSpec
     )
 
     MockIdGenerator.getCorrelationId.returns(correlationId)
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "amend" should {

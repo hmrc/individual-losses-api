@@ -24,7 +24,7 @@ import v2.models.hateoas.Method.{GET, PUT}
 
 class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
 
-  val nino = "AA123456A"
+  val nino: String = "AA123456A"
 
   "json writes" must {
     "output as per spec" in {
@@ -36,7 +36,7 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
   "Links Factory" should {
     "expose the correct links" when {
       "called" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
         AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(mockAppConfig, AmendLossClaimsOrderHateoasData(nino)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims/order", PUT, "amend-loss-claim-order"),
@@ -45,5 +45,4 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
       }
     }
   }
-
 }

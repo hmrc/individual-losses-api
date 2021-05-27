@@ -16,10 +16,9 @@
 
 package v1.services
 
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
 import v1.models.des.{ListLossClaimsResponse, LossClaimId}
-import v1.models.domain.TypeOfClaim
+import v1.models.domain.{Nino, TypeOfClaim}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.ListLossClaimsRequest
@@ -28,14 +27,14 @@ import scala.concurrent.Future
 
 class ListLossClaimsServiceSpec extends ServiceSpec {
 
-  val nino: Nino = Nino("AA123456A")
-  val claimId = "AAZZ1234567890a"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new ListLossClaimsService(connector)
   }
 
-  lazy val request: ListLossClaimsRequest = ListLossClaimsRequest(nino, None, None, None, None)
+  lazy val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), None, None, None, None)
 
   "retrieve the list of bf losses" should {
     "return a Right" when {
@@ -99,5 +98,4 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
         }
     }
   }
-
 }

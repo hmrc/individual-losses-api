@@ -16,8 +16,8 @@
 
 package v1.services
 
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockBFLossConnector
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.DeleteBFLossRequest
@@ -26,14 +26,14 @@ import scala.concurrent.Future
 
 class DeleteBFLossServiceSpec extends ServiceSpec {
 
-  val nino: Nino = Nino("AA123456A")
-  val lossId = "AAZZ1234567890a"
+  val nino: String = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   trait Test extends MockBFLossConnector {
     lazy val service = new DeleteBFLossService(connector)
   }
 
-  lazy val request: DeleteBFLossRequest = DeleteBFLossRequest(nino, lossId)
+  lazy val request: DeleteBFLossRequest = DeleteBFLossRequest(Nino(nino), lossId)
 
   "Delete BF Loss" should {
     "return a Right" when {
@@ -92,5 +92,4 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
         }
     }
   }
-
 }

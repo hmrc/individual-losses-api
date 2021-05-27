@@ -19,25 +19,28 @@ package v2.controllers.requestParsers
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.validators.MockCreateBFLossValidator
-import v2.models.domain.{BFLoss, TypeOfLoss}
+import v2.models.domain.{BFLoss, Nino, TypeOfLoss}
 import v2.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v2.models.requestData._
 
 class CreateBFLossParserSpec extends UnitSpec {
-  val nino = "AA123456B"
-  val taxYear = "2017-18"
+
+  private val nino = "AA123456B"
+  private val taxYear = "2017-18"
 
   private val requestBodyJson = Json.parse(
-    s"""{
+    s"""
+       |{
        |  "typeOfLoss" : "self-employment",
        |  "businessId" : "XAIS01234567890",
        |  "taxYear" : "$taxYear",
        |  "lossAmount" : 1000
-       |}""".stripMargin)
+       |}
+     """.stripMargin
+  )
 
-  val inputData =
+  val inputData: CreateBFLossRawData =
     CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
 
   trait Test extends MockCreateBFLossValidator {

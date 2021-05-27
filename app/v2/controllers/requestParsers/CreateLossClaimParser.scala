@@ -17,14 +17,13 @@
 package v2.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v2.controllers.requestParsers.validators.CreateLossClaimValidator
-import v2.models.domain.LossClaim
+import v2.models.domain.{LossClaim, Nino}
 import v2.models.requestData._
 
-class CreateLossClaimParser @Inject()(val validator: CreateLossClaimValidator) extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
+class CreateLossClaimParser @Inject()(val validator: CreateLossClaimValidator)
+  extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
 
   override protected def requestFor(data: CreateLossClaimRawData): CreateLossClaimRequest =
     CreateLossClaimRequest(Nino(data.nino), data.body.json.as[LossClaim])
-
 }

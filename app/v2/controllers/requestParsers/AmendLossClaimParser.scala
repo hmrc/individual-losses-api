@@ -17,9 +17,8 @@
 package v2.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v2.controllers.requestParsers.validators.AmendLossClaimValidator
-import v2.models.domain.AmendLossClaim
+import v2.models.domain.{AmendLossClaim, Nino}
 import v2.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
 class AmendLossClaimParser @Inject()(val validator: AmendLossClaimValidator)

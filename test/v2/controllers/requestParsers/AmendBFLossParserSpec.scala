@@ -19,9 +19,8 @@ package v2.controllers.requestParsers
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.validators.MockAmendBFLossValidator
-import v2.models.domain.AmendBFLoss
+import v2.models.domain.{AmendBFLoss, Nino}
 import v2.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
 import v2.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
 
@@ -56,5 +55,4 @@ class AmendBFLossParserSpec extends UnitSpec {
       }
     }
   }
-
 }

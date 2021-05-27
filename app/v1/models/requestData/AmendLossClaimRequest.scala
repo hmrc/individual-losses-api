@@ -16,7 +16,6 @@
 
 package v1.models.requestData
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.AmendLossClaim
+import v1.models.domain.{AmendLossClaim, Nino}
 
 case class AmendLossClaimRequest(nino: Nino, claimId: String, amendLossClaim: AmendLossClaim)

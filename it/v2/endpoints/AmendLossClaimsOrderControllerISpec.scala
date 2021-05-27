@@ -29,17 +29,17 @@ import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
 
-  val correlationId = "X-123"
+  val correlationId: String = "X-123"
 
-  val claim1 = Claim("1234567890ABEF1", 1)
-  val claim2 = Claim("1234567890ABCDE", 2)
-  val claim3 = Claim("1234567890ABDE0", 3)
-  val claimSeq = Seq(claim2, claim1, claim3)
+  val claim1: Claim = Claim("1234567890ABEF1", 1)
+  val claim2: Claim = Claim("1234567890ABCDE", 2)
+  val claim3: Claim = Claim("1234567890ABDE0", 3)
+  val claimSeq: Seq[Claim] = Seq(claim2, claim1, claim3)
 
   def requestJson(claimType: String = TypeOfClaim.`carry-sideways`.toString, listOfLossClaims: Seq[Claim] = claimSeq): JsValue = {
     // resetting custom writes for Seq[Claim] so it doesn't use custom Writes defined in the model
     def writes: OWrites[Claim] = Json.writes[Claim]
-    def writesSeq: Writes[Seq[Claim]] = Writes.traversableWrites[Claim](writes)
+    def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
     Json.parse(s"""
                   |{
                   |   "claimType": "$claimType",
@@ -50,11 +50,11 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino    = "AA123456A"
-    val taxYear = "2019-20"
+    val nino: String    = "AA123456A"
+    val taxYear: String = "2019-20"
 
-    val responseJson: JsValue =
-      Json.parse(s"""
+    val responseJson: JsValue = Json.parse(
+      s"""
         |{
         |  "links": [
         |    {
@@ -68,17 +68,19 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
         |      "rel": "self"
         |    }
         |  ]
-        |}""".stripMargin)
+        |}
+      """.stripMargin
+    )
 
     def uri: String    = s"/$nino/loss-claims/order"
     def desUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DesTaxYear.fromMtd(taxYear)}"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "des message"
-         |      }
+         |{
+         |  "code": "$code",
+         |  "reason": "des message"
+         |}
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -88,7 +90,6 @@ class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.2.0+json"))
     }
-
   }
 
   "Calling the Amend Loss Claims Order endpoint" should {

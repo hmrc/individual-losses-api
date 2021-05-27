@@ -16,7 +16,6 @@
 
 package v2.models.requestData
 
-import uk.gov.hmrc.domain.Nino
-import v2.models.domain.LossClaim
+import v2.models.domain.{LossClaim, Nino}
 
 case class CreateLossClaimRequest(nino: Nino, lossClaim: LossClaim)

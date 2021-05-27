@@ -16,7 +16,7 @@
 
 package v1.connectors
 
-import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.des._
 import v1.models.domain._
 import v1.models.errors._
@@ -28,14 +28,30 @@ import scala.concurrent.Future
 class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
   "create LossClaim" when {
-    val lossClaim = LossClaim("2019-20", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
+
+    val lossClaim: LossClaim = LossClaim(
+      taxYear = "2019-20",
+      typeOfLoss = TypeOfLoss.`self-employment`,
+      typeOfClaim = TypeOfClaim.`carry-forward`,
+      selfEmploymentId = Some("XKIS00000000988")
+    )
+
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+
+    val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
         val expected = Right(DesResponse(correlationId, CreateLossClaimResponse(claimId)))
 
-        MockedHttpClient
-          .post(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim, desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .post(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            config = dummyDesHeaderCarrierConfig,
+            body = lossClaim,
+            requiredHeaders = requiredDesHeadersPost,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
       }
@@ -45,9 +61,14 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
-        MockedHttpClient
-          .post(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim, desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .post(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            config = dummyDesHeaderCarrierConfig,
+            body = lossClaim,
+            requiredHeaders = requiredDesHeadersPost,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
       }
@@ -57,9 +78,14 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
-        MockedHttpClient
-          .post(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim, desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .post(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            config = dummyDesHeaderCarrierConfig,
+            body = lossClaim,
+            requiredHeaders = requiredDesHeadersPost,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
       }
