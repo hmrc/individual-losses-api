@@ -16,25 +16,24 @@
 
 package v1.services
 
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.connectors.MockLossClaimConnector
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.DeleteLossClaimRequest
 
 import scala.concurrent.Future
 
-
 class DeleteLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: Nino = Nino("AA123456A")
-  val claimId = "AAZZ1234567890a"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new DeleteLossClaimService(connector)
   }
 
-  lazy val request: DeleteLossClaimRequest = DeleteLossClaimRequest(nino, claimId)
+  lazy val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
 
   "Delete Loss Claim" should {
     "return a right" when {
@@ -78,7 +77,6 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
       }
     }
 
-
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
@@ -99,7 +97,4 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
     }
 
   }
-
-
-
 }

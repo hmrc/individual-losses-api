@@ -16,7 +16,7 @@
 
 package v1.connectors
 
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData._
@@ -31,9 +31,13 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
       "return a successful response with the correct correlationId" in new Test {
         val expected = Right(DesResponse(correlationId, ()))
 
-        MockedHttpClient
-          .delete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .delete(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }
@@ -43,9 +47,13 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
-        MockedHttpClient
-          .delete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .delete(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }
@@ -55,9 +63,13 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
-        MockedHttpClient
-          .delete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .delete(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }

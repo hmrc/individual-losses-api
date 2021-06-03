@@ -17,8 +17,8 @@
 package v2.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.controllers.requestParsers.validators.Validator
+import v2.models.domain.Nino
 import v2.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
 import v2.models.requestData.RawData
 
@@ -36,7 +36,7 @@ class RequestParserSpec extends UnitSpec {
     val parser: RequestParser[Raw, Request] = new RequestParser[Raw, Request] {
       val validator: Validator[Raw] = test.validator
 
-      protected def requestFor(data: Raw) = Request(Nino(data.nino))
+      protected def requestFor(data: Raw): Request = Request(Nino(data.nino))
     }
   }
 
@@ -65,5 +65,4 @@ class RequestParserSpec extends UnitSpec {
       }
     }
   }
-
 }

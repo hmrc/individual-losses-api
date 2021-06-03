@@ -24,14 +24,11 @@ import v1.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
 
-
-  private val validNino                     = "AA123456A"
-  private val invalidNino                   = "AA123456"
-  private val validTaxYear                  = "2019-20"
-  private val invalidTaxYearGap             = "2018-20"
-  private val invalidTaxYearFormat          = "19-20"
-
-
+  private val validNino = "AA123456A"
+  private val invalidNino = "AA123456"
+  private val validTaxYear = "2019-20"
+  private val invalidTaxYearGap = "2018-20"
+  private val invalidTaxYearFormat = "19-20"
 
   private val mtdRequest = Json.parse(
     """
@@ -44,7 +41,8 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |     }
       |   ]
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val mtdRequestCarryForward = Json.parse(
     """
@@ -57,7 +55,8 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |     }
       |   ]
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val mtdRequestIdIncorrect = Json.parse(
     """
@@ -70,7 +69,8 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |     }
       |   ]
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val mtdRequestInvalidOrder = Json.parse(
     """
@@ -91,7 +91,8 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |     }
       |   ]
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val mtdRequestInvalidStart = Json.parse(
     """
@@ -112,7 +113,8 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |     }
       |   ]
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val mtdRequestInvalidBody = Json.parse(
     """
@@ -129,7 +131,8 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |     }
       |   ]
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val validator = new AmendLossClaimsOrderValidator()
 
@@ -145,42 +148,52 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
 
     "return one error" when {
       "nino validation fails" in {
-        validator.validate(AmendLossClaimsOrderRawData(invalidNino, Some(validTaxYear), AnyContentAsJson(mtdRequest))) shouldBe List(NinoFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(invalidNino, Some(validTaxYear), AnyContentAsJson(mtdRequest))) shouldBe
+          List(NinoFormatError)
       }
 
       "tax year gap is higher than 1" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearGap), AnyContentAsJson(mtdRequest))) shouldBe List(TaxYearFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearGap), AnyContentAsJson(mtdRequest))) shouldBe
+          List(TaxYearFormatError)
       }
 
       "tax year format is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearFormat), AnyContentAsJson(mtdRequest))) shouldBe List(TaxYearFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(invalidTaxYearFormat), AnyContentAsJson(mtdRequest))) shouldBe
+          List(TaxYearFormatError)
       }
 
       "a non-carry-sideways claimType is provided" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestCarryForward))) shouldBe List(ClaimTypeFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestCarryForward))) shouldBe
+          List(ClaimTypeFormatError)
       }
 
       "Id format is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestIdIncorrect))) shouldBe List(ClaimIdFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestIdIncorrect))) shouldBe
+          List(ClaimIdFormatError)
       }
 
       "a mandatory field isn't provided" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(Json.obj()))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(Json.obj()))) shouldBe
+          List(RuleIncorrectOrEmptyBodyError)
       }
 
       "sequence order is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidOrder))) shouldBe List(RuleSequenceOrderBroken)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidOrder))) shouldBe
+          List(RuleSequenceOrderBroken)
       }
       "sequence start is invalid" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidStart))) shouldBe List(RuleInvalidSequenceStart)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidStart))) shouldBe
+          List(RuleInvalidSequenceStart)
       }
     }
     "return multiple errors" when {
-      "an invalid nino and tax year is provided" in {
-        validator.validate(AmendLossClaimsOrderRawData("Walrus", Some("13900"), AnyContentAsJson(mtdRequest))) shouldBe List(NinoFormatError, TaxYearFormatError)
+      "invalid nino and tax year are provided" in {
+        validator.validate(AmendLossClaimsOrderRawData("Walrus", Some("13900"), AnyContentAsJson(mtdRequest))) shouldBe
+          List(NinoFormatError, TaxYearFormatError)
       }
       "invalid body fields are provided" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidBody))) shouldBe List(RuleInvalidSequenceStart, RuleSequenceOrderBroken, ClaimTypeFormatError, ClaimIdFormatError, SequenceFormatError)
+        validator.validate(AmendLossClaimsOrderRawData(validNino, Some(validTaxYear), AnyContentAsJson(mtdRequestInvalidBody))) shouldBe
+          List(RuleInvalidSequenceStart, RuleSequenceOrderBroken, ClaimTypeFormatError, ClaimIdFormatError, SequenceFormatError)
       }
     }
   }

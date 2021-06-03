@@ -32,7 +32,7 @@ class
 AuthorisedControllerSpec extends ControllerBaseSpec {
 
   trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     class TestController extends AuthorisedController(cc) {
       override val authService: EnrolmentsAuthService = mockEnrolmentsAuthService
@@ -46,8 +46,8 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
     lazy val target = new TestController()
   }
 
-  val nino  = "AA123456A"
-  val mtdId = "X123567890"
+  val nino: String  = "AA123456A"
+  val mtdId: String = "X123567890"
 
   val predicate: Predicate = Enrolment("HMRC-MTD-IT")
     .withIdentifier("MTDITID", mtdId)
@@ -58,11 +58,11 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
     "the user is authorised" should {
       "return a 200" in new Test {
 
-        MockedMtdIdLookupService
+        MockMtdIdLookupService
           .lookup(nino)
           .returns(Future.successful(Right(mtdId)))
 
-        MockedEnrolmentsAuthService.authoriseUser()
+        MockEnrolmentsAuthService.authoriseUser()
 
         private val result = target.action(nino)(fakeGetRequest)
         status(result) shouldBe OK
@@ -72,11 +72,11 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
     "auth returns an unexpected error" should {
       "return a 500" in new Test {
 
-        MockedMtdIdLookupService
+        MockMtdIdLookupService
           .lookup(nino)
           .returns(Future.successful(Right(mtdId)))
 
-        MockedEnrolmentsAuthService
+        MockEnrolmentsAuthService
           .authorised(predicate)
           .returns(Future.successful(Left(DownstreamError)))
 
@@ -88,7 +88,7 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
     "the nino is invalid" should {
       "return a 400" in new Test {
 
-        MockedMtdIdLookupService
+        MockMtdIdLookupService
           .lookup(nino)
           .returns(Future.successful(Left(NinoFormatError)))
 
@@ -100,7 +100,7 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
     "the nino is valid but invalid bearer token" should {
       "return a 401" in new Test {
 
-        MockedMtdIdLookupService
+        MockMtdIdLookupService
           .lookup(nino)
           .returns(Future.successful(Left(InvalidBearerTokenError)))
 
@@ -114,7 +114,7 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
   "authorisation checks fail when retrieving the MDT ID" should {
     "return a 403" in new Test {
 
-      MockedMtdIdLookupService
+      MockMtdIdLookupService
         .lookup(nino)
         .returns(Future.successful(Left(UnauthorisedError)))
 
@@ -126,7 +126,7 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
   "the an error occurs retrieving the MDT ID" should {
     "return a 500" in new Test {
 
-      MockedMtdIdLookupService
+      MockMtdIdLookupService
         .lookup(nino)
         .returns(Future.successful(Left(DownstreamError)))
 
@@ -138,11 +138,11 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
   "the MTD user is not authenticated" should {
     "return a 401" in new Test {
 
-      MockedMtdIdLookupService
+      MockMtdIdLookupService
         .lookup(nino)
         .returns(Future.successful(Right(mtdId)))
 
-      MockedEnrolmentsAuthService
+      MockEnrolmentsAuthService
         .authorised(predicate)
         .returns(Future.successful(Left(UnauthorisedError)))
 
@@ -154,11 +154,11 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
   "the MTD user is not authorised" should {
     "return a 403" in new Test {
 
-      MockedMtdIdLookupService
+      MockMtdIdLookupService
         .lookup(nino)
         .returns(Future.successful(Right(mtdId)))
 
-      MockedEnrolmentsAuthService
+      MockEnrolmentsAuthService
         .authorised(predicate)
         .returns(Future.successful(Left(UnauthorisedError)))
 

@@ -17,18 +17,18 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockListLossClaimsValidator
 import v1.models.des.IncomeSourceType
-import v1.models.domain.TypeOfClaim
+import v1.models.domain.{Nino, TypeOfClaim}
 import v1.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v1.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
 class ListLossClaimsParserSpec extends UnitSpec {
-  val nino             = "AA123456B"
-  val taxYear          = "2017-18"
-  val selfEmploymentId = "XAIS01234567890"
-  val claimType        = "carry-sideways"
+
+  private val nino             = "AA123456B"
+  private val taxYear          = "2017-18"
+  private val selfEmploymentId = "XAIS01234567890"
+  private val claimType        = "carry-sideways"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockListLossClaimsValidator {
@@ -40,7 +40,8 @@ class ListLossClaimsParserSpec extends UnitSpec {
 
       "convert uk-property-fhl to incomeSourceType 04" in new Test {
         val inputData: ListLossClaimsRawData =
-          ListLossClaimsRawData(nino,
+          ListLossClaimsRawData(
+            nino = nino,
             taxYear = Some(taxYear),
             typeOfLoss = Some("uk-property-fhl"),
             selfEmploymentId = Some(selfEmploymentId),
@@ -66,7 +67,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
       "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
-            nino,
+            nino = nino,
             taxYear = Some(taxYear),
             typeOfLoss = Some("uk-property-non-fhl"),
             selfEmploymentId = Some(selfEmploymentId),

@@ -44,7 +44,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
         val validationSet = List(levelOneValidations)
 
-        val inputData = TestRawData("ABCDEF", "12345")
+        val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe true
         levelOneValidationOne.called shouldBe 1
@@ -58,7 +58,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         // Set up the mock validations
         val levelOneValidationOne = new MockFunctionObject("Level: 1    Validation 1")
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
-        val mockError             = MtdError("MOCK", "SOME ERROR")
+        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR")
 
         def levelOneValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
@@ -69,7 +69,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
         val validationSet = List(levelOneValidations)
 
-        val inputData = TestRawData("ABCDEF", "12345")
+        val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1
@@ -86,7 +86,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
         val levelTwoValidationOne = new MockFunctionObject("Level: 2    Validation 1")
         val levelTwoValidationTwo = new MockFunctionObject("Level: 2    Validation 2")
-        val mockError             = MtdError("MOCK", "SOME ERROR ON LEVEL 2")
+        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR ON LEVEL 2")
 
         def levelOneValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
@@ -104,7 +104,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
         val validationSet = List(levelOneValidations, levelTwoValidations)
 
-        val inputData = TestRawData("ABCDEF", "12345")
+        val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1

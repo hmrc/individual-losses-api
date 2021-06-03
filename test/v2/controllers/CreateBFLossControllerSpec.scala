@@ -18,14 +18,13 @@ package v2.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v2.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v2.models.audit.{AuditError, AuditEvent, AuditResponse, CreateBFLossAuditDetail}
 import v2.models.des.{CreateBFLossHateoasData, CreateBFLossResponse}
-import v2.models.domain.{BFLoss, TypeOfLoss}
+import v2.models.domain.{BFLoss, Nino, TypeOfLoss}
 import v2.models.errors.{NotFoundError, _}
 import v2.models.hateoas.Method.GET
 import v2.models.hateoas.{HateoasWrapper, Link}
@@ -44,15 +43,15 @@ class CreateBFLossControllerSpec
     with MockHateoasFactory
     with MockAuditService {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
-  val nino = "AA123456A"
-  val lossId = "AAZZ1234567890a"
+  val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
-  val bfLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
+  val createBFLossResponse: CreateBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
 
-  val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
-  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel="test-relationship")
+  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel="test-relationship")
 
   val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
 
@@ -64,7 +63,8 @@ class CreateBFLossControllerSpec
       |    "taxYear": "2019-20",
       |    "lossAmount": 256.78
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   val responseBody: JsValue = Json.parse(
     """
@@ -78,10 +78,11 @@ class CreateBFLossControllerSpec
       |     }
       |  ]
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new CreateBFLossController(
       authService = mockEnrolmentsAuthService,
@@ -93,8 +94,8 @@ class CreateBFLossControllerSpec
       cc = cc
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "create" should {
@@ -118,10 +119,10 @@ class CreateBFLossControllerSpec
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val detail = CreateBFLossAuditDetail(
+        val detail: CreateBFLossAuditDetail = CreateBFLossAuditDetail(
           "Individual", None, nino,  requestBody, correlationId,
           AuditResponse(CREATED, None, Some(responseBody)))
-        val event = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
+        val event: AuditEvent[CreateBFLossAuditDetail] = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
         MockedAuditService.verifyAuditEvent(event).once
       }
     }
@@ -141,10 +142,10 @@ class CreateBFLossControllerSpec
         contentAsJson(response) shouldBe Json.toJson(error)
         header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-        val detail = CreateBFLossAuditDetail(
+        val detail: CreateBFLossAuditDetail = CreateBFLossAuditDetail(
           "Individual", None, nino,  requestBody, correlationId,
           AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-        val event = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
+        val event: AuditEvent[CreateBFLossAuditDetail] = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
         MockedAuditService.verifyAuditEvent(event).once
       }
     }
@@ -183,10 +184,10 @@ class CreateBFLossControllerSpec
         contentAsJson(response) shouldBe Json.toJson(error)
         header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-        val detail = CreateBFLossAuditDetail(
+        val detail: CreateBFLossAuditDetail = CreateBFLossAuditDetail(
           "Individual", None, nino,  requestBody, correlationId,
           AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-        val event = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
+        val event: AuditEvent[CreateBFLossAuditDetail] = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
         MockedAuditService.verifyAuditEvent(event).once
       }
     }

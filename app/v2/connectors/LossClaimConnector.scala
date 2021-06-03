@@ -28,29 +28,29 @@ import v2.models.requestData._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends DesConnector {
+class LossClaimConnector @Inject()(val http: HttpClient,
+                                   val appConfig: AppConfig) extends BaseDesConnector {
 
   def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
                                                        ec: ExecutionContext): Future[DesOutcome[CreateLossClaimResponse]] = {
     val nino = request.nino.nino
 
-    def doIt(implicit hc: HeaderCarrier) =
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[CreateLossClaimResponse]] =
       http.POST[LossClaim, DesOutcome[CreateLossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino", request.lossClaim)
 
-    doIt(desHeaderCarrier(appConfig))
+    doIt(desHeaderCarrier(Seq("Content-Type")))
   }
 
   def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
                                                                    ec: ExecutionContext): Future[DesOutcome[LossClaimResponse]] = {
-
     val nino    = amendLossClaimRequest.nino.nino
     val claimId = amendLossClaimRequest.claimId
 
-    def doIt(implicit hc: HeaderCarrier) =
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[LossClaimResponse]] =
       http.PUT[AmendLossClaim, DesOutcome[LossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId",
                                                               amendLossClaimRequest.amendLossClaim)
 
-    doIt(desHeaderCarrier(appConfig))
+    doIt(desHeaderCarrier(Seq("Content-Type")))
   }
 
   def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier,
@@ -62,47 +62,48 @@ class LossClaimConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
       http.GET[DesOutcome[LossClaimResponse]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId")
     }
 
-    doIt(desHeaderCarrier(appConfig))
+    doIt(desHeaderCarrier())
   }
 
   def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier,
                                                      ec: ExecutionContext): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
-
     val nino = request.nino.nino
-    val pathParameters =
-      Map(
-        "taxYear"          -> request.taxYear.map(_.value),
-        "incomeSourceId"   -> request.businessId,
-        "incomeSourceType" -> request.incomeSourceType.map(_.toString),
-        "claimType"        -> request.claimType.map(_.toString)
-      ).collect {
+    val pathParameters = Map(
+      "taxYear"          -> request.taxYear.map(_.value),
+      "incomeSourceId"   -> request.businessId,
+      "incomeSourceType" -> request.incomeSourceType.map(_.toString),
+      "claimType"        -> request.claimType.map(_.toString)
+    ).collect {
         case (key, Some(value)) => key -> value
-      }
+    }
 
     def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
       http.GET[DesOutcome[ListLossClaimsResponse[LossClaimId]]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino", pathParameters.toSeq)
     }
 
-    doIt(desHeaderCarrier(appConfig))
+    doIt(desHeaderCarrier())
   }
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                       ec: ExecutionContext): Future[DesOutcome[Unit]] = {
     val nino    = request.nino.nino
     val claimId = request.claimId
 
-    def doIt(implicit hc: HeaderCarrier) =
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[Unit]] =
       http.DELETE[DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/$claimId")
 
-    doIt(desHeaderCarrier(appConfig))
+    doIt(desHeaderCarrier())
   }
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
+                                                                 ec: ExecutionContext): Future[DesOutcome[Unit]] = {
     val nino    = request.nino.nino
     val taxYear = request.taxYear
 
-    def doIt(implicit hc: HeaderCarrier) =
-      http.PUT[AmendLossClaimsOrderRequestBody, DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/preferences/$taxYear", request.body)
+    def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[Unit]] =
+      http.PUT[AmendLossClaimsOrderRequestBody,
+        DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/preferences/$taxYear", request.body)
 
-    doIt(desHeaderCarrier(appConfig))
+    doIt(desHeaderCarrier(Seq("Content-Type")))
   }
 }

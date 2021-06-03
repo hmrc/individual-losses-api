@@ -16,8 +16,8 @@
 
 package v2.connectors
 
-import uk.gov.hmrc.domain.Nino
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
+import uk.gov.hmrc.http.HeaderCarrier
+import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
 import v2.models.outcomes.DesResponse
 import v2.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
 
@@ -25,22 +25,34 @@ import scala.concurrent.Future
 
 class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
 
-  val taxYear = "2019-20"
+  val taxYear: String = "2019-20"
 
   "amendLossClaimsOrder" when {
 
-    val amendLossClaimsOrder = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`,
-      Seq(Claim("1234568790ABCDE", 1),
-          Claim("1234568790ABCDF", 2)))
+    val amendLossClaimsOrder: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(
+      claimType = TypeOfClaim.`carry-sideways`,
+      listOfLossClaims = Seq(
+        Claim("1234568790ABCDE", 1),
+        Claim("1234568790ABCDF", 2)
+      )
+    )
+
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+
+    val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-
         val expected = Right(DesResponse(correlationId, ()))
 
-          MockedHttpClient
-          .put(s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/${DesTaxYear.fromMtd(taxYear)}", amendLossClaimsOrder, desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+          MockHttpClient
+          .put(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/${DesTaxYear.fromMtd(taxYear)}",
+            config = dummyDesHeaderCarrierConfig,
+            body = amendLossClaimsOrder,
+            requiredHeaders = requiredDesHeadersPut,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         amendLossClaimsOrderResult(connector) shouldBe expected
       }

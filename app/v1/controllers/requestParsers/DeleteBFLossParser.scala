@@ -17,11 +17,12 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteBFLossValidator
+import v1.models.domain.Nino
 import v1.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
 
-class DeleteBFLossParser @Inject()(val validator: DeleteBFLossValidator) extends RequestParser[DeleteBFLossRawData, DeleteBFLossRequest] {
+class DeleteBFLossParser @Inject()(val validator: DeleteBFLossValidator)
+  extends RequestParser[DeleteBFLossRawData, DeleteBFLossRequest] {
 
   override protected def requestFor(data: DeleteBFLossRawData): DeleteBFLossRequest =
     DeleteBFLossRequest(Nino(data.nino), data.lossId)

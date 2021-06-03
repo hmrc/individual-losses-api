@@ -18,7 +18,7 @@ package v2.connectors
 
 import java.time.LocalDateTime
 
-import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
 import v2.models.des._
 import v2.models.domain._
 import v2.models.errors._
@@ -31,23 +31,32 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
   "amend LossClaim" when {
 
-    val amendLossClaimResponse =
-      LossClaimResponse(businessId = Some("XKIS00000000988"),
-        typeOfLoss = TypeOfLoss.`self-employment`,
-        typeOfClaim = TypeOfClaim.`carry-forward`,
-        taxYear = "2019-20",
-        lastModified = LocalDateTime.now().toString)
+    val amendLossClaimResponse: LossClaimResponse = LossClaimResponse(
+      businessId = Some("XKIS00000000988"),
+      typeOfLoss = TypeOfLoss.`self-employment`,
+      typeOfClaim = TypeOfClaim.`carry-forward`,
+      taxYear = "2019-20",
+      lastModified = LocalDateTime.now().toString
+    )
 
-    val amendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
+    val amendLossClaim: AmendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
+
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+
+    val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-
         val expected = Right(DesResponse(correlationId, amendLossClaimResponse))
 
-        MockedHttpClient
-          .put(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", amendLossClaim, desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .put(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+            config = dummyDesHeaderCarrierConfig,
+            body = amendLossClaim,
+            requiredHeaders = requiredDesHeadersPut,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         amendLossClaimResult(connector) shouldBe expected
       }
@@ -57,9 +66,14 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
-        MockedHttpClient
-          .put(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", amendLossClaim, desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .put(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+            config = dummyDesHeaderCarrierConfig,
+            body = amendLossClaim,
+            requiredHeaders = requiredDesHeadersPut,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         amendLossClaimResult(connector) shouldBe expected
       }
@@ -69,9 +83,14 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
-        MockedHttpClient
-          .put(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", amendLossClaim, desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .put(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+            config = dummyDesHeaderCarrierConfig,
+            body = amendLossClaim,
+            requiredHeaders = requiredDesHeadersPut,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         amendLossClaimResult(connector) shouldBe expected
       }

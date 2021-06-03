@@ -16,10 +16,9 @@
 
 package v2.services
 
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.connectors.MockLossClaimConnector
 import v2.models.des.{ListLossClaimsResponse, LossClaimId}
-import v2.models.domain.TypeOfClaim
+import v2.models.domain.{Nino, TypeOfClaim}
 import v2.models.errors._
 import v2.models.outcomes.DesResponse
 import v2.models.requestData.ListLossClaimsRequest
@@ -28,22 +27,21 @@ import scala.concurrent.Future
 
 class ListLossClaimsServiceSpec extends ServiceSpec {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino   = Nino("AA123456A")
-  val claimId = "AAZZ1234567890a"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new ListLossClaimsService(connector)
   }
 
-  lazy val request = ListLossClaimsRequest(nino, None, None, None, None)
+  lazy val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), None, None, None, None)
 
   "retrieve the list of bf losses" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val desResponse = DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId("testId", Some(1), TypeOfClaim.`carry-sideways`),
-          LossClaimId("testId2", Some(2), TypeOfClaim.`carry-sideways`))))
+        val desResponse: DesResponse[ListLossClaimsResponse[LossClaimId]] =
+          DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId("testId", Some(1), TypeOfClaim.`carry-sideways`),
+            LossClaimId("testId2", Some(2), TypeOfClaim.`carry-sideways`))))
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(desResponse)))
 
         await(service.listLossClaims(request)) shouldBe Right(desResponse)
@@ -52,8 +50,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(desResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
@@ -62,16 +60,16 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val desResponse = DesResponse(correlationId, SingleError(DownstreamError))
-        val expected    = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: DesResponse[SingleError] = DesResponse(correlationId, SingleError(DownstreamError))
+        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(desResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(expected)
       }
 
       "the connector call returns multiple errors including a downstream error" in new Test {
-        val desResponse = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
-        val expected    = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
+        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(desResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(expected)
@@ -100,5 +98,4 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
         }
     }
   }
-
 }

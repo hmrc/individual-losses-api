@@ -18,12 +18,12 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
 import v1.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, DeleteLossClaimAuditDetail}
+import v1.models.domain.Nino
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteLossClaimControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteLossClaimService
@@ -40,10 +40,9 @@ class DeleteLossClaimControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino   = "AA123456A"
-  val claimId = "AAZZ1234567890a"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String          = "AA123456A"
+  val claimId: String       = "AAZZ1234567890a"
 
   val rawData: DeleteLossClaimRawData = DeleteLossClaimRawData(nino, claimId)
   val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
@@ -62,8 +61,8 @@ class DeleteLossClaimControllerSpec
     )
 
     MockIdGenerator.getCorrelationId.returns(correlationId)
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "delete" should {

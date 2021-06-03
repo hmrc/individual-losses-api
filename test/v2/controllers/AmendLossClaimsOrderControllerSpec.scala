@@ -18,13 +18,12 @@ package v2.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v2.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v2.models.des.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
+import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
 import v2.models.errors._
 import v2.models.hateoas.Method.GET
 import v2.models.hateoas.{HateoasWrapper, Link}
@@ -43,20 +42,19 @@ class AmendLossClaimsOrderControllerSpec
     with MockHateoasFactory
     with MockAuditService {
 
+  val claimType: String = "carry-sideways"
+  val id: String = "1234568790ABCDE"
+  val sequence: Int = 1
+  val nino: String = "AA123456A"
+  val taxYear: String = "2019-20"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val claimType = "carry-sideways"
-  val id = "1234568790ABCDE"
-  val sequence = 1
-  val nino = "AA123456A"
-  val taxYear = "2019-20"
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val claim: Claim = Claim(id, sequence)
+  val claimsList: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(claim))
+  val amendLossClaimsOrderRequest: AmendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), claimsList)
+  val amendLossClaimsOrderResponse: AmendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
-  val claim = Claim(id, sequence)
-  val claimsList = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(claim))
-  val amendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), claimsList)
-  val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
-
-  val testHateoasLink = Link(href = s"/individuals/losses/${nino}/loss-claims/order", method = GET, rel = "self")
+  val testHateoasLink: Link = Link(href = s"/individuals/losses/${nino}/loss-claims/order", method = GET, rel = "self")
 
   val requestBody: JsValue = Json.parse(
     """
@@ -64,37 +62,38 @@ class AmendLossClaimsOrderControllerSpec
       |   "claimType": "carry-sideways",
       |   "listOfLossClaims": [
       |      {
-      |      "id": "123456789ABCDE",
-      |      "sequence":2
+      |        "id": "123456789ABCDE",
+      |        "sequence":2
       |      },
       |      {
-      |      "id": "123456789ABDE0",
-      |      "sequence":3
+      |        "id": "123456789ABDE0",
+      |        "sequence":3
       |      },
       |      {
-      |      "id": "123456789ABEF1",
-      |      "sequence":1
+      |        "id": "123456789ABEF1",
+      |        "sequence":1
       |      }
       |   ]
-      |}""".stripMargin)
+      |}
+    """.stripMargin
+  )
 
   val responseBody: JsValue = Json.parse(
     """
       |{
-      |"links":[
-      |          {
-      |               "href":"/individuals/losses/AA123456A/loss-claims/order",
-      |               "rel":"self",
-      |               "method":"GET"
-      |            }
-      |         ]
+      |   "links":[
+      |      {
+      |        "href":"/individuals/losses/AA123456A/loss-claims/order",
+      |        "rel":"self",
+      |        "method":"GET"
+      |      }
+      |   ]
       |}
-      |""".stripMargin
+    """.stripMargin
   )
 
-
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new AmendLossClaimsOrderController(
       authService = mockEnrolmentsAuthService,
@@ -106,8 +105,8 @@ class AmendLossClaimsOrderControllerSpec
       cc = cc
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "amendLossClaimsOrder" should {
@@ -183,7 +182,6 @@ class AmendLossClaimsOrderControllerSpec
       }
     }
 
-
     def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the service" in new Test {
 
@@ -201,4 +199,4 @@ class AmendLossClaimsOrderControllerSpec
         header("X-CorrelationId", response) shouldBe Some(correlationId)
       }
     }
-  }
+}

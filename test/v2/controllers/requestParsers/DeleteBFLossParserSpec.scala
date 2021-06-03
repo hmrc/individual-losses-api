@@ -17,17 +17,16 @@
 package v2.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.validators.MockDeleteBFLossValidator
+import v2.models.domain.Nino
 import v2.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v2.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
 
 class DeleteBFLossParserSpec extends UnitSpec{
-  val nino = "AA123456B"
-  val lossId = "someLossId"
+  val nino: String = "AA123456B"
+  val lossId: String = "someLossId"
 
-  val inputData =
-    DeleteBFLossRawData(nino, lossId)
+  val inputData: DeleteBFLossRawData = DeleteBFLossRawData(nino, lossId)
 
   trait Test extends MockDeleteBFLossValidator {
     lazy val parser = new DeleteBFLossParser(mockValidator)

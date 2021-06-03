@@ -18,13 +18,12 @@ package v2.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
 import v2.models.des.{BFLossResponse, GetBFLossHateoasData}
-import v2.models.domain.TypeOfLoss
+import v2.models.domain.{Nino, TypeOfLoss}
 import v2.models.errors.{NotFoundError, _}
 import v2.models.hateoas.Method.GET
 import v2.models.hateoas.{HateoasWrapper, Link}
@@ -35,7 +34,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveBFLossService
@@ -43,22 +42,25 @@ class RetrieveBFLossControllerSpec
     with MockHateoasFactory
     with MockAuditService {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino          = "AA123456A"
-  val lossId        = "AAZZ1234567890a"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String          = "AA123456A"
+  val lossId: String        = "AAZZ1234567890a"
 
-  val rawData = RetrieveBFLossRawData(nino, lossId)
-  val request = RetrieveBFLossRequest(Nino(nino), lossId)
+  val rawData: RetrieveBFLossRawData = RetrieveBFLossRawData(nino, lossId)
+  val request: RetrieveBFLossRequest = RetrieveBFLossRequest(Nino(nino), lossId)
 
-  val response = BFLossResponse(taxYear = "2017-18",
-                                typeOfLoss = TypeOfLoss.`uk-property-fhl`,
-                                businessId = None,
-                                lossAmount = 100.00,
-                                lastModified = "2018-07-13T12:13:48.763Z")
+  val response: BFLossResponse = BFLossResponse(
+    taxYear = "2017-18",
+    typeOfLoss = TypeOfLoss.`uk-property-fhl`,
+    businessId = None,
+    lossAmount = 100.00,
+    lastModified = "2018-07-13T12:13:48.763Z"
+  )
 
-  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
-  val responseJson: JsValue = Json.parse("""
+  val responseJson: JsValue = Json.parse(
+    """
       |{
       |    "taxYear": "2017-18",
       |    "typeOfLoss": "uk-property-fhl",
@@ -72,10 +74,11 @@ class RetrieveBFLossControllerSpec
       |      }
       |    ]
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new RetrieveBFLossController(
       authService = mockEnrolmentsAuthService,
@@ -87,8 +90,8 @@ class RetrieveBFLossControllerSpec
       cc = cc
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "retrieve" should {

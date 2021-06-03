@@ -16,7 +16,6 @@
 
 package v1.models.requestData
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.AmendBFLoss
+import v1.models.domain.{AmendBFLoss, Nino}
 
 case class AmendBFLossRequest(nino: Nino, lossId: String, amendBroughtForwardLoss: AmendBFLoss)

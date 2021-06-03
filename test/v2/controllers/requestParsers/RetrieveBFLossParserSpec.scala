@@ -17,8 +17,8 @@
 package v2.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.validators.MockRetrieveBFLossValidator
+import v2.models.domain.Nino
 import v2.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v2.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
@@ -52,5 +52,4 @@ class RetrieveBFLossParserSpec extends UnitSpec {
       }
     }
   }
-
 }

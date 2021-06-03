@@ -18,12 +18,12 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteBFLossRequestDataParser
 import v1.mocks.services.{MockAuditService, MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, DeleteBFLossAuditDetail}
+import v1.models.domain.Nino
 import v1.models.errors.{NotFoundError, _}
 import v1.models.outcomes.DesResponse
 import v1.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteBFLossService
@@ -40,10 +40,9 @@ class DeleteBFLossControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
-  val nino   = "AA123456A"
-  val lossId = "AAZZ1234567890a"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String          = "AA123456A"
+  val lossId: String        = "AAZZ1234567890a"
 
   val rawData: DeleteBFLossRawData = DeleteBFLossRawData(nino, lossId)
   val request: DeleteBFLossRequest = DeleteBFLossRequest(Nino(nino), lossId)
@@ -62,8 +61,8 @@ class DeleteBFLossControllerSpec
     )
 
     MockIdGenerator.getCorrelationId.returns(correlationId)
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "delete" should {

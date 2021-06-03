@@ -16,10 +16,9 @@
 
 package v2.services
 
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.connectors.MockLossClaimConnector
 import v2.models.des.LossClaimResponse
-import v2.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{AmendLossClaim, Nino, TypeOfClaim, TypeOfLoss}
 import v2.models.errors._
 import v2.models.outcomes.DesResponse
 import v2.models.requestData.AmendLossClaimRequest
@@ -28,24 +27,22 @@ import scala.concurrent.Future
 
 class AmendLossClaimServiceSpec extends ServiceSpec {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
-  val nino   = Nino("AA123456A")
-  val claimId = "AAZZ1234567890a"
+  val lossClaim: AmendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
 
-  val lossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
-
-  val lossClaimResponse =
+  val lossClaimResponse: LossClaimResponse =
     LossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "lastModified")
 
-  val serviceUnavailableError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
+  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new AmendLossClaimService(connector)
   }
 
   "amend LossClaim" when {
-    lazy val request = AmendLossClaimRequest(nino, claimId, lossClaim)
+    lazy val request = AmendLossClaimRequest(Nino(nino), claimId, lossClaim)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {
@@ -59,8 +56,8 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError   = MtdError("SOME_CODE", "some message")
-        val desResponse = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaim(request).returns(Future.successful(Left(desResponse)))
 
         await(service.amendLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
@@ -69,7 +66,7 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
 
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.amendLossClaim(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimOutcome = await(service.amendLossClaim(request))
         result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))

@@ -17,14 +17,15 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockDeleteBFLossValidator
+import v1.models.domain.Nino
 import v1.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v1.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
 
 class DeleteBFLossParserSpec extends UnitSpec{
-  val nino = "AA123456B"
-  val lossId = "someLossId"
+
+  private val nino = "AA123456B"
+  private val lossId = "someLossId"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val inputData: DeleteBFLossRawData =

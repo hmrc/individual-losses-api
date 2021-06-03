@@ -19,19 +19,18 @@ package v2.controllers.requestParsers
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v2.mocks.validators.MockAmendLossClaimValidator
-import v2.models.domain.{AmendLossClaim, TypeOfClaim}
+import v2.models.domain.{AmendLossClaim, Nino, TypeOfClaim}
 import v2.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
 import v2.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
 class AmendLossClaimParserSpec extends UnitSpec {
 
-  private val nino                     = "AA123456A"
-  private val claimId                   = "AAZZ1234567890a"
-  private val lossClaim                 = TypeOfClaim.`carry-forward`
+  private val nino      = "AA123456A"
+  private val claimId   = "AAZZ1234567890a"
+  private val lossClaim = TypeOfClaim.`carry-forward`
 
-  val data = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim)))
+  val data: AmendLossClaimRawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
 
   trait Test extends MockAmendLossClaimValidator {
     lazy val parser = new AmendLossClaimParser(mockValidator)

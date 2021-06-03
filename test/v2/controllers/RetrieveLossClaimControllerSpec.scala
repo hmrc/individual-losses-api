@@ -18,13 +18,12 @@ package v2.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockRetrieveLossClaimRequestDataParser
 import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveLossClaimService}
 import v2.models.des.{GetLossClaimHateoasData, LossClaimResponse}
-import v2.models.domain.{TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
 import v2.models.errors.{NotFoundError, _}
 import v2.models.hateoas.Method.GET
 import v2.models.hateoas.{HateoasWrapper, Link}
@@ -43,20 +42,22 @@ class RetrieveLossClaimControllerSpec
     with MockHateoasFactory
     with MockAuditService {
 
-  val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino = "AA123456A"
-  val claimId = "AAZZ1234567890a"
+  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
-  val rawData = RetrieveLossClaimRawData(nino, claimId)
-  val request = RetrieveLossClaimRequest(Nino(nino), claimId)
+  val rawData: RetrieveLossClaimRawData = RetrieveLossClaimRawData(nino, claimId)
+  val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(Nino(nino), claimId)
 
-  val response = LossClaimResponse(taxYear = "2017-18",
+  val response: LossClaimResponse = LossClaimResponse(
+    taxYear = "2017-18",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
     businessId = None,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    lastModified = "2018-07-13T12:13:48.763Z")
+    lastModified = "2018-07-13T12:13:48.763Z"
+  )
 
-  val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   val responseJson: JsValue = Json.parse(
     """
@@ -73,10 +74,11 @@ class RetrieveLossClaimControllerSpec
       |      }
       |    ]
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new RetrieveLossClaimController(
       authService = mockEnrolmentsAuthService,
@@ -88,8 +90,8 @@ class RetrieveLossClaimControllerSpec
       cc = cc
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
   }
 
   "retrieve" should {

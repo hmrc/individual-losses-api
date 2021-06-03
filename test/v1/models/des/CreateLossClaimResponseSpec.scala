@@ -24,21 +24,23 @@ import v1.models.hateoas.Method.{DELETE, GET, POST}
 
 class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
-  val createClaimsResponse = CreateLossClaimResponse(id = "AAZZ1234567890a")
+  val createClaimsResponse: CreateLossClaimResponse = CreateLossClaimResponse(id = "AAZZ1234567890a")
 
   val createClaimsResponseJson: JsValue = Json.parse(
     """
       |{
       |   "id": "AAZZ1234567890a"
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   val createClaimsResponseDesJson: JsValue = Json.parse(
     """
       |{
       |   "claimId": "AAZZ1234567890a"
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
   "reads" when {
     "passed valid LossIdResponse JSON" should {
@@ -62,7 +64,7 @@ class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
     "return the correct hateoas links" when {
 
       "provided with a claim id of 'claimId' and nino of 'AA123456A'" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
 
         CreateLossClaimResponse.LinksFactory.links(mockAppConfig, CreateLossClaimHateoasData("AA123456A", "claimId")) shouldBe
         Seq(

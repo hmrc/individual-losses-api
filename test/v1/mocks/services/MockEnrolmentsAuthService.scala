@@ -30,7 +30,7 @@ trait MockEnrolmentsAuthService extends MockFactory {
 
   val mockEnrolmentsAuthService: EnrolmentsAuthService = mock[EnrolmentsAuthService]
 
-  object MockedEnrolmentsAuthService {
+  object MockEnrolmentsAuthService {
     def authoriseUser(): Unit = {
       (mockEnrolmentsAuthService.authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext))
         .expects(*, *, *)

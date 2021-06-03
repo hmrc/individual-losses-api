@@ -16,16 +16,14 @@
 
 package v1.connectors.httpparsers
 
-import play.api.Logger
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpResponse
+import utils.Logging
 import v1.models.errors._
 
 import scala.util.{Success, Try}
 
-trait HttpParser {
-
-  private val logger: Logger = Logger(this.getClass)
+trait HttpParser extends Logging {
 
   implicit class KnownJsonResponse(response: HttpResponse) {
     def validateJson[T](implicit reads: Reads[T]): Option[T] = {

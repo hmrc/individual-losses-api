@@ -32,18 +32,20 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
   private val validBusinessId = "XAIS01234567890"
 
   val emptyBody: JsValue = Json.parse(
-    s"""{
-       |
-       |
-       |}""".stripMargin
+    s"""
+       |{
+       |}
+     """.stripMargin
   )
 
-  val requestBodyJsonNoId = Json.parse(
-    s"""{
+  val requestBodyJsonNoId: JsValue = Json.parse(
+    s"""
+      |{
       |  "typeOfLoss" : "$validTypeOfLoss",
       |  "typeOfClaim" : "$validTypeOfClaim",
       |  "taxYear" : "$validTaxYear"
-      |}""".stripMargin
+      |}
+    """.stripMargin
   )
 
   def createRequestBodyJson(typeOfLoss: String = validTypeOfLoss,
@@ -51,23 +53,27 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
                             typeOfClaim: String = validTypeOfClaim,
                             taxYear: String = validTaxYear
                            ): JsValue = Json.parse(
-    s"""{
+    s"""
+       |{
        |  "typeOfLoss" : "$typeOfLoss",
        |  "businessId" : "$businessId",
        |  "typeOfClaim" : "$typeOfClaim",
        |  "taxYear" : "$taxYear"
-       |}""".stripMargin
+       |}
+     """.stripMargin
   )
 
   def createRequestUkPropertyNonFhlBodyJson(typeOfLoss: String = validTypeOfLoss,
                                             typeOfClaim: String = validTypeOfClaim,
                                             taxYear: String = validTaxYear
                                            ): JsValue = Json.parse(
-    s"""{
+    s"""
+       |{
        |  "typeOfLoss" : "$typeOfLoss",
        |  "typeOfClaim" : "$typeOfClaim",
        |  "taxYear" : "$taxYear"
-       |}""".stripMargin
+       |}
+     """.stripMargin
   )
 
   val validator = new CreateLossClaimValidator
@@ -159,12 +165,15 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
             CreateLossClaimRawData(
               validNino,
               AnyContentAsJson(Json.parse(
-                s"""{
+                s"""
+                   |{
                    |  "typeOfLoss" : "$typeOfLoss",
                    |  "businessId" : "$validBusinessId",
                    |  "typeOfClaim" : "$validTypeOfClaim",
                    |  "taxYear" : "$validTaxYear"
-                   |}""".stripMargin))
+                   |}
+                 """.stripMargin)
+              )
             )
           ) shouldBe List(RuleBusinessId)
         }
@@ -178,11 +187,14 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
             CreateLossClaimRawData(
               validNino,
               AnyContentAsJson(Json.parse(
-                s"""{
+                s"""
+                   |{
                    |  "typeOfLoss" : "$typeOfLoss",
                    |  "typeOfClaim" : "$validTypeOfClaim",
                    |  "taxYear" : "$validTaxYear"
-                   |}""".stripMargin))
+                   |}
+                 """.stripMargin)
+              )
             )
           ) shouldBe List(RuleBusinessId)
         }
@@ -195,7 +207,6 @@ class CreateLossClaimValidatorSpec extends UnitSpec {
           List(BusinessIdFormatError)
       }
     }
-
 
     "return RuleTypeOfClaimInvalid error" when {
       "an incorrect typeOfClaim is used for self-employment typeOfLoss" in {

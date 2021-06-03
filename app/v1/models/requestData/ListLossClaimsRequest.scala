@@ -16,9 +16,8 @@
 
 package v1.models.requestData
 
-import uk.gov.hmrc.domain.Nino
 import v1.models.des.IncomeSourceType
-import v1.models.domain.TypeOfClaim
+import v1.models.domain.{Nino, TypeOfClaim}
 
 case class ListLossClaimsRequest(nino: Nino,
                                  taxYear: Option[DesTaxYear],

@@ -28,6 +28,6 @@ object Versions {
   def getFromRequest(request: RequestHeader): Option[String] =
     getFrom(request.headers.headers)
 
-  private def getFrom(headers: Seq[(String, String)]) =
+  private def getFrom(headers: Seq[(String, String)]): Option[String] =
     headers.collectFirst { case (ACCEPT, versionRegex(ver)) => ver }
 }

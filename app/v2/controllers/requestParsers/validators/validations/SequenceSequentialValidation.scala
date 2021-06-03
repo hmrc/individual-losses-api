@@ -23,7 +23,7 @@ object SequenceSequentialValidation {
     val sortedList = sequences.sorted
     List(
       startsWithOne(sortedList),
-      sequenceInOrder(sortedList)
+      sequenceInOrder(sortedList.toList)
     ).flatten
   }
 
@@ -39,7 +39,7 @@ object SequenceSequentialValidation {
     case a :: b :: Nil if b - a != 1 => (a,b)
   }
 
-  private def sequenceInOrder(sortedSequence: Seq[Int]): List[MtdError] = {
+  private def sequenceInOrder(sortedSequence: List[Int]): List[MtdError] = {
     val inOrder = sortedSequence.sliding(2).collect { checkIfSequential }.isEmpty
     if (inOrder) {
       NoValidationErrors

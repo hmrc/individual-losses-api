@@ -16,10 +16,8 @@
 
 package v1.connectors
 
-import uk.gov.hmrc.domain.Nino
 import v1.models.des._
-
-import v1.models.domain.TypeOfClaim
+import v1.models.domain.{Nino, TypeOfClaim}
 import v1.models.errors._
 import v1.models.outcomes.DesResponse
 import v1.models.requestData._
@@ -30,16 +28,21 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
   "list LossClaims" when {
 
-    val claimId2 = "AAZZ1234567890b"
+    val claimId2: String = "AAZZ1234567890b"
 
     "a valid request is supplied with no query parameters" should {
       "return a successful response with the correct correlationId" in new Test {
         val expected = Right(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
                                                                                    LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
-        MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(), desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .parameterGet(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         listLossClaimsResult(connector) shouldBe expected
       }
@@ -50,11 +53,16 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
-        MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("taxYear", "2019")), desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .parameterGet(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(("taxYear", "2019")),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector, taxYear = Some(DesTaxYear("2019"))) shouldBe expected
+        listLossClaimsResult(connector = connector, taxYear = Some(DesTaxYear("2019"))) shouldBe expected
       }
     }
 
@@ -63,11 +71,16 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
-        MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("incomeSourceId", "testId")), desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .parameterGet(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(("incomeSourceId", "testId")),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector, selfEmploymentId = Some("testId")) shouldBe expected
+        listLossClaimsResult(connector = connector, selfEmploymentId = Some("testId")) shouldBe expected
       }
     }
 
@@ -76,11 +89,16 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
-        MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("incomeSourceType", "02")), desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .parameterGet(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(("incomeSourceType", "02")),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
+        listLossClaimsResult(connector = connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
       }
     }
 
@@ -89,11 +107,16 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
-        MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("claimType", "carry-sideways")), desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .parameterGet(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(("claimType", "carry-sideways")),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector, claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
+        listLossClaimsResult(connector = connector, claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
     }
 
@@ -102,20 +125,21 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(DesResponse(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
-        MockedHttpClient
+        MockHttpClient
           .parameterGet(
-            s"$baseUrl/income-tax/claims-for-relief/$nino",
-            Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "carry-sideways")),
-            desRequestHeaders: _*
-          )
-          .returns(Future.successful(expected))
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "carry-sideways")),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector,
+        listLossClaimsResult(
+          connector = connector,
           taxYear = Some(DesTaxYear("2019")),
           selfEmploymentId = Some("testId"),
           incomeSourceType = Some(IncomeSourceType.`01`),
-          claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe
-          expected
+          claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
     }
 
@@ -123,9 +147,14 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
         val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
 
-        MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(), desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .parameterGet(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
         listLossClaimsResult(connector) shouldBe expected
       }
@@ -135,11 +164,16 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
         val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
-        MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/claims-for-relief/$nino", Seq(("taxYear", "2019")), desRequestHeaders: _*)
-          .returns(Future.successful(expected))
+        MockHttpClient
+          .parameterGet(
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+            parameters = Seq(("taxYear", "2019")),
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector, Some(DesTaxYear("2019"))) shouldBe expected
+        listLossClaimsResult(connector = connector, Some(DesTaxYear("2019"))) shouldBe expected
       }
     }
 

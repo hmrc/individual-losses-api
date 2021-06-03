@@ -33,10 +33,10 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   case class Data1(id: String) extends HateoasData
   case class Data2(id: String) extends HateoasData
 
-  val response = Response("X")
+  val response: Response = Response("X")
 
   class Test {
-    MockedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes
+    MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes
   }
 
   "wrap" should {

@@ -17,12 +17,13 @@
 package v2.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v2.controllers.requestParsers.validators.ListLossClaimsValidator
-import v2.models.domain.{TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
 import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
-class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) extends RequestParser[ListLossClaimsRawData, ListLossClaimsRequest] {
+class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator)
+  extends RequestParser[ListLossClaimsRawData, ListLossClaimsRequest] {
+
   override protected def requestFor(data: ListLossClaimsRawData): ListLossClaimsRequest = {
     val taxYear = data.taxYear
 
@@ -37,6 +38,7 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) ext
       taxYear.map(DesTaxYear.fromMtd),
       incomeSourceType,
       data.businessId,
-      data.claimType.flatMap(TypeOfClaim.parser.lift)    )
+      data.claimType.flatMap(TypeOfClaim.parser.lift)
+    )
   }
 }
