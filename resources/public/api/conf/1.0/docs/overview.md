@@ -1,3 +1,5 @@
+From 30 November 2021 v1.0 will no longer be available.
+
 This API allows taxpayers to provide financial data for their Brought Forward Losses and Loss Claims. 
 
 For Brought forward losses a developer can:
