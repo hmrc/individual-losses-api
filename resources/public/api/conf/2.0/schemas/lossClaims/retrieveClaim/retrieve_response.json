@@ -11,7 +11,7 @@
     },
     "businessId" : {
       "type": "string",
-      "description": "The unique identifier of the income source the claim relates to. Must be provided for self-employment and foreign-property businesses. Must conform to the regular expression ^X[A-Z0-9]{1}IS[0-9]{11}$",
+      "description": "The unique identifier of the income source the claim relates to. Must be provided for self-employment and foreign-property businesses.",
       "example": "XGIS00000001319",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
     },
