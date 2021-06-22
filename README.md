@@ -48,8 +48,13 @@ Then go to http://localhost:9680/api-documentation/docs/preview and enter the fu
 http://localhost:9779/api/conf/2.0/application.raml
 ```
 
-## Reporting Issues
-You can create a GitHub issue [here](https://github.com/hmrc/individual-losses-api/issues)
+## Changelog
+
+You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog/wiki)
+
+## Support and Reporting Issues
+
+You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-changelog/issues)
 
 ## API Reference / Documentation 
 Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api/2.0)
