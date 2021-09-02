@@ -1,6 +1,4 @@
-This API allows taxpayers to provide financial data for their Brought Forward Losses and Loss Claims. 
-For Brought forward losses a developer can:
-
+This API allows developers to provide financial data for Brought Forward Losses and Loss Claims. For Brought Forward losses a developer can:
 * provide a list of brought forward losses
 * create a new brought forward loss 
 * show a single brought forward loss
