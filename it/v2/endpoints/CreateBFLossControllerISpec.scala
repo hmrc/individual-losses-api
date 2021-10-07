@@ -192,6 +192,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec {
         }
       )
 
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "INCOMESOURCE_ID_REQUIRED", Status.BAD_REQUEST, RuleBusinessId)
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_ENDED", Status.BAD_REQUEST, RuleTaxYearNotEndedError)
       createBFLossValidationErrorTest("BADNINO",

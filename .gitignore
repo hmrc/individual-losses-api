@@ -18,10 +18,10 @@ dist
 /.project
 /RUNNING_PID
 /.settings
+/.bsp
 *.iws
 node_modules/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
 
-    
