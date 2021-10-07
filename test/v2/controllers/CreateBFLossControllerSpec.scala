@@ -193,6 +193,7 @@ class CreateBFLossControllerSpec
     }
 
     errorsFromServiceTester(BadRequestError, BAD_REQUEST)
+    errorsFromServiceTester(RuleBusinessId, BAD_REQUEST)
     errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     errorsFromServiceTester(RuleDuplicateSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
