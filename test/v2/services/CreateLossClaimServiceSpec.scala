@@ -82,7 +82,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError,
       "UNEXPECTED_ERROR"            -> DownstreamError,
-      "INCOMESOURCE_ID_REQUIRED"    -> DownstreamError,
+      "INCOMESOURCE_ID_REQUIRED"    -> RuleBusinessId,
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

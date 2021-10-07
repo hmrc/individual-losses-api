@@ -38,13 +38,14 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
   }
 
   private def mappingDesToMtdError: PartialFunction[String, MtdError] = {
-    case "INVALID_TAXABLE_ENTITY_ID"                                                             => NinoFormatError
-    case "DUPLICATE"                                                                             => RuleDuplicateClaimSubmissionError
-    case "NOT_FOUND_INCOME_SOURCE"                                                               => NotFoundError
-    case "ACCOUNTING_PERIOD_NOT_ENDED"                                                           => RulePeriodNotEnded
-    case "INVALID_CLAIM_TYPE"                                                                    => RuleTypeOfClaimInvalid
-    case "TAX_YEAR_NOT_SUPPORTED"                                                                => RuleTaxYearNotSupportedError
-    case "NO_ACCOUNTING_PERIOD"                                                                  => RuleNoAccountingPeriod
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INCOMESOURCE_ID_REQUIRED" => DownstreamError
+    case "INVALID_TAXABLE_ENTITY_ID"                                => NinoFormatError
+    case "DUPLICATE"                                                => RuleDuplicateClaimSubmissionError
+    case "NOT_FOUND_INCOME_SOURCE"                                  => NotFoundError
+    case "ACCOUNTING_PERIOD_NOT_ENDED"                              => RulePeriodNotEnded
+    case "INVALID_CLAIM_TYPE"                                       => RuleTypeOfClaimInvalid
+    case "TAX_YEAR_NOT_SUPPORTED"                                   => RuleTaxYearNotSupportedError
+    case "INCOMESOURCE_ID_REQUIRED"                                 => RuleBusinessId
+    case "NO_ACCOUNTING_PERIOD"                                     => RuleNoAccountingPeriod
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
   }
 }

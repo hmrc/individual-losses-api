@@ -191,6 +191,8 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
 
       createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "INCOMESOURCE_ID_REQUIRED", Status.BAD_REQUEST, RuleBusinessId)
+
       createLossClaimValidationErrorTest("BADNINO",
                                          generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"),
                                          Status.BAD_REQUEST,
