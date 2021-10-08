@@ -22,7 +22,7 @@ import v2.connectors.LossClaimConnector
 import v2.models.errors._
 import v2.models.requestData.CreateLossClaimRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
 
@@ -37,19 +37,15 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
     }
   }
 
-  private def mappingDesToMtdError: PartialFunction[String, MtdError] =
-     {
-       case "INVALID_TAXABLE_ENTITY_ID"   => NinoFormatError
-       case "DUPLICATE"                   => RuleDuplicateClaimSubmissionError
-       case "NOT_FOUND_INCOME_SOURCE"     => NotFoundError
-       case "ACCOUNTING_PERIOD_NOT_ENDED" => RulePeriodNotEnded
-       case "INVALID_CLAIM_TYPE"          => RuleTypeOfClaimInvalid
-       case "TAX_YEAR_NOT_SUPPORTED"      => RuleTaxYearNotSupportedError
-       case "NO_ACCOUNTING_PERIOD"        => RuleNoAccountingPeriod
-       case "INVALID_PAYLOAD" | "SERVER_ERROR"  | "SERVICE_UNAVAILABLE" | "INCOMESOURCE_ID_REQUIRED" => DownstreamError
-      // Likely to be removed as they do not exist in the latest swagger 01/08/2019 or are pertaining to brought forward losses
-       case error@("INVALID_TAX_YEAR" | "INCOME_SOURCE_NOT_ACTIVE" | "TAX_YEAR_NOT_ENDED") =>
-         logger.warn(s"[$serviceName] [Unexpected error: $error]")
-         DownstreamError
-    }
+  private def mappingDesToMtdError: PartialFunction[String, MtdError] = {
+    case "INVALID_TAXABLE_ENTITY_ID"                                => NinoFormatError
+    case "DUPLICATE"                                                => RuleDuplicateClaimSubmissionError
+    case "NOT_FOUND_INCOME_SOURCE"                                  => NotFoundError
+    case "ACCOUNTING_PERIOD_NOT_ENDED"                              => RulePeriodNotEnded
+    case "INVALID_CLAIM_TYPE"                                       => RuleTypeOfClaimInvalid
+    case "TAX_YEAR_NOT_SUPPORTED"                                   => RuleTaxYearNotSupportedError
+    case "INCOMESOURCE_ID_REQUIRED"                                 => RuleBusinessId
+    case "NO_ACCOUNTING_PERIOD"                                     => RuleNoAccountingPeriod
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
+  }
 }

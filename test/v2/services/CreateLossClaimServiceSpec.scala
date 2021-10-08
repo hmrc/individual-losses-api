@@ -18,7 +18,7 @@ package v2.services
 
 import v2.mocks.connectors.MockLossClaimConnector
 import v2.models.des.CreateLossClaimResponse
-import v2.models.domain.{LossClaim, Nino, TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{ LossClaim, Nino, TypeOfClaim, TypeOfLoss }
 import v2.models.errors._
 import v2.models.outcomes.DesResponse
 import v2.models.requestData.CreateLossClaimRequest
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class CreateLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
   val lossClaim: LossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
@@ -53,7 +53,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                     = MtdError("SOME_CODE", "some message")
         val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(desResponse)))
 
@@ -82,12 +82,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError,
       "UNEXPECTED_ERROR"            -> DownstreamError,
-      "INCOMESOURCE_ID_REQUIRED"    -> DownstreamError,
-      // Likely to be removed as they do not exist in the latest swagger 01/08/2019
-      "INVALID_TAX_YEAR"            -> DownstreamError,
-      "INCOME_SOURCE_NOT_ACTIVE"    -> DownstreamError,
-      // Error is Des Spec but related to brought forward losses
-      "TAX_YEAR_NOT_ENDED"          -> DownstreamError
+      "INCOMESOURCE_ID_REQUIRED"    -> RuleBusinessId,
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

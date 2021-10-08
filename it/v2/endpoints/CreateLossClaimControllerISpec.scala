@@ -19,33 +19,29 @@ package v2.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsObject, JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
 import v2.models.errors._
-import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v2.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
 
 class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
-    Json.obj("businessId" -> businessId,
-      "typeOfLoss" -> typeOfLoss,
-      "taxYear" -> taxYear,
-      "typeOfClaim" -> typeOfClaim)
+    Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYear" -> taxYear, "typeOfClaim" -> typeOfClaim)
 
   val correlationId = "X-123"
-  val businessId = "XKIS00000000988"
-  val taxYear = "2019-20"
-  val typeOfClaim = "carry-forward"
-  val typeOfLoss = "self-employment"
-  val claimId = "AAZZ1234567890a"
+  val businessId    = "XKIS00000000988"
+  val taxYear       = "2019-20"
+  val typeOfClaim   = "carry-forward"
+  val typeOfLoss    = "self-employment"
+  val claimId       = "AAZZ1234567890a"
 
   private trait Test {
 
     val nino = "AA123456A"
 
-    val requestJson: JsValue = Json.parse(
-      """
+    val requestJson: JsValue = Json.parse("""
         |{
         |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
@@ -54,8 +50,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
         |{
         |    "id": "AAZZ1234567890a",
         |    "links": [{
@@ -76,8 +71,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val desResponseJson: JsValue = Json.parse(
-      """
+    val desResponseJson: JsValue = Json.parse("""
         |{
         |    "claimId": "AAZZ1234567890a"
         |}
@@ -106,7 +100,7 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
   "Calling the create LossClaim endpoint" should {
 
     trait CreateLossClaimControllerTest extends Test {
-      def uri: String = s"/$nino/loss-claims"
+      def uri: String    = s"/$nino/loss-claims"
       def desUrl: String = s"/income-tax/claims-for-relief/$nino"
     }
 
@@ -130,16 +124,10 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-
       createErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-
-      // These use default mapping but in spec so check explicity...
       createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.FORBIDDEN, "INVALID_TAX_YEAR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.FORBIDDEN, "INCOME_SOURCE_NOT_ACTIVE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_ENDED", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
 
     "return 403 FORBIDDEN" when {
@@ -154,16 +142,16 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
 
     "return 400 (Bad Request)" when {
 
-      Seq("uk-property-non-fhl").foreach(typeOfLoss => s"$typeOfLoss is supplied with a businessId" in new CreateLossClaimControllerTest {
+      Seq("uk-property-non-fhl").foreach(typeOfLoss =>
+        s"$typeOfLoss is supplied with a businessId" in new CreateLossClaimControllerTest {
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-        }
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
 
-        override val requestJson: JsValue = Json.parse(
-          s"""
+          override val requestJson: JsValue = Json.parse(s"""
             |{
             |    "businessId": "XKIS00000000988",
             |    "typeOfLoss": "$typeOfLoss",
@@ -172,22 +160,22 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
             |}
       """.stripMargin)
 
-        val response: WSResponse = await(request().post(requestJson))
-        response.status shouldBe Status.BAD_REQUEST
-        response.json shouldBe Json.toJson(RuleBusinessId)
-        response.header("Content-Type") shouldBe Some("application/json")
+          val response: WSResponse = await(request().post(requestJson))
+          response.status shouldBe Status.BAD_REQUEST
+          response.json shouldBe Json.toJson(RuleBusinessId)
+          response.header("Content-Type") shouldBe Some("application/json")
       })
 
-      Seq("self-employment", "foreign-property").foreach(typeOfLoss => s"$typeOfLoss is supplied without a businessId" in new CreateLossClaimControllerTest {
+      Seq("self-employment", "foreign-property").foreach(typeOfLoss =>
+        s"$typeOfLoss is supplied without a businessId" in new CreateLossClaimControllerTest {
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-        }
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
 
-        override val requestJson: JsValue = Json.parse(
-          s"""
+          override val requestJson: JsValue = Json.parse(s"""
             |{
             |    "typeOfLoss": "$typeOfLoss",
             |    "taxYear": "2019-20",
@@ -195,31 +183,51 @@ class CreateLossClaimControllerISpec extends IntegrationBaseSpec {
             |}
       """.stripMargin)
 
-        val response: WSResponse = await(request().post(requestJson))
-        response.status shouldBe Status.BAD_REQUEST
-        response.json shouldBe Json.toJson(RuleBusinessId)
-        response.header("Content-Type") shouldBe Some("application/json")
+          val response: WSResponse = await(request().post(requestJson))
+          response.status shouldBe Status.BAD_REQUEST
+          response.json shouldBe Json.toJson(RuleBusinessId)
+          response.header("Content-Type") shouldBe Some("application/json")
       })
 
       createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-      createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear,
-        "carry-forward"), Status.BAD_REQUEST, NinoFormatError)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "INCOMESOURCE_ID_REQUIRED", Status.BAD_REQUEST, RuleBusinessId)
+
+      createLossClaimValidationErrorTest("BADNINO",
+                                         generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"),
+                                         Status.BAD_REQUEST,
+                                         NinoFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward") , Status.BAD_REQUEST, TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
+                                         generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
+                                         Status.BAD_REQUEST,
+                                         TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       createLossClaimValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+                                         generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
+                                         Status.BAD_REQUEST,
+                                         RuleTaxYearNotSupportedError)
+      createLossClaimValidationErrorTest(
+        "AA123456A",
+        generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
+        Status.BAD_REQUEST,
+        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear")))
+      )
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"), Status.BAD_REQUEST, RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
+                                         generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),
+                                         Status.BAD_REQUEST,
+                                         TypeOfLossFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"), Status.BAD_REQUEST, TypeOfLossFormatError)
+                                         generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"),
+                                         Status.BAD_REQUEST,
+                                         BusinessIdFormatError)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"), Status.BAD_REQUEST, BusinessIdFormatError)
+                                         generateLossClaim(businessId, typeOfLoss, taxYear, "carry-sideways-fhl"),
+                                         Status.BAD_REQUEST,
+                                         RuleTypeOfClaimInvalid)
       createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(businessId, typeOfLoss, taxYear,"carry-sideways-fhl"), Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createLossClaimValidationErrorTest("AA123456A",
-        generateLossClaim(businessId, typeOfLoss, taxYear,"carry-forward-type"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+                                         generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward-type"),
+                                         Status.BAD_REQUEST,
+                                         TypeOfClaimFormatError)
     }
 
     def createErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
