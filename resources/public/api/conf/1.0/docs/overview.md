@@ -1,4 +1,4 @@
-From 30 November 2021 v1.0 will no longer be available.
+This resource is no longer available. It has been replaced by [individual-losses-api v2.0](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api/2.0).
 
 This API allows taxpayers to provide financial data for their Brought Forward Losses and Loss Claims. 
 

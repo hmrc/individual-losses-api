@@ -15,8 +15,8 @@ is:
   - errors.notFoundClaimId
   - errors.ruleTaxYearNotSupported
   - queryParameters.taxYearForClaims
-displayName: Amend Loss Claims Order
-description: From 30 November 2021 v1.0 will no longer be available. This endpoint allows the developer to change the sequence in which certain losses are used.
+displayName: Amend Loss Claims Order [No longer available]
+description: This resource is no longer available. It has been replaced by the Amend Loss Claims Order endpoint in the <a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api/2.0">individual-losses-api v2.0</a>.
 (annotations.sandboxData): !include scenarios/lossClaimsOrder_amend.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]

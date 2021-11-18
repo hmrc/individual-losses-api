@@ -6,8 +6,8 @@ is:
   - errors.formatClaimId
   - errors.clientOrAgentNotAuthorised
   - errors.notFoundClaimId
-displayName: Delete a Loss Claim
-description: From 30 November 2021 v1.0 will no longer be available. This endpoint allows the user to remove a previously entered loss claim.
+displayName: Delete a Loss Claim [No longer available]
+description: This resource is no longer available. It has been replaced by the Delete a Loss Claim endpoint in the <a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api/2.0">individual-losses-api v2.0</a>.
 (annotations.sandboxData): !include scenarios/lossClaims_delete.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
