@@ -75,7 +75,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def deleteLossClaimResult(connector: LossClaimConnector): IfsOutcome[Unit] =
+    def deleteLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[Unit] =
       await(
         connector.deleteLossClaim(
           DeleteLossClaimRequest(

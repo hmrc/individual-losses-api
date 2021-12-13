@@ -17,7 +17,7 @@
 package v3.services
 
 import play.api.Logger
-import v3.connectors.IfsOutcome
+import v3.connectors.DownstreamOutcome
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 
@@ -49,7 +49,7 @@ trait DownstreamServiceSupport {
     * @return the function to map outcomes
     */
   final def mapToVendor[D, V](endpointName: String, errorMap: PartialFunction[String, MtdError])(success: ResponseWrapper[D] => VendorOutcome[V])(
-    downstreamOutcome: IfsOutcome[D]): VendorOutcome[V] = {
+    downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[V] = {
 
     lazy val defaultErrorMapping: String => MtdError = { code =>
       logger.warn(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
@@ -93,7 +93,7 @@ trait DownstreamServiceSupport {
     * @return the function to map outcomes
     */
   final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, MtdError])(
-    downstreamOutcome: IfsOutcome[D]): VendorOutcome[D] =
+    downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[D] =
     mapToVendor[D, D](endpointName, errorMap) { downstreamResponse =>
       Right(ResponseWrapper(downstreamResponse.correlationId, downstreamResponse.responseData))
     }(downstreamOutcome)

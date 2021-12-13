@@ -181,7 +181,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                              taxYear: Option[DownstreamTaxYear] = None,
                              incomeSourceType: Option[IncomeSourceType] = None,
                              businessId: Option[String] = None,
-                             claimType: Option[TypeOfClaim] = None): IfsOutcome[ListLossClaimsResponse[LossClaimId]] =
+                             claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(

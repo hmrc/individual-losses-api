@@ -17,67 +17,52 @@
 package v3.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v3.connectors.DownstreamUri.IfsUri
 import v3.connectors.httpparsers.StandardDownstreamHttpParser._
 import v3.models.downstream.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
-import v3.models.domain.{AmendBFLoss, BFLoss}
 import v3.models.requestData._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BFLossConnector @Inject()(val http: HttpClient,
-                                val appConfig: AppConfig) extends BaseIfsConnector {
+                                val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
-                                                             ec: ExecutionContext): Future[IfsOutcome[CreateBFLossResponse]] = {
+                                                             ec: ExecutionContext): Future[DownstreamOutcome[CreateBFLossResponse]] = {
     val nino = createBFLossRequest.nino.nino
 
-    def doIt(implicit hc: HeaderCarrier): Future[IfsOutcome[CreateBFLossResponse]] =
-      http.POST[BFLoss, IfsOutcome[CreateBFLossResponse]](s"${appConfig.ifsBaseUrl}/income-tax/brought-forward-losses/$nino",
-        createBFLossRequest.broughtForwardLoss)
-
-    doIt(ifsHeaderCarrier(Seq("Content-Type")))
+    post(createBFLossRequest.broughtForwardLoss, IfsUri[CreateBFLossResponse](s"income-tax/brought-forward-losses/$nino"))
   }
 
   def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
-                                                          ec: ExecutionContext): Future[IfsOutcome[BFLossResponse]] = {
+                                                          ec: ExecutionContext): Future[DownstreamOutcome[BFLossResponse]] = {
     val nino = amendBFLossRequest.nino.nino
     val lossId = amendBFLossRequest.lossId
 
-    def doIt(implicit hc: HeaderCarrier): Future[IfsOutcome[BFLossResponse]] =
-      http.PUT[AmendBFLoss, IfsOutcome[BFLossResponse]](s"${appConfig.ifsBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId",
-        amendBFLossRequest.amendBroughtForwardLoss)
-
-    doIt(ifsHeaderCarrier(Seq("Content-Type")))
+    put(amendBFLossRequest.amendBroughtForwardLoss, IfsUri[BFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
   def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier,
-                                                 ec: ExecutionContext): Future[IfsOutcome[Unit]] = {
+                                                 ec: ExecutionContext): Future[DownstreamOutcome[Unit]] = {
     val nino = request.nino.nino
     val lossId = request.lossId
 
-    def doIt(implicit hc: HeaderCarrier): Future[IfsOutcome[Unit]] =
-      http.DELETE[IfsOutcome[Unit]](s"${appConfig.ifsBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId")
-
-    doIt(ifsHeaderCarrier())
+    delete(IfsUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
   def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier,
-                                                     ec: ExecutionContext): Future[IfsOutcome[BFLossResponse]] = {
+                                                     ec: ExecutionContext): Future[DownstreamOutcome[BFLossResponse]] = {
     val nino = request.nino.nino
     val lossId = request.lossId
 
-    def doIt(implicit hc: HeaderCarrier): Future[IfsOutcome[BFLossResponse]] = {
-      http.GET[IfsOutcome[BFLossResponse]](s"${appConfig.ifsBaseUrl}/income-tax/brought-forward-losses/$nino/$lossId")
-    }
-
-    doIt(ifsHeaderCarrier())
+    get(IfsUri[BFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
   def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier,
-                                                 ec: ExecutionContext): Future[IfsOutcome[ListBFLossesResponse[BFLossId]]] = {
+                                                 ec: ExecutionContext): Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]] = {
     val nino = request.nino.nino
     val pathParameters = Map(
       "taxYear"          -> request.taxYear.map(_.value),
@@ -87,10 +72,6 @@ class BFLossConnector @Inject()(val http: HttpClient,
       case (key, Some(value)) => key -> value
     }
 
-    def doIt(implicit hc: HeaderCarrier): Future[IfsOutcome[ListBFLossesResponse[BFLossId]]] = {
-      http.GET[IfsOutcome[ListBFLossesResponse[BFLossId]]](s"${appConfig.ifsBaseUrl}/income-tax/brought-forward-losses/$nino", pathParameters.toSeq)
-    }
-
-    doIt(ifsHeaderCarrier())
+    get(IfsUri[ListBFLossesResponse[BFLossId]](s"income-tax/brought-forward-losses/$nino"), pathParameters.toSeq)
   }
 }

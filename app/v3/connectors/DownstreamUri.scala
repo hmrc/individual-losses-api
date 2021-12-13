@@ -16,23 +16,11 @@
 
 package v3.connectors
 
-import mocks.MockAppConfig
-import v3.mocks.MockHttpClient
+trait DownstreamUri[Resp] {
+  val value: String
+}
 
-class LossClaimConnectorSpec extends ConnectorSpec {
-
-  val nino: String = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
-
-  class Test extends MockHttpClient with MockAppConfig {
-    val connector: LossClaimConnector = new LossClaimConnector(
-      http = mockHttpClient,
-      appConfig = mockAppConfig
-    )
-
-    MockAppConfig.ifsBaseUrl returns baseUrl
-    MockAppConfig.ifsToken returns "ifs-token"
-    MockAppConfig.ifsEnvironment returns "ifs-environment"
-    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-  }
+object DownstreamUri {
+  case class DesUri[Resp](value: String) extends DownstreamUri[Resp]
+  case class IfsUri[Resp](value: String) extends DownstreamUri[Resp]
 }

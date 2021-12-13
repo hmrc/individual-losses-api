@@ -90,7 +90,7 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def createLossClaimsResult(connector: LossClaimConnector): IfsOutcome[CreateLossClaimResponse] =
+    def createLossClaimsResult(connector: LossClaimConnector): DownstreamOutcome[CreateLossClaimResponse] =
       await(
         connector.createLossClaim(
           CreateLossClaimRequest(

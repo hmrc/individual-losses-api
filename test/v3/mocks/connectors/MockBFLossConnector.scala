@@ -19,7 +19,7 @@ package v3.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.connectors.{BFLossConnector, IfsOutcome}
+import v3.connectors.{BFLossConnector, DownstreamOutcome}
 import v3.models.downstream.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v3.models.requestData._
 
@@ -30,31 +30,31 @@ trait MockBFLossConnector extends MockFactory {
 
   object MockedBFLossConnector {
 
-    def createBFLoss(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[IfsOutcome[CreateBFLossResponse]]] = {
+    def createBFLoss(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[DownstreamOutcome[CreateBFLossResponse]]] = {
       (connector
         .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(createBFLossRequest, *, *)
     }
 
-    def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[IfsOutcome[BFLossResponse]]] = {
+    def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DownstreamOutcome[BFLossResponse]]] = {
       (connector
         .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(amendBFLossRequest, *, *)
     }
 
-    def deleteBFLoss(deleteBFLossRequest: DeleteBFLossRequest): CallHandler[Future[IfsOutcome[Unit]]] = {
+    def deleteBFLoss(deleteBFLossRequest: DeleteBFLossRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
         .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(deleteBFLossRequest, *, *)
     }
 
-    def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[IfsOutcome[BFLossResponse]]] = {
+    def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[DownstreamOutcome[BFLossResponse]]] = {
       (connector
         .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
     }
 
-    def listBFLosses(request: ListBFLossesRequest): CallHandler[Future[IfsOutcome[ListBFLossesResponse[BFLossId]]]] = {
+    def listBFLosses(request: ListBFLossesRequest): CallHandler[Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]]] = {
       (connector
         .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)

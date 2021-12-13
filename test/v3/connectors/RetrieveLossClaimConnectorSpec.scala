@@ -44,7 +44,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
       testDateTime.toString
     )
 
-    def retrieveLossClaimResult(connector: LossClaimConnector): IfsOutcome[LossClaimResponse] = {
+    def retrieveLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[LossClaimResponse] = {
       await(
         connector.retrieveLossClaim(
           RetrieveLossClaimRequest(

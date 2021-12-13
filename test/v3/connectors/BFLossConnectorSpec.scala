@@ -20,7 +20,7 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.MockHttpClient
 import v3.models.downstream._
-import v3.models.domain.{AmendBFLoss, BFLoss, Nino, TypeOfLoss}
+import v3.models.domain.{ AmendBFLoss, BFLoss, Nino, TypeOfLoss }
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData._
@@ -29,19 +29,20 @@ import scala.concurrent.Future
 
 class BFLossConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: BFLossConnector = new BFLossConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
     MockAppConfig.ifsBaseUrl returns baseUrl
-    MockAppConfig.ifsToken returns "downstream-token"
-    MockAppConfig.ifsEnvironment returns "downstream-environment"
-    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders    )
+    MockAppConfig.ifsToken returns "ifs-token"
+    MockAppConfig.ifsEnvironment returns "ifs-environment"
+    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
 
   "create BFLoss" when {
@@ -63,7 +64,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = bfLoss,
             requiredHeaders = requiredIfsHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         createBFLossResult(connector) shouldBe expected
       }
@@ -98,13 +100,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = bfLoss,
             requiredHeaders = requiredIfsHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         createBFLossResult(connector) shouldBe expected
       }
     }
 
-    def createBFLossResult(connector: BFLossConnector): IfsOutcome[CreateBFLossResponse] =
+    def createBFLossResult(connector: BFLossConnector): DownstreamOutcome[CreateBFLossResponse] =
       await(
         connector.createBFLoss(
           CreateBFLossRequest(
@@ -140,7 +143,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = amendBFLoss,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
       }
@@ -157,7 +161,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = amendBFLoss,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
       }
@@ -174,13 +179,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = amendBFLoss,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
       }
     }
 
-    def amendBFLossResult(connector: BFLossConnector): IfsOutcome[BFLossResponse] =
+    def amendBFLossResult(connector: BFLossConnector): DownstreamOutcome[BFLossResponse] =
       await(
         connector.amendBFLoss(
           AmendBFLossRequest(
@@ -202,7 +208,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteBFLossResult(connector) shouldBe expected
       }
@@ -218,7 +225,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteBFLossResult(connector) shouldBe expected
       }
@@ -234,13 +242,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteBFLossResult(connector) shouldBe expected
       }
     }
 
-    def deleteBFLossResult(connector: BFLossConnector): IfsOutcome[Unit] =
+    def deleteBFLossResult(connector: BFLossConnector): DownstreamOutcome[Unit] =
       await(
         connector.deleteBFLoss(
           DeleteBFLossRequest(
@@ -259,7 +268,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       lastModified = "dateString"
     )
 
-    def retrieveBFLossResult(connector: BFLossConnector): IfsOutcome[BFLossResponse] = {
+    def retrieveBFLossResult(connector: BFLossConnector): DownstreamOutcome[BFLossResponse] = {
       await(
         connector.retrieveBFLoss(
           RetrieveBFLossRequest(
@@ -281,7 +290,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveBFLossResult(connector) shouldBe expected
       }
@@ -298,7 +308,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveBFLossResult(connector) shouldBe expected
       }
@@ -325,7 +336,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     def listBFLossesResult(connector: BFLossConnector,
                            taxYear: Option[DownstreamTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
-                           businessId: Option[String] = None): IfsOutcome[ListBFLossesResponse[BFLossId]] = {
+                           businessId: Option[String] = None): DownstreamOutcome[ListBFLossesResponse[BFLossId]] = {
       await(
         connector.listBFLosses(
           ListBFLossesRequest(
@@ -348,7 +359,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector) shouldBe expected
       }
@@ -363,7 +375,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector = connector, taxYear = Some(DownstreamTaxYear("2019"))) shouldBe expected
       }
@@ -378,7 +391,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector = connector, businessId = Some("testId")) shouldBe expected
       }
@@ -393,7 +407,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector = connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
       }
@@ -408,13 +423,13 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
-        listBFLossesResult(
-          connector = connector,
-          taxYear = Some(DownstreamTaxYear("2019")),
-          businessId = Some("testId"),
-          incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe expected
+        listBFLossesResult(connector = connector,
+                           taxYear = Some(DownstreamTaxYear("2019")),
+                           businessId = Some("testId"),
+                           incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe expected
       }
     }
 
@@ -430,7 +445,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector) shouldBe expected
       }
@@ -445,7 +461,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector) shouldBe expected
       }

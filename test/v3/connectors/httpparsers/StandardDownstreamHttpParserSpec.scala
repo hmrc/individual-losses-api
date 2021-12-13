@@ -20,7 +20,7 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, Reads}
 import support.UnitSpec
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import v3.connectors.IfsOutcome
+import v3.connectors.DownstreamOutcome
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 
@@ -41,7 +41,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   import v3.connectors.httpparsers.StandardDownstreamHttpParser._
 
-  val httpReads: HttpReads[IfsOutcome[Unit]] = implicitly
+  val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
   val data = "someData"
   val downstreamExpectedJson: JsValue = Json.obj("data" -> data)
@@ -50,7 +50,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
   val downstreamResponse: ResponseWrapper[SomeModel] = ResponseWrapper(correlationId, downstreamModel)
 
   "The generic HTTP parser" when {
-    val httpReads: HttpReads[IfsOutcome[SomeModel]] = implicitly
+    val httpReads: HttpReads[DownstreamOutcome[SomeModel]] = implicitly
 
     "return a Right downstream response containing the model object if the response json corresponds to a model object" in {
       val httpResponse = HttpResponse(OK, downstreamExpectedJson, Map("CorrelationId" -> Seq(correlationId)))
@@ -72,7 +72,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
   }
 
   "The generic HTTP parser for empty response" when {
-    val httpReads: HttpReads[IfsOutcome[Unit]] = implicitly
+    val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
     "receiving a 204 response" should {
       "return a Right ResponseWrapper with the correct correlationId and no responseData" in {
@@ -122,7 +122,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private def handleErrorsCorrectly[A](httpReads: HttpReads[IfsOutcome[A]]): Unit =
+  private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     Seq(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, UNPROCESSABLE_ENTITY).foreach(
       responseCode =>
         s"receiving a $responseCode response" should {
@@ -148,7 +148,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         }
     )
 
-  private def handleInternalErrorsCorrectly[A](httpReads: HttpReads[IfsOutcome[A]]): Unit =
+  private def handleInternalErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     Seq(INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE).foreach(responseCode =>
       s"receiving a $responseCode response" should {
         "return an outbound error when the error returned matches the Error model" in {
@@ -164,7 +164,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         }
       })
 
-  private def handleUnexpectedResponse[A](httpReads: HttpReads[IfsOutcome[A]]): Unit =
+  private def handleUnexpectedResponse[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     "receiving an unexpected response" should {
       val responseCode = 499
       "return an outbound error when the error returned matches the Error model" in {

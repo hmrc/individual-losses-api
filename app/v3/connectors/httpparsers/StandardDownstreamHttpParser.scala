@@ -19,20 +19,20 @@ package v3.connectors.httpparsers
 import play.api.http.Status._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
-import v3.connectors.IfsOutcome
+import v3.connectors.DownstreamOutcome
 import v3.models.errors.{ DownstreamError, OutboundError }
 import v3.models.outcomes.ResponseWrapper
 
 object StandardDownstreamHttpParser extends HttpParser {
 
   // Return Right[ResponseWrapper[Unit]] as success response has no body - no need to assign it a value
-  implicit val readsEmpty: HttpReads[IfsOutcome[Unit]] =
+  implicit val readsEmpty: HttpReads[DownstreamOutcome[Unit]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(NO_CONTENT, url, response) { correlationId =>
         Right(ResponseWrapper(correlationId, ()))
     }
 
-  implicit def reads[A: Reads]: HttpReads[IfsOutcome[A]] =
+  implicit def reads[A: Reads]: HttpReads[DownstreamOutcome[A]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(OK, url, response) { correlationId =>
         response.validateJson[A] match {
@@ -42,7 +42,7 @@ object StandardDownstreamHttpParser extends HttpParser {
     }
 
   private def doRead[A](successStatusCode: Int, url: String, response: HttpResponse)(
-      successOutcomeFactory: String => IfsOutcome[A]): IfsOutcome[A] = {
+      successOutcomeFactory: String => DownstreamOutcome[A]): DownstreamOutcome[A] = {
 
     val correlationId = retrieveCorrelationId(response)
 

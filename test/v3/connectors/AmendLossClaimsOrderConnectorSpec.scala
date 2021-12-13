@@ -58,7 +58,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def amendLossClaimsOrderResult(connector: LossClaimConnector): IfsOutcome[Unit] =
+    def amendLossClaimsOrderResult(connector: LossClaimConnector): DownstreamOutcome[Unit] =
       await(
         connector.amendLossClaimsOrder(
           AmendLossClaimsOrderRequest(

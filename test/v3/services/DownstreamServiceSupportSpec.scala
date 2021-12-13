@@ -18,7 +18,7 @@ package v3.services
 
 import cats.syntax.either._
 import support.UnitSpec
-import v3.connectors.IfsOutcome
+import v3.connectors.DownstreamOutcome
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 
@@ -99,7 +99,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
     }
   }
 
-  private def singleErrorBehaveCorrectly(handler: IfsOutcome[D] => VendorOutcome[D]): Unit = {
+  private def singleErrorBehaveCorrectly(handler: DownstreamOutcome[D] => VendorOutcome[D]): Unit = {
     "a single error" must {
       "use the error mapping and return a single mtd error" in {
         val singleErrorResponse = ResponseWrapper(correlationId, SingleError(downstreamError1)).asLeft
@@ -128,7 +128,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
     }
   }
 
-  private def multipleErrorsBehaveCorrectly(handler: IfsOutcome[D] => VendorOutcome[D]): Unit = {
+  private def multipleErrorsBehaveCorrectly(handler: DownstreamOutcome[D] => VendorOutcome[D]): Unit = {
     "multiple errors" must {
       "use the error mapping for each and return multiple mtd errors" in {
         val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(downstreamError1, downstreamError2))).asLeft
