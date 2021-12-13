@@ -23,36 +23,36 @@ import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
+import play.api.http.{ HttpConfiguration, HttpErrorHandler, HttpFilters }
 import play.api.libs.json.Json
-import play.api.mvc.{EssentialAction, _}
+import play.api.mvc.{ EssentialAction, _ }
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.UnitSpec
-import v1.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import v2.models.errors.{ InvalidAcceptHeaderError, UnsupportedVersionError }
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockAppConfig with GuiceOneAppPerSuite {
   test =>
 
   implicit private val actorSystem: ActorSystem = ActorSystem("test")
-  val action: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
+  val action: DefaultActionBuilder              = app.injector.instanceOf[DefaultActionBuilder]
 
   import play.api.mvc.Handler
   import play.api.routing.sird._
 
   object DefaultHandler extends Handler
-  object V1Handler extends Handler
-  object V2Handler extends Handler
-  object V3Handler extends Handler
+  object V1Handler      extends Handler
+  object V2Handler      extends Handler
+  object V3Handler      extends Handler
 
   private val defaultRouter = Router.from {
     case GET(p"") => DefaultHandler
   }
-  private val v1Router      = Router.from {
+  private val v1Router = Router.from {
     case GET(p"/v1") => V1Handler
   }
-  private val v2Router      = Router.from {
+  private val v2Router = Router.from {
     case GET(p"/v2") => V2Handler
   }
   private val v3Router = Router.from {
@@ -60,14 +60,14 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   }
 
   private val routingMap = new VersionRoutingMap {
-    override val defaultRouter: Router = test.defaultRouter
+    override val defaultRouter: Router    = test.defaultRouter
     override val map: Map[String, Router] = Map("1.0" -> v1Router, "2.0" -> v2Router, "3.0" -> v3Router)
   }
 
   class Test(implicit acceptHeader: Option[String]) {
     val httpConfiguration: HttpConfiguration = HttpConfiguration("context")
-    private val errorHandler      = mock[HttpErrorHandler]
-    private val filters           = mock[HttpFilters]
+    private val errorHandler                 = mock[HttpErrorHandler]
+    private val filters                      = mock[HttpFilters]
     (filters.filters _).stubs().returns(Seq.empty)
 
     MockAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("""
@@ -183,7 +183,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
         private val request = buildRequest("/v1")
         inside(requestHandler.routeRequest(request)) {
-          case Some(a:EssentialAction) =>
+          case Some(a: EssentialAction) =>
             val result = a.apply(request)
 
             status(result) shouldBe NOT_FOUND
