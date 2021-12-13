@@ -21,12 +21,12 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import support.IntegrationBaseSpec
+import support.V2IntegrationBaseSpec
 import v2.hateoas.HateoasLinks
 import v2.models.errors._
 import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
+class RetrieveBFLossControllerISpec extends V2IntegrationBaseSpec {
 
   val correlationId = "X-123"
 

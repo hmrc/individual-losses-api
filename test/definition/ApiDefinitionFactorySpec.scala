@@ -35,9 +35,9 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       "default apiStatus to ALPHA" in new Test {
         MockAppConfig.apiGatewayContext returns "my/context"
         MockAppConfig.featureSwitch returns None anyNumberOfTimes()
-        MockAppConfig.apiStatus(status = "1.0") returns ""
-        MockAppConfig.apiStatus(status = "2.0") returns ""
-        MockAppConfig.apiStatus(status = "3.0") returns ""
+        MockAppConfig.apiStatus(status = "1.0") returns "" anyNumberOfTimes()
+        MockAppConfig.apiStatus(status = "2.0") returns "" anyNumberOfTimes()
+        MockAppConfig.apiStatus(status = "3.0") returns "" anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = "1") returns false anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = "2") returns true anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = "3") returns true anyNumberOfTimes()
@@ -66,9 +66,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
               APIVersion(
                 version = "1.0", status = ALPHA, endpointsEnabled = false),
               APIVersion(
-                version = "2.0", status = ALPHA, endpointsEnabled = true),
-              APIVersion(
-                version = "3.0", status = ALPHA, endpointsEnabled = true)
+                version = "2.0", status = ALPHA, endpointsEnabled = true)
             ),
             requiresTrust = None
           )
