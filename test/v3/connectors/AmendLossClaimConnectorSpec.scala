@@ -41,7 +41,7 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     val amendLossClaim: AmendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
     val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 

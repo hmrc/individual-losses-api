@@ -18,11 +18,12 @@ package v3.connectors
 
 import config.AppConfig
 import play.api.Logger
+import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient, HttpReads }
-import v3.connectors.DownstreamUri.{ DesUri, IfsUri }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import v3.connectors.DownstreamUri.{DesUri, IfsUri}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseDownstreamConnector {
   val http: HttpClient
@@ -30,7 +31,9 @@ trait BaseDownstreamConnector {
 
   val logger: Logger = Logger(this.getClass)
 
-  private def desHeaderCarrier(additionalHeaders: Seq[String])(implicit hc: HeaderCarrier): HeaderCarrier =
+  private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
+
+  private def desHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier =
     HeaderCarrier(
       extraHeaders = hc.extraHeaders ++
         // Contract headers
@@ -38,11 +41,12 @@ trait BaseDownstreamConnector {
           "Authorization" -> s"Bearer ${appConfig.desToken}",
           "Environment"   -> appConfig.desEnv
         ) ++
-        // Other headers (i.e Gov-Test-Scenario, Content-Type)
-        hc.headers(additionalHeaders ++ appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
+        additionalHeaders ++
+        // Passed through headers (e.g. Gov-Test-Scenario)
+        hc.headers(appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
     )
 
-  private def ifsHeaderCarrier(additionalHeaders: Seq[String])(implicit hc: HeaderCarrier): HeaderCarrier =
+  private def ifsHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier =
     HeaderCarrier(
       extraHeaders = hc.extraHeaders ++
         // Contract headers
@@ -50,8 +54,9 @@ trait BaseDownstreamConnector {
           "Authorization" -> s"Bearer ${appConfig.ifsToken}",
           "Environment"   -> appConfig.ifsEnv
         ) ++
-        // Other headers (i.e Gov-Test-Scenario, Content-Type)
-        hc.headers(additionalHeaders ++ appConfig.ifsEnvironmentHeaders.getOrElse(Seq.empty))
+        additionalHeaders ++
+        // Passed through headers (e.g. Gov-Test-Scenario)
+        hc.headers(appConfig.ifsEnvironmentHeaders.getOrElse(Seq.empty))
     )
 
   def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(
@@ -63,7 +68,7 @@ trait BaseDownstreamConnector {
       http.POST(getBackendUri(uri), body)
     }
 
-    doPost(getBackendHeaders(uri, hc))
+    doPost(getBackendHeaders(uri, hc, jsonContentTypeHeader))
   }
 
   def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Seq.empty)(
@@ -97,7 +102,7 @@ trait BaseDownstreamConnector {
       http.PUT(getBackendUri(uri), body)
     }
 
-    doPut(getBackendHeaders(uri, hc))
+    doPut(getBackendHeaders(uri, hc, jsonContentTypeHeader))
   }
 
   private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String = uri match {
@@ -105,9 +110,9 @@ trait BaseDownstreamConnector {
     case IfsUri(value) => s"${appConfig.ifsBaseUrl}/$value"
   }
 
-  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp], hc: HeaderCarrier, additionalHeaders: Seq[String] = Seq.empty): HeaderCarrier =
+  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp], hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier =
     uri match {
-      case DesUri(_) => desHeaderCarrier(additionalHeaders)(hc)
-      case IfsUri(_) => ifsHeaderCarrier(additionalHeaders)(hc)
+      case DesUri(_) => desHeaderCarrier(hc, additionalHeaders: _*)
+      case IfsUri(_) => ifsHeaderCarrier(hc, additionalHeaders: _*)
     }
 }

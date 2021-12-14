@@ -49,7 +49,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
     val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 

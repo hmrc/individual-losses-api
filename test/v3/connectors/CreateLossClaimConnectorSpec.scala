@@ -36,7 +36,7 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
       businessId = Some("XKIS00000000988")
     )
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
     val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
