@@ -86,7 +86,7 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
     (errorWrapper.error: @unchecked) match {
       case BadRequestError
            | NinoFormatError
-           | RuleIncorrectOrEmptyBodyError
+           | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code)
            | ClaimIdFormatError
            | TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
       case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))

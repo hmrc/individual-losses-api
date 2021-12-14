@@ -201,7 +201,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
                                          generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
                                          Status.BAD_REQUEST,
                                          TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
-      createLossClaimValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      createLossClaimValidationErrorTest("AA123456A", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createLossClaimValidationErrorTest("AA123456A",
                                          generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
                                          Status.BAD_REQUEST,

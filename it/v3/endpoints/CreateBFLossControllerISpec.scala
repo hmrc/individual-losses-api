@@ -203,7 +203,7 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec {
                                       generateBFLoss(Some(businessId), typeOfLoss, "20111", lossAmount),
                                       Status.BAD_REQUEST,
                                       TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
-      createBFLossValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      createBFLossValidationErrorTest("AA123456A", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createBFLossValidationErrorTest("AA123456A",
                                       generateBFLoss(Some(businessId), typeOfLoss, "2011-12", lossAmount),
                                       Status.BAD_REQUEST,

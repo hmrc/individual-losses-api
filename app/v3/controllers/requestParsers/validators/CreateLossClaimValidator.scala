@@ -19,7 +19,7 @@ package v3.controllers.requestParsers.validators
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.LossClaim
-import v3.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v3.models.errors.MtdError
 import v3.models.requestData.CreateLossClaimRawData
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {
@@ -56,7 +56,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
 
   private def bodyFormatValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[LossClaim](data.body.json, RuleIncorrectOrEmptyBodyError)
+      JsonFormatValidation.validate[LossClaim](data.body.json)
     )
   }
 

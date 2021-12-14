@@ -34,6 +34,6 @@ object MtdError {
     ) (MtdError.apply _)
 }
 
-object CustomisedMtdError {
+object MtdErrorWithCode {
   def unapply(arg: MtdError): Option[String] = Some(arg.code)
 }

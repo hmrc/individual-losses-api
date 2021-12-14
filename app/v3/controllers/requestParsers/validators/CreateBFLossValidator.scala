@@ -17,9 +17,9 @@
 package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v3.controllers.requestParsers.validators.validations.{TaxYearValidation, _}
+import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.BFLoss
-import v3.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v3.models.errors.MtdError
 import v3.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedConfig {
@@ -46,7 +46,7 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
 
   private def bodyFormatValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[BFLoss](data.body.json, RuleIncorrectOrEmptyBodyError)
+      JsonFormatValidation.validate[BFLoss](data.body.json)
     )
   }
 

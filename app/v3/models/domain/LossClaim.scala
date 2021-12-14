@@ -16,7 +16,7 @@
 
 package v3.models.domain
 
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.{Json, OWrites, Reads}
 import v3.models.requestData.DownstreamTaxYear
 
 case class LossClaim(taxYear: String,
@@ -26,7 +26,7 @@ case class LossClaim(taxYear: String,
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
-  implicit val writes: Writes[LossClaim] = (claim: LossClaim) => {
+  implicit val writes: OWrites[LossClaim] = (claim: LossClaim) => {
     val jsObject = (claim.typeOfLoss.isUkProperty, claim.typeOfLoss.isForeignProperty) match {
       case (true,_) =>
         Json.obj(

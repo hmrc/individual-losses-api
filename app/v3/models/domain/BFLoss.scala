@@ -27,7 +27,7 @@ case class BFLoss(typeOfLoss: TypeOfLoss,
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
-  implicit val writes: Writes[BFLoss] = (loss: BFLoss) => {
+  implicit val writes: OWrites[BFLoss] = (loss: BFLoss) => {
     (loss.typeOfLoss.isUkProperty,loss.typeOfLoss.isForeignProperty) match {
       case (true,_) => Json.obj(
         "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
