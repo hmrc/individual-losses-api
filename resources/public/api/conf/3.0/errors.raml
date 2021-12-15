@@ -22,7 +22,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: Matching resource not found.
+              description: The supplied income source could not be found.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   notFoundNino:
@@ -63,7 +63,7 @@ traits:
             type: types.errorResponse
             examples:
               clientOrAgentNotAuthorised:
-                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
+                description: The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
                 value:
                   code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
@@ -85,7 +85,7 @@ traits:
             type: types.errorResponse
             examples:
               formatTaxYear:
-                description: The format of the supplied tax year is not valid.
+                description: The format of the supplied taxYear value is not valid.
                 value:
                   code: FORMAT_TAX_YEAR
   incorrectOrEmptyBody:
@@ -107,7 +107,7 @@ traits:
             type: types.errorResponse
             examples:
               rule_TaxYearNotSupported:
-                description: The specified tax year is not supported, the tax year specified is before the minimum tax year value.
+                description: The specified tax year is not supported. The tax year specified is before the minimum tax year value.
                 value:
                   code: RULE_TAX_YEAR_NOT_SUPPORTED
   ruleTaxYearRangeInvalid:
@@ -129,7 +129,7 @@ traits:
               type: types.errorResponse
               examples:
                 ruleTaxYearNotEnded:
-                  description: A brought forward loss is entered before the end of the tax year in which it was generated.
+                  description: The submission has been made before the taxYear it relates to has ended.
                   value:
                     code: RULE_TAX_YEAR_NOT_ENDED
   ruleNoChangeTypeOfClaim:
@@ -151,7 +151,7 @@ traits:
             type: types.errorResponse
             examples:
               formatLossType:
-                description: The format of the supplied Type of loss is not valid.
+                description: The format of the supplied Type of loss field is not valid.
                 value:
                   code: FORMAT_TYPE_OF_LOSS
   formatBusinessId:
@@ -162,7 +162,7 @@ traits:
             type: types.errorResponse
             examples:
               formatBusinessId:
-                description: The format of the supplied Business ID is not valid.
+                description: The format of the supplied Business ID field is not valid.
                 value:
                   code: FORMAT_BUSINESS_ID
   ruleBusinessId:
@@ -294,7 +294,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDuplicateSubmission:
-                description: A brought forward loss already exists for this income source.
+                description: The remote endpoint has indicated that submission already exists for this Resource.
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
   ruleDuplicateClaimSubmission:
@@ -385,3 +385,16 @@ traits:
                 description: Not all of the loss claims of this type for this tax year were included in the submission.
                 value:
                   code: RULE_LOSS_CLAIMS_MISSING
+  FormatValue:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+             FormatValue:
+               description: One or more values have been added with the incorrect format.
+               value:
+                 code: FORMAT_VALUE
+
+
