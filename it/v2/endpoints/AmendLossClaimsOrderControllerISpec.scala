@@ -17,17 +17,17 @@
 package v2.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import support.IntegrationBaseSpec
-import play.api.http.HeaderNames.ACCEPT
+import support.V2IntegrationBaseSpec
 import v2.models.domain.{Claim, TypeOfClaim}
 import v2.models.errors._
 import v2.models.requestData.DesTaxYear
 import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class AmendLossClaimsOrderControllerISpec extends IntegrationBaseSpec {
+class AmendLossClaimsOrderControllerISpec extends V2IntegrationBaseSpec {
 
   val correlationId: String = "X-123"
 

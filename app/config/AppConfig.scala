@@ -32,6 +32,12 @@ trait AppConfig {
   def desToken: String
   def desEnvironmentHeaders: Option[Seq[String]]
 
+  // IFS Config
+  def ifsBaseUrl: String
+  def ifsEnv: String
+  def ifsToken: String
+  def ifsEnvironmentHeaders: Option[Seq[String]]
+
   // API Config
   def apiGatewayContext: String
   def confidenceLevelConfig: ConfidenceLevelConfig
@@ -50,6 +56,12 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
   val desEnv: String = config.getString("microservice.services.des.env")
   val desToken: String = config.getString("microservice.services.des.token")
   val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
+
+  // IFS Config
+  val ifsBaseUrl: String = config.baseUrl("ifs")
+  val ifsEnv: String = config.getString("microservice.services.ifs.env")
+  val ifsToken: String = config.getString("microservice.services.ifs.token")
+  val ifsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs.environmentHeaders")
 
   // API Config
   val apiGatewayContext: String = config.getString("api.gateway.context")

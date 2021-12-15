@@ -18,10 +18,10 @@ package routing
 
 import com.google.inject.ImplementedBy
 import config.{AppConfig, FeatureSwitch}
-import definition.Versions.{VERSION_1, VERSION_2}
-import javax.inject.Inject
-import play.api.Logger
+import definition.Versions.{VERSION_2, VERSION_3}
 import play.api.routing.Router
+
+import javax.inject.Inject
 
 // So that we can have API-independent implementations of
 // VersionRoutingRequestHandler and VersionRoutingRequestHandlerSpec
@@ -37,27 +37,16 @@ trait VersionRoutingMap {
 
 // Add routes corresponding to available versions...
 case class VersionRoutingMapImpl @Inject()(
-                                            appConfig: AppConfig,
-                                            defaultRouter: Router,
-                                            v1Router: v1.Routes,
-                                            v2Router: v2.Routes,
-                                            liveRouter: live.Routes
-                                          ) extends VersionRoutingMap {
+    appConfig: AppConfig,
+    defaultRouter: Router,
+    v2Router: v2.Routes,
+    v3Router: v3.Routes
+) extends VersionRoutingMap {
 
   lazy val featureSwitch: FeatureSwitch = FeatureSwitch(appConfig.featureSwitch)
-  protected val logger = Logger(this.getClass)
 
   val map: Map[String, Router] = Map(
-    VERSION_1 -> {
-      if(featureSwitch.isAmendLossClaimsOrderRouteEnabled) {
-        logger.info("[VersionRoutingMap][map] using v1Router - pointing to live & sandbox-only routes")
-        v1Router
-      }
-      else {
-        logger.info("[VersionRoutingMap][map] using liveRouter - pointing to live routes only")
-        liveRouter
-      }
-    },
-    VERSION_2 -> v2Router
+    VERSION_2 -> v2Router,
+    VERSION_3 -> v3Router
   )
 }

@@ -48,7 +48,7 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |      {
       |        "version":"1.0",
       |        "status":"RETIRED",
-      |        "endpointsEnabled":true
+      |        "endpointsEnabled":false
       |      },
       |      {
       |        "version":"2.0",
@@ -64,19 +64,23 @@ class DocumentationISpec extends IntegrationBaseSpec {
     "return a 200 with the correct response body" in {
 
       val response: WSResponse = await(buildRequest("/api/definition").get())
-      response.status shouldBe Status.OK
       Json.parse(response.body) shouldBe apiDefinitionJson
+      response.status shouldBe Status.OK
     }
   }
 
   "a documentation request" must {
-    "return the v1 documentation" in {
+    "return no v1 documentation" in {
       val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
-      response.status shouldBe Status.OK
-      response.body[String] should startWith("#%RAML 1.0")
+      response.status shouldBe Status.NOT_FOUND
     }
     "return the v2 documentation" in {
       val response: WSResponse = await(buildRequest("/api/conf/2.0/application.raml").get())
+      response.status shouldBe Status.OK
+      response.body[String] should startWith("#%RAML 1.0")
+    }
+    "return the v3 documentation" in {
+      val response: WSResponse = await(buildRequest("/api/conf/3.0/application.raml").get())
       response.status shouldBe Status.OK
       response.body[String] should startWith("#%RAML 1.0")
     }

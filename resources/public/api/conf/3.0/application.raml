@@ -1,0 +1,30 @@
+#%RAML 1.0
+
+uses:
+  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
+  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+  errors: errors.raml
+  headers: headers.raml
+  queryParameters: queryParameters.raml
+
+title: Individual Losses (MTD)
+description: Provide a taxpayer’s financial data for their Brought Forward Losses and Loss Claims.
+version: 3.0
+protocols: [ HTTPS ]
+baseUri: https://api.service.hmrc.gov.uk/
+mediaType: application/json
+
+documentation:
+ - title: Overview
+   content: !include docs/overview.md
+ - title: Versioning
+   content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
+ - title: Errors
+   content: !include docs/errors.md
+ - title: Changelog
+   content: !include docs/changelog.md
+ - title: Support
+   content: !include docs/support.md
+ - title: Testing
+   content: !include docs/testing.md
