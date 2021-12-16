@@ -34,7 +34,7 @@ class CreateBFLossParserSpec extends UnitSpec {
        |{
        |  "typeOfLoss" : "self-employment",
        |  "businessId" : "XAIS01234567890",
-       |  "taxYear" : "$taxYear",
+       |  "taxYearBroughtForwardFrom" : "$taxYear",
        |  "lossAmount" : 1000
        |}
      """.stripMargin

@@ -21,7 +21,7 @@ import v3.models.requestData.DownstreamTaxYear
 
 case class BFLoss(typeOfLoss: TypeOfLoss,
                   businessId: String,
-                  taxYear: String,
+                  taxYearBroughtForwardFrom: String,
                   lossAmount: BigDecimal)
 
 object BFLoss {
@@ -32,13 +32,13 @@ object BFLoss {
       case true => Json.obj(
         "incomeSourceId" -> loss.businessId,
         "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
-        "taxYear" -> DownstreamTaxYear.fromMtd(loss.taxYear).toString,
+        "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
         "broughtForwardLossAmount" -> loss.lossAmount
       )
       case _ => Json.obj(
         "incomeSourceId" -> loss.businessId,
         "lossType" -> loss.typeOfLoss.toLossType,
-        "taxYear" -> DownstreamTaxYear.fromMtd(loss.taxYear).toString,
+        "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
         "broughtForwardLossAmount" -> loss.lossAmount
       )
     }

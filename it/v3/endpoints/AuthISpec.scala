@@ -37,7 +37,7 @@ class AuthISpec extends V3IntegrationBaseSpec {
         |{
         |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
-        |    "taxYear": "2019-20",
+        |    "taxYearBroughtForwardFrom": "2019-20",
         |    "lossAmount": 256.78
         |}
       """.stripMargin
