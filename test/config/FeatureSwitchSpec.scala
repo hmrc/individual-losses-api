@@ -26,11 +26,13 @@ class FeatureSwitchSpec extends UnitSpec {
     FeatureSwitch(Some(Configuration(ConfigFactory.parseString(config))))
 
   "version enabled" when {
+    val anyVersion = "1.0"
+
     "no config" must {
       val featureSwitch = FeatureSwitch(None)
 
       "return false" in {
-        featureSwitch.isVersionEnabled("1.0") shouldBe false
+        featureSwitch.isVersionEnabled(anyVersion) shouldBe false
       }
     }
 
@@ -38,7 +40,7 @@ class FeatureSwitchSpec extends UnitSpec {
       val featureSwitch = createFeatureSwitch("")
 
       "return false" in {
-        featureSwitch.isVersionEnabled("1.0") shouldBe false
+        featureSwitch.isVersionEnabled(anyVersion) shouldBe false
       }
     }
 

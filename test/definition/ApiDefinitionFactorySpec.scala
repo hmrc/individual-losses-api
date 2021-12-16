@@ -35,8 +35,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       "default apiStatus to ALPHA" in new Test {
         MockAppConfig.apiGatewayContext returns "my/context"
         MockAppConfig.featureSwitch returns None anyNumberOfTimes()
-        MockAppConfig.apiStatus(status = "2.0") returns "" anyNumberOfTimes()
-        MockAppConfig.apiStatus(status = "3.0") returns "" anyNumberOfTimes()
+        MockAppConfig.apiStatus(version = "2.0") returns "" anyNumberOfTimes()
+        MockAppConfig.apiStatus(version = "3.0") returns "" anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = "2") returns true anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = "3") returns true anyNumberOfTimes()
         MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
@@ -87,17 +87,18 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
   }
 
   "buildAPIStatus" when {
+    val anyVersion = "1.0"
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
-        MockAppConfig.apiStatus(status = "1.0") returns "BETA"
-        factory.buildAPIStatus(version = "1.0") shouldBe BETA
+        MockAppConfig.apiStatus(version = anyVersion) returns "BETA"
+        factory.buildAPIStatus(version = anyVersion) shouldBe BETA
       }
     }
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockAppConfig.apiStatus(status = "1.0") returns "ALPHO"
-        factory.buildAPIStatus(version = "1.0") shouldBe ALPHA
+        MockAppConfig.apiStatus(version = anyVersion) returns "ALPHO"
+        factory.buildAPIStatus(version = anyVersion) shouldBe ALPHA
       }
     }
   }

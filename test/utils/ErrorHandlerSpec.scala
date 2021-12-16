@@ -41,12 +41,12 @@ import scala.util.control.NoStackTrace
 
 class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
 
-  def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
+  def anyVersionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
 
   class Test() {
     val method = "some-method"
 
-    val requestHeader: FakeRequest[AnyContent] = FakeRequest().withHeaders(versionHeader)
+    val requestHeader: FakeRequest[AnyContent] = FakeRequest().withHeaders(anyVersionHeader)
 
     val auditConnector: AuditConnector = mock[AuditConnector]
     val httpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]

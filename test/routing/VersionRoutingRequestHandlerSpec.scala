@@ -50,13 +50,13 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     case GET(p"") => DefaultHandler
   }
   private val v1Router = Router.from {
-    case GET(p"/v1") => V1Handler
+    case GET(p"/resource") => V1Handler
   }
   private val v2Router = Router.from {
-    case GET(p"/v2") => V2Handler
+    case GET(p"/resource") => V2Handler
   }
   private val v3Router = Router.from {
-    case GET(p"/v3") => V3Handler
+    case GET(p"/resource") => V3Handler
   }
 
   private val routingMap = new VersionRoutingMap {
@@ -91,7 +91,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     handleWithDefaultRoutes()
   }
 
-  "Routing requests with valid version" should {
+  "Routing requests with any enabled version" should {
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
 
     handleWithDefaultRoutes()
@@ -100,12 +100,12 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   "Routing requests with v1" should {
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
 
-    handleWithVersionRoutes("/v1", V1Handler)
+    handleWithVersionRoutes("/resource", V1Handler)
   }
 
   "Routing requests with v2" should {
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.2.0+json")
-    handleWithVersionRoutes("/v2", V2Handler)
+    handleWithVersionRoutes("/resource", V2Handler)
   }
 
   private def handleWithDefaultRoutes()(implicit acceptHeader: Option[String]): Unit = {
@@ -148,7 +148,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
     "return 406" in new Test {
 
-      val request: RequestHeader = buildRequest("/v1")
+      val request: RequestHeader = buildRequest("/resource")
       inside(requestHandler.routeRequest(request)) {
         case Some(a: EssentialAction) =>
           val result = a.apply(request)
@@ -163,7 +163,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.5.0+json")
 
     "return 404" in new Test {
-      private val request = buildRequest("/v1")
+      private val request = buildRequest("/resource")
 
       inside(requestHandler.routeRequest(request)) {
         case Some(a: EssentialAction) =>
@@ -181,7 +181,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "the version has a route for the resource" must {
       "return 404 Not Found" in new Test {
 
-        private val request = buildRequest("/v1")
+        private val request = buildRequest("/resource")
         inside(requestHandler.routeRequest(request)) {
           case Some(a: EssentialAction) =>
             val result = a.apply(request)
