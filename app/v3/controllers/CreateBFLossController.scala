@@ -18,21 +18,17 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{ Inject, Singleton }
-import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
-import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors.{ MtdErrorWithCode, RuleTaxYearRangeInvalid, TaxYearFormatError }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v3.controllers.requestParsers.CreateBFLossParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{ AuditEvent, AuditResponse, CreateBFLossAuditDetail }
 import v3.models.downstream.CreateBFLossHateoasData
 import v3.models.errors._
 import v3.models.requestData.CreateBFLossRawData
 import v3.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -40,7 +36,6 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        createBFLossService: CreateBFLossService,
                                        createBFLossParser: CreateBFLossParser,
                                        hateoasFactory: HateoasFactory,
-                                       auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
@@ -65,50 +60,26 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          val response = Json.toJson(vendorResponse)
-
-          auditSubmission(
-            CreateBFLossAuditDetail(request.userDetails,
-                                    nino,
-                                    request.body,
-                                    serviceResponse.correlationId,
-                                    AuditResponse(CREATED, Right(Some(response)))))
-
-          Created(response)
+          Created(Json.toJson(vendorResponse))
             .withApiHeaders(serviceResponse.correlationId)
-            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
-
-        auditSubmission(
-          CreateBFLossAuditDetail(request.userDetails,
-                                  nino,
-                                  request.body,
-                                  correlationId,
-                                  AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
-
-        result
+        errorResult(errorWrapper).withApiHeaders(correlationId)
       }.merge
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) |
-          RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId |
-          AmountFormatError | RuleInvalidLossAmount | RuleTaxYearNotEndedError | MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(
+      case BadRequestError | NinoFormatError | TaxYearFormatError | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCode(
+            RuleTaxYearNotSupportedError.code) | RuleTaxYearRangeInvalid | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId |
+          MtdErrorWithCode(ValueFormatError.code) | RuleTaxYearNotEndedError | MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(
             RuleTaxYearRangeInvalid.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError                => NotFound(Json.toJson(errorWrapper))
       case DownstreamError              => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def auditSubmission(details: CreateBFLossAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
-    val event = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", details)
-    auditService.auditEvent(event)
   }
 }

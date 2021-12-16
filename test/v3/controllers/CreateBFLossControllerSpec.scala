@@ -21,11 +21,10 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
-import v3.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v3.models.audit.{AuditError, AuditEvent, AuditResponse, CreateBFLossAuditDetail}
-import v3.models.downstream.{CreateBFLossHateoasData, CreateBFLossResponse}
+import v3.mocks.services.{MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v3.models.domain.{BFLoss, Nino, TypeOfLoss}
-import v3.models.errors.{NotFoundError, _}
+import v3.models.downstream.{CreateBFLossHateoasData, CreateBFLossResponse}
+import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
@@ -40,8 +39,7 @@ class CreateBFLossControllerSpec
     with MockMtdIdLookupService
     with MockCreateBFLossService
     with MockCreateBFLossRequestDataParser
-    with MockHateoasFactory
-    with MockAuditService {
+    with MockHateoasFactory {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String = "AA123456A"
@@ -60,7 +58,7 @@ class CreateBFLossControllerSpec
       |{
       |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
-      |    "taxYear": "2019-20",
+      |    "taxYearBroughtForwardFrom": "2019-20",
       |    "lossAmount": 256.78
       |}
     """.stripMargin
@@ -90,7 +88,6 @@ class CreateBFLossControllerSpec
       createBFLossService = mockCreateBFLossService,
       createBFLossParser = mockCreateBFLossRequestDataParser,
       hateoasFactory = mockHateoasFactory,
-      auditService = mockAuditService,
       cc = cc
     )
 
@@ -115,15 +112,9 @@ class CreateBFLossControllerSpec
           .returns(HateoasWrapper(createBFLossResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
-        status(result) shouldBe CREATED
         contentAsJson(result) shouldBe responseBody
+        status(result) shouldBe CREATED
         header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val detail: CreateBFLossAuditDetail = CreateBFLossAuditDetail(
-          "Individual", None, nino,  requestBody, correlationId,
-          AuditResponse(CREATED, None, Some(responseBody)))
-        val event: AuditEvent[CreateBFLossAuditDetail] = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
   }
@@ -138,29 +129,21 @@ class CreateBFLossControllerSpec
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
 
-        status(response) shouldBe expectedStatus
         contentAsJson(response) shouldBe Json.toJson(error)
+        status(response) shouldBe expectedStatus
         header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-        val detail: CreateBFLossAuditDetail = CreateBFLossAuditDetail(
-          "Individual", None, nino,  requestBody, correlationId,
-          AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-        val event: AuditEvent[CreateBFLossAuditDetail] = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
       val badRequestErrorsFromParser = List(
         NinoFormatError,
-        TaxYearFormatError.copy(paths = Some(List("/taxYear"))),
-        RuleIncorrectOrEmptyBodyError,
-        RuleTaxYearNotSupportedError,
-        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))),
-        TypeOfLossFormatError,
+        TaxYearFormatError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+        RuleTaxYearNotSupportedError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+        ValueFormatError.copy(paths = Some(List("/lossAmount"))),
         BusinessIdFormatError,
-        RuleBusinessId,
-        AmountFormatError,
-        RuleInvalidLossAmount,
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+        TypeOfLossFormatError,
         RuleTaxYearNotEndedError
       )
 
@@ -180,23 +163,18 @@ class CreateBFLossControllerSpec
           .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
-        status(response) shouldBe expectedStatus
         contentAsJson(response) shouldBe Json.toJson(error)
+        status(response) shouldBe expectedStatus
         header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-        val detail: CreateBFLossAuditDetail = CreateBFLossAuditDetail(
-          "Individual", None, nino,  requestBody, correlationId,
-          AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-        val event: AuditEvent[CreateBFLossAuditDetail] = AuditEvent("createBroughtForwardLoss", "create-brought-forward-loss", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
-    errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-    errorsFromServiceTester(RuleBusinessId, BAD_REQUEST)
-    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
-    errorsFromServiceTester(RuleDuplicateSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
+    errorsFromServiceTester(RuleTaxYearNotEndedError, BAD_REQUEST)
+    errorsFromServiceTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
+    errorsFromServiceTester(RuleDuplicateSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)
+    errorsFromServiceTester(BadRequestError, BAD_REQUEST)
+    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
   }
 }
