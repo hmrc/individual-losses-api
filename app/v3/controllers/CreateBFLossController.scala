@@ -57,7 +57,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
           serviceResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, CreateBFLossHateoasData(nino, serviceResponse.responseData.id))
+              .wrap(serviceResponse.responseData, CreateBFLossHateoasData(nino, serviceResponse.responseData.lossId))
               .asRight[ErrorWrapper]
           )
         } yield {

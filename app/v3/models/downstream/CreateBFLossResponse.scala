@@ -21,7 +21,7 @@ import play.api.libs.json._
 import v3.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v3.models.hateoas.{HateoasData, Link}
 
-case class CreateBFLossResponse(id: String)
+case class CreateBFLossResponse(lossId: String)
 
 object CreateBFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[CreateBFLossResponse] = Json.writes[CreateBFLossResponse]

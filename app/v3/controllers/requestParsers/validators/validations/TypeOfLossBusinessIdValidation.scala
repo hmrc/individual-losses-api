@@ -32,4 +32,16 @@ object TypeOfLossBusinessIdValidation {
       case _                                                => List(RuleBusinessId)
     }
   }
+
+  def validate(typeOfLoss: TypeOfLoss, businessId: String): List[MtdError] = {
+    (typeOfLoss, businessId) match {
+      case (TypeOfLoss.`uk-property-non-fhl`, _)         => NoValidationErrors
+      case (TypeOfLoss.`uk-property-fhl`, _)             => NoValidationErrors
+      case (TypeOfLoss.`self-employment`, _)             => NoValidationErrors
+      case (TypeOfLoss.`self-employment-class4`, _)      => NoValidationErrors
+      case (TypeOfLoss.`foreign-property-fhl-eea`, _)    => NoValidationErrors
+      case (TypeOfLoss.`foreign-property`, _)            => NoValidationErrors
+      case _                                             => List(RuleBusinessId)
+    }
+  }
 }

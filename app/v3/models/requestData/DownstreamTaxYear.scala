@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter
   */
 case class DownstreamTaxYear(value: String) extends AnyVal {
   override def toString: String = value
+  def toInt: Int = value.toInt
 }
 
 object DownstreamTaxYear {

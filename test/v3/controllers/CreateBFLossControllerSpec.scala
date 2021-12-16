@@ -47,7 +47,7 @@ class CreateBFLossControllerSpec
   val nino: String = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
+  val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
   val createBFLossResponse: CreateBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
 
@@ -69,7 +69,7 @@ class CreateBFLossControllerSpec
   val responseBody: JsValue = Json.parse(
     """
       |{
-      |  "id": "AAZZ1234567890a",
+      |  "lossId": "AAZZ1234567890a",
       |  "links" : [
       |     {
       |       "href": "/foo/bar",

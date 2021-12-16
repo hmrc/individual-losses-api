@@ -25,12 +25,12 @@ import v3.models.hateoas.{HateoasWrapper, Link}
 
 class CreateBFLossResponseSpec extends UnitSpec {
 
-  val lossIdResponse: CreateBFLossResponse = CreateBFLossResponse(id = "AAZZ1234567890a")
+  val lossIdResponse: CreateBFLossResponse = CreateBFLossResponse(lossId = "AAZZ1234567890a")
 
   val lossIdJson: JsValue = Json.parse(
     """
       |{
-      |   "id": "AAZZ1234567890a"
+      |   "lossId": "AAZZ1234567890a"
       |}
     """.stripMargin
   )

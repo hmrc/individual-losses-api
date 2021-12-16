@@ -20,30 +20,25 @@ import play.api.libs.json._
 import v3.models.requestData.DownstreamTaxYear
 
 case class BFLoss(typeOfLoss: TypeOfLoss,
-                  businessId: Option[String],
-                  taxYear: String,
+                  businessId: String,
+                  taxYearBroughtForwardFrom: String,
                   lossAmount: BigDecimal)
 
 object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
   implicit val writes: OWrites[BFLoss] = (loss: BFLoss) => {
-    (loss.typeOfLoss.isUkProperty,loss.typeOfLoss.isForeignProperty) match {
-      case (true,_) => Json.obj(
-        "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
-        "taxYear" -> DownstreamTaxYear.fromMtd(loss.taxYear).toString,
-        "broughtForwardLossAmount" -> loss.lossAmount
-      )
-      case (_,true) => Json.obj(
+    loss.typeOfLoss.isProperty match {
+      case true => Json.obj(
         "incomeSourceId" -> loss.businessId,
         "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
-        "taxYear" -> DownstreamTaxYear.fromMtd(loss.taxYear).toString,
+        "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
         "broughtForwardLossAmount" -> loss.lossAmount
       )
-      case (_,_) => Json.obj(
+      case _ => Json.obj(
         "incomeSourceId" -> loss.businessId,
         "lossType" -> loss.typeOfLoss.toLossType,
-        "taxYear" -> DownstreamTaxYear.fromMtd(loss.taxYear).toString,
+        "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
         "broughtForwardLossAmount" -> loss.lossAmount
       )
     }

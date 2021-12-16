@@ -54,7 +54,7 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
     val req = data.body.json.as[BFLoss]
     List(
       TaxYearValidation
-        .validate(req.taxYear)
+        .validate(req.taxYearBroughtForwardFrom)
         .map(
           _.copy(paths = Some(Seq(s"/taxYear")))
         )
@@ -71,8 +71,8 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
   private def otherBodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[BFLoss]
     List(
-      MinTaxYearValidation.validate(req.taxYear, minimumTaxYearBFLoss),
-      req.businessId.map(BusinessIdValidation.validate).getOrElse(NoValidationErrors),
+      MinTaxYearValidation.validate(req.taxYearBroughtForwardFrom, minimumTaxYearBFLoss),
+      BusinessIdValidation.validate(req.businessId),
       AmountValidation.validate(req.lossAmount)
     )
   }
