@@ -22,17 +22,17 @@ securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
     description: The brought forward loss information brought into MTD
-    type: !include schemas/broughtForwardLosses/createBFLoss/create_request.json
+    type: !include schemas/create_request.json
     examples:
      example-1:
        description: Self Employment example
-       value: !include examples/broughtForwardLosses/createBFLoss/create_request_self_employment.json
+       value: !include examples/create_request_self_employment.json
      example-2:
        description: UK Property example
-       value: !include examples/broughtForwardLosses/createBFLoss/create_request_uk_property.json
+       value: !include examples/create_request_uk_property.json
      example-3:
        description: Foreign Property example
-       value: !include examples/broughtForwardLosses/createBFLoss/create_request_foreign_property.json
+       value: !include examples/create_request_foreign_property.json
 responses:
   201:
     headers:
@@ -41,5 +41,5 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include schemas/broughtForwardLosses/createBFLoss/create_response.json
-        example: !include examples/broughtForwardLosses/createBFLoss/create_response.json
+        type: !include schemas/create_response.json
+        example: !include examples/create_response.json

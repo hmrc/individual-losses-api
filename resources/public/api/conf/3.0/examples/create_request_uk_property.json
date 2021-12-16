@@ -1,6 +1,6 @@
 {
-  "businessId": "AAIS12345678901",
+  "taxYearBroughtForwardFrom": "2020-21",
+  "businessId": "XAIS12345678910",
   "typeOfLoss": "uk-property-fhl",
-  "lossAmount": 500.99,
-  "taxYear": "2019-20"
+  "lossAmount": 500.99
 }

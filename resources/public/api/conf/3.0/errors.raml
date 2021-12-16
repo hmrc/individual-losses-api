@@ -63,7 +63,7 @@ traits:
             type: types.errorResponse
             examples:
               clientOrAgentNotAuthorised:
-                description: The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                description: The client and/or agent is not authorised. This is normally because the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
                 value:
                   code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
@@ -385,14 +385,14 @@ traits:
                 description: Not all of the loss claims of this type for this tax year were included in the submission.
                 value:
                   code: RULE_LOSS_CLAIMS_MISSING
-  FormatValue:
+  formatValue:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-             FormatValue:
+             formatValue:
                description: One or more values have been added with the incorrect format.
                value:
                  code: FORMAT_VALUE
