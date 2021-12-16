@@ -43,7 +43,7 @@ class ErrorHandler @Inject()(config: Configuration,
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    logger.warn(s"[ErrorHandler][onClientError] error in version 1, for (${request.method}) [${request.uri}] with status:" +
+    logger.warn(s"[ErrorHandler][onClientError] error for (${request.method}) [${request.uri}] with status:" +
           s" $statusCode and message: $message")
     statusCode match {
       case BAD_REQUEST =>
@@ -77,7 +77,7 @@ class ErrorHandler @Inject()(config: Configuration,
   override def onServerError(request: RequestHeader, ex: Throwable): Future[Result] = {
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    logger.warn(s"[ErrorHandler][onServerError] Internal server error in version 1, for (${request.method}) [${request.uri}] -> ", ex)
+    logger.warn(s"[ErrorHandler][onServerError] Internal server error for (${request.method}) [${request.uri}] -> ", ex)
 
     val (status, errorCode, eventType) = ex match {
       case _: NotFoundException => (NOT_FOUND, NotFoundError, "ResourceNotFound")

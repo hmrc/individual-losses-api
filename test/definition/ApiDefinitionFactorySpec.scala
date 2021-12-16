@@ -35,10 +35,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       "default apiStatus to ALPHA" in new Test {
         MockAppConfig.apiGatewayContext returns "my/context"
         MockAppConfig.featureSwitch returns None anyNumberOfTimes()
-        MockAppConfig.apiStatus(status = "1.0") returns "" anyNumberOfTimes()
         MockAppConfig.apiStatus(status = "2.0") returns "" anyNumberOfTimes()
         MockAppConfig.apiStatus(status = "3.0") returns "" anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(version = "1") returns false anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = "2") returns true anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = "3") returns true anyNumberOfTimes()
         MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
@@ -63,8 +61,6 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             description = "An API for providing individual losses data",
             context = "my/context",
             versions = Seq(
-              APIVersion(
-                version = "1.0", status = ALPHA, endpointsEnabled = false),
               APIVersion(
                 version = "2.0", status = ALPHA, endpointsEnabled = true)
             ),
