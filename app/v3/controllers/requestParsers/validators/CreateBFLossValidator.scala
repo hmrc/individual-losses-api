@@ -17,17 +17,18 @@
 package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
+import javax.inject.Inject
+import utils.CurrentDateTime
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.BFLoss
 import v3.models.errors.MtdError
 import v3.models.requestData.CreateBFLossRawData
 
-class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedConfig {
+class CreateBFLossValidator @Inject()(implicit currentDateTime: CurrentDateTime) extends Validator[CreateBFLossRawData] with FixedConfig {
 
   private val validationSet = List(parameterFormatValidation,
                                    typeOfLossValidator,
                                    bodyFormatValidator,
-                                   typeOfLossBusinessIdValidator,
                                    taxYearValidator,
                                    otherBodyFieldsValidator)
 
@@ -56,15 +57,8 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
       TaxYearValidation
         .validate(req.taxYearBroughtForwardFrom)
         .map(
-          _.copy(paths = Some(Seq(s"/taxYear")))
+          _.copy(paths = Some(Seq(s"/taxYearBroughtForwardFrom")))
         )
-    )
-  }
-
-  private def typeOfLossBusinessIdValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
-    val req = data.body.json.as[BFLoss]
-    List(
-      TypeOfLossBusinessIdValidation.validate(req.typeOfLoss, req.businessId)
     )
   }
 
@@ -72,8 +66,9 @@ class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedCon
     val req = data.body.json.as[BFLoss]
     List(
       MinTaxYearValidation.validate(req.taxYearBroughtForwardFrom, minimumTaxYearBFLoss),
+      TaxYearNotEndedValidation.validate(req.taxYearBroughtForwardFrom),
       BusinessIdValidation.validate(req.businessId),
-      AmountValidation.validate(req.lossAmount)
+      NumberValidation.validate(req.lossAmount, "/lossAmount")
     )
   }
 

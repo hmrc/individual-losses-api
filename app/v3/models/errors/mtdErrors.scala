@@ -26,6 +26,10 @@ object TypeOfLossFormatError extends MtdError("FORMAT_TYPE_OF_LOSS", "The provid
 object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The provided Type of claim is invalid")
 object ClaimTypeFormatError extends MtdError("FORMAT_CLAIM_TYPE", "The provided claim type is invalid")
 object SequenceFormatError extends MtdError("FORMAT_SEQUENCE", "The provided sequence number is invalid")
+object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99"){
+  def forPathAndRange(path : String, min: String, max: String): MtdError =
+    ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max" )
+}
 
 // Rule Errors
 object RuleTaxYearNotSupportedError extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED",
