@@ -28,3 +28,17 @@ documentation:
    content: !include docs/support.md
  - title: Testing
    content: !include docs/testing.md
+
+'/individuals/losses':
+  /{nino}:
+    uriParameters:
+      nino:
+        description: National Insurance number, in the format AA999999A.
+        type: string
+        example: TC663795B
+    /brought-forward-losses:
+      (annotations.group):
+        name: Brought Forward Losses
+        description: !include docs/group_broughtForwardLosses.md
+      post: !include broughtForwardLosses_create.raml
+
