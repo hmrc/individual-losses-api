@@ -119,10 +119,10 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "amend BFLoss" when {
 
     val amendBFLossResponse: BFLossResponse = BFLossResponse(
-      businessId = Some("XKIS00000000988"),
+      businessId = "XKIS00000000988",
       typeOfLoss = TypeOfLoss.`self-employment`,
       lossAmount = 500.13,
-      taxYear = "2019-20",
+      taxYearBroughtForwardFrom = "2019-20",
       lastModified = "2018-07-13T12:13:48.763Z"
     )
 
@@ -261,10 +261,10 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "retrieveBFLoss" should {
 
     val retrieveResponse: BFLossResponse = BFLossResponse(
-      businessId = Some("fakeId"),
+      businessId = "fakeId",
       typeOfLoss = TypeOfLoss.`self-employment`,
       lossAmount = 2000.25,
-      taxYear = "2018-19",
+      taxYearBroughtForwardFrom = "2018-19",
       lastModified = "dateString"
     )
 

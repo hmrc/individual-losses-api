@@ -50,9 +50,9 @@ class RetrieveBFLossControllerSpec
   val request: RetrieveBFLossRequest = RetrieveBFLossRequest(Nino(nino), lossId)
 
   val response: BFLossResponse = BFLossResponse(
-    taxYear = "2017-18",
+    taxYearBroughtForwardFrom = "2017-18",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
-    businessId = None,
+    businessId = "XKIS00000000988",
     lossAmount = 100.00,
     lastModified = "2018-07-13T12:13:48.763Z"
   )
@@ -62,7 +62,8 @@ class RetrieveBFLossControllerSpec
   val responseJson: JsValue = Json.parse(
     """
       |{
-      |    "taxYear": "2017-18",
+      |    "businessId": "XKIS00000000988",
+      |    "taxYearBroughtForwardFrom": "2017-18",
       |    "typeOfLoss": "uk-property-fhl",
       |    "lossAmount": 100.00,
       |    "lastModified": "2018-07-13T12:13:48.763Z",

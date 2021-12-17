@@ -56,17 +56,17 @@ class BFLossResponseSpec extends UnitSpec {
 
   def downstreamToModel: TypeOfLoss => BFLossResponse =
     typeOfLoss =>
-      BFLossResponse(businessId = Some("000000000000001"),
+      BFLossResponse(businessId = "000000000000001",
                      typeOfLoss = typeOfLoss,
                      lossAmount = 99999999999.99,
-                     taxYear = "2019-20",
+                     taxYearBroughtForwardFrom = "2019-20",
                      lastModified = "2018-07-13T12:13:48.763Z")
 
   val bfLossResponse: BFLossResponse = BFLossResponse(
-    businessId = Some("000000000000001"),
+    businessId = "000000000000001",
     typeOfLoss = TypeOfLoss.`self-employment`,
     lossAmount = 99999999999.99,
-    taxYear = "2019-20",
+    taxYearBroughtForwardFrom = "2019-20",
     lastModified = "2018-07-13T12:13:48.763Z"
   )
 
@@ -100,7 +100,7 @@ class BFLossResponseSpec extends UnitSpec {
         |  "businessId": "000000000000001",
         |  "typeOfLoss": "self-employment",
         |  "lossAmount": 99999999999.99,
-        |  "taxYear": "2019-20",
+        |  "taxYearBroughtForwardFrom": "2019-20",
         |  "lastModified": "2018-07-13T12:13:48.763Z"
         |}
       """.stripMargin

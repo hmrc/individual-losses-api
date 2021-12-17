@@ -40,7 +40,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val downstreamResponse: ResponseWrapper[BFLossResponse] =
-          ResponseWrapper(correlationId, BFLossResponse(Some("selfEmploymentId"), TypeOfLoss.`self-employment`, 123.45, "2018-19", "time"))
+          ResponseWrapper(correlationId, BFLossResponse("selfEmploymentId", TypeOfLoss.`self-employment`, 123.45, "2018-19", "time"))
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Right(downstreamResponse)
