@@ -3,7 +3,6 @@
 uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
-
 traits:
   notFound:
     responses:
@@ -32,7 +31,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given NINO
+              description: The remote endpoint has indicated that no data can be found for the given NINO.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   notFoundLossId:
@@ -42,7 +41,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given loss ID
+              description: The remote endpoint has indicated that no data can be found for the given loss ID.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   notFoundClaimId:
@@ -52,7 +51,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given claim ID
+              description: The remote endpoint has indicated that no data can be found for the given claim ID.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
@@ -63,7 +62,7 @@ traits:
             type: types.errorResponse
             examples:
               clientOrAgentNotAuthorised:
-                description: The client and/or agent is not authorised. This is normally because the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
                 value:
                   code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
@@ -107,7 +106,7 @@ traits:
             type: types.errorResponse
             examples:
               rule_TaxYearNotSupported:
-                description: The specified tax year is not supported. The tax year specified is before the minimum tax year value.
+                description: The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
                 value:
                   code: RULE_TAX_YEAR_NOT_SUPPORTED
   ruleTaxYearRangeInvalid:
@@ -129,7 +128,7 @@ traits:
               type: types.errorResponse
               examples:
                 ruleTaxYearNotEnded:
-                  description: The submission has been made before the taxYear it relates to has ended.
+                  description: The submission has been made before the tax year it relates to has ended.
                   value:
                     code: RULE_TAX_YEAR_NOT_ENDED
   ruleNoChangeTypeOfClaim:
@@ -151,7 +150,7 @@ traits:
             type: types.errorResponse
             examples:
               formatLossType:
-                description: The format of the supplied Type of loss field is not valid.
+                description: The format of the supplied type of loss field is not valid.
                 value:
                   code: FORMAT_TYPE_OF_LOSS
   formatBusinessId:
@@ -239,7 +238,7 @@ traits:
             type: types.errorResponse
             examples:
               formatClaimType:
-                description: '[This error is only available in Sandbox] The format of the supplied claim type is not valid'
+                description: '[This error is only available in Sandbox] The format of the supplied claim type is not valid.'
                 value:
                   code: FORMAT_CLAIM_TYPE
   formatClaimType:
@@ -250,7 +249,7 @@ traits:
             type: types.errorResponse
             examples:
               formatClaimType:
-                description: 'The format of the supplied claim type is not valid'
+                description: 'The format of the supplied claim type is not valid.'
                 value:
                   code: FORMAT_CLAIM_TYPE
   ruleTypeOfClaim403:
@@ -288,13 +287,13 @@ traits:
                   code: FORMAT_CLAIM_ID
   ruleDuplicateSubmission:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
             examples:
               ruleDuplicateSubmission:
-                description: The remote endpoint has indicated that submission already exists for this Resource.
+                description: The remote endpoint has indicated that the submission already exists for this resource.
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
   ruleDuplicateClaimSubmission:

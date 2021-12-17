@@ -14,7 +14,7 @@ is:
   - errors.ruleTaxYearNotEnded
   - errors.clientOrAgentNotAuthorised
   - errors.notFoundIncomeSource
-displayName: Create a Brought Forward Loss
+displayName: Create a Brought Forward Loss [test only]
 description: This endpoint allows the developer to create a new brought forward loss which can be submitted against self-employment, self-employment class 4, UK Furnished Holiday Let (FHL) property, UK other (Non-FHL) property, foreign property FHL in the European Economic Area (EEA) and foreign property for the tax year prior to joining MTD. A National Insurance number must be provided.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_create.md
 (annotations.scope): "write:self-assessment"
@@ -25,13 +25,13 @@ body:
     type: !include schemas/create_request.json
     examples:
      example-1:
-       description: Self Employment example
+       description: Self Employment Request
        value: !include examples/create_request_self_employment.json
      example-2:
-       description: UK Property example
-       value: !include examples/create_request_uk_property.json
+       description: UK FHL Property Request
+       value: !include examples/create_request_uk_property_fhl.json
      example-3:
-       description: Foreign Property example
+       description: Foreign Property Request
        value: !include examples/create_request_foreign_property.json
 responses:
   201:

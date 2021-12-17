@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Brought Forward Loss",
-  "description": "Brought Forward Loss",
+  "title": "Create a Brought Forward Loss Request",
+  "description": "Create a Brought Forward Loss Request",
   "type": "object",
   "properties": {
     "taxYearBroughtForwardFrom": {
@@ -23,13 +23,16 @@
     },
     "businessId": {
       "type": "string",
-      "description": "An identifier for the business, unique to the customer. Must conform to the regular expression",
-      "example": "XAIS12345678910",
+      "description": "An identifier for the business, unique to the customer.",
+      "example": "XPIS12345678910",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
     },
     "lossAmount": {
       "type": "number",
       "description": "Brought Forward Loss amount related to the type of loss specified. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "multipleOf": 0.01,
+      "minimum": 0.00,
+      "maximum": 99999999999.99,
       "example": "2345.67"
     }
   },
