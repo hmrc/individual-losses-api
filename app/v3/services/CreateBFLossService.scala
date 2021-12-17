@@ -40,11 +40,13 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends Downstre
 
   private def errorMap: PartialFunction[String, MtdError] = {
     case "INVALID_TAXABLE_ENTITY_ID" => NinoFormatError
-    case "DUPLICATE" => RuleDuplicateSubmissionError
+    case "DUPLICATE_SUBMISSION" => RuleDuplicateSubmissionError
     case "TAX_YEAR_NOT_SUPPORTED" => RuleTaxYearNotSupportedError
-    case "NOT_FOUND_INCOME_SOURCE" => NotFoundError
+    case "INCOME_SOURCE_NOT_FOUND" => NotFoundError
     case "TAX_YEAR_NOT_ENDED" => RuleTaxYearNotEndedError
-    case "INCOMESOURCE_ID_REQUIRED" => RuleBusinessId
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
+    case "INVALID_CORRELATIONID" => DownstreamError
+    case "INVALID_PAYLOAD" => DownstreamError
+    case "SERVER_ERROR" => DownstreamError
+    case "SERVICE_UNAVAILABLE" => DownstreamError
   }
 }

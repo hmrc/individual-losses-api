@@ -71,16 +71,15 @@ class CreateBFLossServiceSpec extends ServiceSpec {
     }
 
     Map(
-      "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-      "DUPLICATE"                  -> RuleDuplicateSubmissionError,
-      "NOT_FOUND_INCOME_SOURCE"    -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
-      "TAX_YEAR_NOT_ENDED"         -> RuleTaxYearNotEndedError,
-      "INCOMESOURCE_ID_REQUIRED"   -> RuleBusinessId,
-      "INVALID_PAYLOAD"            -> DownstreamError,
-      "SERVER_ERROR"               -> DownstreamError,
-      "SERVICE_UNAVAILABLE"        -> DownstreamError,
-      "UNEXPECTED_ERROR"           -> DownstreamError
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "DUPLICATE_SUBMISSION" -> RuleDuplicateSubmissionError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "TAX_YEAR_NOT_ENDED" -> RuleTaxYearNotEndedError,
+      "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
+      "INVALID_CORRELATIONID" -> DownstreamError,
+      "INVALID_PAYLOAD" -> DownstreamError,
+      "SERVER_ERROR" -> DownstreamError,
+      "SERVICE_UNAVAILABLE" -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
