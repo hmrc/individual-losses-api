@@ -84,6 +84,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "NOT_FOUND"                  -> NotFoundError,
       "INVALID_PAYLOAD"            -> DownstreamError,
       "CONFLICT"                   -> RuleLossAmountNotChanged,
+      "INVALID_CORRELATIONID"      -> DownstreamError,
       "SERVER_ERROR"               -> DownstreamError,
       "SERVICE_UNAVAILABLE"        -> DownstreamError,
       "UNEXPECTED_ERROR"           -> DownstreamError

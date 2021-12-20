@@ -46,6 +46,7 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends Downstrea
     "INVALID_LOSS_ID"            -> LossIdFormatError,
     "NOT_FOUND"                  -> NotFoundError,
     "CONFLICT"                   -> RuleLossAmountNotChanged,
+    "INVALID_CORRELATIONID"      -> DownstreamError,
     "INVALID_PAYLOAD"            -> DownstreamError,
     "SERVER_ERROR"               -> DownstreamError,
     "SERVICE_UNAVAILABLE"        -> DownstreamError
