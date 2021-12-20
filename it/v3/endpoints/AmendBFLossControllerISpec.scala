@@ -73,7 +73,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
          |{
          |    "businessId": "XKIS00000000988",
          |    "typeOfLoss": "self-employment",
-         |    "taxYear": "2019-20",
+         |    "taxYearBroughtForwardFrom": "2019-20",
          |    "lossAmount": $lossAmount,
          |    "lastModified": "2018-07-13T12:13:48.763Z",
          |    "links": [{

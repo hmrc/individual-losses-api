@@ -24,13 +24,13 @@ import v3.models.domain.TypeOfLoss
 import v3.models.hateoas.{HateoasData, Link}
 import v3.models.requestData.DownstreamTaxYear
 
-case class BFLossResponse(businessId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)
+case class BFLossResponse(businessId: String, typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYearBroughtForwardFrom: String, lastModified: String)
 
 object BFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[BFLossResponse] = Json.writes[BFLossResponse]
 
   implicit val downstreamToMtdReads: Reads[BFLossResponse] = (
-    (__ \ "incomeSourceId").readNullable[String] and
+    (__ \ "incomeSourceId").read[String] and
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and

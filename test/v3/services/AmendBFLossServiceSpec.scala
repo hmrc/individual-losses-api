@@ -33,7 +33,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
   val bfLoss: AmendBFLoss = AmendBFLoss(256.78)
 
   val bfLossResponse: BFLossResponse = BFLossResponse(
-    Some("XKIS00000000988"),
+    "XKIS00000000988",
     TypeOfLoss.`self-employment`,
     256.78,
     "2019-20",
