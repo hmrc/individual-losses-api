@@ -186,28 +186,6 @@ traits:
                 description: The format of the supplied Loss ID is not valid.
                 value:
                   code: FORMAT_LOSS_ID
-  formatLossAmount:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatLossAmount:
-                description: The format of the supplied Loss amount field is not valid.
-                value:
-                  code: FORMAT_LOSS_AMOUNT
-  ruleLossAmount:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleLossAmount:
-                description: Amounts should be a positive number less than 99999999999.99 with up to 2 decimal places.
-                value:
-                  code: RULE_LOSS_AMOUNT
   formatTypeOfClaim:
     responses:
       400:

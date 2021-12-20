@@ -62,7 +62,9 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             context = "my/context",
             versions = Seq(
               APIVersion(
-                version = "2.0", status = ALPHA, endpointsEnabled = true)
+                version = "2.0", status = ALPHA, endpointsEnabled = true),
+              APIVersion(
+                version = "3.0", status = ALPHA, endpointsEnabled = true)
             ),
             requiresTrust = None
           )
