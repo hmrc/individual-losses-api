@@ -48,20 +48,24 @@
           "href": {
             "description": "The relative url of the endpoint",
             "type": "string",
-            "example": "/individuals/losses/{nino}/brought-forward-losses/{lossId}"
+            "example": "/individuals/losses/{nino}/brought-forward-losses/AAZZ1234567890a"
           },
           "rel": {
             "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
             "type": "string",
             "enum": [
-              "self"
+              "self",
+              "amend-brought-forward-loss",
+              "delete-brought-forward-loss"
             ]
           },
           "method": {
             "description": "The HTTP method type for the endpoint",
             "type": "string",
             "enum": [
-              "GET"
+              "GET",
+              "POST",
+              "DELETE"
             ]
           }
         },
