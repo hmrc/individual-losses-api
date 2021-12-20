@@ -16,17 +16,17 @@
 
 package v3.controllers.requestParsers.validators
 
-import com.typesafe.config.ConfigFactory
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import config.AppConfig
 import mocks.MockAppConfig
-import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
-import play.api.Configuration
+import org.scalamock.handlers.CallHandler
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import utils.CurrentDateTime
-import v3.mocks.MockCurrentDateTime
+import utils.CurrentDate
+import v3.mocks.MockCurrentDate
 import v3.models.errors._
 import v3.models.requestData
 import v3.models.requestData.CreateBFLossRawData
@@ -54,23 +54,16 @@ class CreateBFLossValidatorSpec extends UnitSpec {
        |}""".stripMargin
   )
 
-  class Test(errorFeatureSwitch: Boolean = true) extends MockCurrentDateTime with MockAppConfig {
+  class Test extends MockCurrentDate with MockAppConfig {
 
-    implicit val dateTimeProvider: CurrentDateTime = mockCurrentDateTime
-    val dateTimeFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
+    implicit val dateProvider: CurrentDate     = mockCurrentDate
+    val dateTimeFormatter: DateTimeFormatter   = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    implicit val appConfig: AppConfig          = mockAppConfig
+    val validator: CreateBFLossValidator       = new CreateBFLossValidator()
 
-    implicit val appConfig: AppConfig = mockAppConfig
-
-    val validator: CreateBFLossValidator = new CreateBFLossValidator()
-
-    MockCurrentDateTime.getCurrentDate
-      .returns(DateTime.parse("2021-07-11", dateTimeFormatter))
+    MockCurrentDate.getCurrentDate
+      .returns(LocalDate.parse("2022-07-11", dateTimeFormatter))
       .anyNumberOfTimes()
-
-    MockAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString(
-      s"""
-         |taxYearNotEndedRule.enabled = $errorFeatureSwitch
-      """.stripMargin))))
   }
 
   "running a validation" should {
@@ -134,17 +127,9 @@ class CreateBFLossValidatorSpec extends UnitSpec {
             .CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
           List(TypeOfLossFormatError)
       }
-
-      "there is also a self employment id" in new Test {
-        validator.validate(
-          requestData.CreateBFLossRawData(
-            validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
-          List(TypeOfLossFormatError)
-      }
     }
 
-    "return AmountValidation error" when {
+    "return ValueFormatError" when {
       "an invalid amount (Too high) is submitted" in new Test {
         validator.validate(
           requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100000000000.00))))) shouldBe
@@ -152,7 +137,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
-    "return AmountValidation error" when {
+    "return ValueFormatError" when {
       "an invalid amount (Negative) is submitted" in new Test {
         validator.validate(
           requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(-100.00))))) shouldBe
@@ -160,7 +145,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
-    "return AmountValidation error" when {
+    "return ValueFormatError" when {
       "an invalid amount (3 decimal places) is submitted" in new Test {
         validator.validate(
           requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100.734))))) shouldBe

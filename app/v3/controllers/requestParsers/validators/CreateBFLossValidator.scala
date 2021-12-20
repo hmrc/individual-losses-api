@@ -17,14 +17,15 @@
 package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
-import javax.inject.Inject
-import utils.CurrentDateTime
+import javax.inject.{Inject, Singleton}
+import utils.CurrentDate
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.BFLoss
 import v3.models.errors.MtdError
 import v3.models.requestData.CreateBFLossRawData
 
-class CreateBFLossValidator @Inject()(implicit currentDateTime: CurrentDateTime) extends Validator[CreateBFLossRawData] with FixedConfig {
+@Singleton
+class CreateBFLossValidator @Inject()(implicit currentDateTime: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
 
   private val validationSet = List(parameterFormatValidation,
                                    typeOfLossValidator,
