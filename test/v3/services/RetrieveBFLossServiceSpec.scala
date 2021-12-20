@@ -80,6 +80,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
       "INVALID_LOSS_ID"           -> LossIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
       "SERVER_ERROR"              -> DownstreamError,
+      "INVALID_CORRELATIONID"     -> DownstreamError,
       "SERVICE_UNAVAILABLE"       -> DownstreamError
     ).foreach {
       case (k, v) =>
