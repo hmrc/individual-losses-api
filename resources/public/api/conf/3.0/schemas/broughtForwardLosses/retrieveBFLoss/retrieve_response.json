@@ -79,9 +79,10 @@
     }
   },
   "required": [
+    "businessId",
     "typeOfLoss",
     "lossAmount",
-    "taxYear",
+    "taxYearBroughtForwardFrom",
     "lastModified"
   ],
   "additionalProperties": false
