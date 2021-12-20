@@ -2,7 +2,7 @@
   "businessId": "XAIS12345678911",
   "typeOfLoss": "self-employment",
   "lossAmount": 300.11,
-  "taxYearBroughtForwardFrom": "2019-20"
+  "taxYearBroughtForwardFrom": "2019-20",
   "lastModified": "2021-11-05T11:56:27Z",
   "links": [
     {
