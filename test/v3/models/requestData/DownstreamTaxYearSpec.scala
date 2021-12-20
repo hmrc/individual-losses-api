@@ -22,20 +22,16 @@ import support.UnitSpec
 
 class DownstreamTaxYearSpec extends UnitSpec {
 
-  val taxYear    = "2018-19"
-  val downstreamTaxYear = "2019"
-
-  "DownstreamTaxYear" should {
-    "generate a downstream tax year" when {
-      "given a year" in {
-        val year = DownstreamTaxYear.fromMtd(taxYear)
-        year.value shouldBe downstreamTaxYear
+  "DownstreamTaxYear" when {
+    "constructed from an mtd tax year" should {
+      "use the end year as the basis for the downstream tax year" in {
+        DownstreamTaxYear.fromMtd("2018-19") shouldBe DownstreamTaxYear("2019")
       }
     }
-    "generate an mtd tax year" when {
-      "given a year" in {
-        val year = DownstreamTaxYear.fromDownstream(downstreamTaxYear)
-        year.value shouldBe taxYear
+
+    "converted to an mtd tax year" should {
+      "construct a 1-year range from the previous year" in {
+        DownstreamTaxYear("2019").toMtd shouldBe "2018-19"
       }
     }
     "generate the most recent tax year" when {

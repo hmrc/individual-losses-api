@@ -38,7 +38,7 @@ object LossClaimResponse extends HateoasLinks {
         //For SE scenario where incomeSourceType doesn't exist
         orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
-      (__ \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear.fromDownstream).map(_.toString) and
+      (__ \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
       (__ \ "submissionDate").read[String]
     ) (LossClaimResponse.apply _)
 

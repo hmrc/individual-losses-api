@@ -26,7 +26,9 @@ import java.time.format.DateTimeFormatter
   */
 case class DownstreamTaxYear(value: String) extends AnyVal {
   override def toString: String = value
-  def toInt: Int = value.toInt
+  def toInt: Int                = value.toInt
+
+  def toMtd: String = (value.toInt - 1) + "-" + value.drop(2)
 }
 
 object DownstreamTaxYear {
@@ -37,12 +39,9 @@ object DownstreamTaxYear {
   def fromMtd(taxYear: String): DownstreamTaxYear =
     DownstreamTaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  def fromDownstream(taxYear: String): DownstreamTaxYear =
-    DownstreamTaxYear((taxYear.toInt -1) + "-" + taxYear.drop(2))
-
   def mostRecentTaxYear(date: LocalDate = LocalDate.now()): DownstreamTaxYear = {
     val limit = LocalDate.parse(s"${date.getYear}-04-05", DateTimeFormatter.ISO_DATE)
-    if(date.isBefore(limit)) {
+    if (date.isBefore(limit)) {
       DownstreamTaxYear(s"${date.getYear - 1}")
     } else {
       DownstreamTaxYear(s"${date.getYear}")
