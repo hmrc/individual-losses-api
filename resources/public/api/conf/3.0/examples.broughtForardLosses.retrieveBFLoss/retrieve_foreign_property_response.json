@@ -1,0 +1,24 @@
+{
+  "businessId": "XAIS12345678913",
+  "typeOfLoss": "foreign-property",
+  "lossAmount": 553.32,
+  "taxYearBroughtForwardFrom": "2019-20",
+  "lastModified": "2021-12-02T11:55:55Z",
+  "links":[
+    {
+      "href":"/individuals/losses/{nino}/brought-forward-losses/{lossId}",
+      "rel":"self",
+      "method":"GET"
+    },
+    {
+      "href":"/individuals/losses/{nino}/brought-forward-losses/{lossId}",
+      "rel":"delete-brought-forward-loss",
+      "method":"DELETE"
+    },
+    {
+      "href":"/individuals/losses/{nino}/brought-forward-losses/{lossId}/change-loss-amount",
+      "rel":"amend-brought-forward-loss",
+      "method":"POST"
+    }
+  ]
+}
