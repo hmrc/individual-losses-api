@@ -172,8 +172,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
 
       amendBFLossValidationErrorTest("BADNINO", requestJson(531.99), Status.BAD_REQUEST, NinoFormatError)
       amendBFLossValidationErrorTest("AA123456A", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      amendBFLossValidationErrorTest("AA123456A", requestJson(-3234.99), Status.BAD_REQUEST, RuleInvalidLossAmount)
-      amendBFLossValidationErrorTest("AA123456A",requestJson(99999999999.999), Status.BAD_REQUEST, AmountFormatError)
+      amendBFLossValidationErrorTest("AA123456A", requestJson(99999999999.999), Status.BAD_REQUEST, ValueFormatError.forPathAndRange("/lossAmount","0","99999999999.99"))
     }
 
 
