@@ -25,13 +25,13 @@ traits:
     queryParameters:
       typeOfLoss:
         description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul><li>`self-employment`<li>`uk-property-fhl`<li>`uk-property-non-fhl`<li>`foreign-property-fhl-eea`<li>`foreign-property`</b>'
-        required: false
+        required: true
   businessId:
     queryParameters:
       businessId:
         description: 'The unique identifier of the income source the claim relates to. Must conform to the regular expression <ul>`^X[A-Z0-9]{1}IS[0-9]{11}$`'
         example: 'XGIS00000001319'
-        required: false
+        required: true
   claimType:
     queryParameters:
       claimType:
@@ -42,5 +42,5 @@ traits:
         taxYearBroughtForwardFrom:
           description: 'The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.'
           example: "2020-21"
-          required: false
+          required: true
         
