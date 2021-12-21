@@ -19,6 +19,7 @@ package v3.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, CONFLICT, FORBIDDEN, SERVICE_UNAVAILABLE}
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
@@ -28,24 +29,31 @@ import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
 
 class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
 
-  val lossAmount = 531.99
+  val lossAmount = 2345.67
 
   val downstreamResponseJson: JsValue = Json.parse(
     s"""
        |{
-       |"incomeSourceId": "XKIS00000000988",
-       |"lossType": "INCOME",
-       |"broughtForwardLossAmount": $lossAmount,
-       |"taxYear": "2020",
-       |"lossId": "AAZZ1234567890a",
-       |"submissionDate": "2018-07-13T12:13:48.763Z"
+       |    "incomeSourceId": "XBIS12345678910",
+       |    "lossType": "INCOME",
+       |    "broughtForwardLossAmount": $lossAmount,
+       |    "taxYear": "2022",
+       |    "lossId": "AAZZ1234567890A",
+       |    "submissionDate": "2022-07-13T12:13:48.763Z"
        |}
       """.stripMargin)
 
-  val requestJson: BigDecimal => JsValue = lossAmount => Json.parse(
+  val requestJson: JsValue = Json.parse(
     s"""
        |{
        |    "lossAmount": $lossAmount
+       |}
+      """.stripMargin)
+
+  val invalidRequestJson: JsValue = Json.parse(
+    s"""
+       |{
+       |    "lossAmount": 23.2714
        |}
       """.stripMargin)
 
@@ -64,59 +72,53 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
     val nino = "AA123456A"
     val lossId = "AAZZ1234567890a"
     val correlationId = "X-123"
-    val businessId = "XKIS00000000988"
-    val taxYear = "2019-20"
     val typeOfLoss = "self-employment"
 
     val responseJson: JsValue = Json.parse(
       s"""
          |{
-         |    "businessId": "XKIS00000000988",
+         |    "businessId": "XBIS12345678910",
          |    "typeOfLoss": "self-employment",
-         |    "taxYearBroughtForwardFrom": "2019-20",
-         |    "lossAmount": $lossAmount,
-         |    "lastModified": "2018-07-13T12:13:48.763Z",
-         |    "links": [{
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-         |      "method": "POST",
-         |      "rel": "amend-brought-forward-loss"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "DELETE",
-         |      "rel": "delete-brought-forward-loss"
-         |    }
-         |    ]
+         |    "lossAmount": 2345.67,
+         |    "taxYearBroughtForwardFrom": "2021-22",
+         |    "lastModified": "2022-07-13T12:13:48.763Z",
+         |    "links": [
+         |      {
+         |        "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890a",
+         |        "rel": "self",
+         |        "method": "GET"
+         |      },
+         |      {
+         |        "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890a/change-loss-amount",
+         |        "rel": "amend-brought-forward-loss",
+         |        "method": "POST"
+         |      },
+         |      {
+         |        "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890a",
+         |        "rel": "delete-brought-forward-loss",
+         |        "method": "DELETE"
+         |      }
+         |     ]
          |}
       """.stripMargin)
 
-    def setupStubs(): StubMapping
+    def url: String = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
+    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
 
-    def uri: String
+    def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(url)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))
     }
 
   }
 
   "Calling the amend BFLoss endpoint" should {
-
-    trait AmendBFLossControllerTest extends Test {
-      def uri: String = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
-      def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
-    }
-
     "return a 200 status code" when {
 
-      "any valid request is made" in new AmendBFLossControllerTest() {
+      "a valid request is made" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -125,7 +127,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
           IfsStub.onSuccess(IfsStub.PUT, ifsUrl, Status.OK, downstreamResponseJson)
         }
 
-        val response: WSResponse = await(request().post(requestJson(531.99)))
+        val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe Status.OK
         response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -134,63 +136,74 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
     }
 
 
-    "return 500 (Internal Server Error)" when {
+    "return errors ae per the spec" when {
+      "validation error occurs" when {
+        def validationErrorTest(requestNino: String,
+                                requestLossId: String,
+                                requestBody: JsValue,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
+          s"validation fails with ${expectedBody.code} error" in new Test {
 
-      amendErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      amendErrorTest(Status.BAD_REQUEST, "UNEXPECTED_IFS_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      amendErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      amendErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-    }
+            override val nino: String = requestNino
+            override val lossId: String = requestLossId
 
-    "return 404 NOT FOUND" when {
-      amendErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-    }
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+            }
 
-    "return 409 CONFLICT" when {
-      amendErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleLossAmountNotChanged)
-    }
-
-    def amendErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-      s"downstream returns an $ifsCode error" in new AmendBFLossControllerTest {
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onError(IfsStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
+            val response: WSResponse = await(request().post(requestBody))
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
         }
 
-        val response: WSResponse = await(request().post(requestJson(531.99)))
-        response.status shouldBe expectedStatus
-        response.json shouldBe Json.toJson(expectedBody)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
+        val input = Seq(
+          ("AA1123A", "XAIS12345678910", requestJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "XAIS1234dfxgchjbn5678910", requestJson, BAD_REQUEST, LossIdFormatError),
+          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST,
+            ValueFormatError.copy(paths = Some(Seq(
+              "/lossAmount")))),
+          ("AA123456A", "XAIS12345678910", Json.parse(s"""
+                                                         |{
+                                                         |
+                                                         |}""".stripMargin), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+        )
+
+        input.foreach(args => (validationErrorTest _).tupled(args))
       }
-    }
 
-    "return 400 (Bad Request)" when {
+      "downstream service error" when {
+        def serviceErrorTest(ifsStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $ifsStatus" in new Test {
 
-      amendBFLossValidationErrorTest("BADNINO", requestJson(531.99), Status.BAD_REQUEST, NinoFormatError)
-      amendBFLossValidationErrorTest("AA123456A", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      amendBFLossValidationErrorTest("AA123456A", requestJson(99999999999.999), Status.BAD_REQUEST, ValueFormatError.forPathAndRange("/lossAmount","0","99999999999.99"))
-    }
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+              IfsStub.onError(IfsStub.PUT, ifsUrl, ifsStatus, errorBody(downstreamCode))
+            }
 
-
-    def amendBFLossValidationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
-      s"validation fails with ${expectedBody.code} error" in new AmendBFLossControllerTest {
-
-        override val nino: String = requestNino
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
+            val response: WSResponse = await(request().post(requestJson))
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
         }
 
-        val response: WSResponse = await(request().post(requestBody))
-        response.status shouldBe expectedStatus
-        response.json shouldBe Json.toJson(expectedBody)
-        response.header("Content-Type") shouldBe Some("application/json")
+        val input = Seq(
+          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
+          (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
+          (CONFLICT, "CONFLICT", FORBIDDEN, RuleLossAmountNotChanged),
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+        )
+
+        input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
   }
