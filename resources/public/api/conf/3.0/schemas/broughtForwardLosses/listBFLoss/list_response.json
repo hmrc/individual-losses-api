@@ -8,7 +8,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "description": "Array of losses",
+        "description": "Array of losses. An empty array will never be returned. In the instance that no losses exist for the supplied NINO, a MATCHING_RESOURCE_NOT_FOUND error will be returned.",
         "properties": {
           "lossId": {
             "description": "The unique identifier of the loss",
