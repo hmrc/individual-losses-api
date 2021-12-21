@@ -42,6 +42,7 @@ class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends Downst
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_LOSS_ID" -> LossIdFormatError,
     "NOT_FOUND" -> NotFoundError,
+    "INVALID_CORRELATIONID" -> DownstreamError,
     "SERVER_ERROR" -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
   )
