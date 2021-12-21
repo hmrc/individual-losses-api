@@ -11,7 +11,7 @@ is:
   - errors.clientOrAgentNotAuthorised
   - queryParameters.businessId
   - queryParameters.typeOfLossForBFLosses
-  - queryParameters.taxYearForBFLosses
+  - queryParameters.taxYearBroughtForwardFrom
 displayName: List Brought Forward Losses [test only]
 description: This endpoint allows a developer to retrieve a list of all brought forward losses that have incurred before joining MTD. A National Insurance number must be provided.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_list.md
@@ -21,7 +21,6 @@ responses:
   200:
     body:
       application/json:
-        type: !include schemas/broughtForwardLosses/listBFLoss/list_request.json
         example: !include examples/broughtForwardLosses/listBFLoss/list_response.json
     headers:
       X-CorrelationId:

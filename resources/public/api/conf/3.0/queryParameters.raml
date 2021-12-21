@@ -37,4 +37,10 @@ traits:
       claimType:
         description: '[This query parameter is only available in Sandbox]<br/><br/>The type of loss claim. Limited to the following possible values: <ul><li><b>`carry-sideways`</b></li></ul>'
         required: false
+  taxYearBroughtForwardFrom:
+      queryParameters:
+        taxYear:
+          description: 'The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.'
+          example: "2020-21"
+          required: false
         
