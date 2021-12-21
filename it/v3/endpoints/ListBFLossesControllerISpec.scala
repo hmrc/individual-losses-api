@@ -68,7 +68,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
          |{
          |    "losses": [
          |        {
-         |            "id": "000000000000001",
+         |            "lossId": "000000000000001",
          |            "links" : [
          |             {
          |               "href" : "/individuals/losses$uri/000000000000001",
@@ -78,7 +78,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
          |            ]
          |        },
          |        {
-         |            "id": "000000000000002",
+         |            "lossId": "000000000000002",
          |             "links" : [
          |             {
          |               "href" : "/individuals/losses$uri/000000000000002",
@@ -104,7 +104,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
      """.stripMargin)
 
     def queryParams: Seq[(String, String)] =
-      Seq("taxYear" -> taxYearBroughtForwardFrom, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
+      Seq("taxYearBroughtForwardFrom" -> taxYearBroughtForwardFrom, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
         .collect {
           case (k, Some(v)) => (k, v)
         }
@@ -233,7 +233,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYearBroughtForwardFrom" -> "2019"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2019"), Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -250,7 +250,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("taxYearBroughtForwardFrom" -> "2019"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("taxYear" -> "2019"), Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
