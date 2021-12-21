@@ -21,6 +21,7 @@ responses:
   200:
     body:
       application/json:
+        type: !include schemas/broughtForwardLosses/listBFLoss/list_response.json
         example: !include examples/broughtForwardLosses/listBFLoss/list_response.json
     headers:
       X-CorrelationId:
