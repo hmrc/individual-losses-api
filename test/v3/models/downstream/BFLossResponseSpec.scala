@@ -17,96 +17,89 @@
 package v3.models.downstream
 
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 import v3.hateoas.HateoasFactory
 import v3.models.domain.TypeOfLoss
-import v3.models.hateoas.Method.{DELETE, GET, POST}
-import v3.models.hateoas.{HateoasWrapper, Link}
+import v3.models.hateoas.Method.{ DELETE, GET, POST }
+import v3.models.hateoas.{ HateoasWrapper, Link }
 
 class BFLossResponseSpec extends UnitSpec {
 
-  def downstreamPropertyJson(incomeSourceType: String): JsValue = {
-    Json.parse(
-      s"""
-        |{
-        |  "incomeSourceId": "000000000000001",
-        |  "incomeSourceType": "$incomeSourceType",
-        |  "broughtForwardLossAmount": 99999999999.99,
-        |  "taxYear": "2020",
-        |  "submissionDate": "2018-07-13T12:13:48.763Z"
-        |}
-      """.stripMargin
+  val businessId = "000000000000001"
+  val lossAmount = 123.45
+  val taxYearDownstream = "2020"
+  val taxYear = "2019-20"
+  val lastModified = "2018-07-13T12:13:48.763Z"
+
+  def responseWith(typeOfLoss: TypeOfLoss): BFLossResponse =
+    BFLossResponse(
+      businessId = businessId,
+      typeOfLoss = typeOfLoss,
+      lossAmount = lossAmount,
+      taxYearBroughtForwardFrom = taxYear,
+      lastModified = lastModified
     )
-  }
 
-  def downstreamEmploymentJson(lossType: String): JsValue = {
-    Json.parse(
-      s"""
-        |{
-        |  "incomeSourceId": "000000000000001",
-        |  "lossType": "$lossType",
-        |  "broughtForwardLossAmount": 99999999999.99,
-        |  "taxYear": "2020",
-        |  "submissionDate": "2018-07-13T12:13:48.763Z"
-        |}
-      """.stripMargin
-    )
-  }
+  "Json Reads" when {
+    "reading a property brought forward loss" must {
+      test(IncomeSourceType.`02`, TypeOfLoss.`uk-property-non-fhl`)
+      test(IncomeSourceType.`03`, TypeOfLoss.`foreign-property-fhl-eea`)
+      test(IncomeSourceType.`04`, TypeOfLoss.`uk-property-fhl`)
+      test(IncomeSourceType.`15`, TypeOfLoss.`foreign-property`)
 
-  def downstreamToModel: TypeOfLoss => BFLossResponse =
-    typeOfLoss =>
-      BFLossResponse(businessId = "000000000000001",
-                     typeOfLoss = typeOfLoss,
-                     lossAmount = 99999999999.99,
-                     taxYearBroughtForwardFrom = "2019-20",
-                     lastModified = "2018-07-13T12:13:48.763Z")
+      def test(incomeSourceType: IncomeSourceType, typeOfLoss: TypeOfLoss): Unit =
+        s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" in {
+          val downstreamJson =
+            Json.parse(s"""
+                 |{
+                 |  "incomeSourceId": "$businessId",
+                 |  "incomeSourceType": "$incomeSourceType",
+                 |  "broughtForwardLossAmount": $lossAmount,
+                 |  "taxYear": "$taxYearDownstream",
+                 |  "submissionDate": "$lastModified"
+                 |}
+             """.stripMargin)
 
-  val bfLossResponse: BFLossResponse = BFLossResponse(
-    businessId = "000000000000001",
-    typeOfLoss = TypeOfLoss.`self-employment`,
-    lossAmount = 99999999999.99,
-    taxYearBroughtForwardFrom = "2019-20",
-    lastModified = "2018-07-13T12:13:48.763Z"
-  )
-
-  "Json Reads" should {
-    "convert property JSON from downstream into a valid model for property type 02" in {
-      downstreamPropertyJson("02").as[BFLossResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
+          downstreamJson.as[BFLossResponse] shouldBe responseWith(typeOfLoss)
+        }
     }
 
-    "convert property JSON from downstream into a valid model for property type 04" in {
-      downstreamPropertyJson("04").as[BFLossResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-fhl`)
-    }
+    "reading a self-employment brought forward loss" must {
+      test(LossType.INCOME, TypeOfLoss.`self-employment`)
+      test(LossType.CLASS4, TypeOfLoss.`self-employment-class4`)
 
-    "convert employment JSON from downstream into a valid model for property type INCOME" in {
-      downstreamEmploymentJson("INCOME").as[BFLossResponse] shouldBe downstreamToModel(TypeOfLoss.`self-employment`)
-    }
+      def test(lossType: LossType, typeOfLoss: TypeOfLoss): Unit =
+        s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" in {
+          val downstreamJson: JsValue =
+            Json.parse(s"""
+                 |{
+                 |  "incomeSourceId": "$businessId",
+                 |  "lossType": "$lossType",
+                 |  "broughtForwardLossAmount": $lossAmount,
+                 |  "taxYear": "$taxYearDownstream",
+                 |  "submissionDate": "$lastModified"
+                 |}
+               """.stripMargin)
 
-    "convert employment JSON from downstream into a valid model for property type CLASS4" in {
-      downstreamEmploymentJson("CLASS4").as[BFLossResponse] shouldBe downstreamToModel(TypeOfLoss.`self-employment-class4`)
-    }
-    "convert employment JSON from downstream into a valid model for property type 03" in {
-      downstreamPropertyJson("03").as[BFLossResponse] shouldBe downstreamToModel(TypeOfLoss.`foreign-property-fhl-eea`)
-    }
-    "convert employment JSON from downstream into a valid model for property type 15" in {
-      downstreamPropertyJson("15").as[BFLossResponse] shouldBe downstreamToModel(TypeOfLoss.`foreign-property`)
+          downstreamJson.as[BFLossResponse] shouldBe responseWith(typeOfLoss)
+        }
     }
   }
+
   "Json Writes" should {
-    val mtdJson = Json.parse(
-      """
-        |{
-        |  "businessId": "000000000000001",
-        |  "typeOfLoss": "self-employment",
-        |  "lossAmount": 99999999999.99,
-        |  "taxYearBroughtForwardFrom": "2019-20",
-        |  "lastModified": "2018-07-13T12:13:48.763Z"
-        |}
-      """.stripMargin
-    )
     "convert a valid model into MTD JSON" in {
-      Json.toJson(bfLossResponse) shouldBe mtdJson
+      Json.toJson(responseWith(TypeOfLoss.`self-employment`)) shouldBe Json.parse(
+        s"""
+          |{
+          |  "businessId": "$businessId",
+          |  "typeOfLoss": "self-employment",
+          |  "lossAmount": $lossAmount,
+          |  "taxYearBroughtForwardFrom": "$taxYear",
+          |  "lastModified": "$lastModified"
+          |}
+      """.stripMargin
+      )
     }
   }
 
@@ -114,7 +107,11 @@ class BFLossResponseSpec extends UnitSpec {
     class Test extends MockAppConfig {
       val hateoasFactory = new HateoasFactory(mockAppConfig)
       val nino           = "someNino"
-      val lossId         = "lossId"
+      val lossId         = "someLossId"
+
+      // WLOG
+      val bfLossResponse: BFLossResponse = responseWith(typeOfLoss = TypeOfLoss.`self-employment`)
+
       MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
     }
 
@@ -123,9 +120,9 @@ class BFLossResponseSpec extends UnitSpec {
         HateoasWrapper(
           bfLossResponse,
           Seq(
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", GET, "self"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", DELETE, "delete-brought-forward-loss"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId/change-loss-amount", POST, "amend-brought-forward-loss")
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", GET, "self"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", DELETE, "delete-brought-forward-loss"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount", POST, "amend-brought-forward-loss")
           )
         )
     }
@@ -135,7 +132,7 @@ class BFLossResponseSpec extends UnitSpec {
         HateoasWrapper(
           bfLossResponse,
           Seq(
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", GET, "self")
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", GET, "self")
           )
         )
     }

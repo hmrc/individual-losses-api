@@ -29,12 +29,12 @@ case class BFLossResponse(businessId: String, typeOfLoss: TypeOfLoss, lossAmount
 object BFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[BFLossResponse] = Json.writes[BFLossResponse]
 
-  implicit val downstreamToMtdReads: Reads[BFLossResponse] = (
+  implicit val reads: Reads[BFLossResponse] = (
     (__ \ "incomeSourceId").read[String] and
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      (__ \ "taxYear").read[String].map(DownstreamTaxYear.fromDownstream).map(_.toString) and
+      (__ \ "taxYear").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
       (__ \ "submissionDate").read[String]
   )(BFLossResponse.apply _)
 
