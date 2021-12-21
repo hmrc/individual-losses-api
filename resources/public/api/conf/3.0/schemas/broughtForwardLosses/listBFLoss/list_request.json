@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "List Brought Forward Losses Request",
+  "description": "List Brought Forward Losses Request",
+  "type": "object",
+  "properties": {
+    "businessId": {
+      "type": "string",
+      "description": "An identifier for the business, unique to the customer.",
+      "example": "XAIS12345678910",
+      "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+    },
+    "typeOfLoss": {
+      "type": "string",
+      "enum": [
+        "self-employment",
+        "self-employment-class4",
+        "uk-property-fhl",
+        "uk-property-non-fhl",
+        "foreign-property-fhl-eea",
+        "foreign-property"
+      ],
+      "description": "The type of business the loss applies to."
+    },
+    "taxYearBroughtForwardFrom": {
+      "type": "string",
+      "description": "The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.",
+      "example": "2020-21"
+    }
+  },
+  "additionalProperties": false
+}
