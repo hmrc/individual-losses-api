@@ -19,29 +19,31 @@ package v3.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V3IntegrationBaseSpec
 import v3.hateoas.HateoasLinks
 import v3.models.errors._
-import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
+import v3.stubs.{ AuditStub, AuthStub, IfsStub, MtdIdLookupStub }
 
 class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
 
-  val correlationId = "X-123"
-
-  val lossAmount = 531.99
+  val lossAmount        = 531.99
+  val businessId        = "XKIS00000000988"
+  val lastModified      = "2018-07-13T12:13:48.763Z"
+  val taxYear           = "2019-20"
+  val downstreamTaxYear = "2020"
 
   object Hateoas extends HateoasLinks
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
        |{
-       |"incomeSourceId": "XKIS00000000988",
+       |"incomeSourceId": "$businessId",
        |"lossType": "INCOME",
        |"broughtForwardLossAmount": $lossAmount,
-       |"taxYear": "2020",
+       |"taxYear": "$downstreamTaxYear",
        |"lossId": "AAZZ1234567890a",
-       |"submissionDate": "2018-07-13T12:13:48.763Z"
+       |"submissionDate": "$lastModified"
        |}
       """.stripMargin)
 
@@ -52,11 +54,11 @@ class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
 
     val responseJson: JsValue = Json.parse(s"""
          |{
-         |    "businessId": "XKIS00000000988",
+         |    "businessId": "$businessId",
          |    "typeOfLoss": "self-employment",
-         |    "taxYearBroughtForwardFrom": "2019-20",
+         |    "taxYearBroughtForwardFrom": "$taxYear",
          |    "lossAmount": $lossAmount,
-         |    "lastModified":"2018-07-13T12:13:48.763Z",
+         |    "lastModified":"$lastModified",
          |    "links": [{
          |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
          |      "method": "GET",
@@ -76,7 +78,6 @@ class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def uri: String    = s"/$nino/brought-forward-losses/$lossId"
     def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
 
     def errorBody(code: String): String =
@@ -91,7 +92,7 @@ class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"/$nino/brought-forward-losses/$lossId")
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))
     }
 
@@ -100,9 +101,7 @@ class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
   "Calling the retrieve BFLoss endpoint" should {
 
     "return a 200 status code" when {
-
       "any valid request is made" in new Test {
-
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
@@ -111,37 +110,11 @@ class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.OK
         response.json shouldBe responseJson
+        response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
-    }
-
-    "handle errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
-
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            IfsStub.onError(IfsStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
-          }
-
-          val response: WSResponse = await(request().get())
-          response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedBody)
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-          response.header("Content-Type") shouldBe Some("application/json")
-        }
-      }
-
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
 
     "handle validation errors according to spec" when {
@@ -158,8 +131,8 @@ class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(request().get())
-          response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
@@ -168,5 +141,31 @@ class RetrieveBFLossControllerISpec extends V3IntegrationBaseSpec {
       validationErrorTest("AA123456A", "BADLOSSID", Status.BAD_REQUEST, LossIdFormatError)
     }
 
+    "handle errors according to spec" when {
+      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $ifsCode error" in new Test {
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            IfsStub.onError(IfsStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
+          }
+
+          val response: WSResponse = await(request().get())
+          response.json shouldBe Json.toJson(expectedBody)
+          response.status shouldBe expectedStatus
+          response.json shouldBe Json.toJson(expectedBody)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
+          response.header("Content-Type") shouldBe Some("application/json")
+        }
+      }
+
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+    }
   }
 }
