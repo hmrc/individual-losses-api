@@ -67,7 +67,7 @@ class BFLossConnector @Inject()(val http: HttpClient,
     val pathParameters = Map(
       "taxYearBroughtForwardFrom" -> request.taxYearBroughtForwardFrom.map(_.value),
       "incomeSourceId"            -> request.businessId,
-      "incomeSourceType"          -> request.incomeSourceType.map(_.toString)
+      "incomeSourceType"          -> request.typeOfLoss.map(_.toString)
     ).collect {
       case (key, Some(value)) => key -> value
     }

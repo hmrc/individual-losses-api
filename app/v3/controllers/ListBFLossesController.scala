@@ -49,7 +49,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
   def list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      val rawData = ListBFLossesRawData(nino, taxYear = taxYearBroughtForwardFrom, typeOfLoss = typeOfLoss, businessId = businessId)
+      val rawData = ListBFLossesRawData(nino, taxYearBroughtForwardFrom = taxYearBroughtForwardFrom, typeOfLoss = typeOfLoss, businessId = businessId)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))

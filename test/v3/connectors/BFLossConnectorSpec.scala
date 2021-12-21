@@ -335,14 +335,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     def listBFLossesResult(connector: BFLossConnector,
                            taxYearBroughtForwardFrom: Option[DownstreamTaxYear] = None,
-                           incomeSourceType: Option[IncomeSourceType] = None,
+                           typeOfLoss: Option[IncomeSourceType] = None,
                            businessId: Option[String] = None): DownstreamOutcome[ListBFLossesResponse[BFLossId]] = {
       await(
         connector.listBFLosses(
           ListBFLossesRequest(
             nino = Nino(nino),
             taxYearBroughtForwardFrom = taxYearBroughtForwardFrom,
-            incomeSourceType = incomeSourceType,
+            typeOfLoss = typeOfLoss,
             businessId = businessId
           )))
     }
@@ -410,7 +410,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
           )
           .returns(Future.successful(expected))
 
-        listBFLossesResult(connector = connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
+        listBFLossesResult(connector = connector, typeOfLoss = Some(IncomeSourceType.`02`)) shouldBe expected
       }
 
       "provided with all parameters" in new Test {
@@ -429,7 +429,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         listBFLossesResult(connector = connector,
                            taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2019")),
                            businessId = Some("testId"),
-                           incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe expected
+                           typeOfLoss = Some(IncomeSourceType.`01`)) shouldBe expected
       }
     }
 
