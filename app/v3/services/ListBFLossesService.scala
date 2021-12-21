@@ -22,13 +22,13 @@ import v3.connectors.BFLossConnector
 import v3.models.errors._
 import v3.models.requestData.ListBFLossesRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class ListBFLossesService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 
   override val serviceName: String = this.getClass.getSimpleName
 
-  def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[ListBFLossesOutcome] = {
+  def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ListBFLossesOutcome] = {
     connector.listBFLosses(request).map {
       mapToVendorDirect("listBFLosses", errorMap)
     }
@@ -36,11 +36,11 @@ class ListBFLossesService @Inject()(connector: BFLossConnector) extends Downstre
 
   private def errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAXYEAR" -> TaxYearFormatError,
-    "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-    "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
-    "NOT_FOUND" -> NotFoundError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_TAXYEAR"           -> TaxYearFormatError,
+    "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
+    "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "SERVER_ERROR"              -> DownstreamError,
+    "SERVICE_UNAVAILABLE"       -> DownstreamError
   )
 }

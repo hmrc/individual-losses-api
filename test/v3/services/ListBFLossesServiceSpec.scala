@@ -17,7 +17,7 @@
 package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.downstream.{BFLossId, ListBFLossesResponse}
+import v3.models.downstream.{ BFLossId, ListBFLossesResponse }
 import v3.models.domain.Nino
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class ListBFLossesServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
   trait Test extends MockBFLossConnector {
@@ -49,7 +49,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -60,14 +60,15 @@ class ListBFLossesServiceSpec extends ServiceSpec {
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(DownstreamError))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listBFLosses(request)) shouldBe Left(expected)
       }
 
       "the connector call returns multiple errors including a downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
+        val downstreamResponse: ResponseWrapper[MultipleErrors] =
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
         val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -77,12 +78,12 @@ class ListBFLossesServiceSpec extends ServiceSpec {
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR" -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
-      "NOT_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "INVALID_TAXYEAR"           -> TaxYearFormatError,
+      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {

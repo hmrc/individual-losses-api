@@ -17,18 +17,17 @@
 package v3.connectors
 
 import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v3.connectors.DownstreamUri.IfsUri
 import v3.connectors.httpparsers.StandardDownstreamHttpParser._
-import v3.models.downstream.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
+import v3.models.downstream.{ BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
 import v3.models.requestData._
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
-class BFLossConnector @Inject()(val http: HttpClient,
-                                val appConfig: AppConfig) extends BaseDownstreamConnector {
+class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
                                                              ec: ExecutionContext): Future[DownstreamOutcome[CreateBFLossResponse]] = {
@@ -65,9 +64,9 @@ class BFLossConnector @Inject()(val http: HttpClient,
                                                  ec: ExecutionContext): Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]] = {
     val nino = request.nino.nino
     val pathParameters = Map(
-      "taxYear"            -> request.taxYearBroughtForwardFrom.map(_.value),
-      "incomeSourceId"     -> request.businessId,
-      "incomeSourceType"   -> request.typeOfLoss.map(_.toString)
+      "taxYear"          -> request.taxYearBroughtForwardFrom.map(_.value),
+      "incomeSourceId"   -> request.businessId,
+      "incomeSourceType" -> request.incomeSourceType.map(_.toString)
     ).collect {
       case (key, Some(value)) => key -> value
     }

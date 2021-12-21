@@ -90,7 +90,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .get(absoluteUrl,
                config = dummyDesHeaderCarrierConfig,
-               queryParams = qps,
+               parameters = qps,
                requiredHeaders = requiredDesHeaders,
                excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
@@ -157,7 +157,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .get(absoluteUrl,
                config = dummyIfsHeaderCarrierConfig,
-               queryParams = qps,
+               parameters = qps,
                requiredHeaders = requiredIfsHeaders,
                excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
