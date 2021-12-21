@@ -68,17 +68,10 @@ class AmendBFLossValidatorSpec extends UnitSpec {
           RuleIncorrectOrEmptyBodyError)
       }
     }
-    "return a FORMAT_LOSS_AMOUNT error" when {
+    "return a FORMAT_VALUE error" when {
       "a lossAmount greater than 2 decimal places is submitted" in {
-        validator.validate(amendBFLossRawData(validNino, validLossId, invalidLossAmountFormat)) shouldBe List(AmountFormatError)
-      }
-    }
-    "return a RULE_LOSS_AMOUNT error" when {
-      "a lossAmount less than the minimum allowed value is submitted" in {
-        validator.validate(amendBFLossRawData(validNino, validLossId, invalidLossAmountRuleUnderMin)) shouldBe List(RuleInvalidLossAmount)
-      }
-      "a lossAmount greater than the maximum allowed value is submitted" in {
-        validator.validate(amendBFLossRawData(validNino, validLossId, invalidLossAmountRuleOverMax)) shouldBe List(RuleInvalidLossAmount)
+        validator.validate(amendBFLossRawData(validNino, validLossId, invalidLossAmountFormat)) shouldBe
+          List(ValueFormatError.forPathAndRange("/lossAmount","0","99999999999.99"))
       }
     }
     "return multiple errors" when {

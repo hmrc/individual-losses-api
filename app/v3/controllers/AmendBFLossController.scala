@@ -94,7 +94,12 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) | LossIdFormatError | AmountFormatError |
+      case BadRequestError   |
+           NinoFormatError   |
+           MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) |
+           LossIdFormatError |
+           AmountFormatError |
+           MtdErrorWithCode(ValueFormatError.code)  |
           RuleInvalidLossAmount =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleLossAmountNotChanged => Forbidden(Json.toJson(errorWrapper))
