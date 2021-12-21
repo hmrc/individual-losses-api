@@ -104,7 +104,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
      """.stripMargin)
 
     def queryParams: Seq[(String, String)] =
-      Seq("taxYear" -> taxYearBroughtForwardFrom, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
+      Seq("taxYearBroughtForwardFrom" -> taxYearBroughtForwardFrom, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
         .collect {
           case (k, Some(v)) => (k, v)
         }

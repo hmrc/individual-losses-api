@@ -25,10 +25,7 @@ import v3.models.hateoas.{HateoasData, Link}
 case class BFLossId(lossId: String)
 
 object BFLossId {
-  implicit val writes: OWrites[BFLossId] = Json.writes[BFLossId]
-
-  implicit val reads: Reads[BFLossId] =
-    (JsPath \ "lossId").read[String].map(BFLossId(_))
+  implicit val format: OFormat[BFLossId] = Json.format[BFLossId]
 }
 
 case class ListBFLossesResponse[I](losses: Seq[I])
