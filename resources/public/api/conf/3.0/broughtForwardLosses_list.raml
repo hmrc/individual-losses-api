@@ -1,19 +1,17 @@
 is:
   - headers.acceptJson
-  - headers.contentTypeJson
   - headers.testScenarioHeader
   - errors.formatNino
   - errors.formatTaxYear
   - errors.ruleTaxYearRangeInvalid
   - errors.ruleTaxYearNotSupported
-  - errors.formatValue
+  - errors.notFound
   - errors.formatBusinessId
-  - errors.incorrectOrEmptyBody
   - errors.formatLossType
-  - errors.ruleDuplicateSubmission
-  - errors.ruleTaxYearNotEnded
   - errors.clientOrAgentNotAuthorised
-  - errors.notFoundIncomeSource
+  - queryParameters.businessId
+  - queryParameters.typeOfLossForBFLosses
+  - queryParameters.taxYearForBFLosses
 displayName: 	List Brought Forward Losses [test only]
 description:  This endpoint allows a developer to retrieve a list of all brought forward losses that have incurred before joining MTD. A National Insurance number must be provided.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_list.md
