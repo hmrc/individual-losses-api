@@ -371,7 +371,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .parameterGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("taxYearBroughtForwardFrom", "2019")),
+            parameters = Seq(("taxYear", "2019")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -419,7 +419,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .parameterGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("taxYearBroughtForwardFrom", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01")),
+            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

@@ -64,7 +64,7 @@ class ListBFLossesControllerSpec
       |{
       |    "losses": [
       |        {
-      |            "id": "000000123456789",
+      |            "lossId": "000000123456789",
       |            "links" : [
       |               {
       |                 "href": "/foo/bar",
@@ -74,7 +74,7 @@ class ListBFLossesControllerSpec
       |            ]
       |        },
       |        {
-      |            "id": "000000123456790",
+      |            "lossId": "000000123456790",
       |            "links" : [
       |               {
       |                 "href": "/foo/bar",

@@ -33,10 +33,10 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
           |{
           |    "losses": [
           |        {
-          |            "id": "000000123456789"
+          |            "lossId": "000000123456789"
           |        },
           |        {
-          |            "id": "000000123456790"
+          |            "lossId": "000000123456790"
           |        }
           |    ]
           |}
