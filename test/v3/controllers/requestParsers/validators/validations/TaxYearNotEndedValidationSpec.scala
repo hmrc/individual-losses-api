@@ -52,7 +52,7 @@ class TaxYearNotEndedValidationSpec extends UnitSpec {
     "return RuleTaxYearNotEndedError error" when {
       "the supplied tax year has not yet ended" in new Test {
 
-        setupDateProvider("2022-04-04")
+        setupDateProvider("2022-04-05")
 
         private val invalidTaxYear = "2021-22"
         private val validationResult = TaxYearNotEndedValidation.validate(invalidTaxYear)
