@@ -53,7 +53,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           Right(
               ListBFLossesRequest(
                 nino = Nino(nino),
-                taxYear = Some(DownstreamTaxYear("2018")),
+                taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
                 incomeSourceType = Some(IncomeSourceType.`04`),
                 businessId = Some(businessId)
               )
@@ -77,7 +77,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           Right(
             ListBFLossesRequest(
               nino = Nino(nino),
-              taxYear = Some(DownstreamTaxYear("2018")),
+              taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`02`),
               businessId = Some(businessId))
           )

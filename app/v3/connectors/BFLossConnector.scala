@@ -65,9 +65,9 @@ class BFLossConnector @Inject()(val http: HttpClient,
                                                  ec: ExecutionContext): Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]] = {
     val nino = request.nino.nino
     val pathParameters = Map(
-      "taxYear"          -> request.taxYear.map(_.value),
-      "incomeSourceId"   -> request.businessId,
-      "incomeSourceType" -> request.incomeSourceType.map(_.toString)
+      "taxYearBroughtForwardFrom" -> request.taxYearBroughtForwardFrom.map(_.value),
+      "incomeSourceId"            -> request.businessId,
+      "incomeSourceType"          -> request.incomeSourceType.map(_.toString)
     ).collect {
       case (key, Some(value)) => key -> value
     }

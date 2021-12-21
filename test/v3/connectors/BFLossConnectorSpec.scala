@@ -334,14 +334,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "listBFLosses" should {
 
     def listBFLossesResult(connector: BFLossConnector,
-                           taxYear: Option[DownstreamTaxYear] = None,
+                           taxYearBroughtForwardFrom: Option[DownstreamTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
                            businessId: Option[String] = None): DownstreamOutcome[ListBFLossesResponse[BFLossId]] = {
       await(
         connector.listBFLosses(
           ListBFLossesRequest(
             nino = Nino(nino),
-            taxYear = taxYear,
+            taxYearBroughtForwardFrom = taxYearBroughtForwardFrom,
             incomeSourceType = incomeSourceType,
             businessId = businessId
           )))
@@ -371,14 +371,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .parameterGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("taxYear", "2019")),
+            parameters = Seq(("taxYearBroughtForwardFrom", "2019")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(expected))
 
-        listBFLossesResult(connector = connector, taxYear = Some(DownstreamTaxYear("2019"))) shouldBe expected
+        listBFLossesResult(connector = connector, taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2019"))) shouldBe expected
       }
 
       "provided with a income source id parameter" in new Test {
@@ -419,7 +419,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .parameterGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01")),
+            parameters = Seq(("taxYearBroughtForwardFrom", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -427,7 +427,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
           .returns(Future.successful(expected))
 
         listBFLossesResult(connector = connector,
-                           taxYear = Some(DownstreamTaxYear("2019")),
+                           taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2019")),
                            businessId = Some("testId"),
                            incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe expected
       }

@@ -34,7 +34,7 @@ class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends
 
     ListBFLossesRequest(
       nino = Nino(data.nino),
-      taxYear = taxYear.map(DownstreamTaxYear.fromMtd),
+      taxYearBroughtForwardFrom = taxYear.map(DownstreamTaxYear.fromMtd),
       incomeSourceType = incomeSourceType,
       businessId = data.businessId
     )

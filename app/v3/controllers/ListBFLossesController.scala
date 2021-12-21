@@ -47,9 +47,9 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "LisBFLossesController", endpointName = "List Brought Forward Losses")
 
-  def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], businessId: Option[String]): Action[AnyContent] =
+  def list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      val rawData = ListBFLossesRawData(nino, taxYear = taxYear, typeOfLoss = typeOfLoss, businessId = businessId)
+      val rawData = ListBFLossesRawData(nino, taxYear = taxYearBroughtForwardFrom, typeOfLoss = typeOfLoss, businessId = businessId)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))
@@ -74,7 +74,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
             val response = Json.toJson(vendorResponse)
 
-            auditSubmission(ListBFLossesAuditDetail(request.userDetails, nino, taxYear, typeOfLoss, businessId,
+            auditSubmission(ListBFLossesAuditDetail(request.userDetails, nino, taxYearBroughtForwardFrom, typeOfLoss, businessId,
               serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
 
             Ok(response)

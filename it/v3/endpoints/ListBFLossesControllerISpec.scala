@@ -56,7 +56,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
   private trait Test {
 
     val nino                             = "AA123456A"
-    val taxYear: Option[String]          = None
+    val taxYearBroughtForwardFrom: Option[String]          = None
     val typeOfLoss: Option[String]       = None
     val businessId: Option[String]       = None
 
@@ -104,7 +104,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
      """.stripMargin)
 
     def queryParams: Seq[(String, String)] =
-      Seq("taxYear" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
+      Seq("taxYear" -> taxYearBroughtForwardFrom, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
         .collect {
           case (k, Some(v)) => (k, v)
         }
@@ -151,7 +151,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying for property" in new Test {
-        override val taxYear: Option[String]          = None
+        override val taxYearBroughtForwardFrom: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("uk-property-fhl")
         override val businessId: Option[String] = None
 
@@ -170,7 +170,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying for self-employment" in new Test {
-        override val taxYear: Option[String]          = None
+        override val taxYearBroughtForwardFrom: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("self-employment")
         override val businessId: Option[String] = Some("XKIS00000000988")
 
@@ -189,7 +189,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying for selfEmploymentId with no typeOfLoss" in new Test {
-        override val taxYear: Option[String]          = None
+        override val taxYearBroughtForwardFrom: Option[String]          = None
         override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
@@ -207,7 +207,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying for self-employment with no selfEmploymentId" in new Test {
-        override val taxYear: Option[String]          = None
+        override val taxYearBroughtForwardFrom: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("self-employment")
 
         override def setupStubs(): StubMapping = {
@@ -225,7 +225,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "query with taxYear" in new Test {
-        override val taxYear: Option[String]          = Some("2018-19")
+        override val taxYearBroughtForwardFrom: Option[String]          = Some("2018-19")
         override val typeOfLoss: Option[String]       = Some("self-employment")
         override val businessId: Option[String] = Some("XKIS00000000988")
 
@@ -233,7 +233,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2019"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYearBroughtForwardFrom" -> "2019"), Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -244,13 +244,13 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "query with taxYear only" in new Test {
-        override val taxYear: Option[String] = Some("2018-19")
+        override val taxYearBroughtForwardFrom: Option[String] = Some("2018-19")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("taxYear" -> "2019"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("taxYearBroughtForwardFrom" -> "2019"), Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -299,7 +299,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String     = requestNino
-          override val taxYear: Option[String] = requestTaxYear
+          override val taxYearBroughtForwardFrom: Option[String] = requestTaxYear
           override val typeOfLoss: Option[String] = requestTypeOfLoss
           override val businessId: Option[String] = requestBusinessId
 

@@ -55,39 +55,39 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
            |   "incomeSourceId": "000000000000000",
            |   "lossType": "INCOME",
            |   "broughtForwardLossAmount": 99999999999.99,
-           |   "taxYear": "2000",
+           |   "taxYear": "2020",
            |   "lossId": "000000000000001",
-           |   "submissionDate": "2018-07-13T12:13:48.763Z"
+           |   "submissionDate": "2020-07-13T12:13:48.763Z"
            |  },
            |  {
            |   "incomeSourceId": "000000000000000",
            |   "lossType": "INCOME",
            |   "broughtForwardLossAmount": 0.02,
-           |   "taxYear": "2000",
+           |   "taxYear": "2020",
            |   "lossId": "000000000000002",
-           |   "submissionDate": "2018-07-13T12:13:48.763Z"
+           |   "submissionDate": "2020-07-13T12:13:48.763Z"
            |  },
            |  {
            |   "incomeSourceId": "000000000000000",
            |   "incomeSourceType": "01",
            |   "broughtForwardLossAmount": 0.02,
-           |   "taxYear": "2000",
+           |   "taxYear": "2020",
            |   "lossId": "000000000000008",
-           |   "submissionDate": "2018-07-13T12:13:48.763Z"
+           |   "submissionDate": "2020-07-13T12:13:48.763Z"
            |  },
            |  {
            |   "incomeSourceType": "02",
            |   "broughtForwardLossAmount": 0.02,
-           |   "taxYear": "2000",
+           |   "taxYear": "2020",
            |   "lossId": "000000000000003",
-           |   "submissionDate": "2018-07-13T12:13:48.763Z"
+           |   "submissionDate": "2020-07-13T12:13:48.763Z"
            |  },
            |  {
            |   "incomeSourceType": "04",
            |   "broughtForwardLossAmount": 0.02,
-           |   "taxYear": "2000",
+           |   "taxYear": "2020",
            |   "lossId": "000000000000004",
-           |   "submissionDate": "2018-07-13T12:13:48.763Z"
+           |   "submissionDate": "2020-07-13T12:13:48.763Z"
            |  }
            |]
          """.stripMargin
