@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter
 
 import config.AppConfig
 import mocks.MockAppConfig
-import org.scalamock.handlers.CallHandler
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec

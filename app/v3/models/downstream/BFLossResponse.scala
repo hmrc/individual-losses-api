@@ -41,14 +41,14 @@ object BFLossResponse extends HateoasLinks {
   implicit object AmendLinksFactory extends HateoasLinksFactory[BFLossResponse, AmendBFLossHateoasData] {
     override def links(appConfig: AppConfig, data: AmendBFLossHateoasData): Seq[Link] = {
       import data._
-      Seq(getBFLoss(appConfig, nino, lossId))
+      Seq(getBFLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId))
     }
   }
 
   implicit object GetLinksFactory extends HateoasLinksFactory[BFLossResponse, GetBFLossHateoasData] {
     override def links(appConfig: AppConfig, data: GetBFLossHateoasData): Seq[Link] = {
       import data._
-      Seq(getBFLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId))
+      Seq(getBFLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId))
     }
   }
 }

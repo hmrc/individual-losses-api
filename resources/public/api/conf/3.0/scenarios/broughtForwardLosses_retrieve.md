@@ -9,19 +9,19 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulates successful self-employment response.</p></td>
+            <td><p>Simulates success response where type of loss is Self-Employment.</p></td>
         </tr>
     </tbody>
     <tbody>
         <tr>
             <td><p>UK_PROPERTY</p></td>
-            <td><p>Simulates successful UK property FHL response..</p></td>
+            <td><p>Simulates the scenario where type of loss is UK Property FHL.</p></td>
         </tr>
     </tbody>
     <tbody>
         <tr>
             <td><p>FOREIGN_PROPERTY</p></td>
-            <td><p>Simulates successful foreign property response.</p></td>
+            <td><p>Simulates the scenario where type of loss is Foreign Property.</p></td>
         </tr>
     </tbody>
     <tbody>

@@ -27,31 +27,31 @@ class RetrieveBFLossValidatorSpec extends UnitSpec {
   private val validLossId   = "AAZZ1234567890a"
   private val invalidLossId = "AAZZ1234567890"
 
-  private val retrieveBFLossRawData: (String, String) => RetrieveBFLossRawData = (nino, lossId) => RetrieveBFLossRawData(nino, lossId)
-
   val validator = new RetrieveBFLossValidator
 
-  "retrieve validation" should {
+  "RetrieveBFLossValidator" should {
     "return no errors" when {
-      "supplied with a valid nino and a valid loss amount" in {
-        validator.validate(retrieveBFLossRawData(validNino, validLossId)) shouldBe empty
+      "a valid request is supplied" in {
+        validator.validate(RetrieveBFLossRawData(validNino, validLossId)) shouldBe Nil
       }
     }
-    "return a FORMAT_NINO error" when {
+
+    "return NinoFormatError" when {
       "the provided nino is invalid" in {
-        validator.validate(retrieveBFLossRawData(invalidNino, validLossId)) shouldBe List(NinoFormatError)
+        validator.validate(RetrieveBFLossRawData(invalidNino, validLossId)) shouldBe List(NinoFormatError)
       }
     }
-    "return a FORMAT_LOSS_ID error" when {
-      "the provided lossId is invalid" in {
-        validator.validate(retrieveBFLossRawData(validNino, invalidLossId)) shouldBe List(LossIdFormatError)
+
+    "return LossIdFormatError" when {
+      "the provided loss ID is invalid" in {
+        validator.validate(RetrieveBFLossRawData(validNino, invalidLossId)) shouldBe List(LossIdFormatError)
       }
     }
+
     "return multiple errors" when {
       "a request with multiple errors is provided" in {
-        validator.validate(retrieveBFLossRawData(invalidNino, invalidLossId)) shouldBe List(NinoFormatError, LossIdFormatError)
+        validator.validate(RetrieveBFLossRawData(invalidNino, invalidLossId)) shouldBe List(NinoFormatError, LossIdFormatError)
       }
     }
   }
-
 }
