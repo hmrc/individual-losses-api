@@ -25,7 +25,7 @@ import v3.models.errors.MtdError
 import v3.models.requestData.CreateBFLossRawData
 
 @Singleton
-class CreateBFLossValidator @Inject()(implicit currentDateTime: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
+class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
 
   private val validationSet = List(parameterFormatValidation,
                                    typeOfLossValidator,

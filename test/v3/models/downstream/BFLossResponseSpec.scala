@@ -121,8 +121,8 @@ class BFLossResponseSpec extends UnitSpec {
           bfLossResponse,
           Seq(
             Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", GET, "self"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", DELETE, "delete-brought-forward-loss"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount", POST, "amend-brought-forward-loss")
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount", POST, "amend-brought-forward-loss"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", DELETE, "delete-brought-forward-loss")
           )
         )
     }
@@ -132,7 +132,9 @@ class BFLossResponseSpec extends UnitSpec {
         HateoasWrapper(
           bfLossResponse,
           Seq(
-            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", GET, "self")
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", GET, "self"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount", POST, "amend-brought-forward-loss"),
+            Link(s"/individuals/losses/$nino/brought-forward-losses/$lossId", DELETE, "delete-brought-forward-loss")
           )
         )
     }

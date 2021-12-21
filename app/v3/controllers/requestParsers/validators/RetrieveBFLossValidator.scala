@@ -16,10 +16,12 @@
 
 package v3.controllers.requestParsers.validators
 
+import javax.inject.Singleton
 import v3.controllers.requestParsers.validators.validations.{LossIdValidation, NinoValidation}
 import v3.models.errors.MtdError
 import v3.models.requestData.RetrieveBFLossRawData
 
+@Singleton
 class RetrieveBFLossValidator extends Validator[RetrieveBFLossRawData] {
 
   private val validationSet = List(parameterFormatValidation)

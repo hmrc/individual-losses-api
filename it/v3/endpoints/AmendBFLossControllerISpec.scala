@@ -80,6 +80,16 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
          |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
          |      "method": "GET",
          |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+         |      "method": "POST",
+         |      "rel": "amend-brought-forward-loss"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "DELETE",
+         |      "rel": "delete-brought-forward-loss"
          |    }
          |    ]
          |}

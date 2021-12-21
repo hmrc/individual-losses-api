@@ -4,9 +4,9 @@ is:
   - errors.formatNino
   - errors.formatLossId
   - errors.clientOrAgentNotAuthorised
-  - errors.notFound
-displayName: Retrieve a Brought Forward Loss
-description: This endpoint allows the developer to retrieve an existing brought forward loss amount. A National Insurance number and Loss must be provided.
+  - errors.notFoundIncomeSource
+displayName: Retrieve a Brought Forward Loss [test only]
+description: This endpoint allows the developer to retrieve an existing brought forward loss amount. A National Insurance number and Loss ID must be provided.
 (annotations.sandboxData): !include scenarios/broughtForwardLosses_retrieve.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
@@ -17,11 +17,11 @@ responses:
         type: !include schemas/broughtForwardLosses/retrieveBFLoss/retrieve_response.json
         examples:
           example-1:
-            description: Self-employment Loss
+            description: Self-Employment Loss
             value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_se_response.json
           example-2:
-            description: UK Property Loss
-            value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_uk_property_response.json
+            description: UK FHL Property Loss
+            value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_uk_property_fhl_response.json
           example-3:
             description: Foreign Property Loss
             value: !include examples/broughtForwardLosses/retrieveBFLoss/retrieve_foreign_property_response.json
