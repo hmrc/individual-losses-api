@@ -16,11 +16,13 @@
 
 package v3.controllers.requestParsers.validators
 
+import javax.inject.Singleton
 import v3.controllers.requestParsers.validators.validations.{JsonFormatValidation, LossIdValidation, NinoValidation, NumberValidation}
 import v3.models.domain.AmendBFLoss
 import v3.models.errors.MtdError
 import v3.models.requestData.AmendBFLossRawData
 
+@Singleton
 class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
 
   private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldsValidator)

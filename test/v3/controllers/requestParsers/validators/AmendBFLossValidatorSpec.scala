@@ -32,8 +32,6 @@ class AmendBFLossValidatorSpec extends UnitSpec {
   private val minimumLossAmount             = 0.00
   private val maximumLossAmount             = 99999999999.99
   private val invalidLossAmountFormat       = 99999999999.999
-  private val invalidLossAmountRuleUnderMin = -0.01
-  private val invalidLossAmountRuleOverMax  = 100000000000.00
 
   private val amendBFLossRawData: (String, String, BigDecimal) => AmendBFLossRawData = (nino, lossId, lossAmount) =>
     AmendBFLossRawData(nino, lossId, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
