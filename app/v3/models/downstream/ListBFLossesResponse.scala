@@ -27,7 +27,8 @@ case class BFLossId(id: String)
 object BFLossId {
   implicit val writes: OWrites[BFLossId] = Json.writes[BFLossId]
 
-  implicit val reads: Reads[BFLossId] = (JsPath \ "lossId").read[String].map(BFLossId(_))
+  implicit val reads: Reads[BFLossId] =
+    (JsPath \ "lossId").read[String].map(BFLossId(_))
 }
 
 case class ListBFLossesResponse[I](losses: Seq[I])

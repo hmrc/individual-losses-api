@@ -20,6 +20,6 @@ import v3.models.downstream.IncomeSourceType
 import v3.models.domain.Nino
 
 case class ListBFLossesRequest(nino: Nino,
-                               taxYear: Option[DownstreamTaxYear],
-                               incomeSourceType: Option[IncomeSourceType],
+                               taxYearBroughtForwardFrom: Option[DownstreamTaxYear],
+                               typeOfLoss: Option[IncomeSourceType],
                                businessId: Option[String])

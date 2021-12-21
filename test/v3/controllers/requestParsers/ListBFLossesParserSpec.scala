@@ -40,7 +40,7 @@ class ListBFLossesParserSpec extends UnitSpec {
         val inputData: ListBFLossesRawData =
           ListBFLossesRawData(
             nino = nino,
-            taxYear = Some(taxYear),
+            taxYearBroughtForwardFrom = Some(taxYear),
             typeOfLoss = Some("uk-property-fhl"),
             businessId = Some(businessId)
           )
@@ -53,8 +53,8 @@ class ListBFLossesParserSpec extends UnitSpec {
           Right(
               ListBFLossesRequest(
                 nino = Nino(nino),
-                taxYear = Some(DownstreamTaxYear("2018")),
-                incomeSourceType = Some(IncomeSourceType.`04`),
+                taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
+                typeOfLoss = Some(IncomeSourceType.`04`),
                 businessId = Some(businessId)
               )
           )
@@ -64,7 +64,7 @@ class ListBFLossesParserSpec extends UnitSpec {
         val inputData: ListBFLossesRawData =
           ListBFLossesRawData(
             nino = nino,
-            taxYear = Some(taxYear),
+            taxYearBroughtForwardFrom = Some(taxYear),
             typeOfLoss = Some("uk-property-non-fhl"),
             businessId = Some(businessId)
           )
@@ -77,8 +77,8 @@ class ListBFLossesParserSpec extends UnitSpec {
           Right(
             ListBFLossesRequest(
               nino = Nino(nino),
-              taxYear = Some(DownstreamTaxYear("2018")),
-              incomeSourceType = Some(IncomeSourceType.`02`),
+              taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
+              typeOfLoss = Some(IncomeSourceType.`02`),
               businessId = Some(businessId))
           )
       }
