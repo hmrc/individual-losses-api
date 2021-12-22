@@ -130,6 +130,30 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         await(connector.put(body, DesUri[Result](url))) shouldBe outcome
       }
     }
+
+    "content-type header already present and set to be passed through" must {
+      "override (not duplicate) the value" when {
+        testNoDuplicatedContentType("Content-Type" -> "application/user-type")
+        testNoDuplicatedContentType("content-type" -> "application/user-type")
+
+        def testNoDuplicatedContentType(userContentType: (String, String)): Unit =
+          s"for user content type header $userContentType" in new DesTest {
+            implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq(userContentType))
+
+            MockHttpClient
+              .put(
+                absoluteUrl,
+                config = dummyDesHeaderCarrierConfig,
+                body,
+                requiredHeaders = requiredDesHeaders ++ Seq("Content-Type" -> "application/json"),
+                excludedHeaders = Seq(userContentType)
+              )
+              .returns(Future.successful(outcome))
+
+            await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+          }
+      }
+    }
   }
 
   "for IFS" when {
@@ -195,6 +219,30 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
           .returns(Future.successful(outcome))
 
         await(connector.put(body, IfsUri[Result](url))) shouldBe outcome
+      }
+    }
+
+    "content-type header already present and set to be passed through" must {
+      "override (not duplicate) the value" when {
+        testNoDuplicatedContentType("Content-Type" -> "application/user-type")
+        testNoDuplicatedContentType("content-type" -> "application/user-type")
+
+        def testNoDuplicatedContentType(userContentType: (String, String)): Unit =
+          s"for user content type header $userContentType" in new IfsTest {
+            implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq(userContentType))
+
+            MockHttpClient
+              .put(
+                absoluteUrl,
+                config = dummyIfsHeaderCarrierConfig,
+                body,
+                requiredHeaders = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json"),
+                excludedHeaders = Seq(userContentType)
+              )
+              .returns(Future.successful(outcome))
+
+            await(connector.put(body, IfsUri[Result](url))) shouldBe outcome
+          }
       }
     }
   }
