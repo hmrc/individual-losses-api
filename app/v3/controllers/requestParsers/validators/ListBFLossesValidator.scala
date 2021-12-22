@@ -34,6 +34,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
     List(
       NinoValidation.validate(data.nino),
       data.taxYearBroughtForwardFrom.map(TaxYearValidation.validate).getOrElse(Nil),
+      data.businessId.map(BusinessIdValidation.validate).getOrElse(Nil),
       data.typeOfLoss.map(lossType => if (availableLossTypeNames.contains(lossType)) Nil else List(TypeOfLossFormatError)).getOrElse(Nil)
     )
   }
@@ -41,10 +42,6 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
   private def postFormatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(
       data.taxYearBroughtForwardFrom.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil),
-      data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => BusinessIdValidation.validateOptionalWithTypeOfLoss(lossType, data.businessId, idOptional = true, noRuleBusinessIdError = true)
-        case None           => Nil
-      }
     )
   }
 
