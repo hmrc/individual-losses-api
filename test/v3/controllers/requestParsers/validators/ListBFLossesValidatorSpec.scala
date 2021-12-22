@@ -37,18 +37,68 @@ class ListBFLossesValidatorSpec extends UnitSpec {
                                                typeOfLoss = Some(validLossType),
                                                businessId = Some(validBusinessId))) shouldBe Nil
       }
-      "a business id is not supplied for a loss type of self-employment" in {
+
+      "no tax year is supplied" in {
         validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYearBroughtForwardFrom = Some(validTaxYear),
-          typeOfLoss                = Some("self-employment"),
-          businessId                = None)) shouldBe Nil
+          taxYearBroughtForwardFrom = None,
+          typeOfLoss                = Some(validLossType),
+          businessId                = Some(validBusinessId))) shouldBe Nil
       }
 
-      "a business id is supplied and no loss type is supplied" in {
+      "no loss type is supplied" in {
         validator.validate(ListBFLossesRawData(nino = validNino,
           taxYearBroughtForwardFrom = Some(validTaxYear),
           typeOfLoss                = None,
           businessId                = Some(validBusinessId))) shouldBe Nil
+      }
+
+      "a business id is not supplied" in {
+        validator.validate(ListBFLossesRawData(nino = validNino,
+          taxYearBroughtForwardFrom = Some(validTaxYear),
+          typeOfLoss                = Some(validLossType),
+          businessId                = None)) shouldBe Nil
+      }
+
+      "a request with no query params is provided" in {
+        validator.validate(ListBFLossesRawData(nino = validNino,
+          taxYearBroughtForwardFrom = None,
+          typeOfLoss                = None,
+          businessId                = None)) shouldBe Nil
+      }
+
+      "a request with self-employment as type of loss is provided" in {
+        validator.validate(ListBFLossesRawData(nino = validNino,
+          taxYearBroughtForwardFrom = Some(validTaxYear),
+          typeOfLoss = Some("self-employment"),
+          businessId = Some(validBusinessId))) shouldBe Nil
+      }
+
+      "a request with uk-property-non-fhl as type of loss is provided" in {
+        validator.validate(ListBFLossesRawData(nino = validNino,
+          taxYearBroughtForwardFrom = Some(validTaxYear),
+          typeOfLoss = Some("uk-property-non-fhl"),
+          businessId = Some(validBusinessId))) shouldBe Nil
+      }
+
+      "a request with foreign-property-fhl-eea as type of loss is provided" in {
+        validator.validate(ListBFLossesRawData(nino = validNino,
+          taxYearBroughtForwardFrom = Some(validTaxYear),
+          typeOfLoss = Some("foreign-property-fhl-eea"),
+          businessId = Some(validBusinessId))) shouldBe Nil
+      }
+
+      "a request with uk-property-fhl as type of loss is provided" in {
+        validator.validate(ListBFLossesRawData(nino = validNino,
+          taxYearBroughtForwardFrom = Some(validTaxYear),
+          typeOfLoss = Some("uk-property-fhl"),
+          businessId = Some(validBusinessId))) shouldBe Nil
+      }
+
+      "a request with foreign-property as type of loss is provided" in {
+        validator.validate(ListBFLossesRawData(nino = validNino,
+          taxYearBroughtForwardFrom = Some(validTaxYear),
+          typeOfLoss = Some("foreign-property"),
+          businessId = Some(validBusinessId))) shouldBe Nil
       }
     }
 
@@ -111,39 +161,6 @@ class ListBFLossesValidatorSpec extends UnitSpec {
           taxYearBroughtForwardFrom = Some(validTaxYear),
           typeOfLoss                = Some(validLossType),
           businessId                = Some("badBusinessId"))) shouldBe List(BusinessIdFormatError)
-      }
-    }
-
-    "not return an error" when {
-      "a self employment id is not supplied for a loss type of non-fhl property" in {
-        validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYearBroughtForwardFrom = Some(validTaxYear),
-          typeOfLoss                = Some("uk-property-non-fhl"),
-          businessId                = None)) shouldBe Nil
-      }
-      "a business id is not supplied for a loss type of fhl property" in {
-        validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYearBroughtForwardFrom = Some(validTaxYear),
-          typeOfLoss                = Some("uk-property-fhl"),
-          businessId                = None)) shouldBe Nil
-      }
-      "a business id is supplied for a loss type of self-employment" in {
-        validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYearBroughtForwardFrom = Some(validTaxYear),
-          typeOfLoss                = Some("self-employment"),
-          businessId                = Some(validBusinessId))) shouldBe Nil
-      }
-      "a business id is supplied for a loss type of foreign-property" in {
-        validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYearBroughtForwardFrom = Some(validTaxYear),
-          typeOfLoss                = Some("foreign-property"),
-          businessId                = Some(validBusinessId))) shouldBe Nil
-      }
-      "a business id is supplied for a loss type of foreign-property-fhl-eea" in {
-        validator.validate(ListBFLossesRawData(nino = validNino,
-          taxYearBroughtForwardFrom = Some(validTaxYear),
-          typeOfLoss                = Some("foreign-property-fhl-eea"),
-          businessId                = Some(validBusinessId))) shouldBe Nil
       }
     }
 
