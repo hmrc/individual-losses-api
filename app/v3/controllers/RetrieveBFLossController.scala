@@ -18,7 +18,6 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v3.controllers.requestParsers.RetrieveBFLossParser
@@ -28,6 +27,7 @@ import v3.models.errors._
 import v3.models.requestData.RetrieveBFLossRawData
 import v3.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -36,7 +36,6 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                          retrieveBFLossService: RetrieveBFLossService,
                                          retrieveBFLossParser: RetrieveBFLossParser,
                                          hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {

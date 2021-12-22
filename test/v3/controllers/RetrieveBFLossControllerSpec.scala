@@ -21,10 +21,10 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
-import v3.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
-import v3.models.downstream.{BFLossResponse, GetBFLossHateoasData}
+import v3.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
 import v3.models.domain.{Nino, TypeOfLoss}
-import v3.models.errors.{NotFoundError, _}
+import v3.models.downstream.{BFLossResponse, GetBFLossHateoasData}
+import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
@@ -39,8 +39,7 @@ class RetrieveBFLossControllerSpec
     with MockMtdIdLookupService
     with MockRetrieveBFLossService
     with MockRetrieveBFLossRequestDataParser
-    with MockHateoasFactory
-    with MockAuditService {
+    with MockHateoasFactory {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -87,7 +86,6 @@ class RetrieveBFLossControllerSpec
       retrieveBFLossService = mockRetrieveBFLossService,
       retrieveBFLossParser = mockRetrieveBFLossRequestDataParser,
       hateoasFactory = mockHateoasFactory,
-      auditService = mockAuditService,
       cc = cc
     )
 
@@ -112,8 +110,8 @@ class RetrieveBFLossControllerSpec
           .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
-        status(result) shouldBe OK
         contentAsJson(result) shouldBe responseJson
+        status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
@@ -128,16 +126,16 @@ class RetrieveBFLossControllerSpec
 
           val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
 
-          status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
+          status(response) shouldBe expectedStatus
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NotFoundError, NOT_FOUND)
       errorsFromParserTester(NinoFormatError, BAD_REQUEST)
       errorsFromParserTester(LossIdFormatError, BAD_REQUEST)
+      errorsFromParserTester(NotFoundError, NOT_FOUND)
+      errorsFromParserTester(BadRequestError, BAD_REQUEST)
     }
 
     "handle non-mdtp validation errors as per spec" when {
@@ -153,17 +151,17 @@ class RetrieveBFLossControllerSpec
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
           val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
-          status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
+          status(response) shouldBe expectedStatus
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
+      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
+      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
 }
