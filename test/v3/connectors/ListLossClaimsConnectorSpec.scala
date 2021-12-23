@@ -36,7 +36,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                                                                                    LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(),
             config = dummyIfsHeaderCarrierConfig,
@@ -54,7 +54,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(("taxYear", "2019")),
             config = dummyIfsHeaderCarrierConfig,
@@ -72,7 +72,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(("incomeSourceId", "testId")),
             config = dummyIfsHeaderCarrierConfig,
@@ -90,7 +90,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(("incomeSourceType", "02")),
             config = dummyIfsHeaderCarrierConfig,
@@ -108,7 +108,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(("claimType", "carry-sideways")),
             config = dummyIfsHeaderCarrierConfig,
@@ -126,7 +126,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "carry-sideways")),
             config = dummyIfsHeaderCarrierConfig,
@@ -148,7 +148,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(),
             config = dummyIfsHeaderCarrierConfig,
@@ -165,7 +165,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockHttpClient
-          .parameterGet(
+          .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
             parameters = Seq(("taxYear", "2019")),
             config = dummyIfsHeaderCarrierConfig,

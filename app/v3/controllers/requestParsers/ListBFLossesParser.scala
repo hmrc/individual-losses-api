@@ -26,7 +26,7 @@ class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends
   override protected def requestFor(data: ListBFLossesRawData): ListBFLossesRequest = {
     val taxYear = data.taxYearBroughtForwardFrom
 
-    val typeOfLoss = for {
+    val incomeSourceType = for {
       typeOfLossString <- data.typeOfLoss
       typeOfLoss       <- TypeOfLoss.parser.lift(typeOfLossString)
       incomeSourceType <- typeOfLoss.toIncomeSourceType
@@ -35,7 +35,7 @@ class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends
     ListBFLossesRequest(
       nino = Nino(data.nino),
       taxYearBroughtForwardFrom = taxYear.map(DownstreamTaxYear.fromMtd),
-      typeOfLoss = typeOfLoss,
+      incomeSourceType = incomeSourceType,
       businessId = data.businessId
     )
   }

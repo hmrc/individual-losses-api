@@ -17,6 +17,7 @@
 package v3.connectors
 
 import mocks.MockAppConfig
+import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.MockHttpClient
 import v3.models.downstream._
@@ -282,7 +283,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     "return a successful response and correlationId" when {
 
       "provided with a valid request" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
+        val expected = Right(ResponseWrapper(correlationId, retrieveResponse))
 
         MockHttpClient
           .get(
@@ -333,138 +334,90 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
   "listBFLosses" should {
 
-    def listBFLossesResult(connector: BFLossConnector,
-                           taxYearBroughtForwardFrom: Option[DownstreamTaxYear] = None,
-                           typeOfLoss: Option[IncomeSourceType] = None,
-                           businessId: Option[String] = None): DownstreamOutcome[ListBFLossesResponse[BFLossId]] = {
-      await(
-        connector.listBFLosses(
-          ListBFLossesRequest(
-            nino = Nino(nino),
-            taxYearBroughtForwardFrom = taxYearBroughtForwardFrom,
-            typeOfLoss = typeOfLoss,
-            businessId = businessId
-          )))
+    class ListTest extends Test {
+      def mockHttpWithParameters(parameters: (String, String)*): CallHandler[Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]]] =
+        MockHttpClient
+          .get[DownstreamOutcome[ListBFLossesResponse[BFLossId]]](
+            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
+            parameters = parameters,
+            config = dummyIfsHeaderCarrierConfig,
+            requiredHeaders = requiredIfsHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          )
+
+      def request(taxYear: Option[DownstreamTaxYear] = None,
+                  incomeSourceType: Option[IncomeSourceType] = None,
+                  businessId: Option[String] = None): ListBFLossesRequest =
+        ListBFLossesRequest(
+          nino = Nino(nino),
+          taxYearBroughtForwardFrom = taxYear,
+          incomeSourceType = incomeSourceType,
+          businessId = businessId
+        )
     }
 
     "return a successful response" when {
 
-      "provided with no parameters" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+      "provided with no parameters" in new ListTest {
+        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
-        MockHttpClient
-          .parameterGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        mockHttpWithParameters() returns Future.successful(expected)
 
-        listBFLossesResult(connector) shouldBe expected
+        await(connector.listBFLosses(request())) shouldBe expected
       }
 
-      "provided with a tax year parameter" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+      "provided with a tax year parameter" in new ListTest {
+        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
-        MockHttpClient
-          .parameterGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("taxYear", "2019")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        mockHttpWithParameters("taxYear" -> "2019") returns Future.successful(expected)
 
-        listBFLossesResult(connector = connector, taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2019"))) shouldBe expected
+        await(connector.listBFLosses(request(taxYear = Some(DownstreamTaxYear("2019"))))) shouldBe expected
       }
 
-      "provided with a income source id parameter" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+      "provided with a income source id parameter" in new ListTest {
+        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
-        MockHttpClient
-          .parameterGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("incomeSourceId", "testId")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        mockHttpWithParameters("incomeSourceId" -> "testId") returns Future.successful(expected)
 
-        listBFLossesResult(connector = connector, businessId = Some("testId")) shouldBe expected
+        await(connector.listBFLosses(request(businessId = Some("testId")))) shouldBe expected
       }
 
-      "provided with a income source type parameter" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+      "provided with a income source type parameter" in new ListTest {
+        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
-        MockHttpClient
-          .parameterGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("incomeSourceType", "02")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        mockHttpWithParameters("incomeSourceType" -> "02") returns Future.successful(expected)
 
-        listBFLossesResult(connector = connector, typeOfLoss = Some(IncomeSourceType.`02`)) shouldBe expected
+        await(connector.listBFLosses(request(incomeSourceType = Some(IncomeSourceType.`02`)))) shouldBe expected
       }
 
-      "provided with all parameters" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+      "provided with all parameters" in new ListTest {
+        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
-        MockHttpClient
-          .parameterGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        mockHttpWithParameters("taxYear" -> "2019", "incomeSourceId" -> "testId", "incomeSourceType" -> "01") returns Future.successful(expected)
 
-        listBFLossesResult(connector = connector,
-                           taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2019")),
-                           businessId = Some("testId"),
-                           typeOfLoss = Some(IncomeSourceType.`01`)) shouldBe expected
+        await(
+          connector.listBFLosses(request(taxYear = Some(DownstreamTaxYear("2019")),
+                                         businessId = Some("testId"),
+                                         incomeSourceType = Some(IncomeSourceType.`01`)))) shouldBe expected
       }
     }
 
     "return an unsuccessful response" when {
 
-      "provided with a single error" in new Test {
+      "provided with a single error" in new ListTest {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
-        MockHttpClient
-          .parameterGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        mockHttpWithParameters() returns Future.successful(expected)
 
-        listBFLossesResult(connector) shouldBe expected
+        await(connector.listBFLosses(request())) shouldBe expected
       }
 
-      "provided with multiple errors" in new Test {
+      "provided with multiple errors" in new ListTest {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
-        MockHttpClient
-          .parameterGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            parameters = Seq(),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        mockHttpWithParameters() returns Future.successful(expected)
 
-        listBFLossesResult(connector) shouldBe expected
+        await(connector.listBFLosses(request())) shouldBe expected
       }
     }
   }

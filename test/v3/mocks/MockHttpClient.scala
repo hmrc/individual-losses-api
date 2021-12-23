@@ -30,28 +30,9 @@ trait MockHttpClient extends MockFactory {
 
   object MockHttpClient extends Matchers {
 
-    def parameterGet[T](url: String,
-                        parameters: Seq[(String, String)],
-                        config: HeaderCarrier.Config,
-                        requiredHeaders: Seq[(String, String)] = Seq.empty,
-                        excludedHeaders: Seq[(String, String)] = Seq.empty): CallHandler[Future[T]] = {
-      (mockHttpClient
-        .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
-        .expects(assertArgs {
-          (actualUrl: String, actualParams: Seq[(String, String)], _: Seq[(String, String)], _: HttpReads[T], hc: HeaderCarrier, _: ExecutionContext) =>
-            {
-              actualUrl shouldBe url
-              actualParams shouldBe parameters
-
-              val headersForUrl = hc.headersForUrl(config)(actualUrl)
-              assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
-            }
-        })
-    }
-
     def get[T](url: String,
                config: HeaderCarrier.Config,
-               queryParams: Seq[(String, String)] = Seq.empty,
+               parameters: Seq[(String, String)] = Seq.empty,
                requiredHeaders: Seq[(String, String)] = Seq.empty,
                excludedHeaders: Seq[(String, String)] = Seq.empty): CallHandler[Future[T]] = {
       (mockHttpClient
@@ -60,7 +41,7 @@ trait MockHttpClient extends MockFactory {
           (actualUrl: String, actualParams: Seq[(String, String)], _: Seq[(String, String)], _: HttpReads[T], hc: HeaderCarrier, _: ExecutionContext) =>
             {
               actualUrl shouldBe url
-              actualParams shouldBe queryParams
+              actualParams shouldBe parameters
 
               val headersForUrl = hc.headersForUrl(config)(actualUrl)
               assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
