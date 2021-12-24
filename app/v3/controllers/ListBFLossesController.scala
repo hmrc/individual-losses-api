@@ -21,11 +21,8 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import play.mvc.Http.MimeTypes
-import uk.gov.hmrc.http.HeaderCarrier
 import v3.controllers.requestParsers.ListBFLossesParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{AuditEvent, AuditResponse, ListBFLossesAuditDetail}
 import v3.models.downstream.ListBFLossHateoasData
 import v3.models.errors._
 import v3.models.requestData.ListBFLossesRawData
@@ -39,7 +36,6 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
                                        listBFLossesService: ListBFLossesService,
                                        listBFLossesParser: ListBFLossesParser,
                                        hateoasFactory: HateoasFactory,
-                                       auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
@@ -49,7 +45,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
   def list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      val rawData = ListBFLossesRawData(nino, taxYearBroughtForwardFrom = taxYearBroughtForwardFrom, typeOfLoss = typeOfLoss, businessId = businessId)
+      val rawData = ListBFLossesRawData(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))
@@ -72,14 +68,8 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
               s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
                 s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-            val response = Json.toJson(vendorResponse)
-
-            auditSubmission(ListBFLossesAuditDetail(request.userDetails, nino, taxYearBroughtForwardFrom, typeOfLoss, businessId,
-              serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
-
-            Ok(response)
+            Ok(Json.toJson(vendorResponse))
               .withApiHeaders(serviceResponse.correlationId)
-              .as(MimeTypes.JSON)
           }
         }
 
@@ -98,12 +88,5 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def auditSubmission(details: ListBFLossesAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
-    val event = AuditEvent("ListBroughtForwardLosses", "list-brought-forward-Losses", details)
-    auditService.auditEvent(event)
   }
 }
