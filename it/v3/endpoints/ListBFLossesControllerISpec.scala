@@ -29,36 +29,34 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
 
   val correlationId = "X-123"
 
-  val lossAmount = 531.99
-
   val downstreamResponseJson: JsValue =
     Json.parse(s"""
        |[
-       |{
-       |"incomeSourceId": "000000000000000",
-       |"lossType": "INCOME",
-       |"broughtForwardLossAmount": 99999999999.99,
-       |"taxYear": "2000",
-       |"lossId": "000000000000001",
-       |"submissionDate": "2018-07-13T12:13:48.763Z"
-       |},
-       |{
-       |"incomeSourceId": "000000000000000",
-       |"lossType": "INCOME",
-       |"broughtForwardLossAmount": 0.02,
-       |"taxYear": "2000",
-       |"lossId": "000000000000002",
-       |"submissionDate": "2018-07-13T12:13:48.763Z"
-       |}
+       |  {
+       |    "incomeSourceId": "012345678912345",
+       |    "lossType": "INCOME",
+       |    "broughtForwardLossAmount": 345.67,
+       |    "taxYear": "2019",
+       |    "lossId": "AAZZ1234567890A",
+       |    "submissionDate": "2020-07-13T12:13:48.763Z"
+       |  },
+       |  {
+       |    "incomeSourceId": "012345678912346",
+       |    "incomeSourceType": "02",
+       |    "broughtForwardLossAmount": 385.67,
+       |    "taxYear": "2020",
+       |    "lossId": "AAZZ1234567890B",
+       |    "submissionDate": "2020-08-13T12:13:48.763Z"
+       |  }
        |]
      """.stripMargin)
 
   private trait Test {
 
-    val nino                             = "AA123456A"
+    val nino: String                                       = "AA123456A"
     val taxYearBroughtForwardFrom: Option[String]          = None
-    val typeOfLoss: Option[String]       = None
-    val businessId: Option[String]       = None
+    val typeOfLoss: Option[String]                         = None
+    val businessId: Option[String]                         = None
 
 
     def uri: String = s"/$nino/brought-forward-losses"
@@ -66,40 +64,40 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
     val responseJson: JsValue = Json.parse(
       s"""
          |{
-         |    "losses": [
+         |  "losses": [
+         |    {
+         |      "lossId": "AAZZ1234567890A",
+         |      "links": [
          |        {
-         |            "lossId": "000000000000001",
-         |            "links" : [
-         |             {
-         |               "href" : "/individuals/losses$uri/000000000000001",
-         |               "rel": "self",
-         |               "method": "GET"
-         |             }
-         |            ]
-         |        },
-         |        {
-         |            "lossId": "000000000000002",
-         |             "links" : [
-         |             {
-         |               "href" : "/individuals/losses$uri/000000000000002",
-         |               "rel": "self",
-         |               "method": "GET"
-         |             }
-         |           ]
+         |          "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890A",
+         |          "rel": "self",
+         |          "method": "GET"
          |        }
-         |    ],
-         |    "links": [
-         |      {
-         |        "href": "/individuals/losses$uri",
-         |        "rel": "self",
-         |        "method": "GET"
-         |      },
-         |      {
-         |        "href": "/individuals/losses$uri",
-         |        "rel": "create-brought-forward-loss",
-         |        "method": "POST"
-         |      }
-         |    ]
+         |      ]
+         |    },
+         |    {
+         |      "lossId": "AAZZ1234567890B",
+         |      "links": [
+         |        {
+         |          "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890B",
+         |          "rel": "self",
+         |          "method": "GET"
+         |        }
+         |      ]
+         |    }
+         |  ],
+         |  "links": [
+         |    {
+         |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
+         |      "rel": "self",
+         |      "method": "GET"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
+         |      "rel": "create-brought-forward-loss",
+         |      "method": "POST"
+         |    }
+         |  ]
          |}
      """.stripMargin)
 
@@ -127,14 +125,13 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
         .addQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))
     }
-
   }
 
   "Calling the ListBFLosses endpoint" should {
 
     "return a 200 status code" when {
 
-      "query for everything" in new Test {
+      "query for all losses" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -150,16 +147,59 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying for property" in new Test {
+      "querying with specific typeOfLoss" in new Test {
         override val taxYearBroughtForwardFrom: Option[String]          = None
         override val typeOfLoss: Option[String]       = Some("uk-property-fhl")
         override val businessId: Option[String] = None
+        override val responseJson: JsValue = Json.parse(
+          s"""
+             |{
+             |  "losses": [
+             |    {
+             |      "lossId": "AAZZ1234567890B",
+             |      "links": [
+             |        {
+             |          "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890B",
+             |          "rel": "self",
+             |          "method": "GET"
+             |        }
+             |      ]
+             |    }
+             |  ],
+             |  "links": [
+             |    {
+             |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
+             |      "rel": "self",
+             |      "method": "GET"
+             |    },
+             |    {
+             |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
+             |      "rel": "create-brought-forward-loss",
+             |      "method": "POST"
+             |    }
+             |  ]
+             |}
+     """.stripMargin)
+
+        val downstreamResponse: JsValue =
+          Json.parse(s"""
+                        |[
+                        |  {
+                        |    "incomeSourceId": "012345678912346",
+                        |    "incomeSourceType": "04",
+                        |    "broughtForwardLossAmount": 385.67,
+                        |    "taxYear": "2020",
+                        |    "lossId": "AAZZ1234567890B",
+                        |    "submissionDate": "2020-08-13T12:13:48.763Z"
+                        |  }
+                        |]
+     """.stripMargin)
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceType" -> "04"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceType" -> "04"), Status.OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request().get())
@@ -169,88 +209,60 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying for self-employment" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String]          = None
+      "querying with businessId, taxYear and typeOfLoss" in new Test {
+        override val taxYearBroughtForwardFrom: Option[String]          = Some("2019-20")
         override val typeOfLoss: Option[String]       = Some("self-employment")
         override val businessId: Option[String] = Some("XKIS00000000988")
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988"), Status.OK, downstreamResponseJson)
-        }
+        override val responseJson: JsValue = Json.parse(
+          s"""
+             |{
+             |  "losses": [
+             |    {
+             |      "lossId": "AAZZ1234567890B",
+             |      "links": [
+             |        {
+             |          "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890B",
+             |          "rel": "self",
+             |          "method": "GET"
+             |        }
+             |      ]
+             |    }
+             |  ],
+             |  "links": [
+             |    {
+             |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
+             |      "rel": "self",
+             |      "method": "GET"
+             |    },
+             |    {
+             |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
+             |      "rel": "create-brought-forward-loss",
+             |      "method": "POST"
+             |    }
+             |  ]
+             |}
+     """.stripMargin)
 
-        val response: WSResponse = await(request().get())
-        response.json shouldBe responseJson
-        response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "querying for selfEmploymentId with no typeOfLoss" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String]          = None
-        override val businessId: Option[String] = Some("XKIS00000000988")
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988"), Status.OK, downstreamResponseJson)
-        }
-
-        val response: WSResponse = await(request().get())
-        response.json shouldBe responseJson
-        response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "querying for self-employment with no selfEmploymentId" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String]          = None
-        override val typeOfLoss: Option[String]       = Some("self-employment")
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceType" -> "01"), Status.OK, downstreamResponseJson)
-        }
-
-        val response: WSResponse = await(request().get())
-        response.json shouldBe responseJson
-        response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "query with taxYear" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String]          = Some("2018-19")
-        override val typeOfLoss: Option[String]       = Some("self-employment")
-        override val businessId: Option[String] = Some("XKIS00000000988")
+        val downstreamResponse: JsValue =
+          Json.parse(s"""
+                        |[
+                        |  {
+                        |    "incomeSourceId": "XKIS00000000988",
+                        |    "incomeSourceType": "01",
+                        |    "broughtForwardLossAmount": 385.67,
+                        |    "taxYear": "2020",
+                        |    "lossId": "AAZZ1234567890B",
+                        |    "submissionDate": "2020-08-13T12:13:48.763Z"
+                        |  }
+                        |]
+     """.stripMargin)
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2019"), Status.OK, downstreamResponseJson)
-        }
-
-        val response: WSResponse = await(request().get())
-        response.json shouldBe responseJson
-        response.status shouldBe Status.OK
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "query with taxYear only" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String] = Some("2018-19")
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("taxYear" -> "2019"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020"), Status.OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request().get())
@@ -285,6 +297,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
