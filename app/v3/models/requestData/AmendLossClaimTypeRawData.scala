@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package v3.models.domain
+package v3.models.requestData
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.mvc.AnyContentAsJson
 
-case class AmendLossClaim(typeOfClaim: TypeOfClaim)
-
-object AmendLossClaim {
-  implicit val reads: Reads[AmendLossClaim] = Json.reads[AmendLossClaim]
-  implicit val writes: OWrites[AmendLossClaim] = (o: AmendLossClaim) => Json.obj(
-    "updatedReliefClaimedType" -> o.typeOfClaim.toReliefClaimed
-  )
-
-}
+case class AmendLossClaimTypeRawData(nino: String, claimId: String, body: AnyContentAsJson) extends RawData

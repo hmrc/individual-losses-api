@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package v3.mocks.requestParsers
+package v3.mocks.validators
 
-import org.scalamock.handlers.CallHandler
+import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v3.controllers.requestParsers.AmendLossClaimParser
-import v3.models.errors.ErrorWrapper
-import v3.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
+import v3.controllers.requestParsers.validators.AmendLossClaimTypeValidator
+import v3.models.errors.MtdError
+import v3.models.requestData.AmendLossClaimTypeRawData
 
-trait MockAmendLossClaimRequestDataParser extends MockFactory {
+class MockAmendLossClaimTypeValidator extends MockFactory {
 
-  val mockAmendLossClaimRequestDataParser: AmendLossClaimParser = mock[AmendLossClaimParser]
+  val mockValidator: AmendLossClaimTypeValidator = mock[AmendLossClaimTypeValidator]
 
-  object MockAmendLossClaimRequestDataParser {
-    def parseRequest(data: AmendLossClaimRawData): CallHandler[Either[ErrorWrapper, AmendLossClaimRequest]] = {
-      (mockAmendLossClaimRequestDataParser.parseRequest(_: AmendLossClaimRawData)).expects(data)
+  object MockValidator {
+    def validate(data: AmendLossClaimTypeRawData): CallHandler1[AmendLossClaimTypeRawData, List[MtdError]] = {
+      (mockValidator.validate(_: AmendLossClaimTypeRawData))
+        .expects(data)
     }
   }
-
 }

@@ -18,44 +18,46 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.controllers.requestParsers.AmendLossClaimParser
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import v3.controllers.requestParsers.AmendLossClaimTypeParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{AmendLossClaimAuditDetail, AuditEvent, AuditResponse}
-import v3.models.downstream.AmendLossClaimHateoasData
+import v3.models.audit.{AmendLossClaimTypeAuditDetail, AuditEvent, AuditResponse}
+import v3.models.downstream.AmendLossClaimTypeHateoasData
 import v3.models.errors._
-import v3.models.requestData.AmendLossClaimRawData
+import v3.models.requestData.AmendLossClaimTypeRawData
 import v3.services._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
-                                         val lookupService: MtdIdLookupService,
-                                         amendLossClaimService: AmendLossClaimService,
-                                         amendLossClaimParser: AmendLossClaimParser,
-                                         hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
-                                         cc: ControllerComponents)(implicit ec: ExecutionContext)
+class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthService,
+                                             val lookupService: MtdIdLookupService,
+                                             amendLossClaimTypeService: AmendLossClaimTypeService,
+                                             amendLossClaimTypeParser: AmendLossClaimTypeParser,
+                                             hateoasFactory: HateoasFactory,
+                                             auditService: AuditService,
+                                             cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendLossClaimController", endpointName = "Amend a Loss Claim")
+    EndpointLogContext(controllerName = "AmendLossClaimTypeController", endpointName = "Amend a Loss Claim Type")
 
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
-      val rawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(request.body))
+      val rawData = AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(request.body))
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](amendLossClaimParser.parseRequest(rawData))
-          serviceResponse <- EitherT(amendLossClaimService.amendLossClaim(parsedRequest))
+          parsedRequest <- EitherT.fromEither[Future](amendLossClaimTypeParser.parseRequest(rawData))
+          serviceResponse <- EitherT(amendLossClaimTypeService.amendLossClaimType(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
+            hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimTypeHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -63,7 +65,7 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
 
           val response = Json.toJson(vendorResponse)
 
-          auditSubmission(AmendLossClaimAuditDetail(request.userDetails, nino, claimId, request.body,
+          auditSubmission(AmendLossClaimTypeAuditDetail(request.userDetails, nino, claimId, request.body,
             serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
@@ -75,7 +77,7 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
 
-        auditSubmission(AmendLossClaimAuditDetail(request.userDetails, nino, claimId, request.body,
+        auditSubmission(AmendLossClaimTypeAuditDetail(request.userDetails, nino, claimId, request.body,
           correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
@@ -95,9 +97,9 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
     }
   }
 
-  private def auditSubmission(details: AmendLossClaimAuditDetail)
+  private def auditSubmission(details: AmendLossClaimTypeAuditDetail)
                              (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+                              ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("amendLossClaim", "amend-loss-claim", details)
     auditService.auditEvent(event)
   }

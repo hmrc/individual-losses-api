@@ -19,20 +19,20 @@ package v3.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.requestData.AmendLossClaimRequest
-import v3.services.{AmendLossClaimOutcome, AmendLossClaimService}
+import v3.models.requestData.AmendLossClaimTypeRequest
+import v3.services.{AmendLossClaimTypeOutcome, AmendLossClaimTypeService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendLossClaimService extends MockFactory {
+trait MockAmendLossClaimTypeService extends MockFactory {
 
-  val mockAmendLossClaimService: AmendLossClaimService = mock[AmendLossClaimService]
+  val mockAmendLossClaimTypeService: AmendLossClaimTypeService = mock[AmendLossClaimTypeService]
 
-  object MockAmendLossClaimService {
+  object MockAmendLossClaimTypeService {
 
-    def amend(requestData: AmendLossClaimRequest): CallHandler[Future[AmendLossClaimOutcome]] = {
-      (mockAmendLossClaimService
-        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
+    def amend(requestData: AmendLossClaimTypeRequest): CallHandler[Future[AmendLossClaimTypeOutcome]] = {
+      (mockAmendLossClaimTypeService
+        .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)
     }
   }

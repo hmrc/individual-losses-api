@@ -25,7 +25,7 @@ import support.V3IntegrationBaseSpec
 import v3.models.errors._
 import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
 
-class AmendLossClaimControllerISpec extends V3IntegrationBaseSpec {
+class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
 
   val correlationId = "X-123"
 

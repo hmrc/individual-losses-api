@@ -119,7 +119,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
     "expose the correct links for amend" in {
       MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-      LossClaimResponse.AmendLinksFactory.links(mockAppConfig, AmendLossClaimHateoasData(nino, claimId)) shouldBe
+      LossClaimResponse.AmendLinksFactory.links(mockAppConfig, AmendLossClaimTypeHateoasData(nino, claimId)) shouldBe
         Seq(
           Link("/individuals/losses/AA123456A/loss-claims/claimId", GET, "self")
         )

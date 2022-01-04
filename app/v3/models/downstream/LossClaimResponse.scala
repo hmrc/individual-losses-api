@@ -45,12 +45,12 @@ object LossClaimResponse extends HateoasLinks {
   implicit object GetLinksFactory extends HateoasLinksFactory[LossClaimResponse, GetLossClaimHateoasData] {
     override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
       import data._
-      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaim(appConfig, nino, claimId))
+      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
   }
 
-  implicit object AmendLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimHateoasData] {
-    override def links(appConfig: AppConfig, data: AmendLossClaimHateoasData): Seq[Link] = {
+  implicit object AmendLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimTypeHateoasData] {
+    override def links(appConfig: AppConfig, data: AmendLossClaimTypeHateoasData): Seq[Link] = {
       import data._
       Seq(getLossClaim(appConfig, nino, claimId))
     }
@@ -59,4 +59,4 @@ object LossClaimResponse extends HateoasLinks {
 
 case class GetLossClaimHateoasData(nino: String, claimId: String) extends HateoasData
 
-case class AmendLossClaimHateoasData(nino: String, claimId: String) extends HateoasData
+case class AmendLossClaimTypeHateoasData(nino: String, claimId: String) extends HateoasData
