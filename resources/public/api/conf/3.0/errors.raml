@@ -318,6 +318,17 @@ traits:
                 description: There is no accounting period for the year of the claim.
                 value:
                   code: RULE_NO_ACCOUNTING_PERIOD
+  ruleAccountingPeriodNotEnded:
+      responses:
+        403:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                ruleAccountingPeriodNotEnded:
+                  description: The accounting period has not yet ended.
+                  value:
+                    code: RULE_ACCOUNTING_PERIOD_NOT_ENDED
   formatSequence:
     responses:
       400:
