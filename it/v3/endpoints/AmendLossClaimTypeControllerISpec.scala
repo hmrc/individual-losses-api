@@ -31,11 +31,12 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
        |{
-       |"incomeSourceId": "XKIS00000000988",
-       |"reliefClaimed": "CF",
-       |"taxYearClaimedFor": "2020",
-       |"claimId": "notUsed",
-       |"submissionDate": "2018-07-13T12:13:48.763Z"
+       |  "incomeSourceId": "XKIS00000000988",
+       |  "reliefClaimed": "CF",
+       |  "taxYear": "2020",
+       |  "claimId": "notUsed",
+       |  "sequence": 1,
+       |  "submissionDate": "2018-07-13T12:13:48.763Z"
        |}
       """.stripMargin)
 
@@ -53,18 +54,19 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
 
     val responseJson: JsValue = Json.parse(s"""
                                               |{
-                                              |    "businessId": "XKIS00000000988",
-                                              |    "typeOfLoss": "self-employment",
-                                              |    "typeOfClaim": "carry-forward",
-                                              |    "taxYear": "2019-20",
-                                              |    "lastModified":"2018-07-13T12:13:48.763Z",
-                                              |    "links": [
-                                              |      {
+                                              |  "businessId": "XKIS00000000988",
+                                              |  "typeOfLoss": "self-employment",
+                                              |  "typeOfClaim": "carry-forward",
+                                              |  "taxYearClaimedFor": "2019-20",
+                                              |  "lastModified":"2018-07-13T12:13:48.763Z",
+                                              |  "sequence": 1,
+                                              |  "links": [
+                                              |    {
                                               |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
                                               |      "method": "GET",
                                               |      "rel": "self"
-                                              |      }
-                                              |    ]
+                                              |    }
+                                              |  ]
                                               |}
       """.stripMargin)
 

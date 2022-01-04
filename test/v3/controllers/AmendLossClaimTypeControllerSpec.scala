@@ -50,7 +50,14 @@ class AmendLossClaimTypeControllerSpec
   val amendLossClaimType: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
   val response: LossClaimResponse =
-    LossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "2018-07-13T12:13:48.763Z")
+    LossClaimResponse(
+      "2019-20",
+      TypeOfLoss.`self-employment`,
+      TypeOfClaim.`carry-forward`,
+      "XKIS00000000988",
+      Some(1),
+      "2018-07-13T12:13:48.763Z"
+    )
 
   val request: AmendLossClaimTypeRequest = AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType)
 
@@ -61,8 +68,9 @@ class AmendLossClaimTypeControllerSpec
       |{
       |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
-      |    "taxYear": "2019-20",
+      |    "taxYearClaimedFor": "2019-20",
       |    "typeOfClaim": "carry-forward",
+      |    "sequence": 1,
       |    "lastModified": "2018-07-13T12:13:48.763Z",
       |    "links" : [
       |      {

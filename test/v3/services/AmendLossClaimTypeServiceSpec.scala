@@ -33,7 +33,14 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
   val requestBody: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
   val lossClaimResponse: LossClaimResponse =
-    LossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "lastModified")
+    LossClaimResponse(
+      "2019-20",
+      TypeOfLoss.`self-employment`,
+      TypeOfClaim.`carry-forward`,
+      "XKIS00000000988",
+      Some(1),
+      "lastModified"
+    )
 
   val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 

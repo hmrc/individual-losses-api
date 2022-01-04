@@ -17,8 +17,8 @@
 package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.downstream.LossClaimResponse
 import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.downstream.LossClaimResponse
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.RetrieveLossClaimRequest
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class RetrieveLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
@@ -41,7 +41,14 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
       "the connector call is successful" in new Test {
         val downstreamResponse: ResponseWrapper[LossClaimResponse] =
           ResponseWrapper(correlationId,
-                      LossClaimResponse(Some("selfEmploymentId"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "time"))
+                          LossClaimResponse(
+                            "2019-20",
+                            TypeOfLoss.`self-employment`,
+                            TypeOfClaim.`carry-forward`,
+                            "selfEmploymentId",
+                            Some(1),
+                            "time"
+                          ))
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Right(downstreamResponse)
@@ -50,7 +57,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -61,14 +68,15 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(DownstreamError))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Left(expected)
       }
 
       "the connector call returns multiple errors including a downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
+        val downstreamResponse: ResponseWrapper[MultipleErrors] =
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
         val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
