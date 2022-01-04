@@ -30,10 +30,10 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
   "create LossClaim" when {
 
     val lossClaim: LossClaim = LossClaim(
-      taxYear = "2019-20",
+      taxYearClaimedFor = "2019-20",
       typeOfLoss = TypeOfLoss.`self-employment`,
       typeOfClaim = TypeOfClaim.`carry-forward`,
-      businessId = Some("XKIS00000000988")
+      businessId = "XKIS00000000988"
     )
 
     implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)

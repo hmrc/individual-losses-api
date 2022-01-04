@@ -16,31 +16,29 @@
 
 package v3.models.domain
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 import v3.models.utils.JsonErrorValidators
 
 class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
-  val lossClaimEmployment = LossClaim(
-    taxYear = "2019-20",
+  val lossClaimSelfEmployment: LossClaim = LossClaim(
+    taxYearClaimedFor = "2019-20",
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    businessId = Some("X2IS12356589871")
+    businessId = "X2IS12356589871"
   )
 
-  val lossClaimEmploymentJson: JsValue = Json.parse(
-    """
+  val lossClaimSelfEmploymentJson: JsValue = Json.parse("""
       |{
       |    "typeOfLoss": "self-employment",
       |    "businessId": "X2IS12356589871",
       |    "typeOfClaim": "carry-forward",
-      |    "taxYear": "2019-20"
+      |    "taxYearClaimedFor": "2019-20"
       |}
     """.stripMargin)
 
-  val lossClaimEmploymentDownstreamJson: JsValue = Json.parse(
-    """
+  val lossClaimSelfEmploymentDownstreamJson: JsValue = Json.parse("""
       |{
       |    "incomeSourceId": "X2IS12356589871",
       |    "reliefClaimed": "CF",
@@ -48,50 +46,48 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimPropertyNonFhl = LossClaim(
-    taxYear = "2019-20",
+  val lossClaimUkPropertyNonFhl: LossClaim = LossClaim(
+    taxYearClaimedFor = "2019-20",
     typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
     typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`,
-    businessId = Some("X2IS12356589871")
+    businessId = "X2IS12356589871"
   )
 
-  val lossClaimPropertyNonFhlJson: JsValue = Json.parse(
-    """
+  val lossClaimUkPropertyNonFhlJson: JsValue = Json.parse("""
       |{
+      |    "businessId": "X2IS12356589871",
       |    "typeOfLoss": "uk-property-non-fhl",
       |    "typeOfClaim": "carry-forward-to-carry-sideways",
-      |    "taxYear": "2019-20"
+      |    "taxYearClaimedFor": "2019-20"
       |}
     """.stripMargin)
 
-  val lossClaimPropertyNonFhlDowwnstreamJson: JsValue = Json.parse(
-    """
+  val lossClaimUkPropertyNonFhlDowwnstreamJson: JsValue = Json.parse("""
       |{
+      |    "incomeSourceId": "X2IS12356589871",
       |    "incomeSourceType": "02",
       |    "reliefClaimed": "CFCSGI",
       |    "taxYear": "2020"
       |}
     """.stripMargin)
 
-  val lossClaimForeignProp = LossClaim(
-    taxYear = "2019-20",
+  val lossClaimForeignProperty: LossClaim = LossClaim(
+    taxYearClaimedFor = "2019-20",
     typeOfLoss = TypeOfLoss.`foreign-property`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    businessId = Some("X2IS12356589871")
+    businessId = "X2IS12356589871"
   )
 
-  val lossClaimForeignPropJson: JsValue = Json.parse(
-    """
+  val lossClaimForeignPropertyJson: JsValue = Json.parse("""
       |{
       |    "typeOfLoss": "foreign-property",
       |    "businessId": "X2IS12356589871",
       |    "typeOfClaim": "carry-forward",
-      |    "taxYear": "2019-20"
+      |    "taxYearClaimedFor": "2019-20"
       |}
     """.stripMargin)
 
-  val lossClaimForeignPropDowwnstreamJson: JsValue = Json.parse(
-    """
+  val lossClaimForeignPropertyDowwnstreamJson: JsValue = Json.parse("""
       |{
       |    "incomeSourceId": "X2IS12356589871",
       |    "incomeSourceType": "15",
@@ -102,44 +98,51 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
   "reads" when {
     "passed a valid LossClaim Json" should {
-      "return a valid model" in {
-      lossClaimEmploymentJson.as[LossClaim] shouldBe lossClaimEmployment
+      "return a valid model" when {
+        Map[TypeOfLoss, (JsValue, LossClaim)](
+          TypeOfLoss.`self-employment`     -> (lossClaimSelfEmploymentJson, lossClaimSelfEmployment),
+          TypeOfLoss.`uk-property-non-fhl` -> (lossClaimUkPropertyNonFhlJson, lossClaimUkPropertyNonFhl),
+          TypeOfLoss.`foreign-property`    -> (lossClaimForeignPropertyJson, lossClaimForeignProperty)
+        ).foreach {
+          case (loss, res) =>
+            val (json, model) = res
+            s"typeOfLoss = $loss" in {
+              json.as[LossClaim] shouldBe model
+            }
+        }
       }
 
-      testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/typeOfLoss")
-      testPropertyType[LossClaim](lossClaimEmploymentJson)(
-        path = "/typeOfLoss",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testMandatoryProperty[LossClaim](lossClaimSelfEmploymentJson)("/typeOfLoss")
+      testPropertyType[LossClaim](lossClaimSelfEmploymentJson)(path = "/typeOfLoss",
+                                                               replacement = 12344.toJson,
+                                                               expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/taxYear")
-      testPropertyType[LossClaim](lossClaimEmploymentJson)(
-        path = "/taxYear",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testMandatoryProperty[LossClaim](lossClaimSelfEmploymentJson)("/taxYearClaimedFor")
+      testPropertyType[LossClaim](lossClaimSelfEmploymentJson)(path = "/taxYearClaimedFor",
+                                                               replacement = 12344.toJson,
+                                                               expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/typeOfClaim")
-      testPropertyType[LossClaim](lossClaimEmploymentJson)(
-        path = "/typeOfClaim",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testMandatoryProperty[LossClaim](lossClaimSelfEmploymentJson)("/typeOfClaim")
+      testPropertyType[LossClaim](lossClaimSelfEmploymentJson)(path = "/typeOfClaim",
+                                                               replacement = 12344.toJson,
+                                                               expectedError = JsonError.STRING_FORMAT_EXCEPTION)
     }
   }
 
   "writes" when {
     "passed a valid Loss Claim Employment model" should {
       "return a valid Loss Claim Employment JSON" in {
-        LossClaim.writes.writes(lossClaimEmployment) shouldBe lossClaimEmploymentDownstreamJson
+        LossClaim.writes.writes(lossClaimSelfEmployment) shouldBe lossClaimSelfEmploymentDownstreamJson
       }
     }
     "passed a valid Loss Claim Property model" should {
       "return a valid Loss Claim Property JSON" in {
-        LossClaim.writes.writes(lossClaimPropertyNonFhl) shouldBe lossClaimPropertyNonFhlDowwnstreamJson
+        LossClaim.writes.writes(lossClaimUkPropertyNonFhl) shouldBe lossClaimUkPropertyNonFhlDowwnstreamJson
       }
     }
     "passed a valid Loss Claim Foreign Property model" should {
       "return a valid Loss Claim Foreign Property JSON" in {
-        LossClaim.writes.writes(lossClaimForeignProp) shouldBe lossClaimForeignPropDowwnstreamJson
+        LossClaim.writes.writes(lossClaimForeignProperty) shouldBe lossClaimForeignPropertyDowwnstreamJson
       }
     }
   }

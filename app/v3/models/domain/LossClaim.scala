@@ -16,38 +16,38 @@
 
 package v3.models.domain
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.libs.json._
 import v3.models.requestData.DownstreamTaxYear
 
-case class LossClaim(taxYear: String,
-                     typeOfLoss: TypeOfLoss,
-                     typeOfClaim: TypeOfClaim,
-                     businessId: Option[String])
+case class LossClaim(taxYearClaimedFor: String, typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, businessId: String)
+
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
-  implicit val writes: OWrites[LossClaim] = (claim: LossClaim) => {
-    val jsObject = (claim.typeOfLoss.isUkProperty, claim.typeOfLoss.isForeignProperty) match {
-      case (true,_) =>
+  implicit val writes: OWrites[LossClaim] = (lossClaim: LossClaim) => {
+    (lossClaim.typeOfLoss) match {
+      case TypeOfLoss.`uk-property-non-fhl` =>
         Json.obj(
-          "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DownstreamTaxYear.fromMtd(claim.taxYear).toString
+          "taxYear"          -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
+          "incomeSourceType" -> TypeOfLoss.`uk-property-non-fhl`.toIncomeSourceType.get,
+          "reliefClaimed"    -> lossClaim.typeOfClaim.toReliefClaimed,
+          "incomeSourceId"   -> lossClaim.businessId
         )
-      case (_,true) =>
+      case TypeOfLoss.`foreign-property` =>
         Json.obj(
-          "incomeSourceId" -> claim.businessId,
-          "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DownstreamTaxYear.fromMtd(claim.taxYear).toString
+          "taxYear"          -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
+          "incomeSourceType" -> TypeOfLoss.`foreign-property`.toIncomeSourceType.get,
+          "reliefClaimed"    -> lossClaim.typeOfClaim.toReliefClaimed,
+          "incomeSourceId"   -> lossClaim.businessId
         )
-      case (_,_) =>
+      case _ =>
+        // This endpoint only allows for uk-property-non-fhl, foreign-property and self-employment
+        // The only remaining option is self-employment, where incomeSourceType isn't sent down
         Json.obj(
-          "incomeSourceId" -> claim.businessId,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DownstreamTaxYear.fromMtd(claim.taxYear).toString
+          "taxYear"        -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
+          "reliefClaimed"  -> lossClaim.typeOfClaim.toReliefClaimed,
+          "incomeSourceId" -> lossClaim.businessId
         )
     }
-    if(claim.typeOfLoss == TypeOfLoss.`uk-property-non-fhl`) jsObject - "businessId" else jsObject
   }
 }

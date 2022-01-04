@@ -64,7 +64,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     val req = data.body.json.as[LossClaim]
     List(
       TaxYearValidation
-        .validate(req.taxYear)
+        .validate(req.taxYearClaimedFor)
         .map(
           _.copy(paths = Some(Seq(s"/taxYear")))
         )
@@ -81,8 +81,8 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
   private def otherBodyFieldsValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[LossClaim]
     List(
-      MinTaxYearValidation.validate(req.taxYear, minimumTaxYearLossClaim),
-      req.businessId.map(BusinessIdValidation.validate).getOrElse(NoValidationErrors),
+      MinTaxYearValidation.validate(req.taxYearClaimedFor, minimumTaxYearLossClaim),
+      BusinessIdValidation.validate(req.businessId),
       TypeOfClaimValidation.checkClaim(req.typeOfClaim, req.typeOfLoss)
     )
   }
