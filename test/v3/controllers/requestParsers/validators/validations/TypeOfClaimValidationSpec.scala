@@ -17,8 +17,8 @@
 package v3.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v3.models.domain.TypeOfClaim._
-import v3.models.domain.TypeOfLoss._
+import utils.enums.Values.MkValues
+import v3.models.domain.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 class TypeOfClaimValidationSpec extends UnitSpec {
@@ -26,103 +26,68 @@ class TypeOfClaimValidationSpec extends UnitSpec {
   "validate" should {
 
     "return no errors" when {
+      checkValid("carry-forward")
+      checkValid("carry-sideways")
+      checkValid("carry-sideways-fhl")
+      checkValid("carry-forward-to-carry-sideways")
 
-      "provided with a string of 'carry-forward'" in {
-        TypeOfClaimValidation.validate("carry-forward").isEmpty shouldBe true
-      }
-
-      "provided with a string of 'carry-sideways'" in {
-        TypeOfClaimValidation.validate("carry-sideways").isEmpty shouldBe true
-      }
-
-      "provided with a string of 'carry-forward-to-carry-sideways'" in {
-        TypeOfClaimValidation.validate("carry-forward-to-carry-sideways").isEmpty shouldBe true
-      }
-
-      "provided with a string of 'carry-sideways-fhl'" in {
-        TypeOfClaimValidation.validate("carry-sideways-fhl").isEmpty shouldBe true
-      }
+      def checkValid(typeOfClaim: String): Unit =
+        s"provided with a string of '$typeOfClaim'" in {
+          TypeOfClaimValidation.validate(typeOfClaim) shouldBe Nil
+        }
     }
 
-    "return an error" when {
-
-      "provided with an empty string" in {
-        TypeOfClaimValidation.validate("") shouldBe List(TypeOfClaimFormatError)
-      }
-
-      "provided with a non-matching string" in {
-        TypeOfClaimValidation.validate("carry-forwar") shouldBe List(TypeOfClaimFormatError)
+    "return a TypeOfLossFormatError" when {
+      "provided with an unknown type of claim" in {
+        TypeOfClaimValidation.validate("invalid") shouldBe List(TypeOfClaimFormatError)
       }
     }
   }
 
-  "checkClaim" should {
+  "validateTypeOfClaimPermitted" when {
+    val allTypesOfClaim: Seq[TypeOfClaim] = implicitly[MkValues[TypeOfClaim]].values
 
-    "return no errors when typeOfLoss is 'uk-property-non-fhl' and" when {
-
-
-      "provided with a string of 'carry-sideways'" in {
-        TypeOfClaimValidation.checkClaim(`carry-sideways`, `uk-property-non-fhl`).isEmpty shouldBe true
-      }
-
-      "provided with a string of 'carry-forward-to-carry-sideways'" in {
-        TypeOfClaimValidation.checkClaim(`carry-forward-to-carry-sideways`, `uk-property-non-fhl`).isEmpty shouldBe true
-      }
-
-      "provided with a string of 'carry-sideways-fhl'" in {
-        TypeOfClaimValidation.checkClaim(`carry-sideways-fhl`, `uk-property-non-fhl`).isEmpty shouldBe true
-      }
+    "a typeOfLoss is self employment" must {
+      permitOnly(TypeOfLoss.`self-employment`, Seq(TypeOfClaim.`carry-forward`, TypeOfClaim.`carry-sideways`))
     }
 
-    "return no errors when typeOfLoss is 'self-employment' and" when {
-
-      "typeOfClaim is 'carry-forward'" in {
-        TypeOfClaimValidation.checkClaim(`carry-forward`, `self-employment`).isEmpty shouldBe true
-      }
-
-      "provided with a string of 'carry-sideways'" in {
-        TypeOfClaimValidation.checkClaim(`carry-sideways`, `self-employment`).isEmpty shouldBe true
-      }
+    "a typeOfLoss is uk-property-non-fhl" must {
+      permitOnly(TypeOfLoss.`uk-property-non-fhl`,
+        Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
     }
 
-    "return no errors when typeOfLoss is 'foreign-property' and" when {
-
-      "typeOfClaim is 'carry-forward-to-carry-sideways'" in {
-        TypeOfClaimValidation.checkClaim(`carry-forward-to-carry-sideways`, `foreign-property`).isEmpty shouldBe true
-      }
-
-      "provided with a string of 'carry-sideways'" in {
-        TypeOfClaimValidation.checkClaim(`carry-sideways`, `foreign-property`).isEmpty shouldBe true
-      }
-      "provided with a string of 'carry-sideways-fhl'" in {
-        TypeOfClaimValidation.checkClaim(`carry-sideways-fhl`, `foreign-property`).isEmpty shouldBe true
-      }
+    "a typeOfLoss is foreign-property" must {
+      permitOnly(TypeOfLoss.`foreign-property`,
+                 Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
     }
 
-    "return TypeOfClaimFormatError when typeOfLoss is 'self-employment' and" when {
-
-      "typeOfClaim is 'carry-sideways-fhl" in {
-        TypeOfClaimValidation.checkClaim(`carry-sideways-fhl`, `self-employment`) shouldBe List(RuleTypeOfClaimInvalid)
-      }
-
-      "typeOfClaim is 'carry-forward-to-carry-sideways" in {
-        TypeOfClaimValidation.checkClaim(`carry-forward-to-carry-sideways`, `self-employment`) shouldBe List(RuleTypeOfClaimInvalid)
-      }
-
+    "other types of loss" must {
+      permitNoTypesOfClaim(TypeOfLoss.`uk-property-fhl`)
+      permitNoTypesOfClaim(TypeOfLoss.`foreign-property-fhl-eea`)
+      permitNoTypesOfClaim(TypeOfLoss.`self-employment-class4`)
     }
 
-    "return typeOfClaimFormatError when typeOfLoss is 'uk-property-non-fhl' and" when {
+    def permitOnly(typeOfLoss: TypeOfLoss, permittedTypesOfClaim: Seq[TypeOfClaim]): Unit = {
+      permittedTypesOfClaim.foreach(typeOfClaim =>
+        s"permit $typeOfLoss with $typeOfClaim" in {
+          TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe Nil
+      })
 
-      "typeOfClaim is 'carry-forward'" in {
-        TypeOfClaimValidation.checkClaim(`carry-forward`, `uk-property-non-fhl`) shouldBe List(RuleTypeOfClaimInvalid)
-      }
-
-      "return typeOfClaimFormatError when typeOfLoss is 'foreign-property' and" when {
-
-        "typeOfClaim is 'carry-forward'" in {
-          TypeOfClaimValidation.checkClaim(`carry-forward`, `foreign-property`) shouldBe List(RuleTypeOfClaimInvalid)
-        }
-      }
+      allTypesOfClaim
+        .filterNot(permittedTypesOfClaim.contains)
+        .foreach(typeOfClaim =>
+          s"not permit $typeOfLoss with $typeOfClaim" in {
+            TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe List(RuleTypeOfClaimInvalid)
+        })
     }
+
+    def permitNoTypesOfClaim(typeOfLoss: TypeOfLoss): Unit = {
+      allTypesOfClaim
+        .foreach(typeOfClaim =>
+          s"not permit $typeOfLoss with $typeOfClaim" in {
+            TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe List(RuleTypeOfClaimInvalid)
+        })
+    }
+
   }
 }
