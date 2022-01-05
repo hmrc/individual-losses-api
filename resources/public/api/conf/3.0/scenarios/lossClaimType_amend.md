@@ -69,13 +69,13 @@
     <tbody>
         <tr>
             <td><p>TYPE_OF_CLAIM_INVALID</p></td>
-            <td><p>Simulates a Foreign Property carried forward scenario.</p></td>
+            <td><p>imulates the scenario where a claim type is invalid for the income source.</p></td>
         </tr>
     </tbody>
     <tbody>
         <tr>
             <td><p>NOT_FOUND</p></td>
-            <td><p>Simulates the scenario where a claim type is invalid for the income source.</p></td>
+            <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>
     </tbody>
 </table>
