@@ -75,14 +75,13 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "DUPLICATE"                   -> RuleDuplicateClaimSubmissionError,
       "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
       "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
-      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+      "INCOME_SOURCE_NOT_FOUND"     -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
       "NO_ACCOUNTING_PERIOD"        -> RuleNoAccountingPeriod,
       "INVALID_PAYLOAD"             -> DownstreamError,
       "SERVER_ERROR"                -> DownstreamError,
       "SERVICE_UNAVAILABLE"         -> DownstreamError,
-      "UNEXPECTED_ERROR"            -> DownstreamError,
-      "INCOMESOURCE_ID_REQUIRED"    -> RuleBusinessId,
+      "INVALID_CORRELATIONID"       -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
