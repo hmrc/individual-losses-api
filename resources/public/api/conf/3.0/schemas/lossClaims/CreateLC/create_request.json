@@ -40,5 +40,6 @@
     "typeOfLoss",
     "typeOfClaim",
     "businessId"
-  ]
+  ],
+  "additionalProperties": false
 }

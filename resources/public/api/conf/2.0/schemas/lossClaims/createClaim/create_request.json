@@ -30,5 +30,6 @@
     "typeOfLoss",
     "typeOfClaim",
     "taxYear"
-  ]
+  ],
+    "additionalProperties": false
 }
