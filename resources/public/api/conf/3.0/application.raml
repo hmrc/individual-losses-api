@@ -51,5 +51,15 @@ documentation:
         get:  !include broughtForwardLosses_retrieve.raml
         /change-loss-amount:
           post: !include broughtForwardLosses_amend.raml
-
-
+    /loss-claims:
+      (annotations.group):
+        name: Loss Claims
+        description: !include docs/group_lossClaims.md
+      /{claimId}:
+        uriParameters:
+          claimId:
+            description: Unique identifier for the loss claim. Must conform to the regular expression ^[A-Za-z0-9]{15}$
+            type: string
+            example: "AAZZ0123456789a"
+        /change-type-of-claim:
+          post: !include lossClaimType_amend.raml
