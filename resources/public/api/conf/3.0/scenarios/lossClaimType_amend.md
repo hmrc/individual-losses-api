@@ -69,7 +69,7 @@
     <tbody>
         <tr>
             <td><p>TYPE_OF_CLAIM_INVALID</p></td>
-            <td><p>imulates the scenario where a claim type is invalid for the income source.</p></td>
+            <td><p>Simulates the scenario where a claim type is invalid for the income source.</p></td>
         </tr>
     </tbody>
     <tbody>
