@@ -18,22 +18,22 @@
       ],
       "description": "The type of business the loss applies to."
     },
-      "typeOfClaim": {
-        "type": "string",
-        "description": "The type of claim to be applied.\n\nPermitted values for \"self-employment\": \n\n    carry-forward, \n\n    carry-sideways\n\nPermitted values for \"uk-property-non-fhl\" and \"foreign-property\": \n\n    carry-sideways,\n\n    carry-sideways-fhl,\n\n    carry-forward-to-carry-sideways",
-        "enum": [
-          "carry-forward",
-          "carry-sideways",
-          "carry-sideways-fhl",
-          "carry-forward-to-carry-sideways"
-        ]
-      }
+    "typeOfClaim": {
+      "type": "string",
+      "description": "The type of claim to be applied.\n\nPermitted values for \"self-employment\": \n\n    carry-forward, \n\n    carry-sideways\n\nPermitted values for \"uk-property-non-fhl\" and \"foreign-property\": \n\n    carry-sideways,\n\n    carry-sideways-fhl,\n\n    carry-forward-to-carry-sideways",
+      "enum": [
+        "carry-forward",
+        "carry-sideways",
+        "carry-sideways-fhl",
+        "carry-forward-to-carry-sideways"
+      ]
     },
     "businessId": {
       "type": "string",
       "description": "An identifier for the business, unique to the customer.",
       "example": "XAIS12345678910",
       "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+    }
   },
   "required": [
     "taxYearClaimedFor",
