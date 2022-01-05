@@ -31,10 +31,10 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
   private val validTypeOfClaim = "carry-forward"
   private val validBusinessId  = "XAIS01234567890"
 
-  def createRequestBodyJson(typeOfLoss: String = validTypeOfLoss,
-                            businessId: String = validBusinessId,
-                            typeOfClaim: String = validTypeOfClaim,
-                            taxYearClaimedFor: String = validTaxYear): JsValue = Json.parse(
+  def requestBodyJson(typeOfLoss: String = validTypeOfLoss,
+                      businessId: String = validBusinessId,
+                      typeOfClaim: String = validTypeOfClaim,
+                      taxYearClaimedFor: String = validTaxYear): JsValue = Json.parse(
     s"""
        |{
        |  "typeOfLoss" : "$typeOfLoss",
@@ -51,7 +51,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
 
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson()))) shouldBe Nil
       }
     }
 
@@ -69,56 +69,56 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
       def testMissingMandatory(field: String): Unit =
         s"a mandatory field $field is missing" in {
           val path = s"/$field"
-          validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson().removeProperty(path)))) shouldBe
+          validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson().removeProperty(path)))) shouldBe
             List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq(path))))
         }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(CreateLossClaimRawData("A12344A", AnyContentAsJson(createRequestBodyJson()))) shouldBe
+        validator.validate(CreateLossClaimRawData("A12344A", AnyContentAsJson(requestBodyJson()))) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearClaimedFor = "2016")))) shouldBe
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(taxYearClaimedFor = "2016")))) shouldBe
           List(TaxYearFormatError.copy(paths = Some(List("/taxYearClaimedFor"))))
       }
     }
 
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearClaimedFor = "2019-21")))) shouldBe
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(taxYearClaimedFor = "2019-21")))) shouldBe
           List(RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearClaimedFor"))))
       }
     }
 
     "return RuleTaxYearNotSupportedError error" when {
       "an out of range tax year is supplied" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearClaimedFor = "2018-19")))) shouldBe
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(taxYearClaimedFor = "2018-19")))) shouldBe
           List(RuleTaxYearNotSupportedError)
       }
     }
 
     "return TypeOfLossFormatError error" when {
       "an invalid loss type is submitted" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(typeOfLoss = "invalid")))) shouldBe
           List(TypeOfLossFormatError)
       }
     }
 
     "return TypeOfClaimFormatError error" when {
       "an invalid claim type is submitted" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfClaim = "invalid")))) shouldBe
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(typeOfClaim = "invalid")))) shouldBe
           List(TypeOfClaimFormatError)
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid id is submitted" in {
-        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
+        validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(businessId = "invalid")))) shouldBe
           List(BusinessIdFormatError)
       }
     }
@@ -128,7 +128,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
         validator.validate(
           CreateLossClaimRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
+            AnyContentAsJson(requestBodyJson(typeOfLoss = "self-employment", typeOfClaim = "carry-forward-to-carry-sideways")))) shouldBe
           List(RuleTypeOfClaimInvalid)
       }
     }
@@ -138,7 +138,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
         validator.validate(
           CreateLossClaimRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment", businessId = "invalid", taxYearClaimedFor = "2010-11")))) shouldBe
+            AnyContentAsJson(requestBodyJson(typeOfLoss = "self-employment", businessId = "invalid", taxYearClaimedFor = "2010-11")))) shouldBe
           List(RuleTaxYearNotSupportedError, BusinessIdFormatError)
       }
     }
