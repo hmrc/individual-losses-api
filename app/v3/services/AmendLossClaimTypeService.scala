@@ -45,6 +45,7 @@ class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends
     "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleClaimTypeNotChanged,
+    "INVALID_CORRELATIONID"     -> DownstreamError,
     "SERVER_ERROR"              -> DownstreamError,
     "SERVICE_UNAVAILABLE"       -> DownstreamError
   )
