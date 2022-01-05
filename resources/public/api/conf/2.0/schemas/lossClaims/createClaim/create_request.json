@@ -31,5 +31,5 @@
     "typeOfClaim",
     "taxYear"
   ],
-    "additionalProperties": false
+  "additionalProperties": false
 }
