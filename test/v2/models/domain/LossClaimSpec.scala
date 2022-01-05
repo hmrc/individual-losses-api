@@ -129,17 +129,17 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
   "writes" when {
     "passed a valid Loss Claim Employment model" should {
       "return a valid Loss Claim Employment JSON" in {
-        LossClaim.writes.writes(lossClaimEmployment) shouldBe lossClaimEmploymentDesJson
+        Json.toJson(lossClaimEmployment) shouldBe lossClaimEmploymentDesJson
       }
     }
     "passed a valid Loss Claim Property model" should {
       "return a valid Loss Claim Property JSON" in {
-        LossClaim.writes.writes(lossClaimPropertyNonFhl) shouldBe lossClaimPropertyNonFhlDesJson
+        Json.toJson(lossClaimPropertyNonFhl) shouldBe lossClaimPropertyNonFhlDesJson
       }
     }
     "passed a valid Loss Claim Foreign Property model" should {
       "return a valid Loss Claim Foreign Property JSON" in {
-        LossClaim.writes.writes(lossClaimForeignProp) shouldBe lossClaimForeignPropDesJson
+        Json.toJson(lossClaimForeignProp) shouldBe lossClaimForeignPropDesJson
       }
     }
   }

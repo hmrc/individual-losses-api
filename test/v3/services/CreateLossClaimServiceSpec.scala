@@ -30,7 +30,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
-  val lossClaim: LossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, Some("XKIS00000000988"))
+  val lossClaim: LossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
 
   val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 

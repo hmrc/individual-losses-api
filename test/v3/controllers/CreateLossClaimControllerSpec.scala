@@ -47,7 +47,7 @@ class CreateLossClaimControllerSpec
   val nino: String          = "AA123456A"
   val lossClaimId: String   = "AAZZ1234567890a"
 
-  val lossClaim: LossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, Some("XKIS00000000988"))
+  val lossClaim: LossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
 
   val createLossClaimResponse: CreateLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
 

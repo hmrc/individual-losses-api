@@ -28,9 +28,8 @@ import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
 class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
-    Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYear" -> taxYear, "typeOfClaim" -> typeOfClaim)
+    Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
 
-  val correlationId = "X-123"
   val businessId    = "XKIS00000000988"
   val taxYear       = "2019-20"
   val typeOfClaim   = "carry-forward"
@@ -45,7 +44,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
         |{
         |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
-        |    "taxYear": "2019-20",
+        |    "taxYearClaimedFor": "2019-20",
         |    "typeOfClaim": "carry-forward"
         |}
       """.stripMargin)
@@ -141,53 +140,6 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "return 400 (Bad Request)" when {
-
-      Seq("uk-property-non-fhl").foreach(typeOfLoss =>
-        s"$typeOfLoss is supplied with a businessId" in new CreateLossClaimControllerTest {
-
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          override val requestJson: JsValue = Json.parse(s"""
-            |{
-            |    "businessId": "XKIS00000000988",
-            |    "typeOfLoss": "$typeOfLoss",
-            |    "taxYear": "2019-20",
-            |    "typeOfClaim": "carry-forward"
-            |}
-      """.stripMargin)
-
-          val response: WSResponse = await(request().post(requestJson))
-          response.status shouldBe Status.BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleBusinessId)
-          response.header("Content-Type") shouldBe Some("application/json")
-      })
-
-      Seq("self-employment", "foreign-property").foreach(typeOfLoss =>
-        s"$typeOfLoss is supplied without a businessId" in new CreateLossClaimControllerTest {
-
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          override val requestJson: JsValue = Json.parse(s"""
-            |{
-            |    "typeOfLoss": "$typeOfLoss",
-            |    "taxYear": "2019-20",
-            |    "typeOfClaim": "carry-forward"
-            |}
-      """.stripMargin)
-
-          val response: WSResponse = await(request().post(requestJson))
-          response.status shouldBe Status.BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleBusinessId)
-          response.header("Content-Type") shouldBe Some("application/json")
-      })
 
       createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
       createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)

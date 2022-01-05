@@ -100,7 +100,7 @@ class BFLossSpec extends UnitSpec with JsonErrorValidators {
                                               |	  "taxYearBroughtForwardFrom": 2020,
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
-            BFLoss.writes.writes(model) shouldBe json
+            Json.toJson(model) shouldBe json
           }
       )
     }
@@ -115,7 +115,7 @@ class BFLossSpec extends UnitSpec with JsonErrorValidators {
                                               |	  "taxYearBroughtForwardFrom": 2020,
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
-            BFLoss.writes.writes(model) shouldBe json
+            Json.toJson(model) shouldBe json
           }
       )
     }
@@ -130,7 +130,7 @@ class BFLossSpec extends UnitSpec with JsonErrorValidators {
                                               |	  "taxYearBroughtForwardFrom": 2020,
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
-            BFLoss.writes.writes(model) shouldBe json
+            Json.toJson(model) shouldBe json
           }
       )
     }
