@@ -66,7 +66,7 @@ trait HateoasLinks {
   def getLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = GET, rel = SELF)
 
-  def amendLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
+  def amendLossClaimType(appConfig: AppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimChangeRequest(appConfig, nino, claimId), method = POST, rel = AMEND_LOSS_CLAIM)
 
   def deleteLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =

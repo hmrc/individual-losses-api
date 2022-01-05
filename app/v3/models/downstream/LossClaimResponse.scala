@@ -18,39 +18,39 @@ package v3.models.downstream
 
 import config.AppConfig
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Json, OWrites, Reads, __}
+import play.api.libs.json._
 import v3.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v3.models.domain.{TypeOfClaim, TypeOfLoss}
 import v3.models.hateoas.{HateoasData, Link}
 import v3.models.requestData.DownstreamTaxYear
 
-case class LossClaimResponse(businessId: Option[String],
+case class LossClaimResponse(taxYearClaimedFor: String,
                              typeOfLoss: TypeOfLoss,
                              typeOfClaim: TypeOfClaim,
-                             taxYear: String,
+                             businessId: String,
+                             sequence: Option[Int],
                              lastModified: String)
 
 object LossClaimResponse extends HateoasLinks {
   implicit val writes: OWrites[LossClaimResponse] = Json.writes[LossClaimResponse]
   implicit val reads: Reads[LossClaimResponse] = (
-    (__ \ "incomeSourceId").readNullable[String] and
-      ((__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
-        //For SE scenario where incomeSourceType doesn't exist
-        orElse Reads.pure(TypeOfLoss.`self-employment`)) and
-      (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
-      (__ \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
-      (__ \ "submissionDate").read[String]
-    ) (LossClaimResponse.apply _)
+    (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
+      ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
+      (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
+      (JsPath \ "incomeSourceId").read[String] and
+      (JsPath \ "sequence").readNullable[Int] and
+      (JsPath \ "submissionDate").read[String]
+  )(LossClaimResponse.apply _)
 
   implicit object GetLinksFactory extends HateoasLinksFactory[LossClaimResponse, GetLossClaimHateoasData] {
     override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
       import data._
-      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaim(appConfig, nino, claimId))
+      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
   }
 
-  implicit object AmendLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimHateoasData] {
-    override def links(appConfig: AppConfig, data: AmendLossClaimHateoasData): Seq[Link] = {
+  implicit object AmendLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimTypeHateoasData] {
+    override def links(appConfig: AppConfig, data: AmendLossClaimTypeHateoasData): Seq[Link] = {
       import data._
       Seq(getLossClaim(appConfig, nino, claimId))
     }
@@ -59,4 +59,4 @@ object LossClaimResponse extends HateoasLinks {
 
 case class GetLossClaimHateoasData(nino: String, claimId: String) extends HateoasData
 
-case class AmendLossClaimHateoasData(nino: String, claimId: String) extends HateoasData
+case class AmendLossClaimTypeHateoasData(nino: String, claimId: String) extends HateoasData

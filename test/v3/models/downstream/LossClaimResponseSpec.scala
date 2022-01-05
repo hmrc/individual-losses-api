@@ -29,11 +29,12 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
   val claimId: String = "claimId"
 
   val lossClaimResponse: LossClaimResponse = LossClaimResponse(
-    businessId = Some("000000000000001"),
+    businessId = "000000000000001",
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    taxYear = "2019-20",
-    lastModified = ""
+    taxYearClaimedFor = "2019-20",
+    lastModified = "",
+    sequence = Some(1)
   )
 
   "Json Reads" should {
@@ -46,7 +47,8 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
            |  "reliefClaimed": "CSFHL",
            |  "taxYearClaimedFor": "2020",
            |  "claimId": "notUsed",
-           |  "submissionDate": "20180708"
+           |  "submissionDate": "20180708",
+           |  "sequence": 1
            |}
         """.stripMargin
       )
@@ -60,7 +62,8 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
            |  "reliefClaimed": "CF",
            |  "taxYearClaimedFor": "2020",
            |  "claimId": "notUsed",
-           |  "submissionDate": "20180708"
+           |  "submissionDate": "20180708",
+           |  "sequence": 1
            |}
          """.stripMargin
       )
@@ -69,11 +72,12 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
     def downstreamToModel: TypeOfLoss => LossClaimResponse =
       typeOfLoss =>
         LossClaimResponse(
-          businessId = Some("000000000000001"),
+          businessId = "000000000000001",
           typeOfLoss = typeOfLoss,
           typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
-          taxYear = "2019-20",
-          lastModified = "20180708"
+          taxYearClaimedFor = "2019-20",
+          lastModified = "20180708",
+          sequence = Some(1)
         )
 
     "convert property JSON from downstream into a valid model for property type 02" in {
@@ -81,11 +85,14 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
     }
 
     "convert se json from downstream into a valid model" in {
-      downstreamEmploymentJson.as[LossClaimResponse] shouldBe LossClaimResponse(Some("000000000000001"),
+      downstreamEmploymentJson.as[LossClaimResponse] shouldBe LossClaimResponse(
+        "2019-20",
         TypeOfLoss.`self-employment`,
         TypeOfClaim.`carry-forward`,
-        "2019-20",
-        "20180708")
+        "000000000000001",
+        Some(1),
+        "20180708"
+      )
     }
   }
   "Json Writes" should {
@@ -95,8 +102,9 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
         |  "businessId": "000000000000001",
         |  "typeOfLoss": "self-employment",
         |  "typeOfClaim": "carry-forward",
-        |  "taxYear": "2019-20",
-        |  "lastModified" : ""
+        |  "taxYearClaimedFor": "2019-20",
+        |  "lastModified" : "",
+        |  "sequence": 1
         |}
       """.stripMargin
     )
@@ -119,7 +127,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
     "expose the correct links for amend" in {
       MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-      LossClaimResponse.AmendLinksFactory.links(mockAppConfig, AmendLossClaimHateoasData(nino, claimId)) shouldBe
+      LossClaimResponse.AmendLinksFactory.links(mockAppConfig, AmendLossClaimTypeHateoasData(nino, claimId)) shouldBe
         Seq(
           Link("/individuals/losses/AA123456A/loss-claims/claimId", GET, "self")
         )

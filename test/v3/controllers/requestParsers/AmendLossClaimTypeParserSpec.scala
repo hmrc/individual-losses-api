@@ -19,28 +19,28 @@ package v3.controllers.requestParsers
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v3.mocks.validators.MockAmendLossClaimValidator
-import v3.models.domain.{AmendLossClaim, Nino, TypeOfClaim}
+import v3.mocks.validators.MockAmendLossClaimTypeValidator
+import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino, TypeOfClaim}
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
-import v3.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
+import v3.models.requestData.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest}
 
-class AmendLossClaimParserSpec extends UnitSpec {
+class AmendLossClaimTypeParserSpec extends UnitSpec {
 
   private val nino      = "AA123456A"
   private val claimId   = "AAZZ1234567890a"
   private val lossClaim = TypeOfClaim.`carry-forward`
 
-  val data: AmendLossClaimRawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
+  val data: AmendLossClaimTypeRawData = AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
 
-  trait Test extends MockAmendLossClaimValidator {
-    lazy val parser = new AmendLossClaimParser(mockValidator)
+  trait Test extends MockAmendLossClaimTypeValidator {
+    lazy val parser = new AmendLossClaimTypeParser(mockValidator)
   }
 
   "parse" should {
     "return an AmendBFLossRequest" when {
       "the validator returns no errors" in new Test {
         MockValidator.validate(data).returns(List())
-        parser.parseRequest(data) shouldBe Right(AmendLossClaimRequest(Nino(nino), claimId, AmendLossClaim(lossClaim)))
+        parser.parseRequest(data) shouldBe Right(AmendLossClaimTypeRequest(Nino(nino), claimId, AmendLossClaimTypeRequestBody(lossClaim)))
       }
     }
     "return a single error" when {

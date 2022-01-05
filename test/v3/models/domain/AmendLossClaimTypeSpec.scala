@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v3.models.domain.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
 
-class AmendLossClaimSpec extends UnitSpec {
+class AmendLossClaimTypeSpec extends UnitSpec {
 
   def downstreamJson(reliefClaimed: String): JsValue = Json.parse {
     s"""
@@ -50,7 +50,7 @@ class AmendLossClaimSpec extends UnitSpec {
 
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
-          Json.toJson(AmendLossClaim(test._2)) shouldBe downstreamJson(test._1)
+          Json.toJson(AmendLossClaimTypeRequestBody(test._2)) shouldBe downstreamJson(test._1)
         }
       )
     }
@@ -69,7 +69,7 @@ class AmendLossClaimSpec extends UnitSpec {
 
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._1}" in {
-          mtdJson(test._1).as[AmendLossClaim] shouldBe AmendLossClaim(test._2)
+          mtdJson(test._1).as[AmendLossClaimTypeRequestBody] shouldBe AmendLossClaimTypeRequestBody(test._2)
         }
       )
     }

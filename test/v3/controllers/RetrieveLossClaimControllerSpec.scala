@@ -50,11 +50,12 @@ class RetrieveLossClaimControllerSpec
   val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(Nino(nino), claimId)
 
   val response: LossClaimResponse = LossClaimResponse(
-    taxYear = "2017-18",
+    taxYearClaimedFor = "2017-18",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
-    businessId = None,
+    businessId = "XKIS00000000988",
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    lastModified = "2018-07-13T12:13:48.763Z"
+    lastModified = "2018-07-13T12:13:48.763Z",
+    sequence = Some(1)
   )
 
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
@@ -62,10 +63,12 @@ class RetrieveLossClaimControllerSpec
   val responseJson: JsValue = Json.parse(
     """
       |{
-      |    "taxYear": "2017-18",
+      |    "taxYearClaimedFor": "2017-18",
       |    "typeOfLoss": "uk-property-fhl",
       |    "typeOfClaim": "carry-forward",
       |    "lastModified": "2018-07-13T12:13:48.763Z",
+      |    "businessId": "XKIS00000000988",
+      |    "sequence": 1,
       |    "links": [
       |      {
       |       "href": "/foo/bar",

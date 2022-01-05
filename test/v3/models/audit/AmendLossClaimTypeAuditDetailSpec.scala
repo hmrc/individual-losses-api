@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import support.UnitSpec
 import v3.models.errors.RuleTypeOfClaimInvalid
 
-class AmendLossClaimAuditDetailSpec extends UnitSpec {
+class AmendLossClaimTypeAuditDetailSpec extends UnitSpec {
 
   val nino    = "ZG903729C"
   val claimId = "claimId"
@@ -56,7 +56,7 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             |}""".stripMargin)
 
         Json.toJson(
-          AmendLossClaimAuditDetail(
+          AmendLossClaimTypeAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,
@@ -110,7 +110,7 @@ class AmendLossClaimAuditDetailSpec extends UnitSpec {
             |""".stripMargin)
 
         Json.toJson(
-          AmendLossClaimAuditDetail(
+          AmendLossClaimTypeAuditDetail(
             userType = "Agent",
             agentReferenceNumber = Some("012345678"),
             nino = nino,

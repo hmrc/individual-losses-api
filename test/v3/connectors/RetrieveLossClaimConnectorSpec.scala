@@ -32,15 +32,16 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     val testDateTime: LocalDateTime = LocalDateTime.now()
     val validTaxYear: String = "2019-20"
-    val validSelfEmploymentId: String = "XAIS01234567890"
+    val validBusinessId: String = "XAIS01234567890"
     val nino: String = "AA123456A"
     val claimId: String = "AAZZ1234567890a"
 
     val retrieveResponse: LossClaimResponse = LossClaimResponse(
-      Some(validSelfEmploymentId),
+      validTaxYear,
       TypeOfLoss.`self-employment`,
       TypeOfClaim.`carry-forward`,
-      validTaxYear,
+      validBusinessId,
+      Some(1),
       testDateTime.toString
     )
 

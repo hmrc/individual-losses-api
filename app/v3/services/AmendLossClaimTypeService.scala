@@ -20,21 +20,21 @@ import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.LossClaimConnector
 import v3.models.errors._
-import v3.models.requestData.AmendLossClaimRequest
+import v3.models.requestData.AmendLossClaimTypeRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
+class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
   /**
     * Service name for logging
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendLossClaim(request: AmendLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendLossClaimOutcome] = {
+  def amendLossClaimType(request: AmendLossClaimTypeRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendLossClaimTypeOutcome] = {
 
-    connector.amendLossClaim(request).map {
-      mapToVendorDirect("amendLossClaim", errorMap)
+    connector.amendLossClaimType(request).map {
+      mapToVendorDirect("amendLossClaimType", errorMap)
     }
   }
 

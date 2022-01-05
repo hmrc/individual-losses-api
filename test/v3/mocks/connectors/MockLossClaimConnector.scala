@@ -36,10 +36,10 @@ trait MockLossClaimConnector extends MockFactory {
         .expects(request, *, *)
     }
 
-    def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest): CallHandler[Future[DownstreamOutcome[LossClaimResponse]]] = {
+    def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest): CallHandler[Future[DownstreamOutcome[LossClaimResponse]]] = {
       (connector
-        .amendLossClaim(_: AmendLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(amendLossClaimRequest, *, *)
+        .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(amendLossClaimTypeRequest, *, *)
     }
 
     def retrieveLossClaim(request: RetrieveLossClaimRequest): CallHandler[Future[DownstreamOutcome[LossClaimResponse]]] = {

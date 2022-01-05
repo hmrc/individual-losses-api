@@ -37,12 +37,12 @@ class LossClaimConnector @Inject()(val http: HttpClient,
     post(request.lossClaim, IfsUri[CreateLossClaimResponse](s"income-tax/claims-for-relief/$nino"))
   }
 
-  def amendLossClaim(amendLossClaimRequest: AmendLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                                   ec: ExecutionContext): Future[DownstreamOutcome[LossClaimResponse]] = {
-    val nino    = amendLossClaimRequest.nino.nino
-    val claimId = amendLossClaimRequest.claimId
+  def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest)(implicit hc: HeaderCarrier,
+                                                                               ec: ExecutionContext): Future[DownstreamOutcome[LossClaimResponse]] = {
+    val nino    = amendLossClaimTypeRequest.nino.nino
+    val claimId = amendLossClaimTypeRequest.claimId
 
-    put(amendLossClaimRequest.amendLossClaim, IfsUri[LossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId"))
+    put(amendLossClaimTypeRequest.amendLossClaimType, IfsUri[LossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId"))
   }
 
   def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier,

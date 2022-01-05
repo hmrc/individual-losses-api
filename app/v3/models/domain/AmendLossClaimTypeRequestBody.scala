@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package v3.controllers.requestParsers
+package v3.models.domain
 
-import javax.inject.Inject
-import v3.controllers.requestParsers.validators.AmendLossClaimValidator
-import v3.models.domain.{AmendLossClaim, Nino}
-import v3.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
+import play.api.libs.json.{Json, OWrites, Reads}
 
-class AmendLossClaimParser @Inject()(val validator: AmendLossClaimValidator)
-  extends RequestParser[AmendLossClaimRawData, AmendLossClaimRequest] {
+case class AmendLossClaimTypeRequestBody(typeOfClaim: TypeOfClaim)
 
-  override protected def requestFor(data: AmendLossClaimRawData): AmendLossClaimRequest =
-    AmendLossClaimRequest(Nino(data.nino), data.claimId, data.body.json.as[AmendLossClaim])
+object AmendLossClaimTypeRequestBody {
+  implicit val reads: Reads[AmendLossClaimTypeRequestBody] = Json.reads[AmendLossClaimTypeRequestBody]
+  implicit val writes: OWrites[AmendLossClaimTypeRequestBody] = (o: AmendLossClaimTypeRequestBody) => Json.obj(
+    "updatedReliefClaimedType" -> o.typeOfClaim.toReliefClaimed
+  )
+
 }

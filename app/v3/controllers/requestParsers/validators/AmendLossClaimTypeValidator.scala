@@ -17,32 +17,32 @@
 package v3.controllers.requestParsers.validators
 
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.domain.AmendLossClaim
+import v3.models.domain.AmendLossClaimTypeRequestBody
 import v3.models.errors.MtdError
-import v3.models.requestData.AmendLossClaimRawData
+import v3.models.requestData.AmendLossClaimTypeRawData
 
-class AmendLossClaimValidator extends Validator[AmendLossClaimRawData] {
+class AmendLossClaimTypeValidator extends Validator[AmendLossClaimTypeRawData] {
 
   val validationSet = List(parameterFormatValidation, typeOfClaimValidator, bodyFormatValidator)
 
-  private def parameterFormatValidation: AmendLossClaimRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: AmendLossClaimTypeRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       ClaimIdValidation.validate(data.claimId)
     )
   }
 
-  private def bodyFormatValidator: AmendLossClaimRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: AmendLossClaimTypeRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[AmendLossClaim](data.body.json)
+      JsonFormatValidation.validate[AmendLossClaimTypeRequestBody](data.body.json)
     )
   }
 
-  private def typeOfClaimValidator: AmendLossClaimRawData => List[List[MtdError]] = { data =>
+  private def typeOfClaimValidator: AmendLossClaimTypeRawData => List[List[MtdError]] = { data =>
     List(
       JsonValidation.validate[String](data.body.json \ "typeOfClaim")(TypeOfClaimValidation.validate)
     )
   }
 
-  override def validate(data: AmendLossClaimRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: AmendLossClaimTypeRawData): List[MtdError] = run(validationSet, data)
 }

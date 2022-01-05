@@ -27,19 +27,20 @@ import v3.models.requestData._
 
 import scala.concurrent.Future
 
-class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
+class AmendLossClaimTypeConnectorSpec extends LossClaimConnectorSpec {
 
-  "amend LossClaim" when {
+  "amendLossClaimType" when {
 
-    val amendLossClaimResponse: LossClaimResponse = LossClaimResponse(
-      businessId = Some("XKIS00000000988"),
+    val response: LossClaimResponse = LossClaimResponse(
+      businessId = "XKIS00000000988",
       typeOfLoss = TypeOfLoss.`self-employment`,
       typeOfClaim = TypeOfClaim.`carry-forward`,
-      taxYear = "2019-20",
-      lastModified = LocalDateTime.now().toString
+      taxYearClaimedFor = "2019-20",
+      lastModified = LocalDateTime.now().toString,
+      sequence = Some(1)
     )
 
-    val amendLossClaim: AmendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
+    val amendLossClaimType: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
     implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
@@ -47,18 +48,18 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(ResponseWrapper(correlationId, amendLossClaimResponse))
+        val expected = Right(ResponseWrapper(correlationId, response))
 
         MockHttpClient
           .put(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
             config = dummyIfsHeaderCarrierConfig,
-            body = amendLossClaim,
+            body = amendLossClaimType,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
-        amendLossClaimResult(connector) shouldBe expected
+        amendLossClaimTypeResult(connector) shouldBe expected
       }
     }
 
@@ -70,12 +71,12 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
           .put(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
             config = dummyIfsHeaderCarrierConfig,
-            body = amendLossClaim,
+            body = amendLossClaimType,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
-        amendLossClaimResult(connector) shouldBe expected
+        amendLossClaimTypeResult(connector) shouldBe expected
       }
     }
 
@@ -87,22 +88,22 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
           .put(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
             config = dummyIfsHeaderCarrierConfig,
-            body = amendLossClaim,
+            body = amendLossClaimType,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
-        amendLossClaimResult(connector) shouldBe expected
+        amendLossClaimTypeResult(connector) shouldBe expected
       }
     }
 
-    def amendLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[LossClaimResponse] =
+    def amendLossClaimTypeResult(connector: LossClaimConnector): DownstreamOutcome[LossClaimResponse] =
       await(
-        connector.amendLossClaim(
-          AmendLossClaimRequest(
+        connector.amendLossClaimType(
+          AmendLossClaimTypeRequest(
             nino = Nino(nino),
             claimId = claimId,
-            amendLossClaim
+            amendLossClaimType
           )))
   }
 }
