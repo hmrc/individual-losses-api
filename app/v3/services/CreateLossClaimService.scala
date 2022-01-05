@@ -40,12 +40,12 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends Do
   private def errorMap: PartialFunction[String, MtdError] = {
     case "INVALID_TAXABLE_ENTITY_ID"                                => NinoFormatError
     case "DUPLICATE"                                                => RuleDuplicateClaimSubmissionError
-    case "NOT_FOUND_INCOME_SOURCE"                                  => NotFoundError
+    case "INCOME_SOURCE_NOT_FOUND"                                  => NotFoundError
     case "ACCOUNTING_PERIOD_NOT_ENDED"                              => RulePeriodNotEnded
     case "INVALID_CLAIM_TYPE"                                       => RuleTypeOfClaimInvalid
     case "TAX_YEAR_NOT_SUPPORTED"                                   => RuleTaxYearNotSupportedError
-    case "INCOMESOURCE_ID_REQUIRED"                                 => RuleBusinessId
     case "NO_ACCOUNTING_PERIOD"                                     => RuleNoAccountingPeriod
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
+    case "INVALID_PAYLOAD" | "SERVER_ERROR"
+         | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID"          => DownstreamError
   }
 }
