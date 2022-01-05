@@ -252,6 +252,17 @@ traits:
                 description: The Loss claim has been made too soon.
                 value:
                   code: RULE_PERIOD_NOT_ENDED
+  ruleAccountingPeriodNotEnded:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleAccountingPeriodNotEnded:
+                description: The accounting period has not yet ended.
+                value:
+                  code: RULE_ACCOUNTING_PERIOD_NOT_ENDED
   formatClaimId:
     responses:
       400:
