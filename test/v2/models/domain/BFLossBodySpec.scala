@@ -90,7 +90,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
   "writes" when {
     "passed a valid BroughtForwardLoss Employment model" should {
       "return a valid BroughtForwardLoss Employment JSON" in {
-        BFLoss.writes.writes(broughtForwardLossEmployment) shouldBe broughtForwardLossEmploymentDesJson
+        Json.toJson(broughtForwardLossEmployment) shouldBe broughtForwardLossEmploymentDesJson
       }
     }
     "passed a valid BroughtForwardLoss UK Property model" should {
@@ -103,13 +103,13 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
                                               |	  "taxYear": "2020",
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
-            BFLoss.writes.writes(model) shouldBe json
+            Json.toJson(model) shouldBe json
           }
       )
     }
     "passed a valid BroughtForwardLoss Foreign Property model" should {
       "return a valid BroughtForwardLoss Foreign Property JSON" in {
-        BFLoss.writes.writes(broughtForwardLossForeignProperty) shouldBe broughtForwardLossForeignPropertyDesJson
+        Json.toJson(broughtForwardLossForeignProperty) shouldBe broughtForwardLossForeignPropertyDesJson
       }
     }
   }

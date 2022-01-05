@@ -16,7 +16,7 @@
 
 package v3.models.domain
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v3.models.utils.JsonErrorValidators
 
@@ -62,7 +62,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimUkPropertyNonFhlDowwnstreamJson: JsValue = Json.parse("""
+  val lossClaimUkPropertyNonFhlDownstreamJson: JsValue = Json.parse("""
       |{
       |    "incomeSourceId": "X2IS12356589871",
       |    "incomeSourceType": "02",
@@ -99,14 +99,13 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
   "reads" when {
     "passed a valid LossClaim Json" should {
       "return a valid model" when {
-        Map[TypeOfLoss, (JsValue, LossClaim)](
-          TypeOfLoss.`self-employment`     -> (lossClaimSelfEmploymentJson, lossClaimSelfEmployment),
-          TypeOfLoss.`uk-property-non-fhl` -> (lossClaimUkPropertyNonFhlJson, lossClaimUkPropertyNonFhl),
-          TypeOfLoss.`foreign-property`    -> (lossClaimForeignPropertyJson, lossClaimForeignProperty)
+        Map[LossClaim, JsValue](
+          lossClaimSelfEmployment   -> lossClaimSelfEmploymentJson,
+          lossClaimUkPropertyNonFhl -> lossClaimUkPropertyNonFhlJson,
+          lossClaimForeignProperty  -> lossClaimForeignPropertyJson,
         ).foreach {
-          case (loss, res) =>
-            val (json, model) = res
-            s"typeOfLoss = $loss" in {
+          case (model, json) =>
+            s"typeOfLoss = ${model.typeOfLoss}" in {
               json.as[LossClaim] shouldBe model
             }
         }
@@ -132,17 +131,17 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
   "writes" when {
     "passed a valid Loss Claim Employment model" should {
       "return a valid Loss Claim Employment JSON" in {
-        LossClaim.writes.writes(lossClaimSelfEmployment) shouldBe lossClaimSelfEmploymentDownstreamJson
+        Json.toJson(lossClaimSelfEmployment) shouldBe lossClaimSelfEmploymentDownstreamJson
       }
     }
     "passed a valid Loss Claim Property model" should {
       "return a valid Loss Claim Property JSON" in {
-        LossClaim.writes.writes(lossClaimUkPropertyNonFhl) shouldBe lossClaimUkPropertyNonFhlDowwnstreamJson
+        Json.toJson(lossClaimUkPropertyNonFhl) shouldBe lossClaimUkPropertyNonFhlDownstreamJson
       }
     }
     "passed a valid Loss Claim Foreign Property model" should {
       "return a valid Loss Claim Foreign Property JSON" in {
-        LossClaim.writes.writes(lossClaimForeignProperty) shouldBe lossClaimForeignPropertyDowwnstreamJson
+        Json.toJson(lossClaimForeignProperty) shouldBe lossClaimForeignPropertyDowwnstreamJson
       }
     }
   }
