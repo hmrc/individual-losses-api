@@ -18,21 +18,16 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-
-import javax.inject.{Inject, Singleton}
-import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.AmendLossClaimTypeParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{AmendLossClaimTypeAuditDetail, AuditEvent, AuditResponse}
 import v3.models.downstream.AmendLossClaimTypeHateoasData
 import v3.models.errors._
 import v3.models.requestData.AmendLossClaimTypeRawData
 import v3.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -41,7 +36,6 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
                                              amendLossClaimTypeService: AmendLossClaimTypeService,
                                              amendLossClaimTypeParser: AmendLossClaimTypeParser,
                                              hateoasFactory: HateoasFactory,
-                                             auditService: AuditService,
                                              cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
@@ -63,24 +57,12 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          val response = Json.toJson(vendorResponse)
-
-          auditSubmission(AmendLossClaimTypeAuditDetail(request.userDetails, nino, claimId, request.body,
-            serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
-
-          Ok(response)
+          Ok(Json.toJson(vendorResponse))
             .withApiHeaders(serviceResponse.correlationId)
-            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
-
-        auditSubmission(AmendLossClaimTypeAuditDetail(request.userDetails, nino, claimId, request.body,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
-
-        result
+        errorResult(errorWrapper).withApiHeaders(getCorrelationId(errorWrapper))
       }.merge
     }
 
@@ -95,12 +77,5 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def auditSubmission(details: AmendLossClaimTypeAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("amendLossClaimType", "amend-loss-claim-type", details)
-    auditService.auditEvent(event)
   }
 }

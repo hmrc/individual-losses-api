@@ -52,7 +52,7 @@ object LossClaimResponse extends HateoasLinks {
   implicit object AmendLinksFactory extends HateoasLinksFactory[LossClaimResponse, AmendLossClaimTypeHateoasData] {
     override def links(appConfig: AppConfig, data: AmendLossClaimTypeHateoasData): Seq[Link] = {
       import data._
-      Seq(getLossClaim(appConfig, nino, claimId))
+      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
   }
 }

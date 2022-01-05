@@ -40,8 +40,7 @@ class AmendLossClaimTypeControllerSpec
     with MockMtdIdLookupService
     with MockAmendLossClaimTypeService
     with MockAmendLossClaimTypeRequestDataParser
-    with MockHateoasFactory
-    with MockAuditService {
+    with MockHateoasFactory {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String = "AA123456A"
@@ -99,7 +98,6 @@ class AmendLossClaimTypeControllerSpec
       lookupService = mockMtdIdLookupService,
       amendLossClaimTypeService = mockAmendLossClaimTypeService,
       amendLossClaimTypeParser = mockAmendLossClaimTypeRequestDataParser,
-      auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
       cc = cc
     )
@@ -125,91 +123,64 @@ class AmendLossClaimTypeControllerSpec
           .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
-        status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
+        status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val detail: AmendLossClaimTypeAuditDetail = AmendLossClaimTypeAuditDetail(
-          "Individual", None, nino,  claimId, requestBody, correlationId,
-          AuditResponse(OK, None, Some(responseBody)))
-        val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaimType", "amend-loss-claim-type", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
-    "return a 400 Bad Request with a single error" when {
-
+    "handle mdtp validation errors as per spec" when {
       val badRequestErrorsFromParser = List(
         NinoFormatError,
-        RuleIncorrectOrEmptyBodyError,
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/typeOfClaim"))),
         ClaimIdFormatError,
         TypeOfClaimFormatError
       )
 
-      val badRequestErrorsFromService = List(
-        NinoFormatError,
-        ClaimIdFormatError
-      )
-
-      val notFoundErrorsFromService = List(
-        NotFoundError
-      )
-
-      val forbiddenErrorsFromService = List(
-        RuleClaimTypeNotChanged,
-        RuleTypeOfClaimInvalid
-      )
-
       badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
-      badRequestErrorsFromService.foreach(errorsFromServiceTester(_, BAD_REQUEST))
-      notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
-      forbiddenErrorsFromService.foreach(errorsFromServiceTester(_, FORBIDDEN))
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+    }
+
+    def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      s"a ${error.code} error is returned from the parser" in new Test {
+
+        MockAmendLossClaimTypeRequestDataParser.
+          parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+
+        val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
+
+        contentAsJson(response) shouldBe Json.toJson(error)
+        status(response) shouldBe expectedStatus
+        header("X-CorrelationId", response) shouldBe Some(correlationId)
+      }
     }
   }
 
-  def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-    s"a ${error.code} error is returned from the parser" in new Test {
+  "handle downstream errors as per spec" when {
 
-      MockAmendLossClaimTypeRequestDataParser.
-        parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
-        .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+    errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
+    errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)
+    errorsFromServiceTester(RuleTypeOfClaimInvalid, FORBIDDEN)
+    errorsFromServiceTester(RuleClaimTypeNotChanged, FORBIDDEN)
+    errorsFromServiceTester(NotFoundError, NOT_FOUND)
+    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
 
-      val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
+    def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      s"a ${error.code} error is returned from the service" in new Test {
 
-      status(response) shouldBe expectedStatus
-      contentAsJson(response) shouldBe Json.toJson(error)
-      header("X-CorrelationId", response) shouldBe Some(correlationId)
+        MockAmendLossClaimTypeRequestDataParser.parseRequest(
+          AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .returns(Right(request))
 
-      val detail: AmendLossClaimTypeAuditDetail = AmendLossClaimTypeAuditDetail(
-        "Individual", None, nino, claimId, requestBody, correlationId,
-        AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-      val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaimType", "amend-loss-claim-type", detail)
-      MockedAuditService.verifyAuditEvent(event).once
-    }
-  }
+        MockAmendLossClaimTypeService
+          .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
+          .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
-  def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
-    s"a ${error.code} error is returned from the service" in new Test {
-
-      MockAmendLossClaimTypeRequestDataParser.parseRequest(
-        AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
-        .returns(Right(request))
-
-      MockAmendLossClaimTypeService
-        .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
-        .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
-
-      val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
-      status(response) shouldBe expectedStatus
-      contentAsJson(response) shouldBe Json.toJson(error)
-      header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-      val detail: AmendLossClaimTypeAuditDetail = AmendLossClaimTypeAuditDetail(
-        "Individual", None, nino, claimId, requestBody, correlationId,
-        AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-      val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaimType", "amend-loss-claim-type", detail)
-      MockedAuditService.verifyAuditEvent(event).once
+        val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
+        contentAsJson(response) shouldBe Json.toJson(error)
+        status(response) shouldBe expectedStatus
+        header("X-CorrelationId", response) shouldBe Some(correlationId)
+      }
     }
   }
 }
