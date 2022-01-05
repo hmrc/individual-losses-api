@@ -44,13 +44,11 @@
           "href",
           "rel",
           "method"
-        ],
-        "additionalProperties": false
+        ]
       }
     }
   },
   "required": [
     "claimId"
-  ],
-  "additionalProperties": false
+  ]
 }

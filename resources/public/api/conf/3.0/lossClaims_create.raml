@@ -18,7 +18,7 @@ is:
   - errors.notFoundIncomeSource
 displayName: Create a Loss Claim [test only]
 description: This endpoint allows a developer to create a Loss Claim against an income source for a specific tax year. Claims cannot be made until after the End of Period Statement. A National Insurance number must be provided.
-(annotations.sandboxData): !include scenarios/broughtForwardLosses_create.md
+(annotations.sandboxData): !include scenarios/lossClaim_create.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
