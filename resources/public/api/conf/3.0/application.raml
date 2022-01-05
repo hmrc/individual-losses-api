@@ -55,6 +55,7 @@ documentation:
       (annotations.group):
         name: Loss Claims
         description: !include docs/group_lossClaims.md
+      post: !include lossClaim_create.raml
       /{claimId}:
         uriParameters:
           claimId:
@@ -63,7 +64,3 @@ documentation:
             example: "AAZZ0123456789a"
         /change-type-of-claim:
           post: !include lossClaimType_amend.raml
-    /loss-claims
-      post: !include lossClaim_create.raml
-
-
