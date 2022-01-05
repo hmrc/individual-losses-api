@@ -33,7 +33,7 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
        |{
        |  "incomeSourceId": "XKIS00000000988",
        |  "reliefClaimed": "CF",
-       |  "taxYear": "2020",
+       |  "taxYearClaimedFor": "2020",
        |  "claimId": "notUsed",
        |  "sequence": 1,
        |  "submissionDate": "2018-07-13T12:13:48.763Z"

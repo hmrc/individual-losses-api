@@ -34,7 +34,7 @@ case class LossClaimResponse(taxYearClaimedFor: String,
 object LossClaimResponse extends HateoasLinks {
   implicit val writes: OWrites[LossClaimResponse] = Json.writes[LossClaimResponse]
   implicit val reads: Reads[LossClaimResponse] = (
-    (JsPath \ "taxYear").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
+    (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and

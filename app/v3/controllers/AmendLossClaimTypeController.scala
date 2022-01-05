@@ -100,7 +100,7 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
   private def auditSubmission(details: AmendLossClaimTypeAuditDetail)
                              (implicit hc: HeaderCarrier,
                               ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("amendLossClaim", "amend-loss-claim", details)
+    val event = AuditEvent("amendLossClaimType", "amend-loss-claim-type", details)
     auditService.auditEvent(event)
   }
 }

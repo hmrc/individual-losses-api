@@ -132,7 +132,7 @@ class AmendLossClaimTypeControllerSpec
         val detail: AmendLossClaimTypeAuditDetail = AmendLossClaimTypeAuditDetail(
           "Individual", None, nino,  claimId, requestBody, correlationId,
           AuditResponse(OK, None, Some(responseBody)))
-        val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+        val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaimType", "amend-loss-claim-type", detail)
         MockedAuditService.verifyAuditEvent(event).once
       }
     }
@@ -184,7 +184,7 @@ class AmendLossClaimTypeControllerSpec
       val detail: AmendLossClaimTypeAuditDetail = AmendLossClaimTypeAuditDetail(
         "Individual", None, nino, claimId, requestBody, correlationId,
         AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-      val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+      val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaimType", "amend-loss-claim-type", detail)
       MockedAuditService.verifyAuditEvent(event).once
     }
   }
@@ -208,7 +208,7 @@ class AmendLossClaimTypeControllerSpec
       val detail: AmendLossClaimTypeAuditDetail = AmendLossClaimTypeAuditDetail(
         "Individual", None, nino, claimId, requestBody, correlationId,
         AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-      val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaim", "amend-loss-claim", detail)
+      val event: AuditEvent[AmendLossClaimTypeAuditDetail] = AuditEvent("amendLossClaimType", "amend-loss-claim-type", detail)
       MockedAuditService.verifyAuditEvent(event).once
     }
   }

@@ -45,7 +45,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
            |  "incomeSourceId": "000000000000001",
            |  "incomeSourceType": "$incomeSourceType",
            |  "reliefClaimed": "CSFHL",
-           |  "taxYear": "2020",
+           |  "taxYearClaimedFor": "2020",
            |  "claimId": "notUsed",
            |  "submissionDate": "20180708",
            |  "sequence": 1
@@ -60,7 +60,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
            |{
            |  "incomeSourceId": "000000000000001",
            |  "reliefClaimed": "CF",
-           |  "taxYear": "2020",
+           |  "taxYearClaimedFor": "2020",
            |  "claimId": "notUsed",
            |  "submissionDate": "20180708",
            |  "sequence": 1
