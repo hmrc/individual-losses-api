@@ -62,5 +62,6 @@ documentation:
             description: Unique identifier for the loss claim. Must conform to the regular expression ^[A-Za-z0-9]{15}$
             type: string
             example: "AAZZ0123456789a"
+        get: !include lossClaimType_retrieve.raml
         /change-type-of-claim:
           post: !include lossClaimType_amend.raml
