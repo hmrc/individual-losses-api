@@ -22,13 +22,11 @@ import v3.hateoas.HateoasLinksFactory
 import v3.models.downstream.CreateBFLossResponse._
 import v3.models.hateoas.{HateoasData, Link}
 
-case class CreateLossClaimResponse(id: String)
+case class CreateLossClaimResponse(claimId: String)
 
 object CreateLossClaimResponse {
-  implicit val writes: OWrites[CreateLossClaimResponse] = Json.writes[CreateLossClaimResponse]
 
-  implicit val downstreamToMtdReads: Reads[CreateLossClaimResponse] =
-    (__ \ "claimId").read[String].map(CreateLossClaimResponse.apply)
+  implicit val format: OFormat[CreateLossClaimResponse] = Json.format[CreateLossClaimResponse]
 
   implicit object LinksFactory extends HateoasLinksFactory[CreateLossClaimResponse, CreateLossClaimHateoasData] {
     override def links(appConfig: AppConfig, data: CreateLossClaimHateoasData): Seq[Link] = {

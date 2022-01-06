@@ -69,7 +69,7 @@ class CreateLossClaimControllerSpec
   val responseBody: JsValue = Json.parse(
     """
       |{
-      |  "id": "AAZZ1234567890a",
+      |  "claimId": "AAZZ1234567890a",
       |  "links" : [
       |     {
       |       "href": "/foo/bar",

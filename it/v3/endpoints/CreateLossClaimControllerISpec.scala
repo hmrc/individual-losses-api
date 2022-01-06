@@ -51,7 +51,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
     val responseJson: JsValue = Json.parse(s"""
         |{
-        |    "id": "AAZZ1234567890a",
+        |    "claimId": "AAZZ1234567890a",
         |    "links": [{
         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
         |      "method": "GET",

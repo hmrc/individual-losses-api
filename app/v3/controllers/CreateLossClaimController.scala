@@ -57,7 +57,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
           serviceResponse <- EitherT(createLossClaimService.createLossClaim(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, CreateLossClaimHateoasData(nino, serviceResponse.responseData.id))
+              .wrap(serviceResponse.responseData, CreateLossClaimHateoasData(nino, serviceResponse.responseData.claimId))
               .asRight[ErrorWrapper]
           )
         } yield {

@@ -41,7 +41,7 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
             |    "response":{
             |      "httpStatus": 201,
             |      "body":{
-            |        "id": "$claimId",
+            |        "claimId": "$claimId",
             |        "links":[
             |        {
             |            "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}",
@@ -80,7 +80,7 @@ class CreateLossClaimAuditDetailSpec extends UnitSpec {
               201,
               errors = None,
               body = Some(Json.parse(s"""{
-                          |     "id": "$claimId",
+                          |     "claimId": "$claimId",
                           |     "links":[
                           |      {
                           |         "href":"/individuals/losses/{$nino}/loss-claims/{$claimId}",
