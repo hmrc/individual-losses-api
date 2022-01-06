@@ -43,4 +43,20 @@ traits:
           description: 'The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.'
           example: "2020-21"
           required: true
-        
+  taxYearClaimedFor:
+    queryParameters:
+      taxYearClaimedFor:
+        description: 'The tax year to which the claim applies. The start year and end year must not span two tax years. The minimum tax year is 2019-20. No gaps are allowed, for example, 2022-24 is not valid.'
+        example: "2022-23"
+        required: false
+  typeOfClaim:
+    queryParameters:
+      typeOfClaim:
+        description: 'The type of claim to be applied. Permitted values: <b><ul><li>`carry-sideways`</b>'
+        required: false
+  businessIdForClaims:
+    queryParameters:
+      businessId:
+        description: 'The unique identifier of the income source the claim relates to. Must conform to the regular expression <ul>`^X[A-Z0-9]{1}IS[0-9]{11}$`'
+        example: 'XGIS00000001319'
+        required: false
