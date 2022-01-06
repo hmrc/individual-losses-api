@@ -79,7 +79,7 @@ class ErrorWrapperSpec extends UnitSpec {
         |       },
         |       {
         |         "code": "FORMAT_TAX_YEAR",
-        |         "message": "The provided Tax year is invalid"
+        |         "message": "The provided tax year is invalid"
         |       }
         |   ]
         |}
