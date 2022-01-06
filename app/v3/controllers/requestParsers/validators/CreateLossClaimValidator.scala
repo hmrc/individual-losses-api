@@ -26,10 +26,8 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
 
   private val validationSet = List(
     parameterFormatValidation,
-    typeOfLossValidator,
-    typeOfClaimValidator,
+    enumValidator,
     bodyFormatValidator,
-    typeOfLossBusinessIdValidator,
     taxYearValidator,
     otherBodyFieldsValidator
   )
@@ -41,15 +39,9 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
   }
 
   //  Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
-  private def typeOfLossValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+  private def enumValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     List(
-      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfLossValidation.validateLossClaim)
-    )
-  }
-
-  // Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
-  private def typeOfClaimValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
-    List(
+      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfLossValidation.validateForLossClaim),
       JsonValidation.validate[String](data.body.json \ "typeOfClaim")(TypeOfClaimValidation.validate)
     )
   }
@@ -66,15 +58,8 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
       TaxYearValidation
         .validate(req.taxYearClaimedFor)
         .map(
-          _.copy(paths = Some(Seq(s"/taxYear")))
+          _.copy(paths = Some(Seq(s"/taxYearClaimedFor")))
         )
-    )
-  }
-
-  private def typeOfLossBusinessIdValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
-    val req = data.body.json.as[LossClaim]
-    List(
-      TypeOfLossBusinessIdValidation.validate(req.typeOfLoss, req.businessId)
     )
   }
 
@@ -83,7 +68,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     List(
       MinTaxYearValidation.validate(req.taxYearClaimedFor, minimumTaxYearLossClaim),
       BusinessIdValidation.validate(req.businessId),
-      TypeOfClaimValidation.checkClaim(req.typeOfClaim, req.typeOfLoss)
+      TypeOfClaimValidation.validateTypeOfClaimPermitted(req.typeOfClaim, req.typeOfLoss)
     )
   }
 

@@ -27,16 +27,23 @@ object TypeOfClaimValidation {
     if (TypeOfClaim.parser.isDefinedAt(typeOfClaim)) NoValidationErrors else List(TypeOfClaimFormatError)
   }
 
-  def checkClaim(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] =
-    (typeOfLoss, typeOfClaim) match {
-      case (`uk-property-non-fhl`, `carry-sideways`)                  => NoValidationErrors
-      case (`uk-property-non-fhl`, `carry-sideways-fhl`)              => NoValidationErrors
-      case (`uk-property-non-fhl`, `carry-forward-to-carry-sideways`) => NoValidationErrors
-      case (`self-employment`, `carry-forward`)                       => NoValidationErrors
-      case (`self-employment`, `carry-sideways`)                      => NoValidationErrors
-      case (`foreign-property`, `carry-sideways`)                     => NoValidationErrors
-      case (`foreign-property`, `carry-sideways-fhl`)                 => NoValidationErrors
-      case (`foreign-property`, `carry-forward-to-carry-sideways`)    => NoValidationErrors
-      case (_, _)                                                     => List(RuleTypeOfClaimInvalid)
+  def validateTypeOfClaimPermitted(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] = {
+    val permitted = typeOfLoss match {
+      case `self-employment` =>
+        typeOfClaim match {
+          case `carry-forward` | `carry-sideways` => true
+          case _                                  => false
+        }
+
+      case `uk-property-non-fhl` | `foreign-property` =>
+        typeOfClaim match {
+          case `carry-sideways` | `carry-sideways-fhl` | `carry-forward-to-carry-sideways` => true
+          case _                                                                           => false
+        }
+
+      case _ => false
     }
+
+    if (permitted) NoValidationErrors else List(RuleTypeOfClaimInvalid)
+  }
 }

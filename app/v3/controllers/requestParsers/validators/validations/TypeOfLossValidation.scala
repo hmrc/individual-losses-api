@@ -26,7 +26,7 @@ object TypeOfLossValidation {
     if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 
-  def validateLossClaim(typeOfLoss: String): List[MtdError] = {
+  def validateForLossClaim(typeOfLoss: String): List[MtdError] = {
     if (lossClaimLossTypeNames.contains(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 }

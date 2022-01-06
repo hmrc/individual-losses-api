@@ -150,7 +150,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
       createLossClaimValidationErrorTest("AA123456A",
                                          generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
                                          Status.BAD_REQUEST,
-                                         TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
+                                         TaxYearFormatError.copy(paths = Some(List("/taxYearClaimedFor"))))
       createLossClaimValidationErrorTest("AA123456A", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createLossClaimValidationErrorTest("AA123456A",
                                          generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
@@ -160,7 +160,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
         Status.BAD_REQUEST,
-        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear")))
+        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearClaimedFor")))
       )
       createLossClaimValidationErrorTest("AA123456A",
                                          generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),

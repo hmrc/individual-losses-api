@@ -29,7 +29,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
   private def formatValidation: ListLossClaimsRawData => List[List[MtdError]] = data => List(
     NinoValidation.validate(data.nino),
     data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
-    data.typeOfLoss.map(TypeOfLossValidation.validateLossClaim).getOrElse(Nil)
+    data.typeOfLoss.map(TypeOfLossValidation.validateForLossClaim).getOrElse(Nil)
   )
 
   private def postFormatValidation: ListLossClaimsRawData => List[List[MtdError]] = { data =>

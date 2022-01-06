@@ -24,37 +24,48 @@ class TypeOfLossValidationSpec extends UnitSpec {
   "validate" should {
 
     "return no errors" when {
+      checkValid("self-employment")
+      checkValid("self-employment-class4")
+      checkValid("uk-property-fhl")
+      checkValid("uk-property-non-fhl")
+      checkValid("foreign-property")
+      checkValid("foreign-property-fhl-eea")
 
-      "provided with a string of 'self-employment'" in {
-        TypeOfLossValidation.validate("self-employment").isEmpty shouldBe true
-      }
-
-      "provided with a string of 'self-employment-class4'" in {
-        TypeOfLossValidation.validate("self-employment-class4").isEmpty shouldBe true
-      }
-
-      "provided with a string of 'uk-property-fhl'" in {
-        TypeOfLossValidation.validate("uk-property-fhl").isEmpty shouldBe true
-      }
-
-      "provided with a string of 'uk-property-non-fhl'" in {
-        TypeOfLossValidation.validate("uk-property-non-fhl").isEmpty shouldBe true
-      }
-
-      "provided with a string of 'foreign-property'" in {
-        TypeOfLossValidation.validate("foreign-property").isEmpty shouldBe true
-      }
+      def checkValid(typeOfLoss  : String)  : Unit =
+        s"provided with a string of '$typeOfLoss'" in {
+          TypeOfLossValidation.validate(typeOfLoss) shouldBe Nil
+        }
     }
 
-    "return an error" when {
-
-      "provided with an empty string" in {
-        TypeOfLossValidation.validate("") shouldBe List(TypeOfLossFormatError)
+    "return a TypeOfLossFormatError" when {
+      "provided with an unknown type of loss" in {
+        TypeOfLossValidation.validate("invalid") shouldBe List(TypeOfLossFormatError)
       }
+    }
+  }
 
-      "provided with a non-matching string" in {
-        TypeOfLossValidation.validate("self-employment-a") shouldBe List(TypeOfLossFormatError)
-      }
+  "validateForLossClaims" should {
+    "return no errors" when {
+      checkValid("self-employment")
+      checkValid("uk-property-non-fhl")
+      checkValid("foreign-property")
+
+      def checkValid(typeOfLoss  : String)  : Unit =
+        s"provided with a string of '$typeOfLoss'" in {
+          TypeOfLossValidation.validateForLossClaim(typeOfLoss) shouldBe Nil
+        }
+    }
+
+    "return a TypeOfLossFormatError" when {
+      checkInvalid("self-employment-class4")
+      checkInvalid("uk-property-fhl")
+      checkInvalid("foreign-property-fhl-eea")
+      checkInvalid("invalid")
+
+      def checkInvalid(typeOfLoss  : String)  : Unit =
+        s"provided with a string of '$typeOfLoss'" in {
+          TypeOfLossValidation.validateForLossClaim(typeOfLoss) shouldBe  List(TypeOfLossFormatError)
+        }
     }
   }
 }
