@@ -15,7 +15,7 @@
     <tbody>
         <tr>
             <td><p>UK_PROPERTY</p></td>
-            <td><p>	Simulates successful uk-property-non-fhl response where typeOfClaim is "carry-sideways-fhl".</p></td>
+            <td><p>Simulates successful uk-property-non-fhl response where typeOfClaim is "carry-sideways-fhl".</p></td>
         </tr>
     </tbody>
     <tbody>
