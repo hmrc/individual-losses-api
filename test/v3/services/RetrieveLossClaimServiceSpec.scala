@@ -88,6 +88,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
+      "INVALID_CORRELATIONID"     -> DownstreamError,
       "SERVER_ERROR"              -> DownstreamError,
       "SERVICE_UNAVAILABLE"       -> DownstreamError
     ).foreach {
