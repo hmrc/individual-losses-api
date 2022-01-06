@@ -51,7 +51,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
     val responseJson: JsValue = Json.parse(s"""
         |{
-        |    "id": "AAZZ1234567890a",
+        |    "claimId": "AAZZ1234567890a",
         |    "links": [{
         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
         |      "method": "GET",
@@ -103,7 +103,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
       def ifsUrl: String = s"/income-tax/claims-for-relief/$nino"
     }
 
-    "return a 201 status code" when {
+    "return a 200 status code" when {
 
       "any valid request is made" in new CreateLossClaimControllerTest() {
 
@@ -123,7 +123,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(Status.BAD_REQUEST, "UNEXPECTED_IFS_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
@@ -131,8 +131,8 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
     "return 403 FORBIDDEN" when {
       createErrorTest(Status.CONFLICT, "DUPLICATE", Status.FORBIDDEN, RuleDuplicateClaimSubmissionError)
-      createErrorTest(Status.FORBIDDEN, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
-      createErrorTest(Status.FORBIDDEN, "NO_ACCOUNTING_PERIOD", Status.FORBIDDEN, RuleNoAccountingPeriod)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", Status.FORBIDDEN, RuleNoAccountingPeriod)
     }
 
     "return 404 NOT FOUND" when {
@@ -141,8 +141,8 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
     "return 400 (Bad Request)" when {
 
-      createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("BADNINO",
                                          generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"),
                                          Status.BAD_REQUEST,

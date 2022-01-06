@@ -22,7 +22,7 @@ import v3.connectors.LossClaimConnector
 import v3.models.errors._
 import v3.models.requestData.CreateLossClaimRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
