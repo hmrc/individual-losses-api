@@ -1,0 +1,27 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatClaimId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundIncomeSource
+displayName: Retrieve a Loss Claim [test only]
+description: This endpoint allows a developer to retrieve the detail of an existing loss claim. A National Insurance Number and Claim ID must be provided.
+(annotations.sandboxData): !include scenarios/lossClaimType_retrieve.md
+(annotations.scope): "read:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+responses:
+  200:
+    body:
+      application/json:
+        type: !include schemas/retrieveLossClaimType/retrieve_response.json
+        examples:
+          example-1:
+            description: Self-Employment Loss Claim
+            value: !include examples/retrieveLossClaimType/retrieve_request_self_employment_claims.json
+          example-2:
+            description: Property Loss Claim
+            value: !include examples/retrieveLossClaimType/retrieve_request_property_claims.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
