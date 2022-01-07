@@ -17,7 +17,7 @@
 package v3.models.requestData
 
 case class ListLossClaimsRawData(nino: String,
-                                 taxYear: Option[String],
+                                 taxYearClaimedFor: Option[String],
                                  typeOfLoss: Option[String],
                                  businessId: Option[String],
-                                 claimType: Option[String]) extends RawData
+                                 typeOfClaim: Option[String]) extends RawData
