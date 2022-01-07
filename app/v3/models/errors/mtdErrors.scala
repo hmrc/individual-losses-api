@@ -42,7 +42,7 @@ object RuleDuplicateClaimSubmissionError extends MtdError("RULE_DUPLICATE_SUBMIS
 object RuleDeleteAfterCrystallisationError extends MtdError("RULE_DELETE_AFTER_CRYSTALLISATION", "This loss cannot be deleted after crystallisation")
 object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The claim type selected is not available for this type of loss")
 object RuleClaimTypeNotChanged extends MtdError("RULE_NO_CHANGE", "This claim matches a previous submission")
-object RulePeriodNotEnded extends MtdError("RULE_PERIOD_NOT_ENDED", "The relevant accounting period has not yet ended")
+object RulePeriodNotEnded extends MtdError("RULE_ACCOUNTING_PERIOD_NOT_ENDED", "The accounting period has not yet ended")
 object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed")
 object RuleNoAccountingPeriod extends MtdError("RULE_NO_ACCOUNTING_PERIOD", "For the year of the claim there is no accounting period")
 object RuleInvalidSequenceStart extends MtdError( "RULE_INVALID_SEQUENCE_START", "The sequence does not begin with 1")

@@ -24,12 +24,12 @@ import v3.models.hateoas.Method.{DELETE, GET, POST}
 
 class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
-  val createClaimsResponse: CreateLossClaimResponse = CreateLossClaimResponse(id = "AAZZ1234567890a")
+  val createClaimsResponse: CreateLossClaimResponse = CreateLossClaimResponse(claimId = "AAZZ1234567890a")
 
   val createClaimsResponseJson: JsValue = Json.parse(
     """
       |{
-      |   "id": "AAZZ1234567890a"
+      |   "claimId": "AAZZ1234567890a"
       |}
     """.stripMargin
   )

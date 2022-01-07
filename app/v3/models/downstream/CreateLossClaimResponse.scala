@@ -22,7 +22,7 @@ import v3.hateoas.HateoasLinksFactory
 import v3.models.downstream.CreateBFLossResponse._
 import v3.models.hateoas.{HateoasData, Link}
 
-case class CreateLossClaimResponse(id: String)
+case class CreateLossClaimResponse(claimId: String)
 
 object CreateLossClaimResponse {
   implicit val writes: OWrites[CreateLossClaimResponse] = Json.writes[CreateLossClaimResponse]

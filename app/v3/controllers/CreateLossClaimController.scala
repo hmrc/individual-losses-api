@@ -19,16 +19,12 @@ package v3.controllers
 import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
-import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors.{MtdErrorWithCode, RuleTaxYearRangeInvalid, TaxYearFormatError}
 import v3.controllers.requestParsers.CreateLossClaimParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{AuditEvent, AuditResponse, CreateLossClaimAuditDetail}
 import v3.models.downstream.CreateLossClaimHateoasData
-import v3.models.errors._
+import v3.models.errors.{MtdErrorWithCode, RuleTaxYearRangeInvalid, TaxYearFormatError, _}
 import v3.models.requestData.CreateLossClaimRawData
 import v3.services._
 
@@ -57,7 +53,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
           serviceResponse <- EitherT(createLossClaimService.createLossClaim(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, CreateLossClaimHateoasData(nino, serviceResponse.responseData.id))
+              .wrap(serviceResponse.responseData, CreateLossClaimHateoasData(nino, serviceResponse.responseData.claimId))
               .asRight[ErrorWrapper]
           )
         } yield {
@@ -65,22 +61,13 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          val response = Json.toJson(vendorResponse)
-
-          auditSubmission(CreateLossClaimAuditDetail(request.userDetails, nino, request.body,
-            serviceResponse.correlationId, AuditResponse(CREATED, Right(Some(response)))))
-
-          Created(response)
+          Created(Json.toJson(vendorResponse))
             .withApiHeaders(serviceResponse.correlationId)
-            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
-
-        auditSubmission(CreateLossClaimAuditDetail(request.userDetails, nino, request.body,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
@@ -96,7 +83,6 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | RuleTaxYearRangeInvalid
            | TypeOfLossFormatError
            | BusinessIdFormatError
-           | RuleBusinessId
            | RuleTypeOfClaimInvalid
            | TypeOfClaimFormatError
            | MtdErrorWithCode(TaxYearFormatError.code)
@@ -106,12 +92,5 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def auditSubmission(details: CreateLossClaimAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
-    val event = AuditEvent("createLossClaim", "create-loss-claim", details)
-    auditService.auditEvent(event)
   }
 }

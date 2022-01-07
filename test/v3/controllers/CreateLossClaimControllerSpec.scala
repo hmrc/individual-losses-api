@@ -16,20 +16,19 @@
 
 package v3.controllers
 
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v3.mocks.services._
-import v3.models.audit.{ AuditError, AuditEvent, AuditResponse, CreateLossClaimAuditDetail }
-import v3.models.downstream.{ CreateLossClaimHateoasData, CreateLossClaimResponse }
-import v3.models.domain.{ LossClaim, Nino, TypeOfClaim, TypeOfLoss }
-import v3.models.errors.{ NotFoundError, _ }
+import v3.models.domain.{LossClaim, Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.downstream.{CreateLossClaimHateoasData, CreateLossClaimResponse}
+import v3.models.errors.{NotFoundError, _}
 import v3.models.hateoas.Method.GET
-import v3.models.hateoas.{ HateoasWrapper, Link }
+import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{ CreateLossClaimRawData, CreateLossClaimRequest }
+import v3.models.requestData.{CreateLossClaimRawData, CreateLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -69,7 +68,7 @@ class CreateLossClaimControllerSpec
   val responseBody: JsValue = Json.parse(
     """
       |{
-      |  "id": "AAZZ1234567890a",
+      |  "claimId": "AAZZ1234567890a",
       |  "links" : [
       |     {
       |       "href": "/foo/bar",
@@ -118,11 +117,6 @@ class CreateLossClaimControllerSpec
         status(result) shouldBe CREATED
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val detail: CreateLossClaimAuditDetail =
-          CreateLossClaimAuditDetail("Individual", None, nino, requestBody, correlationId, AuditResponse(CREATED, None, Some(responseBody)))
-        val event: AuditEvent[CreateLossClaimAuditDetail] = AuditEvent("createLossClaim", "create-loss-claim", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
   }
@@ -140,15 +134,6 @@ class CreateLossClaimControllerSpec
         status(response) shouldBe expectedStatus
         contentAsJson(response) shouldBe Json.toJson(error)
         header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-        val detail: CreateLossClaimAuditDetail = CreateLossClaimAuditDetail("Individual",
-                                                                            None,
-                                                                            nino,
-                                                                            requestBody,
-                                                                            correlationId,
-                                                                            AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-        val event: AuditEvent[CreateLossClaimAuditDetail] = AuditEvent("createLossClaim", "create-loss-claim", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
@@ -161,7 +146,6 @@ class CreateLossClaimControllerSpec
       RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))),
       TypeOfLossFormatError,
       BusinessIdFormatError,
-      RuleBusinessId,
       RuleTypeOfClaimInvalid,
       TypeOfClaimFormatError
     )
@@ -185,15 +169,6 @@ class CreateLossClaimControllerSpec
         status(response) shouldBe expectedStatus
         contentAsJson(response) shouldBe Json.toJson(error)
         header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-        val detail: CreateLossClaimAuditDetail = CreateLossClaimAuditDetail("Individual",
-                                                                            None,
-                                                                            nino,
-                                                                            requestBody,
-                                                                            correlationId,
-                                                                            AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-        val event: AuditEvent[CreateLossClaimAuditDetail] = AuditEvent("createLossClaim", "create-loss-claim", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
@@ -205,6 +180,5 @@ class CreateLossClaimControllerSpec
     errorsFromServiceTester(RuleTypeOfClaimInvalid, BAD_REQUEST)
     errorsFromServiceTester(RulePeriodNotEnded, FORBIDDEN)
     errorsFromServiceTester(RuleNoAccountingPeriod, FORBIDDEN)
-    errorsFromServiceTester(RuleBusinessId, BAD_REQUEST)
   }
 }

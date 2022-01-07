@@ -51,7 +51,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
     val responseJson: JsValue = Json.parse(s"""
         |{
-        |    "id": "AAZZ1234567890a",
+        |    "claimId": "AAZZ1234567890a",
         |    "links": [{
         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
         |      "method": "GET",
@@ -123,7 +123,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(Status.BAD_REQUEST, "UNEXPECTED_IFS_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
@@ -131,18 +131,26 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
     "return 403 FORBIDDEN" when {
       createErrorTest(Status.CONFLICT, "DUPLICATE", Status.FORBIDDEN, RuleDuplicateClaimSubmissionError)
-      createErrorTest(Status.FORBIDDEN, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
-      createErrorTest(Status.FORBIDDEN, "NO_ACCOUNTING_PERIOD", Status.FORBIDDEN, RuleNoAccountingPeriod)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", Status.FORBIDDEN, RuleNoAccountingPeriod)
     }
 
     "return 404 NOT FOUND" when {
       createErrorTest(Status.NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", Status.NOT_FOUND, NotFoundError)
     }
 
+    "return 400 (Bad Request) with paths for the missing mandatory field" when {
+      createLossClaimValidationErrorTest("AA123456A",
+        Json.obj("typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim),
+        Status.BAD_REQUEST,
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/businessId"))))
+    }
+
     "return 400 (Bad Request)" when {
 
-      createErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(Status.FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(Status.UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("BADNINO",
                                          generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"),
                                          Status.BAD_REQUEST,
