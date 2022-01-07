@@ -22,18 +22,30 @@ import play.api.libs.json._
 import v3.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v3.models.hateoas.{HateoasData, Link}
 import play.api.libs.functional.syntax._
-import v3.models.domain.TypeOfClaim
+import v3.models.domain.{TypeOfClaim, TypeOfLoss}
+import v3.models.requestData.DownstreamTaxYear
 
 
-case class LossClaimId(id: String, sequence: Option[Int], typeOfClaim: TypeOfClaim)
+case class LossClaimId(businessId: String,
+                       typeOfClaim: TypeOfClaim,
+                       typeOfLoss: TypeOfLoss,
+                       taxYearClaimedFor: String,
+                       claimId: String,
+                       sequence: Option[Int],
+                       lastModified: String
+                       )
 
 object LossClaimId {
   implicit val writes: OWrites[LossClaimId] = Json.writes[LossClaimId]
 
   implicit val reads: Reads[LossClaimId] = (
-    (JsPath \ "claimId").read[String] and
+    (JsPath \ "incomeSourceId").read[String] and
+      (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
+      (JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) and
+      (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
+      (JsPath \ "claimId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
-      (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim)
+      (JsPath \ "submissionDate").read[String]
     )(LossClaimId.apply _)
 }
 
@@ -60,7 +72,7 @@ object ListLossClaimsResponse extends HateoasLinks {
     }
 
     override def itemLinks(appConfig: AppConfig, data: ListLossClaimsHateoasData, item: LossClaimId): Seq[Link] =
-      Seq(getLossClaim(appConfig, data.nino, item.id))
+      Seq(getLossClaim(appConfig, data.nino, item.claimId))
   }
 
   implicit object ResponseFunctor extends Functor[ListLossClaimsResponse] {

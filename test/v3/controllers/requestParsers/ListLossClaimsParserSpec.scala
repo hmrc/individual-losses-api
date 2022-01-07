@@ -41,10 +41,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
             nino = nino,
-            taxYear = Some(taxYear),
+            taxYearClaimedFor = Some(taxYear),
             typeOfLoss = Some("uk-property-fhl"),
             businessId = Some(businessId),
-            claimType = Some(claimType)
+            typeOfClaim = Some(claimType)
           )
 
         MockValidator
@@ -55,10 +55,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
           Right(
             ListLossClaimsRequest(
               nino = Nino(nino),
-              taxYear = Some(DownstreamTaxYear("2018")),
-              incomeSourceType = Some(IncomeSourceType.`04`),
+              taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
+              typeOfLoss = Some(IncomeSourceType.`04`),
               businessId = Some(businessId),
-              claimType = Some(TypeOfClaim.`carry-sideways`)
+              typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
             )
           )
       }
@@ -67,10 +67,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
             nino = nino,
-            taxYear = Some(taxYear),
+            taxYearClaimedFor = Some(taxYear),
             typeOfLoss = Some("uk-property-non-fhl"),
             businessId = Some(businessId),
-            claimType = Some(claimType)
+            typeOfClaim = Some(claimType)
           )
 
         MockValidator
@@ -81,10 +81,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
           Right(
             ListLossClaimsRequest(
               nino = Nino(nino),
-              taxYear = Some(DownstreamTaxYear("2018")),
-              incomeSourceType = Some(IncomeSourceType.`02`),
+              taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
+              typeOfLoss = Some(IncomeSourceType.`02`),
               businessId = Some(businessId),
-              claimType = Some(TypeOfClaim.`carry-sideways`)
+              typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
             )
           )
       }

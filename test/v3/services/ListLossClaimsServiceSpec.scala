@@ -18,7 +18,7 @@ package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
 import v3.models.downstream.{ListLossClaimsResponse, LossClaimId}
-import v3.models.domain.{Nino, TypeOfClaim}
+import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.ListLossClaimsRequest
@@ -40,8 +40,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[LossClaimId]] =
-          ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("testId", Some(1), TypeOfClaim.`carry-sideways`),
-            LossClaimId("testId2", Some(2), TypeOfClaim.`carry-sideways`))))
+          ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("testId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+            LossClaimId("testId2", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId2", Some(1), "2020-07-13T12:13:48.763Z"))))
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.listLossClaims(request)) shouldBe Right(downstreamResponse)

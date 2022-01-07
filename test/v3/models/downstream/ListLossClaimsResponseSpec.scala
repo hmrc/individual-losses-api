@@ -21,7 +21,7 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.models.domain.TypeOfClaim
+import v3.models.domain.{TypeOfClaim, TypeOfLoss}
 import v3.models.hateoas.Link
 import v3.models.hateoas.Method.{GET, POST, PUT}
 
@@ -31,8 +31,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   "json writes" must {
     "output as per spec" in {
-      Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`),
-                                             LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-forward`)))) shouldBe
+      Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+        LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))) shouldBe
         Json.parse(
           """
             |{
@@ -90,9 +90,9 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
       downstreamResponseJson.as[ListLossClaimsResponse[LossClaimId]] shouldBe
         ListLossClaimsResponse(
-          Seq(LossClaimId("000000000000011", Some(1), TypeOfClaim.`carry-forward`),
-              LossClaimId("000000000000022", Some(2), TypeOfClaim.`carry-forward`),
-              LossClaimId("000000000000033", Some(3), TypeOfClaim.`carry-sideways-fhl`)))
+          Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId2", TypeOfClaim.`carry-forward`, TypeOfLoss.`self-employment`, "2020", "claimId2", Some(3), "2020-07-13T12:13:48.763Z")))
     }
   }
 
@@ -123,7 +123,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
     "expose the correct item level links for list" in {
       MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
       ListLossClaimsResponse.LinksFactory.itemLinks(mockAppConfig, ListLossClaimsHateoasData(nino),
-        LossClaimId("claimId", Some(1), TypeOfClaim.`carry-sideways`)) shouldBe
+        LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z")) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self")
         )
