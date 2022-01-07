@@ -19,25 +19,26 @@ package v3.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V3IntegrationBaseSpec
 import v3.models.errors._
-import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
+import v3.stubs.{ AuditStub, AuthStub, IfsStub, MtdIdLookupStub }
 
 class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
   val correlationId = "X-123"
-
+  val businessId    = "XKIS00000000988"
+  val lastModified  = "2018-07-13T12:13:48.763Z"
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
        |{
-       |  "incomeSourceId": "XKIS00000000988",
+       |  "incomeSourceId": "$businessId",
        |  "reliefClaimed": "CF",
        |  "taxYearClaimedFor": "2020",
        |  "claimId": "notUsed",
        |  "sequence": 1,
-       |  "submissionDate": "2018-07-13T12:13:48.763Z"
+       |  "submissionDate": "$lastModified"
        |}
       """.stripMargin)
 
@@ -46,14 +47,13 @@ class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
-         |    "businessId": "XKIS00000000988",
+         |    "businessId": "$businessId",
          |    "typeOfLoss": "self-employment",
          |    "typeOfClaim": "carry-forward",
          |    "taxYearClaimedFor": "2019-20",
-         |    "lastModified":"2018-07-13T12:13:48.763Z",
+         |    "lastModified":"$lastModified",
          |    "sequence": 1,
          |    "links": [{
          |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
@@ -135,6 +135,7 @@ class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
