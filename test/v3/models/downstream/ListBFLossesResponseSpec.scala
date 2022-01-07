@@ -19,24 +19,54 @@ package v3.models.downstream
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.hateoas.{HateoasFactory, HateoasLinks}
-import v3.models.hateoas.Method.{GET, POST}
-import v3.models.hateoas.{HateoasWrapper, Link}
+import v3.hateoas.{ HateoasFactory, HateoasLinks }
+import v3.models.domain.TypeOfLoss
+import v3.models.hateoas.Method.{ GET, POST }
+import v3.models.hateoas.{ HateoasWrapper, Link }
 
 class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 
+  val item1: ListBFLossesItem = ListBFLossesItem(
+    lossId = "lossId1",
+    businessId = "businessId1",
+    typeOfLoss = TypeOfLoss.`self-employment`,
+    lossAmount = 1.50,
+    taxYearBroughtForwardFrom = "2019-20",
+    lastModified = "lastModified1"
+  )
+
+  val item2: ListBFLossesItem = ListBFLossesItem(
+    lossId = "lossId2",
+    businessId = "businessId2",
+    typeOfLoss = TypeOfLoss.`self-employment`,
+    lossAmount = 2.75,
+    taxYearBroughtForwardFrom = "2019-20",
+    lastModified = "lastModified2"
+  )
+
   "json writes" must {
     "output as per spec" in {
-      Json.toJson(ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))) shouldBe
+
+      Json.toJson(ListBFLossesResponse(Seq(item1, item2))) shouldBe
         Json.parse(
-        """
+          """
           |{
           |    "losses": [
           |        {
-          |            "lossId": "000000123456789"
+          |            "lossId": "lossId1",
+          |            "businessId": "businessId1",
+          |            "typeOfLoss": "self-employment",
+          |            "lossAmount": 1.50,
+          |            "taxYearBroughtForwardFrom": "2019-20",
+          |            "lastModified": "lastModified1"
           |        },
           |        {
-          |            "lossId": "000000123456790"
+          |            "lossId": "lossId2",
+          |            "businessId": "businessId2",
+          |            "typeOfLoss": "self-employment",
+          |            "lossAmount": 2.75,
+          |            "taxYearBroughtForwardFrom": "2019-20",
+          |            "lastModified": "lastModified2"
           |        }
           |    ]
           |}
@@ -44,62 +74,35 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
         )
     }
   }
+
   "json reads" must {
     "work for downstream response" in {
-      // Note we ignore all but the lossId currently...
       val downstreamResponseJson =
         Json.parse(
-        """
+          """
            |[
            |  {
-           |   "incomeSourceId": "000000000000000",
+           |   "incomeSourceId": "businessId1",
            |   "lossType": "INCOME",
-           |   "broughtForwardLossAmount": 99999999999.99,
+           |   "broughtForwardLossAmount": 1.50,
            |   "taxYear": "2020",
-           |   "lossId": "000000000000001",
-           |   "submissionDate": "2020-07-13T12:13:48.763Z"
+           |   "lossId": "lossId1",
+           |   "submissionDate": "lastModified1"
            |  },
            |  {
-           |   "incomeSourceId": "000000000000000",
+           |   "incomeSourceId": "businessId2",
            |   "lossType": "INCOME",
-           |   "broughtForwardLossAmount": 0.02,
+           |   "broughtForwardLossAmount": 2.75,
            |   "taxYear": "2020",
-           |   "lossId": "000000000000002",
-           |   "submissionDate": "2020-07-13T12:13:48.763Z"
-           |  },
-           |  {
-           |   "incomeSourceId": "000000000000000",
-           |   "incomeSourceType": "01",
-           |   "broughtForwardLossAmount": 0.02,
-           |   "taxYear": "2020",
-           |   "lossId": "000000000000008",
-           |   "submissionDate": "2020-07-13T12:13:48.763Z"
-           |  },
-           |  {
-           |   "incomeSourceType": "02",
-           |   "broughtForwardLossAmount": 0.02,
-           |   "taxYear": "2020",
-           |   "lossId": "000000000000003",
-           |   "submissionDate": "2020-07-13T12:13:48.763Z"
-           |  },
-           |  {
-           |   "incomeSourceType": "04",
-           |   "broughtForwardLossAmount": 0.02,
-           |   "taxYear": "2020",
-           |   "lossId": "000000000000004",
-           |   "submissionDate": "2020-07-13T12:13:48.763Z"
+           |   "lossId": "lossId2",
+           |   "submissionDate": "lastModified2"
            |  }
            |]
          """.stripMargin
         )
 
-      downstreamResponseJson.as[ListBFLossesResponse[BFLossId]] shouldBe
-        ListBFLossesResponse(
-          Seq(BFLossId("000000000000001"),
-              BFLossId("000000000000002"),
-              BFLossId("000000000000008"),
-              BFLossId("000000000000003"),
-              BFLossId("000000000000004")))
+      downstreamResponseJson.as[ListBFLossesResponse[ListBFLossesItem]] shouldBe
+        ListBFLossesResponse(Seq(item1, item2))
     }
   }
 
@@ -111,10 +114,14 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
     }
 
     "expose the correct links for list" in new Test {
-      hateoasFactory.wrapList(ListBFLossesResponse(Seq(BFLossId("lossId"))), ListBFLossHateoasData(nino)) shouldBe
+      hateoasFactory.wrapList(ListBFLossesResponse(Seq(item1, item2)), ListBFLossHateoasData(nino)) shouldBe
         HateoasWrapper(
           ListBFLossesResponse(
-            Seq(HateoasWrapper(BFLossId("lossId"), Seq(Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", GET, "self"))))),
+            Seq(
+              HateoasWrapper(item1, Seq(Link(s"/individuals/losses/$nino/brought-forward-losses/lossId1", GET, "self"))),
+              HateoasWrapper(item2, Seq(Link(s"/individuals/losses/$nino/brought-forward-losses/lossId2", GET, "self")))
+            )
+          ),
           Seq(
             Link(s"/individuals/losses/$nino/brought-forward-losses", GET, "self"),
             Link(s"/individuals/losses/$nino/brought-forward-losses", POST, "create-brought-forward-loss")

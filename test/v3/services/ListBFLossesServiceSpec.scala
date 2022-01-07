@@ -17,8 +17,8 @@
 package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.downstream.{ BFLossId, ListBFLossesResponse }
-import v3.models.domain.Nino
+import v3.models.downstream.{ListBFLossesItem, ListBFLossesResponse}
+import v3.models.domain.{Nino, TypeOfLoss}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.ListBFLossesRequest
@@ -36,11 +36,15 @@ class ListBFLossesServiceSpec extends ServiceSpec {
 
   lazy val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), None, None, None)
 
+  val response: ListBFLossesResponse[ListBFLossesItem] =
+    ListBFLossesResponse(Seq(ListBFLossesItem(lossId, "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
+
+
   "retrieve the list of bf losses" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val downstreamResponse: ResponseWrapper[ListBFLossesResponse[BFLossId]] =
-          ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("testId"), BFLossId("testId2"))))
+        val downstreamResponse: ResponseWrapper[ListBFLossesResponse[ListBFLossesItem]] =
+          ResponseWrapper(correlationId, response)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.listBFLosses(request)) shouldBe Right(downstreamResponse)

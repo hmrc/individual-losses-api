@@ -26,7 +26,7 @@ package object services {
 
   type RetrieveBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[BFLossResponse]]
 
-  type ListBFLossesOutcome = Either[ErrorWrapper, ResponseWrapper[ListBFLossesResponse[BFLossId]]]
+  type ListBFLossesOutcome = Either[ErrorWrapper, ResponseWrapper[ListBFLossesResponse[ListBFLossesItem]]]
 
   type AmendBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[BFLossResponse]]
 

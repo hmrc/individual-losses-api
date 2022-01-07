@@ -22,8 +22,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockListBFLossesRequestDataParser
 import v3.mocks.services.{MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
-import v3.models.domain.Nino
-import v3.models.downstream.{BFLossId, IncomeSourceType, ListBFLossHateoasData, ListBFLossesResponse}
+import v3.models.domain.{Nino, TypeOfLoss}
+import v3.models.downstream.{IncomeSourceType, ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import v3.models.errors.{NotFoundError, _}
 import v3.models.hateoas.Method.{GET, POST}
 import v3.models.hateoas.{HateoasWrapper, Link}
@@ -54,31 +54,27 @@ class ListBFLossesControllerSpec
   val createHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = POST, rel = "create-brought-forward-loss")
   val getHateoasLink: String => Link  = lossId => Link(href = s"/individuals/losses/TC663795B/brought-forward-losses/$lossId", method = GET, rel = "self")
 
-  val response: ListBFLossesResponse[BFLossId] = ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))
+  // WLOG
+  val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
+  val response: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Seq(responseItem))
 
-  val hateoasResponse: ListBFLossesResponse[HateoasWrapper[BFLossId]] = ListBFLossesResponse(
-    Seq(HateoasWrapper(BFLossId("000000123456789"), Seq(getHateoasLink("000000123456789"))),
-      HateoasWrapper(BFLossId("000000123456790"), Seq(getHateoasLink("000000123456790")))))
+  val hateoasResponse: ListBFLossesResponse[HateoasWrapper[ListBFLossesItem]] = ListBFLossesResponse(
+    Seq(HateoasWrapper(responseItem, Seq(getHateoasLink("lossId")))))
 
   val responseJson: JsValue = Json.parse(
     """
       |{
       |  "losses": [
       |    {
-      |      "lossId": "000000123456789",
+      |      "lossId": "lossId",
+      |      "businessId": "businessId",
+      |      "typeOfLoss": "uk-property-fhl",
+      |      "lossAmount": 2.75,
+      |      "taxYearBroughtForwardFrom": "2019-20",
+      |      "lastModified": "lastModified",
       |      "links": [
       |        {
-      |          "href": "/individuals/losses/TC663795B/brought-forward-losses/000000123456789",
-      |          "rel": "self",
-      |          "method": "GET"
-      |        }
-      |      ]
-      |    },
-      |    {
-      |      "lossId": "000000123456790",
-      |      "links": [
-      |        {
-      |          "href": "/individuals/losses/TC663795B/brought-forward-losses/000000123456790",
+      |          "href": "/individuals/losses/TC663795B/brought-forward-losses/lossId",
       |          "rel": "self",
       |          "method": "GET"
       |        }
@@ -152,8 +148,8 @@ class ListBFLossesControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ListBFLossesResponse(Nil)))))
 
         MockHateoasFactory
-          .wrapList(ListBFLossesResponse(List.empty[BFLossId]), ListBFLossHateoasData(nino))
-          .returns(HateoasWrapper(ListBFLossesResponse(List.empty[HateoasWrapper[BFLossId]]), Seq(createHateoasLink)))
+          .wrapList(ListBFLossesResponse(List.empty[ListBFLossesItem]), ListBFLossHateoasData(nino))
+          .returns(HateoasWrapper(ListBFLossesResponse(List.empty[HateoasWrapper[ListBFLossesItem]]), Seq(createHateoasLink)))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
         status(result) shouldBe NOT_FOUND
