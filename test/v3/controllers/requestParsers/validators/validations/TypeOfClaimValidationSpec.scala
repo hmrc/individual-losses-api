@@ -17,7 +17,6 @@
 package v3.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import utils.enums.Values.MkValues
 import v3.models.domain.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
@@ -45,8 +44,6 @@ class TypeOfClaimValidationSpec extends UnitSpec {
   }
 
   "validateTypeOfClaimPermitted" when {
-    val allTypesOfClaim: Seq[TypeOfClaim] = implicitly[MkValues[TypeOfClaim]].values
-
     "a typeOfLoss is self employment" must {
       permitOnly(TypeOfLoss.`self-employment`, Seq(TypeOfClaim.`carry-forward`, TypeOfClaim.`carry-sideways`))
     }
@@ -73,7 +70,7 @@ class TypeOfClaimValidationSpec extends UnitSpec {
           TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe Nil
       })
 
-      allTypesOfClaim
+      TypeOfClaim.values
         .filterNot(permittedTypesOfClaim.contains)
         .foreach(typeOfClaim =>
           s"not permit $typeOfLoss with $typeOfClaim" in {
@@ -82,7 +79,7 @@ class TypeOfClaimValidationSpec extends UnitSpec {
     }
 
     def permitNoTypesOfClaim(typeOfLoss: TypeOfLoss): Unit = {
-      allTypesOfClaim
+      TypeOfClaim.values
         .foreach(typeOfClaim =>
           s"not permit $typeOfLoss with $typeOfClaim" in {
             TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe List(RuleTypeOfClaimInvalid)
