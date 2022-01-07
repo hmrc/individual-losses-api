@@ -39,9 +39,10 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Dow
     "INVALID_TAXYEAR" -> TaxYearFormatError,
     "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
     "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
+    "INVALID_CLAIM_TYPE" -> ClaimTypeFormatError,
     "NOT_FOUND" -> NotFoundError,
+    "INVALID_CORRELATIONID" -> DownstreamError,
     "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError,
-    "INVALID_CLAIM_TYPE" -> ClaimTypeFormatError
+    "SERVICE_UNAVAILABLE" -> DownstreamError
   )
 }
