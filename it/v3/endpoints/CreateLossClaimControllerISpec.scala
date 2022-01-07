@@ -103,7 +103,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
       def ifsUrl: String = s"/income-tax/claims-for-relief/$nino"
     }
 
-    "return a 200 status code" when {
+    "return a 201 status code" when {
 
       "any valid request is made" in new CreateLossClaimControllerTest() {
 
@@ -139,8 +139,16 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
       createErrorTest(Status.NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", Status.NOT_FOUND, NotFoundError)
     }
 
+    "return 400 (Bad Request) with paths for the missing mandatory field" when {
+      createLossClaimValidationErrorTest("AA123456A",
+        Json.obj("typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim),
+        Status.BAD_REQUEST,
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/businessId"))))
+    }
+
     "return 400 (Bad Request)" when {
 
+      createErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       createErrorTest(Status.UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
       createErrorTest(Status.UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("BADNINO",
