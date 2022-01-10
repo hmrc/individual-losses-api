@@ -17,7 +17,7 @@
 package v3.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v3.models.errors.{RuleInvalidSequenceStart, RuleSequenceOrderBroken}
+import v3.models.errors.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken }
 
 class SequenceSequentialValidationSpec extends UnitSpec {
 
@@ -25,56 +25,48 @@ class SequenceSequentialValidationSpec extends UnitSpec {
 
   "validate" should {
     "return no errors" when {
-      "a single number is input" in {
+      "the sequence contains only 1" in {
         SequenceSequentialValidation.validate(Seq(1)) shouldBe Nil
       }
-      "a valid sorted sequence is input" in {
-        SequenceSequentialValidation.validate(Seq(1,2,3,4,5,6,7,8)) shouldBe Nil
+
+      "the sequence contains all numbers in range already sorted" in {
+        SequenceSequentialValidation.validate(Seq(1, 2, 3, 4, 5)) shouldBe Nil
       }
-      "a valid unsorted sequence is input" in {
-        SequenceSequentialValidation.validate(Seq(3,1,5,4,2)) shouldBe Nil
+
+      "the sequence contains all numbers in range not sorted" in {
+        SequenceSequentialValidation.validate(Seq(3, 1, 5, 4, 2)) shouldBe Nil
       }
     }
-    "return an error" when {
-      "no number is input" in {
+
+    "return RuleInvalidSequenceStart" when {
+      "the sequence is empty" in {
         SequenceSequentialValidation.validate(Seq()) shouldBe List(RuleInvalidSequenceStart)
       }
-      "sequence doesn't have a 1" in {
-        SequenceSequentialValidation.validate(Seq(2,3,4,5)) shouldBe List(RuleInvalidSequenceStart)
-        SequenceSequentialValidation.validate(Seq(5,2,4,3)) shouldBe List(RuleInvalidSequenceStart)
-      }
-      "sequence isn't in a sequential order" in {
-        SequenceSequentialValidation.validate(Seq(1,3,5,7,9)) shouldBe List(RuleSequenceOrderBroken)
-        SequenceSequentialValidation.validate(Seq(5,3,9,1,10)) shouldBe List(RuleSequenceOrderBroken)
+
+      "the sequence doesn't have a 1" in {
+        SequenceSequentialValidation.validate(Seq(2, 3, 4, 5)) shouldBe List(RuleInvalidSequenceStart)
+        SequenceSequentialValidation.validate(Seq(5, 2, 4, 3)) shouldBe List(RuleInvalidSequenceStart)
       }
     }
+
+    "return RuleSequenceOrderBroken" when {
+      "the sequence has a gap" in {
+        SequenceSequentialValidation.validate(Seq(1, 3)) shouldBe List(RuleSequenceOrderBroken)
+      }
+
+      "the sequence has multiple gaps" in {
+        SequenceSequentialValidation.validate(Seq(1, 3, 5, 7, 9)) shouldBe List(RuleSequenceOrderBroken)
+      }
+
+      "the sequence has repeated elements" in {
+        SequenceSequentialValidation.validate(Seq(1, 2, 2, 3)) shouldBe List(RuleSequenceOrderBroken)
+        SequenceSequentialValidation.validate(Seq(1, 1)) shouldBe List(RuleSequenceOrderBroken)
+      }
+    }
+
     "return multiple errors" when {
-      "the sequence doesn't have a 1 and isn't in sequential order" in {
-        SequenceSequentialValidation.validate(Seq(7, 20, 12, 9, 3)) shouldBe List(RuleInvalidSequenceStart, RuleSequenceOrderBroken)
-      }
-    }
-  }
-  "checkIfSequential" should {
-    "return an empty list" when {
-      "passed two sequential numbers" in {
-        List(List(1,2)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List()
-      }
-      "passed nothing" in {
-        List(List()).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List()
-      }
-      "passed only one number" in {
-        List(List(1)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List()
-      }
-    }
-    "return a populated list" when {
-      "passed two numbers which aren't sequential" in {
-        List(List(1,3)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((1,3))
-      }
-      "passed a List with a mix of sequential and non-sequential numbers" in {
-       sortAndGroupByTwo(List(1,3,2,5)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((3,5))
-      }
-      "passed multiple numbers where none of them are sequential" in {
-        sortAndGroupByTwo(List(1,3,5,8)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((1,3), (3,5), (5,8))
+      "the sequence doesn't have a 1 and has gaps" in {
+        SequenceSequentialValidation.validate(Seq(2, 3, 5)) shouldBe List(RuleInvalidSequenceStart, RuleSequenceOrderBroken)
       }
     }
   }

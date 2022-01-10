@@ -18,7 +18,6 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
@@ -31,6 +30,7 @@ import v3.models.errors._
 import v3.models.requestData.AmendLossClaimsOrderRawData
 import v3.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -84,9 +84,9 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
            | NinoFormatError
            | TaxYearFormatError
            | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code)
-           | ClaimIdFormatError
-           | ClaimTypeFormatError
-           | SequenceFormatError
+           | MtdErrorWithCode(ClaimIdFormatError.code)
+           | TypeOfClaimFormatError
+           | MtdErrorWithCode(ValueFormatError.code)
            | RuleInvalidSequenceStart
            | RuleSequenceOrderBroken
            | RuleLossClaimsMissing => BadRequest(Json.toJson(errorWrapper))

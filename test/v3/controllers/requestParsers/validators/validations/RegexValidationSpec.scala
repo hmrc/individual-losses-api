@@ -45,5 +45,11 @@ class RegexValidationSpec extends UnitSpec {
         TestValidator.validate("") shouldBe List(TestError)
       }
     }
+
+    "string does not match regex and path specicied" must {
+      "return the required error with a path" in {
+        TestValidator.validate(" abc123", "/somePath") shouldBe List(TestError.copy(paths=Some(Seq("/somePath"))))
+      }
+    }
   }
 }
