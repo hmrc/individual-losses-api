@@ -64,7 +64,6 @@ class LossClaimConnector @Inject()(val http: HttpClient,
     ).collect {
         case (key, Some(value)) => key -> value
     }
-
     get(IfsUri[ListLossClaimsResponse[LossClaimId]](s"income-tax/claims-for-relief/$nino"), pathParameters.toSeq)
   }
 

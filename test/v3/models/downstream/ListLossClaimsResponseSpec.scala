@@ -31,21 +31,30 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   "json writes" must {
     "output as per spec" in {
-      Json.toJson(ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-        LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))) shouldBe
+      Json.toJson(ListLossClaimsResponse(Seq(
+        LossClaimId("XAIS12345678910", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020-21", "AAZZ1234567890A", Some(1), "2020-07-13T12:13:48.763Z"),
+        LossClaimId("XAIS12345678912", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020-21", "AAZZ1234567890B", Some(2), "2020-07-13T12:13:48.763Z")))) shouldBe
         Json.parse(
           """
             |{
             |    "claims": [
             |        {
-            |            "id": "000000123456789",
+            |            "businessId": "XAIS12345678910",
+            |            "typeOfClaim": "carry-sideways",
+            |            "typeOfLoss": "self-employment",
+            |            "taxYearClaimedFor": "2020-21",
+            |            "claimId": "AAZZ1234567890A",
             |            "sequence": 1,
-            |            "typeOfClaim": "carry-sideways"
+            |            "lastModified": "2020-07-13T12:13:48.763Z"
             |        },
             |        {
-            |            "id": "000000123456790",
+            |            "businessId": "XAIS12345678912",
+            |            "typeOfClaim": "carry-sideways",
+            |            "typeOfLoss": "self-employment",
+            |            "taxYearClaimedFor": "2020-21",
+            |            "claimId": "AAZZ1234567890B",
             |            "sequence": 2,
-            |            "typeOfClaim": "carry-forward"
+            |            "lastModified": "2020-07-13T12:13:48.763Z"
             |        }
             |    ]
             |}
@@ -62,26 +71,28 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
             |[
             |  {
             |    "incomeSourceId": "000000000000001",
-            |    "reliefClaimed": "CF",
-            |    "taxYearClaimedFor": "2099",
+            |    "reliefClaimed": "CSGI",
+            |    "taxYearClaimedFor": "2020",
             |    "claimId": "000000000000011",
-            |    "submissionDate": "2019-07-13T12:13:48.763Z",
+            |    "submissionDate": "2020-07-13T12:13:48.763Z",
             |    "sequence": 1
             |  },
             |  {
             |    "incomeSourceId": "000000000000002",
-            |    "reliefClaimed": "CF",
+            |    "incomeSourceType": "02",
+            |    "reliefClaimed": "CSGI",
             |    "taxYearClaimedFor": "2020",
             |    "claimId": "000000000000022",
-            |    "submissionDate": "2018-07-13T12:13:48.763Z",
+            |    "submissionDate": "2020-07-13T12:13:48.763Z",
             |    "sequence": 2
             |  },
             |  {
-            |     "incomeSourceType": "02",
-            |     "reliefClaimed": "CSFHL",
+            |     "incomeSourceId": "000000000000003",
+            |     "incomeSourceType": "15",
+            |     "reliefClaimed": "CF",
             |     "taxYearClaimedFor": "2020",
             |     "claimId": "000000000000033",
-            |     "submissionDate": "2018-07-13T12:13:48.763Z",
+            |     "submissionDate": "2020-07-13T12:13:48.763Z",
             |     "sequence": 3
             |  }
             |]
@@ -90,9 +101,9 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
       downstreamResponseJson.as[ListLossClaimsResponse[LossClaimId]] shouldBe
         ListLossClaimsResponse(
-          Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId2", TypeOfClaim.`carry-forward`, TypeOfLoss.`self-employment`, "2020", "claimId2", Some(3), "2020-07-13T12:13:48.763Z")))
+          Seq(LossClaimId("000000000000001", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2019-20", "000000000000011", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("000000000000002", TypeOfClaim.`carry-sideways`, TypeOfLoss.`uk-property-non-fhl`, "2019-20", "000000000000022", Some(2), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("000000000000003", TypeOfClaim.`carry-forward`, TypeOfLoss.`foreign-property`, "2019-20", "000000000000033", Some(3), "2020-07-13T12:13:48.763Z")))
     }
   }
 

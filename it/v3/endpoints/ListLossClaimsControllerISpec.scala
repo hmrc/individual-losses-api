@@ -36,17 +36,18 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         |    {
         |        "incomeSourceId": "000000000000001",
         |        "reliefClaimed": "CF",
-        |        "taxYearClaimedFor": "2099",
+        |        "taxYearClaimedFor": "2021",
         |        "claimId": "000000000000011",
-        |        "submissionDate": "2019-07-13T12:13:48.763Z",
+        |        "submissionDate": "2021-07-13T12:13:48.763Z",
         |        "sequence": 1
         |    },
         |    {
         |        "incomeSourceId": "000000000000002",
-        |        "reliefClaimed": "CF",
+        |        "incomeSourceType": "02",
+        |        "reliefClaimed": "CGSI",
         |        "taxYearClaimedFor": "2020",
         |        "claimId": "000000000000022",
-        |        "submissionDate": "2018-07-13T12:13:48.763Z",
+        |        "submissionDate": "2020-07-13T12:13:48.763Z",
         |        "sequence": 2
         |    }
         |]
@@ -67,9 +68,13 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                                               |{
                                               |    "claims": [
                                               |        {
-                                              |            "id": "000000000000011",
+                                              |            "businessId": "000000000000001",
+                                              |            "typeOfLoss": "self-employment",
+                                              |            "typeOfClaim": "carry-forwards",
+                                              |            "taxYearClaimedFor": "2020-21",
+                                              |            "claimId": "000000000000011",
                                               |            "sequence": 1,
-                                              |            "typeOfClaim": "carry-forward",
+                                              |            "lastModified": "2021-07-13T12:13:48.763Z",
                                               |            "links" : [
                                               |             {
                                               |               "href" : "/individuals/losses$uri/000000000000011",
@@ -79,9 +84,13 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                                               |            ]
                                               |        },
                                               |        {
-                                              |            "id": "000000000000022",
-                                              |            "sequence": 2,
-                                              |            "typeOfClaim": "carry-forward",
+                                              |            "businessId": "XAIS12345678910",
+                                              |            "typeOfLoss": "uk-property-non-fhl",
+                                              |            "typeOfClaim": "carry-sideways",
+                                              |            "taxYearClaimedFor": "2019-20",
+                                              |            "claimId": "000000000000022",
+                                              |            "sequence": 1,
+                                              |            "lastModified": "2020-07-13T12:13:48.763Z",
                                               |            "links" : [
                                               |             {
                                               |               "href" : "/individuals/losses$uri/000000000000022",
