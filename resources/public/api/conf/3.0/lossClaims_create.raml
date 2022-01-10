@@ -24,14 +24,14 @@ securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
     description: The brought forward loss information brought into MTD
-    type: !include schemas/createLossClaimType/create_request.json
+    type: !include schemas/lossClaims/createLossClaim/create_request.json
     examples:
      example-1:
        description: Self-Employment Claim Request
-       value: !include examples/createLossClaimType/create_request_self_employment_claims.json
+       value: !include examples/lossClaims/createLossClaim/create_request_self_employment_claims.json
      example-2:
        description: Property Claim Request
-       value: !include examples/createLossClaimType/create_request_property_claims.json
+       value: !include examples/lossClaims/createLossClaim/create_request_property_claims.json
 responses:
   201:
     headers:
@@ -40,5 +40,5 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include schemas/createLossClaimType/create_response.json
-        example: !include examples/createLossClaimType/create_response.json
+        type: !include schemas/lossClaims/createLossClaim/create_response.json
+        example: !include examples/lossClaims/createLossClaim/create_response.json

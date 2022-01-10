@@ -16,8 +16,8 @@ description: This endpoint allows a developer to change the type of claim for an
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
 body:
   application/json:
-    type: !include schemas/lossClaimType/amendLossClaimType/amend_request.json
-    example: !include examples/lossClaimType/amendLossClaimType/amend_request.json
+    type: !include schemas/lossClaims/amendLossClaimType/amend_request.json
+    example: !include examples/lossClaims/amendLossClaimType/amend_request.json
 responses:
   200:
     headers:
@@ -26,7 +26,7 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include schemas/lossClaimType/amendLossClaimType/amend_response.json
+        type: !include schemas/lossClaims/amendLossClaimType/amend_response.json
         examples:
           example:
-            value: !include examples/lossClaimType/amendLossClaimType/amend_response.json
+            value: !include examples/lossClaims/amendLossClaimType/amend_response.json

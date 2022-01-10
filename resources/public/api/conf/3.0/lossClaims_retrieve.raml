@@ -14,14 +14,14 @@ responses:
   200:
     body:
       application/json:
-        type: !include schemas/retrieveLossClaimType/retrieve_response.json
+        type: !include schemas/lossClaims/retrieveLossClaim/retrieve_response.json
         examples:
           example-1:
             description: Self-Employment Loss Claim
-            value: !include examples/retrieveLossClaimType/retrieve_request_self_employment_claims.json
+            value: !include examples/lossClaims/retrieveLossClaim/retrieve_request_self_employment_claims.json
           example-2:
             description: Property Loss Claim
-            value: !include examples/retrieveLossClaimType/retrieve_request_property_claims.json
+            value: !include examples/lossClaims/retrieveLossClaim/retrieve_request_property_claims.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
