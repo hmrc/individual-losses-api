@@ -66,3 +66,11 @@ documentation:
         get: !include lossClaims_retrieve.raml
         /change-type-of-claim:
           post: !include lossClaims_amendType.raml
+      /order:
+        /{taxYearClaimedFor}:
+        uriParameters:
+          taxYearClaimedFor:
+            description: 'The tax year to which the claim applies. The start year and end year must not span two tax years. The minimum tax year is 2019-20. No gaps are allowed, for example, 2022-24 is not valid.'
+            type: string
+            example: "2022-23"
+          put: !include lossClaimsOrder_amend.raml

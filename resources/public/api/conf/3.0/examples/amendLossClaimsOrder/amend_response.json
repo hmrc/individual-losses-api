@@ -1,0 +1,14 @@
+{
+  "links": [
+    {
+      "href": "/individuals/losses/TC663795B/loss-claims/order/{taxYearClaimedFor}",
+      "rel": "self",
+      "method": "PUT"
+    },
+    {
+      "href": "/individuals/losses/TC663795B/loss-claims",
+      "rel": "list-loss-claims",
+      "method": "GET"
+    }
+  ]
+}
