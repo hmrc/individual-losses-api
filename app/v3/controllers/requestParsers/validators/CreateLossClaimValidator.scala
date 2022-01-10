@@ -19,7 +19,7 @@ package v3.controllers.requestParsers.validators
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.LossClaim
-import v3.models.errors.MtdError
+import v3.models.errors.{MtdError, TaxYearClaimedForFormatError}
 import v3.models.requestData.CreateLossClaimRawData
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {
@@ -56,7 +56,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     val req = data.body.json.as[LossClaim]
     List(
       TaxYearValidation
-        .validate(req.taxYearClaimedFor)
+        .validate(req.taxYearClaimedFor, TaxYearClaimedForFormatError)
         .map(
           _.copy(paths = Some(Seq(s"/taxYearClaimedFor")))
         )

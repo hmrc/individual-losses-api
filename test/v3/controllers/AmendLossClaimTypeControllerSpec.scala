@@ -22,10 +22,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendLossClaimTypeRequestDataParser
 import v3.mocks.services._
-import v3.models.audit.{AmendLossClaimTypeAuditDetail, AuditError, AuditEvent, AuditResponse}
-import v3.models.downstream.{AmendLossClaimTypeHateoasData, LossClaimResponse}
 import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino, TypeOfClaim, TypeOfLoss}
-import v3.models.errors.{NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, _}
+import v3.models.downstream.{AmendLossClaimTypeHateoasData, LossClaimResponse}
+import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper

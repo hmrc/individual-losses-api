@@ -88,7 +88,6 @@ class CreateLossClaimControllerSpec
       lookupService = mockMtdIdLookupService,
       createLossClaimService = mockCreateLossClaimService,
       createLossClaimParser = mockCreateLossClaimRequestDataParser,
-      auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
       cc = cc
     )
@@ -140,10 +139,10 @@ class CreateLossClaimControllerSpec
     val badRequestErrorsFromParser = List(
       BadRequestError,
       NinoFormatError,
-      TaxYearFormatError.copy(paths = Some(List("/taxYear"))),
+      TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor"))),
       RuleIncorrectOrEmptyBodyError,
       RuleTaxYearNotSupportedError,
-      RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))),
+      RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearClaimedFor"))),
       TypeOfLossFormatError,
       BusinessIdFormatError,
       RuleTypeOfClaimInvalid,

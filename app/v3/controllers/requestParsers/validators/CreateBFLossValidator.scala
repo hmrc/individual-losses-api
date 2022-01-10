@@ -17,11 +17,12 @@
 package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
+
 import javax.inject.{Inject, Singleton}
 import utils.CurrentDate
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.BFLoss
-import v3.models.errors.MtdError
+import v3.models.errors.{MtdError, TaxYearFormatError}
 import v3.models.requestData.CreateBFLossRawData
 
 @Singleton
@@ -56,7 +57,7 @@ class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends
     val req = data.body.json.as[BFLoss]
     List(
       TaxYearValidation
-        .validate(req.taxYearBroughtForwardFrom)
+        .validate(req.taxYearBroughtForwardFrom, TaxYearFormatError)
         .map(
           _.copy(paths = Some(Seq(s"/taxYearBroughtForwardFrom")))
         )
