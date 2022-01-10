@@ -36,7 +36,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |  "claimType":"carry-sideways",
       |  "listOfLossClaims":[
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":1
       |     }
       |   ]
@@ -50,7 +50,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |  "claimType":"carry-forward",
       |  "listOfLossClaims":[
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":1
       |     }
       |   ]
@@ -64,7 +64,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |  "claimType":"carry-sideways",
       |  "listOfLossClaims":[
       |     {
-      |       "id":"1234",
+      |       "claimId":"1234",
       |       "sequence":1
       |     }
       |   ]
@@ -78,15 +78,15 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |  "claimType":"carry-sideways",
       |  "listOfLossClaims":[
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":1
       |     },
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":3
       |     },
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":5
       |     }
       |   ]
@@ -100,15 +100,15 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |  "claimType":"carry-sideways",
       |  "listOfLossClaims":[
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":3
       |     },
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":2
       |     },
       |     {
-      |       "id":"AAZZ1234567890a",
+      |       "claimId":"AAZZ1234567890a",
       |       "sequence":4
       |     }
       |   ]
@@ -122,11 +122,11 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
       |  "claimType":"carry-forward",
       |  "listOfLossClaims":[
       |     {
-      |       "id":"walrus",
+      |       "claimId":"walrus",
       |       "sequence":2
       |     },
       |     {
-      |       "id":"walrus",
+      |       "claimId":"walrus",
       |       "sequence":100
       |     }
       |   ]

@@ -25,11 +25,11 @@ class LossClaimsListSpec extends UnitSpec {
   val lossClaimsList = LossClaimsList(
     claimType = ReliefClaimed.`CSGI`,
     listOfLossClaims = Seq(Claim(
-      id = "234568790ABCDE",
+      claimId = "234568790ABCDE",
       sequence = 1
     ),
       Claim(
-        id = "234568790ABCFE",
+        claimId = "234568790ABCFE",
         sequence = 2
       )
     )
@@ -40,11 +40,11 @@ class LossClaimsListSpec extends UnitSpec {
     |   "claimType" : "carry-sideways",
     |   "listOfLossClaims": [
     |      {
-    |      "id": "234568790ABCDE",
+    |      "claimId": "234568790ABCDE",
     |      "sequence":1
     |      },
     |      {
-    |      "id": "234568790ABCFE",
+    |      "claimId": "234568790ABCFE",
     |      "sequence":2
     |      }
     |   ]

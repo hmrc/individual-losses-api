@@ -29,7 +29,7 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
   private val nino = "AA123456A"
   private val claimType = "carry-sideways"
   private val taxYear = "2020-21"
-  private val claim = Json.obj("id" -> "1234568790ABCDE", "sequence" -> 1)
+  private val claim = Json.obj("claimId" -> "1234568790ABCDE", "sequence" -> 1)
 
   val data: AmendLossClaimsOrderRawData =
     AmendLossClaimsOrderRawData(nino, Some(taxYear), AnyContentAsJson(Json.obj("claimType" -> claimType, "listOfLossClaims" -> Seq(claim))))

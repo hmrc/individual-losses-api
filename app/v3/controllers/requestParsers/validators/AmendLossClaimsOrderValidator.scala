@@ -45,7 +45,7 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
     )
     val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
       List(
-        ClaimIdValidation.validate(lossClaim.id),
+        ClaimIdValidation.validate(lossClaim.claimId),
         SequenceValidation.validate(lossClaim.sequence)
       )
     }
