@@ -18,4 +18,4 @@ package v3.models.requestData
 
 import v3.models.domain.{AmendLossClaimsOrderRequestBody, Nino}
 
-case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: DownstreamTaxYear, body: AmendLossClaimsOrderRequestBody)
+case class AmendLossClaimsOrderRequest(nino: Nino, taxYearClaimedFor: DownstreamTaxYear, body: AmendLossClaimsOrderRequestBody)
