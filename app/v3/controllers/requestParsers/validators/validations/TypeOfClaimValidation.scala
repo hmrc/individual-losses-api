@@ -18,8 +18,8 @@ package v3.controllers.requestParsers.validators.validations
 
 import v3.models.domain.TypeOfClaim._
 import v3.models.domain.TypeOfLoss._
-import v3.models.domain.{ TypeOfClaim, TypeOfLoss }
-import v3.models.errors.{ MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
+import v3.models.domain.{TypeOfClaim, TypeOfLoss}
+import v3.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 object TypeOfClaimValidation {
 
@@ -32,13 +32,13 @@ object TypeOfClaimValidation {
       case `self-employment` =>
         typeOfClaim match {
           case `carry-forward` | `carry-sideways` => true
-          case _                                  => false
+          case _ => false
         }
 
       case `uk-property-non-fhl` | `foreign-property` =>
         typeOfClaim match {
           case `carry-sideways` | `carry-sideways-fhl` | `carry-forward-to-carry-sideways` => true
-          case _                                                                           => false
+          case _ => false
         }
 
       case _ => false

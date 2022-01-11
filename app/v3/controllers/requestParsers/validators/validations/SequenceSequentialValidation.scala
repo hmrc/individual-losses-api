@@ -16,35 +16,25 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.errors.{MtdError, RuleInvalidSequenceStart, RuleSequenceOrderBroken}
+import v3.models.errors.{ MtdError, RuleInvalidSequenceStart, RuleSequenceOrderBroken }
 
 object SequenceSequentialValidation {
+
   def validate(sequences: Seq[Int]): List[MtdError] = {
-    val sortedList = sequences.sorted
-    List(
-      startsWithOne(sortedList),
-      sequenceInOrder(sortedList.toList)
-    ).flatten
+    val sortedList = sequences.sorted.toList
+
+    validateStartsWithOne(sortedList) ++ validateContinuous(sortedList)
   }
 
-  private def startsWithOne(sortedSequence: Seq[Int]): List[MtdError] = {
-    if(sortedSequence.headOption.getOrElse(0) != 1) {
-      List(RuleInvalidSequenceStart)
-    } else {
-      NoValidationErrors
+  private def validateStartsWithOne(sortedSequence: Seq[Int]): List[MtdError] =
+    if (sortedSequence.headOption.contains(1)) Nil else List(RuleInvalidSequenceStart)
+
+  private def validateContinuous(sortedSequence: List[Int]): List[MtdError] = {
+    val noGaps = sortedSequence.sliding(2).forall {
+      case a :: b :: Nil => b - a == 1
+      case _             => true
     }
-  }
 
-  def checkIfSequential: PartialFunction[Seq[Int], (Int, Int)] = {
-    case a :: b :: Nil if b - a != 1 => (a,b)
-  }
-
-  private def sequenceInOrder(sortedSequence: List[Int]): List[MtdError] = {
-    val inOrder = sortedSequence.sliding(2).collect { checkIfSequential }.isEmpty
-    if (inOrder) {
-      NoValidationErrors
-    } else {
-      List(RuleSequenceOrderBroken)
-    }
+    if (noGaps) NoValidationErrors else List(RuleSequenceOrderBroken)
   }
 }

@@ -25,11 +25,14 @@ trait RegexValidation {
 
   def validate(value: String): List[MtdError] =
     RegexValidation.validate(error, value, regexFormat)
+
+  def validate(value: String, path: String): List[MtdError] =
+    RegexValidation.validate(error.copy(paths = Some(Seq(path))), value, regexFormat)
 }
 
 object RegexValidation {
 
-  def validate(error: MtdError, value: String, regexFormat: String): List[MtdError] = {
+  private def validate(error: => MtdError, value: String, regexFormat: String): List[MtdError] = {
     if (value.matches(regexFormat)) NoValidationErrors else List(error)
   }
 }

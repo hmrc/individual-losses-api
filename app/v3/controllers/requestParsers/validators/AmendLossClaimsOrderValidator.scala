@@ -16,19 +16,38 @@
 
 package v3.controllers.requestParsers.validators
 
+import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.domain.AmendLossClaimsOrderRequestBody
-import v3.models.errors.MtdError
+import v3.models.domain.{AmendLossClaimsOrderRequestBody, TypeOfClaim}
+import v3.models.errors.{MtdError, TypeOfClaimFormatError}
 import v3.models.requestData.AmendLossClaimsOrderRawData
 
-class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] {
+class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] with FixedConfig {
 
-  val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldValidator)
+  val validationSet = List(parameterFormatValidation, parameterValueValidation, bodyEnumValidator, bodyFormatValidator, bodyFieldValidator)
 
   private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
-      data.taxYear.map(ClaimOrderTaxYearValidation.validate).getOrElse(Nil)
+      data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
+    )
+  }
+
+  private def parameterValueValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+    List(
+      data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil)
+    )
+  }
+
+  //  Validate body fields (e.g. enums and ranges) that would otherwise fail at JsonFormatValidation with a less specific error
+  private def bodyEnumValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+    List(
+      JsonValidation.validate[String](data.body.json \ "claimType") { value =>
+        TypeOfClaim.parser.lift(value) match {
+          case Some(TypeOfClaim.`carry-sideways`) => Nil
+          case _                                  => List(TypeOfClaimFormatError)
+        }
+      }
     )
   }
 
@@ -40,18 +59,20 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
 
   private def bodyFieldValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
-    val claimTypeValidation = List(
-      ClaimTypeValidation.validateClaimIsCarrySideways(req.claimType)
-    )
-    val listOfLossClaimsValidator = req.listOfLossClaims.flatMap { lossClaim =>
-      List(
-        ClaimIdValidation.validate(lossClaim.claimId),
-        SequenceValidation.validate(lossClaim.sequence)
-      )
+
+    val listOfLossClaimsValidator = req.listOfLossClaims.zipWithIndex.flatMap {
+      case (lossClaim, index) =>
+        List(
+          ClaimIdValidation.validate(lossClaim.claimId, path = s"/listOfLossClaims/$index/claimId"),
+          NumberValidation.validate(lossClaim.sequence, path = s"/listOfLossClaims/$index/sequence", min = 1, max = 99)
+        )
     }
-    List(
+
+    val sequenceValidation = List(
       SequenceSequentialValidation.validate(req.listOfLossClaims.map(_.sequence))
-    ) ++ claimTypeValidation ++ listOfLossClaimsValidator
+    )
+
+    sequenceValidation ++ listOfLossClaimsValidator
   }
 
   override def validate(data: AmendLossClaimsOrderRawData): List[MtdError] = run(validationSet, data).distinct

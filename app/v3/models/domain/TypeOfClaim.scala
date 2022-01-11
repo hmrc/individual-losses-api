@@ -26,7 +26,6 @@ sealed trait TypeOfClaim {
 
 object TypeOfClaim {
 
-
   case object `carry-forward` extends TypeOfClaim {
     override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CF`
   }

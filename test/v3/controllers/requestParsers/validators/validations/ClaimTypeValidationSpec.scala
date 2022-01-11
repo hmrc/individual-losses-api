@@ -42,18 +42,4 @@ class ClaimTypeValidationSpec extends UnitSpec {
       }
     }
   }
-
-  "validateClaimIsCarrySideways" should {
-    "return no errors" when {
-      "provided with a string of 'carry-sideways'" in {
-        ClaimTypeValidation.validateClaimIsCarrySideways(TypeOfClaim.`carry-sideways`).isEmpty shouldBe true
-      }
-    }
-    "return an error" when {
-      "provided with a non-matching string" in {
-        ClaimTypeValidation.validateClaimIsCarrySideways(TypeOfClaim.`carry-forward`) shouldBe List(ClaimTypeFormatError)
-      }
-    }
-  }
-
 }
