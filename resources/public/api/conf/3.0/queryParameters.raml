@@ -19,30 +19,31 @@ traits:
   typeOfLossForClaims:
     queryParameters:
       typeOfLoss:
-        description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul><li>`self-employment`<li>`uk-property-non-fhl`<li>`foreign-property`</b>'
+        description: 'The type of business the loss applies to.<br><br>Limited to the following possible values:<ul style = "list-style-type: none; padding: 0;"><li>`self-employment`<li>`uk-property-non-fhl`<li>`foreign-property`'
         required: false
   typeOfLossForBFLosses:
     queryParameters:
       typeOfLoss:
-        description: 'The type of business the loss applies to. Limited to the following possible values: <b><ul><li>`self-employment`<li>`uk-property-fhl`<li>`uk-property-non-fhl`<li>`foreign-property-fhl-eea`<li>`foreign-property`</b>'
-        required: true
-  businessId:
+        description: 'The type of business the loss applies to.<br><br>Limited to the following possible values:<ul style = "list-style-type: none; padding: 0;"><li>`self-employment`<li>`uk-property-fhl`<li>`uk-property-non-fhl`<li>`foreign-property-fhl-eea`<li>`foreign-property`'
+        required: false
+  businessIdForClaims:
     queryParameters:
       businessId:
-        description: 'The unique identifier of the income source the claim relates to. Must conform to the regular expression <ul>`^X[A-Z0-9]{1}IS[0-9]{11}$`'
-        example: 'XGIS00000001319'
-        required: true
-  claimType:
+        description: 'The unique identifier of the income source the claim relates to.<br><br>Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`'
+        example: 'XPIS00000001319'
+        required: false
+  businessIdForBFLosses:
     queryParameters:
-      claimType:
-        description: '[This query parameter is only available in Sandbox]<br/><br/>The type of loss claim. Limited to the following possible values: <ul><li><b>`carry-sideways`</b></li></ul>'
+      businessId:
+        description: 'An identifier for the business, unique to the customer.<br><br>Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`'
+        example: 'XBIS00000001319'
         required: false
   taxYearBroughtForwardFrom:
-      queryParameters:
-        taxYearBroughtForwardFrom:
-          description: 'The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.'
-          example: "2020-21"
-          required: true
+    queryParameters:
+      taxYearBroughtForwardFrom:
+        description: 'The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.'
+        example: "2022-23"
+        required: false
   taxYearClaimedFor:
     queryParameters:
       taxYearClaimedFor:
@@ -52,11 +53,5 @@ traits:
   typeOfClaim:
     queryParameters:
       typeOfClaim:
-        description: 'The type of claim to be applied. Permitted values: <b><ul><li>`carry-sideways`</b>'
-        required: false
-  businessIdForClaims:
-    queryParameters:
-      businessId:
-        description: 'The unique identifier of the income source the claim relates to. Must conform to the regular expression <ul>`^X[A-Z0-9]{1}IS[0-9]{11}$`'
-        example: 'XGIS00000001319'
+        description: 'The type of claim to be applied.<br><br>Permitted values:<ul style = "list-style-type: none; padding: 0;"><li>`carry-sideways`'
         required: false
