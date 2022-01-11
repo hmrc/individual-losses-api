@@ -92,13 +92,13 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         MockHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("incomeSourceType", "02")),
+            parameters = Seq(("incomeSourceType", "uk-property-non-fhl")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector = connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
+        listLossClaimsResult(connector = connector, incomeSourceType = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
       }
     }
 
@@ -128,7 +128,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         MockHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "carry-sideways")),
+            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "self-employment"), ("claimType", "carry-sideways")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -138,7 +138,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           connector = connector,
           taxYear = Some(DownstreamTaxYear("2019")),
           businessId = Some("testId"),
-          incomeSourceType = Some(IncomeSourceType.`01`),
+          incomeSourceType = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
     }
@@ -179,7 +179,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     def listLossClaimsResult(connector: LossClaimConnector,
                              taxYear: Option[DownstreamTaxYear] = None,
-                             incomeSourceType: Option[IncomeSourceType] = None,
+                             incomeSourceType: Option[TypeOfLoss] = None,
                              businessId: Option[String] = None,
                              claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(

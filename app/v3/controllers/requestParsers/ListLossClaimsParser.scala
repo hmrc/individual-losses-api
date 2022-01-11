@@ -27,16 +27,10 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator)
   override protected def requestFor(data: ListLossClaimsRawData): ListLossClaimsRequest = {
     val taxYear = data.taxYearClaimedFor
 
-    val incomeSourceType = for {
-      typeOfLossString <- data.typeOfLoss
-      typeOfLoss       <- TypeOfLoss.parser.lift(typeOfLossString)
-      incomeSourceType <- typeOfLoss.toIncomeSourceType
-    } yield incomeSourceType
-
     ListLossClaimsRequest(
       Nino(data.nino),
       taxYear.map(DownstreamTaxYear.fromMtd),
-      incomeSourceType,
+      data.typeOfLoss.flatMap(TypeOfLoss.parser.lift),
       data.businessId,
       data.typeOfClaim.flatMap(TypeOfClaim.parser.lift)
     )
