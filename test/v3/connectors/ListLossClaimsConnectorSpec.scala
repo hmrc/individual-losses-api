@@ -92,7 +92,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         MockHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("incomeSourceType", "uk-property-non-fhl")),
+            parameters = Seq(("incomeSourceType", "02")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -110,7 +110,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         MockHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("claimType", "carry-sideways")),
+            parameters = Seq(("claimType", "CSGI")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -128,7 +128,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
         MockHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "self-employment"), ("claimType", "carry-sideways")),
+            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
