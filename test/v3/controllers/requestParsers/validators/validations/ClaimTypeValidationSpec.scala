@@ -17,7 +17,6 @@
 package v3.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v3.models.domain.TypeOfClaim
 import v3.models.errors.ClaimTypeFormatError
 
 class ClaimTypeValidationSpec extends UnitSpec {
