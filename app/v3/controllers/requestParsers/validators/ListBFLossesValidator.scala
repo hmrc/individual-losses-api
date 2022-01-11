@@ -17,9 +17,9 @@
 package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v3.controllers.requestParsers.validators.validations.{MinTaxYearValidation, NinoValidation, BusinessIdValidation, TaxYearValidation}
+import v3.controllers.requestParsers.validators.validations.{BusinessIdValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation}
 import v3.models.domain.TypeOfLoss._
-import v3.models.errors.{MtdError, TypeOfLossFormatError}
+import v3.models.errors.{MtdError, TaxYearFormatError, TypeOfLossFormatError}
 import v3.models.requestData.ListBFLossesRawData
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {
@@ -32,7 +32,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
   private def formatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
-      data.taxYearBroughtForwardFrom.map(TaxYearValidation.validate).getOrElse(Nil),
+      data.taxYearBroughtForwardFrom.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil),
       data.businessId.map(BusinessIdValidation.validate).getOrElse(Nil),
       data.typeOfLoss.map(lossType => if (availableLossTypeNames.contains(lossType)) Nil else List(TypeOfLossFormatError)).getOrElse(Nil)
     )

@@ -18,16 +18,16 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v3.controllers.requestParsers.CreateLossClaimParser
 import v3.hateoas.HateoasFactory
 import v3.models.downstream.CreateLossClaimHateoasData
-import v3.models.errors.{MtdErrorWithCode, RuleTaxYearRangeInvalid, TaxYearFormatError, _}
+import v3.models.errors._
 import v3.models.requestData.CreateLossClaimRawData
 import v3.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -36,7 +36,6 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
                                           createLossClaimService: CreateLossClaimService,
                                           createLossClaimParser: CreateLossClaimParser,
                                           hateoasFactory: HateoasFactory,
-                                          auditService: AuditService,
                                           cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
@@ -77,7 +76,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
     (errorWrapper.error: @unchecked) match {
       case BadRequestError
            | NinoFormatError
-           | TaxYearFormatError
+           | TaxYearClaimedForFormatError
            | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code)
            | RuleTaxYearNotSupportedError
            | RuleTaxYearRangeInvalid
@@ -85,7 +84,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
            | BusinessIdFormatError
            | RuleTypeOfClaimInvalid
            | TypeOfClaimFormatError
-           | MtdErrorWithCode(TaxYearFormatError.code)
+           | MtdErrorWithCode(TaxYearClaimedForFormatError.code)
            | MtdErrorWithCode(RuleTaxYearRangeInvalid.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleDuplicateClaimSubmissionError | RulePeriodNotEnded | RuleNoAccountingPeriod => Forbidden(Json.toJson(errorWrapper))

@@ -81,10 +81,10 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
       }
     }
 
-    "return TaxYearFormatError error" when {
+    "return TaxYearClaimedForFormatError error" when {
       "an invalid tax year is supplied" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(taxYearClaimedFor = "2016")))) shouldBe
-          List(TaxYearFormatError.copy(paths = Some(List("/taxYearClaimedFor"))))
+          List(TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor"))))
       }
     }
 
