@@ -22,14 +22,14 @@ description: This endpoint allows the developer to change the sequence in which 
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
-    type: !include schemas/lossClaims/amendLossClaimsOrder/amend_request.json
-    example: !include examples/lossClaims/amendLossClaimsOrder/amend_request.json
+    type: !include schemas/amendLossClaimsOrder/amend_request.json
+    example: !include examples/amendLossClaimsOrder/amend_request.json
 responses:
   200:
     body:
       application/json:
-        type: !include schemas/lossClaims/amendLossClaimsOrder/amend_response.json
-        example: !include examples/lossClaims/amendLossClaimsOrder/amend_response.json
+        type: !include schemas/amendLossClaimsOrder/amend_response.json
+        example: !include examples/amendLossClaimsOrder/amend_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
