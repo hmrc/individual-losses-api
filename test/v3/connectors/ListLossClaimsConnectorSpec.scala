@@ -28,8 +28,6 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
   "list LossClaims" when {
 
-    val claimId2: String = "AAZZ1234567890b"
-
     "a valid request is supplied with no query parameters" should {
       "return a successful response with the correct correlationId" in new Test {
         val expected = Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
