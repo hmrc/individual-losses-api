@@ -16,11 +16,10 @@
 
 package v3.models.requestData
 
-import v3.models.downstream.IncomeSourceType
-import v3.models.domain.{Nino, TypeOfClaim}
+import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
 
 case class ListLossClaimsRequest(nino: Nino,
-                                 taxYear: Option[DownstreamTaxYear],
-                                 incomeSourceType: Option[IncomeSourceType],
+                                 taxYearClaimedFor: Option[DownstreamTaxYear],
+                                 typeOfLoss: Option[TypeOfLoss],
                                  businessId: Option[String],
-                                 claimType: Option[TypeOfClaim])
+                                 typeOfClaim: Option[TypeOfClaim])

@@ -18,8 +18,7 @@ package v3.controllers.requestParsers
 
 import support.UnitSpec
 import v3.mocks.validators.MockListLossClaimsValidator
-import v3.models.downstream.IncomeSourceType
-import v3.models.domain.{Nino, TypeOfClaim}
+import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
 import v3.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v3.models.requestData.{DownstreamTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
@@ -41,10 +40,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
             nino = nino,
-            taxYear = Some(taxYear),
+            taxYearClaimedFor = Some(taxYear),
             typeOfLoss = Some("uk-property-fhl"),
             businessId = Some(businessId),
-            claimType = Some(claimType)
+            typeOfClaim = Some(claimType)
           )
 
         MockValidator
@@ -55,10 +54,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
           Right(
             ListLossClaimsRequest(
               nino = Nino(nino),
-              taxYear = Some(DownstreamTaxYear("2018")),
-              incomeSourceType = Some(IncomeSourceType.`04`),
+              taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
+              typeOfLoss = Some(TypeOfLoss.`uk-property-fhl`),
               businessId = Some(businessId),
-              claimType = Some(TypeOfClaim.`carry-sideways`)
+              typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
             )
           )
       }
@@ -67,10 +66,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
             nino = nino,
-            taxYear = Some(taxYear),
+            taxYearClaimedFor = Some(taxYear),
             typeOfLoss = Some("uk-property-non-fhl"),
             businessId = Some(businessId),
-            claimType = Some(claimType)
+            typeOfClaim = Some(claimType)
           )
 
         MockValidator
@@ -81,10 +80,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
           Right(
             ListLossClaimsRequest(
               nino = Nino(nino),
-              taxYear = Some(DownstreamTaxYear("2018")),
-              incomeSourceType = Some(IncomeSourceType.`02`),
+              taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
+              typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`),
               businessId = Some(businessId),
-              claimType = Some(TypeOfClaim.`carry-sideways`)
+              typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
             )
           )
       }

@@ -17,7 +17,7 @@
 package v3.connectors
 
 import v3.models.downstream._
-import v3.models.domain.{Nino, TypeOfClaim}
+import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData._
@@ -28,12 +28,10 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
   "list LossClaims" when {
 
-    val claimId2: String = "AAZZ1234567890b"
-
     "a valid request is supplied with no query parameters" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
-                                                                                   LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
+        val expected = Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
         MockHttpClient
           .get(
@@ -50,8 +48,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a tax year parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
-                                                                                  LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
+        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
         MockHttpClient
           .get(
@@ -68,8 +66,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a income source id parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
-                                                                                  LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
+        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
         MockHttpClient
           .get(
@@ -86,8 +84,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a income source type parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
-                                                                                  LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
+        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
         MockHttpClient
           .get(
@@ -98,19 +96,19 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector = connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
+        listLossClaimsResult(connector = connector, incomeSourceType = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
       }
     }
 
     "provided with a claim type parameter" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
-                                                                                  LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
+        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
         MockHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("claimType", "carry-sideways")),
+            parameters = Seq(("claimType", "CSGI")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -122,13 +120,13 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with all parameters" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId(claimId, Some(1), TypeOfClaim.`carry-sideways`),
-                                                                                  LossClaimId(claimId2, Some(2), TypeOfClaim.`carry-sideways`)))))
+        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
+          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
         MockHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "carry-sideways")),
+            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI")),
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -138,7 +136,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           connector = connector,
           taxYear = Some(DownstreamTaxYear("2019")),
           businessId = Some("testId"),
-          incomeSourceType = Some(IncomeSourceType.`01`),
+          incomeSourceType = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
     }
@@ -179,17 +177,17 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     def listLossClaimsResult(connector: LossClaimConnector,
                              taxYear: Option[DownstreamTaxYear] = None,
-                             incomeSourceType: Option[IncomeSourceType] = None,
+                             incomeSourceType: Option[TypeOfLoss] = None,
                              businessId: Option[String] = None,
                              claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(
             nino = Nino(nino),
-            taxYear = taxYear,
-            incomeSourceType = incomeSourceType,
+            taxYearClaimedFor = taxYear,
+            typeOfLoss = incomeSourceType,
             businessId = businessId,
-            claimType = claimType
+            typeOfClaim = claimType
           )))
   }
 }
