@@ -20,7 +20,7 @@ import config.AppConfig
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v3.connectors.DownstreamUri.IfsUri
 import v3.connectors.httpparsers.StandardDownstreamHttpParser._
-import v3.models.downstream.{ BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
+import v3.models.downstream.{ ListBFLossesItem, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
 import v3.models.requestData._
 
 import javax.inject.{ Inject, Singleton }
@@ -61,7 +61,7 @@ class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) 
   }
 
   def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier,
-                                                 ec: ExecutionContext): Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]] = {
+                                                 ec: ExecutionContext): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
     val nino = request.nino.nino
     val pathParameters = Map(
       "taxYear"          -> request.taxYearBroughtForwardFrom.map(_.value),
@@ -71,6 +71,6 @@ class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) 
       case (key, Some(value)) => key -> value
     }
 
-    get(IfsUri[ListBFLossesResponse[BFLossId]](s"income-tax/brought-forward-losses/$nino"), pathParameters.toSeq)
+    get(IfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/$nino"), pathParameters.toSeq)
   }
 }

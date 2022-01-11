@@ -335,9 +335,9 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "listBFLosses" should {
 
     class ListTest extends Test {
-      def mockHttpWithParameters(parameters: (String, String)*): CallHandler[Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]]] =
+      def mockHttpWithParameters(parameters: (String, String)*): CallHandler[Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]]] =
         MockHttpClient
-          .get[DownstreamOutcome[ListBFLossesResponse[BFLossId]]](
+          .get[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]](
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
             parameters = parameters,
             config = dummyIfsHeaderCarrierConfig,
@@ -358,8 +358,12 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "return a successful response" when {
 
+      // WLOG
+      val response =
+        ListBFLossesResponse(Seq(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
+
       "provided with no parameters" in new ListTest {
-        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Right(ResponseWrapper(correlationId, response))
 
         mockHttpWithParameters() returns Future.successful(expected)
 
@@ -367,7 +371,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
 
       "provided with a tax year parameter" in new ListTest {
-        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Right(ResponseWrapper(correlationId, response))
 
         mockHttpWithParameters("taxYear" -> "2019") returns Future.successful(expected)
 
@@ -375,7 +379,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
 
       "provided with a income source id parameter" in new ListTest {
-        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Right(ResponseWrapper(correlationId, response))
 
         mockHttpWithParameters("incomeSourceId" -> "testId") returns Future.successful(expected)
 
@@ -383,7 +387,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
 
       "provided with a income source type parameter" in new ListTest {
-        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Right(ResponseWrapper(correlationId, response))
 
         mockHttpWithParameters("incomeSourceType" -> "02") returns Future.successful(expected)
 
@@ -391,7 +395,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
 
       "provided with all parameters" in new ListTest {
-        val expected = Right(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Right(ResponseWrapper(correlationId, response))
 
         mockHttpWithParameters("taxYear" -> "2019", "incomeSourceId" -> "testId", "incomeSourceType" -> "01") returns Future.successful(expected)
 

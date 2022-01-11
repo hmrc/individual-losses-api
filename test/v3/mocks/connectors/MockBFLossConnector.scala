@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.{BFLossConnector, DownstreamOutcome}
-import v3.models.downstream.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
+import v3.models.downstream.{ListBFLossesItem, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v3.models.requestData._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,7 +54,7 @@ trait MockBFLossConnector extends MockFactory {
         .expects(request, *, *)
     }
 
-    def listBFLosses(request: ListBFLossesRequest): CallHandler[Future[DownstreamOutcome[ListBFLossesResponse[BFLossId]]]] = {
+    def listBFLosses(request: ListBFLossesRequest): CallHandler[Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]]] = {
       (connector
         .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
