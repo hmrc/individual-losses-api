@@ -25,7 +25,7 @@ class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
       |  "claimType": "carry-sideways",
       |  "listOfLossClaims": [
       |    {
-      |      "id": "id",
+      |      "claimId": "id",
       |      "sequence": 1
       |    }
       |  ]
@@ -34,7 +34,7 @@ class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
   val model = AmendLossClaimsOrderRequestBody(
     claimType = TypeOfClaim.`carry-sideways`,
     listOfLossClaims = Seq(Claim(
-      id = "id",
+      claimId = "id",
       sequence = 1))
   )
 

@@ -20,7 +20,7 @@ import play.api.libs.json.{JsPath, Json, Reads, Writes}
 import play.api.libs.functional.syntax._
 
 
-case class Claim(id: String, sequence: Int)
+case class Claim(claimId: String, sequence: Int)
 
 object Claim {
   implicit val reads: Reads[Claim] = Json.reads[Claim]

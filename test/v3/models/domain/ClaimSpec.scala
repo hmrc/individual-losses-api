@@ -22,13 +22,13 @@ import support.UnitSpec
 class ClaimSpec extends UnitSpec {
 
   val claim = Claim(
-    id = "234568790ABCDE",
+    claimId = "234568790ABCDE",
     sequence = 1
   )
 
   val claimJson : JsValue = Json.parse("""
     |{
-    | "id": "234568790ABCDE",
+    | "claimId": "234568790ABCDE",
     | "sequence": 1
     |}
     |""".stripMargin
