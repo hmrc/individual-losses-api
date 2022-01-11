@@ -19,7 +19,7 @@ package v3.controllers.requestParsers.validators
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.{AmendLossClaimsOrderRequestBody, TypeOfClaim}
-import v3.models.errors.{MtdError, TypeOfClaimFormatError}
+import v3.models.errors.{MtdError, TaxYearFormatError, TypeOfClaimFormatError}
 import v3.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] with FixedConfig {
@@ -29,7 +29,7 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
   private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
-      data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
+      data.taxYear.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil)
     )
   }
 
