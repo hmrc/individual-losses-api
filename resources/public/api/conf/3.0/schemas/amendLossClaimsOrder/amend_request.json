@@ -19,7 +19,7 @@
         "properties": {
           "claimId": {
             "description": "The unique identifier for the loss claim.",
-            "format": "^[A-Za-z0-9]{15}",
+            "pattern": "^[A-Za-z0-9]{15}",
             "type": "string",
             "example": "1234568790ABCDE"
           },
