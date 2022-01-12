@@ -96,7 +96,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
-        listLossClaimsResult(connector = connector, incomeSourceType = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
+        listLossClaimsResult(connector = connector, typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
       }
     }
 
@@ -136,7 +136,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           connector = connector,
           taxYear = Some(DownstreamTaxYear("2019")),
           businessId = Some("testId"),
-          incomeSourceType = Some(TypeOfLoss.`self-employment`),
+          typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
     }
@@ -177,7 +177,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     def listLossClaimsResult(connector: LossClaimConnector,
                              taxYear: Option[DownstreamTaxYear] = None,
-                             incomeSourceType: Option[TypeOfLoss] = None,
+                             typeOfLoss: Option[TypeOfLoss] = None,
                              businessId: Option[String] = None,
                              claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(
@@ -185,7 +185,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           ListLossClaimsRequest(
             nino = Nino(nino),
             taxYearClaimedFor = taxYear,
-            typeOfLoss = incomeSourceType,
+            typeOfLoss = typeOfLoss,
             businessId = businessId,
             typeOfClaim = claimType
           )))

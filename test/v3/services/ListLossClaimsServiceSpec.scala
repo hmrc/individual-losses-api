@@ -81,8 +81,9 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
       "INVALID_TAXYEAR" -> TaxYearFormatError,
       "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
       "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
-      "INVALID_CLAIM_TYPE" -> ClaimTypeFormatError,
+      "INVALID_CLAIM_TYPE" -> TypeOfClaimFormatError,
       "NOT_FOUND" -> NotFoundError,
+      "INVALID_CORRELATIONID" -> DownstreamError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
     ).foreach {
