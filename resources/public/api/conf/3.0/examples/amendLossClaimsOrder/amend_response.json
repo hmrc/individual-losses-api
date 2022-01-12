@@ -1,7 +1,7 @@
 {
   "links": [
     {
-      "href": "/individuals/losses/TC663795B/loss-claims/order/{taxYearClaimedFor}",
+      "href": "/individuals/losses/TC663795B/loss-claims/order/2022-23",
       "rel": "self",
       "method": "PUT"
     },
