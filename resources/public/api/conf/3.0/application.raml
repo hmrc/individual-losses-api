@@ -48,7 +48,8 @@ documentation:
             description: A unique identifier for loss.<br><br>Must conform to the regular expression `^[A-Za-z0-9]{15}$`
             type: string
             example: "AAZZ1234567890a"
-        get:  !include broughtForwardLosses_retrieve.raml
+        get: !include broughtForwardLosses_retrieve.raml
+        delete: !include broughtForwardLosses_delete.raml
         /change-loss-amount:
           post: !include broughtForwardLosses_amend.raml
     /loss-claims:
