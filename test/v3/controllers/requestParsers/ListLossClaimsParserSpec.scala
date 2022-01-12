@@ -24,10 +24,8 @@ import v3.models.requestData.{DownstreamTaxYear, ListLossClaimsRawData, ListLoss
 
 class ListLossClaimsParserSpec extends UnitSpec {
 
-  private val nino        = "AA123456B"
-  private val taxYear     = "2017-18"
-  private val businessId  = "XAIS01234567890"
-  private val claimType   = "carry-sideways"
+  private val nino       = "AA123456B"
+  private val businessId = "XAIS01234567890"
 
   trait Test extends MockListLossClaimsValidator {
     lazy val parser = new ListLossClaimsParser(mockValidator)
@@ -35,20 +33,17 @@ class ListLossClaimsParserSpec extends UnitSpec {
 
   "parse" when {
     "valid input" should {
-
-      "convert uk-property-fhl to incomeSourceType 04" in new Test {
+      "work where parameters are provided" in new Test {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
             nino = nino,
-            taxYearClaimedFor = Some(taxYear),
+            taxYearClaimedFor = Some("2017-18"),
             typeOfLoss = Some("uk-property-fhl"),
             businessId = Some(businessId),
-            typeOfClaim = Some(claimType)
+            typeOfClaim = Some("carry-sideways")
           )
 
-        MockValidator
-          .validate(inputData)
-          .returns(Nil)
+        MockValidator.validate(inputData) returns Nil
 
         parser.parseRequest(inputData) shouldBe
           Right(
@@ -58,43 +53,14 @@ class ListLossClaimsParserSpec extends UnitSpec {
               typeOfLoss = Some(TypeOfLoss.`uk-property-fhl`),
               businessId = Some(businessId),
               typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
-            )
-          )
-      }
-
-      "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
-        val inputData: ListLossClaimsRawData =
-          ListLossClaimsRawData(
-            nino = nino,
-            taxYearClaimedFor = Some(taxYear),
-            typeOfLoss = Some("uk-property-non-fhl"),
-            businessId = Some(businessId),
-            typeOfClaim = Some(claimType)
-          )
-
-        MockValidator
-          .validate(inputData)
-          .returns(Nil)
-
-        parser.parseRequest(inputData) shouldBe
-          Right(
-            ListLossClaimsRequest(
-              nino = Nino(nino),
-              taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
-              typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`),
-              businessId = Some(businessId),
-              typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
-            )
-          )
+          ))
       }
 
       "map missing parameters to None" in new Test {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(nino, None, None, None, None)
 
-        MockValidator
-          .validate(inputData)
-          .returns(Nil)
+        MockValidator.validate(inputData) returns Nil
 
         parser.parseRequest(inputData) shouldBe
           Right(ListLossClaimsRequest(Nino(nino), None, None, None, None))
@@ -106,18 +72,14 @@ class ListLossClaimsParserSpec extends UnitSpec {
       val inputData = ListLossClaimsRawData("nino", None, None, None, None)
 
       "handle a single error" in new Test {
-        MockValidator
-          .validate(inputData)
-          .returns(List(NinoFormatError))
+        MockValidator.validate(inputData) returns List(NinoFormatError)
 
         parser.parseRequest(inputData) shouldBe
           Left(ErrorWrapper(None, NinoFormatError, None))
       }
 
       "handle multiple errors" in new Test {
-        MockValidator
-          .validate(inputData)
-          .returns(List(NinoFormatError, LossIdFormatError))
+        MockValidator.validate(inputData) returns List(NinoFormatError, LossIdFormatError)
 
         parser.parseRequest(inputData) shouldBe
           Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))

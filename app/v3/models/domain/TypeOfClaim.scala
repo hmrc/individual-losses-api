@@ -18,6 +18,7 @@ package v3.models.domain
 
 import play.api.libs.json.Format
 import utils.enums.Enums
+import utils.enums.Values.MkValues
 import v3.models.downstream.ReliefClaimed
 
 sealed trait TypeOfClaim {
@@ -45,4 +46,6 @@ object TypeOfClaim {
   implicit val format: Format[TypeOfClaim] = Enums.format[TypeOfClaim]
 
   val parser: PartialFunction[String, TypeOfClaim] = Enums.parser[TypeOfClaim]
+
+  val values: Seq[TypeOfClaim] = implicitly[MkValues[TypeOfClaim]].values
 }

@@ -334,8 +334,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       validationErrorTest("AA123456A", Some("2019-21"), None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
       validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError)
       validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), None, Status.BAD_REQUEST, BusinessIdFormatError)
-      validationErrorTest("AA123456A", None, Some("uk-property-non-fhl"), Some("XA01234556790"), None, Status.BAD_REQUEST, RuleBusinessId)
-      validationErrorTest("AA123456A", None, None, None, Some("bad-claim-type"), Status.BAD_REQUEST, ClaimTypeFormatError)
+      validationErrorTest("AA123456A", None, None, None, Some("bad-claim-type"), Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
 
   }

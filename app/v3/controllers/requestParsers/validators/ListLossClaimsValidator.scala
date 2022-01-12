@@ -18,31 +18,36 @@ package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.domain.TypeOfLoss
-import v3.models.errors.{MtdError, TaxYearFormatError}
+import v3.models.domain.TypeOfClaim
+import v3.models.errors.{MtdError, TaxYearFormatError, TypeOfClaimFormatError}
 import v3.models.requestData.ListLossClaimsRawData
 
 class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with FixedConfig {
 
   private val validationSet = List(formatValidation, postFormatValidation)
 
-  private def formatValidation: ListLossClaimsRawData => List[List[MtdError]] = data => List(
-    NinoValidation.validate(data.nino),
-    
-    data.taxYearClaimedFor.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil),
-    data.typeOfLoss.map(TypeOfLossValidation.validateForLossClaim).getOrElse(Nil)
-  )
+  private def formatValidation: ListLossClaimsRawData => List[List[MtdError]] =
+    data =>
+      List(
+        NinoValidation.validate(data.nino),
+        data.businessId.map(BusinessIdValidation.validate).getOrElse(Nil),
+        data.taxYearClaimedFor.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil),
+        data.typeOfLoss.map(TypeOfLossValidation.validateForLossClaim).getOrElse(Nil),
+        data.typeOfClaim.map(validateClaimType).getOrElse(Nil)
+    )
 
   private def postFormatValidation: ListLossClaimsRawData => List[List[MtdError]] = { data =>
     List(
       data.taxYearClaimedFor.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil),
-      data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => BusinessIdValidation.validateOptionalWithTypeOfLoss(lossType, data.businessId, idOptional = true)
-        case None           => Nil
-      },
-      data.typeOfClaim.map(ClaimTypeValidation.validate).getOrElse(Nil)
     )
   }
+
+  // Allow only carry-sideways here...
+  private def validateClaimType(claimType: String) =
+    TypeOfClaim.parser.lift(claimType) match {
+      case Some(TypeOfClaim.`carry-sideways`) => Nil
+      case _                                  => List(TypeOfClaimFormatError)
+    }
 
   override def validate(data: ListLossClaimsRawData): List[MtdError] = run(validationSet, data)
 }
