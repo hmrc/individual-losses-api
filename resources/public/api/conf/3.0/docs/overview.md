@@ -6,6 +6,7 @@ For Brought Forward losses a developer can:
 * create a new brought forward loss 
 * show a single brought forward loss
 * update an existing brought forward loss
+* delete an existing brought forward loss
  
 For Loss claims a developer can:
 
