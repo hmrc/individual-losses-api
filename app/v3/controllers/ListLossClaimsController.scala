@@ -91,7 +91,7 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId |
-           RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid | ClaimTypeFormatError =>
+           RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid | ClaimTypeFormatError | TypeOfClaimFormatError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

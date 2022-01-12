@@ -245,7 +245,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYearClaimedFor" -> "2020"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020"), Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -261,7 +261,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("taxYearClaimedFor" -> "2020"), Status.OK, downstreamResponseJson)
+          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("taxYear" -> "2020"), Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -296,7 +296,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, ClaimTypeFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
 
     "handle validation errors according to spec" when {
