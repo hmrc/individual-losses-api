@@ -77,7 +77,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                                               |            "lastModified": "2020-07-13T12:13:763Z",
                                               |            "links" : [
                                               |             {
-                                              |               "href" : "/individuals/losses$uri/AAZZ1234567890A",
+                                              |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
                                               |               "rel": "self",
                                               |               "method": "GET"
                                               |             }
@@ -93,7 +93,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                                               |            "lastModified": "2021-11-10T11:56:728Z",
                                               |            "links" : [
                                               |             {
-                                              |               "href" : "/individuals/losses$uri/AAZZ1234567890B",
+                                              |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890B",
                                               |               "rel": "self",
                                               |               "method": "GET"
                                               |             }
@@ -102,17 +102,17 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                                               |    ],
                                               |    "links": [
                                               |      {
-                                              |        "href": "/individuals/losses$uri",
+                                              |        "href": "/individuals/losses/$nino/loss-claims",
                                               |        "rel": "self",
                                               |        "method": "GET"
                                               |      },
                                               |      {
-                                              |        "href": "/individuals/losses$uri",
+                                              |        "href": "/individuals/losses/$nino/loss-claims",
                                               |        "rel": "create-loss-claim",
                                               |        "method": "POST"
                                               |      },
                                               |      {
-                                              |        "href": "/individuals/losses$uri/order",
+                                              |        "href": "/individuals/losses/$nino/loss-claims/order",
                                               |        "rel": "amend-loss-claim-order",
                                               |        "method": "PUT"
                                               |      }
@@ -121,7 +121,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
      """.stripMargin)
 
     def queryParams: Seq[(String, String)] =
-      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "claimType" -> claimType)
+      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
         .collect {
           case (k, Some(v)) => (k, v)
         }
@@ -197,7 +197,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
              |            "lastModified": "2020-07-13T12:13:763Z",
              |            "links" : [
              |             {
-             |               "href" : "/individuals/losses$uri/AAZZ1234567890A",
+             |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
              |               "rel": "self",
              |               "method": "GET"
              |             }
@@ -206,17 +206,17 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
              |    ],
              |    "links": [
              |      {
-             |        "href": "/individuals/losses$uri",
+             |        "href": "/individuals/losses/$nino/loss-claims",
              |        "rel": "self",
              |        "method": "GET"
              |      },
              |      {
-             |        "href": "/individuals/losses$uri",
+             |        "href": "/individuals/losses/$nino/loss-claims",
              |        "rel": "create-loss-claim",
              |        "method": "POST"
              |      },
              |      {
-             |        "href": "/individuals/losses$uri/order",
+             |        "href": "/individuals/losses/$nino/loss-claims/order",
              |        "rel": "amend-loss-claim-order",
              |        "method": "PUT"
              |      }
@@ -269,7 +269,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
              |            "lastModified": "2020-07-13T12:13:763Z",
              |            "links" : [
              |             {
-             |               "href" : "/individuals/losses$uri/AAZZ1234567890B",
+             |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890B",
              |               "rel": "self",
              |               "method": "GET"
              |             }
@@ -278,17 +278,17 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
              |    ],
              |    "links": [
              |      {
-             |        "href": "/individuals/losses$uri",
+             |        "href": "/individuals/losses/$nino/loss-claims",
              |        "rel": "self",
              |        "method": "GET"
              |      },
              |      {
-             |        "href": "/individuals/losses$uri",
+             |        "href": "/individuals/losses/$nino/loss-claims",
              |        "rel": "create-loss-claim",
              |        "method": "POST"
              |      },
              |      {
-             |        "href": "/individuals/losses$uri/order",
+             |        "href": "/individuals/losses/$nino/loss-claims/order",
              |        "rel": "amend-loss-claim-order",
              |        "method": "PUT"
              |      }
@@ -388,7 +388,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                               requestTaxYear: Option[String],
                               requestTypeOfLoss: Option[String],
                               requestSelfEmploymentId: Option[String],
-                              requestclaimType: Option[String],
+                              requestClaimType: Option[String],
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
@@ -397,7 +397,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           override val taxYear: Option[String] = requestTaxYear
           override val typeOfLoss: Option[String] = requestTypeOfLoss
           override val businessId : Option[String] = requestSelfEmploymentId
-          override val claimType: Option[String] = requestclaimType
+          override val claimType: Option[String] = requestClaimType
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()

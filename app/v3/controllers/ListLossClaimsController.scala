@@ -44,9 +44,9 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListLossClaimsController", endpointName = "List Loss Claims")
 
-  def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], businessId: Option[String], claimType: Option[String]): Action[AnyContent] =
+  def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      val rawData = ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = claimType)
+      val rawData = ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listLossClaimsParser.parseRequest(rawData))
