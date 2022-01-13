@@ -74,13 +74,13 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
     }
 
     Map(
-      "INVALID_IDVALUE"     -> NinoFormatError,
-      "INVALID_LOSS_ID"     -> LossIdFormatError,
-      "NOT_FOUND"           -> NotFoundError,
-      "CONFLICT"            -> RuleDeleteAfterFinalDeclarationError,
-      "SERVER_ERROR"        -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError,
-      "UNEXPECTED_ERROR"    -> DownstreamError
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError,
+      "UNEXPECTED_ERROR"          -> DownstreamError
     ).foreach {
       case(k, v) =>
         s"return a ${v.code} error" when {

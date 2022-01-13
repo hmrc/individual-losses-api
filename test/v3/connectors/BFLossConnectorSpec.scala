@@ -54,9 +54,9 @@ class BFLossConnectorSpec extends ConnectorSpec {
     )
 
     MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "ifs-token"
-    MockAppConfig.desEnvironment returns "ifs-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedIfsHeaders)
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "create BFLoss" when {
@@ -219,8 +219,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .delete(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(expected))
@@ -236,8 +236,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .delete(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(expected))
@@ -253,8 +253,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .delete(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(expected))
