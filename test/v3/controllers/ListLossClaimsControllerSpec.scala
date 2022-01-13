@@ -193,11 +193,10 @@ class ListLossClaimsControllerSpec
       errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
       errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromParserTester(ClaimTypeFormatError, BAD_REQUEST)
-      errorsFromParserTester(RuleBusinessId, BAD_REQUEST)
       errorsFromParserTester(BusinessIdFormatError, BAD_REQUEST)
     }
 
-    "handle non-mdtp validation errors as per spec" when {
+    "handle backend service errors as per spec" when {
       def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
@@ -219,8 +218,8 @@ class ListLossClaimsControllerSpec
       errorsFromServiceTester(BadRequestError, BAD_REQUEST)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromServiceTester(RuleBusinessId, BAD_REQUEST)
       errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
+      errorsFromServiceTester(BusinessIdFormatError, BAD_REQUEST)
       errorsFromServiceTester(ClaimTypeFormatError, BAD_REQUEST)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)

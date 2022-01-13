@@ -21,10 +21,8 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
 import v3.controllers.requestParsers.ListLossClaimsParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{AuditEvent, AuditResponse, ListLossClaimsAuditDetail}
 import v3.models.downstream.ListLossClaimsHateoasData
 import v3.models.errors._
 import v3.models.requestData.ListLossClaimsRawData
@@ -71,12 +69,7 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
               s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
                 s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-            val response = Json.toJson(vendorResponse)
-
-            auditSubmission(ListLossClaimsAuditDetail(request.userDetails, nino, taxYear, typeOfLoss, businessId, claimType,
-              serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
-
-            Ok(response)
+            Ok(Json.toJson(vendorResponse))
               .withApiHeaders(serviceResponse.correlationId)
           }
         }
@@ -90,18 +83,16 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId |
-           RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid | ClaimTypeFormatError | TypeOfClaimFormatError =>
-        BadRequest(Json.toJson(errorWrapper))
+      case BadRequestError |
+           NinoFormatError |
+           TaxYearFormatError |
+           TypeOfLossFormatError |
+           BusinessIdFormatError |
+           RuleTaxYearNotSupportedError |
+           RuleTaxYearRangeInvalid |
+           TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def auditSubmission(details: ListLossClaimsAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
-    val event = AuditEvent("ListLossClaims", "list-loss-claims", details)
-    auditService.auditEvent(event)
   }
 }
