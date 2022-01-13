@@ -41,7 +41,7 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
     val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new IfsTest {
         val expected = Right(ResponseWrapper(correlationId, CreateLossClaimResponse(claimId)))
 
         MockHttpClient
@@ -58,7 +58,7 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new Test {
+      "return an unsuccessful response with the correct correlationId and a single error" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -75,7 +75,7 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockHttpClient

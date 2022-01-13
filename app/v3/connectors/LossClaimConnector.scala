@@ -80,6 +80,6 @@ class LossClaimConnector @Inject()(val http: HttpClient,
     val nino    = request.nino.nino
     val taxYear = request.taxYearClaimedFor
 
-    put(request.body, IfsUri[Unit](s"income-tax/claims-for-relief/$nino/preferences/$taxYear"))
+    put(request.body, DesUri[Unit](s"income-tax/claims-for-relief/$nino/preferences/$taxYear"))
   }
 }
