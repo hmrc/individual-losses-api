@@ -46,6 +46,19 @@ class BFLossConnectorSpec extends ConnectorSpec {
     MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
 
+  class DesTest extends MockHttpClient with MockAppConfig {
+
+    val connector: BFLossConnector = new BFLossConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
+
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "ifs-token"
+    MockAppConfig.desEnvironment returns "ifs-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedIfsHeaders)
+  }
+
   "create BFLoss" when {
 
     val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
@@ -200,7 +213,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "delete BFLoss" when {
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new DesTest {
         val expected = Right(ResponseWrapper(correlationId, ()))
 
         MockHttpClient
@@ -217,7 +230,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     }
 
     "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new Test {
+      "return an unsuccessful response with the correct correlationId and a single error" in new DesTest {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -234,7 +247,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     }
 
     "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new DesTest {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         MockHttpClient

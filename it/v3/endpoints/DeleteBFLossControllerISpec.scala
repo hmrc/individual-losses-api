@@ -31,11 +31,10 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
+    val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    def uri: String = s"/$nino/brought-forward-losses/$lossId"
-
+    def uri: String    = s"/$nino/brought-forward-losses/$lossId"
     def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
 
     def errorBody(code: String): String =
@@ -107,7 +106,7 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
       def validationErrorTest(requestNino: String, requestLossId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String = requestNino
+          override val nino: String   = requestNino
           override val lossId: String = requestLossId
 
           override def setupStubs(): StubMapping = {
