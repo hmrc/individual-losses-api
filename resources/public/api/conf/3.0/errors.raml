@@ -307,17 +307,17 @@ traits:
                 description: The type of claim is the same as a previous submission for this income source.
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
-  ruleDeleteAfterCrystallisation:
+  ruleDeleteAfterFinalDeclaration:
     responses:
       403:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              ruleDeleteAfterCrystallisation:
-                description: An existing brought forward loss cannot be deleted after it has been crystallised.  The requested resource is locked.
+              ruleDeleteAfterFinalDeclaration:
+                description: The remote endpoint has indicated that the requested resource has been locked.
                 value:
-                  code: RULE_DELETE_AFTER_CRYSTALLISATION
+                  code: RULE_DELETE_AFTER_FINAL_DECLARATION
   ruleNoChangeLossAmount:
     responses:
       403:
