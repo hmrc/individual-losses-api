@@ -13,5 +13,6 @@ For Loss claims a developer can:
 * create a loss claim against an income source for a specific tax year
 * show the detail of an existing loss claim
 * update a previously entered loss claim
+* delete an existing loss claim
 
 For information on how to connect to this API [see the Income Tax MTD end-to-end service guide](https://developer.service.hmrc.gov.uk/guides/income-tax-mtd-end-to-end-service-guide/).
