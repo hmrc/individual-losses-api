@@ -77,7 +77,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       "INVALID_IDVALUE"     -> NinoFormatError,
       "INVALID_LOSS_ID"     -> LossIdFormatError,
       "NOT_FOUND"           -> NotFoundError,
-      "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
+      "CONFLICT"            -> RuleDeleteAfterFinalDeclarationError,
       "SERVER_ERROR"        -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError,
       "UNEXPECTED_ERROR"    -> DownstreamError

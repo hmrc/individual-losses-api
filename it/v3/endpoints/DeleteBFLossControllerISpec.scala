@@ -31,10 +31,11 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino   = "AA123456A"
+    val nino = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    def uri: String    = s"/$nino/brought-forward-losses/$lossId"
+    def uri: String = s"/$nino/brought-forward-losses/$lossId"
+
     def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
 
     def errorBody(code: String): String =
@@ -97,7 +98,7 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_IFS_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDeleteAfterCrystallisationError)
+      serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDeleteAfterFinalDeclarationError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
     }
@@ -106,8 +107,9 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
       def validationErrorTest(requestNino: String, requestLossId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String   = requestNino
+          override val nino: String = requestNino
           override val lossId: String = requestLossId
+
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()

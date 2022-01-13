@@ -39,7 +39,7 @@ object RuleTaxYearNotEndedError extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The
 object RuleBusinessId extends MtdError("RULE_BUSINESS_ID", "A Business ID must be supplied for a self-employment or a foreign property business type.")
 object RuleDuplicateSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "Submission already exists")
 object RuleDuplicateClaimSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "This claim matches a previous submission")
-object RuleDeleteAfterCrystallisationError extends MtdError("RULE_DELETE_AFTER_CRYSTALLISATION", "This loss cannot be deleted after crystallisation")
+object RuleDeleteAfterFinalDeclarationError extends MtdError("RULE_DELETE_AFTER_FINAL_DECLARATION", "This loss cannot be deleted after final declaration")
 object RuleTypeOfClaimInvalid extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The claim type selected is not available for this type of loss")
 object RuleClaimTypeNotChanged extends MtdError("RULE_NO_CHANGE", "This claim matches a previous submission")
 object RulePeriodNotEnded extends MtdError("RULE_ACCOUNTING_PERIOD_NOT_ENDED", "The accounting period has not yet ended")
