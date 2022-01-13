@@ -1,0 +1,37 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.formatClaimId
+  - errors.formatClaimType
+  - errors.formatSequence
+  - errors.RuleInvalidSequenceStart
+  - errors.RuleSequenceOrderBroken
+  - errors.RuleLossClaimsMissing
+  - errors.incorrectOrEmptyBody
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundClaimId
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeInvalid
+displayName: Amend Loss Claims Order [Test Only]
+description: This endpoint allows the developer to change the sequence in which certain losses are used. A National Insurance Number must be provided.
+(annotations.sandboxData): !include scenarios/lossClaimsOrder_amend.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/amendLossClaimsOrder/amend_request.json
+    example: !include examples/amendLossClaimsOrder/amend_request.json
+responses:
+  200:
+    body:
+      application/json:
+        type: !include schemas/amendLossClaimsOrder/amend_response.json
+        example: !include examples/amendLossClaimsOrder/amend_response.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
+

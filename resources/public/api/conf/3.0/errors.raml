@@ -51,7 +51,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given claim ID.
+              description: One or more loss claims not be found on this account.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
@@ -229,7 +229,7 @@ traits:
               formatClaimType:
                 description: '[This error is only available in Sandbox] The format of the supplied claim type is not valid.'
                 value:
-                  code: FORMAT_CLAIM_TYPE
+                  code: FORMAT_TYPE_OF_CLAIM
   formatClaimType:
     responses:
       400:
@@ -240,7 +240,7 @@ traits:
               formatClaimType:
                 description: 'The format of the supplied claim type is not valid.'
                 value:
-                  code: FORMAT_CLAIM_TYPE
+                  code: FORMAT_TYPE_OF_CLAIM
   ruleTypeOfClaim403:
     responses:
       403:
