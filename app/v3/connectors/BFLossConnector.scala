@@ -17,14 +17,14 @@
 package v3.connectors
 
 import config.AppConfig
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
-import v3.connectors.DownstreamUri.IfsUri
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v3.connectors.DownstreamUri.{DesUri, IfsUri}
 import v3.connectors.httpparsers.StandardDownstreamHttpParser._
-import v3.models.downstream.{ ListBFLossesItem, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
+import v3.models.downstream.{BFLossResponse, CreateBFLossResponse, ListBFLossesItem, ListBFLossesResponse}
 import v3.models.requestData._
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
@@ -49,7 +49,7 @@ class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) 
     val nino = request.nino.nino
     val lossId = request.lossId
 
-    delete(IfsUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId"))
+    delete(DesUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
   def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier,

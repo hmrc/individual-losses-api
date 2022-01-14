@@ -39,11 +39,11 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends Downstre
   }
 
   private def errorMap: Map[String, MtdError] = Map(
-    "INVALID_IDVALUE"     -> NinoFormatError,
-    "INVALID_LOSS_ID"     -> LossIdFormatError,
-    "NOT_FOUND"           -> NotFoundError,
-    "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
-    "SERVER_ERROR"        -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_LOSS_ID"           -> LossIdFormatError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
+    "SERVER_ERROR"              -> DownstreamError,
+    "SERVICE_UNAVAILABLE"       -> DownstreamError
   )
 }

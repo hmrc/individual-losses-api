@@ -78,7 +78,7 @@ class DeleteBFLossControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val detail: DeleteBFLossAuditDetail = DeleteBFLossAuditDetail(
-          "Individual", None, nino,  lossId, correlationId, AuditResponse(NO_CONTENT, None, None))
+          "Individual", None, nino, lossId, correlationId, AuditResponse(NO_CONTENT, None, None))
         val event: AuditEvent[DeleteBFLossAuditDetail] = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", detail)
         MockedAuditService.verifyAuditEvent(event).once
       }
@@ -143,7 +143,7 @@ class DeleteBFLossControllerSpec
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(RuleDeleteAfterCrystallisationError, FORBIDDEN)
+      errorsFromServiceTester(RuleDeleteAfterFinalDeclarationError, FORBIDDEN)
     }
   }
 }

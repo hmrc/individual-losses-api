@@ -79,7 +79,7 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case BadRequestError
            | NinoFormatError
            | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleDeleteAfterCrystallisationError => Forbidden(Json.toJson(errorWrapper))
+      case RuleDeleteAfterFinalDeclarationError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
