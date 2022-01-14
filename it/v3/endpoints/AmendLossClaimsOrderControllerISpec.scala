@@ -72,7 +72,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def uri: String    = s"/$nino/loss-claims/order"
+    def uri: String    = s"/$nino/loss-claims/order/$taxYear"
     def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.fromMtd(taxYear)}"
 
     def errorBody(code: String): String =
@@ -92,29 +92,11 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
     }
   }
 
-  "Calling the Amend Loss Claims Order endpoint" should {
+  "Calling the Amend Loss Claims Order V3 endpoint" should {
 
     "return a 200 status code" when {
 
       "any valid request is made" in new Test {
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.NO_CONTENT)
-        }
-
-        val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
-        response.status shouldBe Status.OK
-        response.json shouldBe responseJson
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "any valid request is made with no taxYear" in new Test {
-
-        override def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.mostRecentTaxYear()}"
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()

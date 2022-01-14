@@ -63,7 +63,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
         connector.amendLossClaimsOrder(
           AmendLossClaimsOrderRequest(
             nino = Nino(nino),
-            taxYearClaimedFor = DownstreamTaxYear.fromMtd(taxYear),
+            taxYear = DownstreamTaxYear.fromMtd(taxYear),
             body = amendLossClaimsOrder
           )))
   }

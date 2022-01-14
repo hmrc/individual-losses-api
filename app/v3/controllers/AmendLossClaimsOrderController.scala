@@ -46,10 +46,10 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimsOrderController", endpointName = "Amend a Loss Claim Order")
 
-  def amendClaimsOrder(nino: String, taxYear: Option[String]): Action[JsValue] =
+  def amendClaimsOrder(nino: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
-      val rawData = AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(request.body))
+      val rawData = AmendLossClaimsOrderRawData(nino, taxYearClaimedFor, AnyContentAsJson(request.body))
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](amendLossClaimsOrderParser.parseRequest(rawData))
@@ -63,7 +63,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
 
           val response = Json.toJson(vendorResponse)
 
-          auditSubmission(AmendLossClaimsOrderAuditDetail(request.userDetails, nino, taxYear, request.body,
+          auditSubmission(AmendLossClaimsOrderAuditDetail(request.userDetails, nino, taxYearClaimedFor, request.body,
             serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
