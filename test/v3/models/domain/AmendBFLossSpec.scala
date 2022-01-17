@@ -27,7 +27,7 @@ class AmendBFLossSpec extends UnitSpec {
       |  "lossAmount": 1000.99
       |}
     """.stripMargin)
-  val model = AmendBFLoss(1000.99)
+  val model: AmendBFLoss = AmendBFLoss(1000.99)
   val downstreamJson: JsValue = Json.parse(
     """
       |{

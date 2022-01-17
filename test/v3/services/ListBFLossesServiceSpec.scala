@@ -18,7 +18,7 @@ package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
 import v3.models.downstream.{ListBFLossesItem, ListBFLossesResponse}
-import v3.models.domain.{Nino, TypeOfLoss}
+import v3.models.domain.{BFLossTypeOfLoss, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.ListBFLossesRequest
@@ -37,7 +37,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
   lazy val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), None, None, None)
 
   val response: ListBFLossesResponse[ListBFLossesItem] =
-    ListBFLossesResponse(Seq(ListBFLossesItem(lossId, "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
+    ListBFLossesResponse(Seq(ListBFLossesItem(lossId, "businessId", BFLossTypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
 
 
   "retrieve the list of bf losses" should {

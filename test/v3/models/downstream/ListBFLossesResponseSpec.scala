@@ -19,17 +19,17 @@ package v3.models.downstream
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.hateoas.{ HateoasFactory, HateoasLinks }
-import v3.models.domain.TypeOfLoss
-import v3.models.hateoas.Method.{ GET, POST }
-import v3.models.hateoas.{ HateoasWrapper, Link }
+import v3.hateoas.{HateoasFactory, HateoasLinks}
+import v3.models.domain.BFLossTypeOfLoss
+import v3.models.hateoas.Method.{GET, POST}
+import v3.models.hateoas.{HateoasWrapper, Link}
 
 class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 
   val item1: ListBFLossesItem = ListBFLossesItem(
     lossId = "lossId1",
     businessId = "businessId1",
-    typeOfLoss = TypeOfLoss.`self-employment`,
+    typeOfLoss = BFLossTypeOfLoss.`self-employment`,
     lossAmount = 1.50,
     taxYearBroughtForwardFrom = "2019-20",
     lastModified = "lastModified1"
@@ -38,7 +38,7 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
   val item2: ListBFLossesItem = ListBFLossesItem(
     lossId = "lossId2",
     businessId = "businessId2",
-    typeOfLoss = TypeOfLoss.`self-employment`,
+    typeOfLoss = BFLossTypeOfLoss.`self-employment`,
     lossAmount = 2.75,
     taxYearBroughtForwardFrom = "2019-20",
     lastModified = "lastModified2"

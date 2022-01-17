@@ -18,12 +18,12 @@ package v3.models.downstream
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
-import v3.models.domain.TypeOfLoss
+import v3.models.domain.BFLossTypeOfLoss
 import v3.models.requestData.DownstreamTaxYear
 
 case class ListBFLossesItem(lossId: String,
                             businessId: String,
-                            typeOfLoss: TypeOfLoss,
+                            typeOfLoss: BFLossTypeOfLoss,
                             lossAmount: BigDecimal,
                             taxYearBroughtForwardFrom: String,
                             lastModified: String)

@@ -19,7 +19,7 @@ package v3.models.domain
 import play.api.libs.json._
 import v3.models.requestData.DownstreamTaxYear
 
-case class BFLoss(typeOfLoss: TypeOfLoss,
+case class BFLoss(typeOfLoss: BFLossTypeOfLoss,
                   businessId: String,
                   taxYearBroughtForwardFrom: String,
                   lossAmount: BigDecimal)

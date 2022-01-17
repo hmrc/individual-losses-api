@@ -19,24 +19,27 @@ package v3.models.domain
 import play.api.libs.json._
 import v3.models.requestData.DownstreamTaxYear
 
-case class LossClaim(taxYearClaimedFor: String, typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, businessId: String)
+case class LossClaim(taxYearClaimedFor: String,
+                     typeOfLoss: LossClaimTypeOfLoss,
+                     typeOfClaim: TypeOfClaim,
+                     businessId: String)
 
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
   implicit val writes: OWrites[LossClaim] = (lossClaim: LossClaim) => {
-    (lossClaim.typeOfLoss) match {
+    lossClaim.typeOfLoss match {
       case TypeOfLoss.`uk-property-non-fhl` =>
         Json.obj(
-          "taxYear"          -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
-          "incomeSourceType" -> TypeOfLoss.`uk-property-non-fhl`.toIncomeSourceType.get,
+          "taxYear"   -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
+          "incomeSourceType" -> "02",
           "reliefClaimed"    -> lossClaim.typeOfClaim.toReliefClaimed,
           "incomeSourceId"   -> lossClaim.businessId
         )
       case TypeOfLoss.`foreign-property` =>
         Json.obj(
-          "taxYear"          -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
-          "incomeSourceType" -> TypeOfLoss.`foreign-property`.toIncomeSourceType.get,
+          "taxYear"   -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
+          "incomeSourceType" -> "15",
           "reliefClaimed"    -> lossClaim.typeOfClaim.toReliefClaimed,
           "incomeSourceId"   -> lossClaim.businessId
         )
@@ -44,7 +47,7 @@ object LossClaim {
         // This endpoint only allows for uk-property-non-fhl, foreign-property and self-employment
         // The only remaining option is self-employment, where incomeSourceType isn't sent down
         Json.obj(
-          "taxYear"        -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
+          "taxYear" -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
           "reliefClaimed"  -> lossClaim.typeOfClaim.toReliefClaimed,
           "incomeSourceId" -> lossClaim.businessId
         )
