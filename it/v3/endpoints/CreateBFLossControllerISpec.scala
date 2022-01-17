@@ -24,7 +24,7 @@ import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V3IntegrationBaseSpec
 import v3.models.errors._
 import v3.models.utils.JsonErrorValidators
-import v3.stubs.{ AuditStub, AuthStub, IfsStub, MtdIdLookupStub }
+import v3.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorValidators {
 
@@ -95,7 +95,7 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.POST, ifsUrl, OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request.post(requestBody))
@@ -157,7 +157,7 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              IfsStub.onError(IfsStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request.post(requestBody))

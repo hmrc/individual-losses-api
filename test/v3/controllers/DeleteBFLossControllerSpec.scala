@@ -20,23 +20,21 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockDeleteBFLossRequestDataParser
-import v3.mocks.services.{MockAuditService, MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v3.models.audit.{AuditError, AuditEvent, AuditResponse, DeleteBFLossAuditDetail}
+import v3.mocks.services.{ MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import v3.models.domain.Nino
-import v3.models.errors.{NotFoundError, _}
+import v3.models.errors.{ NotFoundError, _ }
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
+import v3.models.requestData.{ DeleteBFLossRawData, DeleteBFLossRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteBFLossService
-    with MockDeleteBFLossRequestDataParser
-    with MockAuditService {
+    with MockDeleteBFLossRequestDataParser {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -53,7 +51,6 @@ class DeleteBFLossControllerSpec
       lookupService = mockMtdIdLookupService,
       deleteBFLossService = mockDeleteBFLossService,
       deleteBFLossParser = mockDeleteBFLossRequestDataParser,
-      auditService = mockAuditService,
       cc = cc
     )
 
@@ -76,11 +73,6 @@ class DeleteBFLossControllerSpec
         val result: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val detail: DeleteBFLossAuditDetail = DeleteBFLossAuditDetail(
-          "Individual", None, nino, lossId, correlationId, AuditResponse(NO_CONTENT, None, None))
-        val event: AuditEvent[DeleteBFLossAuditDetail] = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", detail)
-        MockedAuditService.verifyAuditEvent(event).once
       }
     }
 
@@ -97,12 +89,6 @@ class DeleteBFLossControllerSpec
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val detail: DeleteBFLossAuditDetail = DeleteBFLossAuditDetail(
-            "Individual", None, nino, lossId, correlationId,
-            AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-          val event: AuditEvent[DeleteBFLossAuditDetail] = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", detail)
-          MockedAuditService.verifyAuditEvent(event).once
         }
       }
 
@@ -129,12 +115,6 @@ class DeleteBFLossControllerSpec
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val detail: DeleteBFLossAuditDetail = DeleteBFLossAuditDetail(
-            "Individual", None, nino, lossId, correlationId,
-            AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None))
-          val event: AuditEvent[DeleteBFLossAuditDetail] = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", detail)
-          MockedAuditService.verifyAuditEvent(event).once
         }
       }
 

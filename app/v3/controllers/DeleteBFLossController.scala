@@ -18,45 +18,39 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import v3.controllers.requestParsers.DeleteBFLossParser
-import v3.models.audit.{AuditEvent, AuditResponse, DeleteBFLossAuditDetail}
 import v3.models.errors._
 import v3.models.requestData.DeleteBFLossRawData
 import v3.services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        deleteBFLossService: DeleteBFLossService,
                                        deleteBFLossParser: DeleteBFLossParser,
-                                       auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController {
+    extends AuthorisedController(cc)
+    with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteBFLossController", endpointName = "Delete a Brought Forward Loss")
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       val rawData = DeleteBFLossRawData(nino, lossId)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](deleteBFLossParser.parseRequest(rawData))
+          parsedRequest  <- EitherT.fromEither[Future](deleteBFLossParser.parseRequest(rawData))
           vendorResponse <- EitherT(deleteBFLossService.deleteBFLoss(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
-
-          auditSubmission(DeleteBFLossAuditDetail(request.userDetails, nino, lossId,
-            vendorResponse.correlationId, AuditResponse(NO_CONTENT, None, None)))
 
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
@@ -64,31 +58,18 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
-
-        auditSubmission(DeleteBFLossAuditDetail(request.userDetails, nino, lossId,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
 
         result
       }.merge
     }
 
-
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError
-           | NinoFormatError
-           | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleDeleteAfterFinalDeclarationError => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
+      case RuleDeleteAfterFinalDeclarationError                  => Forbidden(Json.toJson(errorWrapper))
+      case NotFoundError                                         => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError                                       => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def auditSubmission(details: DeleteBFLossAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
-    val event = AuditEvent("deleteBroughtForwardLoss", "delete-brought-forward-Loss", details)
-    auditService.auditEvent(event)
   }
 }

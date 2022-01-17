@@ -23,7 +23,7 @@ import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V3IntegrationBaseSpec
 import v3.models.errors._
-import v3.stubs.{ AuditStub, AuthStub, IfsStub, MtdIdLookupStub }
+import v3.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
@@ -103,7 +103,7 @@ class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -122,7 +122,7 @@ class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            IfsStub.onError(IfsStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
           }
 
           val response: WSResponse = await(request().get())

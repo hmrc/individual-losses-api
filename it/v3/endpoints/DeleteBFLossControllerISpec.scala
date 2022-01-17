@@ -23,7 +23,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
 import v3.models.errors._
-import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
+import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
 
@@ -35,7 +35,7 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
     val lossId = "AAZZ1234567890a"
 
     def uri: String    = s"/$nino/brought-forward-losses/$lossId"
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
+    def desUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
 
     def errorBody(code: String): String =
       s"""
@@ -65,7 +65,7 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.DELETE, ifsUrl, Status.NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, desUrl, Status.NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -75,14 +75,14 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "handle errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
+      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $desCode error" in new Test {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            IfsStub.onError(IfsStub.DELETE, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, desUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())
@@ -95,7 +95,7 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_IFS_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDeleteAfterFinalDeclarationError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
