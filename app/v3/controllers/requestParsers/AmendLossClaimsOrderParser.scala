@@ -26,9 +26,7 @@ class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderVa
 
   override protected def requestFor(data: AmendLossClaimsOrderRawData): AmendLossClaimsOrderRequest = {
 
-    val taxYear: DownstreamTaxYear = data.taxYearClaimedFor match {
-      case year => DownstreamTaxYear.fromMtd(year)
-    }
+    val taxYear = DownstreamTaxYear.fromMtd(data.taxYearClaimedFor)
 
     AmendLossClaimsOrderRequest(Nino(data.nino), taxYear, data.body.json.as[AmendLossClaimsOrderRequestBody])
   }
