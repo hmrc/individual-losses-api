@@ -21,9 +21,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
 import v3.controllers.requestParsers.DeleteLossClaimParser
-import v3.models.audit.{AuditEvent, AuditResponse, DeleteLossClaimAuditDetail}
 import v3.models.errors._
 import v3.models.requestData.DeleteLossClaimRawData
 import v3.services._
@@ -35,7 +33,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
                                           val lookupService: MtdIdLookupService,
                                           deleteLossClaimService: DeleteLossClaimService,
                                           deleteLossClaimParser: DeleteLossClaimParser,
-                                          auditService: AuditService,
                                           cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
@@ -55,10 +52,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-          auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
-            vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(None))))
-
-
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
         }
@@ -66,9 +59,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
-
-        auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
@@ -82,12 +72,5 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def auditSubmission(details: DeleteLossClaimAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
-    val event = AuditEvent("deleteLossClaim", "delete-loss-claim", details)
-    auditService.auditEvent(event)
   }
 }

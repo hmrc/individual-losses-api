@@ -29,8 +29,6 @@ import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
-  val correlationId: String = "X-123"
-
   val claim1: Claim = Claim("1234567890ABEF1", 1)
   val claim2: Claim = Claim("1234567890ABCDE", 2)
   val claim3: Claim = Claim("1234567890ABDE0", 3)

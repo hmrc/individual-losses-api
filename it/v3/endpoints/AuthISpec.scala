@@ -30,7 +30,6 @@ class AuthISpec extends V3IntegrationBaseSpec {
     val nino          = "AA123456A"
     val taxYear       = "2017-18"
     val data        = "someData"
-    val correlationId = "X-123"
 
     val requestJson: String =
       """

@@ -27,7 +27,6 @@ import v3.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
-  val correlationId = "X-123"
   val businessId    = "XKIS00000000988"
   val lastModified  = "2018-07-13T12:13:48.763Z"
 

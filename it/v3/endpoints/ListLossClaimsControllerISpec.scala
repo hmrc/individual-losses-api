@@ -27,8 +27,6 @@ import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 
-  val correlationId = "X-123"
-
   val lossAmount = 531.99
 
   val downstreamResponseJson: JsValue =

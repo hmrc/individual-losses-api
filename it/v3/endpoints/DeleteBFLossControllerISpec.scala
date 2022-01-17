@@ -27,8 +27,6 @@ import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
 
-  val correlationId = "X-123"
-
   private trait Test {
 
     val nino   = "AA123456A"
