@@ -27,12 +27,12 @@ import v3.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderR
 class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
   private val nino = "AA123456A"
-  private val claimType = "carry-sideways"
+  private val typeOfClaim = "carry-sideways"
   private val taxYear = "2020-21"
   private val claim = Json.obj("claimId" -> "1234568790ABCDE", "sequence" -> 1)
 
   val data: AmendLossClaimsOrderRawData =
-    AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(Json.obj("claimType" -> claimType, "listOfLossClaims" -> Seq(claim))))
+    AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(Json.obj("typeOfClaim" -> typeOfClaim, "listOfLossClaims" -> Seq(claim))))
 
   trait Test extends MockAmendLossClaimsOrderValidator {
     lazy val parser = new AmendLossClaimsOrderParser(mockValidator)

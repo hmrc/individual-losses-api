@@ -30,7 +30,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
   "amendLossClaimsOrderV3" when {
 
     val amendLossClaimsOrder: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(
-      claimType = TypeOfClaim.`carry-sideways`,
+      typeOfClaim = TypeOfClaim.`carry-sideways`,
       listOfLossClaims = Seq(
         Claim("1234568790ABCDE", 1),
         Claim("1234568790ABCDF", 2)
@@ -63,7 +63,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
         connector.amendLossClaimsOrder(
           AmendLossClaimsOrderRequest(
             nino = Nino(nino),
-            taxYear = DownstreamTaxYear.fromMtd(taxYear),
+            taxYearClaimedFor = DownstreamTaxYear.fromMtd(taxYear),
             body = amendLossClaimsOrder
           )))
   }

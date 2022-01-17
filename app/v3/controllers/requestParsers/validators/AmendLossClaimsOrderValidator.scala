@@ -42,7 +42,7 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
   //  Validate body fields (e.g. enums and ranges) that would otherwise fail at JsonFormatValidation with a less specific error
   private def bodyEnumValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     List(
-      JsonValidation.validate[String](data.body.json \ "claimType") { value =>
+      JsonValidation.validate[String](data.body.json \ "typeOfClaim") { value =>
         TypeOfClaim.parser.lift(value) match {
           case Some(TypeOfClaim.`carry-sideways`) => Nil
           case _                                  => List(TypeOfClaimFormatError)

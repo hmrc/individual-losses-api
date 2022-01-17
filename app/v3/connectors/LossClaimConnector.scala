@@ -78,7 +78,7 @@ class LossClaimConnector @Inject()(val http: HttpClient,
   def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
                                                                  ec: ExecutionContext): Future[DownstreamOutcome[Unit]] = {
     val nino    = request.nino.nino
-    val taxYear = request.taxYear
+    val taxYear = request.taxYearClaimedFor
 
     put(request.body, DesUri[Unit](s"income-tax/claims-for-relief/$nino/preferences/$taxYear"))
   }

@@ -35,10 +35,11 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
        |}
     """.stripMargin)
 
-  private def mtdRequestWith(claimType: String = "carry-sideways", items: Seq[JsValue]) =
+  private def mtdRequestWith(typeOfClaim: String = "carry-sideways", items: Seq[JsValue]) =
     Json.parse(s"""
       |{
-      |  "claimType":"$claimType",
+      |
+      |  "typeOfClaim":"$typeOfClaim",
       |  "listOfLossClaims": ${JsArray(items)}
       |}
     """.stripMargin)
@@ -83,15 +84,15 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
     }
 
     "return TypeOfClaimFormatError" when {
-      "a non-carry-sideways claimType is provided" in {
-        val requestBody = mtdRequestWith(claimType = "carry-forward", items = Seq(item(1)))
+      "a non-carry-sideways typeOfClaim is provided" in {
+        val requestBody = mtdRequestWith(typeOfClaim = "carry-forward", items = Seq(item(1)))
 
         validator.validate(AmendLossClaimsOrderRawData(validNino, validTaxYear, AnyContentAsJson(requestBody))) shouldBe
           List(TypeOfClaimFormatError)
       }
 
-      "a bad claimType is provided" in {
-        val requestBody = mtdRequestWith(claimType = "invalid-type", items = Seq(item(1)))
+      "a bad typeOfClaim is provided" in {
+        val requestBody = mtdRequestWith(typeOfClaim = "invalid-type", items = Seq(item(1)))
 
         validator.validate(AmendLossClaimsOrderRawData(validNino, validTaxYear, AnyContentAsJson(requestBody))) shouldBe
           List(TypeOfClaimFormatError)
@@ -113,9 +114,9 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
           List(RuleIncorrectOrEmptyBodyError)
       }
 
-      "the claimType field isn't provided" in {
-        validator.validate(AmendLossClaimsOrderRawData(validNino, validTaxYear, AnyContentAsJson(mtdRequest.removeProperty("claimType")))) shouldBe
-          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/claimType"))))
+      "the typeOfClaim field isn't provided" in {
+        validator.validate(AmendLossClaimsOrderRawData(validNino, validTaxYear, AnyContentAsJson(mtdRequest.removeProperty("typeOfClaim")))) shouldBe
+          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/typeOfClaim"))))
       }
 
       "the claim id isn't provided" in {

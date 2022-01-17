@@ -18,14 +18,14 @@ package v3.models.domain
 
 import play.api.libs.json.{Json, OWrites, Reads}
 
-case class AmendLossClaimsOrderRequestBody(claimType: TypeOfClaim, listOfLossClaims: Seq[Claim]) {
+case class AmendLossClaimsOrderRequestBody(typeOfClaim: TypeOfClaim, listOfLossClaims: Seq[Claim]) {
 
 }
 object AmendLossClaimsOrderRequestBody {
   implicit val reads: Reads[AmendLossClaimsOrderRequestBody] = Json.reads[AmendLossClaimsOrderRequestBody]
 
   implicit val writes: OWrites[AmendLossClaimsOrderRequestBody] = (o: AmendLossClaimsOrderRequestBody) => Json.obj(
-    "claimType" -> o.claimType.toReliefClaimed,
+    "claimType" -> o.typeOfClaim.toReliefClaimed,
     "claimsSequence" -> o.listOfLossClaims
   )
 }
