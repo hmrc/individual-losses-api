@@ -19,7 +19,7 @@ package v3.controllers.requestParsers
 import javax.inject.Inject
 import v3.controllers.requestParsers.validators.RetrieveBFLossValidator
 import v3.models.domain.Nino
-import v3.models.requestData._
+import v3.models.request.retrieveBFLoss.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
 class RetrieveBFLossParser @Inject()(val validator: RetrieveBFLossValidator)
   extends RequestParser[RetrieveBFLossRawData, RetrieveBFLossRequest] {

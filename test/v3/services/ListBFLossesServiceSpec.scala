@@ -17,11 +17,12 @@
 package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.downstream.{ListBFLossesItem, ListBFLossesResponse}
-import v3.models.domain.{TypeOfBFLoss, Nino}
+import v3.models.domain.Nino
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.ListBFLossesRequest
+import v3.models.request.listBFLosses.ListBFLossesRequest
+import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import scala.concurrent.Future
 
@@ -37,8 +38,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
   lazy val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), None, None, None)
 
   val response: ListBFLossesResponse[ListBFLossesItem] =
-    ListBFLossesResponse(Seq(ListBFLossesItem(lossId, "businessId", TypeOfBFLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
-
+    ListBFLossesResponse(Seq(ListBFLossesItem(lossId, "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
 
   "retrieve the list of bf losses" should {
     "return a Right" when {

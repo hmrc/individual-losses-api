@@ -18,14 +18,15 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v3.controllers.requestParsers.ListLossClaimsParser
 import v3.hateoas.HateoasFactory
-import v3.models.downstream.ListLossClaimsHateoasData
 import v3.models.errors._
-import v3.models.requestData.ListLossClaimsRawData
+import v3.models.request.listLossClaims.ListLossClaimsRawData
+import v3.models.response.listLossClaims.ListLossClaimsHateoasData
 import v3.services._
 
 import scala.concurrent.{ExecutionContext, Future}

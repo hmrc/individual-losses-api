@@ -20,8 +20,16 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.{DownstreamOutcome, LossClaimConnector}
-import v3.models.downstream.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
-import v3.models.requestData._
+import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
+import v3.models.request.createLossClaim.CreateLossClaimRequest
+import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
+import v3.models.request.listLossClaims.ListLossClaimsRequest
+import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
+import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
+import v3.models.response.createLossClaim.CreateLossClaimResponse
+import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
+import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,13 +44,13 @@ trait MockLossClaimConnector extends MockFactory {
         .expects(request, *, *)
     }
 
-    def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest): CallHandler[Future[DownstreamOutcome[LossClaimResponse]]] = {
+    def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest): CallHandler[Future[DownstreamOutcome[AmendLossClaimTypeResponse]]] = {
       (connector
         .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(amendLossClaimTypeRequest, *, *)
     }
 
-    def retrieveLossClaim(request: RetrieveLossClaimRequest): CallHandler[Future[DownstreamOutcome[LossClaimResponse]]] = {
+    def retrieveLossClaim(request: RetrieveLossClaimRequest): CallHandler[Future[DownstreamOutcome[RetrieveLossClaimResponse]]] = {
       (connector
         .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)
@@ -54,7 +62,7 @@ trait MockLossClaimConnector extends MockFactory {
         .expects(deleteLossClaimRequest, *, *)
     }
 
-    def listLossClaims(request: ListLossClaimsRequest): CallHandler[Future[DownstreamOutcome[ListLossClaimsResponse[LossClaimId]]]] = {
+    def listLossClaims(request: ListLossClaimsRequest): CallHandler[Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]]] = {
       (connector
         .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)

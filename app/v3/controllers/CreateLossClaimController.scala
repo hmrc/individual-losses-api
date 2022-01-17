@@ -22,9 +22,9 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import v3.controllers.requestParsers.CreateLossClaimParser
 import v3.hateoas.HateoasFactory
-import v3.models.downstream.CreateLossClaimHateoasData
 import v3.models.errors._
-import v3.models.requestData.CreateLossClaimRawData
+import v3.models.request.createLossClaim.CreateLossClaimRawData
+import v3.models.response.createLossClaim.CreateLossClaimHateoasData
 import v3.services._
 
 import javax.inject.{Inject, Singleton}

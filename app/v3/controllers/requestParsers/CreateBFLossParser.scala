@@ -18,12 +18,12 @@ package v3.controllers.requestParsers
 
 import javax.inject.Inject
 import v3.controllers.requestParsers.validators.CreateBFLossValidator
-import v3.models.domain.{BFLoss, Nino}
-import v3.models.requestData._
+import v3.models.domain.Nino
+import v3.models.request.createBFLoss.{CreateBFLossRequestBody, CreateBFLossRawData, CreateBFLossRequest}
 
 class CreateBFLossParser @Inject()(val validator: CreateBFLossValidator)
   extends RequestParser[CreateBFLossRawData, CreateBFLossRequest] {
 
   override protected def requestFor(data: CreateBFLossRawData): CreateBFLossRequest =
-    CreateBFLossRequest(Nino(data.nino), data.body.json.as[BFLoss])
+    CreateBFLossRequest(Nino(data.nino), data.body.json.as[CreateBFLossRequestBody])
 }

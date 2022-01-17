@@ -20,13 +20,14 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockCreateBFLossValidator
-import v3.models.domain.{BFLoss, TypeOfBFLoss, Nino}
+import v3.models.domain.Nino
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import v3.models.requestData._
+import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
 
 class CreateBFLossParserSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
+  private val nino    = "AA123456B"
   private val taxYear = "2017-18"
 
   private val requestBodyJson = Json.parse(
@@ -54,14 +55,15 @@ class CreateBFLossParserSpec extends UnitSpec {
         MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(CreateBFLossRequest(Nino(nino), BFLoss(TypeOfBFLoss.`self-employment`, "XAIS01234567890", taxYear, 1000)))
+          Right(CreateBFLossRequest(Nino(nino), CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XAIS01234567890", taxYear, 1000)))
       }
     }
 
     "return an ErrorWrapper" when {
 
       "a single validation error occurs" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator
+          .validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -69,7 +71,8 @@ class CreateBFLossParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator
+          .validate(inputData)
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(inputData) shouldBe

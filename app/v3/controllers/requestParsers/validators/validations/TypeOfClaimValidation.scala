@@ -16,9 +16,9 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.domain.TypeOfClaimLoss._
-import v3.models.domain.TypeOfClaim._
-import v3.models.domain.{TypeOfClaimLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.TypeOfLoss._
+import v3.models.domain.lossClaim.TypeOfClaim._
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 object TypeOfClaimValidation {
@@ -27,7 +27,7 @@ object TypeOfClaimValidation {
     if (TypeOfClaim.parser.isDefinedAt(typeOfClaim)) NoValidationErrors else List(TypeOfClaimFormatError)
   }
 
-  def validateTypeOfClaimPermitted(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfClaimLoss): List[MtdError] = {
+  def validateTypeOfClaimPermitted(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] = {
     val permitted = typeOfLoss match {
       case `self-employment` =>
         typeOfClaim match {

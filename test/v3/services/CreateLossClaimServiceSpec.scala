@@ -17,11 +17,12 @@
 package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.downstream.CreateLossClaimResponse
-import v3.models.domain.{ LossClaim, Nino, TypeOfClaim, TypeOfClaimLoss }
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.CreateLossClaimRequest
+import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
+import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.Future
 
@@ -30,7 +31,8 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
-  val lossClaim: LossClaim = LossClaim("2018", TypeOfClaimLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
+  val lossClaim: CreateLossClaimRequestBody =
+    CreateLossClaimRequestBody("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
 
   val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
@@ -53,7 +55,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                     = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 

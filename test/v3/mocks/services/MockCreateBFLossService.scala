@@ -19,7 +19,7 @@ package v3.mocks.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.requestData.CreateBFLossRequest
+import v3.models.request.createBFLoss.CreateBFLossRequest
 import v3.services.{CreateBFLossOutcome, CreateBFLossService}
 
 import scala.concurrent.{ExecutionContext, Future}

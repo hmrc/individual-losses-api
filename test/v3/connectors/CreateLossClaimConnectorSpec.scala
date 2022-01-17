@@ -17,11 +17,12 @@
 package v3.connectors
 
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.downstream._
 import v3.models.domain._
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData._
+import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
+import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.Future
 
@@ -29,9 +30,9 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
   "create LossClaim" when {
 
-    val lossClaim: LossClaim = LossClaim(
+    val lossClaim: CreateLossClaimRequestBody = CreateLossClaimRequestBody(
       taxYearClaimedFor = "2019-20",
-      typeOfLoss = TypeOfClaimLoss.`self-employment`,
+      typeOfLoss = TypeOfLoss.`self-employment`,
       typeOfClaim = TypeOfClaim.`carry-forward`,
       businessId = "XKIS00000000988"
     )

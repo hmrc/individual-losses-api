@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.validators.ListBFLossesValidator
 import v3.models.errors.MtdError
-import v3.models.requestData.ListBFLossesRawData
+import v3.models.request.listBFLosses.ListBFLossesRawData
 
 class MockListBFLossesValidator extends MockFactory {
 

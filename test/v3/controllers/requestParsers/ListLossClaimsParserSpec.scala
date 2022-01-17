@@ -18,9 +18,10 @@ package v3.controllers.requestParsers
 
 import support.UnitSpec
 import v3.mocks.validators.MockListLossClaimsValidator
-import v3.models.domain.{TypeOfClaimLoss, Nino, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
-import v3.models.requestData.{DownstreamTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
+import v3.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
 
 class ListLossClaimsParserSpec extends UnitSpec {
 
@@ -50,10 +51,10 @@ class ListLossClaimsParserSpec extends UnitSpec {
             ListLossClaimsRequest(
               nino = Nino(nino),
               taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
-              typeOfLoss = Some(TypeOfClaimLoss.`uk-property-non-fhl`),
+              typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`),
               businessId = Some(businessId),
               typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
-          ))
+            ))
       }
 
       "map missing parameters to None" in new Test {

@@ -16,11 +16,11 @@
 
 package v3.controllers.requestParsers.validators
 
-import play.api.libs.json.{ JsArray, JsValue, Json }
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.models.errors._
-import v3.models.requestData.AmendLossClaimsOrderRawData
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
 import v3.models.utils.JsonErrorValidators
 
 class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidators {

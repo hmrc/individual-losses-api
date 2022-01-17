@@ -17,20 +17,21 @@
 package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.downstream.CreateBFLossResponse
-import v3.models.domain.{BFLoss, TypeOfBFLoss, Nino}
+import v3.models.domain.Nino
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.CreateBFLossRequest
+import v3.models.request.createBFLoss.{CreateBFLossRequest, CreateBFLossRequestBody}
+import v3.models.response.createBFLoss.CreateBFLossResponse
 
 import scala.concurrent.Future
 
 class CreateBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val bfLoss: BFLoss = BFLoss(TypeOfBFLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+  val bfLoss: CreateBFLossRequestBody = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
   val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
@@ -53,7 +54,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -72,14 +73,14 @@ class CreateBFLossServiceSpec extends ServiceSpec {
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "DUPLICATE_SUBMISSION" -> RuleDuplicateSubmissionError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
-      "TAX_YEAR_NOT_ENDED" -> RuleTaxYearNotEndedError,
-      "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "INVALID_PAYLOAD" -> DownstreamError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "DUPLICATE_SUBMISSION"      -> RuleDuplicateSubmissionError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+      "TAX_YEAR_NOT_ENDED"        -> RuleTaxYearNotEndedError,
+      "INCOME_SOURCE_NOT_FOUND"   -> NotFoundError,
+      "INVALID_CORRELATIONID"     -> DownstreamError,
+      "INVALID_PAYLOAD"           -> DownstreamError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

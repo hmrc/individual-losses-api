@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.DeleteLossClaimParser
 import v3.models.errors.ErrorWrapper
-import v3.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
+import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 trait MockDeleteLossClaimRequestDataParser extends MockFactory {
 

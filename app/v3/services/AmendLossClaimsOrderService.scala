@@ -19,10 +19,10 @@ package v3.services
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.LossClaimConnector
-import v3.models.downstream.AmendLossClaimsOrderResponse
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.AmendLossClaimsOrderRequest
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
+import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 

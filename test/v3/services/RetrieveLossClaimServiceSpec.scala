@@ -17,11 +17,12 @@
 package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.domain.{Nino, TypeOfClaim, TypeOfClaimLoss}
-import v3.models.downstream.LossClaimResponse
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.RetrieveLossClaimRequest
+import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
+import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import scala.concurrent.Future
 
@@ -39,11 +40,11 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
   "retrieve loss claim" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val downstreamResponse: ResponseWrapper[LossClaimResponse] =
+        val downstreamResponse: ResponseWrapper[RetrieveLossClaimResponse] =
           ResponseWrapper(correlationId,
-                          LossClaimResponse(
+                          RetrieveLossClaimResponse(
                             "2019-20",
-                            TypeOfClaimLoss.`self-employment`,
+                            TypeOfLoss.`self-employment`,
                             TypeOfClaim.`carry-forward`,
                             "selfEmploymentId",
                             Some(1),

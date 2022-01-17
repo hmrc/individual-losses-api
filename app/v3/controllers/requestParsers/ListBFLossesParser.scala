@@ -16,10 +16,12 @@
 
 package v3.controllers.requestParsers
 
-import javax.inject.Inject
 import v3.controllers.requestParsers.validators.ListBFLossesValidator
-import v3.models.domain.{Nino, TypeOfBFLoss}
-import v3.models.requestData._
+import v3.models.domain.bfLoss.TypeOfLoss
+import v3.models.domain.{DownstreamTaxYear, Nino}
+import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
+
+import javax.inject.Inject
 
 class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
 
@@ -28,7 +30,7 @@ class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends
 
     val BFIncomeSourceType = for {
       typeOfLossString <- data.typeOfLoss
-      typeOfLoss       <- TypeOfBFLoss.parser.lift(typeOfLossString)
+      typeOfLoss       <- TypeOfLoss.parser.lift(typeOfLossString)
       incomeSourceType <- typeOfLoss.toIncomeSourceType
     } yield incomeSourceType
 

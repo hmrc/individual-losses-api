@@ -17,11 +17,12 @@
 package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.downstream.AmendLossClaimsOrderResponse
-import v3.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
+import v3.models.domain.lossClaim.TypeOfClaim
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{AmendLossClaimsOrderRequest, DownstreamTaxYear}
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
+import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
 import scala.concurrent.Future
 

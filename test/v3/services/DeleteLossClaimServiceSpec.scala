@@ -20,7 +20,7 @@ import v3.mocks.connectors.MockLossClaimConnector
 import v3.models.domain.Nino
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.DeleteLossClaimRequest
+import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
 
 import scala.concurrent.Future
 

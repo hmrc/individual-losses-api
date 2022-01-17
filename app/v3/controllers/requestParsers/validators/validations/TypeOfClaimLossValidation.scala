@@ -16,13 +16,13 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.domain.TypeOfClaimLoss
+import v3.models.domain.lossClaim.TypeOfLoss
 import v3.models.errors.{MtdError, TypeOfLossFormatError}
 
 object TypeOfClaimLossValidation {
 
   def validate(typeOfLoss: String): List[MtdError] = {
-    if (TypeOfClaimLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
+    if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 
 }

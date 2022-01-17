@@ -16,24 +16,24 @@
 
 package v3.connectors
 
-import java.time.LocalDateTime
-
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.downstream._
 import v3.models.domain._
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData._
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
+import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class AmendLossClaimTypeConnectorSpec extends LossClaimConnectorSpec {
 
   "amendLossClaimType" when {
 
-    val response: LossClaimResponse = LossClaimResponse(
+    val response: AmendLossClaimTypeResponse = AmendLossClaimTypeResponse(
       businessId = "XKIS00000000988",
-      typeOfLoss = TypeOfClaimLoss.`self-employment`,
+      typeOfLoss = TypeOfLoss.`self-employment`,
       typeOfClaim = TypeOfClaim.`carry-forward`,
       taxYearClaimedFor = "2019-20",
       lastModified = LocalDateTime.now().toString,
@@ -97,7 +97,7 @@ class AmendLossClaimTypeConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def amendLossClaimTypeResult(connector: LossClaimConnector): DownstreamOutcome[LossClaimResponse] =
+    def amendLossClaimTypeResult(connector: LossClaimConnector): DownstreamOutcome[AmendLossClaimTypeResponse] =
       await(
         connector.amendLossClaimType(
           AmendLossClaimTypeRequest(

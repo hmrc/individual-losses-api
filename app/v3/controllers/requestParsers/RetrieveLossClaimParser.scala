@@ -19,7 +19,7 @@ package v3.controllers.requestParsers
 import javax.inject.Inject
 import v3.controllers.requestParsers.validators.RetrieveLossClaimValidator
 import v3.models.domain.Nino
-import v3.models.requestData._
+import v3.models.request.retrieveLossClaim.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
 
 class RetrieveLossClaimParser @Inject()(val validator: RetrieveLossClaimValidator)
   extends RequestParser[RetrieveLossClaimRawData, RetrieveLossClaimRequest] {

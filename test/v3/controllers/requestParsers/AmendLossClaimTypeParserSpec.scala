@@ -20,9 +20,10 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendLossClaimTypeValidator
-import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino, TypeOfClaim}
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
-import v3.models.requestData.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest}
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 
 class AmendLossClaimTypeParserSpec extends UnitSpec {
 

@@ -22,19 +22,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockListLossClaimsRequestDataParser
 import v3.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
-import v3.models.downstream.{ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId}
-import v3.models.domain.{TypeOfClaimLoss, Nino, TypeOfClaim}
-import v3.models.errors.{NotFoundError, _}
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.{DownstreamTaxYear, Nino}
+import v3.models.errors._
 import v3.models.hateoas.Method.{GET, POST}
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{DownstreamTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
+import v3.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
+import v3.models.response.listLossClaims.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockListLossClaimsService
@@ -50,17 +51,54 @@ class ListLossClaimsControllerSpec
   val claimType: String      = "carry-sideways"
 
   val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
-  val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), Some(DownstreamTaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+
+  val request: ListLossClaimsRequest =
+    ListLossClaimsRequest(Nino(nino), Some(DownstreamTaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
   val testHateoasLink: Link       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val response: ListLossClaimsResponse[LossClaimId] = ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfClaimLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-    LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfClaimLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))
+  val response: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
+    Seq(
+      ListLossClaimsItem("businessId",
+                         TypeOfClaim.`carry-sideways`,
+                         TypeOfLoss.`self-employment`,
+                         "2020",
+                         "claimId",
+                         Some(1),
+                         "2020-07-13T12:13:48.763Z"),
+      ListLossClaimsItem("businessId1",
+                         TypeOfClaim.`carry-sideways`,
+                         TypeOfLoss.`self-employment`,
+                         "2020",
+                         "claimId1",
+                         Some(2),
+                         "2020-07-13T12:13:48.763Z")
+    ))
 
-  val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[LossClaimId]] = ListLossClaimsResponse(
-    Seq(HateoasWrapper(LossClaimId("XAIS12345678910", TypeOfClaim.`carry-sideways`, TypeOfClaimLoss.`self-employment`, "2020-21", "AAZZ1234567890A", Some(1), "2020-07-13T12:13:48.763Z"), Seq(testHateoasLink)),
-        HateoasWrapper(LossClaimId("XAIS12345678911", TypeOfClaim.`carry-sideways`, TypeOfClaimLoss.`uk-property-non-fhl`, "2020-21", "AAZZ1234567890B", Some(2), "2020-07-13T12:13:48.763Z"), Seq(testHateoasLink))))
+  val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
+    Seq(
+      HateoasWrapper(
+        ListLossClaimsItem("XAIS12345678910",
+                           TypeOfClaim.`carry-sideways`,
+                           TypeOfLoss.`self-employment`,
+                           "2020-21",
+                           "AAZZ1234567890A",
+                           Some(1),
+                           "2020-07-13T12:13:48.763Z"),
+        Seq(testHateoasLink)
+      ),
+      HateoasWrapper(
+        ListLossClaimsItem("XAIS12345678911",
+                           TypeOfClaim.`carry-sideways`,
+                           TypeOfLoss.`uk-property-non-fhl`,
+                           "2020-21",
+                           "AAZZ1234567890B",
+                           Some(2),
+                           "2020-07-13T12:13:48.763Z"),
+        Seq(testHateoasLink)
+      )
+    ))
 
   val responseJson: JsValue = Json.parse(
     """
@@ -161,8 +199,8 @@ class ListLossClaimsControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
 
         MockHateoasFactory
-          .wrapList(ListLossClaimsResponse(List.empty[LossClaimId]), ListLossClaimsHateoasData(nino))
-          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[LossClaimId]]), Seq(testCreateHateoasLink)))
+          .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
+          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
 
         val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
         status(result) shouldBe NOT_FOUND
