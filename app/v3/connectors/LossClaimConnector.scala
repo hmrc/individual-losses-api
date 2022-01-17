@@ -18,12 +18,12 @@ package v3.connectors
 
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.connectors.DownstreamUri.IfsUri
+import v3.connectors.DownstreamUri.{DesUri, IfsUri}
 import v3.connectors.httpparsers.StandardDownstreamHttpParser._
 import v3.models.downstream.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
 import v3.models.requestData._
-
 import javax.inject.{Inject, Singleton}
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -72,7 +72,7 @@ class LossClaimConnector @Inject()(val http: HttpClient,
     val nino    = request.nino.nino
     val claimId = request.claimId
 
-    delete(IfsUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId"))
+    delete(DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId"))
   }
 
   def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,

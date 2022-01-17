@@ -35,4 +35,16 @@ class LossClaimConnectorSpec extends ConnectorSpec {
     MockAppConfig.ifsEnvironment returns "ifs-environment"
     MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
+
+  class DesTest extends MockHttpClient with MockAppConfig {
+    val connector: LossClaimConnector = new LossClaimConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
+
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+  }
 }
