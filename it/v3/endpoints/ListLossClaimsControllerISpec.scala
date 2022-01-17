@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
 import v3.models.errors._
-import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
+import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 
@@ -156,7 +156,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map.empty, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map.empty, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -227,7 +227,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map("incomeSourceType" -> "02"), Status.OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map("incomeSourceType" -> "02"), Status.OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request().get())
@@ -300,7 +300,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, queryParams = Map("incomeSourceId" -> "XAIS12345678911", "taxYear" -> "2020"), Status.OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, queryParams = Map("incomeSourceId" -> "XAIS12345678911", "taxYear" -> "2020"), Status.OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request().get())
@@ -317,7 +317,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map.empty, Status.OK,
+          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map.empty, Status.OK,
             Json.parse(
               """
                 |[
@@ -339,7 +339,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.GET, ifsUrl, Map.empty, Status.OK,
+          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map.empty, Status.OK,
             Json.parse(
               """
                 |[
@@ -362,7 +362,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            IfsStub.onError(IfsStub.GET, ifsUrl, Map.empty, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, Map.empty, ifsStatus, errorBody(ifsCode))
           }
 
           val response: WSResponse = await(request().get())

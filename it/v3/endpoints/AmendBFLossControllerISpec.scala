@@ -25,7 +25,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
 import v3.hateoas.HateoasLinks
 import v3.models.errors._
-import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
+import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
 
@@ -124,7 +124,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.PUT, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -183,7 +183,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              IfsStub.onError(IfsStub.PUT, ifsUrl, ifsStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.PUT, ifsUrl, ifsStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().post(requestJson))

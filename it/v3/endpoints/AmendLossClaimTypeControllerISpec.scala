@@ -23,7 +23,7 @@ import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V3IntegrationBaseSpec
 import v3.models.errors._
-import v3.stubs.{ AuditStub, AuthStub, IfsStub, MtdIdLookupStub }
+import v3.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
 
@@ -111,7 +111,7 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.PUT, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -130,7 +130,7 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            IfsStub.onError(IfsStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
           }
 
           val response: WSResponse = await(request().post(requestJson))

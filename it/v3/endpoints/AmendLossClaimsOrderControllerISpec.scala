@@ -25,7 +25,7 @@ import support.V3IntegrationBaseSpec
 import v3.models.domain.{Claim, TypeOfClaim}
 import v3.models.errors._
 import v3.models.requestData.DownstreamTaxYear
-import v3.stubs.{AuditStub, AuthStub, IfsStub, MtdIdLookupStub}
+import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
@@ -102,7 +102,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.PUT, ifsUrl, Status.NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.NO_CONTENT)
         }
 
         val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
@@ -120,7 +120,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          IfsStub.onSuccess(IfsStub.PUT, ifsUrl, Status.NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.NO_CONTENT)
         }
 
         val response: WSResponse = await(request().put(requestJson()))
@@ -139,7 +139,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            IfsStub.onError(IfsStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
           }
 
           val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
