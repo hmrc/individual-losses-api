@@ -28,14 +28,14 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
   "delete LossClaim" when {
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new DesTest {
         val expected = Right(ResponseWrapper(correlationId, ()))
 
         MockHttpClient
           .delete(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
@@ -44,14 +44,14 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new Test {
+      "return an unsuccessful response with the correct correlationId and a single error" in new DesTest {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .delete(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
@@ -60,14 +60,14 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new DesTest {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockHttpClient
           .delete(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 
