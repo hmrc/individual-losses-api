@@ -22,7 +22,7 @@ import support.UnitSpec
 class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
   val mtdJson = Json.parse(
     """{
-      |  "claimType": "carry-sideways",
+      |  "typeOfClaim": "carry-sideways",
       |  "listOfLossClaims": [
       |    {
       |      "claimId": "id",
@@ -32,7 +32,7 @@ class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
       |}""".stripMargin)
 
   val model = AmendLossClaimsOrderRequestBody(
-    claimType = TypeOfClaim.`carry-sideways`,
+    typeOfClaim = TypeOfClaim.`carry-sideways`,
     listOfLossClaims = Seq(Claim(
       claimId = "id",
       sequence = 1))

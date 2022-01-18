@@ -45,6 +45,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new DesTest {
+
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -61,6 +62,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new DesTest {
+
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockHttpClient

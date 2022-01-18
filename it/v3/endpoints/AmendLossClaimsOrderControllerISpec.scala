@@ -34,13 +34,13 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
   val claim3: Claim = Claim("1234567890ABDE0", 3)
   val claimSeq: Seq[Claim] = Seq(claim2, claim1, claim3)
 
-  def requestJson(claimType: String = TypeOfClaim.`carry-sideways`.toString, listOfLossClaims: Seq[Claim] = claimSeq): JsValue = {
+  def requestJson(typeOfClaim: String = TypeOfClaim.`carry-sideways`.toString, listOfLossClaims: Seq[Claim] = claimSeq): JsValue = {
     // resetting custom writes for Seq[Claim] so it doesn't use custom Writes defined in the model
     def writes: OWrites[Claim] = Json.writes[Claim]
     def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
     Json.parse(s"""
                   |{
-                  |   "claimType": "$claimType",
+                  |   "typeOfClaim": "$typeOfClaim",
                   |   "listOfLossClaims": ${Json.toJson(listOfLossClaims)(writesSeq)}
                   |}
       """.stripMargin)
@@ -70,7 +70,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def uri: String    = s"/$nino/loss-claims/order"
+    def uri: String    = s"/$nino/loss-claims/order/$taxYear"
     def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.fromMtd(taxYear)}"
 
     def errorBody(code: String): String =
@@ -90,29 +90,11 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
     }
   }
 
-  "Calling the Amend Loss Claims Order endpoint" should {
+  "Calling the Amend Loss Claims Order V3 endpoint" should {
 
     "return a 200 status code" when {
 
       "any valid request is made" in new Test {
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.NO_CONTENT)
-        }
-
-        val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
-        response.status shouldBe Status.OK
-        response.json shouldBe responseJson
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "any valid request is made with no taxYear" in new Test {
-
-        override def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.mostRecentTaxYear()}"
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -185,7 +167,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
       validationErrorTest("BADNINO", "2019-20", requestJson(), Status.BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BadDate", requestJson(), Status.BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", "2019-20", requestJson(claimType = "carry-sideways-fhl"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+      validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), Status.BAD_REQUEST, TypeOfClaimFormatError)
       validationErrorTest("AA123456A", "2019-20", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))), Status.BAD_REQUEST,
         ClaimIdFormatError.copy(paths = Some(Seq("/listOfLossClaims/0/claimId"))))

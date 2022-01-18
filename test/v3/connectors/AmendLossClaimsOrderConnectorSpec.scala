@@ -27,10 +27,10 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
 
   val taxYear: String = "2019-20"
 
-  "amendLossClaimsOrder" when {
+  "amendLossClaimsOrderV3" when {
 
     val amendLossClaimsOrder: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(
-      claimType = TypeOfClaim.`carry-sideways`,
+      typeOfClaim = TypeOfClaim.`carry-sideways`,
       listOfLossClaims = Seq(
         Claim("1234568790ABCDE", 1),
         Claim("1234568790ABCDF", 2)
@@ -39,18 +39,18 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
 
     implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
-    val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
+    val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new DesTest {
         val expected = Right(ResponseWrapper(correlationId, ()))
 
           MockHttpClient
           .put(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.fromMtd(taxYear)}",
-            config = dummyIfsHeaderCarrierConfig,
+            config = dummyDesHeaderCarrierConfig,
             body = amendLossClaimsOrder,
-            requiredHeaders = requiredIfsHeadersPut,
+            requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(expected))
 

@@ -29,7 +29,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
   "list LossClaims" when {
 
     "a valid request is supplied with no query parameters" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new IfsTest {
         val expected = Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
           LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
@@ -47,7 +47,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a tax year parameter" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
           LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
@@ -65,7 +65,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a income source id parameter" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
           LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
@@ -83,7 +83,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a income source type parameter" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
           LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
@@ -101,7 +101,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a claim type parameter" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
           LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
@@ -119,7 +119,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with all parameters" should {
-      "return a successful response with the correct correlationId" in new Test {
+      "return a successful response with the correct correlationId" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
           LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
 
@@ -142,7 +142,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new Test {
+      "return an unsuccessful response with the correct correlationId and a single error" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -159,7 +159,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new IfsTest {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockHttpClient

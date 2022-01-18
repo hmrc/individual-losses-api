@@ -39,17 +39,16 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
                                          amendLossClaimsOrderService: AmendLossClaimsOrderService,
                                          amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
                                          hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimsOrderController", endpointName = "Amend a Loss Claim Order")
 
-  def amendClaimsOrder(nino: String, taxYear: Option[String]): Action[JsValue] =
+  def amendClaimsOrder(nino: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
-      val rawData = AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(request.body))
+      val rawData = AmendLossClaimsOrderRawData(nino, taxYearClaimedFor, AnyContentAsJson(request.body))
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](amendLossClaimsOrderParser.parseRequest(rawData))
@@ -62,9 +61,6 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
           val response = Json.toJson(vendorResponse)
-
-          auditSubmission(AmendLossClaimsOrderAuditDetail(request.userDetails, nino, taxYear, request.body,
-            serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
             .withApiHeaders(serviceResponse.correlationId)
@@ -96,10 +92,4 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
     }
   }
 
-  private def auditSubmission(details: AmendLossClaimsOrderAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
-    val event = AuditEvent("AmendLossClaimsOrder", "amend-loss-claims-order", details)
-    auditService.auditEvent(event)
-  }
 }

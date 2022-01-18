@@ -22,7 +22,7 @@ import v3.models.auth.UserDetails
 case class AmendLossClaimsOrderAuditDetail  (userType: String,
                                              agentReferenceNumber: Option[String],
                                              nino: String,
-                                             taxYear: Option[String],
+                                             taxYear: String,
                                              request: JsValue,
                                              `X-CorrelationId`: String,
                                              response: AuditResponse)
@@ -32,7 +32,7 @@ object AmendLossClaimsOrderAuditDetail {
 
   def apply(userDetails: UserDetails,
             nino: String,
-            taxYear: Option[String],
+            taxYear: String,
             request: JsValue,
             `X-CorrelationId`: String,
             auditResponse: AuditResponse): AmendLossClaimsOrderAuditDetail = {

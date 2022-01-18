@@ -29,20 +29,20 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
   private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
-      data.taxYear.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil)
+      TaxYearValidation.validate(data.taxYearClaimedFor, TaxYearFormatError)
     )
   }
 
   private def parameterValueValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     List(
-      data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil)
+      MinTaxYearValidation.validate(data.taxYearClaimedFor, minimumTaxYearLossClaim)
     )
   }
 
   //  Validate body fields (e.g. enums and ranges) that would otherwise fail at JsonFormatValidation with a less specific error
   private def bodyEnumValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
     List(
-      JsonValidation.validate[String](data.body.json \ "claimType") { value =>
+      JsonValidation.validate[String](data.body.json \ "typeOfClaim") { value =>
         TypeOfClaim.parser.lift(value) match {
           case Some(TypeOfClaim.`carry-sideways`) => Nil
           case _                                  => List(TypeOfClaimFormatError)

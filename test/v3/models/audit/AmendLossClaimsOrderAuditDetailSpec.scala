@@ -25,7 +25,7 @@ class AmendLossClaimsOrderAuditDetailSpec extends UnitSpec {
 
   val nino = "ZG903729C"
   val wrongNino = "XX751130C"
-  val taxYear = Some("2018-19")
+  val taxYear = "2018-19"
   val typeOfClaim = TypeOfClaim.`carry-forward`
   def uri: String = s"/$nino/brought-forward-losses"
 
