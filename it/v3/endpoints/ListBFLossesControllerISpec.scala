@@ -27,8 +27,6 @@ import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
 
-  val correlationId = "X-123"
-
   val downstreamResponseJson: JsValue =
     Json.parse(s"""
        |[

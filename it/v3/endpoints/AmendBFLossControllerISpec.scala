@@ -71,7 +71,6 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
 
     val nino = "AA123456A"
     val lossId = "AAZZ1234567890a"
-    val correlationId = "X-123"
     val typeOfLoss = "self-employment"
 
     val responseJson: JsValue = Json.parse(
