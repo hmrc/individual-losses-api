@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockListBFLossesRequestDataParser
 import v3.mocks.services.{MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
-import v3.models.domain.{BFLossTypeOfLoss, Nino}
+import v3.models.domain.{TypeOfBFLoss, Nino}
 import v3.models.downstream.{IncomeSourceType, ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import v3.models.errors.{NotFoundError, _}
 import v3.models.hateoas.Method.{GET, POST}
@@ -55,7 +55,7 @@ class ListBFLossesControllerSpec
   val getHateoasLink: String => Link  = lossId => Link(href = s"/individuals/losses/TC663795B/brought-forward-losses/$lossId", method = GET, rel = "self")
 
   // WLOG
-  val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", BFLossTypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
+  val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfBFLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
   val response: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Seq(responseItem))
 
   val hateoasResponse: ListBFLossesResponse[HateoasWrapper[ListBFLossesItem]] = ListBFLossesResponse(

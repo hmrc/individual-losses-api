@@ -18,7 +18,7 @@ package v3.controllers.requestParsers
 
 import javax.inject.Inject
 import v3.controllers.requestParsers.validators.ListLossClaimsValidator
-import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{TypeOfClaimLoss, Nino, TypeOfClaim}
 import v3.models.requestData.{DownstreamTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
 class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator)
@@ -30,7 +30,7 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator)
     ListLossClaimsRequest(
       Nino(data.nino),
       taxYear.map(DownstreamTaxYear.fromMtd),
-      data.typeOfLoss.flatMap(TypeOfLoss.parser.lift),
+      data.typeOfLoss.flatMap(TypeOfClaimLoss.parser.lift),
       data.businessId,
       data.typeOfClaim.flatMap(TypeOfClaim.parser.lift)
     )

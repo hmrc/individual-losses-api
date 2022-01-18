@@ -18,28 +18,34 @@ package v3.models.downstream
 
 import play.api.libs.json._
 import utils.enums.Enums
-import v3.models.domain.BFLossTypeOfLoss
+import v3.models.domain.{TypeOfBFLoss, TypeOfClaimLoss}
 
 sealed trait IncomeSourceType {
-  def toTypeOfLoss: BFLossTypeOfLoss
+  def toTypeClaimLoss: TypeOfClaimLoss
+  def toTypeBFLoss: TypeOfBFLoss
 }
 
 object IncomeSourceType {
 
   case object `01` extends IncomeSourceType {
-    override def toTypeOfLoss: BFLossTypeOfLoss = BFLossTypeOfLoss.`self-employment`
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`self-employment`
+    override def toTypeBFLoss: TypeOfBFLoss = TypeOfBFLoss.`self-employment`
   }
   case object `02` extends IncomeSourceType {
-    override def toTypeOfLoss: BFLossTypeOfLoss = BFLossTypeOfLoss.`uk-property-non-fhl`
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`uk-property-non-fhl`
+    override def toTypeBFLoss: TypeOfBFLoss = TypeOfBFLoss.`uk-property-non-fhl`
   }
   case object `03` extends IncomeSourceType {
-    override def toTypeOfLoss: BFLossTypeOfLoss = BFLossTypeOfLoss.`foreign-property-fhl-eea`
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`foreign-property-fhl-eea`
+    override def toTypeBFLoss: TypeOfBFLoss = TypeOfBFLoss.`foreign-property-fhl-eea`
   }
   case object `04` extends IncomeSourceType {
-    override def toTypeOfLoss: BFLossTypeOfLoss = BFLossTypeOfLoss.`uk-property-fhl`
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`uk-property-fhl`
+    override def toTypeBFLoss: TypeOfBFLoss = TypeOfBFLoss.`uk-property-fhl`
   }
   case object `15` extends IncomeSourceType {
-    override def toTypeOfLoss: BFLossTypeOfLoss = BFLossTypeOfLoss.`foreign-property`
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`foreign-property`
+    override def toTypeBFLoss: TypeOfBFLoss = TypeOfBFLoss.`foreign-property`
   }
 
   implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]

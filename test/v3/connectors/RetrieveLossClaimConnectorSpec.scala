@@ -38,7 +38,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     val retrieveResponse: LossClaimResponse = LossClaimResponse(
       validTaxYear,
-      TypeOfLoss.`self-employment`,
+      TypeOfClaimLoss.`self-employment`,
       TypeOfClaim.`carry-forward`,
       validBusinessId,
       Some(1),

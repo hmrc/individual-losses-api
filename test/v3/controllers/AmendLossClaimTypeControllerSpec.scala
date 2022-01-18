@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendLossClaimTypeRequestDataParser
 import v3.mocks.services._
-import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{AmendLossClaimTypeRequestBody, TypeOfClaimLoss, Nino, TypeOfClaim}
 import v3.models.downstream.{AmendLossClaimTypeHateoasData, LossClaimResponse}
 import v3.models.errors._
 import v3.models.hateoas.Method.GET
@@ -50,7 +50,7 @@ class AmendLossClaimTypeControllerSpec
   val response: LossClaimResponse =
     LossClaimResponse(
       "2019-20",
-      TypeOfLoss.`self-employment`,
+      TypeOfClaimLoss.`self-employment`,
       TypeOfClaim.`carry-forward`,
       "XKIS00000000988",
       Some(1),

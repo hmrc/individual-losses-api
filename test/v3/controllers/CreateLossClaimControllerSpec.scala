@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v3.mocks.services._
-import v3.models.domain.{LossClaim, Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{LossClaim, TypeOfClaimLoss, Nino, TypeOfClaim}
 import v3.models.downstream.{CreateLossClaimHateoasData, CreateLossClaimResponse}
 import v3.models.errors.{NotFoundError, _}
 import v3.models.hateoas.Method.GET
@@ -46,7 +46,7 @@ class CreateLossClaimControllerSpec
   val nino: String          = "AA123456A"
   val lossClaimId: String   = "AAZZ1234567890a"
 
-  val lossClaim: LossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
+  val lossClaim: LossClaim = LossClaim("2017-18", TypeOfClaimLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
 
   val createLossClaimResponse: CreateLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
 

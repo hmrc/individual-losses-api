@@ -19,7 +19,7 @@ package v3.models.downstream
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v3.models.downstream.IncomeSourceType._
-import v3.models.domain.TypeOfLoss
+import v3.models.domain.{TypeOfBFLoss, TypeOfClaimLoss}
 
 class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
@@ -28,11 +28,16 @@ class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
   "IncomeSourceType" when {
     "getting downstream IncomeSourceType" must {
       "work" in {
-        `01`.toTypeOfLoss shouldBe TypeOfLoss.`self-employment`
-        `02`.toTypeOfLoss shouldBe TypeOfLoss.`uk-property-non-fhl`
-        `03`.toTypeOfLoss shouldBe TypeOfLoss.`foreign-property-fhl-eea`
-        `04`.toTypeOfLoss shouldBe TypeOfLoss.`uk-property-fhl`
-        `15`.toTypeOfLoss shouldBe TypeOfLoss.`foreign-property`
+        `01`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`self-employment`
+        `02`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`uk-property-non-fhl`
+        `03`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`foreign-property-fhl-eea`
+        `04`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`uk-property-fhl`
+        `15`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`foreign-property`
+        `01`.toTypeBFLoss shouldBe TypeOfBFLoss.`self-employment`
+        `02`.toTypeBFLoss shouldBe TypeOfBFLoss.`uk-property-non-fhl`
+        `03`.toTypeBFLoss shouldBe TypeOfBFLoss.`foreign-property-fhl-eea`
+        `04`.toTypeBFLoss shouldBe TypeOfBFLoss.`uk-property-fhl`
+        `15`.toTypeBFLoss shouldBe TypeOfBFLoss.`foreign-property`
       }
     }
   }

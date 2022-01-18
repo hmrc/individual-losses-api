@@ -24,7 +24,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
   val lossClaimSelfEmployment: LossClaim = LossClaim(
     taxYearClaimedFor = "2019-20",
-    typeOfLoss = TypeOfLoss.`self-employment`,
+    typeOfLoss = TypeOfClaimLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     businessId = "X2IS12356589871"
   )
@@ -48,7 +48,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
   val lossClaimUkPropertyNonFhl: LossClaim = LossClaim(
     taxYearClaimedFor = "2019-20",
-    typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
+    typeOfLoss = TypeOfClaimLoss.`uk-property-non-fhl`,
     typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`,
     businessId = "X2IS12356589871"
   )
@@ -73,7 +73,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
   val lossClaimForeignProperty: LossClaim = LossClaim(
     taxYearClaimedFor = "2019-20",
-    typeOfLoss = TypeOfLoss.`foreign-property`,
+    typeOfLoss = TypeOfClaimLoss.`foreign-property`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     businessId = "X2IS12356589871"
   )

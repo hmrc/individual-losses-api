@@ -18,7 +18,7 @@ package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
 import v3.models.downstream.CreateBFLossResponse
-import v3.models.domain.{BFLoss, BFLossTypeOfLoss, Nino}
+import v3.models.domain.{BFLoss, TypeOfBFLoss, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.CreateBFLossRequest
@@ -30,7 +30,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   val nino: String = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val bfLoss: BFLoss = BFLoss(BFLossTypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+  val bfLoss: BFLoss = BFLoss(TypeOfBFLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
   val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 

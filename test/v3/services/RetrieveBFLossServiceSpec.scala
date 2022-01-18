@@ -18,7 +18,7 @@ package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
 import v3.models.downstream.BFLossResponse
-import v3.models.domain.{BFLossTypeOfLoss, Nino}
+import v3.models.domain.{TypeOfBFLoss, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.RetrieveBFLossRequest
@@ -40,7 +40,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val downstreamResponse: ResponseWrapper[BFLossResponse] =
-          ResponseWrapper(correlationId, BFLossResponse("selfEmploymentId", BFLossTypeOfLoss.`self-employment`, 123.45, "2018-19", "time"))
+          ResponseWrapper(correlationId, BFLossResponse("selfEmploymentId", TypeOfBFLoss.`self-employment`, 123.45, "2018-19", "time"))
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Right(downstreamResponse)

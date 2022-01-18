@@ -18,22 +18,21 @@ package v3.models.domain
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v3.models.domain.BFLossTypeOfLoss._
+import v3.models.domain.TypeOfBFLoss._
 import v3.models.downstream.{IncomeSourceType, LossType}
 
-class BFLossTypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
+class TypeOfBFLossSpec extends UnitSpec with EnumJsonSpecSupport {
 
-  testRoundTrip[BFLossTypeOfLoss](
+  testRoundTrip[TypeOfBFLoss](
     ("self-employment", `self-employment`),
     ("self-employment-class4", `self-employment-class4`),
     ("uk-property-non-fhl", `uk-property-non-fhl`),
     ("uk-property-fhl", `uk-property-fhl`),
     ("foreign-property-fhl-eea", `foreign-property-fhl-eea`),
     ("foreign-property", `foreign-property`)
-
   )
 
-  "TypeOfLoss" when {
+  "TypeBFLoss" when {
     "getting downstream LossType" must {
       "work" in {
         `self-employment`.toLossType shouldBe LossType.INCOME

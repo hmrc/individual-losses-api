@@ -22,7 +22,7 @@ import v3.models.downstream.ReliefClaimed
 
 class LossClaimsListSpec extends UnitSpec {
 
-  val lossClaimsList = LossClaimsList(
+  val lossClaimsList: LossClaimsList = LossClaimsList(
     claimType = ReliefClaimed.`CSGI`,
     listOfLossClaims = Seq(Claim(
       claimId = "234568790ABCDE",

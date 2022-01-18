@@ -18,7 +18,7 @@ package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
 import v3.models.downstream.LossClaimResponse
-import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino, TypeOfClaim, TypeOfClaimLoss}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.AmendLossClaimTypeRequest
@@ -35,7 +35,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
   val lossClaimResponse: LossClaimResponse =
     LossClaimResponse(
       "2019-20",
-      TypeOfLoss.`self-employment`,
+      TypeOfClaimLoss.`self-employment`,
       TypeOfClaim.`carry-forward`,
       "XKIS00000000988",
       Some(1),

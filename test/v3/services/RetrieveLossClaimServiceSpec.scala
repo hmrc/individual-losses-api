@@ -17,7 +17,7 @@
 package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{Nino, TypeOfClaim, TypeOfClaimLoss}
 import v3.models.downstream.LossClaimResponse
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
@@ -43,7 +43,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
           ResponseWrapper(correlationId,
                           LossClaimResponse(
                             "2019-20",
-                            TypeOfLoss.`self-employment`,
+                            TypeOfClaimLoss.`self-employment`,
                             TypeOfClaim.`carry-forward`,
                             "selfEmploymentId",
                             Some(1),

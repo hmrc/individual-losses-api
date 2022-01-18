@@ -18,47 +18,52 @@ package v3.models.domain
 
 import play.api.libs.json.Format
 import utils.enums.Enums
-import v3.models.downstream.IncomeSourceType
+import v3.models.downstream.{IncomeSourceType, LossType}
 
-sealed trait LossClaimTypeOfLoss {
+sealed trait TypeOfBFLoss {
   def isProperty: Boolean                          = false
   def isUkProperty: Boolean                        = false
   def isForeignProperty: Boolean                   = false
-  def toIncomeSourceType: Option[IncomeSourceType] = None
+  def toIncomeSourceType: IncomeSourceType         = IncomeSourceType.`01`
+  def toLossType: LossType                         = LossType.INCOME
 }
 
-object LossClaimTypeOfLoss {
+object TypeOfBFLoss {
 
-  case object `uk-property-fhl` extends LossClaimTypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`04`)
+  case object `uk-property-fhl` extends TypeOfBFLoss {
+    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`04`
     override def isProperty: Boolean                                 = true
     override def isUkProperty: Boolean                               = true
   }
 
-  case object `uk-property-non-fhl` extends LossClaimTypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`02`)
+  case object `uk-property-non-fhl` extends TypeOfBFLoss {
+    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`02`
     override def isProperty: Boolean                                 = true
     override def isUkProperty: Boolean                               = true
   }
 
-  case object `foreign-property-fhl-eea` extends LossClaimTypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`03`)
+  case object `foreign-property-fhl-eea` extends TypeOfBFLoss {
+    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`03`
     override def isProperty: Boolean                                 = true
     override def isForeignProperty: Boolean                          = true
   }
 
-  case object `foreign-property` extends LossClaimTypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`15`)
+  case object `foreign-property` extends TypeOfBFLoss {
+    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`15`
     override def isProperty: Boolean                                 = true
     override def isForeignProperty: Boolean                          = true
   }
 
-  case object `self-employment` extends LossClaimTypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`01`)
+  case object `self-employment` extends TypeOfBFLoss {
+    override def toLossType: LossType                                = LossType.INCOME
   }
 
-  implicit val format: Format[LossClaimTypeOfLoss] = Enums.format[LossClaimTypeOfLoss]
+  case object `self-employment-class4` extends TypeOfBFLoss {
+    override def toLossType: LossType                                = LossType.CLASS4
+  }
 
-  val parser: PartialFunction[String, LossClaimTypeOfLoss] = Enums.parser[LossClaimTypeOfLoss]
+  implicit val format: Format[TypeOfBFLoss] = Enums.format[TypeOfBFLoss]
+
+  val parser: PartialFunction[String, TypeOfBFLoss] = Enums.parser[TypeOfBFLoss]
 
 }

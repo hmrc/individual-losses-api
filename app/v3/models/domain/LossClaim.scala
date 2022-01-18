@@ -20,7 +20,7 @@ import play.api.libs.json._
 import v3.models.requestData.DownstreamTaxYear
 
 case class LossClaim(taxYearClaimedFor: String,
-                     typeOfLoss: LossClaimTypeOfLoss,
+                     typeOfLoss: TypeOfClaimLoss,
                      typeOfClaim: TypeOfClaim,
                      businessId: String)
 
@@ -29,14 +29,14 @@ object LossClaim {
 
   implicit val writes: OWrites[LossClaim] = (lossClaim: LossClaim) => {
     lossClaim.typeOfLoss match {
-      case TypeOfLoss.`uk-property-non-fhl` =>
+      case TypeOfClaimLoss.`uk-property-non-fhl` =>
         Json.obj(
           "taxYear"   -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
           "incomeSourceType" -> "02",
           "reliefClaimed"    -> lossClaim.typeOfClaim.toReliefClaimed,
           "incomeSourceId"   -> lossClaim.businessId
         )
-      case TypeOfLoss.`foreign-property` =>
+      case TypeOfClaimLoss.`foreign-property` =>
         Json.obj(
           "taxYear"   -> DownstreamTaxYear.fromMtd(lossClaim.taxYearClaimedFor).value,
           "incomeSourceType" -> "15",

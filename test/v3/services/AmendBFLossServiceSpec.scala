@@ -18,7 +18,7 @@ package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
 import v3.models.downstream.BFLossResponse
-import v3.models.domain.{AmendBFLoss, BFLossTypeOfLoss, Nino}
+import v3.models.domain.{AmendBFLoss, TypeOfBFLoss, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.AmendBFLossRequest
@@ -34,7 +34,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
   val bfLossResponse: BFLossResponse = BFLossResponse(
     "XKIS00000000988",
-    BFLossTypeOfLoss.`self-employment`,
+    TypeOfBFLoss.`self-employment`,
     256.78,
     "2019-20",
     "2018-07-13T12:13:48.763Z"

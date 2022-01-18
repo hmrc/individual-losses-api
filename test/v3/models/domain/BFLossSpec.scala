@@ -19,15 +19,15 @@ package v3.models.domain
 import play.api.libs.json._
 import support.UnitSpec
 import v3.models.utils.JsonErrorValidators
-import BFLossTypeOfLoss._
+import TypeOfBFLoss._
 
 class BFLossSpec extends UnitSpec with JsonErrorValidators {
 
   val broughtForwardLossEmployment: BFLoss =
-    BFLoss(typeOfLoss = BFLossTypeOfLoss.`self-employment`, businessId = "XKIS00000000988", taxYearBroughtForwardFrom = "2019-20", lossAmount = 256.78)
+    BFLoss(typeOfLoss = TypeOfBFLoss.`self-employment`, businessId = "XKIS00000000988", taxYearBroughtForwardFrom = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossForeignProperty: BFLoss =
-    BFLoss(typeOfLoss = BFLossTypeOfLoss.`foreign-property`, businessId = "XKIS00000000988", taxYearBroughtForwardFrom = "2019-20", lossAmount = 256.78)
+    BFLoss(typeOfLoss = TypeOfBFLoss.`foreign-property`, businessId = "XKIS00000000988", taxYearBroughtForwardFrom = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossEmploymentJson: JsValue = Json.parse("""
       |{
@@ -56,7 +56,7 @@ class BFLossSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val broughtForwardLossForeignPropertyDowwnstreamJson: JsValue = Json.parse("""
+  val broughtForwardLossForeignPropertyDownstreamJson: JsValue = Json.parse("""
       |{
       |	  "incomeSourceId": "XKIS00000000988",
       |	  "incomeSourceType": "15",

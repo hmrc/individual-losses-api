@@ -21,7 +21,7 @@ import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.MockHttpClient
 import v3.models.downstream._
-import v3.models.domain.{ AmendBFLoss, BFLoss, Nino, TypeOfLoss }
+import v3.models.domain.{AmendBFLoss, BFLoss, TypeOfBFLoss, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData._
@@ -61,7 +61,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
   "create BFLoss" when {
 
-    val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+    val bfLoss: BFLoss = BFLoss(TypeOfBFLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
     implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
@@ -134,7 +134,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     val amendBFLossResponse: BFLossResponse = BFLossResponse(
       businessId = "XKIS00000000988",
-      typeOfLoss = TypeOfLoss.`self-employment`,
+      typeOfLoss = TypeOfBFLoss.`self-employment`,
       lossAmount = 500.13,
       taxYearBroughtForwardFrom = "2019-20",
       lastModified = "2018-07-13T12:13:48.763Z"
@@ -276,7 +276,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     val retrieveResponse: BFLossResponse = BFLossResponse(
       businessId = "fakeId",
-      typeOfLoss = TypeOfLoss.`self-employment`,
+      typeOfLoss = TypeOfBFLoss.`self-employment`,
       lossAmount = 2000.25,
       taxYearBroughtForwardFrom = "2018-19",
       lastModified = "dateString"
@@ -373,7 +373,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
       // WLOG
       val response =
-        ListBFLossesResponse(Seq(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
+        ListBFLossesResponse(Seq(ListBFLossesItem("lossId", "businessId", TypeOfBFLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
 
       "provided with no parameters" in new ListTest {
         val expected = Right(ResponseWrapper(correlationId, response))

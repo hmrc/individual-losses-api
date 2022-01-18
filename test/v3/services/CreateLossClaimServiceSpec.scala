@@ -18,7 +18,7 @@ package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
 import v3.models.downstream.CreateLossClaimResponse
-import v3.models.domain.{ LossClaim, Nino, TypeOfClaim, TypeOfLoss }
+import v3.models.domain.{ LossClaim, Nino, TypeOfClaim, TypeOfClaimLoss }
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
 import v3.models.requestData.CreateLossClaimRequest
@@ -30,7 +30,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
-  val lossClaim: LossClaim = LossClaim("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
+  val lossClaim: LossClaim = LossClaim("2018", TypeOfClaimLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
 
   val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 

@@ -18,12 +18,12 @@ package v3.models.downstream
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
-import v3.models.domain.BFLossTypeOfLoss
+import v3.models.domain.TypeOfBFLoss
 import v3.models.requestData.DownstreamTaxYear
 
 case class ListBFLossesItem(lossId: String,
                             businessId: String,
-                            typeOfLoss: BFLossTypeOfLoss,
+                            typeOfLoss: TypeOfBFLoss,
                             lossAmount: BigDecimal,
                             taxYearBroughtForwardFrom: String,
                             lastModified: String)
@@ -35,7 +35,7 @@ object ListBFLossesItem {
     (__ \ "lossId").read[String] and
       (__ \ "incomeSourceId").read[String] and
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
-        orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
+        orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeBFLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear").read[String].map(DownstreamTaxYear(_).toMtd) and
       (__ \ "submissionDate").read[String]

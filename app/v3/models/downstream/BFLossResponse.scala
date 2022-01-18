@@ -20,12 +20,12 @@ import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v3.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v3.models.domain.BFLossTypeOfLoss
+import v3.models.domain.TypeOfBFLoss
 import v3.models.hateoas.{HateoasData, Link}
 import v3.models.requestData.DownstreamTaxYear
 
 case class BFLossResponse(businessId: String,
-                          typeOfLoss: BFLossTypeOfLoss,
+                          typeOfLoss: TypeOfBFLoss,
                           lossAmount: BigDecimal,
                           taxYearBroughtForwardFrom: String,
                           lastModified: String)
@@ -36,7 +36,7 @@ object BFLossResponse extends HateoasLinks {
   implicit val reads: Reads[BFLossResponse] = (
     (__ \ "incomeSourceId").read[String] and
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
-        orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
+        orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeBFLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
       (__ \ "submissionDate").read[String]

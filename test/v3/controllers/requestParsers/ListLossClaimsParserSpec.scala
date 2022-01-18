@@ -18,7 +18,7 @@ package v3.controllers.requestParsers
 
 import support.UnitSpec
 import v3.mocks.validators.MockListLossClaimsValidator
-import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{TypeOfClaimLoss, Nino, TypeOfClaim}
 import v3.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
 import v3.models.requestData.{DownstreamTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
@@ -50,7 +50,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
             ListLossClaimsRequest(
               nino = Nino(nino),
               taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
-              typeOfLoss = Some(TypeOfLoss.`uk-property-fhl`),
+              typeOfLoss = Some(TypeOfClaimLoss.`uk-property-fhl`),
               businessId = Some(businessId),
               typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
           ))
