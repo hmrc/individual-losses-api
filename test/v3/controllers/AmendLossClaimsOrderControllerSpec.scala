@@ -39,8 +39,7 @@ class AmendLossClaimsOrderControllerSpec
     with MockMtdIdLookupService
     with MockAmendLossClaimsOrderService
     with MockAmendLossClaimsOrderRequestDataParser
-    with MockHateoasFactory
-    with MockAuditService {
+    with MockHateoasFactory {
 
   val claimType: String = "carry-sideways"
   val id: String = "1234568790ABCDE"
@@ -101,7 +100,6 @@ class AmendLossClaimsOrderControllerSpec
       amendLossClaimsOrderService = mockAmendLossClaimsOrderService,
       amendLossClaimsOrderParser = mockAmendLossClaimsRequestDataParser,
       hateoasFactory = mockHateoasFactory,
-      auditService = mockAuditService,
       cc = cc
     )
 

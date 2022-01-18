@@ -39,7 +39,6 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
                                          amendLossClaimsOrderService: AmendLossClaimsOrderService,
                                          amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
                                          hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
@@ -93,10 +92,4 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
     }
   }
 
-  private def auditSubmission(details: AmendLossClaimsOrderAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
-    val event = AuditEvent("AmendLossClaimsOrder", "amend-loss-claims-order", details)
-    auditService.auditEvent(event)
-  }
 }
