@@ -24,42 +24,42 @@ sealed trait TypeOfBFLoss {
   def isProperty: Boolean                          = false
   def isUkProperty: Boolean                        = false
   def isForeignProperty: Boolean                   = false
-  def toIncomeSourceType: IncomeSourceType         = IncomeSourceType.`01`
-  def toLossType: LossType                         = LossType.INCOME
+  def toIncomeSourceType: Option[IncomeSourceType] = None
+  def toLossType: Option[LossType]                 = None
 }
 
 object TypeOfBFLoss {
 
   case object `uk-property-fhl` extends TypeOfBFLoss {
-    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`04`
+    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`04`)
     override def isProperty: Boolean                                 = true
     override def isUkProperty: Boolean                               = true
   }
 
   case object `uk-property-non-fhl` extends TypeOfBFLoss {
-    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`02`
+    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`02`)
     override def isProperty: Boolean                                 = true
     override def isUkProperty: Boolean                               = true
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfBFLoss {
-    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`03`
+    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`03`)
     override def isProperty: Boolean                                 = true
     override def isForeignProperty: Boolean                          = true
   }
 
   case object `foreign-property` extends TypeOfBFLoss {
-    override def toIncomeSourceType: IncomeSourceType                = IncomeSourceType.`15`
+    override def toIncomeSourceType: Option[IncomeSourceType]        = Some(IncomeSourceType.`15`)
     override def isProperty: Boolean                                 = true
     override def isForeignProperty: Boolean                          = true
   }
 
   case object `self-employment` extends TypeOfBFLoss {
-    override def toLossType: LossType                                = LossType.INCOME
+    override def toLossType: Option[LossType]                       = Some(LossType.INCOME)
   }
 
   case object `self-employment-class4` extends TypeOfBFLoss {
-    override def toLossType: LossType                                = LossType.CLASS4
+    override def toLossType: Option[LossType]                       = Some(LossType.CLASS4)
   }
 
   implicit val format: Format[TypeOfBFLoss] = Enums.format[TypeOfBFLoss]

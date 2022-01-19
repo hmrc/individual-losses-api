@@ -96,7 +96,7 @@ class BFLossSpec extends UnitSpec with JsonErrorValidators {
             val model         = BFLoss(typeOfLoss = typeOfLoss, businessId = "XKIS00000000988", taxYearBroughtForwardFrom = "2019-20", lossAmount = 255.50)
             val json: JsValue = Json.parse(s"""{
                                               |   "incomeSourceId": "XKIS00000000988",
-                                              |	  "lossType":"${typeOfLoss.toLossType}",
+                                              |	  "lossType":"${typeOfLoss.toLossType.get}",
                                               |	  "taxYearBroughtForwardFrom": 2020,
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
@@ -111,7 +111,7 @@ class BFLossSpec extends UnitSpec with JsonErrorValidators {
             val model         = BFLoss(typeOfLoss = typeOfLoss, businessId = "XKIS00000000988", taxYearBroughtForwardFrom = "2019-20", lossAmount = 255.50)
             val json: JsValue = Json.parse(s"""{
                                               |   "incomeSourceId": "XKIS00000000988",
-                                              |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType}",
+                                              |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType.get}",
                                               |	  "taxYearBroughtForwardFrom": 2020,
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
@@ -126,7 +126,7 @@ class BFLossSpec extends UnitSpec with JsonErrorValidators {
             val model         = BFLoss(typeOfLoss = typeOfLoss, businessId = "XKIS00000000988", taxYearBroughtForwardFrom = "2019-20", lossAmount = 255.50)
             val json: JsValue = Json.parse(s"""{
                                               |   "incomeSourceId": "XKIS00000000988",
-                                              |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType}",
+                                              |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType.get}",
                                               |	  "taxYearBroughtForwardFrom": 2020,
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
