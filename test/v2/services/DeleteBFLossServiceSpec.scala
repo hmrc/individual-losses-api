@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 class DeleteBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
   trait Test extends MockBFLossConnector {
@@ -39,7 +39,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val desResponse: DesResponse[Unit] = DesResponse(correlationId, ())
-        val expected: DesResponse[Unit] = DesResponse(correlationId, ())
+        val expected: DesResponse[Unit]    = DesResponse(correlationId, ())
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Right(desResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Right(expected)
@@ -48,7 +48,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                     = MtdError("SOME_CODE", "some message")
         val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
 
@@ -59,14 +59,14 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val desResponse: DesResponse[SingleError] = DesResponse(correlationId, SingleError(DownstreamError))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val expected: ErrorWrapper                = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Left(expected)
       }
       "the connector call returns multiple errors including a downstream error" in new Test {
         val desResponse: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val expected: ErrorWrapper                   = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Left(expected)
@@ -74,18 +74,20 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
     }
 
     Map(
-      "INVALID_IDVALUE"     -> NinoFormatError,
-      "INVALID_LOSS_ID"     -> LossIdFormatError,
-      "NOT_FOUND"           -> NotFoundError,
-      "CONFLICT"            -> RuleDeleteAfterCrystallisationError,
-      "SERVER_ERROR"        -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError,
-      "UNEXPECTED_ERROR"    -> DownstreamError
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "CONFLICT"                  -> RuleDeleteAfterCrystallisationError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError,
+      "UNEXPECTED_ERROR"          -> DownstreamError
     ).foreach {
-      case(k, v) =>
+      case (k, v) =>
         s"return a ${v.code} error" when {
           s"the connector call returns $k" in new Test {
-            MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
+            MockedBFLossConnector
+              .deleteBFLoss(request)
+              .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
 
             await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }
