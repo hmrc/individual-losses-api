@@ -43,7 +43,7 @@ class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends
   // Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
   private def typeOfLossValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
-      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfLossValidation.validate)
+      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfBFLossValidation.validate)
     )
   }
 
