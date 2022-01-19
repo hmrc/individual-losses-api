@@ -23,7 +23,7 @@ object AppDependencies {
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc"   %% "bootstrap-backend-play-28" % "5.19.0",
-    "org.typelevel" %% "cats-core"                 % "2.6.1",
+    "org.typelevel" %% "cats-core"                 % "2.7.0",
     "com.chuusai"   %% "shapeless"                 % "2.4.0-M1"
   )
 
@@ -31,7 +31,7 @@ object AppDependencies {
     "org.scalatest"          %% "scalatest"          % "3.2.9"             % scope,
     "org.scalatestplus"      %% "scalacheck-1-15"    % "3.2.9.0"           % scope,
     "com.vladsch.flexmark"   % "flexmark-all"        % "0.36.8"            % scope,
-    "org.scalamock"          %% "scalamock"          % "5.1.0"             % scope,
+    "org.scalamock"          %% "scalamock"          % "5.2.0"             % scope,
     "org.pegdown"            % "pegdown"             % "1.6.0"             % scope,
     "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope,
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"             % scope,
