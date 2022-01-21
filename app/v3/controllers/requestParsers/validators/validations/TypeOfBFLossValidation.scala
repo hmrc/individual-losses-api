@@ -20,19 +20,8 @@ import v3.models.domain.TypeOfBFLoss
 import v3.models.errors.{MtdError, TypeOfLossFormatError}
 
 object TypeOfBFLossValidation {
-  private val typeBFLossTypeNames = List(
-    TypeOfBFLoss.`self-employment`,
-    TypeOfBFLoss.`self-employment-class4`,
-    TypeOfBFLoss.`uk-property-fhl`,
-    TypeOfBFLoss.`uk-property-non-fhl`,
-    TypeOfBFLoss.`foreign-property-fhl-eea`,
-    TypeOfBFLoss.`foreign-property`).map(_.toString)
 
   def validate(typeOfLoss: String): List[MtdError] = {
     if (TypeOfBFLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
-  }
-
-  def validateForLossClaim(typeOfLoss: String): List[MtdError] = {
-    if (typeBFLossTypeNames.contains(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 }

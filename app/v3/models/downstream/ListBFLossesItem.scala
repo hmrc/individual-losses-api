@@ -35,7 +35,7 @@ object ListBFLossesItem {
     (__ \ "lossId").read[String] and
       (__ \ "incomeSourceId").read[String] and
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
-        orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeBFLoss)) and
+        orElse (__ \ "incomeSourceType").read[BFIncomeSourceType].map(_.toTypeBFLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear").read[String].map(DownstreamTaxYear(_).toMtd) and
       (__ \ "submissionDate").read[String]

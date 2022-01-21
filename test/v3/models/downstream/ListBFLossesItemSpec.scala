@@ -83,12 +83,12 @@ class ListBFLossesItemSpec extends UnitSpec {
     }
 
     "work for property losses" when {
-      checkReadsWith(IncomeSourceType.`02`, TypeOfBFLoss.`uk-property-non-fhl`)
-      checkReadsWith(IncomeSourceType.`03`, TypeOfBFLoss.`foreign-property-fhl-eea`)
-      checkReadsWith(IncomeSourceType.`04`, TypeOfBFLoss.`uk-property-fhl`)
-      checkReadsWith(IncomeSourceType.`15`, TypeOfBFLoss.`foreign-property`)
+      checkReadsWith(BFIncomeSourceType.`02`, TypeOfBFLoss.`uk-property-non-fhl`)
+      checkReadsWith(BFIncomeSourceType.`03`, TypeOfBFLoss.`foreign-property-fhl-eea`)
+      checkReadsWith(BFIncomeSourceType.`04`, TypeOfBFLoss.`uk-property-fhl`)
+      checkReadsWith(BFIncomeSourceType.`15`, TypeOfBFLoss.`foreign-property`)
 
-      def checkReadsWith(incomeSourceType: IncomeSourceType, expectedTypeOfLoss: TypeOfBFLoss): Unit =
+      def checkReadsWith(incomeSourceType: BFIncomeSourceType, expectedTypeOfLoss: TypeOfBFLoss): Unit =
         s"income source type is $incomeSourceType" in {
           Json.parse(s"""
                         |{

@@ -33,7 +33,7 @@ import v3.models.requestData.CreateBFLossRawData
 class CreateBFLossValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
-  private val validTaxYear = "2018-19"
+  private val validTaxYear = "2020-21"
   private val validTypeOfLoss = "self-employment"
   private val validBusinessId = "XAIS01234567890"
 

@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package v3.models.domain
+package v3.models.downstream
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v3.models.domain.TypeOfClaimLoss._
-import v3.models.downstream.ClaimIncomeSourceType
+import v3.models.domain.TypeOfClaimLoss
+import v3.models.downstream.ClaimIncomeSourceType._
 
-class TypeOfClaimLossSpec extends UnitSpec with EnumJsonSpecSupport {
+class ClaimIncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
-  testRoundTrip[TypeOfClaimLoss](
-    ("self-employment", `self-employment`),
-    ("uk-property-non-fhl", `uk-property-non-fhl`),
-    ("foreign-property", `foreign-property`)
-  )
+  testRoundTrip[ClaimIncomeSourceType](("01", `01`), ("02", `02`), ("15", `15`))
 
-  "TypeClaimLoss" when {
+  "IncomeSourceType" when {
     "getting downstream IncomeSourceType" must {
       "work" in {
-        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(ClaimIncomeSourceType.`02`)
-        `self-employment`.toIncomeSourceType shouldBe Some(ClaimIncomeSourceType.`01`)
-        `foreign-property`.toIncomeSourceType shouldBe Some(ClaimIncomeSourceType.`15`)
+        `01`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`self-employment`
+        `02`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`uk-property-non-fhl`
+        `15`.toTypeClaimLoss shouldBe TypeOfClaimLoss.`foreign-property`
       }
     }
   }

@@ -36,7 +36,7 @@ object BFLossResponse extends HateoasLinks {
   implicit val reads: Reads[BFLossResponse] = (
     (__ \ "incomeSourceId").read[String] and
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
-        orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeBFLoss)) and
+        orElse (__ \ "incomeSourceType").read[BFIncomeSourceType].map(_.toTypeBFLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
       (__ \ "submissionDate").read[String]

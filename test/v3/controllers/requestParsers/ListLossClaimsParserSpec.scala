@@ -38,7 +38,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
           ListLossClaimsRawData(
             nino = nino,
             taxYearClaimedFor = Some("2017-18"),
-            typeOfLoss = Some("uk-property-fhl"),
+            typeOfLoss = Some("uk-property-non-fhl"),
             businessId = Some(businessId),
             typeOfClaim = Some("carry-sideways")
           )
@@ -50,7 +50,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
             ListLossClaimsRequest(
               nino = Nino(nino),
               taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
-              typeOfLoss = Some(TypeOfClaimLoss.`uk-property-fhl`),
+              typeOfLoss = Some(TypeOfClaimLoss.`uk-property-non-fhl`),
               businessId = Some(businessId),
               typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
           ))

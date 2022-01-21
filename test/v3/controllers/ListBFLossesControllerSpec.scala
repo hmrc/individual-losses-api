@@ -23,7 +23,7 @@ import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockListBFLossesRequestDataParser
 import v3.mocks.services.{MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
 import v3.models.domain.{TypeOfBFLoss, Nino}
-import v3.models.downstream.{IncomeSourceType, ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
+import v3.models.downstream.{BFIncomeSourceType, ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import v3.models.errors.{NotFoundError, _}
 import v3.models.hateoas.Method.{GET, POST}
 import v3.models.hateoas.{HateoasWrapper, Link}
@@ -48,7 +48,7 @@ class ListBFLossesControllerSpec
   val businessId: String       = "XKIS00000000988"
 
   val rawData: ListBFLossesRawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId))
-  val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), Some(DownstreamTaxYear("2019")), Some(IncomeSourceType.`01`), Some(businessId))
+  val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), Some(DownstreamTaxYear("2019")), Some(BFIncomeSourceType.`02`), Some(businessId))
 
   val listHateoasLink: Link       = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
   val createHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = POST, rel = "create-brought-forward-loss")

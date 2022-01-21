@@ -35,7 +35,7 @@ object LossClaimResponse extends HateoasLinks {
   implicit val writes: OWrites[LossClaimResponse] = Json.writes[LossClaimResponse]
   implicit val reads: Reads[LossClaimResponse] = (
     (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
-      ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeClaimLoss) orElse Reads.pure(TypeOfClaimLoss.`self-employment`)) and
+      ((JsPath \ "incomeSourceType").read[ClaimIncomeSourceType].map(_.toTypeClaimLoss) orElse Reads.pure(TypeOfClaimLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and

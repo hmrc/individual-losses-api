@@ -359,7 +359,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
           )
 
       def request(taxYear: Option[DownstreamTaxYear] = None,
-                  incomeSourceType: Option[IncomeSourceType] = None,
+                  incomeSourceType: Option[BFIncomeSourceType] = None,
                   businessId: Option[String] = None): ListBFLossesRequest =
         ListBFLossesRequest(
           nino = Nino(nino),
@@ -404,7 +404,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
         mockHttpWithParameters("incomeSourceType" -> "02") returns Future.successful(expected)
 
-        await(connector.listBFLosses(request(incomeSourceType = Some(IncomeSourceType.`02`)))) shouldBe expected
+        await(connector.listBFLosses(request(incomeSourceType = Some(BFIncomeSourceType.`02`)))) shouldBe expected
       }
 
       "provided with all parameters" in new ListTest {
@@ -415,7 +415,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         await(
           connector.listBFLosses(request(taxYear = Some(DownstreamTaxYear("2019")),
                                          businessId = Some("testId"),
-                                         incomeSourceType = Some(IncomeSourceType.`01`)))) shouldBe expected
+                                         incomeSourceType = Some(BFIncomeSourceType.`01`)))) shouldBe expected
       }
     }
 

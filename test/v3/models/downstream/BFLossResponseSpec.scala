@@ -43,12 +43,12 @@ class BFLossResponseSpec extends UnitSpec {
 
   "Json Reads" when {
     "reading a property brought forward loss" must {
-      test(IncomeSourceType.`02`, TypeOfBFLoss.`uk-property-non-fhl`)
-      test(IncomeSourceType.`03`, TypeOfBFLoss.`foreign-property-fhl-eea`)
-      test(IncomeSourceType.`04`, TypeOfBFLoss.`uk-property-fhl`)
-      test(IncomeSourceType.`15`, TypeOfBFLoss.`foreign-property`)
+      test(BFIncomeSourceType.`02`, TypeOfBFLoss.`uk-property-non-fhl`)
+      test(BFIncomeSourceType.`03`, TypeOfBFLoss.`foreign-property-fhl-eea`)
+      test(BFIncomeSourceType.`04`, TypeOfBFLoss.`uk-property-fhl`)
+      test(BFIncomeSourceType.`15`, TypeOfBFLoss.`foreign-property`)
 
-      def test(incomeSourceType: IncomeSourceType, typeOfLoss: TypeOfBFLoss): Unit =
+      def test(incomeSourceType: BFIncomeSourceType, typeOfLoss: TypeOfBFLoss): Unit =
         s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" in {
           val downstreamJson =
             Json.parse(s"""

@@ -19,7 +19,7 @@ package v3.models.domain
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v3.models.domain.TypeOfBFLoss._
-import v3.models.downstream.{IncomeSourceType, LossType}
+import v3.models.downstream.{BFIncomeSourceType, LossType}
 
 class TypeOfBFLossSpec extends UnitSpec with EnumJsonSpecSupport {
 
@@ -46,10 +46,10 @@ class TypeOfBFLossSpec extends UnitSpec with EnumJsonSpecSupport {
 
     "getting downstream IncomeSourceType" must {
       "work" in {
-        `uk-property-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`04`)
-        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
-        `foreign-property-fhl-eea`.toIncomeSourceType shouldBe Some(IncomeSourceType.`03`)
-        `foreign-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`15`)
+        `uk-property-fhl`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`04`)
+        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`02`)
+        `foreign-property-fhl-eea`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`03`)
+        `foreign-property`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`15`)
         `self-employment`.toIncomeSourceType shouldBe None
         `self-employment-class4`.toIncomeSourceType shouldBe None
       }

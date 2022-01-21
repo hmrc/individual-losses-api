@@ -54,7 +54,7 @@ class RetrieveLossClaimControllerSpec
 
   val response: LossClaimResponse = LossClaimResponse(
     taxYearClaimedFor = taxYear,
-    typeOfLoss = TypeOfClaimLoss.`uk-property-fhl`,
+    typeOfLoss = TypeOfClaimLoss.`uk-property-non-fhl`,
     businessId = businessId,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     lastModified = lastModified,
@@ -67,7 +67,7 @@ class RetrieveLossClaimControllerSpec
     s"""
       |{
       |    "taxYearClaimedFor": "$taxYear",
-      |    "typeOfLoss": "uk-property-fhl",
+      |    "typeOfLoss": "uk-property-non-fhl",
       |    "typeOfClaim": "carry-forward",
       |    "lastModified": "$lastModified",
       |    "businessId": "$businessId",
