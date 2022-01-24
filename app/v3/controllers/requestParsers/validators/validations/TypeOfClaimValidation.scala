@@ -40,8 +40,6 @@ object TypeOfClaimValidation {
           case `carry-sideways` | `carry-sideways-fhl` | `carry-forward-to-carry-sideways` => true
           case _ => false
         }
-
-      case _ => false
     }
 
     if (permitted) NoValidationErrors else List(RuleTypeOfClaimInvalid)

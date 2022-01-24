@@ -44,7 +44,6 @@ object TypeOfClaimLoss {
   case object `self-employment` extends TypeOfClaimLoss {
     override def toIncomeSourceType: Option[ClaimIncomeSourceType]   = Some(ClaimIncomeSourceType.`01`)
     override def isProperty: Boolean                                 = false
-    override def isForeignProperty: Boolean                          = false
   }
 
   implicit val format: Format[TypeOfClaimLoss] = Enums.format[TypeOfClaimLoss]

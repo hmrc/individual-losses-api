@@ -164,7 +164,8 @@ class CreateBFLossValidatorSpec extends UnitSpec {
         validator.validate(
           requestData.CreateBFLossRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment-class4", businessId = "wrong", taxYearBroughtForwardFrom = "2010-11")))) shouldBe
+            AnyContentAsJson(createRequestBodyJson(
+              typeOfLoss = "self-employment-class4", businessId = "wrong", taxYearBroughtForwardFrom = "2010-11")))) shouldBe
           List(RuleTaxYearNotSupportedError, BusinessIdFormatError)
       }
     }
