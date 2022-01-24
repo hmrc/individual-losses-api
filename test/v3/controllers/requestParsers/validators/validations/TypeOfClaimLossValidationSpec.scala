@@ -40,28 +40,4 @@ class TypeOfClaimLossValidationSpec extends UnitSpec {
       }
     }
   }
-
-  "validateForLossClaims" should {
-    "return no errors" when {
-      checkValid("self-employment")
-      checkValid("uk-property-non-fhl")
-      checkValid("foreign-property")
-
-      def checkValid(typeOfLoss  : String)  : Unit =
-        s"provided with a string of '$typeOfLoss'" in {
-          TypeOfClaimLossValidation.validate(typeOfLoss) shouldBe Nil
-        }
-    }
-
-    "return a TypeOfLossFormatError" when {
-      checkInvalid("uk-property-fhl")
-      checkInvalid("foreign-property-fhl-eea")
-      checkInvalid("invalid")
-
-      def checkInvalid(typeOfLoss  : String)  : Unit =
-        s"provided with a string of '$typeOfLoss'" in {
-          TypeOfClaimLossValidation.validate(typeOfLoss) shouldBe  List(TypeOfLossFormatError)
-        }
-    }
-  }
 }

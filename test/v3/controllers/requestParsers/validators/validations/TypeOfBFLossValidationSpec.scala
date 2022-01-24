@@ -43,29 +43,4 @@ class TypeOfBFLossValidationSpec extends UnitSpec {
       }
     }
   }
-
-  "validateForBFLossClaims" should {
-    "return no errors" when {
-      checkValid("self-employment-class4")
-      checkValid("self-employment")
-      checkValid("uk-property-fhl")
-      checkValid("uk-property-non-fhl")
-      checkValid("foreign-property")
-      checkValid("foreign-property-fhl-eea")
-
-      def checkValid(typeOfLoss  : String)  : Unit =
-        s"provided with a string of '$typeOfLoss'" in {
-          TypeOfBFLossValidation.validate(typeOfLoss) shouldBe Nil
-        }
-    }
-
-    "return a TypeOfLossFormatError" when {
-      checkInvalid("invalid")
-
-      def checkInvalid(typeOfLoss  : String)  : Unit =
-        s"provided with a string of '$typeOfLoss'" in {
-          TypeOfBFLossValidation.validate(typeOfLoss) shouldBe List(TypeOfLossFormatError)
-        }
-    }
-  }
 }
