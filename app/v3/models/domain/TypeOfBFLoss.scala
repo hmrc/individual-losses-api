@@ -21,9 +21,6 @@ import utils.enums.Enums
 import v3.models.downstream.{BFIncomeSourceType, LossType}
 
 sealed trait TypeOfBFLoss {
-  def isProperty: Boolean                            = false
-  def isUkProperty: Boolean                          = false
-  def isForeignProperty: Boolean                     = false
   def toIncomeSourceType: Option[BFIncomeSourceType] = None
   def toLossType: Option[LossType]                   = None
 }
@@ -32,26 +29,18 @@ object TypeOfBFLoss {
 
   case object `uk-property-fhl` extends TypeOfBFLoss {
     override def toIncomeSourceType: Option[BFIncomeSourceType]      = Some(BFIncomeSourceType.`04`)
-    override def isProperty: Boolean                                 = true
-    override def isUkProperty: Boolean                               = true
   }
 
   case object `uk-property-non-fhl` extends TypeOfBFLoss {
     override def toIncomeSourceType: Option[BFIncomeSourceType]      = Some(BFIncomeSourceType.`02`)
-    override def isProperty: Boolean                                 = true
-    override def isUkProperty: Boolean                               = true
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfBFLoss {
     override def toIncomeSourceType: Option[BFIncomeSourceType]      = Some(BFIncomeSourceType.`03`)
-    override def isProperty: Boolean                                 = true
-    override def isForeignProperty: Boolean                          = true
   }
 
   case object `foreign-property` extends TypeOfBFLoss {
     override def toIncomeSourceType: Option[BFIncomeSourceType]      = Some(BFIncomeSourceType.`15`)
-    override def isProperty: Boolean                                 = true
-    override def isForeignProperty: Boolean                          = true
   }
 
   case object `self-employment` extends TypeOfBFLoss {

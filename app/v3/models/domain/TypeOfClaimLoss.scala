@@ -21,9 +21,6 @@ import utils.enums.Enums
 import v3.models.downstream.ClaimIncomeSourceType
 
 sealed trait TypeOfClaimLoss {
-  def isProperty: Boolean                          = false
-  def isUkProperty: Boolean                        = false
-  def isForeignProperty: Boolean                   = false
   def toIncomeSourceType: Option[ClaimIncomeSourceType]
 }
 
@@ -31,19 +28,14 @@ object TypeOfClaimLoss {
 
   case object `uk-property-non-fhl` extends TypeOfClaimLoss {
     override def toIncomeSourceType: Option[ClaimIncomeSourceType]   = Some(ClaimIncomeSourceType.`02`)
-    override def isProperty: Boolean                                 = true
-    override def isUkProperty: Boolean                               = true
   }
 
   case object `foreign-property` extends TypeOfClaimLoss {
     override def toIncomeSourceType: Option[ClaimIncomeSourceType]   = Some(ClaimIncomeSourceType.`15`)
-    override def isProperty: Boolean                                 = true
-    override def isForeignProperty: Boolean                          = true
   }
 
   case object `self-employment` extends TypeOfClaimLoss {
     override def toIncomeSourceType: Option[ClaimIncomeSourceType]   = Some(ClaimIncomeSourceType.`01`)
-    override def isProperty: Boolean                                 = false
   }
 
   implicit val format: Format[TypeOfClaimLoss] = Enums.format[TypeOfClaimLoss]
