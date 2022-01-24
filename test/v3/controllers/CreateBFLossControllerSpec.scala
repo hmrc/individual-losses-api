@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v3.mocks.services.{MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v3.models.domain.{BFLoss, Nino, TypeOfLoss}
+import v3.models.domain.{BFLoss, TypeOfBFLoss, Nino}
 import v3.models.downstream.{CreateBFLossHateoasData, CreateBFLossResponse}
 import v3.models.errors._
 import v3.models.hateoas.Method.GET
@@ -45,7 +45,7 @@ class CreateBFLossControllerSpec
   val nino: String = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+  val bfLoss: BFLoss = BFLoss(TypeOfBFLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
   val createBFLossResponse: CreateBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
 

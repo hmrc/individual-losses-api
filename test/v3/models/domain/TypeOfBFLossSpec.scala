@@ -18,22 +18,21 @@ package v3.models.domain
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v3.models.downstream.{IncomeSourceType, LossType}
-import v3.models.domain.TypeOfLoss._
+import v3.models.domain.TypeOfBFLoss._
+import v3.models.downstream.{BFIncomeSourceType, LossType}
 
-class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
+class TypeOfBFLossSpec extends UnitSpec with EnumJsonSpecSupport {
 
-  testRoundTrip[TypeOfLoss](
+  testRoundTrip[TypeOfBFLoss](
     ("self-employment", `self-employment`),
     ("self-employment-class4", `self-employment-class4`),
     ("uk-property-non-fhl", `uk-property-non-fhl`),
     ("uk-property-fhl", `uk-property-fhl`),
     ("foreign-property-fhl-eea", `foreign-property-fhl-eea`),
     ("foreign-property", `foreign-property`)
-
   )
 
-  "TypeOfLoss" when {
+  "TypeBFLoss" when {
     "getting downstream LossType" must {
       "work" in {
         `self-employment`.toLossType shouldBe Some(LossType.INCOME)
@@ -47,12 +46,12 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 
     "getting downstream IncomeSourceType" must {
       "work" in {
-        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
-        `uk-property-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`04`)
-        `self-employment`.toIncomeSourceType shouldBe Some(IncomeSourceType.`01`)
+        `uk-property-fhl`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`04`)
+        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`02`)
+        `foreign-property-fhl-eea`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`03`)
+        `foreign-property`.toIncomeSourceType shouldBe Some(BFIncomeSourceType.`15`)
+        `self-employment`.toIncomeSourceType shouldBe None
         `self-employment-class4`.toIncomeSourceType shouldBe None
-        `foreign-property-fhl-eea`.toIncomeSourceType shouldBe Some(IncomeSourceType.`03`)
-        `foreign-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`15`)
       }
     }
   }

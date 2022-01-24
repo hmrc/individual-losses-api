@@ -17,9 +17,10 @@
 package v3.models.domain
 
 import play.api.libs.json._
+import v3.models.domain.TypeOfBFLoss._
 import v3.models.requestData.DownstreamTaxYear
 
-case class BFLoss(typeOfLoss: TypeOfLoss,
+case class BFLoss(typeOfLoss: TypeOfBFLoss,
                   businessId: String,
                   taxYearBroughtForwardFrom: String,
                   lossAmount: BigDecimal)
@@ -28,14 +29,14 @@ object BFLoss {
   implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
 
   implicit val writes: OWrites[BFLoss] = (loss: BFLoss) => {
-    loss.typeOfLoss.isProperty match {
-      case true => Json.obj(
+    loss.typeOfLoss match {
+      case `uk-property-fhl` | `uk-property-non-fhl` | `foreign-property` | `foreign-property-fhl-eea` => Json.obj(
         "incomeSourceId" -> loss.businessId,
         "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
         "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
         "broughtForwardLossAmount" -> loss.lossAmount
       )
-      case _ => Json.obj(
+      case `self-employment` | `self-employment-class4` => Json.obj(
         "incomeSourceId" -> loss.businessId,
         "lossType" -> loss.typeOfLoss.toLossType,
         "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,

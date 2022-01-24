@@ -16,17 +16,12 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.domain.TypeOfLoss
+import v3.models.domain.TypeOfBFLoss
 import v3.models.errors.{MtdError, TypeOfLossFormatError}
 
-object TypeOfLossValidation {
-  private val lossClaimLossTypeNames = List(TypeOfLoss.`self-employment`, TypeOfLoss.`uk-property-non-fhl`, TypeOfLoss.`foreign-property`).map(_.toString)
+object TypeOfBFLossValidation {
 
   def validate(typeOfLoss: String): List[MtdError] = {
-    if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
-  }
-
-  def validateForLossClaim(typeOfLoss: String): List[MtdError] = {
-    if (lossClaimLossTypeNames.contains(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
+    if (TypeOfBFLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 }

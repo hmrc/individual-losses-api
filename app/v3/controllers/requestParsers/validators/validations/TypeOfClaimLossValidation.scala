@@ -16,14 +16,13 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.errors.{BusinessIdFormatError, MtdError}
+import v3.models.domain.TypeOfClaimLoss
+import v3.models.errors.{MtdError, TypeOfLossFormatError}
 
-object BusinessIdValidation {
+object TypeOfClaimLossValidation {
 
-  private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
-
-  def validate(businessId: String): List[MtdError] = {
-    if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
+  def validate(typeOfLoss: String): List[MtdError] = {
+    if (TypeOfClaimLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 
 }

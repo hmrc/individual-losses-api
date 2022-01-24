@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v3.mocks.services._
-import v3.models.domain.{AmendBFLoss, Nino, TypeOfLoss}
+import v3.models.domain.{AmendBFLoss, TypeOfBFLoss, Nino}
 import v3.models.downstream.{AmendBFLossHateoasData, BFLossResponse}
 import v3.models.errors._
 import v3.models.hateoas.Method.GET
@@ -51,7 +51,7 @@ class AmendBFLossControllerSpec
 
   val amendBFLossResponse: BFLossResponse = BFLossResponse(
     businessId = "XBIS12345678910",
-    typeOfLoss = TypeOfLoss.`self-employment`,
+    typeOfLoss = TypeOfBFLoss.`self-employment`,
     lossAmount = lossAmount,
     taxYearBroughtForwardFrom = "2021-22",
     lastModified = "2022-07-13T12:13:48.763Z"

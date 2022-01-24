@@ -19,53 +19,25 @@ package v3.controllers.requestParsers.validators.validations
 import support.UnitSpec
 import v3.models.errors.TypeOfLossFormatError
 
-class TypeOfLossValidationSpec extends UnitSpec {
+class TypeOfClaimLossValidationSpec extends UnitSpec {
 
   "validate" should {
 
     "return no errors" when {
       checkValid("self-employment")
-      checkValid("self-employment-class4")
-      checkValid("uk-property-fhl")
       checkValid("uk-property-non-fhl")
       checkValid("foreign-property")
-      checkValid("foreign-property-fhl-eea")
 
       def checkValid(typeOfLoss  : String)  : Unit =
         s"provided with a string of '$typeOfLoss'" in {
-          TypeOfLossValidation.validate(typeOfLoss) shouldBe Nil
+          TypeOfClaimLossValidation.validate(typeOfLoss) shouldBe Nil
         }
     }
 
     "return a TypeOfLossFormatError" when {
       "provided with an unknown type of loss" in {
-        TypeOfLossValidation.validate("invalid") shouldBe List(TypeOfLossFormatError)
+        TypeOfClaimLossValidation.validate("invalid") shouldBe List(TypeOfLossFormatError)
       }
-    }
-  }
-
-  "validateForLossClaims" should {
-    "return no errors" when {
-      checkValid("self-employment")
-      checkValid("uk-property-non-fhl")
-      checkValid("foreign-property")
-
-      def checkValid(typeOfLoss  : String)  : Unit =
-        s"provided with a string of '$typeOfLoss'" in {
-          TypeOfLossValidation.validateForLossClaim(typeOfLoss) shouldBe Nil
-        }
-    }
-
-    "return a TypeOfLossFormatError" when {
-      checkInvalid("self-employment-class4")
-      checkInvalid("uk-property-fhl")
-      checkInvalid("foreign-property-fhl-eea")
-      checkInvalid("invalid")
-
-      def checkInvalid(typeOfLoss  : String)  : Unit =
-        s"provided with a string of '$typeOfLoss'" in {
-          TypeOfLossValidation.validateForLossClaim(typeOfLoss) shouldBe  List(TypeOfLossFormatError)
-        }
     }
   }
 }

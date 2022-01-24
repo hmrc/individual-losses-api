@@ -18,19 +18,25 @@ package v3.models.downstream
 
 import play.api.libs.json._
 import utils.enums.Enums
-import v3.models.domain.TypeOfBFLoss
+import v3.models.domain.TypeOfClaimLoss
 
-sealed trait LossType {
-  def toTypeOfLoss: TypeOfBFLoss
+sealed trait ClaimIncomeSourceType {
+  def toTypeClaimLoss: TypeOfClaimLoss
 }
 
-object LossType {
-  case object INCOME extends LossType {
-    override def toTypeOfLoss: TypeOfBFLoss = TypeOfBFLoss.`self-employment`
+object ClaimIncomeSourceType {
+
+  case object `01` extends ClaimIncomeSourceType {
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`self-employment`
   }
-  case object CLASS4 extends LossType {
-    override def toTypeOfLoss: TypeOfBFLoss = TypeOfBFLoss.`self-employment-class4`
+  case object `02` extends ClaimIncomeSourceType {
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`uk-property-non-fhl`
+  }
+  case object `15` extends ClaimIncomeSourceType {
+    override def toTypeClaimLoss: TypeOfClaimLoss = TypeOfClaimLoss.`foreign-property`
   }
 
-  implicit val format: Format[LossType] = Enums.format[LossType]
+  implicit val format: Format[ClaimIncomeSourceType] = Enums.format[ClaimIncomeSourceType]
 }
+
+

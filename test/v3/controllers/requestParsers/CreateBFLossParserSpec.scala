@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockCreateBFLossValidator
-import v3.models.domain.{BFLoss, Nino, TypeOfLoss}
+import v3.models.domain.{BFLoss, TypeOfBFLoss, Nino}
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v3.models.requestData._
 
@@ -54,7 +54,7 @@ class CreateBFLossParserSpec extends UnitSpec {
         MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(CreateBFLossRequest(Nino(nino), BFLoss(TypeOfLoss.`self-employment`, "XAIS01234567890", taxYear, 1000)))
+          Right(CreateBFLossRequest(Nino(nino), BFLoss(TypeOfBFLoss.`self-employment`, "XAIS01234567890", taxYear, 1000)))
       }
     }
 

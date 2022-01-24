@@ -22,13 +22,13 @@ import play.api.libs.json._
 import v3.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v3.models.hateoas.{HateoasData, Link}
 import play.api.libs.functional.syntax._
-import v3.models.domain.{TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{TypeOfClaimLoss, TypeOfClaim}
 import v3.models.requestData.DownstreamTaxYear
 
 
 case class LossClaimId(businessId: String,
                        typeOfClaim: TypeOfClaim,
-                       typeOfLoss: TypeOfLoss,
+                       typeOfLoss: TypeOfClaimLoss,
                        taxYearClaimedFor: String,
                        claimId: String,
                        sequence: Option[Int],
@@ -41,7 +41,7 @@ object LossClaimId {
   implicit val reads: Reads[LossClaimId] = (
     (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
-      ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
+      ((JsPath \ "incomeSourceType").read[ClaimIncomeSourceType].map(_.toTypeClaimLoss) orElse Reads.pure(TypeOfClaimLoss.`self-employment`)) and
       (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
       (JsPath \ "claimId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and

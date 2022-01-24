@@ -17,12 +17,12 @@
 package v3.models.downstream
 
 import mocks.MockAppConfig
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v3.hateoas.HateoasFactory
-import v3.models.domain.TypeOfLoss
-import v3.models.hateoas.Method.{ DELETE, GET, POST }
-import v3.models.hateoas.{ HateoasWrapper, Link }
+import v3.models.domain.TypeOfBFLoss
+import v3.models.hateoas.Method.{DELETE, GET, POST}
+import v3.models.hateoas.{HateoasWrapper, Link}
 
 class BFLossResponseSpec extends UnitSpec {
 
@@ -32,7 +32,7 @@ class BFLossResponseSpec extends UnitSpec {
   val taxYear = "2019-20"
   val lastModified = "2018-07-13T12:13:48.763Z"
 
-  def responseWith(typeOfLoss: TypeOfLoss): BFLossResponse =
+  def responseWith(typeOfLoss: TypeOfBFLoss): BFLossResponse =
     BFLossResponse(
       businessId = businessId,
       typeOfLoss = typeOfLoss,
@@ -43,12 +43,12 @@ class BFLossResponseSpec extends UnitSpec {
 
   "Json Reads" when {
     "reading a property brought forward loss" must {
-      test(IncomeSourceType.`02`, TypeOfLoss.`uk-property-non-fhl`)
-      test(IncomeSourceType.`03`, TypeOfLoss.`foreign-property-fhl-eea`)
-      test(IncomeSourceType.`04`, TypeOfLoss.`uk-property-fhl`)
-      test(IncomeSourceType.`15`, TypeOfLoss.`foreign-property`)
+      test(BFIncomeSourceType.`02`, TypeOfBFLoss.`uk-property-non-fhl`)
+      test(BFIncomeSourceType.`03`, TypeOfBFLoss.`foreign-property-fhl-eea`)
+      test(BFIncomeSourceType.`04`, TypeOfBFLoss.`uk-property-fhl`)
+      test(BFIncomeSourceType.`15`, TypeOfBFLoss.`foreign-property`)
 
-      def test(incomeSourceType: IncomeSourceType, typeOfLoss: TypeOfLoss): Unit =
+      def test(incomeSourceType: BFIncomeSourceType, typeOfLoss: TypeOfBFLoss): Unit =
         s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" in {
           val downstreamJson =
             Json.parse(s"""
@@ -66,10 +66,10 @@ class BFLossResponseSpec extends UnitSpec {
     }
 
     "reading a self-employment brought forward loss" must {
-      test(LossType.INCOME, TypeOfLoss.`self-employment`)
-      test(LossType.CLASS4, TypeOfLoss.`self-employment-class4`)
+      test(LossType.INCOME, TypeOfBFLoss.`self-employment`)
+      test(LossType.CLASS4, TypeOfBFLoss.`self-employment-class4`)
 
-      def test(lossType: LossType, typeOfLoss: TypeOfLoss): Unit =
+      def test(lossType: LossType, typeOfLoss: TypeOfBFLoss): Unit =
         s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" in {
           val downstreamJson: JsValue =
             Json.parse(s"""
@@ -89,7 +89,7 @@ class BFLossResponseSpec extends UnitSpec {
 
   "Json Writes" should {
     "convert a valid model into MTD JSON" in {
-      Json.toJson(responseWith(TypeOfLoss.`self-employment`)) shouldBe Json.parse(
+      Json.toJson(responseWith(TypeOfBFLoss.`self-employment`)) shouldBe Json.parse(
         s"""
           |{
           |  "businessId": "$businessId",
@@ -110,7 +110,7 @@ class BFLossResponseSpec extends UnitSpec {
       val lossId         = "someLossId"
 
       // WLOG
-      val bfLossResponse: BFLossResponse = responseWith(typeOfLoss = TypeOfLoss.`self-employment`)
+      val bfLossResponse: BFLossResponse = responseWith(typeOfLoss = TypeOfBFLoss.`self-employment`)
 
       MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
     }

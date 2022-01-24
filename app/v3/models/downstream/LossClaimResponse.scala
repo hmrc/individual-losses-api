@@ -20,12 +20,12 @@ import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v3.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v3.models.domain.{TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{TypeOfClaimLoss, TypeOfClaim}
 import v3.models.hateoas.{HateoasData, Link}
 import v3.models.requestData.DownstreamTaxYear
 
 case class LossClaimResponse(taxYearClaimedFor: String,
-                             typeOfLoss: TypeOfLoss,
+                             typeOfLoss: TypeOfClaimLoss,
                              typeOfClaim: TypeOfClaim,
                              businessId: String,
                              sequence: Option[Int],
@@ -35,7 +35,7 @@ object LossClaimResponse extends HateoasLinks {
   implicit val writes: OWrites[LossClaimResponse] = Json.writes[LossClaimResponse]
   implicit val reads: Reads[LossClaimResponse] = (
     (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
-      ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
+      ((JsPath \ "incomeSourceType").read[ClaimIncomeSourceType].map(_.toTypeClaimLoss) orElse Reads.pure(TypeOfClaimLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and

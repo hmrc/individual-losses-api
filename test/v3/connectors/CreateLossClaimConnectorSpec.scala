@@ -31,7 +31,7 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     val lossClaim: LossClaim = LossClaim(
       taxYearClaimedFor = "2019-20",
-      typeOfLoss = TypeOfLoss.`self-employment`,
+      typeOfLoss = TypeOfClaimLoss.`self-employment`,
       typeOfClaim = TypeOfClaim.`carry-forward`,
       businessId = "XKIS00000000988"
     )

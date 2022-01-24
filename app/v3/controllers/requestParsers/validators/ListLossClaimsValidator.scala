@@ -32,7 +32,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
         NinoValidation.validate(data.nino),
         data.businessId.map(BusinessIdValidation.validate).getOrElse(Nil),
         data.taxYearClaimedFor.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil),
-        data.typeOfLoss.map(TypeOfLossValidation.validateForLossClaim).getOrElse(Nil),
+        data.typeOfLoss.map(TypeOfClaimLossValidation.validate).getOrElse(Nil),
         data.typeOfClaim.map(validateClaimType).getOrElse(Nil)
     )
 

@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class ClaimSpec extends UnitSpec {
 
-  val claim = Claim(
+  val claim: Claim = Claim(
     claimId = "234568790ABCDE",
     sequence = 1
   )

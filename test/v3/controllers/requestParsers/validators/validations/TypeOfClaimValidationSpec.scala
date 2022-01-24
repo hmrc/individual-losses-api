@@ -17,7 +17,7 @@
 package v3.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v3.models.domain.{TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{TypeOfClaimLoss, TypeOfClaim}
 import v3.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 class TypeOfClaimValidationSpec extends UnitSpec {
@@ -45,26 +45,20 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
   "validateTypeOfClaimPermitted" when {
     "a typeOfLoss is self employment" must {
-      permitOnly(TypeOfLoss.`self-employment`, Seq(TypeOfClaim.`carry-forward`, TypeOfClaim.`carry-sideways`))
+      permitOnly(TypeOfClaimLoss.`self-employment`, Seq(TypeOfClaim.`carry-forward`, TypeOfClaim.`carry-sideways`))
     }
 
     "a typeOfLoss is uk-property-non-fhl" must {
-      permitOnly(TypeOfLoss.`uk-property-non-fhl`,
+      permitOnly(TypeOfClaimLoss.`uk-property-non-fhl`,
         Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
     }
 
     "a typeOfLoss is foreign-property" must {
-      permitOnly(TypeOfLoss.`foreign-property`,
+      permitOnly(TypeOfClaimLoss.`foreign-property`,
                  Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
     }
 
-    "other types of loss" must {
-      permitNoTypesOfClaim(TypeOfLoss.`uk-property-fhl`)
-      permitNoTypesOfClaim(TypeOfLoss.`foreign-property-fhl-eea`)
-      permitNoTypesOfClaim(TypeOfLoss.`self-employment-class4`)
-    }
-
-    def permitOnly(typeOfLoss: TypeOfLoss, permittedTypesOfClaim: Seq[TypeOfClaim]): Unit = {
+    def permitOnly(typeOfLoss: TypeOfClaimLoss, permittedTypesOfClaim: Seq[TypeOfClaim]): Unit = {
       permittedTypesOfClaim.foreach(typeOfClaim =>
         s"permit $typeOfLoss with $typeOfClaim" in {
           TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe Nil
@@ -77,14 +71,5 @@ class TypeOfClaimValidationSpec extends UnitSpec {
             TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe List(RuleTypeOfClaimInvalid)
         })
     }
-
-    def permitNoTypesOfClaim(typeOfLoss: TypeOfLoss): Unit = {
-      TypeOfClaim.values
-        .foreach(typeOfClaim =>
-          s"not permit $typeOfLoss with $typeOfClaim" in {
-            TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe List(RuleTypeOfClaimInvalid)
-        })
-    }
-
   }
 }

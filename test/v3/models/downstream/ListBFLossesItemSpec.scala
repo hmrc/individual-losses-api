@@ -18,7 +18,7 @@ package v3.models.downstream
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.models.domain.TypeOfLoss
+import v3.models.domain.TypeOfBFLoss
 
 class ListBFLossesItemSpec extends UnitSpec {
 
@@ -35,7 +35,7 @@ class ListBFLossesItemSpec extends UnitSpec {
         ListBFLossesItem(
           lossId = lossId,
           businessId = businessId,
-          typeOfLoss = TypeOfLoss.`self-employment`,
+          typeOfLoss = TypeOfBFLoss.`self-employment`,
           lossAmount = lossAmount,
           taxYearBroughtForwardFrom = taxYearMtd,
           lastModified = lastModified
@@ -57,10 +57,10 @@ class ListBFLossesItemSpec extends UnitSpec {
 
   "json reads" must {
     "work for employment losses" when {
-      checkReadsWith(LossType.INCOME, TypeOfLoss.`self-employment`)
-      checkReadsWith(LossType.CLASS4, TypeOfLoss.`self-employment-class4`)
+      checkReadsWith(LossType.INCOME, TypeOfBFLoss.`self-employment`)
+      checkReadsWith(LossType.CLASS4, TypeOfBFLoss.`self-employment-class4`)
 
-      def checkReadsWith(lossType: LossType, expectedTypeOfLoss: TypeOfLoss): Unit =
+      def checkReadsWith(lossType: LossType, expectedTypeOfLoss: TypeOfBFLoss): Unit =
         s"income source type is $lossType" in {
           Json.parse(s"""
                        |{
@@ -83,12 +83,12 @@ class ListBFLossesItemSpec extends UnitSpec {
     }
 
     "work for property losses" when {
-      checkReadsWith(IncomeSourceType.`02`, TypeOfLoss.`uk-property-non-fhl`)
-      checkReadsWith(IncomeSourceType.`03`, TypeOfLoss.`foreign-property-fhl-eea`)
-      checkReadsWith(IncomeSourceType.`04`, TypeOfLoss.`uk-property-fhl`)
-      checkReadsWith(IncomeSourceType.`15`, TypeOfLoss.`foreign-property`)
+      checkReadsWith(BFIncomeSourceType.`02`, TypeOfBFLoss.`uk-property-non-fhl`)
+      checkReadsWith(BFIncomeSourceType.`03`, TypeOfBFLoss.`foreign-property-fhl-eea`)
+      checkReadsWith(BFIncomeSourceType.`04`, TypeOfBFLoss.`uk-property-fhl`)
+      checkReadsWith(BFIncomeSourceType.`15`, TypeOfBFLoss.`foreign-property`)
 
-      def checkReadsWith(incomeSourceType: IncomeSourceType, expectedTypeOfLoss: TypeOfLoss): Unit =
+      def checkReadsWith(incomeSourceType: BFIncomeSourceType, expectedTypeOfLoss: TypeOfBFLoss): Unit =
         s"income source type is $incomeSourceType" in {
           Json.parse(s"""
                         |{

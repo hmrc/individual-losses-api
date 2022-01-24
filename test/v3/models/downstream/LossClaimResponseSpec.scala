@@ -19,7 +19,7 @@ package v3.models.downstream
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v3.models.domain.{TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{TypeOfClaimLoss, TypeOfClaim}
 import v3.models.hateoas.Link
 import v3.models.hateoas.Method.{DELETE, GET, POST}
 
@@ -30,7 +30,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
   val lossClaimResponse: LossClaimResponse = LossClaimResponse(
     businessId = "000000000000001",
-    typeOfLoss = TypeOfLoss.`self-employment`,
+    typeOfLoss = TypeOfClaimLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     taxYearClaimedFor = "2019-20",
     lastModified = "",
@@ -69,7 +69,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
       )
     }
 
-    def downstreamToModel: TypeOfLoss => LossClaimResponse =
+    def downstreamToModel: TypeOfClaimLoss => LossClaimResponse =
       typeOfLoss =>
         LossClaimResponse(
           businessId = "000000000000001",
@@ -81,13 +81,13 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
         )
 
     "convert property JSON from downstream into a valid model for property type 02" in {
-      downstreamPropertyJson("02").as[LossClaimResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
+      downstreamPropertyJson("02").as[LossClaimResponse] shouldBe downstreamToModel(TypeOfClaimLoss.`uk-property-non-fhl`)
     }
 
     "convert se json from downstream into a valid model" in {
       downstreamEmploymentJson.as[LossClaimResponse] shouldBe LossClaimResponse(
         "2019-20",
-        TypeOfLoss.`self-employment`,
+        TypeOfClaimLoss.`self-employment`,
         TypeOfClaim.`carry-forward`,
         "000000000000001",
         Some(1),

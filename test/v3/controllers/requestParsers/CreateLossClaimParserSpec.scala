@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockCreateLossClaimValidator
-import v3.models.domain.{LossClaim, Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.{LossClaim, TypeOfClaimLoss, Nino, TypeOfClaim}
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v3.models.requestData._
 
@@ -55,7 +55,7 @@ class CreateLossClaimParserSpec extends UnitSpec {
         MockValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(CreateLossClaimRequest(Nino(nino), LossClaim(taxYear, TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, businessId)))
+          Right(CreateLossClaimRequest(Nino(nino), LossClaim(taxYear, TypeOfClaimLoss.`self-employment`, TypeOfClaim.`carry-forward`, businessId)))
       }
     }
 
