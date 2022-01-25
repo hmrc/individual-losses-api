@@ -62,7 +62,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
       }
     }
 
-    "return TaxYearFormatError" when {
+    "return RuleTaxYearRangeInvalid" when {
       "tax year gap is higher than 1" in {
         validator.validate(AmendLossClaimsOrderRawData(validNino, "2020-22", AnyContentAsJson(mtdRequest))) shouldBe
           List(RuleTaxYearRangeInvalid)
