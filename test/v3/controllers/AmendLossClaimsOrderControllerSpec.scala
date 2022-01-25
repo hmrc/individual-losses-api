@@ -24,7 +24,7 @@ import v3.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v3.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v3.models.downstream.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 import v3.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
-import v3.models.errors._
+import v3.models.errors.{RuleTaxYearNotEndedError, RuleTaxYearRangeInvalid, _}
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
@@ -136,6 +136,8 @@ class AmendLossClaimsOrderControllerSpec
         BadRequestError,
         NinoFormatError,
         TaxYearFormatError,
+        RuleTaxYearRangeInvalid,
+        RuleTaxYearNotSupportedError,
         RuleIncorrectOrEmptyBodyError,
         TypeOfClaimFormatError,
         ClaimIdFormatError,
