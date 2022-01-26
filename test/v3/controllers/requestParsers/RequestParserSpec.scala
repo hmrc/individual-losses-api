@@ -20,7 +20,7 @@ import support.UnitSpec
 import v3.controllers.requestParsers.validators.Validator
 import v3.models.domain.Nino
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
-import v3.models.requestData.RawData
+import v3.models.request.RawData
 
 class RequestParserSpec extends UnitSpec {
 

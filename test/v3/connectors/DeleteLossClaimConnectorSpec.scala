@@ -19,7 +19,7 @@ package v3.connectors
 import v3.models.domain.Nino
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData._
+import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
 
 import scala.concurrent.Future
 

@@ -18,8 +18,7 @@ package v3.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v3.models.errors.{LossIdFormatError, NinoFormatError}
-import v3.models.requestData
-import v3.models.requestData.DeleteBFLossRawData
+import v3.models.request.deleteBFLoss.DeleteBFLossRawData
 
 class DeleteBFLossValidatorSpec extends UnitSpec{
 
@@ -37,21 +36,21 @@ class DeleteBFLossValidatorSpec extends UnitSpec{
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(requestData.DeleteBFLossRawData("badNino", validLossId)) shouldBe
+        validator.validate(DeleteBFLossRawData("badNino", validLossId)) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return LossIdFormatError error" when {
       "an invalid loss id is supplied" in {
-        validator.validate(requestData.DeleteBFLossRawData(validNino, "badLossId")) shouldBe
+        validator.validate(DeleteBFLossRawData(validNino, "badLossId")) shouldBe
           List(LossIdFormatError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(requestData.DeleteBFLossRawData("badNino", "badLossId")) shouldBe
+        validator.validate(DeleteBFLossRawData("badNino", "badLossId")) shouldBe
           List(NinoFormatError, LossIdFormatError)
       }
     }

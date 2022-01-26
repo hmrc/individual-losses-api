@@ -24,7 +24,7 @@ import v3.mocks.services.{MockDeleteLossClaimService, MockEnrolmentsAuthService,
 import v3.models.domain.Nino
 import v3.models.errors.{NotFoundError, _}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
+import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

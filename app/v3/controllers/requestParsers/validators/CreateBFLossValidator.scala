@@ -21,9 +21,8 @@ import config.FixedConfig
 import javax.inject.{Inject, Singleton}
 import utils.CurrentDate
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.domain.BFLoss
 import v3.models.errors.{MtdError, TaxYearFormatError}
-import v3.models.requestData.CreateBFLossRawData
+import v3.models.request.createBFLoss.{CreateBFLossRequestBody, CreateBFLossRawData}
 
 @Singleton
 class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
@@ -49,12 +48,12 @@ class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends
 
   private def bodyFormatValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[BFLoss](data.body.json)
+      JsonFormatValidation.validate[CreateBFLossRequestBody](data.body.json)
     )
   }
 
   private def taxYearValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
-    val req = data.body.json.as[BFLoss]
+    val req = data.body.json.as[CreateBFLossRequestBody]
     List(
       TaxYearValidation
         .validate(req.taxYearBroughtForwardFrom, TaxYearFormatError)
@@ -65,7 +64,7 @@ class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends
   }
 
   private def otherBodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
-    val req = data.body.json.as[BFLoss]
+    val req = data.body.json.as[CreateBFLossRequestBody]
     List(
       MinTaxYearValidation.validate(req.taxYearBroughtForwardFrom, minimumTaxYearBFLoss),
       TaxYearNotEndedValidation.validate(req.taxYearBroughtForwardFrom),

@@ -22,40 +22,45 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockListBFLossesRequestDataParser
 import v3.mocks.services.{MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
-import v3.models.domain.{TypeOfBFLoss, Nino}
-import v3.models.downstream.{BFIncomeSourceType, ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
-import v3.models.errors.{NotFoundError, _}
+import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
+import v3.models.domain.{DownstreamTaxYear, Nino}
+import v3.models.errors._
 import v3.models.hateoas.Method.{GET, POST}
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{DownstreamTaxYear, ListBFLossesRawData, ListBFLossesRequest}
+import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
+import v3.models.response.listBFLosses.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListBFLossesControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockListBFLossesService
     with MockListBFLossesRequestDataParser
     with MockHateoasFactory {
 
-  val correlationId: String    = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String             = "AA123456A"
-  val taxYear: String          = "2018-19"
-  val selfEmployment: String   = "self-employment"
-  val businessId: String       = "XKIS00000000988"
+  val correlationId: String  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String           = "AA123456A"
+  val taxYear: String        = "2018-19"
+  val selfEmployment: String = "self-employment"
+  val businessId: String     = "XKIS00000000988"
 
   val rawData: ListBFLossesRawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId))
-  val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), Some(DownstreamTaxYear("2019")), Some(BFIncomeSourceType.`02`), Some(businessId))
+  val request: ListBFLossesRequest = ListBFLossesRequest(Nino(nino), Some(DownstreamTaxYear("2019")), Some(IncomeSourceType.`02`), Some(businessId))
 
-  val listHateoasLink: Link       = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
-  val createHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = POST, rel = "create-brought-forward-loss")
-  val getHateoasLink: String => Link  = lossId => Link(href = s"/individuals/losses/TC663795B/brought-forward-losses/$lossId", method = GET, rel = "self")
+  val listHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
+
+  val createHateoasLink: Link =
+    Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = POST, rel = "create-brought-forward-loss")
+
+  val getHateoasLink: String => Link = lossId =>
+    Link(href = s"/individuals/losses/TC663795B/brought-forward-losses/$lossId", method = GET, rel = "self")
 
   // WLOG
-  val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfBFLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
+  val responseItem: ListBFLossesItem                   = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
   val response: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Seq(responseItem))
 
   val hateoasResponse: ListBFLossesResponse[HateoasWrapper[ListBFLossesItem]] = ListBFLossesResponse(

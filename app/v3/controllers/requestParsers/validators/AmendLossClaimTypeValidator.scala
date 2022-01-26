@@ -17,9 +17,8 @@
 package v3.controllers.requestParsers.validators
 
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.domain.AmendLossClaimTypeRequestBody
 import v3.models.errors.MtdError
-import v3.models.requestData.AmendLossClaimTypeRawData
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequestBody}
 
 class AmendLossClaimTypeValidator extends Validator[AmendLossClaimTypeRawData] {
 

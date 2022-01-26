@@ -18,9 +18,8 @@ package v3.controllers.requestParsers.validators
 
 import javax.inject.Singleton
 import v3.controllers.requestParsers.validators.validations.{JsonFormatValidation, LossIdValidation, NinoValidation, NumberValidation}
-import v3.models.domain.AmendBFLoss
 import v3.models.errors.MtdError
-import v3.models.requestData.AmendBFLossRawData
+import v3.models.request.amendBFLoss.{AmendBFLossRequestBody, AmendBFLossRawData}
 
 @Singleton
 class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
@@ -36,12 +35,12 @@ class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
 
   private def bodyFormatValidator: AmendBFLossRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[AmendBFLoss](data.body.json)
+      JsonFormatValidation.validate[AmendBFLossRequestBody](data.body.json)
     )
   }
 
   private def bodyFieldsValidator: AmendBFLossRawData => List[List[MtdError]] = { data =>
-    val req = data.body.json.as[AmendBFLoss]
+    val req = data.body.json.as[AmendBFLossRequestBody]
     List(
       NumberValidation.validate(req.lossAmount, "/lossAmount")
     )

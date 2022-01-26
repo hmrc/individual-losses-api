@@ -18,8 +18,8 @@ package v3.controllers.requestParsers
 
 import javax.inject.Inject
 import v3.controllers.requestParsers.validators.AmendLossClaimTypeValidator
-import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino}
-import v3.models.requestData.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest}
+import v3.models.domain.Nino
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 
 class AmendLossClaimTypeParser @Inject()(val validator: AmendLossClaimTypeValidator)
   extends RequestParser[AmendLossClaimTypeRawData, AmendLossClaimTypeRequest] {

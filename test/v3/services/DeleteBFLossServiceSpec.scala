@@ -20,7 +20,7 @@ import v3.mocks.connectors.MockBFLossConnector
 import v3.models.domain.Nino
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.DeleteBFLossRequest
+import v3.models.request.deleteBFLoss.DeleteBFLossRequest
 
 import scala.concurrent.Future
 

@@ -20,7 +20,7 @@ import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.LossClaimConnector
 import v3.models.errors._
-import v3.models.requestData.CreateLossClaimRequest
+import v3.models.request.createLossClaim.CreateLossClaimRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 

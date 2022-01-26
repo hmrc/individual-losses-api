@@ -22,19 +22,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v3.mocks.services._
-import v3.models.domain.{AmendBFLoss, TypeOfBFLoss, Nino}
-import v3.models.downstream.{AmendBFLossHateoasData, BFLossResponse}
+import v3.models.domain.Nino
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
+import v3.models.request.amendBFLoss.{AmendBFLossRawData, AmendBFLossRequest, AmendBFLossRequestBody}
+import v3.models.response.amendBFLoss.{AmendBFLossHateoasData, AmendBFLossResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendBFLossService
@@ -47,11 +48,11 @@ class AmendBFLossControllerSpec
   val lossId: String         = "AAZZ1234567890a"
   val lossAmount: BigDecimal = BigDecimal(2345.67)
 
-  val amendBFLoss: AmendBFLoss = AmendBFLoss(lossAmount)
+  val amendBFLoss: AmendBFLossRequestBody = AmendBFLossRequestBody(lossAmount)
 
-  val amendBFLossResponse: BFLossResponse = BFLossResponse(
+  val amendBFLossResponse: AmendBFLossResponse = AmendBFLossResponse(
     businessId = "XBIS12345678910",
-    typeOfLoss = TypeOfBFLoss.`self-employment`,
+    typeOfLoss = TypeOfLoss.`self-employment`,
     lossAmount = lossAmount,
     taxYearBroughtForwardFrom = "2021-22",
     lastModified = "2022-07-13T12:13:48.763Z"
@@ -149,8 +150,7 @@ class AmendBFLossControllerSpec
           (BadRequestError, BAD_REQUEST),
           (NinoFormatError, BAD_REQUEST),
           (LossIdFormatError, BAD_REQUEST),
-          (ValueFormatError.copy(paths = Some(Seq(
-            "/lossAmount"))), BAD_REQUEST)
+          (ValueFormatError.copy(paths = Some(Seq("/lossAmount"))), BAD_REQUEST)
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))

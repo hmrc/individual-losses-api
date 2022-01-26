@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.CreateLossClaimParser
 import v3.models.errors.ErrorWrapper
-import v3.models.requestData.{CreateLossClaimRawData, CreateLossClaimRequest}
+import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequest}
 
 trait MockCreateLossClaimRequestDataParser extends MockFactory {
 

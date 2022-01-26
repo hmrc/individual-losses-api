@@ -18,7 +18,7 @@ package v3.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v3.models.errors._
-import v3.models.requestData.ListBFLossesRawData
+import v3.models.request.listBFLosses.ListBFLossesRawData
 
 class ListBFLossesValidatorSpec extends UnitSpec {
 

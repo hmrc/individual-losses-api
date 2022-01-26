@@ -20,14 +20,15 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockCreateLossClaimValidator
-import v3.models.domain.{LossClaim, TypeOfClaimLoss, Nino, TypeOfClaim}
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import v3.models.requestData._
+import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody}
 
 class CreateLossClaimParserSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
-  private val taxYear = "2019-20"
+  private val nino       = "AA123456B"
+  private val taxYear    = "2019-20"
   private val businessId = "XAIS01234567890"
 
   private val requestBodyJson = Json.parse(
@@ -55,14 +56,17 @@ class CreateLossClaimParserSpec extends UnitSpec {
         MockValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(CreateLossClaimRequest(Nino(nino), LossClaim(taxYear, TypeOfClaimLoss.`self-employment`, TypeOfClaim.`carry-forward`, businessId)))
+          Right(
+            CreateLossClaimRequest(Nino(nino),
+                                   CreateLossClaimRequestBody(taxYear, TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, businessId)))
       }
     }
 
     "return an ErrorWrapper" when {
 
       "a single validation error occurs" in new Test {
-        MockValidator.validate(rawData)
+        MockValidator
+          .validate(rawData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(rawData) shouldBe
@@ -70,7 +74,8 @@ class CreateLossClaimParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockValidator.validate(rawData)
+        MockValidator
+          .validate(rawData)
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(rawData) shouldBe

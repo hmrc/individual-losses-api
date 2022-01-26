@@ -16,12 +16,12 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.domain.TypeOfBFLoss
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors.{MtdError, TypeOfLossFormatError}
 
 object TypeOfBFLossValidation {
 
   def validate(typeOfLoss: String): List[MtdError] = {
-    if (TypeOfBFLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
+    if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 }
