@@ -113,6 +113,19 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
+  val singleItemArrayOfErrorsJson: JsValue = Json.parse(
+    """
+      |{
+      |   "failures": [
+      |       {
+      |           "code": "CODE 1",
+      |           "reason": "MESSAGE 1"
+      |       }
+      |   ]
+      |}
+    """.stripMargin
+  )
+
   val malformedErrorJson: JsValue = Json.parse(
     """
       |{
@@ -137,6 +150,14 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
             httpReads.read(method, url, httpResponse) shouldBe {
               Left(ResponseWrapper(correlationId, MultipleErrors(Seq(MtdError("CODE 1", "MESSAGE 1"), MtdError("CODE 2", "MESSAGE 2")))))
+            }
+          }
+
+          "be able to parse a single error returned in an array" in {
+            val httpResponse = HttpResponse(responseCode, singleItemArrayOfErrorsJson, Map("CorrelationId" -> Seq(correlationId)))
+
+            httpReads.read(method, url, httpResponse) shouldBe {
+              Left(ResponseWrapper(correlationId, SingleError(MtdError("CODE 1", "MESSAGE 1"))))
             }
           }
 
