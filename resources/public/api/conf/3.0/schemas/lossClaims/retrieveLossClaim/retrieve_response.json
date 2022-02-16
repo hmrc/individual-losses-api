@@ -16,7 +16,7 @@
         "uk-property-non-fhl",
         "foreign-property"
       ],
-      "description": "The type of business the loss applies to.\n\nLimited to the following possible values: \n\n    self-employment \n\n    uk-property-non-fhl\n    foreign-property"
+      "description": "The type of business the loss applies to."
     },
     "typeOfClaim": {
       "type": "string",
@@ -26,7 +26,7 @@
         "carry-sideways-fhl",
         "carry-forward-to-carry-sideways"
       ],
-      "description": "The type of claim to be applied.\n\nPermitted values for \"self-employment\": \n\n    carry-forward \n\n    carry-sideways\n\nPermitted values for \"uk-property-non-fhl\" and \"foreign-property\": \n\n    carry-sideways\n\n    carry-sideways-fhl\n\n    carry-forward-to-carry-sideways"
+      "description": "The type of claim to be applied. Permitted values for \"self-employment\": carry-forward, carry-sideways. Permitted values for \"uk-property-non-fhl\" and \"foreign-property\": carry-sideways, carry-sideways-fhl, carry-forward-to-carry-sideways."
     },
     "businessId": {
       "type": "string",
