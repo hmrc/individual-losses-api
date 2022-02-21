@@ -100,7 +100,11 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
   private def auditSubmission(details: GenericAuditDetail)
                              (implicit hc: HeaderCarrier,
                               ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("filler", "filler", details)
+    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
+      auditType = "CreateLossClaim",
+      transactionName = "create-loss-claim",
+      detail = details
+    )
     auditService.auditEvent(event)
   }
 }

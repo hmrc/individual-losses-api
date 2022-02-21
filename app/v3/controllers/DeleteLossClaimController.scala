@@ -83,7 +83,11 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
   private def auditSubmission(details: GenericAuditDetail)
                              (implicit hc: HeaderCarrier,
                               ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("filler", "filler", details)
+    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
+      auditType = "DeleteLossClaim",
+      transactionName = "delete-loss-claim",
+      detail = details
+    )
     auditService.auditEvent(event)
   }
 }

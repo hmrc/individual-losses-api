@@ -99,7 +99,11 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
   private def auditSubmission(details: GenericAuditDetail)
                              (implicit hc: HeaderCarrier,
                               ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("filler", "filler", details)
+    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
+      auditType = "AmendLossClaimOrder",
+      transactionName = "amend-loss-claim-order",
+      detail = details
+    )
     auditService.auditEvent(event)
   }
 }

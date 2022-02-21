@@ -81,7 +81,11 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
   private def auditSubmission(details: GenericAuditDetail)
                              (implicit hc: HeaderCarrier,
                               ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("filler", "filler", details)
+    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
+      auditType = "DeleteBroughtForwardLoss",
+      transactionName = "delete-brought-forward-loss",
+      detail = details
+    )
     auditService.auditEvent(event)
   }
 }
