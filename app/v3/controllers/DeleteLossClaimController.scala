@@ -25,11 +25,10 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.DeleteLossClaimParser
-import v3.models.audit.AuditEvent
+import v3.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.deleteLossClaim.DeleteLossClaimRawData
 import v3.services._
-import v3.models.audit.GenericAuditDetail
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,6 +64,12 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(
+          GenericAuditDetail(request.userDetails, Map("nino" -> nino, "claimId" -> claimId), None,
+            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+          )
+        )
 
         result
       }.merge

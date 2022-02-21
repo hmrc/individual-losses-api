@@ -23,6 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import v3.models.audit.AuditResponse
 import v3.controllers.requestParsers.AmendLossClaimsOrderParser
 import v3.hateoas.HateoasFactory
 import v3.models.audit.{AuditEvent, GenericAuditDetail}
@@ -72,6 +73,13 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(
+          GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor), Some(request.body),
+            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+          )
+        )
+
         result
       }.merge
     }

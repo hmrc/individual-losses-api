@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.CreateLossClaimParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{AuditEvent, GenericAuditDetail}
+import v3.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.createLossClaim.CreateLossClaimRawData
 import v3.models.response.createLossClaim.CreateLossClaimHateoasData
@@ -71,6 +71,12 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(
+          GenericAuditDetail(request.userDetails, Map("nino" -> nino), Some(request.body),
+            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+          )
+        )
 
         result
       }.merge
