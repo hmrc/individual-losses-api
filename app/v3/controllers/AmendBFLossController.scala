@@ -22,8 +22,11 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.AmendBFLossParser
 import v3.hateoas.HateoasFactory
+import v3.models.audit.{AuditEvent, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.amendBFLoss.AmendBFLossRawData
 import v3.models.response.amendBFLoss.AmendBFLossHateoasData
@@ -37,6 +40,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       amendBFLossService: AmendBFLossService,
                                       amendBFLossParser: AmendBFLossParser,
                                       hateoasFactory: HateoasFactory,
+                                      auditService: AuditService,
                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
@@ -81,5 +85,12 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError            => NotFound(Json.toJson(errorWrapper))
       case DownstreamError          => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: GenericAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext): Future[AuditResult] = {
+    val event = AuditEvent("filler", "filler", details)
+    auditService.auditEvent(event)
   }
 }

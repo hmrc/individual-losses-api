@@ -22,10 +22,14 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.DeleteLossClaimParser
+import v3.models.audit.AuditEvent
 import v3.models.errors._
 import v3.models.request.deleteLossClaim.DeleteLossClaimRawData
 import v3.services._
+import v3.models.audit.GenericAuditDetail
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,6 +38,7 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
                                           val lookupService: MtdIdLookupService,
                                           deleteLossClaimService: DeleteLossClaimService,
                                           deleteLossClaimParser: DeleteLossClaimParser,
+                                          auditService: AuditService,
                                           cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
@@ -73,5 +78,12 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: GenericAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext): Future[AuditResult] = {
+    val event = AuditEvent("filler", "filler", details)
+    auditService.auditEvent(event)
   }
 }

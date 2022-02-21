@@ -18,21 +18,26 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.DeleteBFLossParser
+import v3.models.audit.{AuditEvent, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.deleteBFLoss.DeleteBFLossRawData
 import v3.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        deleteBFLossService: DeleteBFLossService,
                                        deleteBFLossParser: DeleteBFLossParser,
+                                       auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
@@ -71,5 +76,12 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError                                         => NotFound(Json.toJson(errorWrapper))
       case DownstreamError                                       => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: GenericAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext): Future[AuditResult] = {
+    val event = AuditEvent("filler", "filler", details)
+    auditService.auditEvent(event)
   }
 }

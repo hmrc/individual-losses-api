@@ -21,12 +21,15 @@ import cats.implicits._
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.AmendLossClaimsOrderParser
 import v3.hateoas.HateoasFactory
+import v3.models.audit.{AuditEvent, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderHateoasData
-import v3.services.{AmendLossClaimsOrderService, EnrolmentsAuthService, MtdIdLookupService}
+import v3.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +40,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
                                          amendLossClaimsOrderService: AmendLossClaimsOrderService,
                                          amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
                                          hateoasFactory: HateoasFactory,
+                                         auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController {
 
@@ -92,4 +96,10 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
     }
   }
 
+  private def auditSubmission(details: GenericAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext): Future[AuditResult] = {
+    val event = AuditEvent("filler", "filler", details)
+    auditService.auditEvent(event)
+  }
 }
