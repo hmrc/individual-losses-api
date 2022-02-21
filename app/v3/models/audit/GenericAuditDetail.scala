@@ -48,7 +48,7 @@ object GenericAuditDetail {
     GenericAuditDetail(
       userType = userDetails.userType,
       agentReferenceNumber = userDetails.agentReferenceNumber,
-      versionNumber = "2.0",
+      versionNumber = "3.0",
       params = params,
       request = request,
       `X-CorrelationId` = `X-CorrelationId`,
