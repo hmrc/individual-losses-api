@@ -22,6 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v3.mocks.services._
+import v3.models.audit._
 import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
@@ -41,7 +42,7 @@ class AmendBFLossControllerSpec
     with MockAmendBFLossService
     with MockAmendBFLossRequestDataParser
     with MockHateoasFactory
-    with MockAuditService{
+    with MockAuditService {
 
   val correlationId: String  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String           = "AA123456A"
@@ -89,6 +90,21 @@ class AmendBFLossControllerSpec
     """.stripMargin
   )
 
+  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "AmendBroughtForwardLoss",
+      transactionName = "amend-brought-forward-loss",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        versionNumber = "3.0",
+        params = Map("nino" -> nino, "lossId" -> lossId),
+        request = Some(requestBody),
+        `X-CorrelationId` = correlationId,
+        response = auditResponse
+      )
+    )
+
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
@@ -127,6 +143,8 @@ class AmendBFLossControllerSpec
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseBody))
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
 
@@ -144,6 +162,9 @@ class AmendBFLossControllerSpec
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
           }
         }
 
@@ -174,6 +195,9 @@ class AmendBFLossControllerSpec
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
           }
         }
 

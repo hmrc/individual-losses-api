@@ -81,6 +81,12 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
         val correlationId = getCorrelationId(errorWrapper)
         val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
 
+        auditSubmission(
+          GenericAuditDetail(request.userDetails, Map("nino" -> nino, "lossId" -> lossId), Some(request.body),
+            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+          )
+        )
+
         result
       }.merge
     }
@@ -103,7 +109,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                               ec: ExecutionContext): Future[AuditResult] = {
     val event: AuditEvent[GenericAuditDetail] = AuditEvent(
       auditType = "AmendBroughtForwardLoss",
-      transactionName = "AmendBroughtForwardLoss",
+      transactionName = "amend-brought-forward-loss",
       detail = details
     )
     auditService.auditEvent(event)
