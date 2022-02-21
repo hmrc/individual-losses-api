@@ -18,9 +18,10 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+import play.api.http.MimeTypes
 
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -57,8 +58,15 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
+          auditSubmission(
+            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "lossId" -> lossId), None,
+              vendorResponse.correlationId, AuditResponse(httpStatus = NO_CONTENT, response = Right(None))
+            )
+          )
+
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>

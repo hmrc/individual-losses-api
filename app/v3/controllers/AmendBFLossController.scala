@@ -18,12 +18,14 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+import play.api.http.MimeTypes
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import v3.models.audit.AuditResponse
 import v3.controllers.requestParsers.AmendBFLossParser
 import v3.hateoas.HateoasFactory
 import v3.models.audit.{AuditEvent, GenericAuditDetail}
@@ -62,8 +64,17 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse))
+          val responseJson: JsValue = Json.toJson(vendorResponse)
+
+          auditSubmission(
+            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "lossId" -> lossId), Some(request.body),
+              serviceResponse.correlationId, AuditResponse(httpStatus = OK, response = Right(Some(responseJson)))
+            )
+          )
+
+          Ok(responseJson)
             .withApiHeaders(serviceResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>

@@ -18,6 +18,7 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -64,8 +65,17 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Created(Json.toJson(vendorResponse))
+          val responseJson: JsValue = Json.toJson(vendorResponse)
+
+          auditSubmission(
+            GenericAuditDetail(request.userDetails, Map("nino" -> nino), Some(request.body),
+              serviceResponse.correlationId, AuditResponse(httpStatus = CREATED, response = Right(Some(responseJson)))
+            )
+          )
+
+          Created(responseJson)
             .withApiHeaders(serviceResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>

@@ -63,9 +63,15 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          val response = Json.toJson(vendorResponse)
+          val responseJson: JsValue = Json.toJson(vendorResponse)
 
-          Ok(response)
+          auditSubmission(
+            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor), Some(request.body),
+              serviceResponse.correlationId, AuditResponse(httpStatus = OK, response = Right(Some(responseJson)))
+            )
+          )
+
+          Ok(responseJson)
             .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }

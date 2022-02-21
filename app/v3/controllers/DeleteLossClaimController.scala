@@ -18,6 +18,7 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+import play.api.http.MimeTypes
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
@@ -57,8 +58,15 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
+          auditSubmission(
+            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "claimId" -> claimId), None,
+              vendorResponse.correlationId, AuditResponse(httpStatus = NO_CONTENT, response = Right(None))
+            )
+          )
+
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
