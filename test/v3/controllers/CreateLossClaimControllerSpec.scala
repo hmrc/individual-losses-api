@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateLossClaimControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateLossClaimService
@@ -91,6 +91,7 @@ class CreateLossClaimControllerSpec
       createLossClaimService = mockCreateLossClaimService,
       createLossClaimParser = mockCreateLossClaimRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 

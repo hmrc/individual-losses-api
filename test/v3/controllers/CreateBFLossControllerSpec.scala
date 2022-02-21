@@ -21,7 +21,7 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
-import v3.mocks.services.{MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
@@ -35,12 +35,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateBFLossService
     with MockCreateBFLossRequestDataParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockAuditService {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -89,6 +90,7 @@ class CreateBFLossControllerSpec
       createBFLossService = mockCreateBFLossService,
       createBFLossParser = mockCreateBFLossRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 

@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
-import v3.mocks.services.{MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v3.models.domain.Nino
 import v3.models.errors.{NotFoundError, _}
 import v3.models.outcomes.ResponseWrapper
@@ -34,7 +34,8 @@ class DeleteLossClaimControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteLossClaimService
-    with MockDeleteLossClaimRequestDataParser {
+    with MockDeleteLossClaimRequestDataParser
+    with MockAuditService {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -51,6 +52,7 @@ class DeleteLossClaimControllerSpec
       lookupService = mockMtdIdLookupService,
       deleteLossClaimService = mockDeleteLossClaimService,
       deleteLossClaimParser = mockDeleteLossClaimRequestDataParser,
+      auditService = mockAuditService,
       cc = cc
     )
 

@@ -21,7 +21,7 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
-import v3.mocks.services.{MockAmendLossClaimsOrderService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors._
@@ -35,12 +35,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimsOrderControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendLossClaimsOrderService
     with MockAmendLossClaimsOrderRequestDataParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockAuditService {
 
   val claimType: String     = "carry-sideways"
   val id: String            = "1234568790ABCDE"
@@ -103,6 +104,7 @@ class AmendLossClaimsOrderControllerSpec
       amendLossClaimsOrderService = mockAmendLossClaimsOrderService,
       amendLossClaimsOrderParser = mockAmendLossClaimsRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 

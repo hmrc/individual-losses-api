@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockDeleteBFLossRequestDataParser
-import v3.mocks.services.{MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.mocks.services.{MockAuditService, MockDeleteBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v3.models.domain.Nino
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
@@ -30,11 +30,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteBFLossService
-    with MockDeleteBFLossRequestDataParser {
+    with MockDeleteBFLossRequestDataParser
+    with MockAuditService {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -51,6 +52,7 @@ class DeleteBFLossControllerSpec
       lookupService = mockMtdIdLookupService,
       deleteBFLossService = mockDeleteBFLossService,
       deleteBFLossParser = mockDeleteBFLossRequestDataParser,
+      auditService = mockAuditService,
       cc = cc
     )
 

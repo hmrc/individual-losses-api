@@ -35,13 +35,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendBFLossService
     with MockAmendBFLossRequestDataParser
     with MockHateoasFactory
-    with MockAuditService {
+    with MockAuditService{
 
   val correlationId: String  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String           = "AA123456A"
@@ -98,6 +98,7 @@ class AmendBFLossControllerSpec
       amendBFLossService = mockAmendBFLossService,
       amendBFLossParser = mockAmendBFLossRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 
