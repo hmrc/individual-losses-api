@@ -16,8 +16,6 @@
 
 package utils
 
-import java.time.Instant
-
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
@@ -35,6 +33,7 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import v2.models.errors._
 
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NoStackTrace
@@ -73,8 +72,10 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       .returns(Future.successful(Success))
 
     val configuration: Configuration = Configuration(
-      "appName"                                     -> "myApp",
-      "bootstrap.errorHandler.warnOnly.statusCodes" -> List(OK)
+      "appName"                                         -> "myApp",
+      "bootstrap.errorHandler.warnOnly.statusCodes"     -> List(OK),
+      "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
+      "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
     )
 
     val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
