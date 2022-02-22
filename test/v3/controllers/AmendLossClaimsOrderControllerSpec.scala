@@ -21,7 +21,8 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
-import v3.mocks.services.{MockAmendLossClaimsOrderService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors._
@@ -35,12 +36,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimsOrderControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendLossClaimsOrderService
     with MockAmendLossClaimsOrderRequestDataParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockAuditService {
 
   val claimType: String     = "carry-sideways"
   val id: String            = "1234568790ABCDE"
@@ -94,6 +96,21 @@ class AmendLossClaimsOrderControllerSpec
     """.stripMargin
   )
 
+  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "AmendLossClaimOrder",
+      transactionName = "amend-loss-claim-order",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        versionNumber = "3.0",
+        params = Map("nino" -> nino, "taxYearClaimedFor" -> taxYear),
+        request = Some(requestBody),
+        `X-CorrelationId` = correlationId,
+        response = auditResponse
+      )
+    )
+
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
@@ -103,6 +120,7 @@ class AmendLossClaimsOrderControllerSpec
       amendLossClaimsOrderService = mockAmendLossClaimsOrderService,
       amendLossClaimsOrderParser = mockAmendLossClaimsRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 
@@ -130,11 +148,13 @@ class AmendLossClaimsOrderControllerSpec
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseBody))
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
 
     "return a 400 Bad Request with a single error" when {
-
       val badRequestErrorsFromParser = List(
         BadRequestError,
         NinoFormatError,
@@ -183,6 +203,9 @@ class AmendLossClaimsOrderControllerSpec
       status(response) shouldBe expectedStatus
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+      val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+      MockedAuditService.verifyAuditEvent(event(auditResponse)).once
     }
   }
 
@@ -201,6 +224,9 @@ class AmendLossClaimsOrderControllerSpec
       status(response) shouldBe expectedStatus
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+      val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+      MockedAuditService.verifyAuditEvent(event(auditResponse)).once
     }
   }
 }

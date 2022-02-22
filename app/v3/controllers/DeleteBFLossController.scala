@@ -18,21 +18,26 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
+import play.api.http.MimeTypes
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.DeleteBFLossParser
+import v3.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.deleteBFLoss.DeleteBFLossRawData
 import v3.services._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        deleteBFLossService: DeleteBFLossService,
                                        deleteBFLossParser: DeleteBFLossParser,
+                                       auditService: AuditService,
                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
@@ -52,13 +57,26 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
+          auditSubmission(
+            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "lossId" -> lossId), None,
+              vendorResponse.correlationId, AuditResponse(httpStatus = NO_CONTENT, response = Right(None))
+            )
+          )
+
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(
+          GenericAuditDetail(request.userDetails, Map("nino" -> nino, "lossId" -> lossId), None,
+            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+          )
+        )
 
         result
       }.merge
@@ -71,5 +89,16 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError                                         => NotFound(Json.toJson(errorWrapper))
       case DownstreamError                                       => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: GenericAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext): Future[AuditResult] = {
+    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
+      auditType = "DeleteBroughtForwardLoss",
+      transactionName = "delete-brought-forward-loss",
+      detail = details
+    )
+    auditService.auditEvent(event)
   }
 }

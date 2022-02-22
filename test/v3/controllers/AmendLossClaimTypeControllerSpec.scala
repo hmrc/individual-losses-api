@@ -22,8 +22,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendLossClaimTypeRequestDataParser
 import v3.mocks.services._
+import v3.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.domain.Nino
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
@@ -35,12 +36,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimTypeControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendLossClaimTypeService
     with MockAmendLossClaimTypeRequestDataParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockAuditService {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -90,6 +92,21 @@ class AmendLossClaimTypeControllerSpec
    """.stripMargin
   )
 
+  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "AmendLossClaim",
+      transactionName = "amend-loss-claim",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        versionNumber = "3.0",
+        params = Map("nino" -> nino, "claimId" -> claimId),
+        request = Some(requestBody),
+        `X-CorrelationId` = correlationId,
+        response = auditResponse
+      )
+    )
+
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
@@ -99,6 +116,7 @@ class AmendLossClaimTypeControllerSpec
       amendLossClaimTypeService = mockAmendLossClaimTypeService,
       amendLossClaimTypeParser = mockAmendLossClaimTypeRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 
@@ -126,6 +144,9 @@ class AmendLossClaimTypeControllerSpec
         contentAsJson(result) shouldBe responseBody
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseBody))
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
 
@@ -152,6 +173,9 @@ class AmendLossClaimTypeControllerSpec
         contentAsJson(response) shouldBe Json.toJson(error)
         status(response) shouldBe expectedStatus
         header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
   }
@@ -180,6 +204,9 @@ class AmendLossClaimTypeControllerSpec
         contentAsJson(response) shouldBe Json.toJson(error)
         status(response) shouldBe expectedStatus
         header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
   }

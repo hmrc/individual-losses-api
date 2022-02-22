@@ -22,6 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v3.mocks.services._
+import v3.models.audit._
 import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
@@ -35,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendBFLossService
@@ -89,6 +90,21 @@ class AmendBFLossControllerSpec
     """.stripMargin
   )
 
+  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "AmendBroughtForwardLoss",
+      transactionName = "amend-brought-forward-loss",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        versionNumber = "3.0",
+        params = Map("nino" -> nino, "lossId" -> lossId),
+        request = Some(requestBody),
+        `X-CorrelationId` = correlationId,
+        response = auditResponse
+      )
+    )
+
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
@@ -98,6 +114,7 @@ class AmendBFLossControllerSpec
       amendBFLossService = mockAmendBFLossService,
       amendBFLossParser = mockAmendBFLossRequestDataParser,
       hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
       cc = cc
     )
 
@@ -126,6 +143,8 @@ class AmendBFLossControllerSpec
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseBody))
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
 
@@ -143,6 +162,9 @@ class AmendBFLossControllerSpec
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
           }
         }
 
@@ -173,6 +195,9 @@ class AmendBFLossControllerSpec
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
           }
         }
 

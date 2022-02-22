@@ -20,7 +20,8 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
-import v3.mocks.services.{MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.domain.Nino
 import v3.models.errors.{NotFoundError, _}
 import v3.models.outcomes.ResponseWrapper
@@ -34,7 +35,8 @@ class DeleteLossClaimControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteLossClaimService
-    with MockDeleteLossClaimRequestDataParser {
+    with MockDeleteLossClaimRequestDataParser
+    with MockAuditService {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -42,6 +44,21 @@ class DeleteLossClaimControllerSpec
 
   val rawData: DeleteLossClaimRawData  = DeleteLossClaimRawData(nino, claimId)
   val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
+
+  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "DeleteLossClaim",
+      transactionName = "delete-loss-claim",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        versionNumber = "3.0",
+        params = Map("nino" -> nino, "claimId" -> claimId),
+        request = None,
+        `X-CorrelationId` = correlationId,
+        response = auditResponse
+      )
+    )
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -51,6 +68,7 @@ class DeleteLossClaimControllerSpec
       lookupService = mockMtdIdLookupService,
       deleteLossClaimService = mockDeleteLossClaimService,
       deleteLossClaimParser = mockDeleteLossClaimRequestDataParser,
+      auditService = mockAuditService,
       cc = cc
     )
 
@@ -73,6 +91,9 @@ class DeleteLossClaimControllerSpec
         val result: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
 
@@ -89,6 +110,9 @@ class DeleteLossClaimControllerSpec
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
         }
       }
 
@@ -114,6 +138,9 @@ class DeleteLossClaimControllerSpec
           status(response) shouldBe expectedStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
+
+          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
         }
       }
 

@@ -18,12 +18,17 @@ package v3.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+import play.api.http.MimeTypes
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import v3.models.audit.AuditResponse
 import v3.controllers.requestParsers.AmendBFLossParser
 import v3.hateoas.HateoasFactory
+import v3.models.audit.{AuditEvent, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.amendBFLoss.AmendBFLossRawData
 import v3.models.response.amendBFLoss.AmendBFLossHateoasData
@@ -37,6 +42,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       amendBFLossService: AmendBFLossService,
                                       amendBFLossParser: AmendBFLossParser,
                                       hateoasFactory: HateoasFactory,
+                                      auditService: AuditService,
                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
@@ -58,13 +64,28 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse))
+          val responseJson: JsValue = Json.toJson(vendorResponse)
+
+          auditSubmission(
+            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "lossId" -> lossId), Some(request.body),
+              serviceResponse.correlationId, AuditResponse(httpStatus = OK, response = Right(Some(responseJson)))
+            )
+          )
+
+          Ok(responseJson)
             .withApiHeaders(serviceResponse.correlationId)
+            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
         val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+
+        auditSubmission(
+          GenericAuditDetail(request.userDetails, Map("nino" -> nino, "lossId" -> lossId), Some(request.body),
+            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+          )
+        )
 
         result
       }.merge
@@ -81,5 +102,16 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError            => NotFound(Json.toJson(errorWrapper))
       case DownstreamError          => InternalServerError(Json.toJson(errorWrapper))
     }
+  }
+
+  private def auditSubmission(details: GenericAuditDetail)
+                             (implicit hc: HeaderCarrier,
+                              ec: ExecutionContext): Future[AuditResult] = {
+    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
+      auditType = "AmendBroughtForwardLoss",
+      transactionName = "amend-brought-forward-loss",
+      detail = details
+    )
+    auditService.auditEvent(event)
   }
 }
