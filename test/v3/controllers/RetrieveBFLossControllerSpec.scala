@@ -22,19 +22,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v3.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
-import v3.models.domain.{Nino, TypeOfLoss}
-import v3.models.downstream.{BFLossResponse, GetBFLossHateoasData}
+import v3.models.domain.Nino
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
+import v3.models.request.retrieveBFLoss.{RetrieveBFLossRawData, RetrieveBFLossRequest}
+import v3.models.response.retrieveBFLoss.{GetBFLossHateoasData, RetrieveBFLossResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveBFLossService
@@ -48,7 +49,7 @@ class RetrieveBFLossControllerSpec
   val rawData: RetrieveBFLossRawData = RetrieveBFLossRawData(nino, lossId)
   val request: RetrieveBFLossRequest = RetrieveBFLossRequest(Nino(nino), lossId)
 
-  val response: BFLossResponse = BFLossResponse(
+  val response: RetrieveBFLossResponse = RetrieveBFLossResponse(
     taxYearBroughtForwardFrom = "2017-18",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
     businessId = "XKIS00000000988",

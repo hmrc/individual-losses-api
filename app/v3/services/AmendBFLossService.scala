@@ -20,7 +20,7 @@ import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.BFLossConnector
 import v3.models.errors._
-import v3.models.requestData.AmendBFLossRequest
+import v3.models.request.amendBFLoss.AmendBFLossRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 

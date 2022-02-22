@@ -18,9 +18,9 @@ package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.domain.TypeOfClaim
+import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors.{MtdError, TaxYearFormatError, TypeOfClaimFormatError}
-import v3.models.requestData.ListLossClaimsRawData
+import v3.models.request.listLossClaims.ListLossClaimsRawData
 
 class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with FixedConfig {
 
@@ -32,7 +32,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
         NinoValidation.validate(data.nino),
         data.businessId.map(BusinessIdValidation.validate).getOrElse(Nil),
         data.taxYearClaimedFor.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil),
-        data.typeOfLoss.map(TypeOfLossValidation.validateForLossClaim).getOrElse(Nil),
+        data.typeOfLoss.map(TypeOfClaimLossValidation.validate).getOrElse(Nil),
         data.typeOfClaim.map(validateClaimType).getOrElse(Nil)
     )
 

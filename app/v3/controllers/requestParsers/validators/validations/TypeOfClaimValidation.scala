@@ -16,9 +16,9 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.domain.TypeOfClaim._
-import v3.models.domain.TypeOfLoss._
-import v3.models.domain.{TypeOfClaim, TypeOfLoss}
+import v3.models.domain.lossClaim.TypeOfLoss._
+import v3.models.domain.lossClaim.TypeOfClaim._
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 object TypeOfClaimValidation {
@@ -40,8 +40,6 @@ object TypeOfClaimValidation {
           case `carry-sideways` | `carry-sideways-fhl` | `carry-forward-to-carry-sideways` => true
           case _ => false
         }
-
-      case _ => false
     }
 
     if (permitted) NoValidationErrors else List(RuleTypeOfClaimInvalid)

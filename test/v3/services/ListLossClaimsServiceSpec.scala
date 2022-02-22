@@ -17,17 +17,18 @@
 package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.downstream.{ListLossClaimsResponse, LossClaimId}
-import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.ListLossClaimsRequest
+import v3.models.request.listLossClaims.ListLossClaimsRequest
+import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import scala.concurrent.Future
 
 class ListLossClaimsServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
@@ -39,9 +40,27 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
   "retrieve the list of bf losses" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[LossClaimId]] =
-          ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("testId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-            LossClaimId("testId2", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId2", Some(1), "2020-07-13T12:13:48.763Z"))))
+        val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]] =
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(
+              Seq(
+                ListLossClaimsItem("testId",
+                                   TypeOfClaim.`carry-sideways`,
+                                   TypeOfLoss.`self-employment`,
+                                   "2020",
+                                   "claimId",
+                                   Some(1),
+                                   "2020-07-13T12:13:48.763Z"),
+                ListLossClaimsItem("testId2",
+                                   TypeOfClaim.`carry-sideways`,
+                                   TypeOfLoss.`self-employment`,
+                                   "2020",
+                                   "claimId2",
+                                   Some(1),
+                                   "2020-07-13T12:13:48.763Z")
+              ))
+          )
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.listLossClaims(request)) shouldBe Right(downstreamResponse)
@@ -50,7 +69,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -61,14 +80,15 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(DownstreamError))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(expected)
       }
 
       "the connector call returns multiple errors including a downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
+        val downstreamResponse: ResponseWrapper[MultipleErrors] =
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
         val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -78,14 +98,14 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR" -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
-      "INVALID_CLAIM_TYPE" -> TypeOfClaimFormatError,
-      "NOT_FOUND" -> NotFoundError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "INVALID_TAXYEAR"           -> TaxYearFormatError,
+      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
+      "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "INVALID_CORRELATIONID"     -> DownstreamError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {

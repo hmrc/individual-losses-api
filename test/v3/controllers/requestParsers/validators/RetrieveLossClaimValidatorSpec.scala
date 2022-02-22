@@ -18,7 +18,7 @@ package v3.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v3.models.errors._
-import v3.models.requestData.RetrieveLossClaimRawData
+import v3.models.request.retrieveLossClaim.RetrieveLossClaimRawData
 
 class RetrieveLossClaimValidatorSpec extends UnitSpec {
 

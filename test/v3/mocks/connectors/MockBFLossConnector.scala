@@ -20,8 +20,15 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.{BFLossConnector, DownstreamOutcome}
-import v3.models.downstream.{ListBFLossesItem, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
-import v3.models.requestData._
+import v3.models.request.amendBFLoss.AmendBFLossRequest
+import v3.models.request.createBFLoss.CreateBFLossRequest
+import v3.models.request.deleteBFLoss.DeleteBFLossRequest
+import v3.models.request.listBFLosses.ListBFLossesRequest
+import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
+import v3.models.response.amendBFLoss.AmendBFLossResponse
+import v3.models.response.createBFLoss.CreateBFLossResponse
+import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
+import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,7 +43,7 @@ trait MockBFLossConnector extends MockFactory {
         .expects(createBFLossRequest, *, *)
     }
 
-    def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DownstreamOutcome[BFLossResponse]]] = {
+    def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DownstreamOutcome[AmendBFLossResponse]]] = {
       (connector
         .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(amendBFLossRequest, *, *)
@@ -48,7 +55,7 @@ trait MockBFLossConnector extends MockFactory {
         .expects(deleteBFLossRequest, *, *)
     }
 
-    def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[DownstreamOutcome[BFLossResponse]]] = {
+    def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[DownstreamOutcome[RetrieveBFLossResponse]]] = {
       (connector
         .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(request, *, *)

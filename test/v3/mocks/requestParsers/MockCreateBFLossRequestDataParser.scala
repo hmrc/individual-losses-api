@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.CreateBFLossParser
 import v3.models.errors.ErrorWrapper
-import v3.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
+import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest}
 
 trait MockCreateBFLossRequestDataParser extends MockFactory {
 

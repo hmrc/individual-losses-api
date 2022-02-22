@@ -22,19 +22,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v3.mocks.services.{MockCreateBFLossService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v3.models.domain.{BFLoss, Nino, TypeOfLoss}
-import v3.models.downstream.{CreateBFLossHateoasData, CreateBFLossResponse}
+import v3.models.domain.Nino
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{CreateBFLossRawData, CreateBFLossRequest}
+import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
+import v3.models.response.createBFLoss.{CreateBFLossHateoasData, CreateBFLossResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateBFLossService
@@ -42,14 +43,14 @@ class CreateBFLossControllerSpec
     with MockHateoasFactory {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  val nino: String          = "AA123456A"
+  val lossId: String        = "AAZZ1234567890a"
 
-  val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+  val bfLoss: CreateBFLossRequestBody = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
   val createBFLossResponse: CreateBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
 
-  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel="test-relationship")
+  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
 
@@ -99,8 +100,8 @@ class CreateBFLossControllerSpec
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
 
-        MockCreateBFLossRequestDataParser.parseRequest(
-          CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+        MockCreateBFLossRequestDataParser
+          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Right(bfLossRequest))
 
         MockCreateBFLossService
@@ -123,8 +124,8 @@ class CreateBFLossControllerSpec
     def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the parser" in new Test {
 
-        MockCreateBFLossRequestDataParser.
-          parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+        MockCreateBFLossRequestDataParser
+          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
@@ -135,17 +136,17 @@ class CreateBFLossControllerSpec
       }
     }
 
-      val badRequestErrorsFromParser = List(
-        NinoFormatError,
-        TaxYearFormatError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
-        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
-        RuleTaxYearNotSupportedError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
-        ValueFormatError.copy(paths = Some(List("/lossAmount"))),
-        BusinessIdFormatError,
-        RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
-        TypeOfLossFormatError,
-        RuleTaxYearNotEndedError
-      )
+    val badRequestErrorsFromParser = List(
+      NinoFormatError,
+      TaxYearFormatError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+      RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+      RuleTaxYearNotSupportedError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+      ValueFormatError.copy(paths = Some(List("/lossAmount"))),
+      BusinessIdFormatError,
+      RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+      TypeOfLossFormatError,
+      RuleTaxYearNotEndedError
+    )
 
     badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
   }
@@ -154,8 +155,8 @@ class CreateBFLossControllerSpec
     def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the service" in new Test {
 
-        MockCreateBFLossRequestDataParser.parseRequest(
-          CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+        MockCreateBFLossRequestDataParser
+          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Right(bfLossRequest))
 
         MockCreateBFLossService

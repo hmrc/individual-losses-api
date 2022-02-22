@@ -22,9 +22,10 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
-import v3.models.domain.{Claim, TypeOfClaim}
+import v3.models.domain.DownstreamTaxYear
+import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors._
-import v3.models.requestData.DownstreamTaxYear
+import v3.models.request.amendLossClaimsOrder.Claim
 import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
@@ -167,6 +168,8 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
       validationErrorTest("BADNINO", "2019-20", requestJson(), Status.BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BadDate", requestJson(), Status.BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", "2020-22", requestJson(), Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
+      validationErrorTest("AA123456A", "2017-18", requestJson(), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), Status.BAD_REQUEST, TypeOfClaimFormatError)
       validationErrorTest("AA123456A", "2019-20", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))), Status.BAD_REQUEST,

@@ -17,23 +17,24 @@
 package v3.services
 
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.downstream.LossClaimResponse
-import v3.models.domain.{AmendLossClaimTypeRequestBody, Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.AmendLossClaimTypeRequest
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
+import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
 import scala.concurrent.Future
 
 class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
   val requestBody: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
-  val lossClaimResponse: LossClaimResponse =
-    LossClaimResponse(
+  val lossClaimResponse: AmendLossClaimTypeResponse =
+    AmendLossClaimTypeResponse(
       "2019-20",
       TypeOfLoss.`self-employment`,
       TypeOfClaim.`carry-forward`,
@@ -63,7 +64,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaimType(request).returns(Future.successful(Left(downstreamResponse)))
 

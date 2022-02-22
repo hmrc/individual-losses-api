@@ -16,11 +16,11 @@
 
 package v3.controllers.requestParsers.validators
 
-import play.api.libs.json.{ JsArray, JsValue, Json }
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.models.errors._
-import v3.models.requestData.AmendLossClaimsOrderRawData
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
 import v3.models.utils.JsonErrorValidators
 
 class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidators {
@@ -62,7 +62,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
       }
     }
 
-    "return TaxYearFormatError" when {
+    "return RuleTaxYearRangeInvalid" when {
       "tax year gap is higher than 1" in {
         validator.validate(AmendLossClaimsOrderRawData(validNino, "2020-22", AnyContentAsJson(mtdRequest))) shouldBe
           List(RuleTaxYearRangeInvalid)

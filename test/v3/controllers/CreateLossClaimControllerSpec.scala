@@ -22,13 +22,14 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v3.mocks.services._
-import v3.models.domain.{LossClaim, Nino, TypeOfClaim, TypeOfLoss}
-import v3.models.downstream.{CreateLossClaimHateoasData, CreateLossClaimResponse}
-import v3.models.errors.{NotFoundError, _}
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.errors._
 import v3.models.hateoas.Method.GET
 import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{CreateLossClaimRawData, CreateLossClaimRequest}
+import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody}
+import v3.models.response.createLossClaim.{CreateLossClaimHateoasData, CreateLossClaimResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -46,7 +47,8 @@ class CreateLossClaimControllerSpec
   val nino: String          = "AA123456A"
   val lossClaimId: String   = "AAZZ1234567890a"
 
-  val lossClaim: LossClaim = LossClaim("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
+  val lossClaim: CreateLossClaimRequestBody =
+    CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
 
   val createLossClaimResponse: CreateLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
 

@@ -16,10 +16,12 @@
 
 package v3.controllers.requestParsers
 
-import javax.inject.Inject
 import v3.controllers.requestParsers.validators.ListLossClaimsValidator
-import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
-import v3.models.requestData.{DownstreamTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.{DownstreamTaxYear, Nino}
+import v3.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
+
+import javax.inject.Inject
 
 class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator)
   extends RequestParser[ListLossClaimsRawData, ListLossClaimsRequest] {

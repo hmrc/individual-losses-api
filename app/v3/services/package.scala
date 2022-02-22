@@ -16,29 +16,37 @@
 
 package v3
 
-import v3.models.downstream._
 import v3.models.errors.ErrorWrapper
 import v3.models.outcomes.ResponseWrapper
+import v3.models.response.amendBFLoss.AmendBFLossResponse
+import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
+import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
+import v3.models.response.createBFLoss.CreateBFLossResponse
+import v3.models.response.createLossClaim.CreateLossClaimResponse
+import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
+import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
+import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
+import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 package object services {
 
   type CreateBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[CreateBFLossResponse]]
 
-  type RetrieveBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[BFLossResponse]]
+  type RetrieveBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[RetrieveBFLossResponse]]
 
   type ListBFLossesOutcome = Either[ErrorWrapper, ResponseWrapper[ListBFLossesResponse[ListBFLossesItem]]]
 
-  type AmendBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[BFLossResponse]]
+  type AmendBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[AmendBFLossResponse]]
 
   type DeleteBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
 
   type CreateLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[CreateLossClaimResponse]]
 
-  type RetrieveLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[LossClaimResponse]]
+  type RetrieveLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[RetrieveLossClaimResponse]]
 
-  type ListLossClaimsOutcome = Either[ErrorWrapper, ResponseWrapper[ListLossClaimsResponse[LossClaimId]]]
+  type ListLossClaimsOutcome = Either[ErrorWrapper, ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]]]
 
-  type AmendLossClaimTypeOutcome = Either[ErrorWrapper, ResponseWrapper[LossClaimResponse]]
+  type AmendLossClaimTypeOutcome = Either[ErrorWrapper, ResponseWrapper[AmendLossClaimTypeResponse]]
 
   type DeleteLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
 

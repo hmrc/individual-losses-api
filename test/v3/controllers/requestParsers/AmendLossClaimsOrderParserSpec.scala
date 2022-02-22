@@ -20,9 +20,10 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendLossClaimsOrderValidator
-import v3.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
+import v3.models.domain.lossClaim.TypeOfClaim
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
-import v3.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DownstreamTaxYear}
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 class AmendLossClaimsOrderParserSpec extends UnitSpec {
 

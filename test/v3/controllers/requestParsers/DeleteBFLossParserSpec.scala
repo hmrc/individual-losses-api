@@ -20,7 +20,7 @@ import support.UnitSpec
 import v3.mocks.validators.MockDeleteBFLossValidator
 import v3.models.domain.Nino
 import v3.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
-import v3.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
+import v3.models.request.deleteBFLoss.{DeleteBFLossRawData, DeleteBFLossRequest}
 
 class DeleteBFLossParserSpec extends UnitSpec{
   val nino: String = "AA123456B"

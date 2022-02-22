@@ -18,9 +18,9 @@ package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations.{BusinessIdValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation}
-import v3.models.domain.TypeOfLoss._
+import v3.models.domain.bfLoss.TypeOfLoss._
 import v3.models.errors.{MtdError, TaxYearFormatError, TypeOfLossFormatError}
-import v3.models.requestData.ListBFLossesRawData
+import v3.models.request.listBFLosses.ListBFLossesRawData
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {
 

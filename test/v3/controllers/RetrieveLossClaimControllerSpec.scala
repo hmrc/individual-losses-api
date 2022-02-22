@@ -16,19 +16,20 @@
 
 package v3.controllers
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockRetrieveLossClaimRequestDataParser
-import v3.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveLossClaimService }
-import v3.models.downstream.{ GetLossClaimHateoasData, LossClaimResponse }
-import v3.models.domain.{ Nino, TypeOfClaim, TypeOfLoss }
-import v3.models.errors.{ NotFoundError, _ }
+import v3.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveLossClaimService}
+import v3.models.domain.Nino
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.errors._
 import v3.models.hateoas.Method.GET
-import v3.models.hateoas.{ HateoasWrapper, Link }
+import v3.models.hateoas.{HateoasWrapper, Link}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{ RetrieveLossClaimRawData, RetrieveLossClaimRequest }
+import v3.models.request.retrieveLossClaim.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
+import v3.models.response.retrieveLossClaim.{GetLossClaimHateoasData, RetrieveLossClaimResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -52,9 +53,9 @@ class RetrieveLossClaimControllerSpec
   val rawData: RetrieveLossClaimRawData = RetrieveLossClaimRawData(nino, claimId)
   val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(Nino(nino), claimId)
 
-  val response: LossClaimResponse = LossClaimResponse(
+  val response: RetrieveLossClaimResponse = RetrieveLossClaimResponse(
     taxYearClaimedFor = taxYear,
-    typeOfLoss = TypeOfLoss.`uk-property-fhl`,
+    typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
     businessId = businessId,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     lastModified = lastModified,
@@ -67,7 +68,7 @@ class RetrieveLossClaimControllerSpec
     s"""
       |{
       |    "taxYearClaimedFor": "$taxYear",
-      |    "typeOfLoss": "uk-property-fhl",
+      |    "typeOfLoss": "uk-property-non-fhl",
       |    "typeOfClaim": "carry-forward",
       |    "lastModified": "$lastModified",
       |    "businessId": "$businessId",

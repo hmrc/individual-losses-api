@@ -20,7 +20,7 @@ import support.UnitSpec
 import v3.mocks.validators.MockRetrieveLossClaimValidator
 import v3.models.domain.Nino
 import v3.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
-import v3.models.requestData.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
+import v3.models.request.retrieveLossClaim.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
 
 class RetrieveLossClaimParserSpec extends UnitSpec {
 

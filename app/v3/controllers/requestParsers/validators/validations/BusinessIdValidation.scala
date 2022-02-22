@@ -16,8 +16,7 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.domain.TypeOfLoss
-import v3.models.errors.{BusinessIdFormatError, MtdError, RuleBusinessId}
+import v3.models.errors.{BusinessIdFormatError, MtdError}
 
 object BusinessIdValidation {
 
@@ -25,32 +24,6 @@ object BusinessIdValidation {
 
   def validate(businessId: String): List[MtdError] = {
     if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
-  }
-
-  def validateOptionalWithTypeOfLoss(typeOfLoss: TypeOfLoss,
-                                     businessId: Option[String],
-                                     idOptional: Boolean = false,
-                                     noRuleBusinessIdError: Boolean = false): List[MtdError] = {
-    if (typeOfLoss.isUkProperty && !noRuleBusinessIdError) {
-      propertyValidationOptional(businessId)
-    }
-    else {
-      businessIdValidationOptional(businessId, idOptional, noRuleBusinessIdError)
-    }
-  }
-
-  private def businessIdValidationOptional(businessId: Option[String], idOptional: Boolean, noRuleBusinessIdError: Boolean): List[MtdError] = {
-    businessId match {
-      case None if idOptional             => Nil
-      case None if !noRuleBusinessIdError => List(RuleBusinessId)
-      case None if noRuleBusinessIdError  => Nil
-      case Some(id)                       => if (id.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
-    }
-  }
-
-
-  private def propertyValidationOptional(businessId: Option[String]): List[MtdError] = {
-    if (businessId.isEmpty) NoValidationErrors else List(RuleBusinessId)
   }
 
 }

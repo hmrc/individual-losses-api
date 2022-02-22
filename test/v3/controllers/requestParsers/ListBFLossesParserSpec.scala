@@ -18,16 +18,16 @@ package v3.controllers.requestParsers
 
 import support.UnitSpec
 import v3.mocks.validators.MockListBFLossesValidator
-import v3.models.downstream.IncomeSourceType
-import v3.models.domain.Nino
+import v3.models.domain.bfLoss.IncomeSourceType
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
-import v3.models.requestData.{DownstreamTaxYear, ListBFLossesRawData, ListBFLossesRequest}
+import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
 
 class ListBFLossesParserSpec extends UnitSpec {
 
-  private val nino        = "AA123456B"
-  private val taxYear     = "2017-18"
-  private val businessId  = "XAIS01234567890"
+  private val nino       = "AA123456B"
+  private val taxYear    = "2017-18"
+  private val businessId = "XAIS01234567890"
 
   trait Test extends MockListBFLossesValidator {
     lazy val parser = new ListBFLossesParser(mockValidator)
@@ -36,7 +36,7 @@ class ListBFLossesParserSpec extends UnitSpec {
   "parse" when {
     "valid input" should {
 
-      "convert uk-property-fhl to incomeSourceType 04" in new Test {
+      "convert uk-property-fhl to BFIncomeSourceType 04" in new Test {
         val inputData: ListBFLossesRawData =
           ListBFLossesRawData(
             nino = nino,
@@ -51,16 +51,16 @@ class ListBFLossesParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData) shouldBe
           Right(
-              ListBFLossesRequest(
-                nino = Nino(nino),
-                taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
-                incomeSourceType = Some(IncomeSourceType.`04`),
-                businessId = Some(businessId)
-              )
+            ListBFLossesRequest(
+              nino = Nino(nino),
+              taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
+              incomeSourceType = Some(IncomeSourceType.`04`),
+              businessId = Some(businessId)
+            )
           )
       }
 
-      "convert uk-property-non-fhl to incomeSourceType 02" in new Test {
+      "convert uk-property-non-fhl to BFIncomeSourceType 02" in new Test {
         val inputData: ListBFLossesRawData =
           ListBFLossesRawData(
             nino = nino,
@@ -75,11 +75,10 @@ class ListBFLossesParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData) shouldBe
           Right(
-            ListBFLossesRequest(
-              nino = Nino(nino),
-              taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
-              incomeSourceType = Some(IncomeSourceType.`02`),
-              businessId = Some(businessId))
+            ListBFLossesRequest(nino = Nino(nino),
+                                taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
+                                incomeSourceType = Some(IncomeSourceType.`02`),
+                                businessId = Some(businessId))
           )
       }
 

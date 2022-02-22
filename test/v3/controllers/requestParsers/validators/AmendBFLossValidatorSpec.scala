@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.models.errors._
-import v3.models.requestData.AmendBFLossRawData
+import v3.models.request.amendBFLoss.AmendBFLossRawData
 
 class AmendBFLossValidatorSpec extends UnitSpec {
 

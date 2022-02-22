@@ -20,11 +20,19 @@ import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.MockHttpClient
-import v3.models.downstream._
-import v3.models.domain.{ AmendBFLoss, BFLoss, Nino, TypeOfLoss }
+import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData._
+import v3.models.request.amendBFLoss.{AmendBFLossRequest, AmendBFLossRequestBody}
+import v3.models.request.createBFLoss.{CreateBFLossRequest, CreateBFLossRequestBody}
+import v3.models.request.deleteBFLoss.DeleteBFLossRequest
+import v3.models.request.listBFLosses.ListBFLossesRequest
+import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
+import v3.models.response.amendBFLoss.AmendBFLossResponse
+import v3.models.response.createBFLoss.CreateBFLossResponse
+import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
+import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import scala.concurrent.Future
 
@@ -61,7 +69,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
   "create BFLoss" when {
 
-    val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+    val bfLoss: CreateBFLossRequestBody = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
     implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
@@ -132,7 +140,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
   "amend BFLoss" when {
 
-    val amendBFLossResponse: BFLossResponse = BFLossResponse(
+    val amendBFLossResponse: AmendBFLossResponse = AmendBFLossResponse(
       businessId = "XKIS00000000988",
       typeOfLoss = TypeOfLoss.`self-employment`,
       lossAmount = 500.13,
@@ -140,7 +148,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       lastModified = "2018-07-13T12:13:48.763Z"
     )
 
-    val amendBFLoss: AmendBFLoss = AmendBFLoss(500.13)
+    val amendBFLoss: AmendBFLossRequestBody = AmendBFLossRequestBody(500.13)
 
     implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
 
@@ -200,7 +208,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def amendBFLossResult(connector: BFLossConnector): DownstreamOutcome[BFLossResponse] =
+    def amendBFLossResult(connector: BFLossConnector): DownstreamOutcome[AmendBFLossResponse] =
       await(
         connector.amendBFLoss(
           AmendBFLossRequest(
@@ -274,7 +282,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
   "retrieveBFLoss" should {
 
-    val retrieveResponse: BFLossResponse = BFLossResponse(
+    val retrieveResponse: RetrieveBFLossResponse = RetrieveBFLossResponse(
       businessId = "fakeId",
       typeOfLoss = TypeOfLoss.`self-employment`,
       lossAmount = 2000.25,
@@ -282,7 +290,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       lastModified = "dateString"
     )
 
-    def retrieveBFLossResult(connector: BFLossConnector): DownstreamOutcome[BFLossResponse] = {
+    def retrieveBFLossResult(connector: BFLossConnector): DownstreamOutcome[RetrieveBFLossResponse] = {
       await(
         connector.retrieveBFLoss(
           RetrieveBFLossRequest(

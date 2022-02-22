@@ -21,14 +21,12 @@ import cats.implicits._
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
 import v3.controllers.requestParsers.AmendLossClaimsOrderParser
 import v3.hateoas.HateoasFactory
-import v3.models.audit.{AmendLossClaimsOrderAuditDetail, AuditEvent, AuditResponse}
-import v3.models.downstream.AmendLossClaimsOrderHateoasData
 import v3.models.errors._
-import v3.models.requestData.AmendLossClaimsOrderRawData
-import v3.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
+import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderHateoasData
+import v3.services.{AmendLossClaimsOrderService, EnrolmentsAuthService, MtdIdLookupService}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -79,6 +77,8 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
       case BadRequestError
            | NinoFormatError
            | TaxYearFormatError
+           | RuleTaxYearRangeInvalid
+           | RuleTaxYearNotSupportedError
            | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code)
            | MtdErrorWithCode(ClaimIdFormatError.code)
            | TypeOfClaimFormatError

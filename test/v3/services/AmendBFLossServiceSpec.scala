@@ -17,22 +17,23 @@
 package v3.services
 
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.downstream.BFLossResponse
-import v3.models.domain.{AmendBFLoss, Nino, TypeOfLoss}
+import v3.models.domain.Nino
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.AmendBFLossRequest
+import v3.models.request.amendBFLoss.{AmendBFLossRequest, AmendBFLossRequestBody}
+import v3.models.response.amendBFLoss.AmendBFLossResponse
 
 import scala.concurrent.Future
 
 class AmendBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val bfLoss: AmendBFLoss = AmendBFLoss(256.78)
+  val bfLoss: AmendBFLossRequestBody = AmendBFLossRequestBody(256.78)
 
-  val bfLossResponse: BFLossResponse = BFLossResponse(
+  val bfLossResponse: AmendBFLossResponse = AmendBFLossResponse(
     "XKIS00000000988",
     TypeOfLoss.`self-employment`,
     256.78,
@@ -61,7 +62,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -79,15 +80,15 @@ class AmendBFLossServiceSpec extends ServiceSpec {
     }
 
     Map(
-      "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-      "INVALID_LOSS_ID"            -> LossIdFormatError,
-      "NOT_FOUND"                  -> NotFoundError,
-      "INVALID_PAYLOAD"            -> DownstreamError,
-      "CONFLICT"                   -> RuleLossAmountNotChanged,
-      "INVALID_CORRELATIONID"      -> DownstreamError,
-      "SERVER_ERROR"               -> DownstreamError,
-      "SERVICE_UNAVAILABLE"        -> DownstreamError,
-      "UNEXPECTED_ERROR"           -> DownstreamError
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "INVALID_PAYLOAD"           -> DownstreamError,
+      "CONFLICT"                  -> RuleLossAmountNotChanged,
+      "INVALID_CORRELATIONID"     -> DownstreamError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError,
+      "UNEXPECTED_ERROR"          -> DownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

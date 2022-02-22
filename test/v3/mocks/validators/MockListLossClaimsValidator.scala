@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.validators.ListLossClaimsValidator
 import v3.models.errors.MtdError
-import v3.models.requestData.ListLossClaimsRawData
+import v3.models.request.listLossClaims.ListLossClaimsRawData
 
 class MockListLossClaimsValidator extends MockFactory {
 

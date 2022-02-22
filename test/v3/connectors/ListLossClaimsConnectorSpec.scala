@@ -16,11 +16,12 @@
 
 package v3.connectors
 
-import v3.models.downstream._
-import v3.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData._
+import v3.models.request.listLossClaims.ListLossClaimsRequest
+import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import scala.concurrent.Future
 
@@ -30,8 +31,26 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "a valid request is supplied with no query parameters" should {
       "return a successful response with the correct correlationId" in new IfsTest {
-        val expected = Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
+        val expected = Right(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
 
         MockHttpClient
           .get(
@@ -40,7 +59,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(connector) shouldBe expected
       }
@@ -48,8 +68,26 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a tax year parameter" should {
       "return a successful response with the correct correlationId" in new IfsTest {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
 
         MockHttpClient
           .get(
@@ -58,7 +96,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(connector = connector, taxYear = Some(DownstreamTaxYear("2019"))) shouldBe expected
       }
@@ -66,8 +105,26 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a income source id parameter" should {
       "return a successful response with the correct correlationId" in new IfsTest {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
 
         MockHttpClient
           .get(
@@ -76,7 +133,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(connector = connector, businessId = Some("testId")) shouldBe expected
       }
@@ -84,8 +142,26 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a income source type parameter" should {
       "return a successful response with the correct correlationId" in new IfsTest {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
 
         MockHttpClient
           .get(
@@ -94,7 +170,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(connector = connector, typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
       }
@@ -102,8 +179,26 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with a claim type parameter" should {
       "return a successful response with the correct correlationId" in new IfsTest {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
 
         MockHttpClient
           .get(
@@ -112,7 +207,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(connector = connector, claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
@@ -120,8 +216,26 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
     "provided with all parameters" should {
       "return a successful response with the correct correlationId" in new IfsTest {
-        val expected = Left(ResponseWrapper(correlationId, ListLossClaimsResponse(Seq(LossClaimId("businessId", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId", Some(1), "2020-07-13T12:13:48.763Z"),
-          LossClaimId("businessId1", TypeOfClaim.`carry-sideways`, TypeOfLoss.`self-employment`, "2020", "claimId1", Some(2), "2020-07-13T12:13:48.763Z")))))
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
 
         MockHttpClient
           .get(
@@ -130,14 +244,16 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(
           connector = connector,
           taxYear = Some(DownstreamTaxYear("2019")),
           businessId = Some("testId"),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
-          claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
+          claimType = Some(TypeOfClaim.`carry-sideways`)
+        ) shouldBe expected
       }
     }
 
@@ -152,7 +268,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(connector) shouldBe expected
       }
@@ -169,7 +286,8 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listLossClaimsResult(connector = connector, Some(DownstreamTaxYear("2019"))) shouldBe expected
       }
@@ -179,7 +297,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                              taxYear: Option[DownstreamTaxYear] = None,
                              typeOfLoss: Option[TypeOfLoss] = None,
                              businessId: Option[String] = None,
-                             claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[LossClaimId]] =
+                             claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]] =
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(

@@ -16,14 +16,14 @@
 
 package v3.connectors
 
-import java.time.LocalDateTime
-
-import v3.models.downstream._
 import v3.models.domain._
+import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
 import v3.models.errors._
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData._
+import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
+import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
@@ -36,7 +36,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
     val nino: String = "AA123456A"
     val claimId: String = "AAZZ1234567890a"
 
-    val retrieveResponse: LossClaimResponse = LossClaimResponse(
+    val retrieveResponse: RetrieveLossClaimResponse = RetrieveLossClaimResponse(
       validTaxYear,
       TypeOfLoss.`self-employment`,
       TypeOfClaim.`carry-forward`,
@@ -45,7 +45,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
       testDateTime.toString
     )
 
-    def retrieveLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[LossClaimResponse] = {
+    def retrieveLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[RetrieveLossClaimResponse] = {
       await(
         connector.retrieveLossClaim(
           RetrieveLossClaimRequest(

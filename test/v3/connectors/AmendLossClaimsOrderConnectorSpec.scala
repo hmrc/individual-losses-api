@@ -17,9 +17,10 @@
 package v3.connectors
 
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
+import v3.models.domain.lossClaim.TypeOfClaim
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.outcomes.ResponseWrapper
-import v3.models.requestData.{AmendLossClaimsOrderRequest, DownstreamTaxYear}
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 import scala.concurrent.Future
 

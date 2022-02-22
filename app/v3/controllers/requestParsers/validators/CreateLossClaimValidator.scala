@@ -18,9 +18,8 @@ package v3.controllers.requestParsers.validators
 
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.domain.LossClaim
 import v3.models.errors.{MtdError, TaxYearClaimedForFormatError}
-import v3.models.requestData.CreateLossClaimRawData
+import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequestBody}
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {
 
@@ -41,19 +40,19 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
   //  Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
   private def enumValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     List(
-      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfLossValidation.validateForLossClaim),
+      JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfClaimLossValidation.validate),
       JsonValidation.validate[String](data.body.json \ "typeOfClaim")(TypeOfClaimValidation.validate)
     )
   }
 
   private def bodyFormatValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[LossClaim](data.body.json)
+      JsonFormatValidation.validate[CreateLossClaimRequestBody](data.body.json)
     )
   }
 
   private def taxYearValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
-    val req = data.body.json.as[LossClaim]
+    val req = data.body.json.as[CreateLossClaimRequestBody]
     List(
       TaxYearValidation
         .validate(req.taxYearClaimedFor, TaxYearClaimedForFormatError)
@@ -64,7 +63,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
   }
 
   private def otherBodyFieldsValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
-    val req = data.body.json.as[LossClaim]
+    val req = data.body.json.as[CreateLossClaimRequestBody]
     List(
       MinTaxYearValidation.validate(req.taxYearClaimedFor, minimumTaxYearLossClaim),
       BusinessIdValidation.validate(req.businessId),

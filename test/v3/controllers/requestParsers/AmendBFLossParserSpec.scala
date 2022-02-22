@@ -20,9 +20,9 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendBFLossValidator
-import v3.models.domain.{AmendBFLoss, Nino}
+import v3.models.domain.Nino
 import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
-import v3.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
+import v3.models.request.amendBFLoss.{AmendBFLossRequestBody, AmendBFLossRawData, AmendBFLossRequest}
 
 class AmendBFLossParserSpec extends UnitSpec {
 
@@ -39,7 +39,7 @@ class AmendBFLossParserSpec extends UnitSpec {
     "return an AmendBFLossRequest" when {
       "the validator returns no errors" in new Test {
         MockValidator.validate(data).returns(List())
-        parser.parseRequest(data) shouldBe Right(AmendBFLossRequest(Nino(nino), lossId, AmendBFLoss(lossAmount)))
+        parser.parseRequest(data) shouldBe Right(AmendBFLossRequest(Nino(nino), lossId, AmendBFLossRequestBody(lossAmount)))
       }
     }
     "return a single error" when {
