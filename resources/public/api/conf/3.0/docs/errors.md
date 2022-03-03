@@ -27,3 +27,32 @@ Where possible, multiple errors will be returned with `INVALID_REQUEST` in the f
         }
     ]
 }`
+
+Where it is possible for the same error to be returned multiple times, `message` will describe the expected format and `paths` will show the fields which are invalid.<br>
+
+Where arrays are submitted a number indicates the object in the array sequence, for example, `/arrayName/1/fieldName`.
+
+An example with single error:<br>
+`{
+    "code": "FORMAT_STRING_NAME",
+    "message": "The provided field is not valid",
+    "paths": [ "/arrayName/0/fieldName" ]
+}`
+
+An example with multiple errors:<br>
+`{
+    "code": "INVALID_REQUEST",
+    "message": "Invalid request",
+    "errors": [
+        {
+           "code": "FORMAT_VALUE",
+           "message": "The value should be between 0 and 99999999999.99",
+           "paths": [ "/objectName/fieldName1", "/arrayName/0/fieldName2" ]
+        },
+        {
+           "code": "FORMAT_STRING_NAME",
+           "message": "The provided field is not valid",
+           "paths": [ "/arrayName/0/fieldName3", "/arrayName/1/fieldName3" ]
+        }
+    ]
+}`
