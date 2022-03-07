@@ -16,19 +16,21 @@
 
 package v3.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.errors._
+import api.models.hateoas.Method.GET
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v3.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v3.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.domain.lossClaim.TypeOfClaim
+import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors._
-import v3.models.hateoas.Method.GET
-import v3.models.hateoas.{HateoasWrapper, Link}
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 import v3.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 
@@ -36,7 +38,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimsOrderControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendLossClaimsOrderService
@@ -187,7 +189,7 @@ class AmendLossClaimsOrderControllerSpec
       badRequestErrorsFromService.foreach(errorsFromServiceTester(_, BAD_REQUEST))
       notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
       forbiddenErrorsFromService.foreach(errorsFromServiceTester(_, FORBIDDEN))
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
 

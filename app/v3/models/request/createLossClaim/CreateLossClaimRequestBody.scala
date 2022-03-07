@@ -19,12 +19,9 @@ package v3.models.request.createLossClaim
 import play.api.libs.json._
 import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.lossClaim.TypeOfLoss._
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
-case class CreateLossClaimRequestBody(taxYearClaimedFor: String,
-                                      typeOfLoss: TypeOfLoss,
-                                      typeOfClaim: TypeOfClaim,
-                                      businessId: String)
+case class CreateLossClaimRequestBody(taxYearClaimedFor: String, typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, businessId: String)
 
 object CreateLossClaimRequestBody {
   implicit val reads: Reads[CreateLossClaimRequestBody] = Json.reads[CreateLossClaimRequestBody]
@@ -33,14 +30,14 @@ object CreateLossClaimRequestBody {
     requestBody.typeOfLoss match {
       case `uk-property-non-fhl` | `foreign-property` =>
         Json.obj(
-          "taxYear"   -> DownstreamTaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
+          "taxYear"          -> DownstreamTaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
           "incomeSourceType" -> requestBody.typeOfLoss.toIncomeSourceType,
           "reliefClaimed"    -> requestBody.typeOfClaim.toReliefClaimed,
           "incomeSourceId"   -> requestBody.businessId
         )
       case `self-employment` =>
         Json.obj(
-          "taxYear" -> DownstreamTaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
+          "taxYear"        -> DownstreamTaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
           "reliefClaimed"  -> requestBody.typeOfClaim.toReliefClaimed,
           "incomeSourceId" -> requestBody.businessId
         )

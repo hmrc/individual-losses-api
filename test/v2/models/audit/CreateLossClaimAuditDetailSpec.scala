@@ -16,6 +16,7 @@
 
 package v2.models.audit
 
+import api.models.audit.{AuditError, AuditResponse}
 import play.api.libs.json.Json
 import support.UnitSpec
 import v2.models.errors.RuleTypeOfClaimInvalid

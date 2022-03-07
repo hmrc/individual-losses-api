@@ -21,13 +21,13 @@ import support.UnitSpec
 
 class AmendBFLossSpec extends UnitSpec {
 
-  val mtdJson: JsValue = Json.parse(
-    """
+  val mtdJson: JsValue = Json.parse("""
       |{
       |  "lossAmount": 1000.99
       |}
     """.stripMargin)
-  val model = AmendBFLoss(1000.99)
+  val model            = AmendBFLoss(1000.99)
+
   val desJson: JsValue = Json.parse(
     """
       |{
@@ -35,7 +35,6 @@ class AmendBFLossSpec extends UnitSpec {
       |}
     """.stripMargin
   )
-
 
   "Json Reads" should {
     "convert valid MTD JSON into a model" in {

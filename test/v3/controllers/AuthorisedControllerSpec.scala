@@ -16,20 +16,20 @@
 
 package v3.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v3.models.errors._
 import v3.services.{EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class
-AuthorisedControllerSpec extends ControllerBaseSpec {
+class AuthorisedControllerSpec extends ControllerBaseSpec {
 
   trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -78,7 +78,7 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
 
         MockEnrolmentsAuthService
           .authorised(predicate)
-          .returns(Future.successful(Left(DownstreamError)))
+          .returns(Future.successful(Left(StandardDownstreamError)))
 
         private val result = target.action(nino)(fakeGetRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
@@ -128,7 +128,7 @@ AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockMtdIdLookupService
         .lookup(nino)
-        .returns(Future.successful(Left(DownstreamError)))
+        .returns(Future.successful(Left(StandardDownstreamError)))
 
       private val result = target.action(nino)(fakeGetRequest)
       status(result) shouldBe INTERNAL_SERVER_ERROR

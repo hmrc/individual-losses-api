@@ -16,18 +16,19 @@
 
 package v2.services
 
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v2.mocks.connectors.MockLossClaimConnector
 import v2.models.des.LossClaimResponse
 import v2.models.domain.{AmendLossClaim, Nino, TypeOfClaim, TypeOfLoss}
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData.AmendLossClaimRequest
 
 import scala.concurrent.Future
 
 class AmendLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
   val lossClaim: AmendLossClaim = AmendLossClaim(TypeOfClaim.`carry-forward`)
@@ -48,16 +49,16 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
       "return a successful response with the correct correlationId" in new Test {
         MockedLossClaimConnector
           .amendLossClaim(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, lossClaimResponse))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, lossClaimResponse))))
 
-        await(service.amendLossClaim(request)) shouldBe Right(DesResponse(correlationId, lossClaimResponse))
+        await(service.amendLossClaim(request)) shouldBe Right(ResponseWrapper(correlationId, lossClaimResponse))
       }
     }
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
-        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError                         = MtdError("SOME_CODE", "some message")
+        val desResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaim(request).returns(Future.successful(Left(desResponse)))
 
         await(service.amendLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
@@ -66,30 +67,30 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
 
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.amendLossClaim(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimOutcome = await(service.amendLossClaim(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
       }
     }
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-      "INVALID_PAYLOAD"           -> DownstreamError,
+      "INVALID_PAYLOAD"           -> StandardDownstreamError,
       "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
       "NOT_FOUND"                 -> NotFoundError,
       "CONFLICT"                  -> RuleClaimTypeNotChanged,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError,
-      "UNEXPECTED_ERROR"          -> DownstreamError
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+      "UNEXPECTED_ERROR"          -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
           s"return a $v MTD error" in new Test {
             MockedLossClaimConnector
               .amendLossClaim(request)
-              .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
             await(service.amendLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

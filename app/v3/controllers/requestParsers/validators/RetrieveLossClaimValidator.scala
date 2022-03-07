@@ -16,8 +16,8 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors.MtdError
 import v3.controllers.requestParsers.validators.validations.{ClaimIdValidation, NinoValidation}
-import v3.models.errors.MtdError
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRawData
 
 class RetrieveLossClaimValidator extends Validator[RetrieveLossClaimRawData] {

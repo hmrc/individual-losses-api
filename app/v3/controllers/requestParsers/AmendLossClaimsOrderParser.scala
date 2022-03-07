@@ -16,13 +16,14 @@
 
 package v3.controllers.requestParsers
 
-import javax.inject.Inject
 import v3.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
 import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
 
+import javax.inject.Inject
+
 class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderValidator)
-  extends RequestParser[AmendLossClaimsOrderRawData,AmendLossClaimsOrderRequest] {
+    extends RequestParser[AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest] {
 
   override protected def requestFor(data: AmendLossClaimsOrderRawData): AmendLossClaimsOrderRequest = {
 

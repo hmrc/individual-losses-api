@@ -16,25 +16,27 @@
 
 package v2.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.errors._
+import api.models.hateoas.Method.GET
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.outcomes.ResponseWrapper
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
-import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService}
-import v2.models.des.{BFLossResponse, GetBFLossHateoasData}
-import v2.models.domain.{Nino, TypeOfLoss}
-import v2.models.errors.{NotFoundError, _}
-import v2.models.hateoas.Method.GET
-import v2.models.hateoas.{HateoasWrapper, Link}
-import v2.models.outcomes.DesResponse
-import v2.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
+import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBFLossService }
+import v2.models.des.{ BFLossResponse, GetBFLossHateoasData }
+import v2.models.domain.{ Nino, TypeOfLoss }
+import v2.models.errors._
+import v2.models.requestData.{ RetrieveBFLossRawData, RetrieveBFLossRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveBFLossService
@@ -104,7 +106,7 @@ class RetrieveBFLossControllerSpec
 
         MockRetrieveBFLossService
           .retrieve(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
           .wrap(response, GetBFLossHateoasData(nino, lossId))
@@ -159,7 +161,7 @@ class RetrieveBFLossControllerSpec
       }
 
       errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)

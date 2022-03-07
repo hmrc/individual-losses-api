@@ -16,9 +16,9 @@
 
 package v3.controllers.requestParsers.validators.validations
 
+import api.models.utils.JsonErrorValidators
 import support.UnitSpec
 import v3.models.errors.LossIdFormatError
-import v3.models.utils.JsonErrorValidators
 
 class LossIdValidationSpec extends UnitSpec with JsonErrorValidators {
 

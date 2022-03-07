@@ -16,6 +16,7 @@
 
 package v3.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -51,16 +52,14 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String                                       = "AA123456A"
-    val taxYearBroughtForwardFrom: Option[String]          = None
-    val typeOfLoss: Option[String]                         = None
-    val businessId: Option[String]                         = None
-
+    val nino: String                              = "AA123456A"
+    val taxYearBroughtForwardFrom: Option[String] = None
+    val typeOfLoss: Option[String]                = None
+    val businessId: Option[String]                = None
 
     def uri: String = s"/$nino/brought-forward-losses"
 
-    val responseJson: JsValue = Json.parse(
-      s"""{
+    val responseJson: JsValue = Json.parse(s"""{
          |  "losses": [
          |    {
          |      "lossId": "AAZZ1234567890A",
@@ -155,9 +154,9 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying with specific typeOfLoss" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String]          = None
-        override val typeOfLoss: Option[String]       = Some("uk-property-fhl")
-        override val businessId: Option[String] = None
+        override val taxYearBroughtForwardFrom: Option[String] = None
+        override val typeOfLoss: Option[String]                = Some("uk-property-fhl")
+        override val businessId: Option[String]                = None
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -174,15 +173,19 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying with businessId, taxYear and typeOfLoss" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String]          = Some("2019-20")
-        override val typeOfLoss: Option[String]       = Some("self-employment")
-        override val businessId: Option[String] = Some("XKIS00000000988")
+        override val taxYearBroughtForwardFrom: Option[String] = Some("2019-20")
+        override val typeOfLoss: Option[String]                = Some("self-employment")
+        override val businessId: Option[String]                = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020"), Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET,
+                                   ifsUrl,
+                                   Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020"),
+                                   Status.OK,
+                                   downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -217,9 +220,9 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
     }
 
     "handle validation errors according to spec" when {
@@ -231,10 +234,10 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String     = requestNino
+          override val nino: String                              = requestNino
           override val taxYearBroughtForwardFrom: Option[String] = requestTaxYear
-          override val typeOfLoss: Option[String] = requestTypeOfLoss
-          override val businessId: Option[String] = requestBusinessId
+          override val typeOfLoss: Option[String]                = requestTypeOfLoss
+          override val businessId: Option[String]                = requestBusinessId
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()

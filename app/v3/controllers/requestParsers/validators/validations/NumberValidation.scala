@@ -16,14 +16,15 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import v3.models.errors.{MtdError, ValueFormatError}
+import api.models.errors.MtdError
+import v3.models.errors.ValueFormatError
 
 object NumberValidation {
 
   def validateOptional(field: Option[BigDecimal], path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): List[MtdError] = {
     field match {
       case None        => NoValidationErrors
-      case Some(value) => validate(value, path, min,max)
+      case Some(value) => validate(value, path, min, max)
     }
   }
 

@@ -16,13 +16,13 @@
 
 package v2.models.des
 
+import api.models.hateoas.Method.{DELETE, GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v2.hateoas.HateoasFactory
+import api.hateoas.HateoasFactory
 import v2.models.domain.TypeOfLoss
-import v2.models.hateoas.Method.{DELETE, GET, POST}
-import v2.models.hateoas.{HateoasWrapper, Link}
 
 class BFLossResponseSpec extends UnitSpec {
 

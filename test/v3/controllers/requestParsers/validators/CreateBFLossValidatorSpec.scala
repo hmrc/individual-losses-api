@@ -16,8 +16,7 @@
 
 package v3.controllers.requestParsers.validators
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import api.models.errors._
 import config.AppConfig
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
@@ -28,10 +27,13 @@ import v3.mocks.MockCurrentDate
 import v3.models.errors._
 import v3.models.request.createBFLoss.CreateBFLossRawData
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 class CreateBFLossValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
-  private val validTaxYear = "2020-21"
+  private val validNino       = "AA123456A"
+  private val validTaxYear    = "2020-21"
   private val validTypeOfLoss = "self-employment"
   private val validBusinessId = "XAIS01234567890"
 
@@ -53,10 +55,10 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
   class Test extends MockCurrentDate with MockAppConfig {
 
-    implicit val dateProvider: CurrentDate     = mockCurrentDate
-    val dateTimeFormatter: DateTimeFormatter   = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    implicit val appConfig: AppConfig          = mockAppConfig
-    val validator: CreateBFLossValidator       = new CreateBFLossValidator()
+    implicit val dateProvider: CurrentDate   = mockCurrentDate
+    val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    implicit val appConfig: AppConfig        = mockAppConfig
+    val validator: CreateBFLossValidator     = new CreateBFLossValidator()
 
     MockCurrentDate.getCurrentDate
       .returns(LocalDate.parse("2022-07-11", dateTimeFormatter))
@@ -119,32 +121,28 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
     "return TypeOfLossValidation error" when {
       "an invalid loss type is submitted" in new Test {
-        validator.validate(
-          CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
           List(TypeOfLossFormatError)
       }
     }
 
     "return ValueFormatError" when {
       "an invalid amount (Too high) is submitted" in new Test {
-        validator.validate(
-          CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100000000000.00))))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100000000000.00))))) shouldBe
           List(ValueFormatError.copy(paths = Some(List("/lossAmount"))))
       }
     }
 
     "return ValueFormatError" when {
       "an invalid amount (Negative) is submitted" in new Test {
-        validator.validate(
-          CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(-100.00))))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(-100.00))))) shouldBe
           List(ValueFormatError.copy(paths = Some(List("/lossAmount"))))
       }
     }
 
     "return ValueFormatError" when {
       "an invalid amount (3 decimal places) is submitted" in new Test {
-        validator.validate(
-          CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100.734))))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100.734))))) shouldBe
           List(ValueFormatError.copy(paths = Some(List("/lossAmount"))))
       }
     }
@@ -161,8 +159,8 @@ class CreateBFLossValidatorSpec extends UnitSpec {
         validator.validate(
           CreateBFLossRawData(
             validNino,
-            AnyContentAsJson(createRequestBodyJson(
-              typeOfLoss = "self-employment-class4", businessId = "wrong", taxYearBroughtForwardFrom = "2010-11")))) shouldBe
+            AnyContentAsJson(
+              createRequestBodyJson(typeOfLoss = "self-employment-class4", businessId = "wrong", taxYearBroughtForwardFrom = "2010-11")))) shouldBe
           List(RuleTaxYearNotSupportedError, BusinessIdFormatError)
       }
     }

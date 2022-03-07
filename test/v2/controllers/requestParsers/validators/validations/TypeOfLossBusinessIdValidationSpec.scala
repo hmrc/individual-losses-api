@@ -31,9 +31,10 @@ class TypeOfLossBusinessIdValidationSpec extends UnitSpec {
         (TypeOfLoss.`uk-property-fhl`, None),
         (TypeOfLoss.`uk-property-non-fhl`, None)
       ).foreach {
-        case (loss, businessId) => s"passed in $loss and $businessId" in {
-          TypeOfLossBusinessIdValidation.validate(loss, businessId) shouldBe NoValidationErrors
-        }
+        case (loss, businessId) =>
+          s"passed in $loss and $businessId" in {
+            TypeOfLossBusinessIdValidation.validate(loss, businessId) shouldBe NoValidationErrors
+          }
       }
     }
     "return a RULE_BUSINESS_ID error" when {
@@ -45,9 +46,10 @@ class TypeOfLossBusinessIdValidationSpec extends UnitSpec {
         (TypeOfLoss.`uk-property-fhl`, Some("string")),
         (TypeOfLoss.`uk-property-non-fhl`, Some("string"))
       ).foreach {
-        case (loss, businessId) => s"passed in $loss and $businessId" in {
-          TypeOfLossBusinessIdValidation.validate(loss, businessId) shouldBe List(RuleBusinessId)
-        }
+        case (loss, businessId) =>
+          s"passed in $loss and $businessId" in {
+            TypeOfLossBusinessIdValidation.validate(loss, businessId) shouldBe List(RuleBusinessId)
+          }
       }
     }
   }

@@ -28,7 +28,7 @@ class TypeOfClaimLossValidationSpec extends UnitSpec {
       checkValid("uk-property-non-fhl")
       checkValid("foreign-property")
 
-      def checkValid(typeOfLoss  : String)  : Unit =
+      def checkValid(typeOfLoss: String): Unit =
         s"provided with a string of '$typeOfLoss'" in {
           TypeOfClaimLossValidation.validate(typeOfLoss) shouldBe Nil
         }

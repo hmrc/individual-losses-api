@@ -15,7 +15,6 @@
  */
 
 package v3.connectors
-
 sealed trait DownstreamUri[Resp] {
   val value: String
 }

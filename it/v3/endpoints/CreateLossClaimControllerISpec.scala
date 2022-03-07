@@ -16,6 +16,7 @@
 
 package v3.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -30,11 +31,11 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
 
-  val businessId    = "XKIS00000000988"
-  val taxYear       = "2019-20"
-  val typeOfClaim   = "carry-forward"
-  val typeOfLoss    = "self-employment"
-  val claimId       = "AAZZ1234567890a"
+  val businessId  = "XKIS00000000988"
+  val taxYear     = "2019-20"
+  val typeOfClaim = "carry-forward"
+  val typeOfLoss  = "self-employment"
+  val claimId     = "AAZZ1234567890a"
 
   private trait Test {
 
@@ -123,10 +124,10 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      createErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
     }
 
     "return 403 FORBIDDEN" when {
@@ -140,10 +141,12 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "return 400 (Bad Request) with paths for the missing mandatory field" when {
-      createLossClaimValidationErrorTest("AA123456A",
+      createLossClaimValidationErrorTest(
+        "AA123456A",
         Json.obj("typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim),
         Status.BAD_REQUEST,
-        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/businessId"))))
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/businessId")))
+      )
     }
 
     "return 400 (Bad Request)" when {
@@ -155,10 +158,12 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
                                          generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"),
                                          Status.BAD_REQUEST,
                                          NinoFormatError)
-      createLossClaimValidationErrorTest("AA123456A",
-                                         generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
-                                         Status.BAD_REQUEST,
-                                         TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor"))))
+      createLossClaimValidationErrorTest(
+        "AA123456A",
+        generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
+        Status.BAD_REQUEST,
+        TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor")))
+      )
       createLossClaimValidationErrorTest("AA123456A", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createLossClaimValidationErrorTest("AA123456A",
                                          generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),

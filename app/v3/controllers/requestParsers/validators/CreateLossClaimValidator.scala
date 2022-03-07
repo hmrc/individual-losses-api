@@ -16,9 +16,10 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors.MtdError
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
-import v3.models.errors.{MtdError, TaxYearClaimedForFormatError}
+import v3.models.errors.TaxYearClaimedForFormatError
 import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequestBody}
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {

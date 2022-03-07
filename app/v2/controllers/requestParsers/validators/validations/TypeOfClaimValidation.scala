@@ -16,10 +16,11 @@
 
 package v2.controllers.requestParsers.validators.validations
 
+import api.models.errors.MtdError
 import v2.models.domain.TypeOfClaim._
 import v2.models.domain.TypeOfLoss._
-import v2.models.domain.{ TypeOfClaim, TypeOfLoss }
-import v2.models.errors.{ MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
+import v2.models.domain.{TypeOfClaim, TypeOfLoss}
+import v2.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 object TypeOfClaimValidation {
 

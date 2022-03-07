@@ -16,14 +16,15 @@
 
 package v3.connectors
 
+import api.connectors.DownstreamOutcome
 import config.AppConfig
 import play.api.Logger
-import play.api.http.{ HeaderNames, MimeTypes }
+import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient, HttpReads }
-import v3.connectors.DownstreamUri.{ DesUri, IfsUri }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import v3.connectors.DownstreamUri.{DesUri, IfsUri}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseDownstreamConnector {
   val http: HttpClient
@@ -34,7 +35,8 @@ trait BaseDownstreamConnector {
   private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
 
   private def desHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier = {
-    val passThroughHeaders = hc.headers(appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
+    val passThroughHeaders = hc
+      .headers(appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
       .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
 
     HeaderCarrier(
@@ -42,7 +44,7 @@ trait BaseDownstreamConnector {
         // Contract headers
         Seq(
           "Authorization" -> s"Bearer ${appConfig.desToken}",
-          "Environment" -> appConfig.desEnv
+          "Environment"   -> appConfig.desEnv
         ) ++
         additionalHeaders ++
         passThroughHeaders
@@ -50,7 +52,8 @@ trait BaseDownstreamConnector {
   }
 
   private def ifsHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier = {
-    val passThroughHeaders = hc.headers(appConfig.ifsEnvironmentHeaders.getOrElse(Seq.empty))
+    val passThroughHeaders = hc
+      .headers(appConfig.ifsEnvironmentHeaders.getOrElse(Seq.empty))
       .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
 
     HeaderCarrier(

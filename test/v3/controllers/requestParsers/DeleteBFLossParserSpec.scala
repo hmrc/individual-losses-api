@@ -16,14 +16,15 @@
 
 package v3.controllers.requestParsers
 
+import api.models.errors._
 import support.UnitSpec
 import v3.mocks.validators.MockDeleteBFLossValidator
 import v3.models.domain.Nino
-import v3.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
+import v3.models.errors.LossIdFormatError
 import v3.models.request.deleteBFLoss.{DeleteBFLossRawData, DeleteBFLossRequest}
 
-class DeleteBFLossParserSpec extends UnitSpec{
-  val nino: String = "AA123456B"
+class DeleteBFLossParserSpec extends UnitSpec {
+  val nino: String   = "AA123456B"
   val lossId: String = "someLossId"
 
   val inputData: DeleteBFLossRawData = DeleteBFLossRawData(nino, lossId)
@@ -46,7 +47,8 @@ class DeleteBFLossParserSpec extends UnitSpec{
     "return an ErrorWrapper" when {
 
       "a single validation error occurs" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator
+          .validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -54,7 +56,8 @@ class DeleteBFLossParserSpec extends UnitSpec{
       }
 
       "multiple validation errors occur" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator
+          .validate(inputData)
           .returns(List(NinoFormatError, LossIdFormatError))
 
         parser.parseRequest(inputData) shouldBe

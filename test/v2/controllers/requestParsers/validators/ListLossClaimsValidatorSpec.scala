@@ -16,6 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors._
 import support.UnitSpec
 import v2.models.errors._
 import v2.models.requestData.ListLossClaimsRawData
@@ -33,140 +34,156 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
   "running validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some(validLossType),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe Nil
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some(validLossType),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe Nil
       }
       "a self employment id is not supplied for a loss type of self-employment" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("self-employment"),
-          businessId = None,
-          claimType = Some(claimType))) shouldBe Nil
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some("self-employment"),
+                                businessId = None,
+                                claimType = Some(claimType))) shouldBe Nil
       }
 
       "a self employment id is supplied and no loss type is supplied" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = None,
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe Nil
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = None,
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe Nil
       }
     }
 
     "return NinoFormatError" when {
       "the nino is supplied and invalid" in {
-        validator.validate(ListLossClaimsRawData(nino = "badNino",
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some(validLossType),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(NinoFormatError)
+        validator.validate(
+          ListLossClaimsRawData(nino = "badNino",
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some(validLossType),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(NinoFormatError)
       }
     }
 
     "return TaxYearFormatError" when {
       "the tax year is the incorrect format" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some("XXXX"),
-          typeOfLoss = Some(validLossType),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(TaxYearFormatError)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some("XXXX"),
+                                typeOfLoss = Some(validLossType),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(TaxYearFormatError)
       }
     }
 
     "return RuleTaxYearRangeExceededError" when {
       "the tax year range is not a single year" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some("2018-20"),
-          typeOfLoss = Some(validLossType),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(RuleTaxYearRangeInvalid)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some("2018-20"),
+                                typeOfLoss = Some(validLossType),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(RuleTaxYearRangeInvalid)
       }
     }
 
     "return RuleTaxYearNotSupportedError" when {
       "the tax year is too early" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some("2018-19"),
-          typeOfLoss = Some(validLossType),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(RuleTaxYearNotSupportedError)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some("2018-19"),
+                                typeOfLoss = Some(validLossType),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(RuleTaxYearNotSupportedError)
       }
     }
 
     "return TypeOfLossFormatError" when {
       "the loss type is invalid" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("badLossType"),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some("badLossType"),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
       }
 
       // Because DES does not distinguish self-employment types for its query...
       "the loss type is self-employment-class4" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("self-employment-class4"),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some("self-employment-class4"),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
       }
 
       "the loss type in an fhl property" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("uk-property-fhl"),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some("uk-property-fhl"),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(TypeOfLossFormatError)
       }
     }
 
     "return SelfEmploymentIdFormatError" when {
       "the self employment id is invalid" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some(validLossType),
-          businessId = Some("badSEId"),
-          claimType = Some(claimType))) shouldBe List(BusinessIdFormatError)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some(validLossType),
+                                businessId = Some("badSEId"),
+                                claimType = Some(claimType))) shouldBe List(BusinessIdFormatError)
       }
     }
 
     "return RuleSelfEmploymentId" when {
       "a self employment id is supplied for a loss type of non-fhl property" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("uk-property-non-fhl"),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(RuleBusinessId)
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some("uk-property-non-fhl"),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(RuleBusinessId)
       }
     }
 
     "not return a RuleSelfEmploymentId" when {
       "a self employment id is not supplied for a loss type of non-fhl property" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("uk-property-non-fhl"),
-          businessId = None,
-          claimType = Some(claimType))) shouldBe Nil
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some("uk-property-non-fhl"),
+                                businessId = None,
+                                claimType = Some(claimType))) shouldBe Nil
       }
       "a self employment id is supplied for a loss type of self-employment" in {
-        validator.validate(ListLossClaimsRawData(nino = validNino,
-          taxYear = Some(validTaxYear),
-          typeOfLoss = Some("self-employment"),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe Nil
+        validator.validate(
+          ListLossClaimsRawData(nino = validNino,
+                                taxYear = Some(validTaxYear),
+                                typeOfLoss = Some("self-employment"),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe Nil
       }
     }
 
     "return multiple errors" when {
       "there are multiple errors" in {
-        validator.validate(ListLossClaimsRawData(nino = "badNino",
-          taxYear = Some("badTaxYear"),
-          typeOfLoss = Some(validLossType),
-          businessId = Some(validSEId),
-          claimType = Some(claimType))) shouldBe List(NinoFormatError, TaxYearFormatError) }
+        validator.validate(
+          ListLossClaimsRawData(nino = "badNino",
+                                taxYear = Some("badTaxYear"),
+                                typeOfLoss = Some(validLossType),
+                                businessId = Some(validSEId),
+                                claimType = Some(claimType))) shouldBe List(NinoFormatError, TaxYearFormatError)
+      }
     }
   }
 }

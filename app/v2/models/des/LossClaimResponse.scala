@@ -16,36 +16,32 @@
 
 package v2.models.des
 
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
-import v2.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v2.models.domain.{TypeOfClaim, TypeOfLoss}
-import v2.models.hateoas.{HateoasData, Link}
 import v2.models.requestData.DesTaxYear
 
-case class LossClaimResponse(businessId: Option[String],
-                             typeOfLoss: TypeOfLoss,
-                             typeOfClaim: TypeOfClaim,
-                             taxYear: String,
-                             lastModified: String)
+case class LossClaimResponse(businessId: Option[String], typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, taxYear: String, lastModified: String)
 
 object LossClaimResponse extends HateoasLinks {
   implicit val writes: OWrites[LossClaimResponse] = Json.writes[LossClaimResponse]
   implicit val reads: Reads[LossClaimResponse] = (
     (__ \ "incomeSourceId").readNullable[String] and
       ((__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
-        //For SE scenario where incomeSourceType doesn't exist
+      //For SE scenario where incomeSourceType doesn't exist
         orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (__ \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (__ \ "taxYearClaimedFor").read[String].map(DesTaxYear.fromDes).map(_.toString) and
       (__ \ "submissionDate").read[String]
-    ) (LossClaimResponse.apply _)
+  )(LossClaimResponse.apply _)
 
   implicit object GetLinksFactory extends HateoasLinksFactory[LossClaimResponse, GetLossClaimHateoasData] {
     override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
       import data._
-      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaim(appConfig, nino, claimId))
+      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
   }
 

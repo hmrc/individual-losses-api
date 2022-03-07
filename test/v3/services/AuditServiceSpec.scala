@@ -16,24 +16,25 @@
 
 package v3.services
 
+import api.models.audit.AuditEvent
 import play.api.Configuration
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
-import v3.models.audit.AuditEvent
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuditServiceSpec extends ServiceSpec {
 
   private trait Test {
-    val mockedAppName = "sample-application"
+    val mockedAppName                      = "sample-application"
     val mockAuditConnector: AuditConnector = mock[AuditConnector]
-    val mockConfig: Configuration = mock[Configuration]
+    val mockConfig: Configuration          = mock[Configuration]
 
-    (mockConfig.get(_: String)(_: play.api.ConfigLoader[String]))
+    (mockConfig
+      .get(_: String)(_: play.api.ConfigLoader[String]))
       .expects(*, *)
       .returns(mockedAppName)
 
@@ -42,13 +43,14 @@ class AuditServiceSpec extends ServiceSpec {
 
   "AuditService" when {
     "auditing an event" should {
-      val auditType = "auditType"
-      val transactionName = "transaction-name"
-      val eventDetails = "EventDetails"
+      val auditType                     = "auditType"
+      val transactionName               = "transaction-name"
+      val eventDetails                  = "EventDetails"
       val expected: Future[AuditResult] = Future.successful(Success)
       "return a successful audit result" in new Test {
 
-        (mockAuditConnector.sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
+        (mockAuditConnector
+          .sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
           .expects(*, *, *)
           .returns(expected)
 
@@ -56,14 +58,12 @@ class AuditServiceSpec extends ServiceSpec {
         target.auditEvent(event) shouldBe expected
       }
 
-
-
       "generates an event with the correct auditSource" in new Test {
-        (mockAuditConnector.sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
+        (mockAuditConnector
+          .sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
           .expects(
-            where {
-              (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
-                eventArg.auditSource == mockedAppName // <- assertion in mock
+            where { (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
+              eventArg.auditSource == mockedAppName // <- assertion in mock
             }
           )
           .returns(expected)
@@ -74,11 +74,11 @@ class AuditServiceSpec extends ServiceSpec {
       }
 
       "generates an event with the correct auditType" in new Test {
-        (mockAuditConnector.sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
+        (mockAuditConnector
+          .sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
           .expects(
-            where {
-              (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
-                eventArg.auditType == auditType // <- assertion in mock
+            where { (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
+              eventArg.auditType == auditType // <- assertion in mock
             }
           )
           .returns(expected)
@@ -89,11 +89,11 @@ class AuditServiceSpec extends ServiceSpec {
       }
 
       "generates an event with the correct details" in new Test {
-        (mockAuditConnector.sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
+        (mockAuditConnector
+          .sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
           .expects(
-            where {
-              (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
-                eventArg.detail == Json.toJson(eventDetails) // <- assertion in mock
+            where { (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
+              eventArg.detail == Json.toJson(eventDetails) // <- assertion in mock
             }
           )
           .returns(expected)
@@ -104,11 +104,11 @@ class AuditServiceSpec extends ServiceSpec {
       }
 
       "generates an event with the correct transactionName" in new Test {
-        (mockAuditConnector.sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
+        (mockAuditConnector
+          .sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
           .expects(
-            where {
-              (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
-                eventArg.tags.exists(tag => tag == "transactionName" -> transactionName) // <- assertion in mock
+            where { (eventArg: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
+              eventArg.tags.exists(tag => tag == "transactionName" -> transactionName) // <- assertion in mock
             }
           )
           .returns(expected)

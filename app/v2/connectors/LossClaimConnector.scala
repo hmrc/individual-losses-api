@@ -17,19 +17,17 @@
 package v2.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v2.models.domain.AmendLossClaimsOrderRequestBody
 import v2.connectors.httpparsers.StandardDesHttpParser._
 import v2.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
-import v2.models.domain.{AmendLossClaim, LossClaim}
+import v2.models.domain.{AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim}
 import v2.models.requestData._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LossClaimConnector @Inject()(val http: HttpClient,
-                                   val appConfig: AppConfig) extends BaseDesConnector {
+class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
 
   def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
                                                        ec: ExecutionContext): Future[DesOutcome[CreateLossClaimResponse]] = {
@@ -74,7 +72,7 @@ class LossClaimConnector @Inject()(val http: HttpClient,
       "incomeSourceType" -> request.incomeSourceType.map(_.toString),
       "claimType"        -> request.claimType.map(_.toString)
     ).collect {
-        case (key, Some(value)) => key -> value
+      case (key, Some(value)) => key -> value
     }
 
     def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[ListLossClaimsResponse[LossClaimId]]] = {
@@ -84,8 +82,7 @@ class LossClaimConnector @Inject()(val http: HttpClient,
     doIt(desHeaderCarrier())
   }
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                       ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
     val nino    = request.nino.nino
     val claimId = request.claimId
 
@@ -95,14 +92,13 @@ class LossClaimConnector @Inject()(val http: HttpClient,
     doIt(desHeaderCarrier())
   }
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
-                                                                 ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
     val nino    = request.nino.nino
     val taxYear = request.taxYear
 
     def doIt(implicit hc: HeaderCarrier): Future[DesOutcome[Unit]] =
-      http.PUT[AmendLossClaimsOrderRequestBody,
-        DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/preferences/$taxYear", request.body)
+      http.PUT[AmendLossClaimsOrderRequestBody, DesOutcome[Unit]](s"${appConfig.desBaseUrl}/income-tax/claims-for-relief/$nino/preferences/$taxYear",
+                                                                  request.body)
 
     doIt(desHeaderCarrier(Seq("Content-Type")))
   }

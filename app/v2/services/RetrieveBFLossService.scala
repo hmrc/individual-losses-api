@@ -16,12 +16,13 @@
 
 package v2.services
 
-import javax.inject.Inject
+import api.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.BFLossConnector
 import v2.models.errors._
 import v2.models.requestData.RetrieveBFLossRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends DesServiceSupport {
@@ -40,9 +41,9 @@ class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends DesSer
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_LOSS_ID" -> LossIdFormatError,
-    "NOT_FOUND" -> NotFoundError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_LOSS_ID"           -> LossIdFormatError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }

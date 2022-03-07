@@ -16,6 +16,7 @@
 
 package v2.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -55,16 +56,14 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino                             = "AA123456A"
-    val taxYear: Option[String]          = None
-    val typeOfLoss: Option[String]       = None
-    val businessId: Option[String]       = None
-
+    val nino                       = "AA123456A"
+    val taxYear: Option[String]    = None
+    val typeOfLoss: Option[String] = None
+    val businessId: Option[String] = None
 
     def uri: String = s"/$nino/brought-forward-losses"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "losses": [
          |        {
@@ -151,8 +150,8 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
       }
 
       "querying for property" in new Test {
-        override val taxYear: Option[String]          = None
-        override val typeOfLoss: Option[String]       = Some("uk-property-fhl")
+        override val taxYear: Option[String]    = None
+        override val typeOfLoss: Option[String] = Some("uk-property-fhl")
         override val businessId: Option[String] = None
 
         override def setupStubs(): StubMapping = {
@@ -170,8 +169,8 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
       }
 
       "querying for self-employment" in new Test {
-        override val taxYear: Option[String]          = None
-        override val typeOfLoss: Option[String]       = Some("self-employment")
+        override val taxYear: Option[String]    = None
+        override val typeOfLoss: Option[String] = Some("self-employment")
         override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
@@ -189,7 +188,7 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
       }
 
       "querying for selfEmploymentId with no typeOfLoss" in new Test {
-        override val taxYear: Option[String]          = None
+        override val taxYear: Option[String]    = None
         override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
@@ -207,8 +206,8 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
       }
 
       "querying for self-employment with no selfEmploymentId" in new Test {
-        override val taxYear: Option[String]          = None
-        override val typeOfLoss: Option[String]       = Some("self-employment")
+        override val taxYear: Option[String]    = None
+        override val typeOfLoss: Option[String] = Some("self-employment")
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -225,8 +224,8 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
       }
 
       "query with taxYear" in new Test {
-        override val taxYear: Option[String]          = Some("2018-19")
-        override val typeOfLoss: Option[String]       = Some("self-employment")
+        override val taxYear: Option[String]    = Some("2018-19")
+        override val typeOfLoss: Option[String] = Some("self-employment")
         override val businessId: Option[String] = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
@@ -285,8 +284,8 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
     }
 
     "handle validation errors according to spec" when {
@@ -298,8 +297,8 @@ class ListBFLossesControllerISpec extends V2IntegrationBaseSpec {
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String     = requestNino
-          override val taxYear: Option[String] = requestTaxYear
+          override val nino: String               = requestNino
+          override val taxYear: Option[String]    = requestTaxYear
           override val typeOfLoss: Option[String] = requestTypeOfLoss
           override val businessId: Option[String] = requestBusinessId
 

@@ -16,15 +16,15 @@
 
 package v3.controllers.requestParsers.validators.validations
 
+import api.models.errors.MtdError
 import support.UnitSpec
-import v3.models.errors.MtdError
 
 class RegexValidationSpec extends UnitSpec {
 
   object TestError extends MtdError("SOME_ERR", "some message")
 
   object TestValidator extends RegexValidation {
-    override protected val regexFormat = "[a-z]{3}[0-9]{3}"
+    override protected val regexFormat           = "[a-z]{3}[0-9]{3}"
     override protected val error: TestError.type = TestError
   }
 
@@ -48,7 +48,7 @@ class RegexValidationSpec extends UnitSpec {
 
     "string does not match regex and path specicied" must {
       "return the required error with a path" in {
-        TestValidator.validate(" abc123", "/somePath") shouldBe List(TestError.copy(paths=Some(Seq("/somePath"))))
+        TestValidator.validate(" abc123", "/somePath") shouldBe List(TestError.copy(paths = Some(Seq("/somePath"))))
       }
     }
   }

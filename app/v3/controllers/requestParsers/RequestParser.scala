@@ -16,9 +16,9 @@
 
 package v3.controllers.requestParsers
 
+import api.models.errors._
+import api.models.request.RawData
 import v3.controllers.requestParsers.validators.Validator
-import v3.models.errors.{BadRequestError, ErrorWrapper}
-import v3.models.request.RawData
 
 trait RequestParser[Raw <: RawData, Request] {
   val validator: Validator[Raw]

@@ -16,8 +16,9 @@
 
 package v3.controllers.requestParsers.validators.validations
 
+import api.models.errors.MtdError
 import v3.models.domain.lossClaim.TypeOfLoss
-import v3.models.errors.{MtdError, TypeOfLossFormatError}
+import v3.models.errors.TypeOfLossFormatError
 
 object TypeOfClaimLossValidation {
 

@@ -16,13 +16,13 @@
 
 package v3.models.response.retrieveBFLoss
 
+import api.hateoas.HateoasFactory
+import api.models.hateoas.Method.{ DELETE, GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
-import v3.hateoas.HateoasFactory
-import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss, LossType}
-import v3.models.hateoas.Method.{DELETE, GET, POST}
-import v3.models.hateoas.{HateoasWrapper, Link}
+import v3.models.domain.bfLoss.{ IncomeSourceType, LossType, TypeOfLoss }
 
 class RetrieveBFLossResponseSpec extends UnitSpec {
 

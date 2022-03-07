@@ -16,20 +16,22 @@
 
 package v2.controllers
 
+import api.models.audit.{AuditEvent, AuditResponse}
+import api.models.errors._
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.ListLossClaimsParser
-import v2.hateoas.HateoasFactory
-import v2.models.audit.{AuditEvent, AuditResponse, ListLossClaimsAuditDetail}
+import api.hateoas.HateoasFactory
+import v2.models.audit.ListLossClaimsAuditDetail
 import v2.models.des.ListLossClaimsHateoasData
 import v2.models.errors._
 import v2.models.requestData.ListLossClaimsRawData
 import v2.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -46,7 +48,11 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListLossClaimsController", endpointName = "List Loss Claims")
 
-  def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], businessId: Option[String], claimType: Option[String]): Action[AnyContent] =
+  def list(nino: String,
+           taxYear: Option[String],
+           typeOfLoss: Option[String],
+           businessId: Option[String],
+           claimType: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       val rawData = ListLossClaimsRawData(nino, taxYear = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, claimType = claimType)
       val result =
@@ -73,8 +79,15 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
 
             val response = Json.toJson(vendorResponse)
 
-            auditSubmission(ListLossClaimsAuditDetail(request.userDetails, nino, taxYear, typeOfLoss, businessId, claimType,
-              serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
+            auditSubmission(
+              ListLossClaimsAuditDetail(request.userDetails,
+                                        nino,
+                                        taxYear,
+                                        typeOfLoss,
+                                        businessId,
+                                        claimType,
+                                        serviceResponse.correlationId,
+                                        AuditResponse(OK, Right(Some(response)))))
 
             Ok(response)
               .withApiHeaders(serviceResponse.correlationId)
@@ -91,16 +104,14 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId |
-           RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid | ClaimTypeFormatError =>
+          RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid | ClaimTypeFormatError =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
-  private def auditSubmission(details: ListLossClaimsAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+  private def auditSubmission(details: ListLossClaimsAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
     val event = AuditEvent("ListLossClaims", "list-loss-claims", details)
     auditService.auditEvent(event)
   }

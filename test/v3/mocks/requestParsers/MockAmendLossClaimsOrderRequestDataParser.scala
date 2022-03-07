@@ -16,10 +16,10 @@
 
 package v3.mocks.requestParsers
 
+import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.AmendLossClaimsOrderParser
-import v3.models.errors.ErrorWrapper
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest}
 
 trait MockAmendLossClaimsOrderRequestDataParser extends MockFactory {
@@ -27,6 +27,7 @@ trait MockAmendLossClaimsOrderRequestDataParser extends MockFactory {
   val mockAmendLossClaimsRequestDataParser: AmendLossClaimsOrderParser = mock[AmendLossClaimsOrderParser]
 
   object MockAmendLossClaimsOrderRequestDataParser {
+
     def parseRequest(data: AmendLossClaimsOrderRawData): CallHandler[Either[ErrorWrapper, AmendLossClaimsOrderRequest]] = {
       (mockAmendLossClaimsRequestDataParser.parseRequest(_: AmendLossClaimsOrderRawData)).expects(data)
     }

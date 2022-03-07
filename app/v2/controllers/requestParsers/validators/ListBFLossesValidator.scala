@@ -16,11 +16,12 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors.MtdError
 import config.FixedConfig
-import v2.controllers.requestParsers.validators.validations.{MinTaxYearValidation, NinoValidation, BusinessIdValidation, TaxYearValidation}
+import v2.controllers.requestParsers.validators.validations.{BusinessIdValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation}
 import v2.models.domain.TypeOfLoss
 import v2.models.domain.TypeOfLoss._
-import v2.models.errors.{MtdError, TypeOfLossFormatError}
+import v2.models.errors.TypeOfLossFormatError
 import v2.models.requestData.ListBFLossesRawData
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {
@@ -28,7 +29,8 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
   private val validationSet = List(formatValidation, postFormatValidation)
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
-  private val availableLossTypeNames = Seq(`uk-property-fhl`,`uk-property-non-fhl`,`self-employment`,`foreign-property-fhl-eea`,`foreign-property`).map(_.toString)
+  private val availableLossTypeNames =
+    Seq(`uk-property-fhl`, `uk-property-non-fhl`, `self-employment`, `foreign-property-fhl-eea`, `foreign-property`).map(_.toString)
 
   private def formatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(
@@ -42,8 +44,9 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
     List(
       data.taxYear.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift) match {
-        case Some(lossType) => BusinessIdValidation.validateOptionalWithTypeOfLoss(lossType, data.businessId, idOptional = true, noRuleBusinessIdError = true)
-        case None           => Nil
+        case Some(lossType) =>
+          BusinessIdValidation.validateOptionalWithTypeOfLoss(lossType, data.businessId, idOptional = true, noRuleBusinessIdError = true)
+        case None => Nil
       }
     )
   }

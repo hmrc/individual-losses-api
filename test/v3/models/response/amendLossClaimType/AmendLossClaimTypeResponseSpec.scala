@@ -16,16 +16,16 @@
 
 package v3.models.response.amendLossClaimType
 
+import api.models.hateoas.Link
+import api.models.hateoas.Method.{ DELETE, GET, POST }
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
-import v3.models.hateoas.Link
-import v3.models.hateoas.Method.{DELETE, GET, POST}
+import v3.models.domain.lossClaim.{ TypeOfClaim, TypeOfLoss }
 
 class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "claimId"
 
   val lossClaimResponse: AmendLossClaimTypeResponse = AmendLossClaimTypeResponse(
@@ -56,7 +56,7 @@ class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
 
     def downstreamEmploymentJson: JsValue = {
       Json.parse(
-         """
+        """
            |{
            |  "incomeSourceId": "000000000000001",
            |  "reliefClaimed": "CF",
@@ -78,7 +78,7 @@ class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
           taxYearClaimedFor = "2019-20",
           lastModified = "20180708",
           sequence = Some(1)
-        )
+      )
 
     "convert property JSON from downstream into a valid model for property type 02" in {
       downstreamPropertyJson("02").as[AmendLossClaimTypeResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)

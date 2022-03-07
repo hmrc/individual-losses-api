@@ -16,10 +16,10 @@
 
 package v2.mocks.validators
 
+import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v2.controllers.requestParsers.validators.RetrieveLossClaimValidator
-import v2.models.errors.MtdError
 import v2.models.requestData.RetrieveLossClaimRawData
 
 class MockRetrieveLossClaimValidator extends MockFactory {

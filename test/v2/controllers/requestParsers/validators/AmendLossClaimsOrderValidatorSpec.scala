@@ -16,6 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
@@ -24,10 +25,10 @@ import v2.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
-  private val invalidNino = "AA123456"
-  private val validTaxYear = "2019-20"
-  private val invalidTaxYearGap = "2018-20"
+  private val validNino            = "AA123456A"
+  private val invalidNino          = "AA123456"
+  private val validTaxYear         = "2019-20"
+  private val invalidTaxYearGap    = "2018-20"
   private val invalidTaxYearFormat = "19-20"
 
   private val mtdRequest = Json.parse(

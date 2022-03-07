@@ -31,7 +31,7 @@ class TypeOfBFLossValidationSpec extends UnitSpec {
       checkValid("foreign-property")
       checkValid("foreign-property-fhl-eea")
 
-      def checkValid(typeOfLoss  : String)  : Unit =
+      def checkValid(typeOfLoss: String): Unit =
         s"provided with a string of '$typeOfLoss'" in {
           TypeOfBFLossValidation.validate(typeOfLoss) shouldBe Nil
         }

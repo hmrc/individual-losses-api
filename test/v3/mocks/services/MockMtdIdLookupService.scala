@@ -16,10 +16,10 @@
 
 package v3.mocks.services
 
+import api.connectors.MtdIdLookupOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.connectors.MtdIdLookupOutcome
 import v3.services.MtdIdLookupService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,8 +29,10 @@ trait MockMtdIdLookupService extends MockFactory {
   val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
 
   object MockMtdIdLookupService {
+
     def lookup(nino: String): CallHandler[Future[MtdIdLookupOutcome]] = {
-      (mockMtdIdLookupService.lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
+      (mockMtdIdLookupService
+        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
         .expects(nino, *, *)
     }
   }

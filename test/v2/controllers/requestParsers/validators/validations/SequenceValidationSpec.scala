@@ -24,12 +24,12 @@ class SequenceValidationSpec extends UnitSpec {
   "validate" should {
     "return no errors" when {
       "The minimum number is supplied" in {
-        val sequenceNumber = 1
+        val sequenceNumber   = 1
         val validationResult = SequenceValidation.validate(sequenceNumber)
         validationResult.isEmpty shouldBe true
       }
       "The maximum number is supplied" in {
-        val sequenceNumber = 99
+        val sequenceNumber   = 99
         val validationResult = SequenceValidation.validate(sequenceNumber)
         validationResult.isEmpty shouldBe true
       }
@@ -37,14 +37,14 @@ class SequenceValidationSpec extends UnitSpec {
     "return an error" when {
       "A number higher than 99 is supplied" in {
         val invalidSequenceNumber = 100
-        val validationResult = SequenceValidation.validate(invalidSequenceNumber)
+        val validationResult      = SequenceValidation.validate(invalidSequenceNumber)
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe SequenceFormatError
       }
       "A number lower than 1 is supplied" in {
         val invalidSequenceNumber = 0
-        val validationResult = SequenceValidation.validate(invalidSequenceNumber)
+        val validationResult      = SequenceValidation.validate(invalidSequenceNumber)
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe SequenceFormatError

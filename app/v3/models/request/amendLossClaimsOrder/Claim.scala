@@ -16,8 +16,8 @@
 
 package v3.models.request.amendLossClaimsOrder
 
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
 case class Claim(claimId: String, sequence: Int)
 
@@ -26,5 +26,5 @@ object Claim {
   implicit val writes: Writes[Claim] = (
     (JsPath \ "claimId").write[String] and
       (JsPath \ "sequence").write[Int]
-    )(unlift(Claim.unapply))
+  )(unlift(Claim.unapply))
 }

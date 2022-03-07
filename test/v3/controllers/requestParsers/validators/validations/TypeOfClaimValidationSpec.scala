@@ -17,7 +17,7 @@
 package v3.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 class TypeOfClaimValidationSpec extends UnitSpec {
@@ -50,7 +50,7 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
     "a typeOfLoss is uk-property-non-fhl" must {
       permitOnly(TypeOfLoss.`uk-property-non-fhl`,
-        Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
+                 Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
     }
 
     "a typeOfLoss is foreign-property" must {

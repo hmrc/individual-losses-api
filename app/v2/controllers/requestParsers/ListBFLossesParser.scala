@@ -16,10 +16,11 @@
 
 package v2.controllers.requestParsers
 
-import javax.inject.Inject
 import v2.controllers.requestParsers.validators.ListBFLossesValidator
 import v2.models.domain.{Nino, TypeOfLoss}
 import v2.models.requestData._
+
+import javax.inject.Inject
 
 class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
 

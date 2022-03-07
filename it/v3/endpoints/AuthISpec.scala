@@ -27,9 +27,9 @@ import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 class AuthISpec extends V3IntegrationBaseSpec {
 
   private trait Test {
-    val nino          = "AA123456A"
-    val taxYear       = "2017-18"
-    val data        = "someData"
+    val nino    = "AA123456A"
+    val taxYear = "2017-18"
+    val data    = "someData"
 
     val requestJson: String =
       """
@@ -41,8 +41,7 @@ class AuthISpec extends V3IntegrationBaseSpec {
         |}
       """.stripMargin
 
-    val downstreamResponseJson: JsValue = Json.parse(
-      """
+    val downstreamResponseJson: JsValue = Json.parse("""
         |{
         |    "lossId": "AAZZ1234567890a"
         |}

@@ -16,13 +16,14 @@
 
 package v2.services
 
-import javax.inject.Inject
+import api.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
 import v2.models.errors._
 import v2.models.requestData.CreateLossClaimRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
 
@@ -46,6 +47,6 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends De
     case "TAX_YEAR_NOT_SUPPORTED"                                   => RuleTaxYearNotSupportedError
     case "INCOMESOURCE_ID_REQUIRED"                                 => RuleBusinessId
     case "NO_ACCOUNTING_PERIOD"                                     => RuleNoAccountingPeriod
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => StandardDownstreamError
   }
 }

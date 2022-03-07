@@ -16,12 +16,13 @@
 
 package v3.services
 
-import javax.inject.Inject
+import api.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.LossClaimConnector
 import v3.models.errors._
 import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
@@ -41,12 +42,12 @@ class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends
   private def errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-    "INVALID_PAYLOAD"           -> DownstreamError,
+    "INVALID_PAYLOAD"           -> StandardDownstreamError,
     "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleClaimTypeNotChanged,
-    "INVALID_CORRELATIONID"     -> DownstreamError,
-    "SERVER_ERROR"              -> DownstreamError,
-    "SERVICE_UNAVAILABLE"       -> DownstreamError
+    "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }

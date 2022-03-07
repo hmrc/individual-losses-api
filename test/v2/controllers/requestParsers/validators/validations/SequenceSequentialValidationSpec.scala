@@ -29,10 +29,10 @@ class SequenceSequentialValidationSpec extends UnitSpec {
         SequenceSequentialValidation.validate(Seq(1)) shouldBe Nil
       }
       "a valid sorted sequence is input" in {
-        SequenceSequentialValidation.validate(Seq(1,2,3,4,5,6,7,8)) shouldBe Nil
+        SequenceSequentialValidation.validate(Seq(1, 2, 3, 4, 5, 6, 7, 8)) shouldBe Nil
       }
       "a valid unsorted sequence is input" in {
-        SequenceSequentialValidation.validate(Seq(3,1,5,4,2)) shouldBe Nil
+        SequenceSequentialValidation.validate(Seq(3, 1, 5, 4, 2)) shouldBe Nil
       }
     }
     "return an error" when {
@@ -40,12 +40,12 @@ class SequenceSequentialValidationSpec extends UnitSpec {
         SequenceSequentialValidation.validate(Seq()) shouldBe List(RuleInvalidSequenceStart)
       }
       "sequence doesn't have a 1" in {
-        SequenceSequentialValidation.validate(Seq(2,3,4,5)) shouldBe List(RuleInvalidSequenceStart)
-        SequenceSequentialValidation.validate(Seq(5,2,4,3)) shouldBe List(RuleInvalidSequenceStart)
+        SequenceSequentialValidation.validate(Seq(2, 3, 4, 5)) shouldBe List(RuleInvalidSequenceStart)
+        SequenceSequentialValidation.validate(Seq(5, 2, 4, 3)) shouldBe List(RuleInvalidSequenceStart)
       }
       "sequence isn't in a sequential order" in {
-        SequenceSequentialValidation.validate(Seq(1,3,5,7,9)) shouldBe List(RuleSequenceOrderBroken)
-        SequenceSequentialValidation.validate(Seq(5,3,9,1,10)) shouldBe List(RuleSequenceOrderBroken)
+        SequenceSequentialValidation.validate(Seq(1, 3, 5, 7, 9)) shouldBe List(RuleSequenceOrderBroken)
+        SequenceSequentialValidation.validate(Seq(5, 3, 9, 1, 10)) shouldBe List(RuleSequenceOrderBroken)
       }
     }
     "return multiple errors" when {
@@ -57,7 +57,7 @@ class SequenceSequentialValidationSpec extends UnitSpec {
   "checkIfSequential" should {
     "return an empty list" when {
       "passed two sequential numbers" in {
-        List(List(1,2)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List()
+        List(List(1, 2)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List()
       }
       "passed nothing" in {
         List(List()).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List()
@@ -68,13 +68,13 @@ class SequenceSequentialValidationSpec extends UnitSpec {
     }
     "return a populated list" when {
       "passed two numbers which aren't sequential" in {
-        List(List(1,3)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((1,3))
+        List(List(1, 3)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((1, 3))
       }
       "passed a List with a mix of sequential and non-sequential numbers" in {
-       sortAndGroupByTwo(List(1,3,2,5)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((3,5))
+        sortAndGroupByTwo(List(1, 3, 2, 5)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((3, 5))
       }
       "passed multiple numbers where none of them are sequential" in {
-        sortAndGroupByTwo(List(1,3,5,8)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((1,3), (3,5), (5,8))
+        sortAndGroupByTwo(List(1, 3, 5, 8)).collect(SequenceSequentialValidation.checkIfSequential) shouldBe List((1, 3), (3, 5), (5, 8))
       }
     }
   }

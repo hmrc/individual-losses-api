@@ -16,10 +16,10 @@
 
 package v2.services
 
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import play.api.Logger
 import v2.connectors.DesOutcome
-import v2.models.errors._
-import v2.models.outcomes.DesResponse
 
 trait DesServiceSupport {
 
@@ -30,7 +30,7 @@ trait DesServiceSupport {
 
   protected val logger: Logger = Logger(this.getClass)
 
-  protected type VendorOutcome[T] = Either[ErrorWrapper, DesResponse[T]]
+  protected type VendorOutcome[T] = Either[ErrorWrapper, ResponseWrapper[T]]
 
   /**
     * Gets a function to map DES response outcomes from DES to vendor outcomes.
@@ -48,33 +48,33 @@ trait DesServiceSupport {
     * @tparam V the vendor response domain object type
     * @return the function to map outcomes
     */
-  final def mapToVendor[D, V](endpointName: String, errorMap: PartialFunction[String, MtdError])(success: DesResponse[D] => VendorOutcome[V])(
+  final def mapToVendor[D, V](endpointName: String, errorMap: PartialFunction[String, MtdError])(success: ResponseWrapper[D] => VendorOutcome[V])(
       desOutcome: DesOutcome[D]): VendorOutcome[V] = {
 
     lazy val defaultErrorMapping: String => MtdError = { code =>
       logger.warn(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
-      DownstreamError
+      StandardDownstreamError
     }
 
     desOutcome match {
       case Right(desResponse) => success(desResponse)
 
-      case Left(DesResponse(correlationId, MultipleErrors(errors))) =>
+      case Left(ResponseWrapper(correlationId, MultipleErrors(errors))) =>
         val mtdErrors = errors.map(error => errorMap.applyOrElse(error.code, defaultErrorMapping))
 
-        if (mtdErrors.contains(DownstreamError)) {
+        if (mtdErrors.contains(StandardDownstreamError)) {
           logger.warn(
             s"[$serviceName] [$endpointName] [CorrelationId - $correlationId]" +
               s" - downstream returned ${errors.map(_.code).mkString(",")}. Revert to ISE")
-          Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+          Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
         } else {
           Left(ErrorWrapper(Some(correlationId), BadRequestError, Some(mtdErrors)))
         }
 
-      case Left(DesResponse(correlationId, SingleError(error))) =>
+      case Left(ResponseWrapper(correlationId, SingleError(error))) =>
         Left(ErrorWrapper(Some(correlationId), errorMap.applyOrElse(error.code, defaultErrorMapping), None))
 
-      case Left(DesResponse(correlationId, OutboundError(error))) =>
+      case Left(ResponseWrapper(correlationId, OutboundError(error))) =>
         Left(ErrorWrapper(Some(correlationId), error, None))
     }
   }
@@ -92,10 +92,9 @@ trait DesServiceSupport {
     * @tparam D the DES response domain object type
     * @return the function to map outcomes
     */
-  final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, MtdError])(
-      desOutcome: DesOutcome[D]): VendorOutcome[D] =
+  final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, MtdError])(desOutcome: DesOutcome[D]): VendorOutcome[D] =
     mapToVendor[D, D](endpointName, errorMap) { desResponse =>
-      Right(DesResponse(desResponse.correlationId, desResponse.responseData))
+      Right(ResponseWrapper(desResponse.correlationId, desResponse.responseData))
     }(desOutcome)
 
 }

@@ -16,40 +16,44 @@
 
 package v2.services
 
-import javax.inject.Inject
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
 import v2.models.des.AmendLossClaimsOrderResponse
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData.AmendLossClaimsOrderRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
 
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendLossClaimsOrderOutcome] = {
+  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
+                                                                 ec: ExecutionContext): Future[AmendLossClaimsOrderOutcome] = {
 
-    connector.amendLossClaimsOrder(request).map {
-      mapToVendorDirect("amendLossClaimsOrder", mappingDesToMtdError)
-    }.map {
-      case Left(errorWrapper) => Left(errorWrapper)
-      case Right(desResponse) => Right(DesResponse(desResponse.correlationId, AmendLossClaimsOrderResponse()))
-    }
+    connector
+      .amendLossClaimsOrder(request)
+      .map {
+        mapToVendorDirect("amendLossClaimsOrder", mappingDesToMtdError)
+      }
+      .map {
+        case Left(errorWrapper) => Left(errorWrapper)
+        case Right(desResponse) => Right(ResponseWrapper(desResponse.correlationId, AmendLossClaimsOrderResponse()))
+      }
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAXYEAR" -> TaxYearFormatError,
-    "CONFLICT_SEQUENCE_START" -> RuleInvalidSequenceStart,
-    "CONFLICT_NOT_SEQUENTIAL" -> RuleSequenceOrderBroken,
-    "CONFLICT_NOT_FULL_LIST" -> RuleLossClaimsMissing,
-    "UNPROCESSABLE_ENTITY" -> NotFoundError,
-    "INVALID_PAYLOAD" -> DownstreamError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_TAXYEAR"           -> TaxYearFormatError,
+    "CONFLICT_SEQUENCE_START"   -> RuleInvalidSequenceStart,
+    "CONFLICT_NOT_SEQUENTIAL"   -> RuleSequenceOrderBroken,
+    "CONFLICT_NOT_FULL_LIST"    -> RuleLossClaimsMissing,
+    "UNPROCESSABLE_ENTITY"      -> NotFoundError,
+    "INVALID_PAYLOAD"           -> StandardDownstreamError,
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }
-

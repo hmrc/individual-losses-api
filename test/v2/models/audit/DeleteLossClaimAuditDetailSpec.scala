@@ -16,13 +16,14 @@
 
 package v2.models.audit
 
+import api.models.audit.{AuditError, AuditResponse}
+import api.models.errors._
 import play.api.libs.json.Json
 import support.UnitSpec
-import v2.models.errors.NinoFormatError
 
 class DeleteLossClaimAuditDetailSpec extends UnitSpec {
 
-  val nino = "ZG903729C"
+  val nino    = "ZG903729C"
   val claimId = "claimId"
 
   "writes" must {

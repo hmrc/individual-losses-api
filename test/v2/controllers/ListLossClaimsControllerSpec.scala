@@ -16,25 +16,27 @@
 
 package v2.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.errors._
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.outcomes.ResponseWrapper
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockListLossClaimsRequestDataParser
-import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
-import v2.models.des.{ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId}
-import v2.models.domain.{Nino, TypeOfClaim}
-import v2.models.errors.{NotFoundError, _}
-import v2.models.hateoas.Method.{GET, POST}
-import v2.models.hateoas.{HateoasWrapper, Link}
-import v2.models.outcomes.DesResponse
-import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
+import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService }
+import v2.models.des.{ ListLossClaimsHateoasData, ListLossClaimsResponse, LossClaimId }
+import v2.models.domain.{ Nino, TypeOfClaim }
+import v2.models.errors._
+import v2.models.requestData.{ DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockListLossClaimsService
@@ -50,17 +52,21 @@ class ListLossClaimsControllerSpec
   val claimType: String      = "carry-sideways"
 
   val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
-  val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+
+  val request: ListLossClaimsRequest =
+    ListLossClaimsRequest(Nino(nino), Some(DesTaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
   val testHateoasLink: Link       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val response: ListLossClaimsResponse[LossClaimId] = ListLossClaimsResponse(Seq(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`),
-                                            LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`)))
+  val response: ListLossClaimsResponse[LossClaimId] = ListLossClaimsResponse(
+    Seq(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`), LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`)))
 
   val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[LossClaimId]] = ListLossClaimsResponse(
-    Seq(HateoasWrapper(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink)),
-        HateoasWrapper(LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink))))
+    Seq(
+      HateoasWrapper(LossClaimId("000000123456789", Some(1), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink)),
+      HateoasWrapper(LossClaimId("000000123456790", Some(2), TypeOfClaim.`carry-sideways`), Seq(testHateoasLink))
+    ))
 
   val responseJson: JsValue = Json.parse(
     """
@@ -129,7 +135,7 @@ class ListLossClaimsControllerSpec
 
         MockListLossClaimsService
           .list(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
           .wrapList(response, ListLossClaimsHateoasData(nino))
@@ -150,7 +156,7 @@ class ListLossClaimsControllerSpec
 
         MockListLossClaimsService
           .list(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, ListLossClaimsResponse(Nil)))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
 
         MockHateoasFactory
           .wrapList(ListLossClaimsResponse(List.empty[LossClaimId]), ListLossClaimsHateoasData(nino))
@@ -215,7 +221,7 @@ class ListLossClaimsControllerSpec
       errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromServiceTester(ClaimTypeFormatError, BAD_REQUEST)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
 }

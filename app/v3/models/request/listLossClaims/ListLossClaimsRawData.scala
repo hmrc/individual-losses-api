@@ -16,7 +16,7 @@
 
 package v3.models.request.listLossClaims
 
-import v3.models.request.RawData
+import api.models.request.RawData
 
 case class ListLossClaimsRawData(nino: String,
                                  taxYearClaimedFor: Option[String],

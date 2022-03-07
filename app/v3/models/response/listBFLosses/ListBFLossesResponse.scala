@@ -16,11 +16,11 @@
 
 package v3.models.response.listBFLosses
 
+import api.hateoas.{ HateoasLinks, HateoasListLinksFactory }
+import api.models.hateoas.{ HateoasData, Link }
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json._
-import v3.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import v3.models.hateoas.{HateoasData, Link}
 
 case class ListBFLossesResponse[I](losses: Seq[I])
 

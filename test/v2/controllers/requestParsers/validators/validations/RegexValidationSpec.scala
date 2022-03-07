@@ -16,15 +16,15 @@
 
 package v2.controllers.requestParsers.validators.validations
 
+import api.models.errors.MtdError
 import support.UnitSpec
-import v2.models.errors.MtdError
 
 class RegexValidationSpec extends UnitSpec {
 
   object TestError extends MtdError("SOME_ERR", "some message")
 
   object TestValidator extends RegexValidation {
-    override protected val regexFormat = "[a-z]{3}[0-9]{3}"
+    override protected val regexFormat           = "[a-z]{3}[0-9]{3}"
     override protected val error: TestError.type = TestError
   }
 

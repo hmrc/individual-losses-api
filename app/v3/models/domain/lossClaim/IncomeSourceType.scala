@@ -37,5 +37,3 @@ object IncomeSourceType {
 
   implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
 }
-
-

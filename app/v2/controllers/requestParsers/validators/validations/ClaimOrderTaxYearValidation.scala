@@ -16,7 +16,8 @@
 
 package v2.controllers.requestParsers.validators.validations
 
-import v2.models.errors.{MtdError, RuleTaxYearNotSupportedError, TaxYearFormatError}
+import api.models.errors._
+import v2.models.errors.RuleTaxYearNotSupportedError
 
 object ClaimOrderTaxYearValidation {
 

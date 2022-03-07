@@ -16,18 +16,19 @@
 
 package v2.controllers
 
+import api.models.errors._
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v2.controllers.requestParsers.RetrieveLossClaimParser
-import v2.hateoas.HateoasFactory
+import api.hateoas.HateoasFactory
 import v2.models.des.GetLossClaimHateoasData
 import v2.models.errors._
 import v2.models.requestData.RetrieveLossClaimRawData
 import v2.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -73,7 +74,7 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError                                        => InternalServerError(Json.toJson(errorWrapper))
+      case StandardDownstreamError                                => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 }

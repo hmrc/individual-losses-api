@@ -16,25 +16,27 @@
 
 package v2.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.errors._
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.outcomes.ResponseWrapper
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
-import v2.models.des.{BFLossId, ListBFLossHateoasData, ListBFLossesResponse}
+import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService }
+import v2.models.des.{ BFLossId, ListBFLossHateoasData, ListBFLossesResponse }
 import v2.models.domain.Nino
-import v2.models.errors.{NotFoundError, _}
-import v2.models.hateoas.Method.{GET, POST}
-import v2.models.hateoas.{HateoasWrapper, Link}
-import v2.models.outcomes.DesResponse
-import v2.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
+import v2.models.errors._
+import v2.models.requestData.{ DesTaxYear, ListBFLossesRawData, ListBFLossesRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListBFLossesControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockListBFLossesService
@@ -122,7 +124,7 @@ class ListBFLossesControllerSpec
 
         MockListBFLossesService
           .list(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
           .wrapList(response, ListBFLossHateoasData(nino))
@@ -144,7 +146,7 @@ class ListBFLossesControllerSpec
 
         MockListBFLossesService
           .list(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, ListBFLossesResponse(Nil)))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListBFLossesResponse(Nil)))))
 
         MockHateoasFactory
           .wrapList(ListBFLossesResponse(List.empty[BFLossId]), ListBFLossHateoasData(nino))
@@ -207,7 +209,7 @@ class ListBFLossesControllerSpec
       errorsFromServiceTester(BusinessIdFormatError, BAD_REQUEST)
       errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
 }

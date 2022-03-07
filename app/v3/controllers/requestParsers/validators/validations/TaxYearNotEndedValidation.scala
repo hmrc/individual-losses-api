@@ -16,18 +16,20 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import api.models.errors.MtdError
 import utils.CurrentDate
 import v3.models.domain.DownstreamTaxYear
-import v3.models.errors.{MtdError, RuleTaxYearNotEndedError}
+import v3.models.errors.RuleTaxYearNotEndedError
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object TaxYearNotEndedValidation {
 
   // @param taxYear In format YYYY-YY
   def validate(taxYear: String)(implicit dateProvider: CurrentDate): List[MtdError] = {
 
-    val downstreamTaxYear = Integer.parseInt(DownstreamTaxYear.fromMtd(taxYear).value)
+    val downstreamTaxYear      = Integer.parseInt(DownstreamTaxYear.fromMtd(taxYear).value)
     val currentDate: LocalDate = dateProvider.getCurrentDate
 
     if (downstreamTaxYear >= getCurrentTaxYear(currentDate)) List(RuleTaxYearNotEndedError) else NoValidationErrors

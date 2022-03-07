@@ -16,10 +16,11 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors._
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.errors.{MtdError, TaxYearFormatError, TypeOfClaimFormatError}
+import v3.models.errors.TypeOfClaimFormatError
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequestBody}
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] with FixedConfig {

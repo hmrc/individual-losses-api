@@ -16,13 +16,13 @@
 
 package v3.controllers.requestParsers
 
-import javax.inject.Inject
 import v3.controllers.requestParsers.validators.DeleteLossClaimValidator
 import v3.models.domain.Nino
 import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
-class DeleteLossClaimParser @Inject()(val validator: DeleteLossClaimValidator)
-  extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
+import javax.inject.Inject
+
+class DeleteLossClaimParser @Inject()(val validator: DeleteLossClaimValidator) extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
 
   override protected def requestFor(data: DeleteLossClaimRawData): DeleteLossClaimRequest =
     DeleteLossClaimRequest(Nino(data.nino), data.claimId)

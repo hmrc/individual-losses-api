@@ -16,14 +16,15 @@
 
 package v3.endpoints
 
+import api.hateoas.HateoasLinks
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, CONFLICT, FORBIDDEN, SERVICE_UNAVAILABLE}
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
-import v3.hateoas.HateoasLinks
 import v3.models.errors._
 import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
@@ -31,8 +32,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
 
   val lossAmount = 2345.67
 
-  val downstreamResponseJson: JsValue = Json.parse(
-    s"""
+  val downstreamResponseJson: JsValue = Json.parse(s"""
        |{
        |    "incomeSourceId": "XBIS12345678910",
        |    "lossType": "INCOME",
@@ -43,15 +43,13 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
        |}
       """.stripMargin)
 
-  val requestJson: JsValue = Json.parse(
-    s"""
+  val requestJson: JsValue = Json.parse(s"""
        |{
        |    "lossAmount": $lossAmount
        |}
       """.stripMargin)
 
-  val invalidRequestJson: JsValue = Json.parse(
-    s"""
+  val invalidRequestJson: JsValue = Json.parse(s"""
        |{
        |    "lossAmount": 23.2714
        |}
@@ -69,12 +67,11 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
-    val lossId = "AAZZ1234567890a"
+    val nino       = "AA123456A"
+    val lossId     = "AAZZ1234567890a"
     val typeOfLoss = "self-employment"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "businessId": "XBIS12345678910",
          |    "typeOfLoss": "self-employment",
@@ -101,7 +98,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def url: String = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
+    def url: String    = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
     def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
 
     def setupStubs(): StubMapping
@@ -134,7 +131,6 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
       }
     }
 
-
     "return errors ae per the spec" when {
       "validation error occurs" when {
         def validationErrorTest(requestNino: String,
@@ -144,7 +140,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
                                 expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String   = requestNino
             override val lossId: String = requestLossId
 
             override def setupStubs(): StubMapping = {
@@ -162,13 +158,15 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
         val input = Seq(
           ("AA1123A", "XAIS12345678910", requestJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "XAIS1234dfxgchjbn5678910", requestJson, BAD_REQUEST, LossIdFormatError),
-          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST,
-            ValueFormatError.copy(paths = Some(Seq(
-              "/lossAmount")))),
-          ("AA123456A", "XAIS12345678910", Json.parse(s"""
+          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST, ValueFormatError.copy(paths = Some(Seq("/lossAmount")))),
+          ("AA123456A",
+           "XAIS12345678910",
+           Json.parse(s"""
                                                          |{
                                                          |
-                                                         |}""".stripMargin), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+                                                         |}""".stripMargin),
+           BAD_REQUEST,
+           RuleIncorrectOrEmptyBodyError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -196,10 +194,10 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
           (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
           (CONFLICT, "CONFLICT", FORBIDDEN, RuleLossAmountNotChanged),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

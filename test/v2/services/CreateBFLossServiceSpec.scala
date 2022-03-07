@@ -16,18 +16,19 @@
 
 package v2.services
 
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v2.mocks.connectors.MockBFLossConnector
 import v2.models.des.CreateBFLossResponse
 import v2.models.domain.{BFLoss, Nino, TypeOfLoss}
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData.CreateBFLossRequest
 
 import scala.concurrent.Future
 
 class CreateBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
   val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
@@ -45,16 +46,16 @@ class CreateBFLossServiceSpec extends ServiceSpec {
       "return a successful response with the correct correlationId" in new Test {
         MockedBFLossConnector
           .createBFLoss(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, CreateBFLossResponse(lossId)))))
 
-        await(service.createBFLoss(request)) shouldBe Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))
+        await(service.createBFLoss(request)) shouldBe Right(ResponseWrapper(correlationId, CreateBFLossResponse(lossId)))
       }
     }
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
-        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError                         = MtdError("SOME_CODE", "some message")
+        val desResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(desResponse)))
 
         await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
@@ -63,31 +64,31 @@ class CreateBFLossServiceSpec extends ServiceSpec {
 
     "one of the errors from DES is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(expected)))
         val result: CreateBFLossOutcome = await(service.createBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
       }
     }
 
     Map(
-      "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-      "DUPLICATE"                  -> RuleDuplicateSubmissionError,
-      "NOT_FOUND_INCOME_SOURCE"    -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
-      "TAX_YEAR_NOT_ENDED"         -> RuleTaxYearNotEndedError,
-      "INCOMESOURCE_ID_REQUIRED"   -> RuleBusinessId,
-      "INVALID_PAYLOAD"            -> DownstreamError,
-      "SERVER_ERROR"               -> DownstreamError,
-      "SERVICE_UNAVAILABLE"        -> DownstreamError,
-      "UNEXPECTED_ERROR"           -> DownstreamError
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "DUPLICATE"                 -> RuleDuplicateSubmissionError,
+      "NOT_FOUND_INCOME_SOURCE"   -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+      "TAX_YEAR_NOT_ENDED"        -> RuleTaxYearNotEndedError,
+      "INCOMESOURCE_ID_REQUIRED"  -> RuleBusinessId,
+      "INVALID_PAYLOAD"           -> StandardDownstreamError,
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+      "UNEXPECTED_ERROR"          -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
           s"return a $v MTD error" in new Test {
             MockedBFLossConnector
               .createBFLoss(request)
-              .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
             await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

@@ -16,10 +16,11 @@
 
 package v3.connectors
 
+import api.connectors.DownstreamOutcome
+import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.connectors.DownstreamUri.{DesUri, IfsUri}
-import v3.connectors.httpparsers.StandardDownstreamHttpParser._
 import v3.models.request.amendBFLoss.AmendBFLossRequest
 import v3.models.request.createBFLoss.CreateBFLossRequest
 import v3.models.request.deleteBFLoss.DeleteBFLossRequest
@@ -45,15 +46,14 @@ class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) 
 
   def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
                                                           ec: ExecutionContext): Future[DownstreamOutcome[AmendBFLossResponse]] = {
-    val nino = amendBFLossRequest.nino.nino
+    val nino   = amendBFLossRequest.nino.nino
     val lossId = amendBFLossRequest.lossId
 
     put(amendBFLossRequest.amendBroughtForwardLoss, IfsUri[AmendBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier,
-                                                 ec: ExecutionContext): Future[DownstreamOutcome[Unit]] = {
-    val nino = request.nino.nino
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DownstreamOutcome[Unit]] = {
+    val nino   = request.nino.nino
     val lossId = request.lossId
 
     delete(DesUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId"))
@@ -61,7 +61,7 @@ class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) 
 
   def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier,
                                                      ec: ExecutionContext): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
-    val nino = request.nino.nino
+    val nino   = request.nino.nino
     val lossId = request.lossId
 
     get(IfsUri[RetrieveBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))

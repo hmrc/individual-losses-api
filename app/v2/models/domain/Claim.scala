@@ -16,16 +16,15 @@
 
 package v2.models.domain
 
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
 import play.api.libs.functional.syntax._
-
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
 case class Claim(id: String, sequence: Int)
 
 object Claim {
   implicit val reads: Reads[Claim] = Json.reads[Claim]
   implicit val writes: Writes[Claim] = (
-  (JsPath \ "claimId").write[String] and
-    (JsPath \ "sequence").write[Int]
+    (JsPath \ "claimId").write[String] and
+      (JsPath \ "sequence").write[Int]
   )(unlift(Claim.unapply))
 }

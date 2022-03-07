@@ -16,19 +16,19 @@
 
 package v3.controllers.requestParsers.validators.validations
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import org.scalamock.handlers.CallHandler
 import support.UnitSpec
 import utils.CurrentDate
-import v3.models.errors.RuleTaxYearNotEndedError
 import v3.mocks.MockCurrentDate
+import v3.models.errors.RuleTaxYearNotEndedError
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class TaxYearNotEndedValidationSpec extends UnitSpec {
 
   class Test extends MockCurrentDate {
-    implicit val dateProvider: CurrentDate = mockCurrentDate
+    implicit val dateProvider: CurrentDate   = mockCurrentDate
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     def setupDateProvider(date: String): CallHandler[LocalDate] =
@@ -42,7 +42,7 @@ class TaxYearNotEndedValidationSpec extends UnitSpec {
 
         setupDateProvider("2022-04-06")
 
-        private val validTaxYear = "2021-22"
+        private val validTaxYear     = "2021-22"
         private val validationResult = TaxYearNotEndedValidation.validate(validTaxYear)
 
         validationResult.isEmpty shouldBe true
@@ -54,7 +54,7 @@ class TaxYearNotEndedValidationSpec extends UnitSpec {
 
         setupDateProvider("2022-04-05")
 
-        private val invalidTaxYear = "2021-22"
+        private val invalidTaxYear   = "2021-22"
         private val validationResult = TaxYearNotEndedValidation.validate(invalidTaxYear)
 
         validationResult.isEmpty shouldBe false

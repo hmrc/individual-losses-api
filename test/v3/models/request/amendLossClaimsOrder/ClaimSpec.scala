@@ -26,21 +26,19 @@ class ClaimSpec extends UnitSpec {
     sequence = 1
   )
 
-  val claimJson : JsValue = Json.parse("""
+  val claimJson: JsValue = Json.parse("""
     |{
     | "claimId": "234568790ABCDE",
     | "sequence": 1
     |}
-    |""".stripMargin
-  )
+    |""".stripMargin)
 
-  val downstreamJson : JsValue = Json.parse("""
+  val downstreamJson: JsValue = Json.parse("""
     |{
     | "claimId": "234568790ABCDE",
     | "sequence": 1
     |}
-    |""".stripMargin
-  )
+    |""".stripMargin)
 
   "reads" when {
     "passed valid JSON" should {

@@ -16,8 +16,8 @@
 
 package v3.services
 
-import v3.mocks.connectors.MockMtdIdLookupConnector
-import v3.models.errors.{DownstreamError, NinoFormatError, UnauthorisedError}
+import api.mocks.connectors.MockMtdIdLookupConnector
+import api.models.errors._
 
 import scala.concurrent.Future
 
@@ -27,7 +27,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
     lazy val target = new MtdIdLookupService(mockMtdIdLookupConnector)
   }
 
-  val nino: String = "AA123456A"
+  val nino: String        = "AA123456A"
   val invalidNino: String = "INVALID_NINO"
 
   "calling .getMtdId" when {
@@ -38,7 +38,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
         val expected = Left(NinoFormatError)
 
         // should not call the connector
-        MockedMtdIdLookupConnector.lookup(invalidNino)
+        MockedMtdIdLookupConnector
+          .lookup(invalidNino)
           .never()
 
         private val result = await(target.lookup(invalidNino))
@@ -51,7 +52,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       "proxy the error to the caller" in new Test {
         val connectorResponse = Left(UnauthorisedError)
 
-        MockedMtdIdLookupConnector.lookup(nino)
+        MockedMtdIdLookupConnector
+          .lookup(nino)
           .returns(Future.successful(connectorResponse))
 
         private val result = await(target.lookup(nino))
@@ -62,9 +64,10 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
 
     "a downstream error occurs the service" should {
       "proxy the error to the caller" in new Test {
-        val connectorResponse = Left(DownstreamError)
+        val connectorResponse = Left(StandardDownstreamError)
 
-        MockedMtdIdLookupConnector.lookup(nino)
+        MockedMtdIdLookupConnector
+          .lookup(nino)
           .returns(Future.successful(connectorResponse))
 
         private val result = await(target.lookup(nino))

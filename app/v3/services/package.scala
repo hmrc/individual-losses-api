@@ -16,8 +16,8 @@
 
 package v3
 
-import v3.models.errors.ErrorWrapper
-import v3.models.outcomes.ResponseWrapper
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import v3.models.response.amendBFLoss.AmendBFLossResponse
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
@@ -51,6 +51,5 @@ package object services {
   type DeleteLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
 
   type AmendLossClaimsOrderOutcome = Either[ErrorWrapper, ResponseWrapper[AmendLossClaimsOrderResponse]]
-
 
 }

@@ -16,8 +16,9 @@
 
 package v2.controllers.requestParsers.validators.validations
 
+import api.models.errors.MtdError
 import v2.models.domain.TypeOfClaim
-import v2.models.errors.{ ClaimTypeFormatError, MtdError }
+import v2.models.errors.ClaimTypeFormatError
 
 object ClaimTypeValidation {
 

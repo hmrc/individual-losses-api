@@ -16,10 +16,10 @@
 
 package v3.services
 
+import api.connectors.DownstreamOutcome
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import play.api.Logger
-import v3.connectors.DownstreamOutcome
-import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 
 trait DownstreamServiceSupport {
 
@@ -49,11 +49,11 @@ trait DownstreamServiceSupport {
     * @return the function to map outcomes
     */
   final def mapToVendor[D, V](endpointName: String, errorMap: PartialFunction[String, MtdError])(success: ResponseWrapper[D] => VendorOutcome[V])(
-    downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[V] = {
+      downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[V] = {
 
     lazy val defaultErrorMapping: String => MtdError = { code =>
       logger.warn(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
-      DownstreamError
+      StandardDownstreamError
     }
 
     downstreamOutcome match {
@@ -62,11 +62,11 @@ trait DownstreamServiceSupport {
       case Left(ResponseWrapper(correlationId, MultipleErrors(errors))) =>
         val mtdErrors = errors.map(error => errorMap.applyOrElse(error.code, defaultErrorMapping))
 
-        if (mtdErrors.contains(DownstreamError)) {
+        if (mtdErrors.contains(StandardDownstreamError)) {
           logger.warn(
             s"[$serviceName] [$endpointName] [CorrelationId - $correlationId]" +
               s" - downstream returned ${errors.map(_.code).mkString(",")}. Revert to ISE")
-          Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+          Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
         } else {
           Left(ErrorWrapper(Some(correlationId), BadRequestError, Some(mtdErrors)))
         }
@@ -93,7 +93,7 @@ trait DownstreamServiceSupport {
     * @return the function to map outcomes
     */
   final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, MtdError])(
-    downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[D] =
+      downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[D] =
     mapToVendor[D, D](endpointName, errorMap) { downstreamResponse =>
       Right(ResponseWrapper(downstreamResponse.correlationId, downstreamResponse.responseData))
     }(downstreamOutcome)

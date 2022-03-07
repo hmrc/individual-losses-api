@@ -16,25 +16,25 @@
 
 package v2.connectors
 
-import java.time.LocalDateTime
-
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v2.models.des._
 import v2.models.domain._
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData._
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
   "retrieve LossClaim" should {
 
-    val testDateTime: LocalDateTime = LocalDateTime.now()
-    val validTaxYear: String = "2019-20"
+    val testDateTime: LocalDateTime   = LocalDateTime.now()
+    val validTaxYear: String          = "2019-20"
     val validSelfEmploymentId: String = "XAIS01234567890"
-    val nino: String = "AA123456A"
-    val claimId: String = "AAZZ1234567890a"
+    val nino: String                  = "AA123456A"
+    val claimId: String               = "AAZZ1234567890a"
 
     val retrieveResponse: LossClaimResponse = LossClaimResponse(
       Some(validSelfEmploymentId),
@@ -58,7 +58,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
     "return a successful response and correlationId" when {
 
       "provided with a valid request" in new Test {
-        val expected = Left(DesResponse(correlationId, retrieveResponse))
+        val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
 
         MockHttpClient
           .get(
@@ -66,7 +66,8 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveLossClaimResult(connector) shouldBe expected
       }
@@ -75,7 +76,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
     "return an unsuccessful response" when {
 
       "provided with a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .get(
@@ -83,13 +84,14 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveLossClaimResult(connector) shouldBe expected
       }
 
       "provided with multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockHttpClient
           .get(
@@ -97,7 +99,8 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveLossClaimResult(connector) shouldBe expected
       }

@@ -16,4 +16,6 @@
 
 package v2.models.requestData
 
+import api.models.request.RawData
+
 case class RetrieveBFLossRawData(nino: String, lossId: String) extends RawData

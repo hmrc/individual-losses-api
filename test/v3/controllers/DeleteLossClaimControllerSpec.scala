@@ -16,22 +16,24 @@
 
 package v3.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
 import v3.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v3.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.domain.Nino
-import v3.models.errors.{NotFoundError, _}
-import v3.models.outcomes.ResponseWrapper
+import v3.models.errors._
 import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteLossClaimControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteLossClaimService
@@ -42,7 +44,7 @@ class DeleteLossClaimControllerSpec
   val nino: String          = "AA123456A"
   val claimId: String       = "AAZZ1234567890a"
 
-  val rawData: DeleteLossClaimRawData  = DeleteLossClaimRawData(nino, claimId)
+  val rawData: DeleteLossClaimRawData = DeleteLossClaimRawData(nino, claimId)
   val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
 
   def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
@@ -145,7 +147,7 @@ class DeleteLossClaimControllerSpec
       }
 
       errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)

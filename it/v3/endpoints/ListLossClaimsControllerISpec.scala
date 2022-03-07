@@ -16,6 +16,7 @@
 
 package v3.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -54,11 +55,11 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino                             = "AA123456A"
-    val taxYear: Option[String]          = Some("2019-20")
-    val typeOfLoss: Option[String]       = None
-    val businessId: Option[String]       = None
-    val claimType: Option[String]        = None
+    val nino                       = "AA123456A"
+    val taxYear: Option[String]    = Some("2019-20")
+    val typeOfLoss: Option[String] = None
+    val businessId: Option[String] = None
+    val claimType: Option[String]  = None
 
     def uri: String = s"/$nino/loss-claims"
 
@@ -164,11 +165,10 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying for a specific typeOfLoss" in new Test {
-          override val typeOfLoss: Option[String] = Some("uk-property-non-fhl")
+        override val typeOfLoss: Option[String] = Some("uk-property-non-fhl")
 
-          val downstreamResponse: JsValue =
-            Json.parse(
-              s"""[
+        val downstreamResponse: JsValue =
+          Json.parse(s"""[
                  |    {
                  |        "incomeSourceId": "XAIS12345678910",
                  |        "incomeSourceType": "02",
@@ -181,8 +181,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                  |]
                |""".stripMargin)
 
-        override val responseJson: JsValue = Json.parse(
-          s"""
+        override val responseJson: JsValue = Json.parse(s"""
              |{
              |    "claims": [
              |        {
@@ -235,12 +234,11 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying for specific taxYear and businessId" in new Test {
-        override val taxYear: Option[String] = Some("2019-20")
+        override val taxYear: Option[String]    = Some("2019-20")
         override val businessId: Option[String] = Some("XAIS12345678911")
 
         val downstreamResponse: JsValue =
-          Json.parse(
-            s"""
+          Json.parse(s"""
                |[
                |    {
                |        "incomeSourceId": "XAIS12345678911",
@@ -253,8 +251,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                |]
      """.stripMargin)
 
-        override val responseJson: JsValue = Json.parse(
-          s"""
+        override val responseJson: JsValue = Json.parse(s"""
              |{
              |    "claims": [
              |        {
@@ -298,7 +295,11 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, queryParams = Map("incomeSourceId" -> "XAIS12345678911", "taxYear" -> "2020"), Status.OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.GET,
+                                   ifsUrl,
+                                   queryParams = Map("incomeSourceId" -> "XAIS12345678911", "taxYear" -> "2020"),
+                                   Status.OK,
+                                   downstreamResponse)
         }
 
         val response: WSResponse = await(request().get())
@@ -315,13 +316,17 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map.empty, Status.OK,
-            Json.parse(
-              """
+          DownstreamStub.onSuccess(
+            DownstreamStub.GET,
+            ifsUrl,
+            Map.empty,
+            Status.OK,
+            Json.parse("""
                 |[
                 |
                 |]
-                |""".stripMargin))
+                |""".stripMargin)
+          )
         }
 
         val response: WSResponse = await(request().get())
@@ -337,13 +342,17 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map.empty, Status.OK,
-            Json.parse(
-              """
+          DownstreamStub.onSuccess(
+            DownstreamStub.GET,
+            ifsUrl,
+            Map.empty,
+            Status.OK,
+            Json.parse("""
                 |[
                 |{}
                 |]
-                |""".stripMargin))
+                |""".stripMargin)
+          )
         }
 
         val response: WSResponse = await(request().get())
@@ -374,10 +383,10 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXYEAR", Status.BAD_REQUEST, TaxYearFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
 
@@ -391,11 +400,11 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String     = requestNino
-          override val taxYear: Option[String] = requestTaxYear
+          override val nino: String               = requestNino
+          override val taxYear: Option[String]    = requestTaxYear
           override val typeOfLoss: Option[String] = requestTypeOfLoss
-          override val businessId : Option[String] = requestSelfEmploymentId
-          override val claimType: Option[String] = requestClaimType
+          override val businessId: Option[String] = requestSelfEmploymentId
+          override val claimType: Option[String]  = requestClaimType
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()

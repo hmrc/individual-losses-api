@@ -16,13 +16,13 @@
 
 package v2.controllers.requestParsers
 
-import javax.inject.Inject
 import v2.controllers.requestParsers.validators.RetrieveBFLossValidator
 import v2.models.domain.Nino
 import v2.models.requestData._
 
-class RetrieveBFLossParser @Inject()(val validator: RetrieveBFLossValidator)
-  extends RequestParser[RetrieveBFLossRawData, RetrieveBFLossRequest] {
+import javax.inject.Inject
+
+class RetrieveBFLossParser @Inject()(val validator: RetrieveBFLossValidator) extends RequestParser[RetrieveBFLossRawData, RetrieveBFLossRequest] {
 
   override protected def requestFor(data: RetrieveBFLossRawData): RetrieveBFLossRequest =
     RetrieveBFLossRequest(Nino(data.nino), data.lossId)

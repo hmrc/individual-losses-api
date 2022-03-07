@@ -16,18 +16,17 @@
 
 package v2.controllers.requestParsers.validators.validations
 
-import v2.models.errors.{AmountFormatError, MtdError, RuleInvalidLossAmount}
+import api.models.errors.MtdError
+import v2.models.errors.{AmountFormatError, RuleInvalidLossAmount}
 
 object AmountValidation {
 
   def validate(amount: BigDecimal): List[MtdError] = {
     if (amount.scale > 2) {
       List(AmountFormatError)
-    }
-    else if (amount > 99999999999.99 || amount < 0) {
+    } else if (amount > 99999999999.99 || amount < 0) {
       List(RuleInvalidLossAmount)
-    }
-    else {
+    } else {
       NoValidationErrors
     }
   }

@@ -16,8 +16,9 @@
 
 package v2.models.audit
 
+import api.models.audit.AuditResponse
+import api.models.auth.UserDetails
 import play.api.libs.json.{JsValue, Json, Writes}
-import v2.models.auth.UserDetails
 
 case class CreateBFLossAuditDetail(userType: String,
                                    agentReferenceNumber: Option[String],
@@ -45,4 +46,3 @@ object CreateBFLossAuditDetail {
     )
   }
 }
-

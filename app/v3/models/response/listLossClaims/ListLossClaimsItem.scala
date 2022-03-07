@@ -19,7 +19,7 @@ package v3.models.response.listLossClaims
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v3.models.domain._
-import v3.models.domain.lossClaim.{IncomeSourceType, TypeOfLoss, ReliefClaimed, TypeOfClaim}
+import v3.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 
 case class ListLossClaimsItem(businessId: String,
                               typeOfClaim: TypeOfClaim,

@@ -16,11 +16,12 @@
 
 package v3.services
 
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v3.mocks.connectors.MockLossClaimConnector
 import v3.models.domain.Nino
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.listLossClaims.ListLossClaimsRequest
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
@@ -79,8 +80,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(DownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
+        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(expected)
@@ -88,8 +89,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
+        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(expected)
@@ -103,9 +104,9 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
       "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
       "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
       "NOT_FOUND"                 -> NotFoundError,
-      "INVALID_CORRELATIONID"     -> DownstreamError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError
+      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {

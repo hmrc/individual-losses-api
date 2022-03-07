@@ -16,12 +16,13 @@
 
 package v2.connectors.httpparsers
 
+import api.connectors.httpparsers.HttpParser
+import api.models.errors.{OutboundError, StandardDownstreamError}
+import api.models.outcomes.ResponseWrapper
 import play.api.http.Status._
 import play.api.libs.json.Reads
-import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import v2.connectors.DesOutcome
-import v2.models.errors.{ DownstreamError, OutboundError }
-import v2.models.outcomes.DesResponse
 
 object StandardDesHttpParser extends HttpParser {
 
@@ -29,15 +30,15 @@ object StandardDesHttpParser extends HttpParser {
   implicit val readsEmpty: HttpReads[DesOutcome[Unit]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(NO_CONTENT, url, response) { correlationId =>
-        Right(DesResponse(correlationId, ()))
+        Right(ResponseWrapper(correlationId, ()))
     }
 
   implicit def reads[A: Reads]: HttpReads[DesOutcome[A]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(OK, url, response) { correlationId =>
         response.validateJson[A] match {
-          case Some(ref) => Right(DesResponse(correlationId, ref))
-          case None      => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
+          case Some(ref) => Right(ResponseWrapper(correlationId, ref))
+          case None      => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
         }
     }
 
@@ -59,9 +60,9 @@ object StandardDesHttpParser extends HttpParser {
           "[StandardDesHttpParser][read] - " +
             s"Success response received from DES with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
-      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY => Left(DesResponse(correlationId, parseErrors(response)))
-      case INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE                           => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
-      case _                                                                     => Left(DesResponse(correlationId, OutboundError(DownstreamError)))
+      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY => Left(ResponseWrapper(correlationId, parseErrors(response)))
+      case INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE                           => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
+      case _                                                                     => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
     }
   }
 }

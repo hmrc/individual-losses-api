@@ -60,7 +60,6 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
     "return no errors when typeOfLoss is 'uk-property-non-fhl' and" when {
 
-
       "provided with a string of 'carry-sideways'" in {
         TypeOfClaimValidation.checkClaim(`carry-sideways`, `uk-property-non-fhl`).isEmpty shouldBe true
       }

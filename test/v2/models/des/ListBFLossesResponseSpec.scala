@@ -16,12 +16,12 @@
 
 package v2.models.des
 
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v2.hateoas.{HateoasFactory, HateoasLinks}
-import v2.models.hateoas.Method.{GET, POST}
-import v2.models.hateoas.{HateoasWrapper, Link}
+import api.hateoas.{HateoasFactory, HateoasLinks}
 
 class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 
@@ -29,7 +29,7 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
     "output as per spec" in {
       Json.toJson(ListBFLossesResponse(Seq(BFLossId("000000123456789"), BFLossId("000000123456790")))) shouldBe
         Json.parse(
-        """
+          """
           |{
           |    "losses": [
           |        {
@@ -49,7 +49,7 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
       // Note we ignore all but the lossId currently...
       val desResponseJson =
         Json.parse(
-        """
+          """
            |[
            |  {
            |   "incomeSourceId": "000000000000000",

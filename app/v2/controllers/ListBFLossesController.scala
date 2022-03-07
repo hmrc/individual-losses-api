@@ -16,21 +16,23 @@
 
 package v2.controllers
 
+import api.models.audit.{AuditEvent, AuditResponse}
+import api.models.errors._
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.ListBFLossesParser
-import v2.hateoas.HateoasFactory
-import v2.models.audit.{AuditEvent, AuditResponse, ListBFLossesAuditDetail}
+import api.hateoas.HateoasFactory
+import v2.models.audit.ListBFLossesAuditDetail
 import v2.models.des.ListBFLossHateoasData
 import v2.models.errors._
 import v2.models.requestData.ListBFLossesRawData
 import v2.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -74,8 +76,14 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
             val response = Json.toJson(vendorResponse)
 
-            auditSubmission(ListBFLossesAuditDetail(request.userDetails, nino, taxYear, typeOfLoss, businessId,
-              serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
+            auditSubmission(
+              ListBFLossesAuditDetail(request.userDetails,
+                                      nino,
+                                      taxYear,
+                                      typeOfLoss,
+                                      businessId,
+                                      serviceResponse.correlationId,
+                                      AuditResponse(OK, Right(Some(response)))))
 
             Ok(response)
               .withApiHeaders(serviceResponse.correlationId)
@@ -92,17 +100,15 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError |
-           RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid =>
+      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError | RuleTaxYearNotSupportedError |
+          RuleTaxYearRangeInvalid =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
-  private def auditSubmission(details: ListBFLossesAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+  private def auditSubmission(details: ListBFLossesAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
     val event = AuditEvent("ListBroughtForwardLosses", "list-brought-forward-Losses", details)
     auditService.auditEvent(event)
   }

@@ -16,10 +16,11 @@
 
 package v3.connectors
 
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import api.connectors.DownstreamOutcome
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.domain.{DownstreamTaxYear, Nino}
-import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.listLossClaims.ListLossClaimsRequest
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 

@@ -34,12 +34,12 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     "there is no appConfig.apiStatus" should {
       "default apiStatus to ALPHA" in new Test {
         MockAppConfig.apiGatewayContext returns "my/context"
-        MockAppConfig.featureSwitch returns None anyNumberOfTimes()
-        MockAppConfig.apiStatus(version = "2.0") returns "" anyNumberOfTimes()
-        MockAppConfig.apiStatus(version = "3.0") returns "" anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(version = "2") returns true anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(version = "3") returns true anyNumberOfTimes()
-        MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
+        MockAppConfig.featureSwitch returns None anyNumberOfTimes ()
+        MockAppConfig.apiStatus(version = "2.0") returns "" anyNumberOfTimes ()
+        MockAppConfig.apiStatus(version = "3.0") returns "" anyNumberOfTimes ()
+        MockAppConfig.endpointsEnabled(version = "2") returns true anyNumberOfTimes ()
+        MockAppConfig.endpointsEnabled(version = "3") returns true anyNumberOfTimes ()
+        MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes ()
 
         factory.definition shouldBe Definition(
           scopes = Seq(
@@ -61,10 +61,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             description = "An API for providing individual losses data",
             context = "my/context",
             versions = Seq(
-              APIVersion(
-                version = "2.0", status = ALPHA, endpointsEnabled = true),
-              APIVersion(
-                version = "3.0", status = ALPHA, endpointsEnabled = true)
+              APIVersion(version = "2.0", status = ALPHA, endpointsEnabled = true),
+              APIVersion(version = "3.0", status = ALPHA, endpointsEnabled = true)
             ),
             requiresTrust = None
           )
@@ -81,7 +79,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       case (definitionEnabled, cl) =>
         s"confidence-level-check.definition.enabled is $definitionEnabled in config" should {
           s"return $cl" in new Test {
-            MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = definitionEnabled, authValidationEnabled = true)
+            MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = definitionEnabled,
+                                                                                    authValidationEnabled = true)
             factory.confidenceLevel shouldBe cl
           }
         }

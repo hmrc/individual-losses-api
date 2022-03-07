@@ -16,4 +16,6 @@
 
 package v2.models.requestData
 
+import api.models.request.RawData
+
 case class DeleteLossClaimRawData(nino: String, claimId: String) extends RawData

@@ -16,11 +16,12 @@
 
 package v3.services
 
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v3.mocks.connectors.MockLossClaimConnector
 import v3.models.domain.Nino
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
@@ -77,21 +78,21 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.amendLossClaimType(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimTypeOutcome = await(service.amendLossClaimType(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
       }
     }
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-      "INVALID_PAYLOAD"           -> DownstreamError,
+      "INVALID_PAYLOAD"           -> StandardDownstreamError,
       "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
       "NOT_FOUND"                 -> NotFoundError,
       "CONFLICT"                  -> RuleClaimTypeNotChanged,
-      "INVALID_CORRELATIONID"     -> DownstreamError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError,
-      "UNEXPECTED_ERROR"          -> DownstreamError
+      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+      "UNEXPECTED_ERROR"          -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

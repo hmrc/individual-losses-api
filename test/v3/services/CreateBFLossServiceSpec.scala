@@ -16,11 +16,12 @@
 
 package v3.services
 
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v3.mocks.connectors.MockBFLossConnector
 import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.createBFLoss.{CreateBFLossRequest, CreateBFLossRequestBody}
 import v3.models.response.createBFLoss.CreateBFLossResponse
 
@@ -67,7 +68,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(expected)))
         val result: CreateBFLossOutcome = await(service.createBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
       }
     }
 
@@ -77,10 +78,10 @@ class CreateBFLossServiceSpec extends ServiceSpec {
       "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
       "TAX_YEAR_NOT_ENDED"        -> RuleTaxYearNotEndedError,
       "INCOME_SOURCE_NOT_FOUND"   -> NotFoundError,
-      "INVALID_CORRELATIONID"     -> DownstreamError,
-      "INVALID_PAYLOAD"           -> DownstreamError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError
+      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "INVALID_PAYLOAD"           -> StandardDownstreamError,
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

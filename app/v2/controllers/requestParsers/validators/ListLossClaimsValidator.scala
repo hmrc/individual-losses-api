@@ -16,21 +16,23 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors.MtdError
 import config.FixedConfig
 import v2.controllers.requestParsers.validators.validations._
 import v2.models.domain.TypeOfLoss
-import v2.models.errors.MtdError
 import v2.models.requestData.ListLossClaimsRawData
 
 class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with FixedConfig {
 
   private val validationSet = List(formatValidation, postFormatValidation)
 
-  private def formatValidation: ListLossClaimsRawData => List[List[MtdError]] = data => List(
-    NinoValidation.validate(data.nino),
-    data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
-    data.typeOfLoss.map(TypeOfLossValidation.validateLossClaim).getOrElse(Nil)
-  )
+  private def formatValidation: ListLossClaimsRawData => List[List[MtdError]] =
+    data =>
+      List(
+        NinoValidation.validate(data.nino),
+        data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
+        data.typeOfLoss.map(TypeOfLossValidation.validateLossClaim).getOrElse(Nil)
+    )
 
   private def postFormatValidation: ListLossClaimsRawData => List[List[MtdError]] = { data =>
     List(

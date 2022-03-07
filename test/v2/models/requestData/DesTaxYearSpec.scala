@@ -16,9 +16,9 @@
 
 package v2.models.requestData
 
-import java.time.LocalDate
-
 import support.UnitSpec
+
+import java.time.LocalDate
 
 class DesTaxYearSpec extends UnitSpec {
 

@@ -16,9 +16,9 @@
 
 package v3.controllers.requestParsers.validators.validations
 
+import api.models.errors._
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.models.errors.NinoFormatError
 
 class JsonValidationSpec extends UnitSpec {
   private def unusedValidation[T] = (_: T) => throw new RuntimeException
@@ -45,7 +45,7 @@ class JsonValidationSpec extends UnitSpec {
     "the path element is readable by the Reads" when {
       "the value is valid" must {
         "return empty" in {
-          JsonValidation.validate[String](json \ "field1")((_: String) => Nil)  shouldBe Nil
+          JsonValidation.validate[String](json \ "field1")((_: String) => Nil) shouldBe Nil
         }
       }
 

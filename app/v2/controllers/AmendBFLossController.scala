@@ -16,21 +16,23 @@
 
 package v2.controllers
 
+import api.models.audit.{AuditEvent, AuditResponse}
+import api.models.errors._
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.AmendBFLossParser
-import v2.hateoas.HateoasFactory
-import v2.models.audit.{AmendBFLossAuditDetail, AuditEvent, AuditResponse}
+import api.hateoas.HateoasFactory
+import v2.models.audit.AmendBFLossAuditDetail
 import v2.models.des.AmendBFLossHateoasData
 import v2.models.errors._
 import v2.models.requestData.AmendBFLossRawData
 import v2.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -49,7 +51,6 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
       val result =
         for {
@@ -64,8 +65,13 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
           val response = Json.toJson(vendorResponse)
 
-          auditSubmission(AmendBFLossAuditDetail(request.userDetails, nino, lossId, request.body,
-            serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
+          auditSubmission(
+            AmendBFLossAuditDetail(request.userDetails,
+                                   nino,
+                                   lossId,
+                                   request.body,
+                                   serviceResponse.correlationId,
+                                   AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
             .withApiHeaders(serviceResponse.correlationId)
@@ -76,8 +82,13 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
         val correlationId = getCorrelationId(errorWrapper)
         val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
 
-        auditSubmission(AmendBFLossAuditDetail(request.userDetails, nino, lossId, request.body,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+        auditSubmission(
+          AmendBFLossAuditDetail(request.userDetails,
+                                 nino,
+                                 lossId,
+                                 request.body,
+                                 correlationId,
+                                 AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
@@ -89,13 +100,11 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
         BadRequest(Json.toJson(errorWrapper))
       case RuleLossAmountNotChanged => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError            => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError          => InternalServerError(Json.toJson(errorWrapper))
+      case StandardDownstreamError  => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
-  private def auditSubmission(details: AmendBFLossAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+  private def auditSubmission(details: AmendBFLossAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
     val event = AuditEvent("amendBroughtForwardLoss", "amend-brought-forward-Loss", details)
     auditService.auditEvent(event)
   }

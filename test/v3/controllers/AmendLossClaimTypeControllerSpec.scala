@@ -16,19 +16,21 @@
 
 package v3.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.errors._
+import api.models.hateoas.Method.GET
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockAmendLossClaimTypeRequestDataParser
 import v3.mocks.services._
-import v3.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.domain.Nino
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.hateoas.Method.GET
-import v3.models.hateoas.{HateoasWrapper, Link}
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import v3.models.response.amendLossClaimType.{AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse}
 
@@ -36,7 +38,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimTypeControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendLossClaimTypeService
@@ -187,7 +189,7 @@ class AmendLossClaimTypeControllerSpec
     errorsFromServiceTester(RuleTypeOfClaimInvalid, FORBIDDEN)
     errorsFromServiceTester(RuleClaimTypeNotChanged, FORBIDDEN)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)
-    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+    errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
 
     def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the service" in new Test {

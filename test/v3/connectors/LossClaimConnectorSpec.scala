@@ -21,10 +21,11 @@ import v3.mocks.MockHttpClient
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
   class IfsTest extends MockHttpClient with MockAppConfig {
+
     val connector: LossClaimConnector = new LossClaimConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -37,6 +38,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
   }
 
   class DesTest extends MockHttpClient with MockAppConfig {
+
     val connector: LossClaimConnector = new LossClaimConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig

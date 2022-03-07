@@ -30,7 +30,6 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
     ("uk-property-fhl", `uk-property-fhl`),
     ("foreign-property-fhl-eea", `foreign-property-fhl-eea`),
     ("foreign-property", `foreign-property`)
-
   )
 
   "TypeOfLoss" when {

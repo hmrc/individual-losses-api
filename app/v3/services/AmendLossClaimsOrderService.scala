@@ -16,40 +16,44 @@
 
 package v3.services
 
-import javax.inject.Inject
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.LossClaimConnector
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendLossClaimsOrderOutcome] = {
+  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
+                                                                 ec: ExecutionContext): Future[AmendLossClaimsOrderOutcome] = {
 
-    connector.amendLossClaimsOrder(request).map {
-      mapToVendorDirect("amendLossClaimsOrder", errorMap)
-    }.map {
-      case Left(errorWrapper) => Left(errorWrapper)
-      case Right(response) => Right(ResponseWrapper(response.correlationId, AmendLossClaimsOrderResponse()))
-    }
+    connector
+      .amendLossClaimsOrder(request)
+      .map {
+        mapToVendorDirect("amendLossClaimsOrder", errorMap)
+      }
+      .map {
+        case Left(errorWrapper) => Left(errorWrapper)
+        case Right(response)    => Right(ResponseWrapper(response.correlationId, AmendLossClaimsOrderResponse()))
+      }
   }
 
   private def errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAXYEAR" -> TaxYearFormatError,
-    "CONFLICT_SEQUENCE_START" -> RuleInvalidSequenceStart,
-    "CONFLICT_NOT_SEQUENTIAL" -> RuleSequenceOrderBroken,
-    "CONFLICT_NOT_FULL_LIST" -> RuleLossClaimsMissing,
-    "UNPROCESSABLE_ENTITY" -> NotFoundError,
-    "INVALID_PAYLOAD" -> DownstreamError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_TAXYEAR"           -> TaxYearFormatError,
+    "CONFLICT_SEQUENCE_START"   -> RuleInvalidSequenceStart,
+    "CONFLICT_NOT_SEQUENTIAL"   -> RuleSequenceOrderBroken,
+    "CONFLICT_NOT_FULL_LIST"    -> RuleLossClaimsMissing,
+    "UNPROCESSABLE_ENTITY"      -> NotFoundError,
+    "INVALID_PAYLOAD"           -> StandardDownstreamError,
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }
-

@@ -16,9 +16,9 @@
 
 package v2.models.domain
 
+import api.models.utils.JsonErrorValidators
 import play.api.libs.json._
 import support.UnitSpec
-import v2.models.utils.JsonErrorValidators
 
 class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
 
@@ -104,7 +104,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
                                               |	  "broughtForwardLossAmount": 255.50
                                               |}""".stripMargin)
             Json.toJson(model) shouldBe json
-          }
+        }
       )
     }
     "passed a valid BroughtForwardLoss Foreign Property model" should {

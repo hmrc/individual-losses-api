@@ -69,8 +69,7 @@ class FeatureSwitchSpec extends UnitSpec {
   "isAmendLossClaimsOrderRouteEnabled" must {
     "return true" when {
       "config set to true" in {
-        val featureSwitch = createFeatureSwitch(
-          """
+        val featureSwitch = createFeatureSwitch("""
             |amend-loss-claim-order.enabled = true
             |""".stripMargin)
 
@@ -80,8 +79,7 @@ class FeatureSwitchSpec extends UnitSpec {
 
     "return false" when {
       "config set to false" in {
-        val featureSwitch = createFeatureSwitch(
-          """
+        val featureSwitch = createFeatureSwitch("""
             |amend-loss-claim-order.enabled = false
             |""".stripMargin)
 

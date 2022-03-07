@@ -16,14 +16,15 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors._
 import support.UnitSpec
 import v3.models.errors._
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRawData
 
 class RetrieveLossClaimValidatorSpec extends UnitSpec {
 
-  private val validNino     = "AA123456A"
-  private val invalidNino   = "AA123456"
+  private val validNino      = "AA123456A"
+  private val invalidNino    = "AA123456"
   private val validClaimId   = "AAZZ1234567890a"
   private val invalidClaimId = "AAZZ1234567890"
 

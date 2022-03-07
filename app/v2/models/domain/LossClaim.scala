@@ -19,35 +19,33 @@ package v2.models.domain
 import play.api.libs.json.{Json, Reads, Writes}
 import v2.models.requestData.DesTaxYear
 
-case class LossClaim(taxYear: String,
-                     typeOfLoss: TypeOfLoss,
-                     typeOfClaim: TypeOfClaim,
-                     businessId: Option[String])
+case class LossClaim(taxYear: String, typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, businessId: Option[String])
+
 object LossClaim {
   implicit val reads: Reads[LossClaim] = Json.reads[LossClaim]
 
   implicit val writes: Writes[LossClaim] = (claim: LossClaim) => {
     val jsObject = (claim.typeOfLoss.isUkProperty, claim.typeOfLoss.isForeignProperty) match {
-      case (true,_) =>
+      case (true, _) =>
         Json.obj(
           "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+          "reliefClaimed"    -> claim.typeOfClaim.toReliefClaimed,
+          "taxYear"          -> DesTaxYear.fromMtd(claim.taxYear).toString
         )
-      case (_,true) =>
+      case (_, true) =>
         Json.obj(
-          "incomeSourceId" -> claim.businessId,
+          "incomeSourceId"   -> claim.businessId,
           "incomeSourceType" -> claim.typeOfLoss.toIncomeSourceType,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+          "reliefClaimed"    -> claim.typeOfClaim.toReliefClaimed,
+          "taxYear"          -> DesTaxYear.fromMtd(claim.taxYear).toString
         )
-      case (_,_) =>
+      case (_, _) =>
         Json.obj(
           "incomeSourceId" -> claim.businessId,
-          "reliefClaimed" -> claim.typeOfClaim.toReliefClaimed,
-          "taxYear" -> DesTaxYear.fromMtd(claim.taxYear).toString
+          "reliefClaimed"  -> claim.typeOfClaim.toReliefClaimed,
+          "taxYear"        -> DesTaxYear.fromMtd(claim.taxYear).toString
         )
     }
-    if(claim.typeOfLoss == TypeOfLoss.`uk-property-non-fhl`) jsObject - "businessId" else jsObject
+    if (claim.typeOfLoss == TypeOfLoss.`uk-property-non-fhl`) jsObject - "businessId" else jsObject
   }
 }

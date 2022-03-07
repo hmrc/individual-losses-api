@@ -16,12 +16,13 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors._
+import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
-import v3.models.utils.JsonErrorValidators
 
 class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidators {
 
@@ -168,7 +169,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
       }
 
       "invalid body fields are provided" in {
-        val requestBody = mtdRequestWith(items = Seq(item(seq = 2, claimId="bad"), item(1000)))
+        val requestBody = mtdRequestWith(items = Seq(item(seq = 2, claimId = "bad"), item(1000)))
 
         validator.validate(AmendLossClaimsOrderRawData(validNino, validTaxYear, AnyContentAsJson(requestBody))) shouldBe
           List(

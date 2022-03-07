@@ -16,6 +16,7 @@
 
 package v2.connectors.httpparsers
 
+import api.models.errors._
 import play.api.libs.json.Writes.StringWrites
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{FORBIDDEN, INTERNAL_SERVER_ERROR, OK, UNAUTHORIZED}
@@ -23,21 +24,20 @@ import support.UnitSpec
 import uk.gov.hmrc.http.HttpResponse
 import v2.connectors.MtdIdLookupOutcome
 import v2.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
-import v2.models.errors.{DownstreamError, InvalidBearerTokenError, NinoFormatError}
 
 class MtdIdLookupHttpParserSpec extends UnitSpec {
 
   val method = "GET"
-  val url = "test-url"
-  val mtdId = "test-mtd-id"
+  val url    = "test-url"
+  val mtdId  = "test-mtd-id"
 
-  val mtdIdJson: JsObject = Json.obj("mtdbsa" -> mtdId)
-  val invalidJson: JsObject = Json.obj("hello" -> "world")
+  val mtdIdJson: JsObject   = Json.obj("mtdbsa" -> mtdId)
+  val invalidJson: JsObject = Json.obj("hello"  -> "world")
 
   "read" should {
     "return an MtdId" when {
       "the HttpResponse contains a 200 status and a correct response body" in {
-        val response = HttpResponse(OK, mtdIdJson, Map.empty[String, Seq[String]])
+        val response                   = HttpResponse(OK, mtdIdJson, Map.empty[String, Seq[String]])
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Right(mtdId)
@@ -46,30 +46,30 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "returns an downstream error" when {
       "backend doesn't have a valid data" in {
-        val response = HttpResponse(OK, invalidJson, Map.empty[String, Seq[String]])
+        val response                   = HttpResponse(OK, invalidJson, Map.empty[String, Seq[String]])
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(DownstreamError)
+        result shouldBe Left(StandardDownstreamError)
       }
 
       "backend doesn't return any data" in {
-        val response = HttpResponse(OK, "")
+        val response                   = HttpResponse(OK, "")
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(DownstreamError)
+        result shouldBe Left(StandardDownstreamError)
       }
 
       "the json cannot be read" in {
-        val response = HttpResponse(OK, None.orNull)
+        val response                   = HttpResponse(OK, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(DownstreamError)
+        result shouldBe Left(StandardDownstreamError)
       }
     }
 
     "return an InvalidNino error" when {
       "the HttpResponse contains a 403 status" in {
-        val response = HttpResponse(FORBIDDEN, None.orNull)
+        val response                   = HttpResponse(FORBIDDEN, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(NinoFormatError)
@@ -78,7 +78,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return an Unauthorised error" when {
       "the HttpResponse contains a 403 status" in {
-        val response = HttpResponse(UNAUTHORIZED, None.orNull)
+        val response                   = HttpResponse(UNAUTHORIZED, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(InvalidBearerTokenError)
@@ -87,10 +87,10 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return a DownstreamError" when {
       "the HttpResponse contains any other status" in {
-        val response = HttpResponse(INTERNAL_SERVER_ERROR, None.orNull)
+        val response                   = HttpResponse(INTERNAL_SERVER_ERROR, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(DownstreamError)
+        result shouldBe Left(StandardDownstreamError)
       }
     }
   }

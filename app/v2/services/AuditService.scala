@@ -16,7 +16,7 @@
 
 package v2.services
 
-import javax.inject.{Inject, Singleton}
+import api.models.audit.AuditEvent
 import play.api.libs.json.{Json, Writes}
 import play.api.{Configuration, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -24,13 +24,12 @@ import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import uk.gov.hmrc.play.bootstrap.config.AppName
-import v2.models.audit.AuditEvent
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AuditService @Inject()(auditConnector: AuditConnector,
-                             appNameConfiguration: Configuration) {
+class AuditService @Inject()(auditConnector: AuditConnector, appNameConfiguration: Configuration) {
 
   val logger: Logger = Logger(this.getClass)
 
@@ -45,8 +44,9 @@ class AuditService @Inject()(auditConnector: AuditConnector,
       detail = Json.toJson(event.detail),
       tags = eventTags
     )
-    logger.info(s"Audit event :- dataEvent.tags :: ${dataEvent.tags} --  auditSource:: ${dataEvent.auditSource}" +
-      s" --- detail :: ${dataEvent.detail}")
+    logger.info(
+      s"Audit event :- dataEvent.tags :: ${dataEvent.tags} --  auditSource:: ${dataEvent.auditSource}" +
+        s" --- detail :: ${dataEvent.detail}")
     auditConnector.sendExtendedEvent(dataEvent)
   }
 }

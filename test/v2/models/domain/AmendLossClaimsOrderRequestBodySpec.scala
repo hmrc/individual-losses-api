@@ -20,8 +20,7 @@ import play.api.libs.json.Json
 import support.UnitSpec
 
 class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
-  val mtdJson = Json.parse(
-    """{
+  val mtdJson = Json.parse("""{
       |  "claimType": "carry-sideways",
       |  "listOfLossClaims": [
       |    {
@@ -33,13 +32,10 @@ class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
 
   val model = AmendLossClaimsOrderRequestBody(
     claimType = TypeOfClaim.`carry-sideways`,
-    listOfLossClaims = Seq(Claim(
-      id = "id",
-      sequence = 1))
+    listOfLossClaims = Seq(Claim(id = "id", sequence = 1))
   )
 
-  val desJson = Json.parse(
-    """{
+  val desJson = Json.parse("""{
       |  "claimType": "CSGI",
       |  "claimsSequence": [
       |    {

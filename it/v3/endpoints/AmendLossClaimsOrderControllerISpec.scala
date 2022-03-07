@@ -16,6 +16,7 @@
 
 package v3.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -30,14 +31,14 @@ import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
-  val claim1: Claim = Claim("1234567890ABEF1", 1)
-  val claim2: Claim = Claim("1234567890ABCDE", 2)
-  val claim3: Claim = Claim("1234567890ABDE0", 3)
+  val claim1: Claim        = Claim("1234567890ABEF1", 1)
+  val claim2: Claim        = Claim("1234567890ABCDE", 2)
+  val claim3: Claim        = Claim("1234567890ABDE0", 3)
   val claimSeq: Seq[Claim] = Seq(claim2, claim1, claim3)
 
   def requestJson(typeOfClaim: String = TypeOfClaim.`carry-sideways`.toString, listOfLossClaims: Seq[Claim] = claimSeq): JsValue = {
     // resetting custom writes for Seq[Claim] so it doesn't use custom Writes defined in the model
-    def writes: OWrites[Claim] = Json.writes[Claim]
+    def writes: OWrites[Claim]        = Json.writes[Claim]
     def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
     Json.parse(s"""
                   |{
@@ -136,10 +137,10 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(Status.CONFLICT, "CONFLICT_SEQUENCE_START", Status.BAD_REQUEST, RuleInvalidSequenceStart)
       serviceErrorTest(Status.CONFLICT, "CONFLICT_NOT_SEQUENTIAL", Status.BAD_REQUEST, RuleSequenceOrderBroken)
       serviceErrorTest(Status.CONFLICT, "CONFLICT_NOT_FULL_LIST", Status.BAD_REQUEST, RuleLossClaimsMissing)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
       serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "UNPROCESSABLE_ENTITY", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
     }
 
     "handle validation errors according to spec" when {
@@ -172,11 +173,20 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       validationErrorTest("AA123456A", "2017-18", requestJson(), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), Status.BAD_REQUEST, TypeOfClaimFormatError)
       validationErrorTest("AA123456A", "2019-20", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))), Status.BAD_REQUEST,
-        ClaimIdFormatError.copy(paths = Some(Seq("/listOfLossClaims/0/claimId"))))
-      validationErrorTest("AA123456A", "2019-20",
-        requestJson(listOfLossClaims = Range(1, 101).map(Claim("1234567890ABEF1", _))), Status.BAD_REQUEST,
-        ValueFormatError.forPathAndRange("/listOfLossClaims/99/sequence", "1", "99"))
+      validationErrorTest(
+        "AA123456A",
+        "2019-20",
+        requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))),
+        Status.BAD_REQUEST,
+        ClaimIdFormatError.copy(paths = Some(Seq("/listOfLossClaims/0/claimId")))
+      )
+      validationErrorTest(
+        "AA123456A",
+        "2019-20",
+        requestJson(listOfLossClaims = Range(1, 101).map(Claim("1234567890ABEF1", _))),
+        Status.BAD_REQUEST,
+        ValueFormatError.forPathAndRange("/listOfLossClaims/99/sequence", "1", "99")
+      )
       validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim2, claim3)), Status.BAD_REQUEST, RuleInvalidSequenceStart)
       validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1, claim3)), Status.BAD_REQUEST, RuleSequenceOrderBroken)
     }

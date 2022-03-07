@@ -16,14 +16,15 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors._
 import support.UnitSpec
-import v2.models.errors.{ClaimIdFormatError, NinoFormatError}
+import v2.models.errors.ClaimIdFormatError
 import v2.models.requestData
 import v2.models.requestData.DeleteLossClaimRawData
 
-class DeleteLossClaimValidatorSpec extends UnitSpec{
+class DeleteLossClaimValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
+  private val validNino    = "AA123456A"
   private val validClaimId = "AAZZ1234567890a"
 
   val validator = new DeleteLossClaimValidator

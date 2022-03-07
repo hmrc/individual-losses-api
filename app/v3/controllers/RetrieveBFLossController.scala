@@ -16,12 +16,13 @@
 
 package v3.controllers
 
+import api.hateoas.HateoasFactory
+import api.models.errors._
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v3.controllers.requestParsers.RetrieveBFLossParser
-import v3.hateoas.HateoasFactory
 import v3.models.errors._
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRawData
 import v3.models.response.retrieveBFLoss.GetBFLossHateoasData
@@ -72,7 +73,7 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | LossIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError                                         => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError                                       => InternalServerError(Json.toJson(errorWrapper))
+      case StandardDownstreamError                               => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 }

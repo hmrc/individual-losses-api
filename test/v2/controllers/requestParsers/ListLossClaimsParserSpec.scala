@@ -16,19 +16,20 @@
 
 package v2.controllers.requestParsers
 
+import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockListLossClaimsValidator
 import v2.models.des.IncomeSourceType
 import v2.models.domain.{Nino, TypeOfClaim}
-import v2.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
+import v2.models.errors.LossIdFormatError
 import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
 class ListLossClaimsParserSpec extends UnitSpec {
 
-  private val nino        = "AA123456B"
-  private val taxYear     = "2017-18"
-  private val businessId  = "XAIS01234567890"
-  private val claimType   = "carry-sideways"
+  private val nino       = "AA123456B"
+  private val taxYear    = "2017-18"
+  private val businessId = "XAIS01234567890"
+  private val claimType  = "carry-sideways"
 
   trait Test extends MockListLossClaimsValidator {
     lazy val parser = new ListLossClaimsParser(mockValidator)

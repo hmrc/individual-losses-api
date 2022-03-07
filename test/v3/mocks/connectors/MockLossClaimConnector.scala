@@ -16,10 +16,11 @@
 
 package v3.mocks.connectors
 
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.connectors.{DownstreamOutcome, LossClaimConnector}
+import v3.connectors.LossClaimConnector
 import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
 import v3.models.request.createLossClaim.CreateLossClaimRequest
@@ -44,7 +45,8 @@ trait MockLossClaimConnector extends MockFactory {
         .expects(request, *, *)
     }
 
-    def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest): CallHandler[Future[DownstreamOutcome[AmendLossClaimTypeResponse]]] = {
+    def amendLossClaimType(
+        amendLossClaimTypeRequest: AmendLossClaimTypeRequest): CallHandler[Future[DownstreamOutcome[AmendLossClaimTypeResponse]]] = {
       (connector
         .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(amendLossClaimTypeRequest, *, *)

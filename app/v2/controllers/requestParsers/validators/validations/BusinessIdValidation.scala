@@ -16,8 +16,9 @@
 
 package v2.controllers.requestParsers.validators.validations
 
+import api.models.errors.MtdError
 import v2.models.domain.TypeOfLoss
-import v2.models.errors.{BusinessIdFormatError, MtdError, RuleBusinessId}
+import v2.models.errors.{BusinessIdFormatError, RuleBusinessId}
 
 object BusinessIdValidation {
 
@@ -33,8 +34,7 @@ object BusinessIdValidation {
                                      noRuleBusinessIdError: Boolean = false): List[MtdError] = {
     if (typeOfLoss.isUkProperty && !noRuleBusinessIdError) {
       propertyValidationOptional(businessId)
-    }
-    else {
+    } else {
       businessIdValidationOptional(businessId, idOptional, noRuleBusinessIdError)
     }
   }
@@ -47,7 +47,6 @@ object BusinessIdValidation {
       case Some(id)                       => if (id.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
     }
   }
-
 
   private def propertyValidationOptional(businessId: Option[String]): List[MtdError] = {
     if (businessId.isEmpty) NoValidationErrors else List(RuleBusinessId)

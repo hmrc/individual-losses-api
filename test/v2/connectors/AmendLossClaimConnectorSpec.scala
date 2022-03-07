@@ -16,15 +16,15 @@
 
 package v2.connectors
 
-import java.time.LocalDateTime
-
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.models.des._
 import v2.models.domain._
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData._
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
@@ -47,7 +47,7 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, amendLossClaimResponse))
+        val expected = Right(ResponseWrapper(correlationId, amendLossClaimResponse))
 
         MockHttpClient
           .put(
@@ -56,7 +56,8 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
             body = amendLossClaim,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendLossClaimResult(connector) shouldBe expected
       }
@@ -64,7 +65,7 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .put(
@@ -73,7 +74,8 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
             body = amendLossClaim,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendLossClaimResult(connector) shouldBe expected
       }
@@ -81,7 +83,7 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockHttpClient
           .put(
@@ -90,7 +92,8 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
             body = amendLossClaim,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendLossClaimResult(connector) shouldBe expected
       }

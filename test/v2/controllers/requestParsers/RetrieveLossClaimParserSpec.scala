@@ -16,17 +16,18 @@
 
 package v2.controllers.requestParsers
 
+import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockRetrieveLossClaimValidator
 import v2.models.domain.Nino
-import v2.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
+import v2.models.errors.ClaimIdFormatError
 import v2.models.requestData.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
 
 class RetrieveLossClaimParserSpec extends UnitSpec {
 
-  private val nino   = "AA123456A"
+  private val nino    = "AA123456A"
   private val claimId = "AAZZ1234567890a"
-  private val data   = RetrieveLossClaimRawData(nino, claimId)
+  private val data    = RetrieveLossClaimRawData(nino, claimId)
 
   trait Test extends MockRetrieveLossClaimValidator {
     lazy val parser = new RetrieveLossClaimParser(mockValidator)

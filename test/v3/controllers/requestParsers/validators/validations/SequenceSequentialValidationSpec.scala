@@ -17,7 +17,7 @@
 package v3.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v3.models.errors.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken }
+import v3.models.errors.{RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 
 class SequenceSequentialValidationSpec extends UnitSpec {
 

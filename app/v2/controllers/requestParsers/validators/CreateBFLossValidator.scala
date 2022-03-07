@@ -16,10 +16,11 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors.MtdError
 import config.FixedConfig
-import v2.controllers.requestParsers.validators.validations.{TaxYearValidation, _}
+import v2.controllers.requestParsers.validators.validations._
 import v2.models.domain.BFLoss
-import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v2.models.errors.RuleIncorrectOrEmptyBodyError
 import v2.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidator extends Validator[CreateBFLossRawData] with FixedConfig {

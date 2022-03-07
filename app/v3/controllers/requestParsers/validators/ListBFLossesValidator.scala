@@ -16,10 +16,11 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors._
 import config.FixedConfig
 import v3.controllers.requestParsers.validators.validations.{BusinessIdValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation}
 import v3.models.domain.bfLoss.TypeOfLoss._
-import v3.models.errors.{MtdError, TaxYearFormatError, TypeOfLossFormatError}
+import v3.models.errors.TypeOfLossFormatError
 import v3.models.request.listBFLosses.ListBFLossesRawData
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {
@@ -27,7 +28,8 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
   private val validationSet = List(formatValidation, postFormatValidation)
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
-  private val availableLossTypeNames = Seq(`uk-property-fhl`,`uk-property-non-fhl`,`self-employment`,`foreign-property-fhl-eea`,`foreign-property`).map(_.toString)
+  private val availableLossTypeNames =
+    Seq(`uk-property-fhl`, `uk-property-non-fhl`, `self-employment`, `foreign-property-fhl-eea`, `foreign-property`).map(_.toString)
 
   private def formatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
     List(

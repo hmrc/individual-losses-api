@@ -16,12 +16,12 @@
 
 package v3.controllers
 
-import java.util.UUID
-
+import api.models.errors.ErrorWrapper
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v3.models.errors.ErrorWrapper
+
+import java.util.UUID
 
 trait BaseController {
 
@@ -42,16 +42,17 @@ trait BaseController {
 
   protected def getCorrelationId(errorWrapper: ErrorWrapper): String = {
     errorWrapper.correlationId match {
-      case Some(correlationId) => logger.warn(s"[${logger.underlyingLogger}] - " +
-        s"Error received from downstream ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+      case Some(correlationId) =>
+        logger.warn(
+          s"[${logger.underlyingLogger}] - " +
+            s"Error received from downstream ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
       case None =>
         val correlationId = UUID.randomUUID().toString
-        logger.warn(s"[${getClass.getSimpleName}] -" +
-          s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
+        logger.warn(
+          s"[${getClass.getSimpleName}] -" +
+            s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
         correlationId
     }
   }
 }
-
-

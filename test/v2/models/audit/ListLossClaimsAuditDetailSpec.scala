@@ -16,14 +16,14 @@
 
 package v2.models.audit
 
+import api.models.audit.{AuditError, AuditResponse}
 import play.api.libs.json.Json
 import support.UnitSpec
 
 class ListLossClaimsAuditDetailSpec extends UnitSpec {
 
-
-  val nino = "ZG903729C"
-  val wrongNino = "XX751130C"
+  val nino        = "ZG903729C"
+  val wrongNino   = "XX751130C"
   def uri: String = s"/$nino/loss-claims"
 
   "writes" must {

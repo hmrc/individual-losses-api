@@ -16,7 +16,7 @@
 
 package v3.models.request.amendLossClaimType
 
+import api.models.request.RawData
 import play.api.mvc.AnyContentAsJson
-import v3.models.request.RawData
 
 case class AmendLossClaimTypeRawData(nino: String, claimId: String, body: AnyContentAsJson) extends RawData

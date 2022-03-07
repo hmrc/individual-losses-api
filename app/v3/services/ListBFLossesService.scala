@@ -16,12 +16,13 @@
 
 package v3.services
 
-import javax.inject.Inject
+import api.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.BFLossConnector
 import v3.models.errors._
 import v3.models.request.listBFLosses.ListBFLossesRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ListBFLossesService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
@@ -40,7 +41,7 @@ class ListBFLossesService @Inject()(connector: BFLossConnector) extends Downstre
     "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
     "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
     "NOT_FOUND"                 -> NotFoundError,
-    "SERVER_ERROR"              -> DownstreamError,
-    "SERVICE_UNAVAILABLE"       -> DownstreamError
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }

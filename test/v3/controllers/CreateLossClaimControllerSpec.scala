@@ -16,19 +16,21 @@
 
 package v3.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.errors._
+import api.models.hateoas.Method.GET
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v3.mocks.services._
-import v3.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v3.models.domain.Nino
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.hateoas.Method.GET
-import v3.models.hateoas.{HateoasWrapper, Link}
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody}
 import v3.models.response.createLossClaim.{CreateLossClaimHateoasData, CreateLossClaimResponse}
 
@@ -36,7 +38,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateLossClaimControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateLossClaimService
@@ -200,7 +202,7 @@ class CreateLossClaimControllerSpec
     }
 
     errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+    errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     errorsFromServiceTester(RuleDuplicateClaimSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)

@@ -16,23 +16,25 @@
 
 package v2.connectors
 
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.MockHttpClient
 import v2.models.des._
 import v2.models.domain.{AmendBFLoss, BFLoss, Nino, TypeOfLoss}
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData._
 
 import scala.concurrent.Future
 
 class BFLossConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: BFLossConnector = new BFLossConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -54,7 +56,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, CreateBFLossResponse(lossId)))
+        val expected = Right(ResponseWrapper(correlationId, CreateBFLossResponse(lossId)))
 
         MockHttpClient
           .post(
@@ -63,7 +65,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = bfLoss,
             requiredHeaders = requiredDesHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         createBFLossResult(connector) shouldBe expected
       }
@@ -71,7 +74,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .post(
@@ -89,7 +92,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockHttpClient
           .post(
@@ -98,7 +101,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = bfLoss,
             requiredHeaders = requiredDesHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         createBFLossResult(connector) shouldBe expected
       }
@@ -131,7 +135,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, amendBFLossResponse))
+        val expected = Right(ResponseWrapper(correlationId, amendBFLossResponse))
 
         MockHttpClient
           .put(
@@ -140,7 +144,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = amendBFLoss,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
       }
@@ -148,7 +153,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .put(
@@ -157,7 +162,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = amendBFLoss,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
       }
@@ -165,7 +171,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockHttpClient
           .put(
@@ -174,7 +180,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             body = amendBFLoss,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendBFLossResult(connector) shouldBe expected
       }
@@ -194,7 +201,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, ()))
+        val expected = Right(ResponseWrapper(correlationId, ()))
 
         MockHttpClient
           .delete(
@@ -202,7 +209,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteBFLossResult(connector) shouldBe expected
       }
@@ -210,7 +218,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .delete(
@@ -218,7 +226,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteBFLossResult(connector) shouldBe expected
       }
@@ -226,7 +235,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         MockHttpClient
           .delete(
@@ -234,7 +243,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteBFLossResult(connector) shouldBe expected
       }
@@ -273,7 +283,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     "return a successful response and correlationId" when {
 
       "provided with a valid request" in new Test {
-        val expected = Left(DesResponse(correlationId, retrieveResponse))
+        val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
 
         MockHttpClient
           .get(
@@ -281,7 +291,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveBFLossResult(connector) shouldBe expected
       }
@@ -290,7 +301,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     "return an unsuccessful response" when {
 
       "provided with a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .get(
@@ -298,13 +309,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveBFLossResult(connector) shouldBe expected
       }
 
       "provided with multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         MockHttpClient
           .get(
@@ -339,7 +351,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     "return a successful response" when {
 
       "provided with no parameters" in new Test {
-        val expected = Left(DesResponse(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
         MockHttpClient
           .parameterGet(
@@ -348,13 +360,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector) shouldBe expected
       }
 
       "provided with a tax year parameter" in new Test {
-        val expected = Left(DesResponse(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
         MockHttpClient
           .parameterGet(
@@ -363,13 +376,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector = connector, taxYear = Some(DesTaxYear("2019"))) shouldBe expected
       }
 
       "provided with a income source id parameter" in new Test {
-        val expected = Left(DesResponse(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
         MockHttpClient
           .parameterGet(
@@ -378,13 +392,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector = connector, businessId = Some("testId")) shouldBe expected
       }
 
       "provided with a income source type parameter" in new Test {
-        val expected = Left(DesResponse(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
         MockHttpClient
           .parameterGet(
@@ -393,13 +408,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector = connector, incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe expected
       }
 
       "provided with all parameters" in new Test {
-        val expected = Left(DesResponse(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
+        val expected = Left(ResponseWrapper(correlationId, ListBFLossesResponse(Seq(BFLossId("idOne"), BFLossId("idTwo")))))
 
         MockHttpClient
           .parameterGet(
@@ -408,20 +424,20 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
-        listBFLossesResult(
-          connector = connector,
-          taxYear = Some(DesTaxYear("2019")),
-          businessId = Some("testId"),
-          incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe expected
+        listBFLossesResult(connector = connector,
+                           taxYear = Some(DesTaxYear("2019")),
+                           businessId = Some("testId"),
+                           incomeSourceType = Some(IncomeSourceType.`01`)) shouldBe expected
       }
     }
 
     "return an unsuccessful response" when {
 
       "provided with a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .parameterGet(
@@ -430,13 +446,14 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector) shouldBe expected
       }
 
       "provided with multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         MockHttpClient
           .parameterGet(
@@ -445,7 +462,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         listBFLossesResult(connector) shouldBe expected
       }

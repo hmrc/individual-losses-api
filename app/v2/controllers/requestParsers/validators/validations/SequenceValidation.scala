@@ -16,10 +16,12 @@
 
 package v2.controllers.requestParsers.validators.validations
 
-import v2.models.errors.{MtdError, SequenceFormatError}
+import api.models.errors.MtdError
+import v2.models.errors.SequenceFormatError
 
 object SequenceValidation {
+
   def validate(sequence: Int): List[MtdError] = {
-    if (sequence < 1 || sequence > 99) { List(SequenceFormatError) } else { NoValidationErrors}
+    if (sequence < 1 || sequence > 99) { List(SequenceFormatError) } else { NoValidationErrors }
   }
 }

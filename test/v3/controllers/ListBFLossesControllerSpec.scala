@@ -16,18 +16,20 @@
 
 package v3.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.errors._
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockListBFLossesRequestDataParser
 import v3.mocks.services.{MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService}
 import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors._
-import v3.models.hateoas.Method.{GET, POST}
-import v3.models.hateoas.{HateoasWrapper, Link}
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
 import v3.models.response.listBFLosses.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 
@@ -213,7 +215,7 @@ class ListBFLossesControllerSpec
       errorsFromServiceTester(BusinessIdFormatError, BAD_REQUEST)
       errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
 }

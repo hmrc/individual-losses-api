@@ -16,9 +16,11 @@
 
 package v2.controllers.requestParsers.validators.validations
 
-import v2.models.errors.{MtdError, RuleInvalidSequenceStart, RuleSequenceOrderBroken}
+import api.models.errors.MtdError
+import v2.models.errors.{RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 
 object SequenceSequentialValidation {
+
   def validate(sequences: Seq[Int]): List[MtdError] = {
     val sortedList = sequences.sorted
     List(
@@ -28,7 +30,7 @@ object SequenceSequentialValidation {
   }
 
   private def startsWithOne(sortedSequence: Seq[Int]): List[MtdError] = {
-    if(sortedSequence.headOption.getOrElse(0) != 1) {
+    if (sortedSequence.headOption.getOrElse(0) != 1) {
       List(RuleInvalidSequenceStart)
     } else {
       NoValidationErrors
@@ -36,7 +38,7 @@ object SequenceSequentialValidation {
   }
 
   def checkIfSequential: PartialFunction[Seq[Int], (Int, Int)] = {
-    case a :: b :: Nil if b - a != 1 => (a,b)
+    case a :: b :: Nil if b - a != 1 => (a, b)
   }
 
   private def sequenceInOrder(sortedSequence: List[Int]): List[MtdError] = {

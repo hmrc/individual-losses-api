@@ -16,12 +16,13 @@
 
 package v3.services
 
-import javax.inject.Inject
+import api.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.LossClaimConnector
 import v3.models.errors._
 import v3.models.request.createLossClaim.CreateLossClaimRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
@@ -38,14 +39,13 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends Do
   }
 
   private def errorMap: PartialFunction[String, MtdError] = {
-    case "INVALID_TAXABLE_ENTITY_ID"                                => NinoFormatError
-    case "DUPLICATE"                                                => RuleDuplicateClaimSubmissionError
-    case "INCOME_SOURCE_NOT_FOUND"                                  => NotFoundError
-    case "ACCOUNTING_PERIOD_NOT_ENDED"                              => RulePeriodNotEnded
-    case "INVALID_CLAIM_TYPE"                                       => RuleTypeOfClaimInvalid
-    case "TAX_YEAR_NOT_SUPPORTED"                                   => RuleTaxYearNotSupportedError
-    case "NO_ACCOUNTING_PERIOD"                                     => RuleNoAccountingPeriod
-    case "INVALID_PAYLOAD" | "SERVER_ERROR"
-         | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID"          => DownstreamError
+    case "INVALID_TAXABLE_ENTITY_ID"                                                          => NinoFormatError
+    case "DUPLICATE"                                                                          => RuleDuplicateClaimSubmissionError
+    case "INCOME_SOURCE_NOT_FOUND"                                                            => NotFoundError
+    case "ACCOUNTING_PERIOD_NOT_ENDED"                                                        => RulePeriodNotEnded
+    case "INVALID_CLAIM_TYPE"                                                                 => RuleTypeOfClaimInvalid
+    case "TAX_YEAR_NOT_SUPPORTED"                                                             => RuleTaxYearNotSupportedError
+    case "NO_ACCOUNTING_PERIOD"                                                               => RuleNoAccountingPeriod
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" => StandardDownstreamError
   }
 }

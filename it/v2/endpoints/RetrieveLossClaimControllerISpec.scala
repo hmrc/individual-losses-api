@@ -16,6 +16,7 @@
 
 package v2.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -28,7 +29,6 @@ import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 class RetrieveLossClaimControllerISpec extends V2IntegrationBaseSpec {
 
   val correlationId = "X-123"
-
 
   val desResponseJson: JsValue = Json.parse(s"""
        |{
@@ -45,8 +45,7 @@ class RetrieveLossClaimControllerISpec extends V2IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "businessId": "XKIS00000000988",
          |    "typeOfLoss": "self-employment",
@@ -134,8 +133,8 @@ class RetrieveLossClaimControllerISpec extends V2IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
     }
 
     "handle validation errors according to spec" when {

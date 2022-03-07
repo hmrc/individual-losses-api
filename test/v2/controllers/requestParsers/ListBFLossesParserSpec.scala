@@ -16,18 +16,19 @@
 
 package v2.controllers.requestParsers
 
+import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockListBFLossesValidator
 import v2.models.des.IncomeSourceType
 import v2.models.domain.Nino
-import v2.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
+import v2.models.errors.LossIdFormatError
 import v2.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
 
 class ListBFLossesParserSpec extends UnitSpec {
 
-  private val nino        = "AA123456B"
-  private val taxYear     = "2017-18"
-  private val businessId  = "XAIS01234567890"
+  private val nino       = "AA123456B"
+  private val taxYear    = "2017-18"
+  private val businessId = "XAIS01234567890"
 
   trait Test extends MockListBFLossesValidator {
     lazy val parser = new ListBFLossesParser(mockValidator)
@@ -51,12 +52,12 @@ class ListBFLossesParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData) shouldBe
           Right(
-              ListBFLossesRequest(
-                nino = Nino(nino),
-                taxYear = Some(DesTaxYear("2018")),
-                incomeSourceType = Some(IncomeSourceType.`04`),
-                businessId = Some(businessId)
-              )
+            ListBFLossesRequest(
+              nino = Nino(nino),
+              taxYear = Some(DesTaxYear("2018")),
+              incomeSourceType = Some(IncomeSourceType.`04`),
+              businessId = Some(businessId)
+            )
           )
       }
 
@@ -75,11 +76,10 @@ class ListBFLossesParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData) shouldBe
           Right(
-            ListBFLossesRequest(
-              nino = Nino(nino),
-              taxYear = Some(DesTaxYear("2018")),
-              incomeSourceType = Some(IncomeSourceType.`02`),
-              businessId = Some(businessId))
+            ListBFLossesRequest(nino = Nino(nino),
+                                taxYear = Some(DesTaxYear("2018")),
+                                incomeSourceType = Some(IncomeSourceType.`02`),
+                                businessId = Some(businessId))
           )
       }
 

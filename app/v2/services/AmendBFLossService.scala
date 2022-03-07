@@ -16,12 +16,13 @@
 
 package v2.services
 
-import javax.inject.Inject
+import api.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.BFLossConnector
 import v2.models.errors._
 import v2.models.requestData.AmendBFLossRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendBFLossService @Inject()(connector: BFLossConnector) extends DesServiceSupport {
@@ -31,9 +32,7 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends DesServic
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendBFLoss(request: AmendBFLossRequest)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext): Future[AmendBFLossOutcome] = {
+  def amendBFLoss(request: AmendBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendBFLossOutcome] = {
 
     connector.amendBFLoss(request).map {
       mapToVendorDirect("amendBFLoss", mappingDesToMtdError)
@@ -41,13 +40,13 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends DesServic
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] =
-  Map(
-    "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-    "INVALID_LOSS_ID"            -> LossIdFormatError,
-    "NOT_FOUND"                  -> NotFoundError,
-    "CONFLICT"                   -> RuleLossAmountNotChanged,
-    "INVALID_PAYLOAD"            -> DownstreamError,
-    "SERVER_ERROR"               -> DownstreamError,
-    "SERVICE_UNAVAILABLE"        -> DownstreamError
-  )
+    Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "CONFLICT"                  -> RuleLossAmountNotChanged,
+      "INVALID_PAYLOAD"           -> StandardDownstreamError,
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    )
 }

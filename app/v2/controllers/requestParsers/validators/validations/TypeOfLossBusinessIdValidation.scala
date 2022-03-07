@@ -16,8 +16,9 @@
 
 package v2.controllers.requestParsers.validators.validations
 
+import api.models.errors.MtdError
 import v2.models.domain.TypeOfLoss
-import v2.models.errors.{ MtdError, RuleBusinessId }
+import v2.models.errors.RuleBusinessId
 
 object TypeOfLossBusinessIdValidation {
 

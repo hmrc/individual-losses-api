@@ -16,16 +16,16 @@
 
 package v2.models.audit
 
+import api.models.audit.{AuditError, AuditResponse}
 import play.api.libs.json.Json
 import support.UnitSpec
 import v2.models.domain.TypeOfClaim
 
 class AmendLossClaimsOrderAuditDetailSpec extends UnitSpec {
 
-
-  val nino = "ZG903729C"
-  val wrongNino = "XX751130C"
-  val taxYear = Some("2018-19")
+  val nino        = "ZG903729C"
+  val wrongNino   = "XX751130C"
+  val taxYear     = Some("2018-19")
   val typeOfClaim = TypeOfClaim.`carry-forward`
   def uri: String = s"/$nino/brought-forward-losses"
 
@@ -81,8 +81,7 @@ class AmendLossClaimsOrderAuditDetailSpec extends UnitSpec {
             nino = nino,
             taxYear = taxYear,
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
-            request = Json.parse(
-              s"""{
+            request = Json.parse(s"""{
                 | "claimType": "carry-sideways",
                 | "listOfLossClaims": [
                 |      {
@@ -159,8 +158,7 @@ class AmendLossClaimsOrderAuditDetailSpec extends UnitSpec {
             nino = wrongNino,
             taxYear = taxYear,
             `X-CorrelationId` = "a1e8057e-fbbc-47a8-a8b478d9f015c253",
-            request = Json.parse(
-              s"""{
+            request = Json.parse(s"""{
                  | "claimType": "carry-sideways",
                  | "listOfLossClaims": [
                  |      {
@@ -187,4 +185,3 @@ class AmendLossClaimsOrderAuditDetailSpec extends UnitSpec {
     }
   }
 }
-

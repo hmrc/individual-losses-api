@@ -16,19 +16,19 @@
 
 package v3.controllers
 
+import api.hateoas.HateoasFactory
+import api.models.errors._
 import cats.data.EitherT
 import cats.implicits._
-
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v3.controllers.requestParsers.ListLossClaimsParser
-import v3.hateoas.HateoasFactory
 import v3.models.errors._
 import v3.models.request.listLossClaims.ListLossClaimsRawData
 import v3.models.response.listLossClaims.ListLossClaimsHateoasData
 import v3.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -45,9 +45,14 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListLossClaimsController", endpointName = "List Loss Claims")
 
-  def list(nino: String, taxYear: Option[String], typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String]): Action[AnyContent] =
+  def list(nino: String,
+           taxYear: Option[String],
+           typeOfLoss: Option[String],
+           businessId: Option[String],
+           typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      val rawData = ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
+      val rawData =
+        ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listLossClaimsParser.parseRequest(rawData))
@@ -84,16 +89,11 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError |
-           NinoFormatError |
-           TaxYearFormatError |
-           TypeOfLossFormatError |
-           BusinessIdFormatError |
-           RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeInvalid |
-           TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError | RuleTaxYearNotSupportedError |
+          RuleTaxYearRangeInvalid | TypeOfClaimFormatError =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 }

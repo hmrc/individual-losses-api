@@ -16,14 +16,13 @@
 
 package v2.models.des
 
+import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.{AppConfig, FeatureSwitch}
-import play.api.libs.json._
-import v2.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import v2.models.hateoas.{HateoasData, Link}
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v2.models.domain.TypeOfClaim
-
 
 case class LossClaimId(id: String, sequence: Option[Int], typeOfClaim: TypeOfClaim)
 
@@ -34,7 +33,7 @@ object LossClaimId {
     (JsPath \ "claimId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim)
-    )(LossClaimId.apply _)
+  )(LossClaimId.apply _)
 }
 
 case class ListLossClaimsResponse[I](claims: Seq[I])
@@ -54,7 +53,7 @@ object ListLossClaimsResponse extends HateoasLinks {
         createLossClaim(appConfig, data.nino)
       )
 
-      val extraLinks = if(featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino)) else Seq()
+      val extraLinks = if (featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino)) else Seq()
 
       baseLinks ++ extraLinks
     }

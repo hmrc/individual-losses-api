@@ -16,11 +16,11 @@
 
 package v3.models.request.createBFLoss
 
+import api.models.utils.JsonErrorValidators
 import play.api.libs.json._
 import support.UnitSpec
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.createBFLoss
-import v3.models.utils.JsonErrorValidators
 
 class CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators {
 

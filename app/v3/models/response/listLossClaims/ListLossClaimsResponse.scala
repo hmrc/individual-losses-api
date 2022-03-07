@@ -16,11 +16,11 @@
 
 package v3.models.response.listLossClaims
 
+import api.hateoas.{ HateoasLinks, HateoasListLinksFactory }
+import api.models.hateoas.{ HateoasData, Link }
 import cats.Functor
-import config.{AppConfig, FeatureSwitch}
+import config.{ AppConfig, FeatureSwitch }
 import play.api.libs.json._
-import v3.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import v3.models.hateoas.{HateoasData, Link}
 
 case class ListLossClaimsResponse[I](claims: Seq[I])
 

@@ -43,28 +43,28 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
   "Calling .write" should {
 
     val testData = Map(
-      "CF" -> TypeOfClaim.`carry-forward`,
-      "CSGI" -> TypeOfClaim.`carry-sideways`,
+      "CF"     -> TypeOfClaim.`carry-forward`,
+      "CSGI"   -> TypeOfClaim.`carry-sideways`,
       "CFCSGI" -> TypeOfClaim.`carry-forward-to-carry-sideways`,
-      "CSFHL" -> TypeOfClaim.`carry-sideways-fhl`)
+      "CSFHL"  -> TypeOfClaim.`carry-sideways-fhl`
+    )
 
     "produce the correct Json for downstream submission" when {
 
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
           Json.toJson(AmendLossClaimTypeRequestBody(test._2)) shouldBe downstreamJson(test._1)
-        }
-      )
+      })
     }
   }
 
   "Calling .read" should {
 
     val testData = Map(
-      "carry-forward" -> `carry-forward`,
-      "carry-sideways" -> `carry-sideways`,
+      "carry-forward"                   -> `carry-forward`,
+      "carry-sideways"                  -> `carry-sideways`,
       "carry-forward-to-carry-sideways" -> `carry-forward-to-carry-sideways`,
-      "carry-sideways-fhl" -> `carry-sideways-fhl`
+      "carry-sideways-fhl"              -> `carry-sideways-fhl`
     )
 
     "produce the correct model from MTD submission json" when {
@@ -72,8 +72,7 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._1}" in {
           mtdJson(test._1).as[AmendLossClaimTypeRequestBody] shouldBe amendLossClaimType.AmendLossClaimTypeRequestBody(test._2)
-        }
-      )
+      })
     }
   }
 }

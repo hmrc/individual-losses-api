@@ -16,7 +16,7 @@
 
 package v3.models.request.createBFLoss
 
+import api.models.request.RawData
 import play.api.mvc.AnyContentAsJson
-import v3.models.request.RawData
 
 case class CreateBFLossRawData(nino: String, body: AnyContentAsJson) extends RawData

@@ -20,9 +20,9 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient, HttpReads }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockHttpClient extends MockFactory {
 
@@ -38,13 +38,18 @@ trait MockHttpClient extends MockFactory {
       (mockHttpClient
         .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
         .expects(assertArgs {
-          (actualUrl: String, actualParams: Seq[(String, String)], _: Seq[(String, String)], _: HttpReads[T], hc: HeaderCarrier, _: ExecutionContext) =>
+          (actualUrl: String,
+           actualParams: Seq[(String, String)],
+           _: Seq[(String, String)],
+           _: HttpReads[T],
+           hc: HeaderCarrier,
+           _: ExecutionContext) =>
             {
               actualUrl shouldBe url
               actualParams shouldBe parameters
 
               val headersForUrl = hc.headersForUrl(config)(actualUrl)
-              assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
+              assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
             }
         })
     }
@@ -62,7 +67,7 @@ trait MockHttpClient extends MockFactory {
             actualBody shouldBe body
 
             val headersForUrl = hc.headersForUrl(config)(actualUrl)
-            assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
+            assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
           }
         })
     }
@@ -80,7 +85,7 @@ trait MockHttpClient extends MockFactory {
             actualBody shouldBe body
 
             val headersForUrl = hc.headersForUrl(config)(actualUrl)
-            assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
+            assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
           }
         })
     }
@@ -96,15 +101,14 @@ trait MockHttpClient extends MockFactory {
             actualUrl shouldBe url
 
             val headersForUrl = hc.headersForUrl(config)(actualUrl)
-            assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
+            assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
           }
         })
     }
 
-    private def assertHeaders[T, I](
-                                     actualHeaders: Seq[(String, String)],
-                                     requiredHeaders: Seq[(String, String)],
-                                     excludedHeaders: Seq[(String, String)]) = {
+    private def assertHeaders[T, I](actualHeaders: Seq[(String, String)],
+                                    requiredHeaders: Seq[(String, String)],
+                                    excludedHeaders: Seq[(String, String)]) = {
 
       actualHeaders should contain allElementsOf requiredHeaders
       actualHeaders should contain noElementsOf excludedHeaders
