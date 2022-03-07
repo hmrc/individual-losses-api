@@ -18,6 +18,7 @@ package v2.controllers
 
 import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.MockMtdIdLookupService
 import api.models.errors._
 import api.models.hateoas.Method.{ GET, POST }
 import api.models.hateoas.{ HateoasWrapper, Link }
@@ -26,7 +27,7 @@ import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService, MockMtdIdLookupService }
+import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService }
 import v2.models.des.{ BFLossId, ListBFLossHateoasData, ListBFLossesResponse }
 import v2.models.domain.Nino
 import v2.models.errors._

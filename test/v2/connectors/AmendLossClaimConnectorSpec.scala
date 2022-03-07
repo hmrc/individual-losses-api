@@ -16,6 +16,7 @@
 
 package v2.connectors
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
@@ -99,7 +100,7 @@ class AmendLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def amendLossClaimResult(connector: LossClaimConnector): DesOutcome[LossClaimResponse] =
+    def amendLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[LossClaimResponse] =
       await(
         connector.amendLossClaim(
           AmendLossClaimRequest(

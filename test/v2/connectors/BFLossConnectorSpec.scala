@@ -16,13 +16,14 @@
 
 package v2.connectors
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.MockHttpClient
 import v2.models.des._
-import v2.models.domain.{AmendBFLoss, BFLoss, Nino, TypeOfLoss}
+import v2.models.domain.{ AmendBFLoss, BFLoss, Nino, TypeOfLoss }
 import v2.models.errors._
 import v2.models.requestData._
 
@@ -108,7 +109,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def createBFLossResult(connector: BFLossConnector): DesOutcome[CreateBFLossResponse] =
+    def createBFLossResult(connector: BFLossConnector): DownstreamOutcome[CreateBFLossResponse] =
       await(
         connector.createBFLoss(
           CreateBFLossRequest(
@@ -187,7 +188,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def amendBFLossResult(connector: BFLossConnector): DesOutcome[BFLossResponse] =
+    def amendBFLossResult(connector: BFLossConnector): DownstreamOutcome[BFLossResponse] =
       await(
         connector.amendBFLoss(
           AmendBFLossRequest(
@@ -250,7 +251,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       }
     }
 
-    def deleteBFLossResult(connector: BFLossConnector): DesOutcome[Unit] =
+    def deleteBFLossResult(connector: BFLossConnector): DownstreamOutcome[Unit] =
       await(
         connector.deleteBFLoss(
           DeleteBFLossRequest(
@@ -269,7 +270,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       lastModified = "dateString"
     )
 
-    def retrieveBFLossResult(connector: BFLossConnector): DesOutcome[BFLossResponse] = {
+    def retrieveBFLossResult(connector: BFLossConnector): DownstreamOutcome[BFLossResponse] = {
       await(
         connector.retrieveBFLoss(
           RetrieveBFLossRequest(
@@ -337,7 +338,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     def listBFLossesResult(connector: BFLossConnector,
                            taxYear: Option[DesTaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
-                           businessId: Option[String] = None): DesOutcome[ListBFLossesResponse[BFLossId]] = {
+                           businessId: Option[String] = None): DownstreamOutcome[ListBFLossesResponse[BFLossId]] = {
       await(
         connector.listBFLosses(
           ListBFLossesRequest(

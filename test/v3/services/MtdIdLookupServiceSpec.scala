@@ -18,6 +18,7 @@ package v3.services
 
 import api.mocks.connectors.MockMtdIdLookupConnector
 import api.models.errors._
+import api.services.MtdIdLookupService
 
 import scala.concurrent.Future
 

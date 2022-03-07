@@ -20,16 +20,12 @@ object NinoFormatError    extends MtdError("FORMAT_NINO", "The provided NINO is 
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 
 //Standard Errors
-object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
-
-// renamed to avoid name-clash with DownstreamError (which replaces v3 IfsError & v2 DesError):
+object NotFoundError           extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 object StandardDownstreamError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred")
-
 object BadRequestError         extends MtdError("INVALID_REQUEST", "Invalid request")
 object BVRError                extends MtdError("BUSINESS_ERROR", "Business validation error")
 object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error")
-
-object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")
+object InvalidBodyTypeError    extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")
 
 //Authorisation Errors
 object UnauthorisedError       extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised")

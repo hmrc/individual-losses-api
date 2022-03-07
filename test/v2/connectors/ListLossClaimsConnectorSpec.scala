@@ -16,10 +16,11 @@
 
 package v2.connectors
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v2.models.des._
-import v2.models.domain.{Nino, TypeOfClaim}
+import v2.models.domain.{ Nino, TypeOfClaim }
 import v2.models.requestData._
 
 import scala.concurrent.Future
@@ -214,7 +215,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
                              taxYear: Option[DesTaxYear] = None,
                              incomeSourceType: Option[IncomeSourceType] = None,
                              businessId: Option[String] = None,
-                             claimType: Option[TypeOfClaim] = None): DesOutcome[ListLossClaimsResponse[LossClaimId]] =
+                             claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[LossClaimId]] =
       await(
         connector.listLossClaims(
           ListLossClaimsRequest(

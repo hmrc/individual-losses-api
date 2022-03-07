@@ -19,6 +19,7 @@ package v3.controllers
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
+import api.services.MtdIdLookupService
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes

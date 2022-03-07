@@ -54,22 +54,3 @@ object RuleNoAccountingPeriod   extends MtdError("RULE_NO_ACCOUNTING_PERIOD", "F
 object RuleInvalidSequenceStart extends MtdError("RULE_INVALID_SEQUENCE_START", "The sequence does not begin with 1")
 object RuleSequenceOrderBroken  extends MtdError("RULE_SEQUENCE_ORDER_BROKEN", "The sequence is not continuous")
 object RuleLossClaimsMissing    extends MtdError("RULE_LOSS_CLAIMS_MISSING", "One or more loss claims missing from this request")
-
-////Standard Errors
-//object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
-//
-//object StandardDownstreamError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred")
-//
-//object BadRequestError extends MtdError("INVALID_REQUEST", "Invalid request")
-//object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error")
-//object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error")
-//
-//object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")
-//
-////Authorisation Errors
-//object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised")
-//object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized")
-//
-//// Accept header Errors
-//object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
-//object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")

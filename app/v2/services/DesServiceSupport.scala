@@ -16,10 +16,10 @@
 
 package v2.services
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.Logger
-import v2.connectors.DesOutcome
 
 trait DesServiceSupport {
 
@@ -49,14 +49,14 @@ trait DesServiceSupport {
     * @return the function to map outcomes
     */
   final def mapToVendor[D, V](endpointName: String, errorMap: PartialFunction[String, MtdError])(success: ResponseWrapper[D] => VendorOutcome[V])(
-      desOutcome: DesOutcome[D]): VendorOutcome[V] = {
+      downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[V] = {
 
     lazy val defaultErrorMapping: String => MtdError = { code =>
       logger.warn(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
       StandardDownstreamError
     }
 
-    desOutcome match {
+    downstreamOutcome match {
       case Right(desResponse) => success(desResponse)
 
       case Left(ResponseWrapper(correlationId, MultipleErrors(errors))) =>
@@ -92,9 +92,10 @@ trait DesServiceSupport {
     * @tparam D the DES response domain object type
     * @return the function to map outcomes
     */
-  final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, MtdError])(desOutcome: DesOutcome[D]): VendorOutcome[D] =
+  final def mapToVendorDirect[D](endpointName: String, errorMap: PartialFunction[String, MtdError])(
+      downstreamOutcome: DownstreamOutcome[D]): VendorOutcome[D] =
     mapToVendor[D, D](endpointName, errorMap) { desResponse =>
       Right(ResponseWrapper(desResponse.correlationId, desResponse.responseData))
-    }(desOutcome)
+    }(downstreamOutcome)
 
 }

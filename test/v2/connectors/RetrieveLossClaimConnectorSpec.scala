@@ -16,6 +16,7 @@
 
 package v2.connectors
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v2.models.des._
@@ -44,7 +45,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
       testDateTime.toString
     )
 
-    def retrieveLossClaimResult(connector: LossClaimConnector): DesOutcome[LossClaimResponse] = {
+    def retrieveLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[LossClaimResponse] = {
       await(
         connector.retrieveLossClaim(
           RetrieveLossClaimRequest(

@@ -18,6 +18,7 @@ package v2.controllers
 
 import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.MockMtdIdLookupService
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
 import api.models.errors._
 import api.models.hateoas.Method.GET

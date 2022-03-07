@@ -18,6 +18,7 @@ package v3.controllers
 
 import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.MockMtdIdLookupService
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
@@ -26,7 +27,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockRetrieveLossClaimRequestDataParser
-import v3.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveLossClaimService}
+import v3.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockRetrieveLossClaimService}
 import v3.models.domain.Nino
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._

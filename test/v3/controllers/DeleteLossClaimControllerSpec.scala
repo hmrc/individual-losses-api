@@ -17,6 +17,7 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.mocks.services.MockMtdIdLookupService
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -24,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
-import v3.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v3.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService}
 import v3.models.domain.Nino
 import v3.models.errors._
 import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}

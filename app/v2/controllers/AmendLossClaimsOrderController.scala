@@ -16,24 +16,25 @@
 
 package v2.controllers
 
-import api.models.audit.{AuditEvent, AuditResponse}
+import api.hateoas.HateoasFactory
+import api.models.audit.{ AuditEvent, AuditResponse }
 import api.models.errors._
+import api.services.MtdIdLookupService
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.AmendLossClaimsOrderParser
-import api.hateoas.HateoasFactory
 import v2.models.audit.AmendLossClaimsOrderAuditDetail
 import v2.models.des.AmendLossClaimsOrderHateoasData
 import v2.models.errors._
 import v2.models.requestData.AmendLossClaimsOrderRawData
-import v2.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import v2.services.{ AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthService,

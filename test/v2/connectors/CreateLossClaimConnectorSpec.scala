@@ -16,6 +16,7 @@
 
 package v2.connectors
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
@@ -94,7 +95,7 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def createLossClaimsResult(connector: LossClaimConnector): DesOutcome[CreateLossClaimResponse] =
+    def createLossClaimsResult(connector: LossClaimConnector): DownstreamOutcome[CreateLossClaimResponse] =
       await(
         connector.createLossClaim(
           CreateLossClaimRequest(

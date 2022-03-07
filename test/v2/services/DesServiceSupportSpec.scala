@@ -16,11 +16,11 @@
 
 package v2.services
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import cats.syntax.either._
 import support.UnitSpec
-import v2.connectors.DesOutcome
 
 class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
 
@@ -99,7 +99,7 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
     }
   }
 
-  private def singleErrorBehaveCorrectly(handler: DesOutcome[D] => VendorOutcome[D]): Unit = {
+  private def singleErrorBehaveCorrectly(handler: DownstreamOutcome[D] => VendorOutcome[D]): Unit = {
     "a single error" must {
       "use the error mapping and return a single mtd error" in {
         val singleErrorResponse = ResponseWrapper(correlationId, SingleError(desError1)).asLeft
@@ -128,7 +128,7 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
     }
   }
 
-  private def multipleErrorsBehaveCorrectly(handler: DesOutcome[D] => VendorOutcome[D]): Unit = {
+  private def multipleErrorsBehaveCorrectly(handler: DownstreamOutcome[D] => VendorOutcome[D]): Unit = {
     "multiple errors" must {
       "use the error mapping for each and return multiple mtd errors" in {
         val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(desError1, desError2))).asLeft

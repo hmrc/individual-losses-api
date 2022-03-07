@@ -16,10 +16,11 @@
 
 package v2.connectors
 
+import api.connectors.DownstreamOutcome
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
-import v2.models.requestData.{AmendLossClaimsOrderRequest, DesTaxYear}
+import v2.models.domain.{ AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim }
+import v2.models.requestData.{ AmendLossClaimsOrderRequest, DesTaxYear }
 
 import scala.concurrent.Future
 
@@ -59,7 +60,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def amendLossClaimsOrderResult(connector: LossClaimConnector): DesOutcome[Unit] =
+    def amendLossClaimsOrderResult(connector: LossClaimConnector): DownstreamOutcome[Unit] =
       await(
         connector.amendLossClaimsOrder(
           AmendLossClaimsOrderRequest(

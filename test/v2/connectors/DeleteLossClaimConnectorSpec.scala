@@ -16,6 +16,7 @@
 
 package v2.connectors
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v2.models.domain.Nino
@@ -79,7 +80,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
       }
     }
 
-    def deleteLossClaimResult(connector: LossClaimConnector): DesOutcome[Unit] =
+    def deleteLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[Unit] =
       await(
         connector.deleteLossClaim(
           DeleteLossClaimRequest(

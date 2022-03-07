@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v2.connectors.httpparsers
+package api.connectors.httpparsers
 
+import api.connectors.DownstreamOutcome
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, Reads}
 import support.UnitSpec
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import v2.connectors.DesOutcome
 
 // WLOG if Reads tested elsewhere
 case class SomeModel(data: String)
@@ -31,30 +31,29 @@ object SomeModel {
   implicit val reads: Reads[SomeModel] = Json.reads
 }
 
-class StandardDesHttpParserSpec extends UnitSpec {
+class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   val method = "POST"
   val url    = "test-url"
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  import v2.connectors.httpparsers.StandardDesHttpParser._
+  import api.connectors.httpparsers.StandardDownstreamHttpParser._
+  val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
-  val httpReads: HttpReads[DesOutcome[Unit]] = implicitly
+  val data                            = "someData"
+  val downstreamExpectedJson: JsValue = Json.obj("data" -> data)
 
-  val data                     = "someData"
-  val desExpectedJson: JsValue = Json.obj("data" -> data)
-
-  val desModel: SomeModel                     = SomeModel(data)
-  val desResponse: ResponseWrapper[SomeModel] = ResponseWrapper(correlationId, desModel)
+  val downstreamModel: SomeModel                     = SomeModel(data)
+  val downstreamResponse: ResponseWrapper[SomeModel] = ResponseWrapper(correlationId, downstreamModel)
 
   "The generic HTTP parser" when {
-    val httpReads: HttpReads[DesOutcome[SomeModel]] = implicitly
+    val httpReads: HttpReads[DownstreamOutcome[SomeModel]] = implicitly
 
-    "return a Right DES response containing the model object if the response json corresponds to a model object" in {
-      val httpResponse = HttpResponse(OK, desExpectedJson, Map("CorrelationId" -> Seq(correlationId)))
+    "return a Right downstream response containing the model object if the response json corresponds to a model object" in {
+      val httpResponse = HttpResponse(OK, downstreamExpectedJson, Map("CorrelationId" -> Seq(correlationId)))
 
-      httpReads.read(method, url, httpResponse) shouldBe Right(desResponse)
+      httpReads.read(method, url, httpResponse) shouldBe Right(downstreamResponse)
     }
 
     "return an outbound error if a model object cannot be read from the response json" in {
@@ -71,10 +70,10 @@ class StandardDesHttpParserSpec extends UnitSpec {
   }
 
   "The generic HTTP parser for empty response" when {
-    val httpReads: HttpReads[DesOutcome[Unit]] = implicitly
+    val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
     "receiving a 204 response" should {
-      "return a Right DesResponse with the correct correlationId and no responseData" in {
+      "return a Right ResponseWrapper with the correct correlationId and no responseData" in {
         val httpResponse = HttpResponse(NO_CONTENT, "", Map("CorrelationId" -> Seq(correlationId)))
 
         httpReads.read(method, url, httpResponse) shouldBe Right(ResponseWrapper(correlationId, ()))
@@ -134,7 +133,7 @@ class StandardDesHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private def handleErrorsCorrectly[A](httpReads: HttpReads[DesOutcome[A]]): Unit =
+  private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     Seq(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, UNPROCESSABLE_ENTITY).foreach(
       responseCode =>
         s"receiving a $responseCode response" should {
@@ -168,7 +167,7 @@ class StandardDesHttpParserSpec extends UnitSpec {
       }
     )
 
-  private def handleInternalErrorsCorrectly[A](httpReads: HttpReads[DesOutcome[A]]): Unit =
+  private def handleInternalErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     Seq(INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE).foreach(responseCode =>
       s"receiving a $responseCode response" should {
         "return an outbound error when the error returned matches the Error model" in {
@@ -184,7 +183,7 @@ class StandardDesHttpParserSpec extends UnitSpec {
         }
     })
 
-  private def handleUnexpectedResponse[A](httpReads: HttpReads[DesOutcome[A]]): Unit =
+  private def handleUnexpectedResponse[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     "receiving an unexpected response" should {
       val responseCode = 499
       "return an outbound error when the error returned matches the Error model" in {

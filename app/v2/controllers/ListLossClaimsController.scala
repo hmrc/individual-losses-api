@@ -16,23 +16,24 @@
 
 package v2.controllers
 
-import api.models.audit.{AuditEvent, AuditResponse}
+import api.hateoas.HateoasFactory
+import api.models.audit.{ AuditEvent, AuditResponse }
 import api.models.errors._
+import api.services.MtdIdLookupService
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.ListLossClaimsParser
-import api.hateoas.HateoasFactory
 import v2.models.audit.ListLossClaimsAuditDetail
 import v2.models.des.ListLossClaimsHateoasData
 import v2.models.errors._
 import v2.models.requestData.ListLossClaimsRawData
 import v2.services._
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
