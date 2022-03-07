@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.RetrieveLossClaimValidator
-import v2.models.domain.Nino
 import v2.models.requestData._
 
 import javax.inject.Inject

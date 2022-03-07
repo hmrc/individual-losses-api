@@ -17,9 +17,9 @@
 package v3.connectors
 
 import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v3.models.domain.Nino
 import v3.models.errors._
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
 

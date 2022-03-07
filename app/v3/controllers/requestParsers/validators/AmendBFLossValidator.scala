@@ -16,8 +16,9 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors.MtdError
-import v3.controllers.requestParsers.validators.validations.{JsonFormatValidation, LossIdValidation, NinoValidation, NumberValidation}
+import v3.controllers.requestParsers.validators.validations.{JsonFormatValidation, LossIdValidation, NumberValidation}
 import v3.models.request.amendBFLoss.{AmendBFLossRawData, AmendBFLossRequestBody}
 
 import javax.inject.Singleton

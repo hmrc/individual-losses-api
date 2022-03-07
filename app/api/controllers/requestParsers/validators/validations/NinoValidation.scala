@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package v3.controllers.requestParsers.validators.validations
+package api.controllers.requestParsers.validators.validations
 
-import api.models.errors._
-import v3.models.domain.Nino
+import api.models.domain.Nino
+import api.models.errors.{MtdError, NinoFormatError}
+import v3.controllers.requestParsers.validators.validations.NoValidationErrors
 
 object NinoValidation {
 

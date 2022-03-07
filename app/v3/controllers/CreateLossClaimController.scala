@@ -19,7 +19,7 @@ package v3.controllers
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
-import api.services.MtdIdLookupService
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
@@ -103,7 +103,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
+    errorWrapper.error match {
       case BadRequestError | NinoFormatError | TaxYearClaimedForFormatError | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) |
           RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalid | TypeOfLossFormatError | BusinessIdFormatError | RuleTypeOfClaimInvalid |
           TypeOfClaimFormatError | MtdErrorWithCode(TaxYearClaimedForFormatError.code) | MtdErrorWithCode(RuleTaxYearRangeInvalid.code) =>

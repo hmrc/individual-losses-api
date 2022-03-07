@@ -21,10 +21,10 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
-import v2.models.des.{ CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse }
+import v2.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
 import v2.models.requestData._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockLossClaimConnector extends MockFactory {
   val connector: LossClaimConnector = mock[LossClaimConnector]

@@ -16,6 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors.MtdError
 import config.FixedConfig
 import v2.controllers.requestParsers.validators.validations._

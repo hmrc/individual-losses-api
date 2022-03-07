@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.services
+package api.services
 
 import api.models.auth.UserDetails
 import api.models.errors._
@@ -69,6 +69,10 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
             logger.warn(s"[EnrolmentsAuthService][authorised] No AgentReferenceNumber defined on agent enrolment.")
             Left(StandardDownstreamError)
         }
+      case unexpected =>
+        logger.error(s"[EnrolmentsAuthService][authorised] Unexpected AuthorisedFunction: $unexpected")
+        Future.successful(Left(StandardDownstreamError))
+
     } recoverWith {
       case _: MissingBearerToken     => Future.successful(Left(UnauthorisedError))
       case _: AuthorisationException => Future.successful(Left(UnauthorisedError))

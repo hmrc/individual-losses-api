@@ -17,9 +17,9 @@
 package v2.connectors
 
 import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v2.models.domain.Nino
 import v2.models.errors._
 import v2.models.requestData._
 

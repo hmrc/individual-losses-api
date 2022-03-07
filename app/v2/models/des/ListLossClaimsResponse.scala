@@ -16,12 +16,12 @@
 
 package v2.models.des
 
+import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.{AppConfig, FeatureSwitch}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v2.models.domain.TypeOfClaim
 
 case class LossClaimId(id: String, sequence: Option[Int], typeOfClaim: TypeOfClaim)

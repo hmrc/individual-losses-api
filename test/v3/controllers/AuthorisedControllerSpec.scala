@@ -19,14 +19,13 @@ package v3.controllers
 import api.controllers.ControllerBaseSpec
 import api.mocks.services.MockMtdIdLookupService
 import api.models.errors._
-import api.services.MtdIdLookupService
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.services.MockEnrolmentsAuthService
-import v3.services.EnrolmentsAuthService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

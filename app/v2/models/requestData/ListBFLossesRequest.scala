@@ -16,7 +16,7 @@
 
 package v2.models.requestData
 
+import api.models.domain.Nino
 import v2.models.des.IncomeSourceType
-import v2.models.domain.Nino
 
 case class ListBFLossesRequest(nino: Nino, taxYear: Option[DesTaxYear], incomeSourceType: Option[IncomeSourceType], businessId: Option[String])

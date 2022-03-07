@@ -16,11 +16,11 @@
 
 package v2.models.des
 
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
-import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v2.models.domain.{TypeOfClaim, TypeOfLoss}
 import v2.models.requestData.DesTaxYear
 

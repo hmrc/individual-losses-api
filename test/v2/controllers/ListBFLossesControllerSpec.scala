@@ -19,19 +19,19 @@ package v2.controllers
 import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockMtdIdLookupService
+import api.models.domain.Nino
 import api.models.errors._
-import api.models.hateoas.Method.{ GET, POST }
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockListBFLossesRequestDataParser
-import v2.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService }
-import v2.models.des.{ BFLossId, ListBFLossHateoasData, ListBFLossesResponse }
-import v2.models.domain.Nino
+import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListBFLossesService}
+import v2.models.des.{BFLossId, ListBFLossHateoasData, ListBFLossesResponse}
 import v2.models.errors._
-import v2.models.requestData.{ DesTaxYear, ListBFLossesRawData, ListBFLossesRequest }
+import v2.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

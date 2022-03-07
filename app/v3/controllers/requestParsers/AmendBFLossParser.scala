@@ -16,8 +16,8 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
 import v3.controllers.requestParsers.validators.AmendBFLossValidator
-import v3.models.domain.Nino
 import v3.models.request.amendBFLoss.{AmendBFLossRawData, AmendBFLossRequest, AmendBFLossRequestBody}
 
 import javax.inject.Inject

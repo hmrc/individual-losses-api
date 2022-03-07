@@ -17,7 +17,7 @@
 package v3.models.response.amendLossClaimsOrder
 
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{ GET, PUT }
+import api.models.hateoas.Method.{GET, PUT}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec

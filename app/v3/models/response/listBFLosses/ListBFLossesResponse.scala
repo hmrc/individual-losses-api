@@ -16,8 +16,8 @@
 
 package v3.models.response.listBFLosses
 
-import api.hateoas.{ HateoasLinks, HateoasListLinksFactory }
-import api.models.hateoas.{ HateoasData, Link }
+import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json._

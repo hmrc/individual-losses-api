@@ -16,6 +16,6 @@
 
 package v3.models.request.amendBFLoss
 
-import v3.models.domain.Nino
+import api.models.domain.Nino
 
 case class AmendBFLossRequest(nino: Nino, lossId: String, amendBroughtForwardLoss: AmendBFLossRequestBody)

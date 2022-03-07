@@ -16,13 +16,13 @@
 
 package v3.models.response.amendLossClaimType
 
-import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
-import api.models.hateoas.{ HateoasData, Link }
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v3.models.domain._
-import v3.models.domain.lossClaim.{ IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss }
+import v3.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 
 case class AmendLossClaimTypeResponse(taxYearClaimedFor: String,
                                       typeOfLoss: TypeOfLoss,

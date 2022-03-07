@@ -17,14 +17,14 @@
 package v2.controllers
 
 import api.hateoas.HateoasFactory
-import api.models.audit.{ AuditEvent, AuditResponse }
+import api.models.audit.{AuditEvent, AuditResponse}
 import api.models.errors._
-import api.services.MtdIdLookupService
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.CreateLossClaimParser
 import v2.models.audit.CreateLossClaimAuditDetail
@@ -33,8 +33,8 @@ import v2.models.errors._
 import v2.models.requestData.CreateLossClaimRawData
 import v2.services._
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService,
@@ -97,7 +97,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
+    errorWrapper.error match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleIncorrectOrEmptyBodyError | RuleTaxYearNotSupportedError |
           RuleTaxYearRangeInvalid | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId | RuleTypeOfClaimInvalid | TypeOfClaimFormatError |
           MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(RuleTaxYearRangeInvalid.code) =>

@@ -18,18 +18,18 @@ package v2.controllers
 
 import api.controllers.ControllerBaseSpec
 import api.mocks.services.MockMtdIdLookupService
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
+import api.models.audit.{AuditError, AuditEvent, AuditResponse}
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
-import v2.mocks.services.{ MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService }
+import v2.mocks.services.{MockAuditService, MockDeleteLossClaimService, MockEnrolmentsAuthService}
 import v2.models.audit.DeleteLossClaimAuditDetail
-import v2.models.domain.Nino
 import v2.models.errors._
-import v2.models.requestData.{ DeleteLossClaimRawData, DeleteLossClaimRequest }
+import v2.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

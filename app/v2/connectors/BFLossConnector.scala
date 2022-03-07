@@ -19,13 +19,13 @@ package v2.connectors
 import api.connectors.DownstreamOutcome
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import config.AppConfig
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
-import v2.models.des.{ BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
-import v2.models.domain.{ AmendBFLoss, BFLoss }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v2.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
+import v2.models.domain.{AmendBFLoss, BFLoss}
 import v2.models.requestData._
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {

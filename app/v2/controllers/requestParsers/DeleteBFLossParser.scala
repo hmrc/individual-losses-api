@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.DeleteBFLossValidator
-import v2.models.domain.Nino
 import v2.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
 
 import javax.inject.Inject

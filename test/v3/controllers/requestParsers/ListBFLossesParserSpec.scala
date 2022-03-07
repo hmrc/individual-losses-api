@@ -16,11 +16,12 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v3.mocks.validators.MockListBFLossesValidator
+import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.bfLoss.IncomeSourceType
-import v3.models.domain.{DownstreamTaxYear, Nino}
 import v3.models.errors.LossIdFormatError
 import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
 

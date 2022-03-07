@@ -18,7 +18,7 @@ package v3.controllers
 
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
-import api.services.MtdIdLookupService
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
@@ -91,10 +91,11 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
+    errorWrapper.error match {
       case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
       case StandardDownstreamError                                => InternalServerError(Json.toJson(errorWrapper))
+      case _                                                      => unhandledError(errorWrapper)
     }
   }
 

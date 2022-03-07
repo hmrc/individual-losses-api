@@ -16,11 +16,12 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockListLossClaimsValidator
 import v2.models.des.IncomeSourceType
-import v2.models.domain.{Nino, TypeOfClaim}
+import v2.models.domain.TypeOfClaim
 import v2.models.errors.LossIdFormatError
 import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 

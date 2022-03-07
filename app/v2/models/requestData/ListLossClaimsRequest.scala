@@ -16,8 +16,9 @@
 
 package v2.models.requestData
 
+import api.models.domain.Nino
 import v2.models.des.IncomeSourceType
-import v2.models.domain.{Nino, TypeOfClaim}
+import v2.models.domain.TypeOfClaim
 
 case class ListLossClaimsRequest(nino: Nino,
                                  taxYear: Option[DesTaxYear],

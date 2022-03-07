@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package v2.models.domain
+package api.models.domain
+
 case class Nino(nino: String) {
   require(Nino.isValid(nino), s"$nino is not a valid nino.")
 

@@ -16,6 +16,7 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors.MtdError
 import v3.controllers.requestParsers.validators.validations._
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequestBody}

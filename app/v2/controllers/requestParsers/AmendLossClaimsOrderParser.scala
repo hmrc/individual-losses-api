@@ -16,8 +16,9 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Nino}
+import v2.models.domain.AmendLossClaimsOrderRequestBody
 import v2.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
 import javax.inject.Inject

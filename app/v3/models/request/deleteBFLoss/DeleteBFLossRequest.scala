@@ -16,6 +16,6 @@
 
 package v3.models.request.deleteBFLoss
 
-import v3.models.domain.Nino
+import api.models.domain.Nino
 
 case class DeleteBFLossRequest(nino: Nino, lossId: String)

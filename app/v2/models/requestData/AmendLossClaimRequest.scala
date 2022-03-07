@@ -16,6 +16,7 @@
 
 package v2.models.requestData
 
-import v2.models.domain.{AmendLossClaim, Nino}
+import api.models.domain.Nino
+import v2.models.domain.AmendLossClaim
 
 case class AmendLossClaimRequest(nino: Nino, claimId: String, amendLossClaim: AmendLossClaim)

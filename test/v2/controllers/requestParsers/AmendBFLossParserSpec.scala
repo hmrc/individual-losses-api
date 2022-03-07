@@ -16,12 +16,13 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.mocks.validators.MockAmendBFLossValidator
-import v2.models.domain.{AmendBFLoss, Nino}
+import v2.models.domain.AmendBFLoss
 import v2.models.errors.RuleIncorrectOrEmptyBodyError
 import v2.models.requestData.{AmendBFLossRawData, AmendBFLossRequest}
 

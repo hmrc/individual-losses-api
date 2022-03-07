@@ -19,12 +19,12 @@ package v3.connectors
 import api.connectors.DownstreamOutcome
 import config.AppConfig
 import play.api.Logger
-import play.api.http.{ HeaderNames, MimeTypes }
+import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient, HttpReads }
-import v3.connectors.DownstreamUri.{ DesUri, IfsUri }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import v3.connectors.DownstreamUri.{DesUri, IfsUri}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseDownstreamConnector {
   val http: HttpClient

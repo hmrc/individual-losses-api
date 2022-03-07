@@ -17,11 +17,12 @@
 package v3.connectors
 
 import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
+import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.domain.{ DownstreamTaxYear, Nino }
-import v3.models.request.amendLossClaimsOrder.{ AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim }
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 import scala.concurrent.Future
 

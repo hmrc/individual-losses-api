@@ -20,6 +20,7 @@ import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockMtdIdLookupService
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
@@ -29,7 +30,6 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v3.mocks.services.{MockAuditService, MockCreateBFLossService, MockEnrolmentsAuthService}
-import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}

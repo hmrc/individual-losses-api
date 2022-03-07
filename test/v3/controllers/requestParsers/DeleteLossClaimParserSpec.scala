@@ -16,10 +16,10 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v3.mocks.validators.MockDeleteLossClaimValidator
-import v3.models.domain.Nino
 import v3.models.errors.ClaimIdFormatError
 import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 

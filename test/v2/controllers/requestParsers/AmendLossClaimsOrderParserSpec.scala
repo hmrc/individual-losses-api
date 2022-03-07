@@ -16,12 +16,13 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.mocks.validators.MockAmendLossClaimsOrderValidator
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
+import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
 import v2.models.errors.ClaimIdFormatError
 import v2.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 

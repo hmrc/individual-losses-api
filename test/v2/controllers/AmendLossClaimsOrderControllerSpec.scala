@@ -19,19 +19,20 @@ package v2.controllers
 import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockMtdIdLookupService
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
-import v2.mocks.services.{ MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService }
-import v2.models.des.{ AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse }
-import v2.models.domain.{ AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim }
+import v2.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService, MockEnrolmentsAuthService}
+import v2.models.des.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
+import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
 import v2.models.errors._
-import v2.models.requestData.{ AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear }
+import v2.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

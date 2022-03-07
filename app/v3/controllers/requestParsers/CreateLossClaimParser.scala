@@ -16,8 +16,8 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
 import v3.controllers.requestParsers.validators.CreateLossClaimValidator
-import v3.models.domain.Nino
 import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody}
 
 import javax.inject.Inject

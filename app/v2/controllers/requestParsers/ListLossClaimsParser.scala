@@ -16,8 +16,9 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.ListLossClaimsValidator
-import v2.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{TypeOfClaim, TypeOfLoss}
 import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
 import javax.inject.Inject

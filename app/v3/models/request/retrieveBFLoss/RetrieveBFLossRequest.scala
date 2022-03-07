@@ -16,6 +16,6 @@
 
 package v3.models.request.retrieveBFLoss
 
-import v3.models.domain.Nino
+import api.models.domain.Nino
 
 case class RetrieveBFLossRequest(nino: Nino, lossId: String)

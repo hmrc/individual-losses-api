@@ -19,7 +19,7 @@ package v3.controllers
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
-import api.services.MtdIdLookupService
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
@@ -31,7 +31,7 @@ import v3.controllers.requestParsers.AmendLossClaimsOrderParser
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderHateoasData
-import v3.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService}
+import v3.services.{AmendLossClaimsOrderService, AuditService}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -100,7 +100,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
+    errorWrapper.error match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearRangeInvalid | RuleTaxYearNotSupportedError | MtdErrorWithCode(
             RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCode(ClaimIdFormatError.code) | TypeOfClaimFormatError | MtdErrorWithCode(
             ValueFormatError.code) | RuleInvalidSequenceStart | RuleSequenceOrderBroken | RuleLossClaimsMissing =>

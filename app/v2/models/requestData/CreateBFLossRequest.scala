@@ -16,6 +16,7 @@
 
 package v2.models.requestData
 
-import v2.models.domain.{BFLoss, Nino}
+import api.models.domain.Nino
+import v2.models.domain.BFLoss
 
 case class CreateBFLossRequest(nino: Nino, broughtForwardLoss: BFLoss)

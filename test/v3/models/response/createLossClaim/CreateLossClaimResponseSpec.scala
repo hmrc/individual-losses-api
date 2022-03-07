@@ -17,9 +17,9 @@
 package v3.models.response.createLossClaim
 
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{ DELETE, GET, POST }
+import api.models.hateoas.Method.{DELETE, GET, POST}
 import mocks.MockAppConfig
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {

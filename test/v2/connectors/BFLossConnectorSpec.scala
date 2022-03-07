@@ -17,13 +17,14 @@
 package v2.connectors
 
 import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.MockHttpClient
 import v2.models.des._
-import v2.models.domain.{ AmendBFLoss, BFLoss, Nino, TypeOfLoss }
+import v2.models.domain.{AmendBFLoss, BFLoss, TypeOfLoss}
 import v2.models.errors._
 import v2.models.requestData._
 

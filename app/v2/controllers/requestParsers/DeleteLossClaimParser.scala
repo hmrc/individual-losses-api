@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.DeleteLossClaimValidator
-import v2.models.domain.Nino
 import v2.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 import javax.inject.Inject

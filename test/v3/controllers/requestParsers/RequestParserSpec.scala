@@ -16,11 +16,11 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.request.RawData
 import support.UnitSpec
 import v3.controllers.requestParsers.validators.Validator
-import v3.models.domain.Nino
 import v3.models.errors.RuleIncorrectOrEmptyBodyError
 
 class RequestParserSpec extends UnitSpec {

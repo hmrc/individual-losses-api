@@ -21,10 +21,10 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.BFLossConnector
-import v2.models.des.{ BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
+import v2.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v2.models.requestData._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockBFLossConnector extends MockFactory {
   val connector: BFLossConnector = mock[BFLossConnector]

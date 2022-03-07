@@ -16,11 +16,12 @@
 
 package v2.services
 
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v2.mocks.connectors.MockBFLossConnector
 import v2.models.des.CreateBFLossResponse
-import v2.models.domain.{BFLoss, Nino, TypeOfLoss}
+import v2.models.domain.{BFLoss, TypeOfLoss}
 import v2.models.errors._
 import v2.models.requestData.CreateBFLossRequest
 

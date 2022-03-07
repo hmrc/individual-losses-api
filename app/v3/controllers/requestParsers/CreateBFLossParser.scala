@@ -16,8 +16,8 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
 import v3.controllers.requestParsers.validators.CreateBFLossValidator
-import v3.models.domain.Nino
 import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
 
 import javax.inject.Inject

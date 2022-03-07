@@ -16,10 +16,10 @@
 
 package v3.services
 
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.domain.Nino
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
 import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
