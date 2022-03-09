@@ -20,7 +20,7 @@ import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import utils.Logging
 
-trait BaseDesConnector extends Logging {
+trait BaseDownstreamConnector extends Logging {
   val http: HttpClient
   val appConfig: AppConfig
 

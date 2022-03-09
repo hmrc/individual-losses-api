@@ -16,11 +16,11 @@
 
 package v3.connectors
 
-import api.connectors.DownstreamOutcome
+import api.connectors.DownstreamUri.{ DesUri, IfsUri }
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.connectors.DownstreamUri.{DesUri, IfsUri}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v3.models.request.amendBFLoss.AmendBFLossRequest
 import v3.models.request.createBFLoss.CreateBFLossRequest
 import v3.models.request.deleteBFLoss.DeleteBFLossRequest
@@ -28,11 +28,11 @@ import v3.models.request.listBFLosses.ListBFLossesRequest
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
 import v3.models.response.amendBFLoss.AmendBFLossResponse
 import v3.models.response.createBFLoss.CreateBFLossResponse
-import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
+import v3.models.response.listBFLosses.{ ListBFLossesItem, ListBFLossesResponse }
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {

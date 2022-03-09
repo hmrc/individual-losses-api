@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
+class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
                                                              ec: ExecutionContext): Future[DownstreamOutcome[CreateBFLossResponse]] = {

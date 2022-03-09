@@ -16,7 +16,7 @@
 
 package v3.connectors
 
-import api.connectors.{MtdIdLookupConnector, MtdIdLookupOutcome}
+import api.connectors.{ConnectorSpec, MtdIdLookupConnector, MtdIdLookupOutcome}
 import api.models.errors.StandardDownstreamError
 import mocks.MockAppConfig
 import v3.mocks.MockHttpClient

@@ -16,7 +16,7 @@
 
 package v3.connectors
 
-import api.connectors.DownstreamOutcome
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper

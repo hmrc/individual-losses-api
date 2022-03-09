@@ -16,6 +16,7 @@
 
 package v3.connectors
 
+import api.connectors.ConnectorSpec
 import mocks.MockAppConfig
 import v3.mocks.MockHttpClient
 

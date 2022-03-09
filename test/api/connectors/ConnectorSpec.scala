@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package v3.connectors
+package api.connectors
 
-import play.api.http.{HeaderNames, MimeTypes, Status}
+import play.api.http.{ HeaderNames, MimeTypes, Status }
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 

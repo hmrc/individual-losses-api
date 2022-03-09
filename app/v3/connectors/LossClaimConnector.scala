@@ -16,11 +16,11 @@
 
 package v3.connectors
 
-import api.connectors.DownstreamOutcome
+import api.connectors.DownstreamUri.{ DesUri, IfsUri }
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.connectors.DownstreamUri.{DesUri, IfsUri}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
 import v3.models.request.createLossClaim.CreateLossClaimRequest
@@ -29,11 +29,11 @@ import v3.models.request.listLossClaims.ListLossClaimsRequest
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v3.models.response.createLossClaim.CreateLossClaimResponse
-import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
+import v3.models.response.listLossClaims.{ ListLossClaimsItem, ListLossClaimsResponse }
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
