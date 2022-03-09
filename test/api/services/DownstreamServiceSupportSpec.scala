@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.services
+package api.services
 
 import api.connectors.DownstreamOutcome
 import api.models.errors._
@@ -22,7 +22,7 @@ import api.models.outcomes.ResponseWrapper
 import cats.syntax.either._
 import support.UnitSpec
 
-class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
+class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSupport {
 
   type D = String
   type V = String
@@ -30,18 +30,18 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
   val ep            = "someEndpoint"
   val correlationId = "correllationId"
 
-  val desError1        = MtdError("DES_CODE1", "desmsg1")
-  val desError2        = MtdError("DES_CODE2", "desmsg2")
-  val desError3        = MtdError("DES_CODE_DOWNSTREAM", "desmsg3")
-  val desErrorUnmapped = MtdError("DES_UNMAPPED", "desmsg4")
+  val downstreamError1        = MtdError("DOWNSTREAM_CODE1", "downstreammsg1")
+  val downstreamError2        = MtdError("DOWNSTREAM_CODE2", "downstreammsg2")
+  val downstreamError3        = MtdError("DOWNSTREAM_CODE_DOWNSTREAM", "downstreammsg3")
+  val downstreamErrorUnmapped = MtdError("DOWNSTREAM_UNMAPPED", "downstreammsg4")
 
   val error1 = MtdError("CODE1", "msg1")
   val error2 = MtdError("CODE2", "msg2")
 
-  val desToMtdErrorMap: PartialFunction[String, MtdError] = {
-    case "DES_CODE1"           => error1
-    case "DES_CODE2"           => error2
-    case "DES_CODE_DOWNSTREAM" => StandardDownstreamError
+  val downstreamToMtdErrorMap: PartialFunction[String, MtdError] = {
+    case "DOWNSTREAM_CODE1"           => error1
+    case "DOWNSTREAM_CODE2"           => error2
+    case "DOWNSTREAM_CODE_DOWNSTREAM" => StandardDownstreamError
   }
 
   val mapToError: ResponseWrapper[D] => Either[ErrorWrapper, ResponseWrapper[D]] = { _: ResponseWrapper[D] =>
@@ -51,58 +51,58 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
   override val serviceName = "someService"
 
   "mapToVendor" when {
-    val mapToUpperCase: ResponseWrapper[D] => Either[ErrorWrapper, ResponseWrapper[D]] = { desResponse: ResponseWrapper[D] =>
-      Right(ResponseWrapper(desResponse.correlationId, desResponse.responseData.toUpperCase))
+    val mapToUpperCase: ResponseWrapper[D] => Either[ErrorWrapper, ResponseWrapper[D]] = { downstreamResponse: ResponseWrapper[D] =>
+      Right(ResponseWrapper(downstreamResponse.correlationId, downstreamResponse.responseData.toUpperCase))
     }
 
-    "des returns a success outcome" when {
-      val goodResponse = ResponseWrapper(correlationId, "desresponse").asRight
+    "downstream returns a success outcome" when {
+      val goodResponse = ResponseWrapper(correlationId, "downstreamResponse").asRight
 
       "the specified mapping function returns success" must {
         "use that as the success result" in {
-          mapToVendor(ep, desToMtdErrorMap)(mapToUpperCase)(goodResponse) shouldBe
-            ResponseWrapper(correlationId, "DESRESPONSE").asRight
+          mapToVendor(ep, downstreamToMtdErrorMap)(mapToUpperCase)(goodResponse) shouldBe
+            ResponseWrapper(correlationId, "DOWNSTREAMRESPONSE").asRight
         }
       }
 
       "the specified mapping function returns a failure" must {
         "use that as the failure result" in {
-          mapToVendor(ep, desToMtdErrorMap)(mapToError)(goodResponse) shouldBe
+          mapToVendor(ep, downstreamToMtdErrorMap)(mapToError)(goodResponse) shouldBe
             ErrorWrapper(Some(correlationId), error1, None).asLeft
         }
       }
     }
 
-    "des returns an error" when {
-      singleErrorBehaveCorrectly(mapToVendor(ep, desToMtdErrorMap)(mapToUpperCase))
+    "downstream returns an error" when {
+      singleErrorBehaveCorrectly(mapToVendor(ep, downstreamToMtdErrorMap)(mapToUpperCase))
 
-      multipleErrorsBehaveCorrectly(mapToVendor(ep, desToMtdErrorMap)(mapToUpperCase))
+      multipleErrorsBehaveCorrectly(mapToVendor(ep, downstreamToMtdErrorMap)(mapToUpperCase))
     }
   }
 
   "mapToVendorDirect" when {
-    "des returns a success outcome" when {
-      val goodResponse = ResponseWrapper(correlationId, "desresponse").asRight
+    "downstream returns a success outcome" when {
+      val goodResponse = ResponseWrapper(correlationId, "downstreamResponse").asRight
 
-      "use the des content as is" must {
+      "use the downstream content as is" must {
         "use that as the success result" in {
-          mapToVendorDirect(ep, desToMtdErrorMap)(goodResponse) shouldBe
-            ResponseWrapper(correlationId, "desresponse").asRight
+          mapToVendorDirect(ep, downstreamToMtdErrorMap)(goodResponse) shouldBe
+            ResponseWrapper(correlationId, "downstreamResponse").asRight
         }
       }
     }
 
-    "des returns an error" when {
-      singleErrorBehaveCorrectly(mapToVendorDirect(ep, desToMtdErrorMap))
+    "downstream returns an error" when {
+      singleErrorBehaveCorrectly(mapToVendorDirect(ep, downstreamToMtdErrorMap))
 
-      multipleErrorsBehaveCorrectly(mapToVendorDirect(ep, desToMtdErrorMap))
+      multipleErrorsBehaveCorrectly(mapToVendorDirect(ep, downstreamToMtdErrorMap))
     }
   }
 
   private def singleErrorBehaveCorrectly(handler: DownstreamOutcome[D] => VendorOutcome[D]): Unit = {
     "a single error" must {
       "use the error mapping and return a single mtd error" in {
-        val singleErrorResponse = ResponseWrapper(correlationId, SingleError(desError1)).asLeft
+        val singleErrorResponse = ResponseWrapper(correlationId, SingleError(downstreamError1)).asLeft
 
         handler(singleErrorResponse) shouldBe
           ErrorWrapper(Some(correlationId), error1, None).asLeft
@@ -111,7 +111,7 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
 
     "a single unmapped error" must {
       "map to a DownstreamError" in {
-        val singleErrorResponse = ResponseWrapper(correlationId, SingleError(desErrorUnmapped)).asLeft
+        val singleErrorResponse = ResponseWrapper(correlationId, SingleError(downstreamErrorUnmapped)).asLeft
 
         handler(singleErrorResponse) shouldBe
           ErrorWrapper(Some(correlationId), StandardDownstreamError, None).asLeft
@@ -120,10 +120,10 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
 
     "an OutboundError" must {
       "return the error inside the OutboundError (regardless of mapping)" in {
-        val outboundErrorResponse = ResponseWrapper(correlationId, OutboundError(desError1)).asLeft
+        val outboundErrorResponse = ResponseWrapper(correlationId, OutboundError(downstreamError1)).asLeft
 
         handler(outboundErrorResponse) shouldBe
-          ErrorWrapper(Some(correlationId), desError1, None).asLeft
+          ErrorWrapper(Some(correlationId), downstreamError1, None).asLeft
       }
     }
   }
@@ -131,7 +131,7 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
   private def multipleErrorsBehaveCorrectly(handler: DownstreamOutcome[D] => VendorOutcome[D]): Unit = {
     "multiple errors" must {
       "use the error mapping for each and return multiple mtd errors" in {
-        val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(desError1, desError2))).asLeft
+        val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(downstreamError1, downstreamError2))).asLeft
 
         handler(multipleErrorResponse) shouldBe
           ErrorWrapper(Some(correlationId), BadRequestError, Some(Seq(error1, error2))).asLeft
@@ -139,7 +139,7 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
 
       "one of the mtd errors is a DownstreamError" must {
         "return a single DownstreamError" in {
-          val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(desError1, desError3))).asLeft
+          val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(downstreamError1, downstreamError3))).asLeft
 
           handler(multipleErrorResponse) shouldBe
             ErrorWrapper(Some(correlationId), StandardDownstreamError, None).asLeft
@@ -148,7 +148,7 @@ class DesServiceSupportSpec extends UnitSpec with DesServiceSupport {
 
       "one of the mtd errors is a unmapped" must {
         "return a single DownstreamError" in {
-          val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(desError1, desErrorUnmapped))).asLeft
+          val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(downstreamError1, downstreamErrorUnmapped))).asLeft
 
           handler(multipleErrorResponse) shouldBe
             ErrorWrapper(Some(correlationId), StandardDownstreamError, None).asLeft

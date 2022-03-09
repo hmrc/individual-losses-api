@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers
+package api.controllers
 
 import api.models.errors.{ErrorWrapper, StandardDownstreamError}
 import play.api.Logger

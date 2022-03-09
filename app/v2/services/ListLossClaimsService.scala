@@ -17,15 +17,16 @@
 package v2.services
 
 import api.models.errors._
+import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
 import v2.models.errors._
 import v2.models.requestData.ListLossClaimsRequest
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
+class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
   override val serviceName: String = this.getClass.getSimpleName
 

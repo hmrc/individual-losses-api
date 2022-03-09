@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.controllers
+package api.controllers
 
 import api.models.auth.UserDetails
 import api.models.errors._

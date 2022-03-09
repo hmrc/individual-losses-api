@@ -18,7 +18,7 @@ package v3.controllers
 
 import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.MockMtdIdLookupService
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
@@ -28,7 +28,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockListLossClaimsRequestDataParser
-import v3.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService}
+import v3.mocks.services.{MockAuditService, MockListLossClaimsService}
 import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._

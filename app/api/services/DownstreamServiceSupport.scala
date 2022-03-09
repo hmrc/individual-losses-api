@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.services
+package api.services
 
 import api.connectors.DownstreamOutcome
 import api.models.errors._

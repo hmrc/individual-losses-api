@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package v3.controllers
+package api.controllers
+
 case class EndpointLogContext(
     controllerName: String,
     endpointName: String

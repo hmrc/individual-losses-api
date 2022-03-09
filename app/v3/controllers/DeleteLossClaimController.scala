@@ -16,6 +16,7 @@
 
 package v3.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
