@@ -16,11 +16,11 @@
 
 package v3.controllers.requestParsers.validators
 
-import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors._
+import api.validations.NinoValidation
 import config.FixedConfig
 import utils.CurrentDate
-import v3.controllers.requestParsers.validators.validations._
+import api.validations._
 import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequestBody}
 
 import javax.inject.{Inject, Singleton}

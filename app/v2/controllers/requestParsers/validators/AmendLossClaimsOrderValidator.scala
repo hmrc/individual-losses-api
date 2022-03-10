@@ -16,9 +16,8 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors.MtdError
-import v2.controllers.requestParsers.validators.validations._
+import api.validations.{NinoValidation, _}
 import v2.models.domain.AmendLossClaimsOrderRequestBody
 import v2.models.errors.RuleIncorrectOrEmptyBodyError
 import v2.models.requestData.AmendLossClaimsOrderRawData

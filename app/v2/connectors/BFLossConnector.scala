@@ -16,7 +16,7 @@
 
 package v2.connectors
 
-import api.connectors.DownstreamOutcome
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
