@@ -16,16 +16,16 @@
 
 package v2.connectors
 
-import api.connectors.DownstreamOutcome
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v2.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse}
-import v2.models.domain.{AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
+import v2.models.des.{ CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse }
+import v2.models.domain.{ AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim }
 import v2.models.requestData._
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {

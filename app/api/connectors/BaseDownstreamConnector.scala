@@ -33,6 +33,18 @@ trait BaseDownstreamConnector {
 
   private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
 
+  def desHeaderCarrier(additionalHeaders: Seq[String] = Seq.empty)(implicit hc: HeaderCarrier): HeaderCarrier =
+    HeaderCarrier(
+      extraHeaders = hc.extraHeaders ++
+        // Contract headers
+        Seq(
+          "Authorization" -> s"Bearer ${appConfig.desToken}",
+          "Environment"   -> appConfig.desEnv
+        ) ++
+        // Other headers (i.e Gov-Test-Scenario, Content-Type)
+        hc.headers(additionalHeaders ++ appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
+    )
+
   private def desHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier = {
     val passThroughHeaders = hc
       .headers(appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
