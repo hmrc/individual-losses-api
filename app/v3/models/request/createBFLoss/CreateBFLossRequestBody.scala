@@ -16,8 +16,8 @@
 
 package v3.models.request.createBFLoss
 
+import api.models.domain.DownstreamTaxYear
 import play.api.libs.json._
-import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.domain.bfLoss.TypeOfLoss._
 

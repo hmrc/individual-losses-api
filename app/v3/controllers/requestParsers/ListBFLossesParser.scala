@@ -16,9 +16,8 @@
 
 package v3.controllers.requestParsers
 
-import api.models.domain.Nino
+import api.models.domain.{DownstreamTaxYear, Nino}
 import v3.controllers.requestParsers.validators.ListBFLossesValidator
-import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
 

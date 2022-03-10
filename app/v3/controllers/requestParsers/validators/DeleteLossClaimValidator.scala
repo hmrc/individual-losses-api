@@ -16,10 +16,10 @@
 
 package v3.controllers.requestParsers.validators
 
-import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors.MtdError
-import v3.controllers.requestParsers.validators.validations.ClaimIdValidation
+import api.validations.NinoValidation
 import v3.models.request.deleteLossClaim.DeleteLossClaimRawData
+import v3.validations.ClaimIdValidation
 
 class DeleteLossClaimValidator extends Validator[DeleteLossClaimRawData] {
 

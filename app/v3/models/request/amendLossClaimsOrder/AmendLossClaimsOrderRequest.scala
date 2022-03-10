@@ -16,7 +16,6 @@
 
 package v3.models.request.amendLossClaimsOrder
 
-import api.models.domain.Nino
-import v3.models.domain.DownstreamTaxYear
+import api.models.domain.{DownstreamTaxYear, Nino}
 
 case class AmendLossClaimsOrderRequest(nino: Nino, taxYearClaimedFor: DownstreamTaxYear, body: AmendLossClaimsOrderRequestBody)

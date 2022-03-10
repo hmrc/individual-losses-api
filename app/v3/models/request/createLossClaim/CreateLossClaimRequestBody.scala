@@ -16,8 +16,8 @@
 
 package v3.models.request.createLossClaim
 
+import api.models.domain.DownstreamTaxYear
 import play.api.libs.json._
-import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.lossClaim.TypeOfLoss._
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 

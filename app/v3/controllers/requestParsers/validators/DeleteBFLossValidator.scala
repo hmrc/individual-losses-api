@@ -16,10 +16,10 @@
 
 package v3.controllers.requestParsers.validators
 
-import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors.MtdError
-import v3.controllers.requestParsers.validators.validations.LossIdValidation
+import api.validations.NinoValidation
 import v3.models.request.deleteBFLoss.DeleteBFLossRawData
+import v3.validations.LossIdValidation
 
 class DeleteBFLossValidator extends Validator[DeleteBFLossRawData] {
 

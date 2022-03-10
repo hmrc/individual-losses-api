@@ -16,13 +16,12 @@
 
 package v3.controllers.requestParsers
 
-import api.models.domain.Nino
+import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendLossClaimsOrderValidator
-import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors.ClaimIdFormatError
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}

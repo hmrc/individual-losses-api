@@ -17,14 +17,13 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.Nino
+import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.MockHttpClient
-import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v3.models.errors._
 import v3.models.request.amendBFLoss.{AmendBFLossRequest, AmendBFLossRequestBody}

@@ -16,10 +16,10 @@
 
 package v3.controllers.requestParsers.validators
 
-import api.controllers.requestParsers.validators.validations.NinoValidation
 import api.models.errors.MtdError
-import v3.controllers.requestParsers.validators.validations._
+import api.validations.NinoValidation
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequestBody}
+import v3.validations.{ClaimIdValidation, JsonFormatValidation, JsonValidation, TypeOfClaimValidation}
 
 class AmendLossClaimTypeValidator extends Validator[AmendLossClaimTypeRawData] {
 
