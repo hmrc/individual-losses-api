@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package v2.services
+package api.services
 
 import api.mocks.connectors.MockMtdIdLookupConnector
 import api.models.errors._
-import api.services.MtdIdLookupService
 
 import scala.concurrent.Future
 

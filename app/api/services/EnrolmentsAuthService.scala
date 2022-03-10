@@ -20,7 +20,7 @@ import api.models.auth.UserDetails
 import api.models.errors._
 import api.models.outcomes.AuthOutcome
 import config.AppConfig
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
+import uk.gov.hmrc.auth.core.AffinityGroup.{ Agent, Individual, Organisation }
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -29,8 +29,8 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfig: AppConfig) extends Logging {

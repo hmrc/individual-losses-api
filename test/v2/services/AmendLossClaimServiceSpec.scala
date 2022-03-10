@@ -19,9 +19,10 @@ package v2.services
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v2.mocks.connectors.MockLossClaimConnector
 import v2.models.des.LossClaimResponse
-import v2.models.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
 import v2.models.errors._
 import v2.models.requestData.AmendLossClaimRequest
 

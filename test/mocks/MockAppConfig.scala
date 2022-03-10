@@ -16,7 +16,7 @@
 
 package mocks
 
-import config.{AppConfig, ConfidenceLevelConfig}
+import config.{ AppConfig, ConfidenceLevelConfig }
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration

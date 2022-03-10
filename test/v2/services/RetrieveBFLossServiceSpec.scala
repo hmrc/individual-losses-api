@@ -19,6 +19,7 @@ package v2.services
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v2.mocks.connectors.MockBFLossConnector
 import v2.models.des.BFLossResponse
 import v2.models.domain.TypeOfLoss

@@ -19,6 +19,7 @@ package v3.services
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v3.mocks.connectors.MockLossClaimConnector
 import v3.models.domain.DownstreamTaxYear
 import v3.models.domain.lossClaim.TypeOfClaim

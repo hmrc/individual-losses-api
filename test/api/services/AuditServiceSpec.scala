@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.services
+package api.services
 
 import api.models.audit.AuditEvent
 import play.api.Configuration
@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
+import v3.services.AuditService
 
 import scala.concurrent.{ExecutionContext, Future}
 

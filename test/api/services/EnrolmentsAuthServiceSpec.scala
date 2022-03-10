@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package v3.services
+package api.services
 
 import api.models.auth.UserDetails
 import api.models.errors._
-import api.services.EnrolmentsAuthService
 import config.ConfidenceLevelConfig
 import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
