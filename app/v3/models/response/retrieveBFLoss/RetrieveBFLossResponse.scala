@@ -16,15 +16,19 @@
 
 package v3.models.response.retrieveBFLoss
 
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.models.domain.DownstreamTaxYear
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v3.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v3.models.domain.DownstreamTaxYear
-import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss, LossType}
-import v3.models.hateoas.{HateoasData, Link}
+import v3.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 
-case class RetrieveBFLossResponse(businessId: String, typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYearBroughtForwardFrom: String, lastModified: String)
+case class RetrieveBFLossResponse(businessId: String,
+                                  typeOfLoss: TypeOfLoss,
+                                  lossAmount: BigDecimal,
+                                  taxYearBroughtForwardFrom: String,
+                                  lastModified: String)
 
 object RetrieveBFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[RetrieveBFLossResponse] = Json.writes[RetrieveBFLossResponse]

@@ -19,14 +19,14 @@ package v3.models.request.amendLossClaimsOrder
 import play.api.libs.json.{Json, OWrites, Reads}
 import v3.models.domain.lossClaim.TypeOfClaim
 
-case class AmendLossClaimsOrderRequestBody(typeOfClaim: TypeOfClaim, listOfLossClaims: Seq[Claim]) {
+case class AmendLossClaimsOrderRequestBody(typeOfClaim: TypeOfClaim, listOfLossClaims: Seq[Claim]) {}
 
-}
 object AmendLossClaimsOrderRequestBody {
   implicit val reads: Reads[AmendLossClaimsOrderRequestBody] = Json.reads[AmendLossClaimsOrderRequestBody]
 
-  implicit val writes: OWrites[AmendLossClaimsOrderRequestBody] = (o: AmendLossClaimsOrderRequestBody) => Json.obj(
-    "claimType" -> o.typeOfClaim.toReliefClaimed,
-    "claimsSequence" -> o.listOfLossClaims
+  implicit val writes: OWrites[AmendLossClaimsOrderRequestBody] = (o: AmendLossClaimsOrderRequestBody) =>
+    Json.obj(
+      "claimType"      -> o.typeOfClaim.toReliefClaimed,
+      "claimsSequence" -> o.listOfLossClaims
   )
 }

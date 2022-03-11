@@ -20,9 +20,7 @@ import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v3.models.domain.bfLoss.LossType._
 
-class LossTypeSpec  extends UnitSpec with EnumJsonSpecSupport {
+class LossTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
-  testRoundTrip[LossType](
-    ("INCOME", INCOME),
-    ("CLASS4", CLASS4))
+  testRoundTrip[LossType](("INCOME", INCOME), ("CLASS4", CLASS4))
 }

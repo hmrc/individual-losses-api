@@ -16,10 +16,12 @@
 
 package v2.controllers.requestParsers.validators
 
-import v2.controllers.requestParsers.validators.validations.{AmountValidation, JsonFormatValidation, LossIdValidation, NinoValidation}
+import api.models.errors.MtdError
+import api.validations.NinoValidation
 import v2.models.domain.AmendBFLoss
-import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v2.models.errors.RuleIncorrectOrEmptyBodyError
 import v2.models.requestData.AmendBFLossRawData
+import v2.validations.{AmountValidation, JsonFormatValidation, LossIdValidation}
 
 class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
 

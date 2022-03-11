@@ -16,9 +16,11 @@
 
 package v3.connectors
 
-import v3.models.domain.Nino
+import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
 
 import scala.concurrent.Future
@@ -37,7 +39,8 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }
@@ -54,7 +57,8 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }
@@ -71,7 +75,8 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }

@@ -16,6 +16,7 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors._
 import support.UnitSpec
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors._
@@ -23,11 +24,11 @@ import v3.models.request.listLossClaims.ListLossClaimsRawData
 
 class ListLossClaimsValidatorSpec extends UnitSpec {
 
-  private val validNino       = "AA123456A"
-  private val validTaxYear    = "2021-22"
-  private val validLossType   = "self-employment"
-  private val validBusinessId = "XAIS01234567890"
-  private val validTypeOfClaim  = "carry-sideways"
+  private val validNino        = "AA123456A"
+  private val validTaxYear     = "2021-22"
+  private val validLossType    = "self-employment"
+  private val validBusinessId  = "XAIS01234567890"
+  private val validTypeOfClaim = "carry-sideways"
 
   val validator = new ListLossClaimsValidator
 
@@ -36,7 +37,11 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
               typeOfLoss: Option[String] = Some(validLossType),
               businessId: Option[String] = Some(validBusinessId),
               typeOfClaim: Option[String] = Some(validTypeOfClaim)): ListLossClaimsRawData =
-    ListLossClaimsRawData(nino = nino, taxYearClaimedFor = taxYearClaimedFor, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
+    ListLossClaimsRawData(nino = nino,
+                          taxYearClaimedFor = taxYearClaimedFor,
+                          typeOfLoss = typeOfLoss,
+                          businessId = businessId,
+                          typeOfClaim = typeOfClaim)
 
   "running validation" should {
     "return no errors" when {

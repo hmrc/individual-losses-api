@@ -16,33 +16,32 @@
 
 package v3.models.request.createBFLoss
 
+import api.models.domain.DownstreamTaxYear
 import play.api.libs.json._
-import v3.models.domain.DownstreamTaxYear
-import v3.models.domain.bfLoss.TypeOfLoss._
 import v3.models.domain.bfLoss.TypeOfLoss
+import v3.models.domain.bfLoss.TypeOfLoss._
 
-case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss,
-                                   businessId: String,
-                                   taxYearBroughtForwardFrom: String,
-                                   lossAmount: BigDecimal)
+case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal)
 
 object CreateBFLossRequestBody {
   implicit val reads: Reads[CreateBFLossRequestBody] = Json.reads[CreateBFLossRequestBody]
 
   implicit val writes: OWrites[CreateBFLossRequestBody] = (loss: CreateBFLossRequestBody) => {
     loss.typeOfLoss match {
-      case `uk-property-fhl` | `uk-property-non-fhl` | `foreign-property-fhl-eea` | `foreign-property` => Json.obj(
-        "incomeSourceId" -> loss.businessId,
-        "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
-        "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
-        "broughtForwardLossAmount" -> loss.lossAmount
-      )
-      case TypeOfLoss.`self-employment` | `self-employment-class4` => Json.obj(
-        "incomeSourceId" -> loss.businessId,
-        "lossType" -> loss.typeOfLoss.toLossType,
-        "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
-        "broughtForwardLossAmount" -> loss.lossAmount
-      )
+      case `uk-property-fhl` | `uk-property-non-fhl` | `foreign-property-fhl-eea` | `foreign-property` =>
+        Json.obj(
+          "incomeSourceId"            -> loss.businessId,
+          "incomeSourceType"          -> loss.typeOfLoss.toIncomeSourceType,
+          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
+          "broughtForwardLossAmount"  -> loss.lossAmount
+        )
+      case TypeOfLoss.`self-employment` | `self-employment-class4` =>
+        Json.obj(
+          "incomeSourceId"            -> loss.businessId,
+          "lossType"                  -> loss.typeOfLoss.toLossType,
+          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
+          "broughtForwardLossAmount"  -> loss.lossAmount
+        )
     }
   }
 }

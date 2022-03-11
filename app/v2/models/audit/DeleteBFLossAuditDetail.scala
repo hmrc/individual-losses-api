@@ -16,8 +16,9 @@
 
 package v2.models.audit
 
+import api.models.audit.AuditResponse
+import api.models.auth.UserDetails
 import play.api.libs.json.{Json, Writes}
-import v2.models.auth.UserDetails
 
 case class DeleteBFLossAuditDetail(userType: String,
                                    agentReferenceNumber: Option[String],
@@ -35,14 +36,11 @@ object DeleteBFLossAuditDetail {
             `X-CorrelationId`: String,
             auditResponse: AuditResponse): DeleteBFLossAuditDetail = {
 
-    DeleteBFLossAuditDetail(
-      userType = userDetails.userType,
-      agentReferenceNumber = userDetails.agentReferenceNumber,
-      nino = nino,
-      lossId = lossId,
-      `X-CorrelationId`,
-      auditResponse)
+    DeleteBFLossAuditDetail(userType = userDetails.userType,
+                            agentReferenceNumber = userDetails.agentReferenceNumber,
+                            nino = nino,
+                            lossId = lossId,
+                            `X-CorrelationId`,
+                            auditResponse)
   }
 }
-
-

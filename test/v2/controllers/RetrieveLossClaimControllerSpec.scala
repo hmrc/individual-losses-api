@@ -16,25 +16,29 @@
 
 package v2.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.hateoas.Method.GET
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.outcomes.ResponseWrapper
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockRetrieveLossClaimRequestDataParser
-import v2.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveLossClaimService}
-import v2.models.des.{GetLossClaimHateoasData, LossClaimResponse}
-import v2.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
-import v2.models.errors.{NotFoundError, _}
-import v2.models.hateoas.Method.GET
-import v2.models.hateoas.{HateoasWrapper, Link}
-import v2.models.outcomes.DesResponse
-import v2.models.requestData.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
+import v2.mocks.services.{ MockAuditService, MockRetrieveLossClaimService }
+import v2.models.des.{ GetLossClaimHateoasData, LossClaimResponse }
+import v2.models.domain.{ TypeOfClaim, TypeOfLoss }
+import v2.models.errors._
+import v2.models.requestData.{ RetrieveLossClaimRawData, RetrieveLossClaimRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveLossClaimControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveLossClaimService
@@ -43,8 +47,8 @@ class RetrieveLossClaimControllerSpec
     with MockAuditService {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  val nino: String          = "AA123456A"
+  val claimId: String       = "AAZZ1234567890a"
 
   val rawData: RetrieveLossClaimRawData = RetrieveLossClaimRawData(nino, claimId)
   val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(Nino(nino), claimId)
@@ -104,7 +108,7 @@ class RetrieveLossClaimControllerSpec
 
         MockRetrieveLossClaimService
           .retrieve(request)
-          .returns(Future.successful(Right(DesResponse(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
           .wrap(response, GetLossClaimHateoasData(nino, claimId))
@@ -158,7 +162,7 @@ class RetrieveLossClaimControllerSpec
       }
 
       errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
       errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
       errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)

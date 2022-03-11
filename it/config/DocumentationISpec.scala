@@ -23,8 +23,7 @@ import support.IntegrationBaseSpec
 
 class DocumentationISpec extends IntegrationBaseSpec {
 
-  val apiDefinitionJson: JsValue = Json.parse(
-    """
+  val apiDefinitionJson: JsValue = Json.parse("""
       |{
       |  "scopes":[
       |    {

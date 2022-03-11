@@ -16,18 +16,19 @@
 
 package v3.models.audit
 
+import api.models.audit.{AuditError, AuditResponse, GenericAuditDetail}
+import api.models.errors._
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v3.models.errors.TaxYearFormatError
 
 class GenericAuditDetailSpec extends UnitSpec {
-  val nino: String = "XX751130C"
-  val taxYear: String = "2020-21"
-  val userType: String = "Agent"
+  val nino: String                         = "XX751130C"
+  val taxYear: String                      = "2020-21"
+  val userType: String                     = "Agent"
   val agentReferenceNumber: Option[String] = Some("012345678")
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val versionNumber: String = "2.0"
+  val correlationId: String                = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val versionNumber: String                = "2.0"
 
   val auditDetailJsonSuccess: JsValue = Json.parse(
     s"""
@@ -62,18 +63,18 @@ class GenericAuditDetailSpec extends UnitSpec {
     versionNumber = "2.0",
     agentReferenceNumber = agentReferenceNumber,
     params = Map("nino" -> nino, "taxYear" -> taxYear),
-    request = Some(Json.parse(
-      """
+    request = Some(
+      Json.parse(
+        """
         |{
         |  "someField": true
         |}
         """.stripMargin
-    )),
+      )),
     `X-CorrelationId` = correlationId,
     response = AuditResponse(
       OK,
-      Right(Some(Json.parse(
-        s"""
+      Right(Some(Json.parse(s"""
            |{
            |   "links":[
            |      {
@@ -83,8 +84,7 @@ class GenericAuditDetailSpec extends UnitSpec {
            |      }
            |   ]
            |}
-        """.stripMargin))
-      )
+        """.stripMargin)))
     )
   )
 
@@ -117,13 +117,14 @@ class GenericAuditDetailSpec extends UnitSpec {
     agentReferenceNumber = agentReferenceNumber,
     versionNumber = "2.0",
     params = Map("nino" -> nino, "taxYear" -> "2020-2021"),
-    request = Some(Json.parse(
-      """
+    request = Some(
+      Json.parse(
+        """
         |{
         |   "someField": true
         |}
       """.stripMargin
-    )),
+      )),
     `X-CorrelationId` = correlationId,
     response = AuditResponse(BAD_REQUEST, Left(Seq(AuditError(TaxYearFormatError.code))))
   )

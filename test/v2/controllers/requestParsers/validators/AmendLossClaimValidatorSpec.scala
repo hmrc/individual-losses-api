@@ -16,19 +16,20 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v2.models.errors.{ClaimIdFormatError, NinoFormatError, RuleIncorrectOrEmptyBodyError, TypeOfClaimFormatError}
+import v2.models.errors.{ClaimIdFormatError, RuleIncorrectOrEmptyBodyError, TypeOfClaimFormatError}
 import v2.models.requestData.AmendLossClaimRawData
 
 import scala.collection.immutable.Stream.Empty
 
 class AmendLossClaimValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
-  private val invalidNino = "AA123456"
-  private val validClaimId = "AAZZ1234567890a"
+  private val validNino      = "AA123456A"
+  private val invalidNino    = "AA123456"
+  private val validClaimId   = "AAZZ1234567890a"
   private val invalidClaimId = "AAZZ1234567890"
 
   private def claimType(claimType: String) = AnyContentAsJson(Json.obj("typeOfClaim" -> claimType))

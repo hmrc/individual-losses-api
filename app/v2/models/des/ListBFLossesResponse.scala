@@ -16,11 +16,11 @@
 
 package v2.models.des
 
+import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json._
-import v2.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import v2.models.hateoas.{HateoasData, Link}
 
 case class BFLossId(id: String)
 

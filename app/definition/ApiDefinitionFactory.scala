@@ -19,13 +19,14 @@ package definition
 import config.AppConfig
 import definition.Versions._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
-import javax.inject.{Inject, Singleton}
 import utils.Logging
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
 
-  private val readScope = "read:self-assessment"
+  private val readScope  = "read:self-assessment"
   private val writeScope = "write:self-assessment"
 
   def confidenceLevel: ConfidenceLevel = if (appConfig.confidenceLevelConfig.definitionEnabled) ConfidenceLevel.L200 else ConfidenceLevel.L50
@@ -67,7 +68,8 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
     )
 
   private[definition] def buildAPIStatus(version: String): APIStatus = {
-    APIStatus.parser.lift(appConfig.apiStatus(version))
+    APIStatus.parser
+      .lift(appConfig.apiStatus(version))
       .getOrElse {
         logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
         APIStatus.ALPHA

@@ -16,10 +16,10 @@
 
 package v3.models.response.amendLossClaimsOrder
 
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
-import v3.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v3.models.hateoas.{HateoasData, Link}
 
 case class AmendLossClaimsOrderResponse()
 

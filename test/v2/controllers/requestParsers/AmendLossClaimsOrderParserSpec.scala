@@ -16,20 +16,22 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.mocks.validators.MockAmendLossClaimsOrderValidator
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, Nino, TypeOfClaim}
-import v2.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
+import v2.models.domain.{AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim}
+import v2.models.errors.ClaimIdFormatError
 import v2.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
 class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
-  private val nino = "AA123456A"
+  private val nino      = "AA123456A"
   private val claimType = "carry-sideways"
-  private val taxYear = "2020-21"
-  private val claim = Json.obj("id" -> "1234568790ABCDE", "sequence" -> 1)
+  private val taxYear   = "2020-21"
+  private val claim     = Json.obj("id" -> "1234568790ABCDE", "sequence" -> 1)
 
   val data: AmendLossClaimsOrderRawData =
     AmendLossClaimsOrderRawData(nino, Some(taxYear), AnyContentAsJson(Json.obj("claimType" -> claimType, "listOfLossClaims" -> Seq(claim))))
@@ -47,15 +49,19 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
         MockValidator.validate(data).returns(List())
 
         parser.parseRequest(data) shouldBe {
-          Right(AmendLossClaimsOrderRequest(
-            Nino(nino), DesTaxYear.fromMtd(taxYear), AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
+          Right(
+            AmendLossClaimsOrderRequest(Nino(nino),
+                                        DesTaxYear.fromMtd(taxYear),
+                                        AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }
       "the validator returns no errors and no tax year is supplied" in new Test {
         MockValidator.validate(dataNoTaxYear).returns(List())
         parser.parseRequest(dataNoTaxYear) shouldBe {
-          Right(AmendLossClaimsOrderRequest(
-            Nino(nino), DesTaxYear.mostRecentTaxYear(), AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
+          Right(
+            AmendLossClaimsOrderRequest(Nino(nino),
+                                        DesTaxYear.mostRecentTaxYear(),
+                                        AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }
     }

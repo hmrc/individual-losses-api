@@ -16,9 +16,11 @@
 
 package v2.connectors
 
-import v2.models.domain.Nino
+import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData._
 
 import scala.concurrent.Future
@@ -29,7 +31,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {
-        val expected = Right(DesResponse(correlationId, ()))
+        val expected = Right(ResponseWrapper(correlationId, ()))
 
         MockHttpClient
           .delete(
@@ -37,7 +39,8 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }
@@ -45,7 +48,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new Test {
-        val expected = Left(DesResponse(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
           .delete(
@@ -53,7 +56,8 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }
@@ -61,7 +65,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Test {
-        val expected = Left(DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockHttpClient
           .delete(
@@ -69,13 +73,14 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         deleteLossClaimResult(connector) shouldBe expected
       }
     }
 
-    def deleteLossClaimResult(connector: LossClaimConnector): DesOutcome[Unit] =
+    def deleteLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[Unit] =
       await(
         connector.deleteLossClaim(
           DeleteLossClaimRequest(

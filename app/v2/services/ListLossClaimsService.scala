@@ -16,19 +16,21 @@
 
 package v2.services
 
-import javax.inject.Inject
+import api.models.errors._
+import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
 import v2.models.errors._
 import v2.models.requestData.ListLossClaimsRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.{ ExecutionContext, Future }
 
-class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
+class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
   override val serviceName: String = this.getClass.getSimpleName
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[ListLossClaimsOutcome] = {
+  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ListLossClaimsOutcome] = {
     connector.listLossClaims(request).map {
       mapToVendorDirect("listLossClaims", mappingDesToMtdError)
     }
@@ -36,12 +38,12 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Des
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAXYEAR" -> TaxYearFormatError,
-    "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-    "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
-    "NOT_FOUND" -> NotFoundError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError,
-    "INVALID_CLAIM_TYPE" -> ClaimTypeFormatError
+    "INVALID_TAXYEAR"           -> TaxYearFormatError,
+    "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
+    "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+    "INVALID_CLAIM_TYPE"        -> ClaimTypeFormatError
   )
 }

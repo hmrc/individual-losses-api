@@ -16,11 +16,13 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors.MtdError
+import api.validations.{ NinoValidation, NoValidationErrors }
 import config.FixedConfig
-import v2.controllers.requestParsers.validators.validations._
 import v2.models.domain.LossClaim
-import v2.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v2.models.errors.RuleIncorrectOrEmptyBodyError
 import v2.models.requestData.CreateLossClaimRawData
+import v2.validations._
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {
 

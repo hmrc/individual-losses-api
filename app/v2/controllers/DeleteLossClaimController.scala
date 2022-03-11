@@ -16,18 +16,22 @@
 
 package v2.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.models.audit.{AuditEvent, AuditResponse}
+import api.models.errors._
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.DeleteLossClaimParser
-import v2.models.audit.{AuditEvent, AuditResponse, DeleteLossClaimAuditDetail}
+import v2.models.audit.DeleteLossClaimAuditDetail
 import v2.models.errors._
 import v2.models.requestData.DeleteLossClaimRawData
 import v2.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -37,27 +41,26 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
                                           deleteLossClaimParser: DeleteLossClaimParser,
                                           auditService: AuditService,
                                           cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController {
+    extends AuthorisedController(cc)
+    with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteLossClaimController", endpointName = "Delete a Loss Claim")
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       val rawData = DeleteLossClaimRawData(nino, claimId)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](deleteLossClaimParser.parseRequest(rawData))
+          parsedRequest  <- EitherT.fromEither[Future](deleteLossClaimParser.parseRequest(rawData))
           vendorResponse <- EitherT(deleteLossClaimService.deleteLossClaim(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
 
-          auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
-            vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(None))))
-
+          auditSubmission(
+            DeleteLossClaimAuditDetail(request.userDetails, nino, claimId, vendorResponse.correlationId, AuditResponse(NO_CONTENT, Right(None))))
 
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
@@ -65,28 +68,29 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
 
-        auditSubmission(DeleteLossClaimAuditDetail(request.userDetails, nino, claimId,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+        auditSubmission(
+          DeleteLossClaimAuditDetail(request.userDetails,
+                                     nino,
+                                     claimId,
+                                     correlationId,
+                                     AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError
-           | NinoFormatError
-           | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+    errorWrapper.error match {
+      case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError                                => InternalServerError(Json.toJson(errorWrapper))
+      case _                                                      => unhandledError(errorWrapper)
     }
   }
 
-  private def auditSubmission(details: DeleteLossClaimAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+  private def auditSubmission(details: DeleteLossClaimAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
     val event = AuditEvent("deleteLossClaim", "delete-loss-claim", details)
     auditService.auditEvent(event)
   }

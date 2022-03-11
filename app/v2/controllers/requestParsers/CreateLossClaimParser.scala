@@ -16,13 +16,14 @@
 
 package v2.controllers.requestParsers
 
-import javax.inject.Inject
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.CreateLossClaimValidator
-import v2.models.domain.{LossClaim, Nino}
+import v2.models.domain.LossClaim
 import v2.models.requestData._
 
-class CreateLossClaimParser @Inject()(val validator: CreateLossClaimValidator)
-  extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
+import javax.inject.Inject
+
+class CreateLossClaimParser @Inject()(val validator: CreateLossClaimValidator) extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
 
   override protected def requestFor(data: CreateLossClaimRawData): CreateLossClaimRequest =
     CreateLossClaimRequest(Nino(data.nino), data.body.json.as[LossClaim])

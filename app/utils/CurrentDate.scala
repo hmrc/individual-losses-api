@@ -17,7 +17,6 @@
 package utils
 
 import java.time.{LocalDate, ZoneOffset}
-
 import javax.inject.Singleton
 
 @Singleton

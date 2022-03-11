@@ -22,9 +22,4 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 
-trait UnitSpec extends AnyWordSpecLike
-  with MockFactory
-  with EitherValues
-  with Matchers
-  with FutureAwaits
-  with DefaultAwaitTimeout
+trait UnitSpec extends AnyWordSpecLike with MockFactory with EitherValues with Matchers with FutureAwaits with DefaultAwaitTimeout

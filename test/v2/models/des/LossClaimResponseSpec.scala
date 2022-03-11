@@ -16,16 +16,16 @@
 
 package v2.models.des
 
+import api.models.hateoas.Link
+import api.models.hateoas.Method.{DELETE, GET, POST}
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v2.models.domain.{TypeOfClaim, TypeOfLoss}
-import v2.models.hateoas.Link
-import v2.models.hateoas.Method.{DELETE, GET, POST}
 
 class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "claimId"
 
   val lossClaimResponse: LossClaimResponse = LossClaimResponse(
@@ -54,7 +54,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
     def desEmploymentJson: JsValue = {
       Json.parse(
-         """
+        """
            |{
            |  "incomeSourceId": "000000000000001",
            |  "reliefClaimed": "CF",
@@ -74,7 +74,7 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
           typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
           taxYear = "2019-20",
           lastModified = "20180708"
-        )
+      )
 
     "convert property JSON from DES into a valid model for property type 02" in {
       desPropertyJson("02").as[LossClaimResponse] shouldBe desToModel(TypeOfLoss.`uk-property-non-fhl`)
@@ -82,10 +82,10 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
     "convert se json from DES into a valid model" in {
       desEmploymentJson.as[LossClaimResponse] shouldBe LossClaimResponse(Some("000000000000001"),
-        TypeOfLoss.`self-employment`,
-        TypeOfClaim.`carry-forward`,
-        "2019-20",
-        "20180708")
+                                                                         TypeOfLoss.`self-employment`,
+                                                                         TypeOfClaim.`carry-forward`,
+                                                                         "2019-20",
+                                                                         "20180708")
     }
   }
   "Json Writes" should {
@@ -110,11 +110,11 @@ class LossClaimResponseSpec extends UnitSpec with MockAppConfig {
     "expose the correct links for retrieve" in {
       MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
       LossClaimResponse.GetLinksFactory.links(mockAppConfig, GetLossClaimHateoasData(nino, claimId)) shouldBe
-          Seq(
-            Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self"),
-            Link(s"/individuals/losses/$nino/loss-claims/claimId", DELETE, "delete-loss-claim"),
-            Link(s"/individuals/losses/$nino/loss-claims/claimId/change-type-of-claim", POST, "amend-loss-claim")
-          )
+        Seq(
+          Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self"),
+          Link(s"/individuals/losses/$nino/loss-claims/claimId", DELETE, "delete-loss-claim"),
+          Link(s"/individuals/losses/$nino/loss-claims/claimId/change-type-of-claim", POST, "amend-loss-claim")
+        )
     }
 
     "expose the correct links for amend" in {

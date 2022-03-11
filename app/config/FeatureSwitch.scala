@@ -26,13 +26,13 @@ case class FeatureSwitch(value: Option[Configuration]) {
     val versionNoIfPresent: Option[String] =
       version match {
         case versionRegex(v) => Some(v)
-        case _ => None
+        case _               => None
       }
 
     val enabled = for {
       versionNo <- versionNoIfPresent
-      config <- value
-      enabled <- config.getOptional[Boolean](s"version-$versionNo.enabled")
+      config    <- value
+      enabled   <- config.getOptional[Boolean](s"version-$versionNo.enabled")
     } yield enabled
 
     enabled.getOrElse(false)
@@ -41,7 +41,7 @@ case class FeatureSwitch(value: Option[Configuration]) {
   def isAmendLossClaimsOrderRouteEnabled: Boolean = {
     value match {
       case Some(configuration) => configuration.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
-      case None => false
+      case None                => false
     }
   }
 }

@@ -16,11 +16,13 @@
 
 package v3.services
 
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.amendBFLoss.{AmendBFLossRequest, AmendBFLossRequestBody}
 import v3.models.response.amendBFLoss.AmendBFLossResponse
 
@@ -75,7 +77,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
         val result: AmendBFLossOutcome = await(service.amendBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
       }
     }
 
@@ -83,12 +85,12 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_LOSS_ID"           -> LossIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
-      "INVALID_PAYLOAD"           -> DownstreamError,
+      "INVALID_PAYLOAD"           -> StandardDownstreamError,
       "CONFLICT"                  -> RuleLossAmountNotChanged,
-      "INVALID_CORRELATIONID"     -> DownstreamError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError,
-      "UNEXPECTED_ERROR"          -> DownstreamError
+      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+      "UNEXPECTED_ERROR"          -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

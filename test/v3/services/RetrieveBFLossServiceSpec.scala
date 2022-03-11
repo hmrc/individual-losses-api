@@ -16,11 +16,13 @@
 
 package v3.services
 
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
@@ -60,8 +62,8 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(DownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
+        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Left(expected)
@@ -69,8 +71,8 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
 
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
+        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Left(expected)
@@ -81,9 +83,9 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_LOSS_ID"           -> LossIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "INVALID_CORRELATIONID"     -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {

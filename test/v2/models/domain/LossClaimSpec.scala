@@ -16,9 +16,9 @@
 
 package v2.models.domain
 
+import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v2.models.utils.JsonErrorValidators
 
 class LossClaimSpec extends UnitSpec with JsonErrorValidators {
 
@@ -29,8 +29,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     businessId = Some("X2IS12356589871")
   )
 
-  val lossClaimEmploymentJson: JsValue = Json.parse(
-    """
+  val lossClaimEmploymentJson: JsValue = Json.parse("""
       |{
       |    "typeOfLoss": "self-employment",
       |    "businessId": "X2IS12356589871",
@@ -39,8 +38,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimEmploymentDesJson: JsValue = Json.parse(
-    """
+  val lossClaimEmploymentDesJson: JsValue = Json.parse("""
       |{
       |    "incomeSourceId": "X2IS12356589871",
       |    "reliefClaimed": "CF",
@@ -55,8 +53,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     businessId = Some("X2IS12356589871")
   )
 
-  val lossClaimPropertyNonFhlJson: JsValue = Json.parse(
-    """
+  val lossClaimPropertyNonFhlJson: JsValue = Json.parse("""
       |{
       |    "typeOfLoss": "uk-property-non-fhl",
       |    "typeOfClaim": "carry-forward-to-carry-sideways",
@@ -64,8 +61,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimPropertyNonFhlDesJson: JsValue = Json.parse(
-    """
+  val lossClaimPropertyNonFhlDesJson: JsValue = Json.parse("""
       |{
       |    "incomeSourceType": "02",
       |    "reliefClaimed": "CFCSGI",
@@ -80,8 +76,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
     businessId = Some("X2IS12356589871")
   )
 
-  val lossClaimForeignPropJson: JsValue = Json.parse(
-    """
+  val lossClaimForeignPropJson: JsValue = Json.parse("""
       |{
       |    "typeOfLoss": "foreign-property",
       |    "businessId": "X2IS12356589871",
@@ -90,8 +85,7 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimForeignPropDesJson: JsValue = Json.parse(
-    """
+  val lossClaimForeignPropDesJson: JsValue = Json.parse("""
       |{
       |    "incomeSourceId": "X2IS12356589871",
       |    "incomeSourceType": "15",
@@ -103,26 +97,23 @@ class LossClaimSpec extends UnitSpec with JsonErrorValidators {
   "reads" when {
     "passed a valid LossClaim Json" should {
       "return a valid model" in {
-      lossClaimEmploymentJson.as[LossClaim] shouldBe lossClaimEmployment
+        lossClaimEmploymentJson.as[LossClaim] shouldBe lossClaimEmployment
       }
 
       testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/typeOfLoss")
-      testPropertyType[LossClaim](lossClaimEmploymentJson)(
-        path = "/typeOfLoss",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[LossClaim](lossClaimEmploymentJson)(path = "/typeOfLoss",
+                                                           replacement = 12344.toJson,
+                                                           expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
       testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/taxYear")
-      testPropertyType[LossClaim](lossClaimEmploymentJson)(
-        path = "/taxYear",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[LossClaim](lossClaimEmploymentJson)(path = "/taxYear",
+                                                           replacement = 12344.toJson,
+                                                           expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
       testMandatoryProperty[LossClaim](lossClaimEmploymentJson)("/typeOfClaim")
-      testPropertyType[LossClaim](lossClaimEmploymentJson)(
-        path = "/typeOfClaim",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[LossClaim](lossClaimEmploymentJson)(path = "/typeOfClaim",
+                                                           replacement = 12344.toJson,
+                                                           expectedError = JsonError.STRING_FORMAT_EXCEPTION)
     }
   }
 

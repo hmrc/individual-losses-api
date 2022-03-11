@@ -16,6 +16,7 @@
 
 package v2.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -39,8 +40,7 @@ class AmendLossClaimControllerISpec extends V2IntegrationBaseSpec {
        |}
       """.stripMargin)
 
-  val requestJson: JsValue = Json.parse(
-    s"""
+  val requestJson: JsValue = Json.parse(s"""
        |{
        |    "typeOfClaim": "carry-forward"
        |}
@@ -134,14 +134,17 @@ class AmendLossClaimControllerISpec extends V2IntegrationBaseSpec {
       serviceErrorTest(Status.FORBIDDEN, "INVALID_CLAIM_TYPE", Status.FORBIDDEN, RuleTypeOfClaimInvalid)
       serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleClaimTypeNotChanged)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
     }
 
     "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String, requestClaimId: String, requestBody: JsValue,
-                              expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String,
+                              requestClaimId: String,
+                              requestBody: JsValue,
+                              expectedStatus: Int,
+                              expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String    = requestNino
@@ -160,8 +163,7 @@ class AmendLossClaimControllerISpec extends V2IntegrationBaseSpec {
         }
       }
 
-      val invalidClaimTypeRequestJson: JsValue = Json.parse(
-        s"""
+      val invalidClaimTypeRequestJson: JsValue = Json.parse(s"""
            |{
            |    "typeOfClaim": "carry-backward"
            |}
@@ -170,8 +172,7 @@ class AmendLossClaimControllerISpec extends V2IntegrationBaseSpec {
       validationErrorTest("BADNINO", "AAZZ1234567890a", requestJson, Status.BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BADClaimId", requestJson, Status.BAD_REQUEST, ClaimIdFormatError)
       validationErrorTest("AA123456A", "AAZZ1234567890a", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", invalidClaimTypeRequestJson,
-        Status.BAD_REQUEST, TypeOfClaimFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", invalidClaimTypeRequestJson, Status.BAD_REQUEST, TypeOfClaimFormatError)
     }
   }
 }

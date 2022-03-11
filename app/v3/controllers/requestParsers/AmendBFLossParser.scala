@@ -16,13 +16,13 @@
 
 package v3.controllers.requestParsers
 
-import javax.inject.Inject
+import api.models.domain.Nino
 import v3.controllers.requestParsers.validators.AmendBFLossValidator
-import v3.models.domain.Nino
-import v3.models.request.amendBFLoss.{AmendBFLossRequestBody, AmendBFLossRawData, AmendBFLossRequest}
+import v3.models.request.amendBFLoss.{AmendBFLossRawData, AmendBFLossRequest, AmendBFLossRequestBody}
 
-class AmendBFLossParser @Inject()(val validator: AmendBFLossValidator)
-  extends RequestParser[AmendBFLossRawData, AmendBFLossRequest] {
+import javax.inject.Inject
+
+class AmendBFLossParser @Inject()(val validator: AmendBFLossValidator) extends RequestParser[AmendBFLossRawData, AmendBFLossRequest] {
 
   override protected def requestFor(data: AmendBFLossRawData): AmendBFLossRequest =
     AmendBFLossRequest(Nino(data.nino), data.lossId, data.body.json.as[AmendBFLossRequestBody])

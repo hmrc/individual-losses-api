@@ -16,19 +16,21 @@
 
 package v3.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.hateoas.HateoasFactory
+import api.models.errors._
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
-
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v3.controllers.requestParsers.RetrieveLossClaimParser
-import v3.hateoas.HateoasFactory
 import v3.models.errors._
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRawData
 import v3.models.response.retrieveLossClaim.GetLossClaimHateoasData
 import v3.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -71,10 +73,11 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
+    errorWrapper.error match {
       case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError                                        => InternalServerError(Json.toJson(errorWrapper))
+      case StandardDownstreamError                                => InternalServerError(Json.toJson(errorWrapper))
+      case _                                                      => unhandledError(errorWrapper)
     }
   }
 }

@@ -16,6 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
@@ -26,8 +27,8 @@ import v2.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
-  private val validTaxYear = "2018-19"
+  private val validNino       = "AA123456A"
+  private val validTaxYear    = "2018-19"
   private val validTypeOfLoss = "self-employment"
   private val validBusinessId = "XAIS01234567890"
 
@@ -106,9 +107,8 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
       "there is also a self employment id" in {
         validator.validate(
-          requestData.CreateBFLossRawData(
-            validNino,
-            AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
+          requestData
+            .CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
           List(TypeOfLossFormatError)
       }
     }
@@ -117,13 +117,12 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       Seq[TypeOfLoss](
         TypeOfLoss.`uk-property-fhl`,
         TypeOfLoss.`uk-property-non-fhl`
-      ).foreach {
-        typeOfLoss => s"passed in $typeOfLoss with a valid businessId" in {
+      ).foreach { typeOfLoss =>
+        s"passed in $typeOfLoss with a valid businessId" in {
           validator.validate(
             requestData.CreateBFLossRawData(
               validNino,
-              AnyContentAsJson(Json.parse(
-                s"""
+              AnyContentAsJson(Json.parse(s"""
                   |{
                   |  "typeOfLoss" : "$typeOfLoss",
                   |  "businessId" : "$validBusinessId",
@@ -140,13 +139,12 @@ class CreateBFLossValidatorSpec extends UnitSpec {
         TypeOfLoss.`self-employment-class4`,
         TypeOfLoss.`foreign-property-fhl-eea`,
         TypeOfLoss.`foreign-property`
-      ).foreach {
-        typeOfLoss => s"passed in $typeOfLoss with no businessId" in {
+      ).foreach { typeOfLoss =>
+        s"passed in $typeOfLoss with no businessId" in {
           validator.validate(
             requestData.CreateBFLossRawData(
               validNino,
-              AnyContentAsJson(Json.parse(
-                s"""
+              AnyContentAsJson(Json.parse(s"""
                   |{
                   |  "typeOfLoss" : "$typeOfLoss",
                   |  "taxYear" : "$validTaxYear",
@@ -176,9 +174,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
     "return BusinessIdFormatError error" when {
       "an invalid business id is provided" in {
-        validator.validate(
-          requestData.CreateBFLossRawData(validNino,
-            AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
+        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
           List(BusinessIdFormatError)
       }
     }

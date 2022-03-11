@@ -16,18 +16,21 @@
 
 package v3.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.errors._
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.hateoas.MockHateoasFactory
 import v3.mocks.requestParsers.MockListLossClaimsRequestDataParser
-import v3.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListLossClaimsService, MockMtdIdLookupService}
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
-import v3.models.domain.{DownstreamTaxYear, Nino}
+import v3.mocks.services.{MockAuditService, MockListLossClaimsService}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.hateoas.Method.{GET, POST}
-import v3.models.hateoas.{HateoasWrapper, Link}
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
 import v3.models.response.listLossClaims.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 
@@ -260,7 +263,7 @@ class ListLossClaimsControllerSpec
       errorsFromServiceTester(BusinessIdFormatError, BAD_REQUEST)
       errorsFromServiceTester(TypeOfClaimFormatError, BAD_REQUEST)
       errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
 }

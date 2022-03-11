@@ -16,15 +16,17 @@
 
 package v2.services
 
-import javax.inject.Inject
+import api.models.errors._
+import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.LossClaimConnector
 import v2.models.errors._
 import v2.models.requestData.DeleteLossClaimRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.{ ExecutionContext, Future }
 
-class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends DesServiceSupport {
+class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
   /**
     * Service name for logging
@@ -39,10 +41,10 @@ class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends De
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-    "INVALID_CLAIM_ID"           -> ClaimIdFormatError,
-    "NOT_FOUND"                  -> NotFoundError,
-    "SERVER_ERROR"               -> DownstreamError,
-    "SERVICE_UNAVAILABLE"        -> DownstreamError
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }

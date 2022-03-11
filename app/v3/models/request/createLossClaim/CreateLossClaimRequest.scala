@@ -16,6 +16,6 @@
 
 package v3.models.request.createLossClaim
 
-import v3.models.domain.Nino
+import api.models.domain.Nino
 
 case class CreateLossClaimRequest(nino: Nino, lossClaim: CreateLossClaimRequestBody)

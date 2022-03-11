@@ -27,9 +27,7 @@ import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 class AuthISpec extends V3IntegrationBaseSpec {
 
   private trait Test {
-    val nino          = "AA123456A"
-    val taxYear       = "2017-18"
-    val data        = "someData"
+    val nino = "AA123456A"
 
     val requestJson: String =
       """
@@ -41,8 +39,7 @@ class AuthISpec extends V3IntegrationBaseSpec {
         |}
       """.stripMargin
 
-    val downstreamResponseJson: JsValue = Json.parse(
-      """
+    val downstreamResponseJson: JsValue = Json.parse("""
         |{
         |    "lossId": "AAZZ1234567890a"
         |}
@@ -77,12 +74,12 @@ class AuthISpec extends V3IntegrationBaseSpec {
     "an MTD ID is successfully retrieve from the NINO and the user is authorised" should {
 
       "return 201" in new Test {
-        val ifsUrl: String = s"/income-tax/brought-forward-losses/$nino"
+        val downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino"
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))

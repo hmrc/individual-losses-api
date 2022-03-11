@@ -16,10 +16,11 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
+import api.models.errors._
 import support.UnitSpec
 import v3.mocks.validators.MockRetrieveBFLossValidator
-import v3.models.domain.Nino
-import v3.models.errors.{BadRequestError, ErrorWrapper, LossIdFormatError, NinoFormatError}
+import v3.models.errors.LossIdFormatError
 import v3.models.request.retrieveBFLoss.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
 class RetrieveBFLossParserSpec extends UnitSpec {

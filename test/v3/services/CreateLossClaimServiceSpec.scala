@@ -16,11 +16,13 @@
 
 package v3.services
 
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.domain.Nino
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
@@ -68,7 +70,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
         val result: CreateLossClaimOutcome = await(service.createLossClaim(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), DownstreamError, None))
+        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
       }
     }
 
@@ -80,10 +82,10 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       "INCOME_SOURCE_NOT_FOUND"     -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
       "NO_ACCOUNTING_PERIOD"        -> RuleNoAccountingPeriod,
-      "INVALID_PAYLOAD"             -> DownstreamError,
-      "SERVER_ERROR"                -> DownstreamError,
-      "SERVICE_UNAVAILABLE"         -> DownstreamError,
-      "INVALID_CORRELATIONID"       -> DownstreamError
+      "INVALID_PAYLOAD"             -> StandardDownstreamError,
+      "SERVER_ERROR"                -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"         -> StandardDownstreamError,
+      "INVALID_CORRELATIONID"       -> StandardDownstreamError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

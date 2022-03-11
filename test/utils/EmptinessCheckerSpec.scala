@@ -28,7 +28,7 @@ class EmptinessCheckerSpec extends UnitSpec {
     case object E1 extends SomeEnum
     case object E2 extends SomeEnum
 
-    implicit val ckr : EmptinessChecker[SomeEnum] = EmptinessChecker.primitive
+    implicit val ckr: EmptinessChecker[SomeEnum] = EmptinessChecker.primitive
   }
 
   case class Baz(a: Option[Int] = None, e: Option[SomeEnum] = None)

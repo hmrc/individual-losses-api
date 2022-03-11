@@ -21,33 +21,33 @@ import utils.enums.Enums
 
 sealed trait TypeOfLoss {
   def toIncomeSourceType: Option[IncomeSourceType] = None
-  def toLossType: Option[LossType]                   = None
+  def toLossType: Option[LossType]                 = None
 }
 
 object TypeOfLoss {
 
   case object `uk-property-fhl` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]      = Some(IncomeSourceType.`04`)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`04`)
   }
 
   case object `uk-property-non-fhl` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]      = Some(IncomeSourceType.`02`)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]      = Some(IncomeSourceType.`03`)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`03`)
   }
 
   case object `foreign-property` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]      = Some(IncomeSourceType.`15`)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`15`)
   }
 
   case object `self-employment` extends TypeOfLoss {
-    override def toLossType: Option[LossType]                       = Some(LossType.INCOME)
+    override def toLossType: Option[LossType] = Some(LossType.INCOME)
   }
 
   case object `self-employment-class4` extends TypeOfLoss {
-    override def toLossType: Option[LossType]                       = Some(LossType.CLASS4)
+    override def toLossType: Option[LossType] = Some(LossType.CLASS4)
   }
 
   implicit val format: Format[TypeOfLoss] = Enums.format[TypeOfLoss]

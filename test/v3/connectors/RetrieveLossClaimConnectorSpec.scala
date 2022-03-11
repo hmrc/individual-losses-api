@@ -16,10 +16,12 @@
 
 package v3.connectors
 
-import v3.models.domain._
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
@@ -31,10 +33,10 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
   "retrieve LossClaim" should {
 
     val testDateTime: LocalDateTime = LocalDateTime.now()
-    val validTaxYear: String = "2019-20"
-    val validBusinessId: String = "XAIS01234567890"
-    val nino: String = "AA123456A"
-    val claimId: String = "AAZZ1234567890a"
+    val validTaxYear: String        = "2019-20"
+    val validBusinessId: String     = "XAIS01234567890"
+    val nino: String                = "AA123456A"
+    val claimId: String             = "AAZZ1234567890a"
 
     val retrieveResponse: RetrieveLossClaimResponse = RetrieveLossClaimResponse(
       validTaxYear,
@@ -67,7 +69,8 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveLossClaimResult(connector) shouldBe expected
       }
@@ -84,7 +87,8 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveLossClaimResult(connector) shouldBe expected
       }
@@ -98,7 +102,8 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         retrieveLossClaimResult(connector) shouldBe expected
       }

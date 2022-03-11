@@ -17,7 +17,7 @@
 package utils
 
 import shapeless.labelled.FieldType
-import shapeless.{ ::, HList, HNil, LabelledGeneric, Lazy, Witness }
+import shapeless.{::, HList, HNil, LabelledGeneric, Lazy, Witness}
 
 sealed trait EmptyPathsResult
 

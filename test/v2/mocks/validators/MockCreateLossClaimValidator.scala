@@ -16,10 +16,10 @@
 
 package v2.mocks.validators
 
+import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v2.controllers.requestParsers.validators.CreateLossClaimValidator
-import v2.models.errors.MtdError
 import v2.models.requestData.CreateLossClaimRawData
 
 class MockCreateLossClaimValidator extends MockFactory {
@@ -27,8 +27,10 @@ class MockCreateLossClaimValidator extends MockFactory {
   val mockValidator: CreateLossClaimValidator = mock[CreateLossClaimValidator]
 
   object MockValidator {
+
     def validate(data: CreateLossClaimRawData): CallHandler1[CreateLossClaimRawData, List[MtdError]] = {
-      (mockValidator.validate(_: CreateLossClaimRawData))
+      (mockValidator
+        .validate(_: CreateLossClaimRawData))
         .expects(data)
     }
   }

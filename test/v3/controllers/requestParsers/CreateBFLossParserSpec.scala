@@ -16,13 +16,13 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.Nino
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockCreateBFLossValidator
-import v3.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
 
 class CreateBFLossParserSpec extends UnitSpec {

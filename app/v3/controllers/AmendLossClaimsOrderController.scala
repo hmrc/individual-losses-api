@@ -16,6 +16,11 @@
 
 package v3.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.hateoas.HateoasFactory
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.errors._
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
@@ -23,38 +28,35 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import v3.models.audit.AuditResponse
 import v3.controllers.requestParsers.AmendLossClaimsOrderParser
-import v3.hateoas.HateoasFactory
-import v3.models.audit.{AuditEvent, GenericAuditDetail}
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderHateoasData
-import v3.services.{AmendLossClaimsOrderService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import v3.services.{AmendLossClaimsOrderService, AuditService}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthService,
-                                         val lookupService: MtdIdLookupService,
-                                         amendLossClaimsOrderService: AmendLossClaimsOrderService,
-                                         amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
-                                         hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
-                                         cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController {
+                                               val lookupService: MtdIdLookupService,
+                                               amendLossClaimsOrderService: AmendLossClaimsOrderService,
+                                               amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
+                                               hateoasFactory: HateoasFactory,
+                                               auditService: AuditService,
+                                               cc: ControllerComponents)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
+    with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimsOrderController", endpointName = "Amend a Loss Claim Order")
 
   def amendClaimsOrder(nino: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       val rawData = AmendLossClaimsOrderRawData(nino, taxYearClaimedFor, AnyContentAsJson(request.body))
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](amendLossClaimsOrderParser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](amendLossClaimsOrderParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendLossClaimsOrderService.amendLossClaimsOrder(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimsOrderHateoasData(nino)).asRight[ErrorWrapper])
@@ -66,8 +68,12 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
           val responseJson: JsValue = Json.toJson(vendorResponse)
 
           auditSubmission(
-            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor), Some(request.body),
-              serviceResponse.correlationId, AuditResponse(httpStatus = OK, response = Right(Some(responseJson)))
+            GenericAuditDetail(
+              request.userDetails,
+              Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor),
+              Some(request.body),
+              serviceResponse.correlationId,
+              AuditResponse(httpStatus = OK, response = Right(Some(responseJson)))
             )
           )
 
@@ -78,11 +84,15 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
 
         auditSubmission(
-          GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor), Some(request.body),
-            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+          GenericAuditDetail(
+            request.userDetails,
+            Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor),
+            Some(request.body),
+            correlationId,
+            AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
           )
         )
 
@@ -91,28 +101,18 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError
-           | NinoFormatError
-           | TaxYearFormatError
-           | RuleTaxYearRangeInvalid
-           | RuleTaxYearNotSupportedError
-           | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code)
-           | MtdErrorWithCode(ClaimIdFormatError.code)
-           | TypeOfClaimFormatError
-           | MtdErrorWithCode(ValueFormatError.code)
-           | RuleInvalidSequenceStart
-           | RuleSequenceOrderBroken
-           | RuleLossClaimsMissing => BadRequest(Json.toJson(errorWrapper))
-      case UnauthorisedError => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+    errorWrapper.error match {
+      case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearRangeInvalid | RuleTaxYearNotSupportedError | MtdErrorWithCode(
+            RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCode(ClaimIdFormatError.code) | TypeOfClaimFormatError | MtdErrorWithCode(
+            ValueFormatError.code) | RuleInvalidSequenceStart | RuleSequenceOrderBroken | RuleLossClaimsMissing =>
+        BadRequest(Json.toJson(errorWrapper))
+      case UnauthorisedError       => Forbidden(Json.toJson(errorWrapper))
+      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
-  private def auditSubmission(details: GenericAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext): Future[AuditResult] = {
+  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event: AuditEvent[GenericAuditDetail] = AuditEvent(
       auditType = "AmendLossClaimOrder",
       transactionName = "amend-loss-claim-order",

@@ -22,7 +22,8 @@ case class AmendBFLossRequestBody(lossAmount: BigDecimal)
 
 object AmendBFLossRequestBody {
   implicit val reads: Reads[AmendBFLossRequestBody] = Json.reads[AmendBFLossRequestBody]
-  implicit val writes: OWrites[AmendBFLossRequestBody] = (amendBroughtForwardLoss: AmendBFLossRequestBody) => Json.obj(
-    "updatedBroughtForwardLossAmount" -> amendBroughtForwardLoss.lossAmount
+  implicit val writes: OWrites[AmendBFLossRequestBody] = (amendBroughtForwardLoss: AmendBFLossRequestBody) =>
+    Json.obj(
+      "updatedBroughtForwardLossAmount" -> amendBroughtForwardLoss.lossAmount
   )
 }

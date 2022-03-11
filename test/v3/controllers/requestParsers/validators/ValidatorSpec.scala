@@ -16,10 +16,10 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors.MtdError
+import api.models.request.RawData
 import org.scalamock.scalatest.MockFactory
 import support.UnitSpec
-import v3.models.errors.MtdError
-import v3.models.request.RawData
 
 class ValidatorSpec extends UnitSpec with MockFactory {
 

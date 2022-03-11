@@ -16,16 +16,17 @@
 
 package v2.models.audit
 
+import api.models.audit.AuditResponse
+import api.models.auth.UserDetails
 import play.api.libs.json.{JsValue, Json, Writes}
-import v2.models.auth.UserDetails
 
-case class AmendLossClaimsOrderAuditDetail  (userType: String,
-                                             agentReferenceNumber: Option[String],
-                                             nino: String,
-                                             taxYear: Option[String],
-                                             request: JsValue,
-                                             `X-CorrelationId`: String,
-                                             response: AuditResponse)
+case class AmendLossClaimsOrderAuditDetail(userType: String,
+                                           agentReferenceNumber: Option[String],
+                                           nino: String,
+                                           taxYear: Option[String],
+                                           request: JsValue,
+                                           `X-CorrelationId`: String,
+                                           response: AuditResponse)
 
 object AmendLossClaimsOrderAuditDetail {
   implicit val writes: Writes[AmendLossClaimsOrderAuditDetail] = Json.writes[AmendLossClaimsOrderAuditDetail]
@@ -48,4 +49,3 @@ object AmendLossClaimsOrderAuditDetail {
     )
   }
 }
-

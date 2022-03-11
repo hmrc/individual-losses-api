@@ -16,10 +16,11 @@
 
 package v3.connectors
 
+import api.connectors.DownstreamOutcome
+import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.domain.{DownstreamTaxYear, Nino}
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 import scala.concurrent.Future
@@ -46,14 +47,15 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
       "return a successful response with the correct correlationId" in new DesTest {
         val expected = Right(ResponseWrapper(correlationId, ()))
 
-          MockHttpClient
+        MockHttpClient
           .put(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.fromMtd(taxYear)}",
             config = dummyDesHeaderCarrierConfig,
             body = amendLossClaimsOrder,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendLossClaimsOrderResult(connector) shouldBe expected
       }

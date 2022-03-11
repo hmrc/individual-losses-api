@@ -16,13 +16,13 @@
 
 package v3.controllers.requestParsers
 
-import javax.inject.Inject
+import api.models.domain.Nino
 import v3.controllers.requestParsers.validators.DeleteBFLossValidator
-import v3.models.domain.Nino
 import v3.models.request.deleteBFLoss.{DeleteBFLossRawData, DeleteBFLossRequest}
 
-class DeleteBFLossParser @Inject()(val validator: DeleteBFLossValidator)
-  extends RequestParser[DeleteBFLossRawData, DeleteBFLossRequest] {
+import javax.inject.Inject
+
+class DeleteBFLossParser @Inject()(val validator: DeleteBFLossValidator) extends RequestParser[DeleteBFLossRawData, DeleteBFLossRequest] {
 
   override protected def requestFor(data: DeleteBFLossRawData): DeleteBFLossRequest =
     DeleteBFLossRequest(Nino(data.nino), data.lossId)

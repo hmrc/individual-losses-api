@@ -16,6 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors._
 import support.UnitSpec
 import v2.models.errors._
 import v2.models.requestData.RetrieveBFLossRawData

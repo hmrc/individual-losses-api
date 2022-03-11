@@ -16,6 +16,6 @@
 
 package v3.models.request.deleteBFLoss
 
-import v3.models.request.RawData
+import api.models.request.RawData
 
 case class DeleteBFLossRawData(nino: String, lossId: String) extends RawData

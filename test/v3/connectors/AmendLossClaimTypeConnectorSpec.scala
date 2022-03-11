@@ -16,11 +16,13 @@
 
 package v3.connectors
 
+import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.domain._
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
@@ -57,7 +59,8 @@ class AmendLossClaimTypeConnectorSpec extends LossClaimConnectorSpec {
             body = amendLossClaimType,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendLossClaimTypeResult(connector) shouldBe expected
       }
@@ -74,7 +77,8 @@ class AmendLossClaimTypeConnectorSpec extends LossClaimConnectorSpec {
             body = amendLossClaimType,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendLossClaimTypeResult(connector) shouldBe expected
       }
@@ -91,7 +95,8 @@ class AmendLossClaimTypeConnectorSpec extends LossClaimConnectorSpec {
             body = amendLossClaimType,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         amendLossClaimTypeResult(connector) shouldBe expected
       }

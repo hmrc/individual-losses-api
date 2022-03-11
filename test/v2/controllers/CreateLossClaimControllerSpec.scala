@@ -16,19 +16,24 @@
 
 package v2.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.hateoas.Method.GET
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.mocks.hateoas.MockHateoasFactory
 import v2.mocks.requestParsers.MockCreateLossClaimRequestDataParser
 import v2.mocks.services._
-import v2.models.audit.{ AuditError, AuditEvent, AuditResponse, CreateLossClaimAuditDetail }
+import v2.models.audit.CreateLossClaimAuditDetail
 import v2.models.des.{ CreateLossClaimHateoasData, CreateLossClaimResponse }
-import v2.models.domain.{ LossClaim, Nino, TypeOfClaim, TypeOfLoss }
-import v2.models.errors.{ NotFoundError, _ }
-import v2.models.hateoas.Method.GET
-import v2.models.hateoas.{ HateoasWrapper, Link }
-import v2.models.outcomes.DesResponse
+import v2.models.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
+import v2.models.errors._
 import v2.models.requestData.{ CreateLossClaimRawData, CreateLossClaimRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -108,7 +113,7 @@ class CreateLossClaimControllerSpec
 
         MockCreateLossClaimService
           .create(CreateLossClaimRequest(Nino(nino), lossClaim))
-          .returns(Future.successful(Right(DesResponse(correlationId, createLossClaimResponse))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
 
         MockHateoasFactory
           .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
@@ -198,7 +203,7 @@ class CreateLossClaimControllerSpec
     }
 
     errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-    errorsFromServiceTester(DownstreamError, INTERNAL_SERVER_ERROR)
+    errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     errorsFromServiceTester(RuleDuplicateClaimSubmissionError, FORBIDDEN)
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)

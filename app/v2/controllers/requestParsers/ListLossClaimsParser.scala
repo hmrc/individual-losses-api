@@ -16,13 +16,14 @@
 
 package v2.controllers.requestParsers
 
-import javax.inject.Inject
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.ListLossClaimsValidator
-import v2.models.domain.{Nino, TypeOfClaim, TypeOfLoss}
+import v2.models.domain.{TypeOfClaim, TypeOfLoss}
 import v2.models.requestData.{DesTaxYear, ListLossClaimsRawData, ListLossClaimsRequest}
 
-class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator)
-  extends RequestParser[ListLossClaimsRawData, ListLossClaimsRequest] {
+import javax.inject.Inject
+
+class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) extends RequestParser[ListLossClaimsRawData, ListLossClaimsRequest] {
 
   override protected def requestFor(data: ListLossClaimsRawData): ListLossClaimsRequest = {
     val taxYear = data.taxYear

@@ -16,8 +16,11 @@
 
 package v2.models.requestData
 
+import api.models.request.RawData
+
 case class ListLossClaimsRawData(nino: String,
                                  taxYear: Option[String],
                                  typeOfLoss: Option[String],
                                  businessId: Option[String],
-                                 claimType: Option[String]) extends RawData
+                                 claimType: Option[String])
+    extends RawData

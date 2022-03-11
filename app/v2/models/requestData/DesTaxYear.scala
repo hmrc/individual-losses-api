@@ -37,11 +37,11 @@ object DesTaxYear {
     DesTaxYear(taxYear.take(2) + taxYear.drop(5))
 
   def fromDes(taxYear: String): DesTaxYear =
-    DesTaxYear((taxYear.toInt -1) + "-" + taxYear.drop(2))
+    DesTaxYear((taxYear.toInt - 1) + "-" + taxYear.drop(2))
 
   def mostRecentTaxYear(date: LocalDate = LocalDate.now()): DesTaxYear = {
     val limit = LocalDate.parse(s"${date.getYear}-04-05", DateTimeFormatter.ISO_DATE)
-    if(date.isBefore(limit)) {
+    if (date.isBefore(limit)) {
       DesTaxYear(s"${date.getYear - 1}")
     } else {
       DesTaxYear(s"${date.getYear}")

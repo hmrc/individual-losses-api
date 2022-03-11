@@ -16,10 +16,10 @@
 
 package v3.mocks.validators
 
+import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.validators.AmendBFLossValidator
-import v3.models.errors.MtdError
 import v3.models.request.amendBFLoss.AmendBFLossRawData
 
 class MockAmendBFLossValidator extends MockFactory {
@@ -27,8 +27,10 @@ class MockAmendBFLossValidator extends MockFactory {
   val mockValidator: AmendBFLossValidator = mock[AmendBFLossValidator]
 
   object MockValidator {
+
     def validate(data: AmendBFLossRawData): CallHandler1[AmendBFLossRawData, List[MtdError]] = {
-      (mockValidator.validate(_: AmendBFLossRawData))
+      (mockValidator
+        .validate(_: AmendBFLossRawData))
         .expects(data)
     }
   }

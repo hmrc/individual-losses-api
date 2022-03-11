@@ -16,10 +16,10 @@
             "pattern": "^[A-Za-z0-9]{15}$",
             "example": "A2Za0911235813z"
           },
-          "sequence":  {
+          "sequence": {
             "description": "[This field is only available in Sandbox]\nA number used to order a loss, the value must be between 1 and 99",
             "type": "integer",
-            "example" : "12"
+            "example": "12"
           },
           "typeOfClaim": {
             "description": "The type of claim to be applied. A self employment or a foreign property loss claim can only be of type carry-forward or carry-sideways.",

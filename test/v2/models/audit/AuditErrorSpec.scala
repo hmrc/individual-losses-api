@@ -16,6 +16,7 @@
 
 package v2.models.audit
 
+import api.models.audit.AuditError
 import play.api.libs.json.Json
 import support.UnitSpec
 
@@ -27,8 +28,7 @@ class AuditErrorSpec extends UnitSpec {
     "passed an audit error model" should {
       "produce valid json" in {
 
-         val json = Json.parse(
-          s"""
+        val json = Json.parse(s"""
              |{
              |  "errorCode": "FORMAT_NINO"
              |}

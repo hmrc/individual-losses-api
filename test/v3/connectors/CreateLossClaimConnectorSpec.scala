@@ -16,11 +16,12 @@
 
 package v3.connectors
 
+import api.connectors.DownstreamOutcome
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.domain._
-import v3.models.domain.lossClaim.{TypeOfLoss, TypeOfClaim}
-import v3.models.errors._
-import v3.models.outcomes.ResponseWrapper
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
@@ -52,7 +53,8 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
             body = lossClaim,
             requiredHeaders = requiredIfsHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
       }
@@ -69,7 +71,8 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
             body = lossClaim,
             requiredHeaders = requiredIfsHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
       }
@@ -80,12 +83,14 @@ class CreateLossClaimConnectorSpec extends LossClaimConnectorSpec {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockHttpClient
-          .post(s"$baseUrl/income-tax/claims-for-relief/$nino",
+          .post(
+            s"$baseUrl/income-tax/claims-for-relief/$nino",
             config = dummyIfsHeaderCarrierConfig,
             body = lossClaim,
             requiredHeaders = requiredIfsHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(expected))
+          )
+          .returns(Future.successful(expected))
 
         createLossClaimsResult(connector) shouldBe expected
       }

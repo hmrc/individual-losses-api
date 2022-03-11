@@ -16,15 +16,16 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.Nino
+import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockDeleteLossClaimValidator
-import v2.models.domain.Nino
-import v2.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
+import v2.models.errors.ClaimIdFormatError
 import v2.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
-class DeleteLossClaimParserSpec extends UnitSpec{
+class DeleteLossClaimParserSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
+  private val nino    = "AA123456B"
   private val claimId = "someClaimId"
 
   val inputData: DeleteLossClaimRawData =
@@ -48,7 +49,8 @@ class DeleteLossClaimParserSpec extends UnitSpec{
     "return an ErrorWrapper" when {
 
       "a single validation error occurs" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator
+          .validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -56,7 +58,8 @@ class DeleteLossClaimParserSpec extends UnitSpec{
       }
 
       "multiple validation errors occur" in new Test {
-        MockValidator.validate(inputData)
+        MockValidator
+          .validate(inputData)
           .returns(List(NinoFormatError, ClaimIdFormatError))
 
         parser.parseRequest(inputData) shouldBe

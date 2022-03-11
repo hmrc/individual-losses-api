@@ -16,15 +16,17 @@
 
 package v2.services
 
-import javax.inject.Inject
+import api.models.errors._
+import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.BFLossConnector
 import v2.models.errors._
 import v2.models.requestData.CreateBFLossRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.{ ExecutionContext, Future }
 
-class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServiceSupport {
+class CreateBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 
   /**
     * Service name for logging
@@ -39,12 +41,12 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends DesServi
   }
 
   private def mappingDesToMtdError: PartialFunction[String, MtdError] = {
-    case "INVALID_TAXABLE_ENTITY_ID" => NinoFormatError
-    case "DUPLICATE" => RuleDuplicateSubmissionError
-    case "TAX_YEAR_NOT_SUPPORTED" => RuleTaxYearNotSupportedError
-    case "NOT_FOUND_INCOME_SOURCE" => NotFoundError
-    case "TAX_YEAR_NOT_ENDED" => RuleTaxYearNotEndedError
-    case "INCOMESOURCE_ID_REQUIRED" => RuleBusinessId
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => DownstreamError
+    case "INVALID_TAXABLE_ENTITY_ID"                                => NinoFormatError
+    case "DUPLICATE"                                                => RuleDuplicateSubmissionError
+    case "TAX_YEAR_NOT_SUPPORTED"                                   => RuleTaxYearNotSupportedError
+    case "NOT_FOUND_INCOME_SOURCE"                                  => NotFoundError
+    case "TAX_YEAR_NOT_ENDED"                                       => RuleTaxYearNotEndedError
+    case "INCOMESOURCE_ID_REQUIRED"                                 => RuleBusinessId
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" => StandardDownstreamError
   }
 }

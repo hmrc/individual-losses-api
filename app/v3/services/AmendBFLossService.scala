@@ -16,12 +16,14 @@
 
 package v3.services
 
-import javax.inject.Inject
+import api.models.errors._
+import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.BFLossConnector
 import v3.models.errors._
 import v3.models.request.amendBFLoss.AmendBFLossRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
@@ -31,9 +33,7 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends Downstrea
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendBFLoss(request: AmendBFLossRequest)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext): Future[AmendBFLossOutcome] = {
+  def amendBFLoss(request: AmendBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendBFLossOutcome] = {
 
     connector.amendBFLoss(request).map {
       mapToVendorDirect("amendBFLoss", errorMap)
@@ -41,14 +41,14 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends Downstrea
   }
 
   private def errorMap: Map[String, MtdError] =
-  Map(
-    "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-    "INVALID_LOSS_ID"            -> LossIdFormatError,
-    "NOT_FOUND"                  -> NotFoundError,
-    "CONFLICT"                   -> RuleLossAmountNotChanged,
-    "INVALID_CORRELATIONID"      -> DownstreamError,
-    "INVALID_PAYLOAD"            -> DownstreamError,
-    "SERVER_ERROR"               -> DownstreamError,
-    "SERVICE_UNAVAILABLE"        -> DownstreamError
-  )
+    Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "CONFLICT"                  -> RuleLossAmountNotChanged,
+      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "INVALID_PAYLOAD"           -> StandardDownstreamError,
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    )
 }

@@ -16,12 +16,14 @@
 
 package v3.services
 
-import javax.inject.Inject
+import api.models.errors._
+import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.BFLossConnector
 import v3.models.errors._
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
@@ -40,10 +42,10 @@ class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends Downst
 
   private def errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_LOSS_ID" -> LossIdFormatError,
-    "NOT_FOUND" -> NotFoundError,
-    "INVALID_CORRELATIONID" -> DownstreamError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "INVALID_LOSS_ID"           -> LossIdFormatError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }

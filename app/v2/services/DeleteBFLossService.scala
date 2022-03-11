@@ -16,6 +16,8 @@
 
 package v2.services
 
+import api.models.errors._
+import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.BFLossConnector
 import v2.models.errors._
@@ -24,7 +26,7 @@ import v2.models.requestData.DeleteBFLossRequest
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class DeleteBFLossService @Inject()(connector: BFLossConnector) extends DesServiceSupport {
+class DeleteBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 
   /**
     * Service name for logging
@@ -43,7 +45,7 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends DesServi
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleDeleteAfterCrystallisationError,
-    "SERVER_ERROR"              -> DownstreamError,
-    "SERVICE_UNAVAILABLE"       -> DownstreamError
+    "SERVER_ERROR"              -> StandardDownstreamError,
+    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
   )
 }

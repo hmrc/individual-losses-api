@@ -16,10 +16,12 @@
 
 package v3.controllers.requestParsers.validators
 
-import javax.inject.Singleton
-import v3.controllers.requestParsers.validators.validations.{LossIdValidation, NinoValidation}
-import v3.models.errors.MtdError
+import api.models.errors.MtdError
+import api.validations.NinoValidation
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRawData
+import v3.validations.LossIdValidation
+
+import javax.inject.Singleton
 
 @Singleton
 class RetrieveBFLossValidator extends Validator[RetrieveBFLossRawData] {

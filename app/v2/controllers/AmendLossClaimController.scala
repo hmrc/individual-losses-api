@@ -16,21 +16,25 @@
 
 package v2.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.hateoas.HateoasFactory
+import api.models.audit.{AuditEvent, AuditResponse}
+import api.models.errors._
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.controllers.requestParsers.AmendLossClaimParser
-import v2.hateoas.HateoasFactory
-import v2.models.audit.{AmendLossClaimAuditDetail, AuditEvent, AuditResponse}
+import v2.models.audit.AmendLossClaimAuditDetail
 import v2.models.des.AmendLossClaimHateoasData
 import v2.models.errors._
 import v2.models.requestData.AmendLossClaimRawData
 import v2.services._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -41,18 +45,18 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
                                          hateoasFactory: HateoasFactory,
                                          auditService: AuditService,
                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController {
+    extends AuthorisedController(cc)
+    with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimController", endpointName = "Amend a Loss Claim")
 
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       val rawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(request.body))
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](amendLossClaimParser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](amendLossClaimParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendLossClaimService.amendLossClaim(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
@@ -63,8 +67,13 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
 
           val response = Json.toJson(vendorResponse)
 
-          auditSubmission(AmendLossClaimAuditDetail(request.userDetails, nino, claimId, request.body,
-            serviceResponse.correlationId, AuditResponse(OK, Right(Some(response)))))
+          auditSubmission(
+            AmendLossClaimAuditDetail(request.userDetails,
+                                      nino,
+                                      claimId,
+                                      request.body,
+                                      serviceResponse.correlationId,
+                                      AuditResponse(OK, Right(Some(response)))))
 
           Ok(response)
             .withApiHeaders(serviceResponse.correlationId)
@@ -73,31 +82,32 @@ class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,
 
       result.leftMap { errorWrapper =>
         val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
 
-        auditSubmission(AmendLossClaimAuditDetail(request.userDetails, nino, claimId, request.body,
-          correlationId, AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
+        auditSubmission(
+          AmendLossClaimAuditDetail(request.userDetails,
+                                    nino,
+                                    claimId,
+                                    request.body,
+                                    correlationId,
+                                    AuditResponse(result.header.status, Left(errorWrapper.auditErrors))))
 
         result
       }.merge
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError
-           | NinoFormatError
-           | RuleIncorrectOrEmptyBodyError
-           | ClaimIdFormatError
-           | TypeOfClaimFormatError => BadRequest(Json.toJson(errorWrapper))
+    errorWrapper.error match {
+      case BadRequestError | NinoFormatError | RuleIncorrectOrEmptyBodyError | ClaimIdFormatError | TypeOfClaimFormatError =>
+        BadRequest(Json.toJson(errorWrapper))
       case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case NotFoundError                                    => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError                          => InternalServerError(Json.toJson(errorWrapper))
+      case _                                                => unhandledError(errorWrapper)
     }
   }
 
-  private def auditSubmission(details: AmendLossClaimAuditDetail)
-                             (implicit hc: HeaderCarrier,
-                              ec: ExecutionContext) = {
+  private def auditSubmission(details: AmendLossClaimAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
     val event = AuditEvent("amendLossClaim", "amend-loss-claim", details)
     auditService.auditEvent(event)
   }

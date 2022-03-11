@@ -16,6 +16,6 @@
 
 package v3.models.request.deleteLossClaim
 
-import v3.models.domain.Nino
+import api.models.domain.Nino
 
 case class DeleteLossClaimRequest(nino: Nino, claimId: String)

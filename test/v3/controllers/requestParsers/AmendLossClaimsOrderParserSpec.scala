@@ -16,21 +16,22 @@
 
 package v3.controllers.requestParsers
 
+import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendLossClaimsOrderValidator
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.domain.{DownstreamTaxYear, Nino}
-import v3.models.errors.{BadRequestError, ClaimIdFormatError, ErrorWrapper, NinoFormatError}
+import v3.models.errors.ClaimIdFormatError
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
-  private val nino = "AA123456A"
+  private val nino        = "AA123456A"
   private val typeOfClaim = "carry-sideways"
-  private val taxYear = "2020-21"
-  private val claim = Json.obj("claimId" -> "1234568790ABCDE", "sequence" -> 1)
+  private val taxYear     = "2020-21"
+  private val claim       = Json.obj("claimId" -> "1234568790ABCDE", "sequence" -> 1)
 
   val data: AmendLossClaimsOrderRawData =
     AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(Json.obj("typeOfClaim" -> typeOfClaim, "listOfLossClaims" -> Seq(claim))))
@@ -45,8 +46,10 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
         MockValidator.validate(data).returns(List())
 
         parser.parseRequest(data) shouldBe {
-          Right(AmendLossClaimsOrderRequest(
-            Nino(nino), DownstreamTaxYear.fromMtd(taxYear), AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
+          Right(
+            AmendLossClaimsOrderRequest(Nino(nino),
+                                        DownstreamTaxYear.fromMtd(taxYear),
+                                        AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }
     }

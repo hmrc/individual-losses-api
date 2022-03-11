@@ -29,8 +29,10 @@ trait MockRetrieveBFLossService extends MockFactory {
   val mockRetrieveBFLossService: RetrieveBFLossService = mock[RetrieveBFLossService]
 
   object MockRetrieveBFLossService {
+
     def retrieve(retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[RetrieveBFLossOutcome]] = {
-      (mockRetrieveBFLossService.retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
+      (mockRetrieveBFLossService
+        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(retrieveBFLossRequest, *, *)
     }
   }

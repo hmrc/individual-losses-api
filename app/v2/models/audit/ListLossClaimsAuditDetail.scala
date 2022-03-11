@@ -16,18 +16,19 @@
 
 package v2.models.audit
 
+import api.models.audit.AuditResponse
+import api.models.auth.UserDetails
 import play.api.libs.json.{Json, Writes}
-import v2.models.auth.UserDetails
 
-case class ListLossClaimsAuditDetail (userType: String,
-                                      agentReferenceNumber: Option[String],
-                                      nino: String,
-                                      taxYear: Option[String],
-                                      typeOfLoss:Option[String],
-                                      businessId: Option[String],
-                                      claimType: Option[String],
-                                      `X-CorrelationId`: String,
-                                      response: AuditResponse)
+case class ListLossClaimsAuditDetail(userType: String,
+                                     agentReferenceNumber: Option[String],
+                                     nino: String,
+                                     taxYear: Option[String],
+                                     typeOfLoss: Option[String],
+                                     businessId: Option[String],
+                                     claimType: Option[String],
+                                     `X-CorrelationId`: String,
+                                     response: AuditResponse)
 
 object ListLossClaimsAuditDetail {
   implicit val writes: Writes[ListLossClaimsAuditDetail] = Json.writes[ListLossClaimsAuditDetail]

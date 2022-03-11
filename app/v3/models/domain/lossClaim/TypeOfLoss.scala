@@ -26,15 +26,15 @@ sealed trait TypeOfLoss {
 object TypeOfLoss {
 
   case object `uk-property-non-fhl` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]   = Some(IncomeSourceType.`02`)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
   }
 
   case object `foreign-property` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]   = Some(IncomeSourceType.`15`)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`15`)
   }
 
   case object `self-employment` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType]   = Some(IncomeSourceType.`01`)
+    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`01`)
   }
 
   implicit val format: Format[TypeOfLoss] = Enums.format[TypeOfLoss]

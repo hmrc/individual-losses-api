@@ -25,17 +25,16 @@ class LossClaimsListSpec extends UnitSpec {
   val lossClaimsList = LossClaimsList(
     claimType = ReliefClaimed.`CSGI`,
     listOfLossClaims = Seq(Claim(
-      id = "234568790ABCDE",
-      sequence = 1
-    ),
-      Claim(
-        id = "234568790ABCFE",
-        sequence = 2
-      )
-    )
+                             id = "234568790ABCDE",
+                             sequence = 1
+                           ),
+                           Claim(
+                             id = "234568790ABCFE",
+                             sequence = 2
+                           ))
   )
 
-  val mtdLossClaimsListJson : JsValue = Json.parse("""
+  val mtdLossClaimsListJson: JsValue = Json.parse("""
     |{
     |   "claimType" : "carry-sideways",
     |   "listOfLossClaims": [
@@ -49,11 +48,9 @@ class LossClaimsListSpec extends UnitSpec {
     |      }
     |   ]
     |}
-    |""".stripMargin
-  )
+    |""".stripMargin)
 
-
-  val desLossClaimsListJson : JsValue = Json.parse("""
+  val desLossClaimsListJson: JsValue = Json.parse("""
     |{
     |   "claimType" : "CSGI",
     |   "claimsSequence": [
@@ -67,8 +64,7 @@ class LossClaimsListSpec extends UnitSpec {
     |      }
     |   ]
     |}
-    |""".stripMargin
-  )
+    |""".stripMargin)
 
   "reads" when {
     "passed valid JSON" should {

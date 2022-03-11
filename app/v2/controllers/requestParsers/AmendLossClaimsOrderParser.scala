@@ -16,19 +16,21 @@
 
 package v2.controllers.requestParsers
 
-import javax.inject.Inject
+import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
-import v2.models.domain.{AmendLossClaimsOrderRequestBody, Nino}
+import v2.models.domain.AmendLossClaimsOrderRequestBody
 import v2.models.requestData.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear}
 
+import javax.inject.Inject
+
 class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderValidator)
-  extends RequestParser[AmendLossClaimsOrderRawData,AmendLossClaimsOrderRequest] {
+    extends RequestParser[AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest] {
 
   override protected def requestFor(data: AmendLossClaimsOrderRawData): AmendLossClaimsOrderRequest = {
 
     val taxYear: DesTaxYear = data.taxYear match {
       case Some(year) => DesTaxYear.fromMtd(year)
-      case None => DesTaxYear.mostRecentTaxYear()
+      case None       => DesTaxYear.mostRecentTaxYear()
     }
 
     AmendLossClaimsOrderRequest(Nino(data.nino), taxYear, data.body.json.as[AmendLossClaimsOrderRequestBody])

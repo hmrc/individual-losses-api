@@ -16,6 +16,7 @@
 
 package v2.models.requestData
 
+import api.models.request.RawData
 import play.api.mvc.AnyContentAsJson
 
 case class AmendLossClaimsOrderRawData(nino: String, taxYear: Option[String], body: AnyContentAsJson) extends RawData

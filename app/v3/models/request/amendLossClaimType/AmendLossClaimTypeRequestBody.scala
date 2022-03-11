@@ -23,8 +23,9 @@ case class AmendLossClaimTypeRequestBody(typeOfClaim: TypeOfClaim)
 
 object AmendLossClaimTypeRequestBody {
   implicit val reads: Reads[AmendLossClaimTypeRequestBody] = Json.reads[AmendLossClaimTypeRequestBody]
-  implicit val writes: OWrites[AmendLossClaimTypeRequestBody] = (o: AmendLossClaimTypeRequestBody) => Json.obj(
-    "updatedReliefClaimedType" -> o.typeOfClaim.toReliefClaimed
+  implicit val writes: OWrites[AmendLossClaimTypeRequestBody] = (o: AmendLossClaimTypeRequestBody) =>
+    Json.obj(
+      "updatedReliefClaimedType" -> o.typeOfClaim.toReliefClaimed
   )
 
 }

@@ -16,7 +16,7 @@
 
 package v3.models.request.createLossClaim
 
+import api.models.request.RawData
 import play.api.mvc.AnyContentAsJson
-import v3.models.request.RawData
 
 case class CreateLossClaimRawData(nino: String, body: AnyContentAsJson) extends RawData

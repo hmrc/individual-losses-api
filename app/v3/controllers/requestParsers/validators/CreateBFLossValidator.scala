@@ -16,22 +16,19 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors._
+import api.validations.NinoValidation
 import config.FixedConfig
+import utils.CurrentDate
+import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequestBody}
+import v3.validations._
 
 import javax.inject.{Inject, Singleton}
-import utils.CurrentDate
-import v3.controllers.requestParsers.validators.validations._
-import v3.models.errors.{MtdError, TaxYearFormatError}
-import v3.models.request.createBFLoss.{CreateBFLossRequestBody, CreateBFLossRawData}
 
 @Singleton
 class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
 
-  private val validationSet = List(parameterFormatValidation,
-                                   typeOfLossValidator,
-                                   bodyFormatValidator,
-                                   taxYearValidator,
-                                   otherBodyFieldsValidator)
+  private val validationSet = List(parameterFormatValidation, typeOfLossValidator, bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
 
   private def parameterFormatValidation: CreateBFLossRawData => List[List[MtdError]] = { data =>
     List(

@@ -16,17 +16,19 @@
 
 package v2.services
 
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v2.mocks.connectors.MockLossClaimConnector
-import v2.models.domain.Nino
 import v2.models.errors._
-import v2.models.outcomes.DesResponse
 import v2.models.requestData.DeleteLossClaimRequest
 
 import scala.concurrent.Future
 
 class DeleteLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
@@ -39,10 +41,11 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
     "return a right" when {
       "the connector call is successful" in new Test {
 
-        val desResponse: DesResponse[Unit] = DesResponse(correlationId, ())
-        val expected: DesResponse[Unit] = DesResponse(correlationId, ())
+        val desResponse: ResponseWrapper[Unit] = ResponseWrapper(correlationId, ())
+        val expected: ResponseWrapper[Unit]    = ResponseWrapper(correlationId, ())
 
-        MockedLossClaimConnector.deleteLossClaim(request)
+        MockedLossClaimConnector
+          .deleteLossClaim(request)
           .returns(Future.successful(Right(desResponse)))
 
         await(service.deleteLossClaim(request)) shouldBe Right(expected)
@@ -52,8 +55,8 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError = MtdError("SOME_CODE", "some message")
-        val desResponse: DesResponse[OutboundError] = DesResponse(correlationId, OutboundError(someError))
+        val someError: MtdError                         = MtdError("SOME_CODE", "some message")
+        val desResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
@@ -62,15 +65,16 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val desResponse: DesResponse[SingleError] = DesResponse(correlationId, SingleError(DownstreamError))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
+        val expected: ErrorWrapper                    = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
         MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteLossClaim(request)) shouldBe Left(expected)
       }
       "the connector call returns multiple errors including a downstream error" in new Test {
-        val desResponse: DesResponse[MultipleErrors] = DesResponse(correlationId, MultipleErrors(Seq(NinoFormatError, DownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), DownstreamError, None)
+        val desResponse: ResponseWrapper[MultipleErrors] =
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
+        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
         MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(desResponse)))
 
         await(service.deleteLossClaim(request)) shouldBe Left(expected)
@@ -81,15 +85,16 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError,
-      "UNEXPECTED_ERROR"          -> DownstreamError
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+      "UNEXPECTED_ERROR"          -> StandardDownstreamError
     ).foreach {
-      case(k, v) =>
+      case (k, v) =>
         s"return a ${v.code} error" when {
           s"the connector call returns $k" in new Test {
-            MockedLossClaimConnector.deleteLossClaim(request)
-              .returns(Future.successful(Left(DesResponse(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
+            MockedLossClaimConnector
+              .deleteLossClaim(request)
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
 
             await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

@@ -16,6 +16,7 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
@@ -24,14 +25,14 @@ import v3.models.request.amendBFLoss.AmendBFLossRawData
 
 class AmendBFLossValidatorSpec extends UnitSpec {
 
-  private val validNino                     = "AA123456A"
-  private val invalidNino                   = "AA123456"
-  private val validLossId                   = "AAZZ1234567890a"
-  private val invalidLossId                 = "AAZZ1234567890"
-  private val validLossAmount               = 3.00
-  private val minimumLossAmount             = 0.00
-  private val maximumLossAmount             = 99999999999.99
-  private val invalidLossAmountFormat       = 99999999999.999
+  private val validNino               = "AA123456A"
+  private val invalidNino             = "AA123456"
+  private val validLossId             = "AAZZ1234567890a"
+  private val invalidLossId           = "AAZZ1234567890"
+  private val validLossAmount         = 3.00
+  private val minimumLossAmount       = 0.00
+  private val maximumLossAmount       = 99999999999.99
+  private val invalidLossAmountFormat = 99999999999.999
 
   private val amendBFLossRawData: (String, String, BigDecimal) => AmendBFLossRawData = (nino, lossId, lossAmount) =>
     AmendBFLossRawData(nino, lossId, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
@@ -69,7 +70,7 @@ class AmendBFLossValidatorSpec extends UnitSpec {
     "return a FORMAT_VALUE error" when {
       "a lossAmount greater than 2 decimal places is submitted" in {
         validator.validate(amendBFLossRawData(validNino, validLossId, invalidLossAmountFormat)) shouldBe
-          List(ValueFormatError.forPathAndRange("/lossAmount","0","99999999999.99"))
+          List(ValueFormatError.forPathAndRange("/lossAmount", "0", "99999999999.99"))
       }
     }
     "return multiple errors" when {

@@ -16,13 +16,14 @@
 
 package v2.endpoints
 
+import api.hateoas.HateoasLinks
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V2IntegrationBaseSpec
-import v2.hateoas.HateoasLinks
 import v2.models.errors._
 import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
@@ -30,8 +31,7 @@ class AmendBFLossControllerISpec extends V2IntegrationBaseSpec {
 
   val lossAmount = 531.99
 
-  val desResponseJson: JsValue = Json.parse(
-    s"""
+  val desResponseJson: JsValue = Json.parse(s"""
        |{
        |"incomeSourceId": "XKIS00000000988",
        |"lossType": "INCOME",
@@ -42,8 +42,7 @@ class AmendBFLossControllerISpec extends V2IntegrationBaseSpec {
        |}
       """.stripMargin)
 
-  val requestJson: BigDecimal => JsValue = lossAmount => Json.parse(
-    s"""
+  val requestJson: BigDecimal => JsValue = lossAmount => Json.parse(s"""
        |{
        |    "lossAmount": $lossAmount
        |}
@@ -61,15 +60,14 @@ class AmendBFLossControllerISpec extends V2IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
-    val lossId = "AAZZ1234567890a"
+    val nino          = "AA123456A"
+    val lossId        = "AAZZ1234567890a"
     val correlationId = "X-123"
-    val businessId = "XKIS00000000988"
-    val taxYear = "2019-20"
-    val typeOfLoss = "self-employment"
+    val businessId    = "XKIS00000000988"
+    val taxYear       = "2019-20"
+    val typeOfLoss    = "self-employment"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "businessId": "XKIS00000000988",
          |    "typeOfLoss": "self-employment",
@@ -100,7 +98,7 @@ class AmendBFLossControllerISpec extends V2IntegrationBaseSpec {
   "Calling the amend BFLoss endpoint" should {
 
     trait AmendBFLossControllerTest extends Test {
-      def uri: String = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
+      def uri: String    = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
       def desUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
     }
 
@@ -123,13 +121,12 @@ class AmendBFLossControllerISpec extends V2IntegrationBaseSpec {
       }
     }
 
-
     "return 500 (Internal Server Error)" when {
 
-      amendErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      amendErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      amendErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
-      amendErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+      amendErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      amendErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      amendErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      amendErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
     }
 
     "return 404 NOT FOUND" when {
@@ -163,9 +160,8 @@ class AmendBFLossControllerISpec extends V2IntegrationBaseSpec {
       amendBFLossValidationErrorTest("BADNINO", requestJson(531.99), Status.BAD_REQUEST, NinoFormatError)
       amendBFLossValidationErrorTest("AA123456A", Json.toJson("dsdfs"), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       amendBFLossValidationErrorTest("AA123456A", requestJson(-3234.99), Status.BAD_REQUEST, RuleInvalidLossAmount)
-      amendBFLossValidationErrorTest("AA123456A",requestJson(99999999999.999), Status.BAD_REQUEST, AmountFormatError)
+      amendBFLossValidationErrorTest("AA123456A", requestJson(99999999999.999), Status.BAD_REQUEST, AmountFormatError)
     }
-
 
     def amendBFLossValidationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
       s"validation fails with ${expectedBody.code} error" in new AmendBFLossControllerTest {
