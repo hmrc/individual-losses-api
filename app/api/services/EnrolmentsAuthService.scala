@@ -71,7 +71,7 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
         }
       case unexpected =>
         logger.error(s"[EnrolmentsAuthService][authorised] Unexpected AuthorisedFunction: $unexpected")
-        Future.successful(Left(StandardDownstreamError))
+        Future.successful(Left(UnauthorisedError))
 
     } recoverWith {
       case _: MissingBearerToken     => Future.successful(Left(UnauthorisedError))
