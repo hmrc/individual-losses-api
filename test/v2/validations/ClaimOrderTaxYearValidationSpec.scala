@@ -19,7 +19,6 @@ package v2.validations
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v2.models.errors.RuleTaxYearNotSupportedError
 
 class ClaimOrderTaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
 

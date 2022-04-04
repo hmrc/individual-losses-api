@@ -23,8 +23,8 @@ import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V2IntegrationBaseSpec
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v2.models.errors._
-import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class DeleteLossClaimControllerISpec extends V2IntegrationBaseSpec {
 
@@ -66,7 +66,7 @@ class DeleteLossClaimControllerISpec extends V2IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.DELETE, desUrl, Status.NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, desUrl, Status.NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -83,7 +83,7 @@ class DeleteLossClaimControllerISpec extends V2IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.onError(DesStub.DELETE, desUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, desUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())

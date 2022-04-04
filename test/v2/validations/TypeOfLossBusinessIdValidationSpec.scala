@@ -16,10 +16,10 @@
 
 package v2.validations
 
+import api.models.errors.RuleBusinessId
 import api.validations.NoValidationErrors
 import support.UnitSpec
 import v2.models.domain.TypeOfLoss
-import v2.models.errors.RuleBusinessId
 
 class TypeOfLossBusinessIdValidationSpec extends UnitSpec {
   "validate" should {

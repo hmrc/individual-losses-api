@@ -16,12 +16,12 @@
 
 package v3.validations
 
+import api.models.errors.RuleIncorrectOrEmptyBodyError
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{ Json, OFormat }
 import shapeless.HNil
 import support.UnitSpec
 import utils.EmptinessChecker
-import v3.models.errors.RuleIncorrectOrEmptyBodyError
 
 class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 

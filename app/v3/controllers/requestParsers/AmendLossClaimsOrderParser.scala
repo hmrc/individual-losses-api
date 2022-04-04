@@ -16,6 +16,7 @@
 
 package v3.controllers.requestParsers
 
+import api.controllers.requestParsers.RequestParser
 import api.models.domain.{DownstreamTaxYear, Nino}
 import v3.controllers.requestParsers.validators.AmendLossClaimsOrderValidator
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}

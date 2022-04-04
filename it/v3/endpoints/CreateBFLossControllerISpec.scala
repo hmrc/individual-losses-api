@@ -24,8 +24,8 @@ import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v3.models.errors._
-import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorValidators {
 

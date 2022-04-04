@@ -16,6 +16,7 @@
 
 package v2.controllers.requestParsers
 
+import api.controllers.requestParsers.RequestParser
 import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.RetrieveLossClaimValidator
 import v2.models.requestData._

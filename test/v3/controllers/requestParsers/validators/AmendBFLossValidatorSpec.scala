@@ -16,12 +16,14 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.endpoints.amendBFLoss.common.model
+import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRawData
+import api.endpoints.amendBFLoss.v3.request.AmendBFLossValidator
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.models.errors._
-import v3.models.request.amendBFLoss.AmendBFLossRawData
 
 class AmendBFLossValidatorSpec extends UnitSpec {
 
@@ -35,7 +37,7 @@ class AmendBFLossValidatorSpec extends UnitSpec {
   private val invalidLossAmountFormat = 99999999999.999
 
   private val amendBFLossRawData: (String, String, BigDecimal) => AmendBFLossRawData = (nino, lossId, lossAmount) =>
-    AmendBFLossRawData(nino, lossId, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
+    model.request.AmendBFLossRawData(nino, lossId, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
 
   val validator = new AmendBFLossValidator
 
@@ -63,7 +65,7 @@ class AmendBFLossValidatorSpec extends UnitSpec {
     }
     "return a RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED error" when {
       "a body without a lossAmount field is submitted" in {
-        validator.validate(AmendBFLossRawData(nino = validNino, lossId = validLossId, body = AnyContentAsJson(Json.obj()))) shouldBe List(
+        validator.validate(model.request.AmendBFLossRawData(nino = validNino, lossId = validLossId, body = AnyContentAsJson(Json.obj()))) shouldBe List(
           RuleIncorrectOrEmptyBodyError)
       }
     }

@@ -24,10 +24,10 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.Claim
-import v3.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 

@@ -16,15 +16,15 @@
 
 package v2.services
 
+import api.connectors.v2.BFLossConnector
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.BFLossConnector
 import v2.models.errors._
 import v2.models.requestData.CreateBFLossRequest
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class CreateBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 

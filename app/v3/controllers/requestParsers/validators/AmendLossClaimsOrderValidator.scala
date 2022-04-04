@@ -17,11 +17,11 @@
 package v3.controllers.requestParsers.validators
 
 import api.models.errors._
-import api.validations.NinoValidation
+import api.validations.{ JsonValidation, NinoValidation, Validator }
 import config.FixedConfig
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors.TypeOfClaimFormatError
-import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequestBody}
+import v3.models.request.amendLossClaimsOrder.{ AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequestBody }
 import v3.validations._
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] with FixedConfig {

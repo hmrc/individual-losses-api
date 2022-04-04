@@ -17,7 +17,7 @@
 package definition
 
 import config.AppConfig
-import definition.Versions._
+import routing.{Version, Version2, Version3}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 
@@ -53,21 +53,21 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
         context = appConfig.apiGatewayContext,
         versions = Seq(
           APIVersion(
-            version = VERSION_2,
-            status = buildAPIStatus(VERSION_2),
-            endpointsEnabled = appConfig.endpointsEnabled(version = "2")
+            version = Version2,
+            status = buildAPIStatus(Version2),
+            endpointsEnabled = appConfig.endpointsEnabled(version = Version2.configName)
           ),
           APIVersion(
-            version = VERSION_3,
-            status = buildAPIStatus(VERSION_3),
-            endpointsEnabled = appConfig.endpointsEnabled(version = "3")
+            version = Version3,
+            status = buildAPIStatus(Version3),
+            endpointsEnabled = appConfig.endpointsEnabled(version = Version3.configName)
           )
         ),
         requiresTrust = None
       )
     )
 
-  private[definition] def buildAPIStatus(version: String): APIStatus = {
+  private[definition] def buildAPIStatus(version: Version): APIStatus = {
     APIStatus.parser
       .lift(appConfig.apiStatus(version))
       .getOrElse {

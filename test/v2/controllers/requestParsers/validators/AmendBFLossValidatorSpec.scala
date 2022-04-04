@@ -16,12 +16,13 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRawData
+import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossValidator
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.models.errors._
-import v2.models.requestData.AmendBFLossRawData
 
 class AmendBFLossValidatorSpec extends UnitSpec {
 

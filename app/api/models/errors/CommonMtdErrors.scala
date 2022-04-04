@@ -18,6 +18,7 @@ package api.models.errors
 
 object NinoFormatError    extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
+object AmountFormatError  extends MtdError("FORMAT_LOSS_AMOUNT", "The provided Loss amount is invalid")
 
 //Standard Errors
 object NotFoundError           extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
@@ -34,3 +35,13 @@ object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is
 // Accept header Errors
 object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 object UnsupportedVersionError  extends MtdError("NOT_FOUND", "The requested resource could not be found")
+
+// Common rule errors
+object RuleTaxYearNotSupportedError
+    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
+object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
+object RuleTaxYearRangeInvalid       extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required")
+object RuleTaxYearNotEndedError      extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The tax year for this brought forward loss has not yet ended")
+
+object RuleBusinessId
+    extends MtdError("RULE_BUSINESS_ID", "A Business ID must be supplied for a self-employment or a foreign property business type.")

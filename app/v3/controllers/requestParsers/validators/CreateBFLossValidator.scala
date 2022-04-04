@@ -17,13 +17,13 @@
 package v3.controllers.requestParsers.validators
 
 import api.models.errors._
-import api.validations.NinoValidation
+import api.validations.{ JsonValidation, NinoValidation, Validator }
 import config.FixedConfig
 import utils.CurrentDate
-import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequestBody}
+import v3.models.request.createBFLoss.{ CreateBFLossRawData, CreateBFLossRequestBody }
 import v3.validations._
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
 @Singleton
 class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {

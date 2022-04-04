@@ -16,9 +16,8 @@
 
 package v2.validations
 
-import api.models.errors.MtdError
+import api.models.errors.{ MtdError, RuleTaxYearNotSupportedError }
 import api.validations.NoValidationErrors
-import v2.models.errors.RuleTaxYearNotSupportedError
 import v2.models.requestData.DesTaxYear
 
 object MinTaxYearValidation {

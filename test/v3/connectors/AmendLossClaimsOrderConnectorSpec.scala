@@ -17,6 +17,7 @@
 package v3.connectors
 
 import api.connectors.DownstreamOutcome
+import api.connectors.v3.LossClaimConnector
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier

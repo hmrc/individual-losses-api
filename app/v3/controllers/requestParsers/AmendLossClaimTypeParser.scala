@@ -16,6 +16,7 @@
 
 package v3.controllers.requestParsers
 
+import api.controllers.requestParsers.RequestParser
 import api.models.domain.Nino
 import v3.controllers.requestParsers.validators.AmendLossClaimTypeValidator
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}

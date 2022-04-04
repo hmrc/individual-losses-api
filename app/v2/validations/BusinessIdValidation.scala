@@ -16,10 +16,10 @@
 
 package v2.validations
 
-import api.models.errors.MtdError
+import api.models.errors.{ MtdError, RuleBusinessId }
 import api.validations.NoValidationErrors
 import v2.models.domain.TypeOfLoss
-import v2.models.errors.{ BusinessIdFormatError, RuleBusinessId }
+import v2.models.errors.BusinessIdFormatError
 
 object BusinessIdValidation {
 

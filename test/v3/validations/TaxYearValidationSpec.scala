@@ -19,7 +19,6 @@ package v3.validations
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v3.models.errors.RuleTaxYearRangeInvalid
 
 class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
 

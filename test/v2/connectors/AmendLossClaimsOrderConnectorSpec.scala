@@ -17,6 +17,7 @@
 package v2.connectors
 
 import api.connectors.DownstreamOutcome
+import api.connectors.v2.LossClaimConnector
 import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier

@@ -16,11 +16,10 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.models.errors.MtdError
-import api.validations.{ NinoValidation, NoValidationErrors }
+import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
+import api.validations._
 import config.FixedConfig
 import v2.models.domain.BFLoss
-import v2.models.errors.RuleIncorrectOrEmptyBodyError
 import v2.models.requestData.CreateBFLossRawData
 import v2.validations._
 

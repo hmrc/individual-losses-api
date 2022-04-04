@@ -16,11 +16,11 @@
 
 package v2.mocks.validators
 
+import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRawData
+import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossValidator
 import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v2.controllers.requestParsers.validators.AmendBFLossValidator
-import v2.models.requestData.AmendBFLossRawData
 
 class MockAmendBFLossValidator extends MockFactory {
 

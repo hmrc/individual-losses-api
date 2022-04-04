@@ -16,11 +16,11 @@
 
 package v3.validations
 
+import api.models.errors.RuleTaxYearNotEndedError
 import org.scalamock.handlers.CallHandler
 import support.UnitSpec
 import utils.CurrentDate
 import v3.mocks.MockCurrentDate
-import v3.models.errors.RuleTaxYearNotEndedError
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

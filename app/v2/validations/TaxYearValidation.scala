@@ -18,7 +18,6 @@ package v2.validations
 
 import api.models.errors._
 import api.validations.NoValidationErrors
-import v2.models.errors.RuleTaxYearRangeInvalid
 
 object TaxYearValidation {
 

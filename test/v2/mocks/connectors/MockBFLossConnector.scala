@@ -17,10 +17,11 @@
 package v2.mocks.connectors
 
 import api.connectors.DownstreamOutcome
+import api.connectors.v2.BFLossConnector
+import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.BFLossConnector
 import v2.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v2.models.requestData._
 

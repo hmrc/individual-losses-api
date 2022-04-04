@@ -20,7 +20,7 @@ import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v2.models.errors.{ClaimIdFormatError, RuleIncorrectOrEmptyBodyError, TypeOfClaimFormatError}
+import v2.models.errors.{ ClaimIdFormatError, TypeOfClaimFormatError }
 import v2.models.requestData.AmendLossClaimRawData
 
 import scala.collection.immutable.Stream.Empty

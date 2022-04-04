@@ -17,10 +17,9 @@
 package v3.validations
 
 import api.models.domain.DownstreamTaxYear
-import api.models.errors.MtdError
+import api.models.errors.{ MtdError, RuleTaxYearNotEndedError }
 import api.validations.NoValidationErrors
 import utils.CurrentDate
-import v3.models.errors.RuleTaxYearNotEndedError
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

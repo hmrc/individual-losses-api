@@ -17,10 +17,10 @@
 package v3.controllers.requestParsers.validators
 
 import api.models.errors.MtdError
-import api.validations.NinoValidation
+import api.validations.{ JsonValidation, NinoValidation, Validator }
 import config.FixedConfig
 import v3.models.errors.TaxYearClaimedForFormatError
-import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequestBody}
+import v3.models.request.createLossClaim.{ CreateLossClaimRawData, CreateLossClaimRequestBody }
 import v3.validations._
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {

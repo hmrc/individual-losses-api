@@ -16,11 +16,12 @@
 
 package v3.mocks.requestParsers
 
+import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRawData
+import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.v3.request.AmendBFLossParser
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v3.controllers.requestParsers.AmendBFLossParser
-import v3.models.request.amendBFLoss.{AmendBFLossRawData, AmendBFLossRequest}
 
 trait MockAmendBFLossRequestDataParser extends MockFactory {
 

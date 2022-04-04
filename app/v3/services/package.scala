@@ -16,9 +16,9 @@
 
 package v3
 
+import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
-import v3.models.response.amendBFLoss.AmendBFLossResponse
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 import v3.models.response.createBFLoss.CreateBFLossResponse

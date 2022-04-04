@@ -16,11 +16,10 @@
 
 package v3.validations
 
-import api.models.errors.MtdError
+import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
 import play.api.Logger
 import play.api.libs.json._
-import utils.{EmptinessChecker, EmptyPathsResult}
-import v3.models.errors.RuleIncorrectOrEmptyBodyError
+import utils.{ EmptinessChecker, EmptyPathsResult }
 
 object JsonFormatValidation {
 

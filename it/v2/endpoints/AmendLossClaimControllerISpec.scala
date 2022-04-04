@@ -23,8 +23,8 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V2IntegrationBaseSpec
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v2.models.errors._
-import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendLossClaimControllerISpec extends V2IntegrationBaseSpec {
 
@@ -99,7 +99,7 @@ class AmendLossClaimControllerISpec extends V2IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUrl, Status.OK, desResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, desUrl, Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -118,7 +118,7 @@ class AmendLossClaimControllerISpec extends V2IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.onError(DesStub.PUT, desUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.PUT, desUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().post(requestJson))

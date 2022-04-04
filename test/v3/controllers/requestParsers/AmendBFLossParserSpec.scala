@@ -16,14 +16,15 @@
 
 package v3.controllers.requestParsers
 
+import api.endpoints.amendBFLoss.common.model.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.v3.request.AmendBFLossParser
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendBFLossValidator
-import v3.models.errors.RuleIncorrectOrEmptyBodyError
-import v3.models.request.amendBFLoss.{AmendBFLossRawData, AmendBFLossRequest, AmendBFLossRequestBody}
 
 class AmendBFLossParserSpec extends UnitSpec {
 

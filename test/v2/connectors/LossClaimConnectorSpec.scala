@@ -16,6 +16,7 @@
 
 package v2.connectors
 
+import api.connectors.v2.LossClaimConnector
 import mocks.MockAppConfig
 import v2.mocks.MockHttpClient
 

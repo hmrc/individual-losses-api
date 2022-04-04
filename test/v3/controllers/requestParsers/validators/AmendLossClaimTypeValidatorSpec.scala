@@ -17,10 +17,10 @@
 package v3.controllers.requestParsers.validators
 
 import api.models.errors._
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{ JsObject, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v3.models.errors.{ClaimIdFormatError, RuleIncorrectOrEmptyBodyError, TypeOfClaimFormatError}
+import v3.models.errors.{ ClaimIdFormatError, TypeOfClaimFormatError }
 import v3.models.request.amendLossClaimType.AmendLossClaimTypeRawData
 
 class AmendLossClaimTypeValidatorSpec extends UnitSpec {

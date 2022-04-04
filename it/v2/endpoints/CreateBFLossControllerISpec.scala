@@ -24,8 +24,8 @@ import play.api.http.Status
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V2IntegrationBaseSpec
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v2.models.errors._
-import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class CreateBFLossControllerISpec extends V2IntegrationBaseSpec {
 
@@ -116,7 +116,7 @@ class CreateBFLossControllerISpec extends V2IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.POST, desUrl, Status.OK, desResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, desUrl, Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -240,7 +240,7 @@ class CreateBFLossControllerISpec extends V2IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onError(DesStub.POST, desUrl, desStatus, errorBody(desCode))
+          DownstreamStub.onError(DownstreamStub.POST, desUrl, desStatus, errorBody(desCode))
         }
 
         val response: WSResponse = await(request().post(requestJson))

@@ -16,11 +16,11 @@
 
 package v3.services
 
+import api.connectors.v3.LossClaimConnector
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.connectors.LossClaimConnector
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse

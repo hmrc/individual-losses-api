@@ -16,8 +16,9 @@
 
 package v2.models.des
 
-import api.hateoas.{HateoasLinks, HateoasLinksFactory}
-import api.models.hateoas.{HateoasData, Link}
+import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
+import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
+import api.models.hateoas.{ HateoasData, Link }
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -52,7 +53,5 @@ object BFLossResponse extends HateoasLinks {
     }
   }
 }
-
-case class AmendBFLossHateoasData(nino: String, lossId: String) extends HateoasData
 
 case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData
