@@ -17,11 +17,11 @@
 package api.connectors
 
 import api.connectors.DownstreamUri.{ DesUri, IfsUri }
+import api.mocks.MockHttpClient
 import api.models.outcomes.ResponseWrapper
 import config.AppConfig
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient, HttpReads }
-import v3.mocks.MockHttpClient
 
 import scala.concurrent.Future
 

@@ -19,11 +19,11 @@ package v2.connectors
 import api.connectors.DownstreamOutcome
 import api.connectors.v2.LossClaimConnector
 import api.models.domain.Nino
+import api.models.domain.v2.{ LossClaim, TypeOfClaim, TypeOfLoss }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.models.des._
-import v2.models.domain._
 import v2.models.requestData._
 
 import scala.concurrent.Future

@@ -16,11 +16,12 @@
 
 package v2.mocks.services
 
+import api.endpoints.createBFLoss.v2.CreateBFLossService
+import api.endpoints.createBFLoss.v2.model.request.CreateBFLossRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.requestData.CreateBFLossRequest
-import v2.services.{CreateBFLossOutcome, CreateBFLossService}
+import v2.services.CreateBFLossOutcome
 
 import scala.concurrent.{ExecutionContext, Future}
 

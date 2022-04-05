@@ -19,11 +19,11 @@ package api.endpoints.amendBFLoss.v3.response
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
 import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
 import api.models.domain.DownstreamTaxYear
+import api.models.domain.bfLoss.v3.{ IncomeSourceType, LossType, TypeOfLoss }
 import api.models.hateoas.Link
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v3.models.domain.bfLoss.{ IncomeSourceType, LossType, TypeOfLoss }
 
 case class AmendBFLossResponse(businessId: String,
                                typeOfLoss: TypeOfLoss,

@@ -18,10 +18,10 @@ package api.connectors.v2
 
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
+import api.models.domain.v2.{ AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim }
 import config.AppConfig
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v2.models.des.{ CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId, LossClaimResponse }
-import v2.models.domain.{ AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim }
 import v2.models.requestData._
 
 import javax.inject.{ Inject, Singleton }

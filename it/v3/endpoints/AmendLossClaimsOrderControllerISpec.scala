@@ -17,6 +17,7 @@
 package v3.endpoints
 
 import api.models.domain.DownstreamTaxYear
+import api.models.domain.lossClaim.v3.TypeOfClaim
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -25,7 +26,6 @@ import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.V3IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.Claim
 

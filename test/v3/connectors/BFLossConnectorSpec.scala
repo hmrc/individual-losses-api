@@ -17,25 +17,25 @@
 package v3.connectors
 
 import api.connectors.v3.BFLossConnector
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.connectors.{ ConnectorSpec, DownstreamOutcome }
 import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
 import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.endpoints.createBFLoss.v3.model.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
+import api.mocks.MockHttpClient
+import api.models.domain.bfLoss.v3.{ IncomeSourceType, TypeOfLoss }
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.MockHttpClient
-import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v3.models.errors._
-import v3.models.request.createBFLoss.{CreateBFLossRequest, CreateBFLossRequestBody}
 import v3.models.request.deleteBFLoss.DeleteBFLossRequest
 import v3.models.request.listBFLosses.ListBFLossesRequest
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
 import v3.models.response.createBFLoss.CreateBFLossResponse
-import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
+import v3.models.response.listBFLosses.{ ListBFLossesItem, ListBFLossesResponse }
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import scala.concurrent.Future

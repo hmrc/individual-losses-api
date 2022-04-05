@@ -16,10 +16,10 @@
 
 package api.endpoints.amendBFLoss.v2.model.request
 
-import api.endpoints.amendBFLoss.common.model.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
-import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
-import api.validations.{ AmountValidation, NinoValidation, Validator }
-import v2.validations.{ JsonFormatValidation, LossIdValidation }
+import api.endpoints.amendBFLoss.common.model.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import api.validations.v2.{AmountValidation, JsonFormatValidation, LossIdValidation}
+import api.validations.{NinoValidation, Validator}
 
 class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
 

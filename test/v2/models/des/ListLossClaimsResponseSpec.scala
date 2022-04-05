@@ -16,6 +16,7 @@
 
 package v2.models.des
 
+import api.models.domain.v2.TypeOfClaim
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{GET, POST, PUT}
 import com.typesafe.config.ConfigFactory
@@ -23,7 +24,6 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
-import v2.models.domain.TypeOfClaim
 
 class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 

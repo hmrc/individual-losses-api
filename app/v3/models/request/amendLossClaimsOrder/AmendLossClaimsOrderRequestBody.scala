@@ -16,8 +16,8 @@
 
 package v3.models.request.amendLossClaimsOrder
 
+import api.models.domain.lossClaim.v3.TypeOfClaim
 import play.api.libs.json.{Json, OWrites, Reads}
-import v3.models.domain.lossClaim.TypeOfClaim
 
 case class AmendLossClaimsOrderRequestBody(typeOfClaim: TypeOfClaim, listOfLossClaims: Seq[Claim]) {}
 

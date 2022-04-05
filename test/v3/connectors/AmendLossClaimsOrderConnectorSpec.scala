@@ -18,10 +18,10 @@ package v3.connectors
 
 import api.connectors.DownstreamOutcome
 import api.connectors.v3.LossClaimConnector
+import api.models.domain.lossClaim.v3.TypeOfClaim
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 import scala.concurrent.Future

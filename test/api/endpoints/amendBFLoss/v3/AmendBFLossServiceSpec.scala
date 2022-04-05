@@ -20,11 +20,11 @@ import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
 import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
 import api.models.domain.Nino
+import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.mocks.connectors.MockBFLossConnector
-import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.errors._
 import v3.services.AmendBFLossOutcome
 

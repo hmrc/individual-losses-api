@@ -18,6 +18,7 @@ package v2.validations
 
 import api.models.errors.MtdError
 import api.models.utils.JsonErrorValidators
+import api.validations.v2.JsonFormatValidation
 import play.api.libs.json.{Json, Reads}
 import support.UnitSpec
 

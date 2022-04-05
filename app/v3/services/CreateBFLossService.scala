@@ -17,11 +17,11 @@
 package v3.services
 
 import api.connectors.v3.BFLossConnector
+import api.endpoints.createBFLoss.v3.model.request.CreateBFLossRequest
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.models.errors._
-import v3.models.request.createBFLoss.CreateBFLossRequest
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

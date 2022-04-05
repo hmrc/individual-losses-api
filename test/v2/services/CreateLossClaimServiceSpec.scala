@@ -17,12 +17,12 @@
 package v2.services
 
 import api.models.domain.Nino
+import api.models.domain.v2.{ LossClaim, TypeOfClaim, TypeOfLoss }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.mocks.connectors.MockLossClaimConnector
 import v2.models.des.CreateLossClaimResponse
-import v2.models.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
 import v2.models.errors._
 import v2.models.requestData.CreateLossClaimRequest
 

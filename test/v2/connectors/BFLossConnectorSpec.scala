@@ -19,15 +19,18 @@ package v2.connectors
 import api.connectors.DownstreamOutcome
 import api.connectors.v2.BFLossConnector
 import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
+import api.endpoints.amendBFLoss.v2.model.domain
+import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
 import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossRequest
+import api.endpoints.createBFLoss.v2.model.request.CreateBFLossRequest
 import api.models.domain.Nino
+import api.models.domain.v2.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.MockHttpClient
 import v2.models.des._
-import v2.models.domain.{BFLoss, TypeOfLoss}
 import v2.models.errors._
 import v2.models.requestData._
 
@@ -53,7 +56,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
   "create BFLoss" when {
 
-    val bfLoss: BFLoss = BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
+    val bfLoss: BFLoss = domain.BFLoss(TypeOfLoss.`self-employment`, Some("XKIS00000000988"), "2019-20", 256.78)
 
     implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
 

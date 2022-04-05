@@ -21,6 +21,7 @@ import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
 import api.models.domain.Nino
+import api.models.domain.v2.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
@@ -32,7 +33,6 @@ import v2.mocks.requestParsers.MockAmendLossClaimRequestDataParser
 import v2.mocks.services._
 import v2.models.audit.AmendLossClaimAuditDetail
 import v2.models.des.{ AmendLossClaimHateoasData, LossClaimResponse }
-import v2.models.domain.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
 import v2.models.errors._
 import v2.models.requestData.{ AmendLossClaimRawData, AmendLossClaimRequest }
 

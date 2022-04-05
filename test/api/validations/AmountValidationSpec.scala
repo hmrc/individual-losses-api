@@ -16,9 +16,10 @@
 
 package api.validations
 
+import _root_.v2.models.errors.RuleInvalidLossAmount
 import api.models.errors.AmountFormatError
+import api.validations.v2.AmountValidation
 import support.UnitSpec
-import v2.models.errors.RuleInvalidLossAmount
 
 class AmountValidationSpec extends UnitSpec {
 

@@ -16,11 +16,11 @@
 
 package v3.mocks.requestParsers
 
+import api.endpoints.createBFLoss.v3.model.request.{ CreateBFLossRawData, CreateBFLossRequest }
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.CreateBFLossParser
-import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest}
 
 trait MockCreateBFLossRequestDataParser extends MockFactory {
 

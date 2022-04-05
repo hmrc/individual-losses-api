@@ -17,9 +17,9 @@
 package v2.models.audit
 
 import api.models.audit.{AuditError, AuditResponse}
+import api.models.domain.v2.TypeOfClaim
 import play.api.libs.json.Json
 import support.UnitSpec
-import v2.models.domain.TypeOfClaim
 
 class AmendLossClaimsOrderAuditDetailSpec extends UnitSpec {
 

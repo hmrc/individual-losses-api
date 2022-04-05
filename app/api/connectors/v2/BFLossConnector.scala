@@ -17,17 +17,18 @@
 package api.connectors.v2
 
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
+import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
 import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossRequest
+import api.endpoints.createBFLoss.v2.model.request.CreateBFLossRequest
 import config.AppConfig
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
-import v2.models.des.{ BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse }
-import v2.models.domain.BFLoss
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v2.models.des.{BFLossId, BFLossResponse, CreateBFLossResponse, ListBFLossesResponse}
 import v2.models.requestData._
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {

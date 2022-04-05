@@ -17,6 +17,7 @@
 package v2.validations
 
 import api.models.errors.MtdError
+import api.validations.v2.RegexValidation
 import support.UnitSpec
 
 class RegexValidationSpec extends UnitSpec {

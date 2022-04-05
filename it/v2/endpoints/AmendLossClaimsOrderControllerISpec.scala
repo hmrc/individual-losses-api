@@ -16,15 +16,15 @@
 
 package v2.endpoints
 
+import api.models.domain.v2.{ Claim, TypeOfClaim }
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json, OWrites, Writes}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json, OWrites, Writes }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V2IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import v2.models.domain.{Claim, TypeOfClaim}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 import v2.models.errors._
 import v2.models.requestData.DesTaxYear
 

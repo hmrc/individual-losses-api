@@ -1,6 +1,6 @@
 # Brought-forward losses
 
-POST       /:nino/brought-forward-losses                                v2.controllers.CreateBFLossController.create(nino: String)
+POST       /:nino/brought-forward-losses                                api.endpoints.createBFLoss.v2.CreateBFLossController.create(nino: String)
 DELETE     /:nino/brought-forward-losses/:lossId                        v2.controllers.DeleteBFLossController.delete(nino: String, lossId: String)
 POST       /:nino/brought-forward-losses/:lossId/change-loss-amount     api.endpoints.amendBFLoss.v2.AmendBFLossController.amend(nino: String, lossId: String)
 GET        /:nino/brought-forward-losses/:lossId                        v2.controllers.RetrieveBFLossController.retrieve(nino: String, lossId: String)

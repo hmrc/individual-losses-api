@@ -17,13 +17,13 @@
 package v3.services
 
 import api.models.domain.Nino
+import api.models.domain.lossClaim.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
-import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
+import v3.models.request.createLossClaim.{ CreateLossClaimRequest, CreateLossClaimRequestBody }
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.Future

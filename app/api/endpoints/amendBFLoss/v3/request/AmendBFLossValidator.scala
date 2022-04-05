@@ -16,10 +16,10 @@
 
 package api.endpoints.amendBFLoss.v3.request
 
-import api.endpoints.amendBFLoss.common.model.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.endpoints.amendBFLoss.common.model.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.models.errors.MtdError
-import api.validations.{NinoValidation, Validator}
-import v3.validations.{JsonFormatValidation, LossIdValidation, NumberValidation}
+import api.validations.v3.{ JsonFormatValidation, LossIdValidation, NumberValidation }
+import api.validations.{ NinoValidation, Validator }
 
 import javax.inject.Singleton
 

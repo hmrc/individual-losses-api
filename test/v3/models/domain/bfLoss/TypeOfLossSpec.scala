@@ -16,9 +16,10 @@
 
 package v3.models.domain.bfLoss
 
+import api.models.domain.bfLoss.v3.TypeOfLoss._
+import api.models.domain.bfLoss.v3.{ IncomeSourceType, LossType, TypeOfLoss }
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v3.models.domain.bfLoss.TypeOfLoss._
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 

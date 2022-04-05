@@ -16,6 +16,7 @@
 
 package v3.validations
 
+import api.validations.v3.NumberValidation
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import support.UnitSpec

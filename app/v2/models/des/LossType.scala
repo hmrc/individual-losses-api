@@ -16,9 +16,9 @@
 
 package v2.models.des
 
+import api.models.domain.v2.TypeOfLoss
 import play.api.libs.json._
 import utils.enums.Enums
-import v2.models.domain.TypeOfLoss
 
 sealed trait LossType {
   def toTypeOfLoss: TypeOfLoss

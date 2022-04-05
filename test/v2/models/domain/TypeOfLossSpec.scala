@@ -16,10 +16,11 @@
 
 package v2.models.domain
 
+import api.models.domain.v2.TypeOfLoss
+import api.models.domain.v2.TypeOfLoss._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v2.models.des.{IncomeSourceType, LossType}
-import v2.models.domain.TypeOfLoss._
+import v2.models.des.{ IncomeSourceType, LossType }
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 

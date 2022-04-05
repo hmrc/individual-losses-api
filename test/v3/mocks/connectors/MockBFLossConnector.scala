@@ -20,10 +20,10 @@ import api.connectors.DownstreamOutcome
 import api.connectors.v3.BFLossConnector
 import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
+import api.endpoints.createBFLoss.v3.model.request.CreateBFLossRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.request.createBFLoss.CreateBFLossRequest
 import v3.models.request.deleteBFLoss.DeleteBFLossRequest
 import v3.models.request.listBFLosses.ListBFLossesRequest
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest

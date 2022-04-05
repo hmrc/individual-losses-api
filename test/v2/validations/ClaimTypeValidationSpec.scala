@@ -16,8 +16,9 @@
 
 package v2.validations
 
+import api.models.domain.v2.TypeOfClaim
+import api.validations.v2.ClaimTypeValidation
 import support.UnitSpec
-import v2.models.domain.TypeOfClaim
 import v2.models.errors.ClaimTypeFormatError
 
 class ClaimTypeValidationSpec extends UnitSpec {

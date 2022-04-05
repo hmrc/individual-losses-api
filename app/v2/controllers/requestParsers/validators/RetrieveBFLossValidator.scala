@@ -17,9 +17,9 @@
 package v2.controllers.requestParsers.validators
 
 import api.models.errors.MtdError
+import api.validations.v2.LossIdValidation
 import api.validations.{NinoValidation, Validator}
 import v2.models.requestData.RetrieveBFLossRawData
-import v2.validations.LossIdValidation
 
 class RetrieveBFLossValidator extends Validator[RetrieveBFLossRawData] {
 

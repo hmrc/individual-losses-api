@@ -17,23 +17,24 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.createBFLoss.v3.model.request
+import api.endpoints.createBFLoss.v3.model.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody }
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
+import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.{ HateoasWrapper, Link }
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
-import v3.mocks.services.{MockAuditService, MockCreateBFLossService}
-import v3.models.domain.bfLoss.TypeOfLoss
+import v3.mocks.services.{ MockAuditService, MockCreateBFLossService }
 import v3.models.errors._
-import v3.models.request.createBFLoss.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
-import v3.models.response.createBFLoss.{CreateBFLossHateoasData, CreateBFLossResponse}
+import v3.models.response.createBFLoss.{ CreateBFLossHateoasData, CreateBFLossResponse }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,7 +58,7 @@ class CreateBFLossControllerSpec
 
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
-  val bfLossRequest: CreateBFLossRequest = CreateBFLossRequest(Nino(nino), bfLoss)
+  val bfLossRequest: CreateBFLossRequest = request.CreateBFLossRequest(Nino(nino), bfLoss)
 
   val requestBody: JsValue = Json.parse(
     """
@@ -126,7 +127,7 @@ class CreateBFLossControllerSpec
           .returns(Right(bfLossRequest))
 
         MockCreateBFLossService
-          .create(CreateBFLossRequest(Nino(nino), bfLoss))
+          .create(request.CreateBFLossRequest(Nino(nino), bfLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, createBFLossResponse))))
 
         MockHateoasFactory
@@ -149,7 +150,7 @@ class CreateBFLossControllerSpec
       s"a ${error.code} error is returned from the parser" in new Test {
 
         MockCreateBFLossRequestDataParser
-          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+          .parseRequest(request.CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
@@ -183,11 +184,11 @@ class CreateBFLossControllerSpec
       s"a ${error.code} error is returned from the service" in new Test {
 
         MockCreateBFLossRequestDataParser
-          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+          .parseRequest(request.CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Right(bfLossRequest))
 
         MockCreateBFLossService
-          .create(CreateBFLossRequest(Nino(nino), bfLoss))
+          .create(request.CreateBFLossRequest(Nino(nino), bfLoss))
           .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))

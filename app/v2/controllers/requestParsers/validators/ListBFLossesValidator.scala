@@ -16,14 +16,14 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.domain.v2.TypeOfLoss
+import api.models.domain.v2.TypeOfLoss._
 import api.models.errors.MtdError
-import api.validations.{NinoValidation, Validator}
+import api.validations.v2.{ BusinessIdValidation, MinTaxYearValidation, TaxYearValidation }
+import api.validations.{ NinoValidation, Validator }
 import config.FixedConfig
-import v2.models.domain.TypeOfLoss
-import v2.models.domain.TypeOfLoss._
 import v2.models.errors.TypeOfLossFormatError
 import v2.models.requestData.ListBFLossesRawData
-import v2.validations.{BusinessIdValidation, MinTaxYearValidation, TaxYearValidation}
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {
 

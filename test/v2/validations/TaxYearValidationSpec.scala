@@ -18,6 +18,7 @@ package v2.validations
 
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
+import api.validations.v2.TaxYearValidation
 import support.UnitSpec
 
 class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {

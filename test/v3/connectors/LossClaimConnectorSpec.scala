@@ -18,8 +18,8 @@ package v3.connectors
 
 import api.connectors.ConnectorSpec
 import api.connectors.v3.LossClaimConnector
+import api.mocks.MockHttpClient
 import mocks.MockAppConfig
-import v3.mocks.MockHttpClient
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 

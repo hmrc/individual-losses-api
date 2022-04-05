@@ -16,6 +16,7 @@
 
 package v3.validations
 
+import api.validations.lossClaim.v3.TypeOfClaimLossValidation
 import support.UnitSpec
 import v3.models.errors.TypeOfLossFormatError
 

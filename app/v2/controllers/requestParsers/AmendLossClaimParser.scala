@@ -18,9 +18,9 @@ package v2.controllers.requestParsers
 
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.Nino
+import api.models.domain.v2.AmendLossClaim
 import v2.controllers.requestParsers.validators.AmendLossClaimValidator
-import v2.models.domain.AmendLossClaim
-import v2.models.requestData.{ AmendLossClaimRawData, AmendLossClaimRequest }
+import v2.models.requestData.{AmendLossClaimRawData, AmendLossClaimRequest}
 
 import javax.inject.Inject
 

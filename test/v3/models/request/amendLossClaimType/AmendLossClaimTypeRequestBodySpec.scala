@@ -16,10 +16,10 @@
 
 package v3.models.request.amendLossClaimType
 
+import api.models.domain.lossClaim.v3.TypeOfClaim
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.domain.lossClaim.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
+import api.models.domain.lossClaim.v3.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
 import v3.models.request.amendLossClaimType
 
 class AmendLossClaimTypeRequestBodySpec extends UnitSpec {

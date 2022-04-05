@@ -16,14 +16,14 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.endpoints.createBFLoss.v2.model.request
+import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossRawData, CreateBFLossValidator }
+import api.models.domain.v2.TypeOfLoss
 import api.models.errors._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v2.models.domain.TypeOfLoss
 import v2.models.errors._
-import v2.models.requestData
-import v2.models.requestData.CreateBFLossRawData
 
 class CreateBFLossValidatorSpec extends UnitSpec {
 
@@ -53,61 +53,59 @@ class CreateBFLossValidatorSpec extends UnitSpec {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
       }
     }
 
     "return IncorrectOrEmptyBodySubmitted error" when {
       "an incorrect or empty body is supplied" in {
-        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(emptyBody))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(emptyBody))) shouldBe
           List(RuleIncorrectOrEmptyBodyError)
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(requestData.CreateBFLossRawData("A12344A", AnyContentAsJson(createRequestBodyJson()))) shouldBe
+        validator.validate(request.CreateBFLossRawData("A12344A", AnyContentAsJson(createRequestBodyJson()))) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2016")))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2016")))) shouldBe
           List(TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       }
 
       "a non-numeric tax year is supplied" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "XXXX-YY")))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "XXXX-YY")))) shouldBe
           List(TaxYearFormatError.copy(paths = Some(List("/taxYear"))))
       }
     }
 
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2017-19")))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2017-19")))) shouldBe
           List(RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYear"))))
       }
     }
 
     "return RuleTaxYearNotSupportedError error" when {
       "an out of range tax year is supplied" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2015-16")))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYear = "2015-16")))) shouldBe
           List(RuleTaxYearNotSupportedError)
       }
     }
 
     "return TypeOfLossValidation error" when {
       "an invalid loss type is submitted" in {
-        validator.validate(
-          requestData
-            .CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
           List(TypeOfLossFormatError)
       }
 
       "there is also a self employment id" in {
         validator.validate(
-          requestData
+          request
             .CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid", businessId = validBusinessId)))) shouldBe
           List(TypeOfLossFormatError)
       }
@@ -120,7 +118,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       ).foreach { typeOfLoss =>
         s"passed in $typeOfLoss with a valid businessId" in {
           validator.validate(
-            requestData.CreateBFLossRawData(
+            request.CreateBFLossRawData(
               validNino,
               AnyContentAsJson(Json.parse(s"""
                   |{
@@ -142,7 +140,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       ).foreach { typeOfLoss =>
         s"passed in $typeOfLoss with no businessId" in {
           validator.validate(
-            requestData.CreateBFLossRawData(
+            request.CreateBFLossRawData(
               validNino,
               AnyContentAsJson(Json.parse(s"""
                   |{
@@ -159,22 +157,21 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
     "return SelfEmploymentIdValidation error" when {
       "an invalid id is submitted" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
           List(BusinessIdFormatError)
       }
     }
 
     "return AmountValidation error" when {
       "an invalid amount is submitted" in {
-        validator.validate(
-          requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100000000000.00))))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100000000000.00))))) shouldBe
           List(RuleInvalidLossAmount)
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid business id is provided" in {
-        validator.validate(requestData.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
+        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
           List(BusinessIdFormatError)
       }
     }
@@ -182,7 +179,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     "return multiple errors" when {
       "request supplied has multiple errors" in {
         validator.validate(
-          requestData.CreateBFLossRawData(
+          request.CreateBFLossRawData(
             validNino,
             AnyContentAsJson(createRequestBodyJson(typeOfLoss = "self-employment-class4", businessId = "wrong", taxYear = "2010-11")))) shouldBe
           List(RuleTaxYearNotSupportedError, BusinessIdFormatError)

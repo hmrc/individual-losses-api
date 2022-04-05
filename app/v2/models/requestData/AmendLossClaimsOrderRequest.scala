@@ -17,6 +17,6 @@
 package v2.models.requestData
 
 import api.models.domain.Nino
-import v2.models.domain.AmendLossClaimsOrderRequestBody
+import api.models.domain.v2.AmendLossClaimsOrderRequestBody
 
 case class AmendLossClaimsOrderRequest(nino: Nino, taxYear: DesTaxYear, body: AmendLossClaimsOrderRequestBody)

@@ -19,9 +19,9 @@ package v3.connectors
 import api.connectors.DownstreamOutcome
 import api.connectors.v3.LossClaimConnector
 import api.models.domain.Nino
+import api.models.domain.lossClaim.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.errors._
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse

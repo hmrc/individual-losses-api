@@ -17,12 +17,12 @@
 package v2.models.des
 
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
-import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
-import api.models.hateoas.{ HateoasData, Link }
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.models.domain.v2.TypeOfLoss
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v2.models.domain.TypeOfLoss
 import v2.models.requestData.DesTaxYear
 
 case class BFLossResponse(businessId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)

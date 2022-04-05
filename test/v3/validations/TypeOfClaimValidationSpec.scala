@@ -16,8 +16,10 @@
 
 package v3.validations
 
+import api.models.domain.lossClaim.v3.{TypeOfClaim, TypeOfLoss}
+import api.validations.lossClaim.v3.TypeOfClaimValidation
 import support.UnitSpec
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import api.models.domain.lossClaim.v3.TypeOfLoss
 import v3.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 
 class TypeOfClaimValidationSpec extends UnitSpec {

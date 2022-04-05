@@ -16,6 +16,7 @@
 
 package v2.validations
 
+import api.validations.v2.BusinessIdValidation
 import support.UnitSpec
 import v2.models.errors.BusinessIdFormatError
 

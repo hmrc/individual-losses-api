@@ -16,10 +16,10 @@
 
 package v2.models.des
 
+import api.models.domain.v2.TypeOfClaim
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v2.models.des.ReliefClaimed._
-import v2.models.domain.TypeOfClaim
 
 class ReliefClaimedSpec extends UnitSpec with EnumJsonSpecSupport {
 

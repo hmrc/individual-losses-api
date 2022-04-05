@@ -16,9 +16,10 @@
 
 package v3.models.domain.lossClaim
 
+import api.models.domain.lossClaim.v3.TypeOfClaim._
+import api.models.domain.lossClaim.v3.{ ReliefClaimed, TypeOfClaim }
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v3.models.domain.lossClaim.TypeOfClaim._
 
 class TypeOfClaimSpec extends UnitSpec with EnumJsonSpecSupport {
 

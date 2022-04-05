@@ -19,10 +19,10 @@ package v2.connectors
 import api.connectors.DownstreamOutcome
 import api.connectors.v2.LossClaimConnector
 import api.models.domain.Nino
+import api.models.domain.v2.TypeOfClaim
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v2.models.des._
-import v2.models.domain.TypeOfClaim
 import v2.models.requestData._
 
 import scala.concurrent.Future

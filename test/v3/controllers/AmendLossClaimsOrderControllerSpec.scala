@@ -20,6 +20,7 @@ import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.lossClaim.v3.TypeOfClaim
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import api.models.hateoas.Method.GET
@@ -30,7 +31,6 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v3.mocks.services.{MockAmendLossClaimsOrderService, MockAuditService}
-import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.errors._
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 import v3.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}

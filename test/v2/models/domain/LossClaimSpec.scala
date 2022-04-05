@@ -16,8 +16,9 @@
 
 package v2.models.domain
 
+import api.models.domain.v2.{ LossClaim, TypeOfClaim, TypeOfLoss }
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 
 class LossClaimSpec extends UnitSpec with JsonErrorValidators {

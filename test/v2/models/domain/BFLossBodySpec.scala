@@ -16,6 +16,9 @@
 
 package v2.models.domain
 
+import api.endpoints.amendBFLoss.v2.model.domain
+import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.models.domain.v2.TypeOfLoss
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json._
 import support.UnitSpec
@@ -26,7 +29,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
     BFLoss(typeOfLoss = TypeOfLoss.`self-employment`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossForeignProperty =
-    BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
+    domain.BFLoss(typeOfLoss = TypeOfLoss.`foreign-property`, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 256.78)
 
   val broughtForwardLossEmploymentJson: JsValue = Json.parse("""
       |{
@@ -97,7 +100,7 @@ class BFLossBodySpec extends UnitSpec with JsonErrorValidators {
       Seq(TypeOfLoss.`uk-property-fhl`, TypeOfLoss.`uk-property-non-fhl`).foreach(
         typeOfLoss =>
           s"return valid JSON without a businessId for $typeOfLoss" in {
-            val model         = BFLoss(typeOfLoss = typeOfLoss, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 255.50)
+            val model         = domain.BFLoss(typeOfLoss = typeOfLoss, businessId = Some("XKIS00000000988"), taxYear = "2019-20", lossAmount = 255.50)
             val json: JsValue = Json.parse(s"""{
                                               |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType.get}",
                                               |	  "taxYear": "2020",

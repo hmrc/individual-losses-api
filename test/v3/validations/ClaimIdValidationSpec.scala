@@ -17,6 +17,7 @@
 package v3.validations
 
 import api.models.utils.JsonErrorValidators
+import api.validations.v3.ClaimIdValidation
 import support.UnitSpec
 import v3.models.errors.ClaimIdFormatError
 

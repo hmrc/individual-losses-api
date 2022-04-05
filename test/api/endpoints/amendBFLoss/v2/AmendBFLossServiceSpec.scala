@@ -18,12 +18,12 @@ package api.endpoints.amendBFLoss.v2
 
 import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
 import api.models.domain.Nino
+import api.models.domain.v2.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.mocks.connectors.MockBFLossConnector
 import v2.models.des.BFLossResponse
-import v2.models.domain.TypeOfLoss
 import v2.models.errors._
 
 import scala.concurrent.Future

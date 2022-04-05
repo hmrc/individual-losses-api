@@ -16,14 +16,16 @@
 
 package v2.controllers.requestParsers
 
+import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.createBFLoss.v2.model.request
+import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossParser, CreateBFLossRawData, CreateBFLossRequest }
 import api.models.domain.Nino
+import api.models.domain.v2.TypeOfLoss
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.mocks.validators.MockCreateBFLossValidator
-import v2.models.domain.{BFLoss, TypeOfLoss}
-import v2.models.requestData._
 
 class CreateBFLossParserSpec extends UnitSpec {
 
@@ -42,7 +44,7 @@ class CreateBFLossParserSpec extends UnitSpec {
   )
 
   val inputData: CreateBFLossRawData =
-    CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
+    request.CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
 
   trait Test extends MockCreateBFLossValidator {
     lazy val parser = new CreateBFLossParser(mockValidator)

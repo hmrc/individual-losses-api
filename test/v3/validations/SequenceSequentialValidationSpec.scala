@@ -16,6 +16,7 @@
 
 package v3.validations
 
+import api.validations.v3.SequenceSequentialValidation
 import support.UnitSpec
 import v3.models.errors.{RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 
