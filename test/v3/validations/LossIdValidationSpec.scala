@@ -16,10 +16,10 @@
 
 package v3.validations
 
+import api.models.errors.LossIdFormatError
 import api.models.utils.JsonErrorValidators
 import api.validations.v3.LossIdValidation
 import support.UnitSpec
-import v3.models.errors.LossIdFormatError
 
 class LossIdValidationSpec extends UnitSpec with JsonErrorValidators {
 

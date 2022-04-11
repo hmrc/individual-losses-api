@@ -16,9 +16,8 @@
 
 package api.validations.v3
 
-import api.models.errors.MtdError
+import api.models.errors.{ BusinessIdFormatError, MtdError }
 import api.validations.NoValidationErrors
-import v3.models.errors.BusinessIdFormatError
 
 object BusinessIdValidation {
 

@@ -17,7 +17,7 @@
 package v2.mocks.requestParsers
 
 import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRawData
-import api.endpoints.amendBFLoss.v2.model.request.{ AmendBFLossParser, AmendBFLossRequest }
+import api.endpoints.amendBFLoss.v2.model.request.{AmendBFLossParser, AmendBFLossRequest}
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory

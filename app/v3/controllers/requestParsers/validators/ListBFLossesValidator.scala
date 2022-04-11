@@ -21,7 +21,6 @@ import api.models.errors._
 import api.validations.v3.{ BusinessIdValidation, MinTaxYearValidation, TaxYearValidation }
 import api.validations.{ NinoValidation, Validator }
 import config.FixedConfig
-import v3.models.errors.TypeOfLossFormatError
 import v3.models.request.listBFLosses.ListBFLossesRawData
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {

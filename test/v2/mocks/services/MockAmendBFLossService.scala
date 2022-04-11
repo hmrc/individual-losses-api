@@ -17,12 +17,12 @@
 package v2.mocks.services
 
 import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossRequest
-import api.endpoints.amendBFLoss.v2.{ AmendBFLossOutcome, AmendBFLossService }
+import api.endpoints.amendBFLoss.v2.{AmendBFLossOutcome, AmendBFLossService}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendBFLossService extends MockFactory {
 

@@ -30,7 +30,6 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v3.mocks.services.MockRetrieveBFLossService
-import v3.models.errors._
 import v3.models.request.retrieveBFLoss.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 import v3.models.response.retrieveBFLoss.{GetBFLossHateoasData, RetrieveBFLossResponse}
 

@@ -16,7 +16,7 @@
 
 package api.validations.v2
 
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors.{MtdError, RuleBusinessId}
 import api.validations.NoValidationErrors
 

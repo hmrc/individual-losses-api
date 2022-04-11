@@ -16,13 +16,12 @@
 
 package api.validations.lossClaim.v3
 
-import api.models.domain.lossClaim.v3.{TypeOfClaim, TypeOfLoss}
-import api.models.errors.MtdError
-import api.validations.NoValidationErrors
 import api.models.domain.lossClaim.v3.TypeOfClaim._
 import api.models.domain.lossClaim.v3.TypeOfLoss._
-import api.models.domain.lossClaim.v3.TypeOfLoss
-import v3.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
+import api.models.domain.lossClaim.v3.{ TypeOfClaim, TypeOfLoss }
+import api.models.errors.{ MtdError, TypeOfClaimFormatError }
+import api.validations.NoValidationErrors
+import v3.models.errors.RuleTypeOfClaimInvalid
 
 object TypeOfClaimValidation {
 

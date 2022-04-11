@@ -16,25 +16,25 @@
 
 package api.endpoints.createBFLoss.v2
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossParser, CreateBFLossRawData }
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.endpoints.createBFLoss.v2.model.audit.CreateBFLossAuditDetail
+import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossHateoasData
+import api.endpoints.createBFLoss.v2.model.request.{CreateBFLossParser, CreateBFLossRawData}
 import api.hateoas.HateoasFactory
-import api.models.audit.{ AuditEvent, AuditResponse }
+import api.models.audit.{AuditEvent, AuditResponse}
 import api.models.errors._
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.audit.CreateBFLossAuditDetail
-import v2.models.des.CreateBFLossHateoasData
 import v2.models.errors._
 import v2.services._
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,

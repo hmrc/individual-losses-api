@@ -20,7 +20,6 @@ import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockRetrieveBFLossValidator
-import v2.models.errors.LossIdFormatError
 import v2.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
 class RetrieveBFLossParserSpec extends UnitSpec {

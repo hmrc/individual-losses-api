@@ -23,7 +23,6 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendLossClaimsOrderValidator
-import v3.models.errors.ClaimIdFormatError
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 class AmendLossClaimsOrderParserSpec extends UnitSpec {

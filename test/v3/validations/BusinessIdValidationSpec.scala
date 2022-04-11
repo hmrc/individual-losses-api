@@ -16,9 +16,9 @@
 
 package v3.validations
 
+import api.models.errors.BusinessIdFormatError
 import api.validations.v3.BusinessIdValidation
 import support.UnitSpec
-import v3.models.errors.BusinessIdFormatError
 
 class BusinessIdValidationSpec extends UnitSpec {
 

@@ -17,7 +17,7 @@
 package v3.controllers.requestParsers
 
 import api.endpoints.createBFLoss.v3.model.request
-import api.endpoints.createBFLoss.v3.model.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.createBFLoss.v3.model.request.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
 import api.models.domain.Nino
 import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._

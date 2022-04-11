@@ -16,7 +16,7 @@
 
 package api.endpoints.amendBFLoss.v2.model.domain
 
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import play.api.libs.json._
 import v2.models.requestData.DesTaxYear
 

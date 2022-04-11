@@ -17,6 +17,7 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.createBFLoss.v3.model.downstream.{ CreateBFLossHateoasData, CreateBFLossResponse }
 import api.endpoints.createBFLoss.v3.model.request
 import api.endpoints.createBFLoss.v3.model.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody }
 import api.mocks.hateoas.MockHateoasFactory
@@ -34,7 +35,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v3.mocks.services.{ MockAuditService, MockCreateBFLossService }
 import v3.models.errors._
-import v3.models.response.createBFLoss.{ CreateBFLossHateoasData, CreateBFLossResponse }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

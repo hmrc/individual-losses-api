@@ -20,7 +20,7 @@ import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.Nino
-import api.models.domain.v2.TypeOfClaim
+import api.models.domain.lossClaim.v2.TypeOfClaim
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}

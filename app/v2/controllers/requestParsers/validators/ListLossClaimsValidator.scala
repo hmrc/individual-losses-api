@@ -16,10 +16,10 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors.MtdError
 import api.validations.v2._
-import api.validations.{ NinoValidation, Validator }
+import api.validations.{NinoValidation, Validator}
 import config.FixedConfig
 import v2.models.requestData.ListLossClaimsRawData
 

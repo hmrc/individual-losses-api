@@ -16,7 +16,7 @@
 
 package v2.mocks.requestParsers
 
-import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossParser, CreateBFLossRawData, CreateBFLossRequest }
+import api.endpoints.createBFLoss.v2.model.request.{CreateBFLossParser, CreateBFLossRawData, CreateBFLossRequest}
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory

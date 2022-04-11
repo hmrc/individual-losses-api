@@ -19,13 +19,15 @@ package api.endpoints.createBFLoss.v2
 import api.controllers.ControllerBaseSpec
 import api.endpoints.amendBFLoss.v2.model.domain
 import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.createBFLoss.v2.model.audit.CreateBFLossAuditDetail
+import api.endpoints.createBFLoss.v2.model.downstream.{ CreateBFLossHateoasData, CreateBFLossResponse }
 import api.endpoints.createBFLoss.v2.model.request
 import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossRawData, CreateBFLossRequest }
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
 import api.models.domain.Nino
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
@@ -35,8 +37,6 @@ import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockCreateBFLossRequestDataParser
 import v2.mocks.services.{ MockAuditService, MockCreateBFLossService }
-import v2.models.audit.CreateBFLossAuditDetail
-import v2.models.des.{ CreateBFLossHateoasData, CreateBFLossResponse }
 import v2.models.errors._
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -17,7 +17,7 @@
 package v3.models.domain.lossClaim
 
 import api.models.domain.lossClaim.v3.TypeOfLoss._
-import api.models.domain.lossClaim.v3.{ IncomeSourceType, TypeOfLoss }
+import api.models.domain.lossClaim.v3.{IncomeSourceType, TypeOfLoss}
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

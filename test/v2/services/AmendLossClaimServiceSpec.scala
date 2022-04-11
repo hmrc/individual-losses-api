@@ -16,15 +16,15 @@
 
 package v2.services
 
+import api.endpoints.amendLossClaim.v2.{ AmendLossClaimService, model }
 import api.models.domain.Nino
-import api.models.domain.v2.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
+import api.models.domain.lossClaim.v2.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
+import api.models.downstream.lossClaim.v2.LossClaimResponse
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.mocks.connectors.MockLossClaimConnector
-import v2.models.des.LossClaimResponse
 import v2.models.errors._
-import v2.models.requestData.AmendLossClaimRequest
 
 import scala.concurrent.Future
 
@@ -45,7 +45,7 @@ class AmendLossClaimServiceSpec extends ServiceSpec {
   }
 
   "amend LossClaim" when {
-    lazy val request = AmendLossClaimRequest(Nino(nino), claimId, lossClaim)
+    lazy val request = model.request.AmendLossClaimRequest(Nino(nino), claimId, lossClaim)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

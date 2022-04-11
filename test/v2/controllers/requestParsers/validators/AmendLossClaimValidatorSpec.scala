@@ -16,12 +16,11 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.endpoints.amendLossClaim.v2.model.request
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v2.models.errors.{ ClaimIdFormatError, TypeOfClaimFormatError }
-import v2.models.requestData.AmendLossClaimRawData
 
 import scala.collection.immutable.Stream.Empty
 
@@ -41,26 +40,27 @@ class AmendLossClaimValidatorSpec extends UnitSpec {
     "return no errors" when {
 
       "all data is valid" in {
-        validator.validate(AmendLossClaimRawData(validNino, validClaimId, claimType("carry-forward"))) shouldBe Empty
+        validator.validate(request.AmendLossClaimRawData(validNino, validClaimId, claimType("carry-forward"))) shouldBe Empty
       }
     }
 
     "return one error" when {
 
       "nino validation fails" in {
-        validator.validate(AmendLossClaimRawData(invalidNino, validClaimId, claimType("carry-forward"))) shouldBe List(NinoFormatError)
+        validator.validate(request.AmendLossClaimRawData(invalidNino, validClaimId, claimType("carry-forward"))) shouldBe List(NinoFormatError)
       }
 
       "claimId validation fails" in {
-        validator.validate(AmendLossClaimRawData(validNino, invalidClaimId, claimType("carry-forward"))) shouldBe List(ClaimIdFormatError)
+        validator.validate(request.AmendLossClaimRawData(validNino, invalidClaimId, claimType("carry-forward"))) shouldBe List(ClaimIdFormatError)
       }
 
       "body validation fails" in {
-        validator.validate(AmendLossClaimRawData(validNino, validClaimId, AnyContentAsJson(Json.obj()))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        validator.validate(request.AmendLossClaimRawData(validNino, validClaimId, AnyContentAsJson(Json.obj()))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError)
       }
 
       "type of claim validation fails" in {
-        validator.validate(AmendLossClaimRawData(validNino, validClaimId, claimType("invalid"))) shouldBe List(TypeOfClaimFormatError)
+        validator.validate(request.AmendLossClaimRawData(validNino, validClaimId, claimType("invalid"))) shouldBe List(TypeOfClaimFormatError)
       }
     }
   }

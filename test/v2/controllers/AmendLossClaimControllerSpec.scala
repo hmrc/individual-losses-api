@@ -17,11 +17,16 @@
 package v2.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.amendLossClaim.v2.AmendLossClaimController
+import api.endpoints.amendLossClaim.v2.model.audit.AmendLossClaimAuditDetail
+import api.endpoints.amendLossClaim.v2.model.request
+import api.endpoints.amendLossClaim.v2.model.request.{ AmendLossClaimRawData, AmendLossClaimRequest }
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
 import api.models.domain.Nino
-import api.models.domain.v2.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
+import api.models.domain.lossClaim.v2.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
+import api.models.downstream.lossClaim.v2.{ AmendLossClaimHateoasData, LossClaimResponse }
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
@@ -31,10 +36,7 @@ import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockAmendLossClaimRequestDataParser
 import v2.mocks.services._
-import v2.models.audit.AmendLossClaimAuditDetail
-import v2.models.des.{ AmendLossClaimHateoasData, LossClaimResponse }
 import v2.models.errors._
-import v2.models.requestData.{ AmendLossClaimRawData, AmendLossClaimRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,7 +59,7 @@ class AmendLossClaimControllerSpec
   val amendLossClaimResponse: LossClaimResponse =
     LossClaimResponse(Some("XKIS00000000988"), TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "2019-20", "2018-07-13T12:13:48.763Z")
 
-  val lossClaimRequest: AmendLossClaimRequest = AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim)
+  val lossClaimRequest: AmendLossClaimRequest = request.AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim)
 
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
@@ -114,7 +116,7 @@ class AmendLossClaimControllerSpec
           .returns(Right(lossClaimRequest))
 
         MockAmendLossClaimService
-          .amend(AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
+          .amend(request.AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimResponse))))
 
         MockHateoasFactory
@@ -168,7 +170,7 @@ class AmendLossClaimControllerSpec
     s"a ${error.code} error is returned from the parser" in new Test {
 
       MockAmendLossClaimRequestDataParser
-        .parseRequest(AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
+        .parseRequest(request.AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
         .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
       val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
@@ -193,11 +195,11 @@ class AmendLossClaimControllerSpec
     s"a ${error.code} error is returned from the service" in new Test {
 
       MockAmendLossClaimRequestDataParser
-        .parseRequest(AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
+        .parseRequest(request.AmendLossClaimRawData(nino, claimId, AnyContentAsJson(requestBody)))
         .returns(Right(lossClaimRequest))
 
       MockAmendLossClaimService
-        .amend(AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
+        .amend(request.AmendLossClaimRequest(Nino(nino), claimId, amendLossClaim))
         .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
       val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))

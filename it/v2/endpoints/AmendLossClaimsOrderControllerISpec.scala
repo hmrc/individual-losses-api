@@ -16,7 +16,7 @@
 
 package v2.endpoints
 
-import api.models.domain.v2.{ Claim, TypeOfClaim }
+import api.models.domain.lossClaim.v2.{ Claim, TypeOfClaim }
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT

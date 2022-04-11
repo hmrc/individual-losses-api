@@ -17,9 +17,9 @@
 package v2.connectors
 
 import api.connectors.{MtdIdLookupConnector, MtdIdLookupOutcome}
+import api.mocks.v2.MockHttpClient
 import api.models.errors.StandardDownstreamError
 import mocks.MockAppConfig
-import v2.mocks.MockHttpClient
 
 import scala.concurrent.Future
 

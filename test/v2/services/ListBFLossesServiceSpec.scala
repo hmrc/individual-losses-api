@@ -21,8 +21,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.mocks.connectors.MockBFLossConnector
-import v2.models.des.{ BFLossId, ListBFLossesResponse }
-import v2.models.errors._
+import v2.models.des.{BFLossId, ListBFLossesResponse}
 import v2.models.requestData.ListBFLossesRequest
 
 import scala.concurrent.Future

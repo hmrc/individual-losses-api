@@ -16,8 +16,8 @@
 
 package v2.models.domain
 
-import api.models.domain.v2.{Claim, LossClaimsList}
-import play.api.libs.json.{JsValue, Json}
+import api.models.domain.lossClaim.v2.{ Claim, LossClaimsList }
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 import v2.models.des.ReliefClaimed
 

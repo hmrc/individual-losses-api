@@ -16,10 +16,10 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.models.domain.v2.AmendLossClaimsOrderRequestBody
-import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
+import api.models.domain.lossClaim.v2.AmendLossClaimsOrderRequestBody
+import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import api.validations.v2._
-import api.validations.{ NinoValidation, Validator }
+import api.validations.{NinoValidation, Validator}
 import v2.models.requestData.AmendLossClaimsOrderRawData
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] {

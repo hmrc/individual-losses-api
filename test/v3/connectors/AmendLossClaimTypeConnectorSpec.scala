@@ -19,12 +19,11 @@ package v3.connectors
 import api.connectors.DownstreamOutcome
 import api.connectors.v3.LossClaimConnector
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v3.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.lossClaim.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors._
-import v3.models.request.amendLossClaimType.{ AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody }
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
 import java.time.LocalDateTime

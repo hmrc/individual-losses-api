@@ -17,7 +17,7 @@
 package v2.services
 
 import api.models.domain.Nino
-import api.models.domain.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
+import api.models.domain.lossClaim.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec

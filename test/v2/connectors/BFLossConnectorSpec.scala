@@ -22,16 +22,16 @@ import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
 import api.endpoints.amendBFLoss.v2.model.domain
 import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
 import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossRequest
+import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
 import api.endpoints.createBFLoss.v2.model.request.CreateBFLossRequest
+import api.mocks.v2.MockHttpClient
 import api.models.domain.Nino
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.mocks.MockHttpClient
 import v2.models.des._
-import v2.models.errors._
 import v2.models.requestData._
 
 import scala.concurrent.Future

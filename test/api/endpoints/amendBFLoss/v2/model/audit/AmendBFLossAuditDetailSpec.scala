@@ -16,7 +16,7 @@
 
 package api.endpoints.amendBFLoss.v2.model.audit
 
-import api.models.audit.{ AuditError, AuditResponse }
+import api.models.audit.{AuditError, AuditResponse}
 import api.models.errors._
 import play.api.libs.json.Json
 import support.UnitSpec

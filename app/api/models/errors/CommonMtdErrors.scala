@@ -16,9 +16,14 @@
 
 package api.models.errors
 
-object NinoFormatError    extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
-object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
-object AmountFormatError  extends MtdError("FORMAT_LOSS_AMOUNT", "The provided Loss amount is invalid")
+object NinoFormatError       extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
+object TaxYearFormatError    extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
+object AmountFormatError     extends MtdError("FORMAT_LOSS_AMOUNT", "The provided Loss amount is invalid")
+object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid")
+object ClaimIdFormatError           extends MtdError("FORMAT_CLAIM_ID", "The provided claim ID is invalid")
+object LossIdFormatError            extends MtdError("FORMAT_LOSS_ID", "The provided loss ID is invalid")
+object TypeOfLossFormatError extends MtdError("FORMAT_TYPE_OF_LOSS", "The provided type of loss is invalid")
+object TypeOfClaimFormatError       extends MtdError("FORMAT_TYPE_OF_CLAIM", "The provided type of claim is invalid")
 
 //Standard Errors
 object NotFoundError           extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

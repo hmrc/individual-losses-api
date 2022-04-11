@@ -16,7 +16,7 @@
 
 package v2.validations
 
-import api.models.domain.v2.TypeOfClaim
+import api.models.domain.lossClaim.v2.TypeOfClaim
 import api.validations.v2.ClaimTypeValidation
 import support.UnitSpec
 import v2.models.errors.ClaimTypeFormatError

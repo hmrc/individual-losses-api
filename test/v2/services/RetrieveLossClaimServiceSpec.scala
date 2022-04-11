@@ -17,13 +17,12 @@
 package v2.services
 
 import api.models.domain.Nino
-import api.models.domain.v2.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.lossClaim.v2.{TypeOfClaim, TypeOfLoss}
+import api.models.downstream.lossClaim.v2.LossClaimResponse
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.mocks.connectors.MockLossClaimConnector
-import v2.models.des.LossClaimResponse
-import v2.models.errors._
 import v2.models.requestData.RetrieveLossClaimRequest
 
 import scala.concurrent.Future

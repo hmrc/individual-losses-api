@@ -18,7 +18,6 @@ package v3.controllers.requestParsers.validators
 
 import api.models.errors._
 import support.UnitSpec
-import v3.models.errors.LossIdFormatError
 import v3.models.request.deleteBFLoss.DeleteBFLossRawData
 
 class DeleteBFLossValidatorSpec extends UnitSpec {

@@ -16,14 +16,15 @@
 
 package v2.controllers.requestParsers
 
+import api.endpoints.amendLossClaim.v2.model.request
+import api.endpoints.amendLossClaim.v2.model.request.{ AmendLossClaimParser, AmendLossClaimRawData, AmendLossClaimRequest }
 import api.models.domain.Nino
-import api.models.domain.v2.{ AmendLossClaim, TypeOfClaim }
+import api.models.domain.lossClaim.v2.{ AmendLossClaim, TypeOfClaim }
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.mocks.validators.MockAmendLossClaimValidator
-import v2.models.requestData.{ AmendLossClaimRawData, AmendLossClaimRequest }
 
 class AmendLossClaimParserSpec extends UnitSpec {
 
@@ -31,7 +32,7 @@ class AmendLossClaimParserSpec extends UnitSpec {
   private val claimId   = "AAZZ1234567890a"
   private val lossClaim = TypeOfClaim.`carry-forward`
 
-  val data: AmendLossClaimRawData = AmendLossClaimRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
+  val data: AmendLossClaimRawData = request.AmendLossClaimRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
 
   trait Test extends MockAmendLossClaimValidator {
     lazy val parser = new AmendLossClaimParser(mockValidator)

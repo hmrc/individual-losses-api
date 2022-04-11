@@ -17,13 +17,12 @@
 package v2.controllers.requestParsers
 
 import api.models.domain.Nino
-import api.models.domain.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
+import api.models.domain.lossClaim.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.mocks.validators.MockAmendLossClaimsOrderValidator
-import v2.models.errors.ClaimIdFormatError
 import v2.models.requestData.{ AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear }
 
 class AmendLossClaimsOrderParserSpec extends UnitSpec {

@@ -16,7 +16,7 @@
 
 package v2.models.des
 
-import api.models.domain.v2.TypeOfClaim
+import api.models.domain.lossClaim.v2.TypeOfClaim
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{GET, POST, PUT}
 import com.typesafe.config.ConfigFactory

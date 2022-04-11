@@ -18,7 +18,7 @@ package v2.models.des
 
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
 import api.hateoas.HateoasFactory
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.hateoas.Method.{DELETE, GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
 import mocks.MockAppConfig

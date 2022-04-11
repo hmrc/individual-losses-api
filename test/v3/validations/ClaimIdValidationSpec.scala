@@ -16,10 +16,10 @@
 
 package v3.validations
 
+import api.models.errors.ClaimIdFormatError
 import api.models.utils.JsonErrorValidators
 import api.validations.v3.ClaimIdValidation
 import support.UnitSpec
-import v3.models.errors.ClaimIdFormatError
 
 class ClaimIdValidationSpec extends UnitSpec with JsonErrorValidators {
 

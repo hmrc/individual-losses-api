@@ -18,9 +18,9 @@ package v2.controllers.requestParsers
 
 import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
 import api.endpoints.createBFLoss.v2.model.request
-import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossParser, CreateBFLossRawData, CreateBFLossRequest }
+import api.endpoints.createBFLoss.v2.model.request.{CreateBFLossParser, CreateBFLossRawData, CreateBFLossRequest}
 import api.models.domain.Nino
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson

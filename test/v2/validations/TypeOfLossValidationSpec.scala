@@ -16,9 +16,9 @@
 
 package v2.validations
 
+import api.models.errors.TypeOfLossFormatError
 import api.validations.v2.TypeOfLossValidation
 import support.UnitSpec
-import v2.models.errors.TypeOfLossFormatError
 
 class TypeOfLossValidationSpec extends UnitSpec {
 

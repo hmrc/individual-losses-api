@@ -20,11 +20,10 @@ import api.connectors.v3.BFLossConnector
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors._
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 

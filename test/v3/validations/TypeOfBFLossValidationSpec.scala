@@ -16,9 +16,9 @@
 
 package v3.validations
 
+import api.models.errors.TypeOfLossFormatError
 import api.validations.v3.TypeOfBFLossValidation
 import support.UnitSpec
-import v3.models.errors.TypeOfLossFormatError
 
 class TypeOfBFLossValidationSpec extends UnitSpec {
 

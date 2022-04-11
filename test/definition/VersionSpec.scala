@@ -18,7 +18,7 @@ package definition
 
 import play.api.http.HeaderNames.ACCEPT
 import play.api.test.FakeRequest
-import routing.{InvalidHeader, Version2, Version3, VersionNotFound, Versions}
+import routing._
 import support.UnitSpec
 
 class VersionSpec extends UnitSpec {

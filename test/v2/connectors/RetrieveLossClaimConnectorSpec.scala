@@ -17,13 +17,12 @@
 package v2.connectors
 
 import api.connectors.DownstreamOutcome
-import api.connectors.v2.LossClaimConnector
+import api.connectors.v2.{LossClaimConnector, LossClaimConnectorSpec}
 import api.models.domain.Nino
-import api.models.domain.v2.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.lossClaim.v2.{TypeOfClaim, TypeOfLoss}
+import api.models.downstream.lossClaim.v2.LossClaimResponse
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v2.models.des._
-import v2.models.errors._
 import v2.models.requestData._
 
 import java.time.LocalDateTime

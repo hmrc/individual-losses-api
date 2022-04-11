@@ -16,11 +16,12 @@
 
 package v2.mocks.services
 
+import api.endpoints.amendLossClaim.v2.AmendLossClaimService
+import api.endpoints.amendLossClaim.v2.model.request.AmendLossClaimRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.requestData.AmendLossClaimRequest
-import v2.services.{AmendLossClaimOutcome, AmendLossClaimService}
+import v2.services.AmendLossClaimOutcome
 
 import scala.concurrent.{ExecutionContext, Future}
 

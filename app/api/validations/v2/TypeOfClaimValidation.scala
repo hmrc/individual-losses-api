@@ -16,12 +16,12 @@
 
 package api.validations.v2
 
-import api.models.domain.v2.TypeOfClaim.{ `carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways` }
-import api.models.domain.v2.TypeOfLoss.{ `foreign-property`, `self-employment`, `uk-property-non-fhl` }
-import api.models.domain.v2.{ TypeOfClaim, TypeOfLoss }
-import api.models.errors.MtdError
+import api.models.domain.lossClaim.v2.TypeOfClaim.{ `carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways` }
+import api.models.domain.lossClaim.v2.TypeOfLoss.{ `foreign-property`, `self-employment`, `uk-property-non-fhl` }
+import api.models.domain.lossClaim.v2.{ TypeOfClaim, TypeOfLoss }
+import api.models.errors.{ MtdError, TypeOfClaimFormatError }
 import api.validations.NoValidationErrors
-import v2.models.errors.{ RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
+import v2.models.errors.RuleTypeOfClaimInvalid
 
 object TypeOfClaimValidation {
 

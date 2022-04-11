@@ -16,11 +16,12 @@
 
 package v2.validations
 
-import api.models.domain.v2.TypeOfClaim._
-import api.models.domain.v2.TypeOfLoss._
+import api.models.domain.lossClaim.v2.TypeOfClaim._
+import api.models.domain.lossClaim.v2.TypeOfLoss._
+import api.models.errors.TypeOfClaimFormatError
 import api.validations.v2.TypeOfClaimValidation
 import support.UnitSpec
-import v2.models.errors.{ RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
+import v2.models.errors.RuleTypeOfClaimInvalid
 
 class TypeOfClaimValidationSpec extends UnitSpec {
 

@@ -16,6 +16,7 @@
 
 package v2.models.audit
 
+import api.endpoints.amendLossClaim.v2.model.audit.AmendLossClaimAuditDetail
 import api.models.audit.{AuditError, AuditResponse}
 import play.api.libs.json.Json
 import support.UnitSpec

@@ -19,7 +19,6 @@ package v3.controllers.requestParsers.validators
 import api.models.domain.lossClaim.v3.TypeOfClaim
 import api.models.errors._
 import support.UnitSpec
-import v3.models.errors._
 import v3.models.request.listLossClaims.ListLossClaimsRawData
 
 class ListLossClaimsValidatorSpec extends UnitSpec {

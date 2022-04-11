@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers
 
-import api.endpoints.amendBFLoss.common.model.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
-import api.endpoints.amendBFLoss.v2.model.request.{ AmendBFLossParser, AmendBFLossRequest }
+import api.endpoints.amendBFLoss.common.model.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.endpoints.amendBFLoss.v2.model.request.{AmendBFLossParser, AmendBFLossRequest}
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json

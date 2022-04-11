@@ -16,7 +16,8 @@
 
 package v3.services
 
-import api.endpoints.createBFLoss.v3.model.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.createBFLoss.v3.model.downstream.CreateBFLossResponse
+import api.endpoints.createBFLoss.v3.model.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.models.domain.Nino
 import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
@@ -24,7 +25,6 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.mocks.connectors.MockBFLossConnector
 import v3.models.errors._
-import v3.models.response.createBFLoss.CreateBFLossResponse
 
 import scala.concurrent.Future
 

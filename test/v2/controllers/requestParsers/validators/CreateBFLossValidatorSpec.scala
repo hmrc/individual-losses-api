@@ -17,10 +17,10 @@
 package v2.controllers.requestParsers.validators
 
 import api.endpoints.createBFLoss.v2.model.request
-import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossRawData, CreateBFLossValidator }
-import api.models.domain.v2.TypeOfLoss
+import api.endpoints.createBFLoss.v2.model.request.{CreateBFLossRawData, CreateBFLossValidator}
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v2.models.errors._

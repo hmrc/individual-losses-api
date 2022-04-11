@@ -17,11 +17,11 @@
 package v3
 
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
+import api.endpoints.createBFLoss.v3.model.downstream.CreateBFLossResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
-import v3.models.response.createBFLoss.CreateBFLossResponse
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}

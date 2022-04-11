@@ -18,7 +18,7 @@ package v2.controllers.requestParsers
 
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.Nino
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import v2.controllers.requestParsers.validators.ListBFLossesValidator
 import v2.models.requestData._
 

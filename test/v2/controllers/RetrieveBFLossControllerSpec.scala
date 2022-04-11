@@ -20,7 +20,7 @@ import api.controllers.ControllerBaseSpec
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.Nino
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
@@ -31,7 +31,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v2.mocks.services.{MockAuditService, MockRetrieveBFLossService}
 import v2.models.des.{BFLossResponse, GetBFLossHateoasData}
-import v2.models.errors._
 import v2.models.requestData.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global

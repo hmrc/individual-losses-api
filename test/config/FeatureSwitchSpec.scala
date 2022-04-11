@@ -18,7 +18,7 @@ package config
 
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
-import routing.{ Version2, Version3 }
+import routing.{Version2, Version3}
 import support.UnitSpec
 
 class FeatureSwitchSpec extends UnitSpec {

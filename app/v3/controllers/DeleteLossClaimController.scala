@@ -28,7 +28,6 @@ import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.DeleteLossClaimParser
-import v3.models.errors._
 import v3.models.request.deleteLossClaim.DeleteLossClaimRawData
 import v3.services._
 

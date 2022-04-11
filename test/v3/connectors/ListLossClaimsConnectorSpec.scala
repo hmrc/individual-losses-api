@@ -22,7 +22,6 @@ import api.models.domain.lossClaim.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.domain.lossClaim.v3.TypeOfLoss
 import v3.models.request.listLossClaims.ListLossClaimsRequest
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 

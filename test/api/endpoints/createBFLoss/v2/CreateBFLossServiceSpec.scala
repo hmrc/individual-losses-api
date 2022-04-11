@@ -18,13 +18,13 @@ package api.endpoints.createBFLoss.v2
 
 import api.endpoints.amendBFLoss.v2.model.domain
 import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
 import api.models.domain.Nino
-import api.models.domain.v2.TypeOfLoss
+import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.mocks.connectors.MockBFLossConnector
-import v2.models.des.CreateBFLossResponse
 import v2.models.errors._
 import v2.services.CreateBFLossOutcome
 

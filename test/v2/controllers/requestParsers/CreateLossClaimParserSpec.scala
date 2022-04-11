@@ -17,7 +17,7 @@
 package v2.controllers.requestParsers
 
 import api.models.domain.Nino
-import api.models.domain.v2.{ LossClaim, TypeOfClaim, TypeOfLoss }
+import api.models.domain.lossClaim.v2.{ LossClaim, TypeOfClaim, TypeOfLoss }
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson

@@ -16,7 +16,7 @@
 
 package v2.models.domain
 
-import api.models.domain.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
+import api.models.domain.lossClaim.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import play.api.libs.json.Json
 import support.UnitSpec
 

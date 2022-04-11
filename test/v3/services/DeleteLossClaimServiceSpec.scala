@@ -21,7 +21,6 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.errors._
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
 
 import scala.concurrent.Future

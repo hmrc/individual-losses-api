@@ -16,11 +16,11 @@
 
 package v3.models.response.retrieveLossClaim
 
-import api.models.domain.lossClaim.v3.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.lossClaim.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{ DELETE, GET, POST }
+import api.models.hateoas.Method.{DELETE, GET, POST}
 import mocks.MockAppConfig
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {

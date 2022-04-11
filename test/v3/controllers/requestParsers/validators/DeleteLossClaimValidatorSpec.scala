@@ -18,7 +18,6 @@ package v3.controllers.requestParsers.validators
 
 import api.models.errors._
 import support.UnitSpec
-import v3.models.errors.ClaimIdFormatError
 import v3.models.request.deleteLossClaim.DeleteLossClaimRawData
 
 class DeleteLossClaimValidatorSpec extends UnitSpec {

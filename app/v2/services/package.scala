@@ -16,6 +16,8 @@
 
 package v2
 
+import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
+import api.models.downstream.lossClaim.v2.LossClaimResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import v2.models.des._
