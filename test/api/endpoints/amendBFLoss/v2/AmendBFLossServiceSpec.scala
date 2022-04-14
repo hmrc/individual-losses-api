@@ -16,7 +16,8 @@
 
 package api.endpoints.amendBFLoss.v2
 
-import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
+import api.endpoints.amendBFLoss.common.request.AmendBFLossRequestBody
+import api.endpoints.amendBFLoss.v2.request.AmendBFLossRequest
 import api.models.domain.Nino
 import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
@@ -50,7 +51,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
   }
 
   "amend BFLoss" when {
-    lazy val request = model.request.AmendBFLossRequest(Nino(nino), lossId, bfLoss)
+    lazy val request = AmendBFLossRequest(Nino(nino), lossId, bfLoss)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

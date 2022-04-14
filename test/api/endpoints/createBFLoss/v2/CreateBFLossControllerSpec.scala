@@ -17,8 +17,8 @@
 package api.endpoints.createBFLoss.v2
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.amendBFLoss.v2.model.domain
-import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.amendBFLoss.v2.domain
+import api.endpoints.amendBFLoss.v2.domain.BFLoss
 import api.endpoints.createBFLoss.v2.model.audit.CreateBFLossAuditDetail
 import api.endpoints.createBFLoss.v2.model.downstream.{ CreateBFLossHateoasData, CreateBFLossResponse }
 import api.endpoints.createBFLoss.v2.model.request

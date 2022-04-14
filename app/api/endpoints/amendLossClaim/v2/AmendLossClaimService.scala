@@ -17,7 +17,7 @@
 package api.endpoints.amendLossClaim.v2
 
 import api.connectors.v2.LossClaimConnector
-import api.endpoints.amendLossClaim.v2.model.request.AmendLossClaimRequest
+import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier

@@ -18,7 +18,7 @@ package api.connectors.v2
 
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import api.endpoints.amendLossClaim.v2.model.request.AmendLossClaimRequest
+import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
 import api.models.domain.lossClaim.v2.{AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim}
 import api.models.downstream.lossClaim.v2.LossClaimResponse
 import config.AppConfig

@@ -17,15 +17,15 @@
 package v3.connectors
 
 import api.connectors.v3.BFLossConnector
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
-import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.endpoints.amendBFLoss.common.request.AmendBFLossRequestBody
+import api.endpoints.amendBFLoss.v3.request
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
-import api.endpoints.createBFLoss.v3.model.downstream.CreateBFLossResponse
-import api.endpoints.createBFLoss.v3.model.request.{CreateBFLossRequest, CreateBFLossRequestBody}
+import api.endpoints.createBFLoss.v3.downstream.CreateBFLossResponse
+import api.endpoints.createBFLoss.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
 import api.mocks.MockHttpClient
-import api.models.domain.bfLoss.v3.{IncomeSourceType, TypeOfLoss}
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.bfLoss.v3.{ IncomeSourceType, TypeOfLoss }
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
@@ -34,7 +34,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.models.request.deleteBFLoss.DeleteBFLossRequest
 import v3.models.request.listBFLosses.ListBFLossesRequest
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
-import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
+import v3.models.response.listBFLosses.{ ListBFLossesItem, ListBFLossesResponse }
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import scala.concurrent.Future
@@ -214,7 +214,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     def amendBFLossResult(connector: BFLossConnector): DownstreamOutcome[AmendBFLossResponse] =
       await(
         connector.amendBFLoss(
-          AmendBFLossRequest(
+          request.AmendBFLossRequest(
             nino = Nino(nino),
             lossId = lossId,
             amendBFLoss

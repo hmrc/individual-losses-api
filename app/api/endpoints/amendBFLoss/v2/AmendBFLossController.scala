@@ -17,10 +17,10 @@
 package api.endpoints.amendBFLoss.v2
 
 import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRawData
+import api.endpoints.amendBFLoss.common.request.AmendBFLossRawData
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
-import api.endpoints.amendBFLoss.v2.model.audit.AmendBFLossAuditDetail
-import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossParser
+import api.endpoints.amendBFLoss.v2.audit.AmendBFLossAuditDetail
+import api.endpoints.amendBFLoss.v2.request.AmendBFLossParser
 import api.hateoas.HateoasFactory
 import api.models.audit.{ AuditEvent, AuditResponse }
 import api.models.errors._

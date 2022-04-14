@@ -18,7 +18,7 @@ package v2.mocks.connectors
 
 import api.connectors.DownstreamOutcome
 import api.connectors.v2.LossClaimConnector
-import api.endpoints.amendLossClaim.v2.model.request.AmendLossClaimRequest
+import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
 import api.models.downstream.lossClaim.v2.LossClaimResponse
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory

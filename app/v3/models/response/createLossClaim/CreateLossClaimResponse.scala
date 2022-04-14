@@ -20,7 +20,7 @@ import api.hateoas.HateoasLinksFactory
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.json._
-import api.endpoints.createBFLoss.v3.model.downstream.CreateBFLossResponse._
+import api.endpoints.createBFLoss.v3.downstream.CreateBFLossResponse._
 
 case class CreateLossClaimResponse(claimId: String)
 

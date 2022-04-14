@@ -18,9 +18,9 @@ package api.connectors.v2
 
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
-import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
-import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.common.request.AmendBFLossRequestBody
+import api.endpoints.amendBFLoss.v2.domain.BFLoss
+import api.endpoints.amendBFLoss.v2.request.AmendBFLossRequest
 import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
 import api.endpoints.createBFLoss.v2.model.request.CreateBFLossRequest
 import config.AppConfig

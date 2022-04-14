@@ -16,7 +16,7 @@
 
 package v2.mocks.services
 
-import api.endpoints.amendBFLoss.v2.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.v2.request.AmendBFLossRequest
 import api.endpoints.amendBFLoss.v2.{AmendBFLossOutcome, AmendBFLossService}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory

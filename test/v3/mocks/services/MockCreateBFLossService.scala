@@ -16,7 +16,7 @@
 
 package v3.mocks.services
 
-import api.endpoints.createBFLoss.v3.model.request.CreateBFLossRequest
+import api.endpoints.createBFLoss.v3.request.CreateBFLossRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier

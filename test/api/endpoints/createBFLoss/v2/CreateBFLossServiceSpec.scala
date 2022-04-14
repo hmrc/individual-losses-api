@@ -16,8 +16,8 @@
 
 package api.endpoints.createBFLoss.v2
 
-import api.endpoints.amendBFLoss.v2.model.domain
-import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.amendBFLoss.v2.domain
+import api.endpoints.amendBFLoss.v2.domain.BFLoss
 import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
 import api.models.domain.Nino
 import api.models.domain.lossClaim.v2.TypeOfLoss

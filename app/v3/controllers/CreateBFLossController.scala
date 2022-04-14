@@ -17,8 +17,8 @@
 package v3.controllers
 
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.createBFLoss.v3.model.downstream.CreateBFLossHateoasData
-import api.endpoints.createBFLoss.v3.model.request.CreateBFLossRawData
+import api.endpoints.createBFLoss.v3.downstream.CreateBFLossHateoasData
+import api.endpoints.createBFLoss.v3.request.{CreateBFLossParser, CreateBFLossRawData}
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
@@ -30,7 +30,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import v3.controllers.requestParsers.CreateBFLossParser
 import v3.models.errors._
 import v3.services._
 

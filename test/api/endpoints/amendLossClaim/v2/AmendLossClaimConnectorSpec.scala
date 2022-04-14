@@ -18,7 +18,7 @@ package api.endpoints.amendLossClaim.v2
 
 import api.connectors.DownstreamOutcome
 import api.connectors.v2.{LossClaimConnector, LossClaimConnectorSpec}
-import api.endpoints.amendLossClaim.v2.model.request.AmendLossClaimRequest
+import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
 import api.models.domain.Nino
 import api.models.domain.lossClaim.v2.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
 import api.models.downstream.lossClaim.v2.LossClaimResponse

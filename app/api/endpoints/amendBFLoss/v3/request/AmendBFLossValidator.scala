@@ -16,7 +16,7 @@
 
 package api.endpoints.amendBFLoss.v3.request
 
-import api.endpoints.amendBFLoss.common.model.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
+import api.endpoints.amendBFLoss.common.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.models.errors.MtdError
 import api.validations.v3.{ JsonFormatValidation, LossIdValidation, NumberValidation }
 import api.validations.{ NinoValidation, Validator }

@@ -16,7 +16,7 @@
 
 package v3.mocks.validators
 
-import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRawData
+import api.endpoints.amendBFLoss.common.request.AmendBFLossRawData
 import api.endpoints.amendBFLoss.v3.request.AmendBFLossValidator
 import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1

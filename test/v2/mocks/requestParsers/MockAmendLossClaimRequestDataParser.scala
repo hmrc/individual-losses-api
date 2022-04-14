@@ -16,7 +16,7 @@
 
 package v2.mocks.requestParsers
 
-import api.endpoints.amendLossClaim.v2.model.request.{ AmendLossClaimParser, AmendLossClaimRawData, AmendLossClaimRequest }
+import api.endpoints.amendLossClaim.v2.request.{ AmendLossClaimParser, AmendLossClaimRawData, AmendLossClaimRequest }
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory

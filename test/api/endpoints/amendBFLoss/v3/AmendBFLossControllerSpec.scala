@@ -17,9 +17,9 @@
 package api.endpoints.amendBFLoss.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.amendBFLoss.common.model.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.endpoints.amendBFLoss.common.request.{AmendBFLossRawData, AmendBFLossRequestBody}
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
-import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.v3.request.AmendBFLossRequest
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -66,7 +66,7 @@ class AmendBFLossControllerSpec
 
   val testHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a", method = GET, rel = "self")
 
-  val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
+  val bfLossRequest: AmendBFLossRequest = request.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
 
   val responseBody: JsValue = Json.parse(
     s"""
@@ -136,7 +136,7 @@ class AmendBFLossControllerSpec
           .returns(Right(bfLossRequest))
 
         MockAmendBFLossService
-          .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+          .amend(request.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
 
         MockHateoasFactory
@@ -192,7 +192,7 @@ class AmendBFLossControllerSpec
               .returns(Right(bfLossRequest))
 
             MockAmendBFLossService
-              .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+              .amend(request.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
               .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
 
             val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))

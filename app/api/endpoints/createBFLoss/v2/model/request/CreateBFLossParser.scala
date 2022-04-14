@@ -17,7 +17,7 @@
 package api.endpoints.createBFLoss.v2.model.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.amendBFLoss.v2.domain.BFLoss
 import api.endpoints.createBFLoss.v2.model.request
 import api.models.domain.Nino
 

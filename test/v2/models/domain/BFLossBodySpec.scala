@@ -16,8 +16,8 @@
 
 package v2.models.domain
 
-import api.endpoints.amendBFLoss.v2.model.domain
-import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.amendBFLoss.v2.domain
+import api.endpoints.amendBFLoss.v2.domain.BFLoss
 import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json._

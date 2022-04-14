@@ -16,7 +16,7 @@
 
 package api.endpoints.createBFLoss.v2.model.request
 
-import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.amendBFLoss.v2.domain.BFLoss
 import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
 import api.validations._
 import api.validations.v2._

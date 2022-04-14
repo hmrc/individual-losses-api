@@ -16,8 +16,8 @@
 
 package v3.services
 
-import api.endpoints.createBFLoss.v3.model.downstream.CreateBFLossResponse
-import api.endpoints.createBFLoss.v3.model.request.{CreateBFLossRequest, CreateBFLossRequestBody}
+import api.endpoints.createBFLoss.v3.downstream.CreateBFLossResponse
+import api.endpoints.createBFLoss.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.models.domain.Nino
 import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._

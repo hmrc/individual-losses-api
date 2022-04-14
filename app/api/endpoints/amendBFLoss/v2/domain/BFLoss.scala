@@ -1,0 +1,52 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package api.endpoints.amendBFLoss.v2.domain
+
+import api.models.domain.lossClaim.v2.TypeOfLoss
+import play.api.libs.json._
+import v2.models.requestData.DesTaxYear
+
+case class BFLoss(typeOfLoss: TypeOfLoss, businessId: Option[String], taxYear: String, lossAmount: BigDecimal)
+
+object BFLoss {
+  implicit val reads: Reads[BFLoss] = Json.reads[BFLoss]
+
+  implicit val writes: Writes[BFLoss] = (loss: BFLoss) => {
+    (loss.typeOfLoss.isUkProperty, loss.typeOfLoss.isForeignProperty) match {
+      case (true, _) =>
+        Json.obj(
+          "incomeSourceType"         -> loss.typeOfLoss.toIncomeSourceType,
+          "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
+          "broughtForwardLossAmount" -> loss.lossAmount
+        )
+      case (_, true) =>
+        Json.obj(
+          "incomeSourceId"           -> loss.businessId,
+          "incomeSourceType"         -> loss.typeOfLoss.toIncomeSourceType,
+          "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
+          "broughtForwardLossAmount" -> loss.lossAmount
+        )
+      case (_, _) =>
+        Json.obj(
+          "incomeSourceId"           -> loss.businessId,
+          "lossType"                 -> loss.typeOfLoss.toLossType,
+          "taxYear"                  -> DesTaxYear.fromMtd(loss.taxYear).toString,
+          "broughtForwardLossAmount" -> loss.lossAmount
+        )
+    }
+  }
+}

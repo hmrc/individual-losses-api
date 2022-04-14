@@ -16,8 +16,7 @@
 
 package api.endpoints.amendBFLoss.v3
 
-import api.endpoints.amendBFLoss.common.model.request.AmendBFLossRequestBody
-import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.common.request.AmendBFLossRequestBody
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
 import api.models.domain.Nino
 import api.models.domain.bfLoss.v3.TypeOfLoss
@@ -27,6 +26,7 @@ import api.services.ServiceSpec
 import v3.mocks.connectors.MockBFLossConnector
 import v3.models.errors._
 import v3.services.AmendBFLossOutcome
+import api.endpoints.amendBFLoss.v3
 
 import scala.concurrent.Future
 
@@ -52,7 +52,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
   }
 
   "amend BFLoss" when {
-    lazy val request = AmendBFLossRequest(Nino(nino), lossId, bfLoss)
+    lazy val request = v3.request.AmendBFLossRequest(Nino(nino), lossId, bfLoss)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

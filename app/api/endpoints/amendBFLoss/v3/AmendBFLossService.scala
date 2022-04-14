@@ -17,7 +17,7 @@
 package api.endpoints.amendBFLoss.v3
 
 import api.connectors.v3.BFLossConnector
-import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.v3.request.AmendBFLossRequest
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier

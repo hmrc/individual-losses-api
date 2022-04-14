@@ -16,7 +16,7 @@
 
 package api.endpoints.createBFLoss.v2.model.request
 
-import api.endpoints.amendBFLoss.v2.model.domain.BFLoss
+import api.endpoints.amendBFLoss.v2.domain.BFLoss
 import api.models.domain.Nino
 import api.models.request.RawData
 import play.api.mvc.AnyContentAsJson

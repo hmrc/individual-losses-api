@@ -17,9 +17,8 @@
 package api.endpoints.amendBFLoss.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.amendBFLoss.common.model.request.{AmendBFLossRawData, AmendBFLossRequestBody}
-import api.endpoints.amendBFLoss.v3.model.request
-import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.common.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
+import api.endpoints.amendBFLoss.v3.request
 import api.models.domain.Nino
 
 import javax.inject.Inject

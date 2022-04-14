@@ -17,9 +17,9 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.createBFLoss.v3.model.downstream.{ CreateBFLossHateoasData, CreateBFLossResponse }
-import api.endpoints.createBFLoss.v3.model.request
-import api.endpoints.createBFLoss.v3.model.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.createBFLoss.v3.downstream.{ CreateBFLossHateoasData, CreateBFLossResponse }
+import api.endpoints.createBFLoss.v3.request
+import api.endpoints.createBFLoss.v3.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody }
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }

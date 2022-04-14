@@ -16,25 +16,25 @@
 
 package api.endpoints.amendLossClaim.v2
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.amendLossClaim.v2.model.audit.AmendLossClaimAuditDetail
-import api.endpoints.amendLossClaim.v2.model.request.{ AmendLossClaimParser, AmendLossClaimRawData }
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.endpoints.amendLossClaim.v2.audit.AmendLossClaimAuditDetail
+import api.endpoints.amendLossClaim.v2.request.{AmendLossClaimParser, AmendLossClaimRawData}
 import api.hateoas.HateoasFactory
-import api.models.audit.{ AuditEvent, AuditResponse }
+import api.models.audit.{AuditEvent, AuditResponse}
 import api.models.downstream.lossClaim.v2.AmendLossClaimHateoasData
 import api.models.errors._
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.models.errors._
 import v2.services._
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendLossClaimController @Inject()(val authService: EnrolmentsAuthService,

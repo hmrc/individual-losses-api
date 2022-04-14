@@ -19,10 +19,10 @@ package api.connectors.v3
 import api.connectors.DownstreamUri.{DesUri, IfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import api.endpoints.amendBFLoss.v3.model.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.v3.request.AmendBFLossRequest
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
-import api.endpoints.createBFLoss.v3.model.downstream.CreateBFLossResponse
-import api.endpoints.createBFLoss.v3.model.request.CreateBFLossRequest
+import api.endpoints.createBFLoss.v3.downstream.CreateBFLossResponse
+import api.endpoints.createBFLoss.v3.request.CreateBFLossRequest
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.models.request.deleteBFLoss.DeleteBFLossRequest

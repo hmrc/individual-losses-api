@@ -16,11 +16,10 @@
 
 package v3.mocks.validators
 
-import api.endpoints.createBFLoss.v3.model.request.CreateBFLossRawData
+import api.endpoints.createBFLoss.v3.request.{CreateBFLossRawData, CreateBFLossValidator}
 import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v3.controllers.requestParsers.validators.CreateBFLossValidator
 
 class MockCreateBFLossValidator extends MockFactory {
 

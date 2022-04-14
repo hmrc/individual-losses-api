@@ -16,11 +16,10 @@
 
 package v2.mocks.validators
 
-import api.endpoints.amendLossClaim.v2.model.request.AmendLossClaimRawData
+import api.endpoints.amendLossClaim.v2.request.{AmendLossClaimRawData, AmendLossClaimValidator}
 import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v2.controllers.requestParsers.validators.AmendLossClaimValidator
 
 class MockAmendLossClaimValidator extends MockFactory {
 
