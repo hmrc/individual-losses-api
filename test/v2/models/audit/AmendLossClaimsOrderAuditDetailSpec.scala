@@ -16,8 +16,8 @@
 
 package v2.models.audit
 
+import api.endpoints.common.lossClaim.v2.domain.TypeOfClaim
 import api.models.audit.{AuditError, AuditResponse}
-import api.models.domain.lossClaim.v2.TypeOfClaim
 import play.api.libs.json.Json
 import support.UnitSpec
 

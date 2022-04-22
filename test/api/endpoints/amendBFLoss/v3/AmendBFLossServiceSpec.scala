@@ -16,17 +16,17 @@
 
 package api.endpoints.amendBFLoss.v3
 
+import api.connectors.v3.MockBFLossConnector
 import api.endpoints.amendBFLoss.common.request.AmendBFLossRequestBody
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
 import api.models.domain.Nino
-import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.mocks.connectors.MockBFLossConnector
 import v3.models.errors._
 import v3.services.AmendBFLossOutcome
 import api.endpoints.amendBFLoss.v3
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
 
 import scala.concurrent.Future
 

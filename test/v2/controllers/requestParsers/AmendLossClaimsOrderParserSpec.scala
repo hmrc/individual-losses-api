@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers
 
+import api.endpoints.common.lossClaim.v2.domain.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson

@@ -19,24 +19,22 @@ package api.endpoints.createBFLoss.v2
 import api.controllers.ControllerBaseSpec
 import api.endpoints.amendBFLoss.v2.domain
 import api.endpoints.amendBFLoss.v2.domain.BFLoss
-import api.endpoints.createBFLoss.v2.model.audit.CreateBFLossAuditDetail
-import api.endpoints.createBFLoss.v2.model.downstream.{ CreateBFLossHateoasData, CreateBFLossResponse }
-import api.endpoints.createBFLoss.v2.model.request
-import api.endpoints.createBFLoss.v2.model.request.{ CreateBFLossRawData, CreateBFLossRequest }
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
+import api.endpoints.createBFLoss.v2.audit.CreateBFLossAuditDetail
+import api.endpoints.createBFLoss.v2.request.{CreateBFLossRawData, CreateBFLossRequest, MockCreateBFLossParser}
+import api.endpoints.createBFLoss.v2.response.{CreateBFLossHateoasData, CreateBFLossResponse}
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse}
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.mocks.requestParsers.MockCreateBFLossRequestDataParser
-import v2.mocks.services.{ MockAuditService, MockCreateBFLossService }
+import v2.mocks.services.MockAuditService
 import v2.models.errors._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -47,7 +45,7 @@ class CreateBFLossControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateBFLossService
-    with MockCreateBFLossRequestDataParser
+    with MockCreateBFLossParser
     with MockHateoasFactory
     with MockAuditService {
 

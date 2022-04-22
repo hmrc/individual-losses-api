@@ -16,7 +16,7 @@
 
 package v2.models.des
 
-import api.models.domain.lossClaim.v2.TypeOfClaim
+import api.endpoints.common.lossClaim.v2.domain.TypeOfClaim
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v2.models.des.ReliefClaimed._

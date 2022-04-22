@@ -17,11 +17,11 @@
 package v2.models.des
 
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import api.hateoas.HateoasFactory
-import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.hateoas.Method.{DELETE, GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
-import mocks.MockAppConfig
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 

@@ -16,7 +16,7 @@
 
 package api.validations.v2
 
-import api.models.domain.lossClaim.v2.TypeOfLoss
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import api.models.errors.{BusinessIdFormatError, MtdError, RuleBusinessId}
 import api.validations.NoValidationErrors
 

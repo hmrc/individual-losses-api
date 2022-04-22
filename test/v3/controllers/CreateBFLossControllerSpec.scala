@@ -17,23 +17,22 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.createBFLoss.v3.downstream.{ CreateBFLossHateoasData, CreateBFLossResponse }
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
+import api.endpoints.createBFLoss.v3.response.{CreateBFLossHateoasData, CreateBFLossResponse}
 import api.endpoints.createBFLoss.v3.request
-import api.endpoints.createBFLoss.v3.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.createBFLoss.v3.request.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser}
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
-import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.requestParsers.MockCreateBFLossRequestDataParser
-import v3.mocks.services.{ MockAuditService, MockCreateBFLossService }
+import v3.mocks.services.{MockAuditService, MockCreateBFLossService}
 import v3.models.errors._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -44,7 +43,7 @@ class CreateBFLossControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateBFLossService
-    with MockCreateBFLossRequestDataParser
+    with MockCreateBFLossParser
     with MockHateoasFactory
     with MockAuditService {
 

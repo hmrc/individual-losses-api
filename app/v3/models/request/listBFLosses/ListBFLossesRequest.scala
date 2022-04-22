@@ -16,7 +16,7 @@
 
 package v3.models.request.listBFLosses
 
-import api.models.domain.bfLoss.v3.IncomeSourceType
+import api.endpoints.common.bfLoss.v3.domain.IncomeSourceType
 import api.models.domain.{DownstreamTaxYear, Nino}
 
 case class ListBFLossesRequest(nino: Nino,

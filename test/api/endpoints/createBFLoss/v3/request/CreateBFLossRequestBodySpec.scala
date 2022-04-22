@@ -16,8 +16,8 @@
 
 package api.endpoints.createBFLoss.v3.request
 
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
 import api.endpoints.createBFLoss.v3.request
-import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json._
 import support.UnitSpec

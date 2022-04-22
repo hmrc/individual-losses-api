@@ -16,15 +16,16 @@
 
 package api.endpoints.createBFLoss.v2
 
+import api.connectors.v2.MockBFLossConnector
 import api.endpoints.amendBFLoss.v2.domain
 import api.endpoints.amendBFLoss.v2.domain.BFLoss
-import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
+import api.endpoints.createBFLoss.v2.request.CreateBFLossRequest
+import api.endpoints.createBFLoss.v2.response.CreateBFLossResponse
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v2.mocks.connectors.MockBFLossConnector
 import v2.models.errors._
 import v2.services.CreateBFLossOutcome
 
@@ -44,7 +45,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   }
 
   "create BFLoss" when {
-    lazy val request = model.request.CreateBFLossRequest(Nino(nino), bfLoss)
+    lazy val request = CreateBFLossRequest(Nino(nino), bfLoss)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

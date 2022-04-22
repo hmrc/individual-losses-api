@@ -17,8 +17,7 @@
 package v3.controllers.requestParsers.validators
 
 import api.models.errors.MtdError
-import api.validations.lossClaim.v3.{ TypeOfClaimLossValidation, TypeOfClaimValidation }
-import api.validations.v3.{ BusinessIdValidation, JsonFormatValidation, MinTaxYearValidation, TaxYearValidation }
+import api.validations.v3._
 import api.validations.{ JsonValidation, NinoValidation, Validator }
 import config.FixedConfig
 import v3.models.errors.TaxYearClaimedForFormatError

@@ -16,7 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.models.domain.lossClaim.v2.TypeOfLoss
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import api.models.errors._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson

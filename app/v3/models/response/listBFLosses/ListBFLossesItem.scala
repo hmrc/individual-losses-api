@@ -16,8 +16,8 @@
 
 package v3.models.response.listBFLosses
 
+import api.endpoints.common.bfLoss.v3.domain.{ IncomeSourceType, LossType, TypeOfLoss }
 import api.models.domain.DownstreamTaxYear
-import api.models.domain.bfLoss.v3.{ IncomeSourceType, LossType, TypeOfLoss }
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{ Json, OWrites, Reads, __ }
 

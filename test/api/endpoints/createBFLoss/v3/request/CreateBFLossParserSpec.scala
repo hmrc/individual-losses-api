@@ -16,14 +16,13 @@
 
 package api.endpoints.createBFLoss.v3.request
 
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
 import api.endpoints.createBFLoss.v3.request
 import api.models.domain.Nino
-import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v3.mocks.validators.MockCreateBFLossValidator
 
 class CreateBFLossParserSpec extends UnitSpec {
 

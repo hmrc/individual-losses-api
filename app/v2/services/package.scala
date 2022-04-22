@@ -16,10 +16,10 @@
 
 package v2
 
-import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
-import api.models.downstream.lossClaim.v2.LossClaimResponse
+import api.endpoints.createBFLoss.v2.response.CreateBFLossResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
+import api.models.response.lossClaim.v2.LossClaimResponse
 import v2.models.des._
 
 package object services {

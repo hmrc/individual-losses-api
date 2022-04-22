@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers
 
+import api.endpoints.common.lossClaim.v2.domain.TypeOfClaim
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.TypeOfClaim
 import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockListLossClaimsValidator

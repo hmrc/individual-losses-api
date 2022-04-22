@@ -17,10 +17,10 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.lossClaim.v3.TypeOfClaim
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import api.models.hateoas.Method.GET

@@ -17,10 +17,10 @@
 package v2.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.common.lossClaim.v2.domain.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }

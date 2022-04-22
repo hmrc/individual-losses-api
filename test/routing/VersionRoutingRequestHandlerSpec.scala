@@ -19,7 +19,7 @@ package routing
 import akka.actor.ActorSystem
 import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import com.typesafe.config.{Config, ConfigFactory}
-import mocks.MockAppConfig
+import config.MockAppConfig
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration

@@ -16,14 +16,14 @@
 
 package api.endpoints.amendBFLoss.v2
 
+import api.connectors.v2.MockBFLossConnector
 import api.endpoints.amendBFLoss.common.request.AmendBFLossRequestBody
 import api.endpoints.amendBFLoss.v2.request.AmendBFLossRequest
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v2.mocks.connectors.MockBFLossConnector
 import v2.models.des.BFLossResponse
 import v2.models.errors._
 

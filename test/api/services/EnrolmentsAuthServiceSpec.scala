@@ -18,8 +18,7 @@ package api.services
 
 import api.models.auth.UserDetails
 import api.models.errors._
-import config.ConfidenceLevelConfig
-import mocks.MockAppConfig
+import config.{ConfidenceLevelConfig, MockAppConfig}
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._

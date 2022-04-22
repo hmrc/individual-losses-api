@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.models.domain.lossClaim.v2.TypeOfLoss
-import api.models.domain.lossClaim.v2.TypeOfLoss._
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss._
 import api.models.errors.{ MtdError, TypeOfLossFormatError }
 import api.validations.v2.{ BusinessIdValidation, MinTaxYearValidation, TaxYearValidation }
 import api.validations.{ NinoValidation, Validator }

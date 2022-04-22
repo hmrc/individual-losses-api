@@ -17,7 +17,7 @@
 package v3.connectors
 
 import api.connectors.DownstreamOutcome
-import api.connectors.v3.LossClaimConnector
+import api.connectors.v3.{LossClaimConnector, LossClaimConnectorSpec}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper

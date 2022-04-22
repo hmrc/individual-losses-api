@@ -16,14 +16,14 @@
 
 package api.endpoints.amendLossClaim.v2
 
+import api.connectors.v2.MockLossClaimConnector
 import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
+import api.endpoints.common.lossClaim.v2.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
-import api.models.downstream.lossClaim.v2.LossClaimResponse
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.models.response.lossClaim.v2.LossClaimResponse
 import api.services.ServiceSpec
-import v2.mocks.connectors.MockLossClaimConnector
 import v2.models.errors._
 import v2.services.AmendLossClaimOutcome
 

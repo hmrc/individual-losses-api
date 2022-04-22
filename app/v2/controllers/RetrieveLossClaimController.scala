@@ -18,8 +18,8 @@ package v2.controllers
 
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
 import api.hateoas.HateoasFactory
-import api.models.downstream.lossClaim.v2.GetLossClaimHateoasData
 import api.models.errors._
+import api.models.response.lossClaim.v2.GetLossClaimHateoasData
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._

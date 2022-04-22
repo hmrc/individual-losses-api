@@ -17,21 +17,21 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.common.bfLoss.v3.domain.{ IncomeSourceType, TypeOfLoss }
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import api.models.domain.bfLoss.v3.{IncomeSourceType, TypeOfLoss}
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockListBFLossesRequestDataParser
 import v3.mocks.services.MockListBFLossesService
-import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
-import v3.models.response.listBFLosses.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
+import v3.models.request.listBFLosses.{ ListBFLossesRawData, ListBFLossesRequest }
+import v3.models.response.listBFLosses.{ ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

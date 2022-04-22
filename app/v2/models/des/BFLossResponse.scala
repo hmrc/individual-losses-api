@@ -17,8 +17,8 @@
 package v2.models.des
 
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import api.hateoas.{HateoasLinks, HateoasLinksFactory}
-import api.models.domain.lossClaim.v2.TypeOfLoss
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._

@@ -18,8 +18,8 @@ package api.endpoints.amendLossClaim.v2.request
 
 import api.controllers.requestParsers.RequestParser
 import api.endpoints.amendLossClaim.v2.request
+import api.endpoints.common.lossClaim.v2.domain.AmendLossClaim
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.AmendLossClaim
 
 import javax.inject.Inject
 

@@ -16,9 +16,8 @@
 
 package v3.models.request.listLossClaims
 
-import api.models.domain.lossClaim.v3.{TypeOfClaim, TypeOfLoss}
-import api.models.domain.{DownstreamTaxYear, Nino}
-import api.models.domain.lossClaim.v3.TypeOfLoss
+import api.endpoints.common.lossClaim.v3.domain.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.{ DownstreamTaxYear, Nino }
 
 case class ListLossClaimsRequest(nino: Nino,
                                  taxYearClaimedFor: Option[DownstreamTaxYear],

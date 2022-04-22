@@ -22,7 +22,6 @@ import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v2.mocks.validators.MockAmendBFLossValidator
 
 class AmendBFLossParserSpec extends UnitSpec {
 

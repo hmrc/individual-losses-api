@@ -19,7 +19,7 @@ package v2.models.des
 import api.hateoas.{HateoasFactory, HateoasLinks}
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
-import mocks.MockAppConfig
+import config.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
 

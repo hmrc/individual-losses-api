@@ -17,13 +17,13 @@
 package api.endpoints.amendLossClaim.v2
 
 import api.connectors.DownstreamOutcome
-import api.connectors.v2.{LossClaimConnector, LossClaimConnectorSpec}
+import api.connectors.v2.{ LossClaimConnector, LossClaimConnectorSpec }
 import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
+import api.endpoints.common.lossClaim.v2.domain.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
-import api.models.downstream.lossClaim.v2.LossClaimResponse
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.models.response.lossClaim.v2.LossClaimResponse
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime

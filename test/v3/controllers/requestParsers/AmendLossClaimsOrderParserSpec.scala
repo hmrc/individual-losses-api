@@ -16,7 +16,7 @@
 
 package v3.controllers.requestParsers
 
-import api.models.domain.lossClaim.v3.TypeOfClaim
+import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import play.api.libs.json.Json

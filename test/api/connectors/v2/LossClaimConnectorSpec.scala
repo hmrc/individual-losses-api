@@ -17,8 +17,7 @@
 package api.connectors.v2
 
 import api.mocks.v2.MockHttpClient
-import mocks.MockAppConfig
-import v2.connectors.ConnectorSpec
+import config.MockAppConfig
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 

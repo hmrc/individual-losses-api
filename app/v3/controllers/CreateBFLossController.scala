@@ -17,7 +17,7 @@
 package v3.controllers
 
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.createBFLoss.v3.downstream.CreateBFLossHateoasData
+import api.endpoints.createBFLoss.v3.response.CreateBFLossHateoasData
 import api.endpoints.createBFLoss.v3.request.{CreateBFLossParser, CreateBFLossRawData}
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}

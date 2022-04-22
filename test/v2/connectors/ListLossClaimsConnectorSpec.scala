@@ -18,8 +18,8 @@ package v2.connectors
 
 import api.connectors.DownstreamOutcome
 import api.connectors.v2.{LossClaimConnector, LossClaimConnectorSpec}
+import api.endpoints.common.lossClaim.v2.domain.TypeOfClaim
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.TypeOfClaim
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v2.models.des._

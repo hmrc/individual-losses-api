@@ -16,14 +16,14 @@
 
 package v3.services
 
-import api.endpoints.createBFLoss.v3.downstream.CreateBFLossResponse
+import api.connectors.v3.MockBFLossConnector
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
+import api.endpoints.createBFLoss.v3.response.CreateBFLossResponse
 import api.endpoints.createBFLoss.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.models.domain.Nino
-import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.mocks.connectors.MockBFLossConnector
 import v3.models.errors._
 
 import scala.concurrent.Future

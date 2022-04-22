@@ -16,7 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.models.domain.lossClaim.v2.LossClaim
+import api.endpoints.common.lossClaim.v2.domain.LossClaim
 import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import api.validations.v2._
 import api.validations.{JsonValidation, NinoValidation, NoValidationErrors, Validator}

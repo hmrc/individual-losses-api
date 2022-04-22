@@ -16,7 +16,7 @@
 
 package api.endpoints.amendLossClaim.v2.request
 
-import api.models.domain.lossClaim.v2.AmendLossClaim
+import api.endpoints.common.lossClaim.v2.domain.AmendLossClaim
 import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import api.validations.v2.{ClaimIdValidation, JsonFormatValidation, TypeOfClaimValidation}
 import api.validations.{JsonValidation, NinoValidation, Validator}

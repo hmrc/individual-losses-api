@@ -16,9 +16,8 @@
 
 package definition
 
-import config.ConfidenceLevelConfig
+import config.{ConfidenceLevelConfig, MockAppConfig}
 import definition.APIStatus.{ALPHA, BETA}
-import mocks.MockAppConfig
 import routing.{Version2, Version3}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel

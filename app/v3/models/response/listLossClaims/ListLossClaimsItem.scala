@@ -16,11 +16,10 @@
 
 package v3.models.response.listLossClaims
 
+import api.endpoints.common.lossClaim.v3.domain.{ IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss }
 import api.models.domain.DownstreamTaxYear
-import api.models.domain.lossClaim.v3.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import api.models.domain.lossClaim.v3.TypeOfLoss
 
 case class ListLossClaimsItem(businessId: String,
                               typeOfClaim: TypeOfClaim,

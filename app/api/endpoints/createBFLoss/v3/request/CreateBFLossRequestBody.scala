@@ -16,9 +16,9 @@
 
 package api.endpoints.createBFLoss.v3.request
 
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss._
 import api.models.domain.DownstreamTaxYear
-import api.models.domain.bfLoss.v3.TypeOfLoss
-import api.models.domain.bfLoss.v3.TypeOfLoss._
 import play.api.libs.json._
 
 case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal)

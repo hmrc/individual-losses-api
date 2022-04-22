@@ -17,10 +17,10 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.Nino
-import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}

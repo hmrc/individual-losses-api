@@ -16,7 +16,7 @@
 
 package v3.controllers.requestParsers
 
-import api.models.domain.bfLoss.v3.IncomeSourceType
+import api.endpoints.common.bfLoss.v3.domain.IncomeSourceType
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import support.UnitSpec

@@ -21,8 +21,8 @@ import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.endpoints.amendBFLoss.common.request.AmendBFLossRequestBody
 import api.endpoints.amendBFLoss.v2.domain.BFLoss
 import api.endpoints.amendBFLoss.v2.request.AmendBFLossRequest
-import api.endpoints.createBFLoss.v2.model.downstream.CreateBFLossResponse
-import api.endpoints.createBFLoss.v2.model.request.CreateBFLossRequest
+import api.endpoints.createBFLoss.v2.request.CreateBFLossRequest
+import api.endpoints.createBFLoss.v2.response.CreateBFLossResponse
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v2.models.des.{BFLossId, BFLossResponse, ListBFLossesResponse}

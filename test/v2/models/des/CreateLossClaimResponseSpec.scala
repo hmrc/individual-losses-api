@@ -18,7 +18,7 @@ package v2.models.des
 
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST}
-import mocks.MockAppConfig
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 

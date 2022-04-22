@@ -19,13 +19,13 @@ package api.endpoints.amendBFLoss.v3
 import api.controllers.ControllerBaseSpec
 import api.endpoints.amendBFLoss.common.request.{AmendBFLossRawData, AmendBFLossRequestBody}
 import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
-import api.endpoints.amendBFLoss.v3.request.AmendBFLossRequest
+import api.endpoints.amendBFLoss.v3.request.{AmendBFLossRequest, MockAmendBFLossParser}
 import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
-import api.models.domain.bfLoss.v3.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
@@ -33,7 +33,6 @@ import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.requestParsers.MockAmendBFLossRequestDataParser
 import v3.mocks.services._
 import v3.models.errors._
 
@@ -45,7 +44,7 @@ class AmendBFLossControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendBFLossService
-    with MockAmendBFLossRequestDataParser
+    with MockAmendBFLossParser
     with MockHateoasFactory
     with MockAuditService {
 

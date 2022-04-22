@@ -17,13 +17,12 @@
 package api.endpoints.amendLossClaim.v2.request
 
 import api.endpoints.amendLossClaim.v2.request
+import api.endpoints.common.lossClaim.v2.domain.{AmendLossClaim, TypeOfClaim}
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.{ AmendLossClaim, TypeOfClaim }
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v2.mocks.validators.MockAmendLossClaimValidator
 
 class AmendLossClaimParserSpec extends UnitSpec {
 

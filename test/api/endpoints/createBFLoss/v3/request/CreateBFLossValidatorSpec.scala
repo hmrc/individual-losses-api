@@ -19,8 +19,7 @@ package api.endpoints.createBFLoss.v3.request
 import api.endpoints.createBFLoss.v3.request
 import api.mocks.MockCurrentDate
 import api.models.errors._
-import config.AppConfig
-import mocks.MockAppConfig
+import config.{AppConfig, MockAppConfig}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec

@@ -21,8 +21,8 @@ import api.endpoints.amendLossClaim.v2.audit.AmendLossClaimAuditDetail
 import api.endpoints.amendLossClaim.v2.request.{AmendLossClaimParser, AmendLossClaimRawData}
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse}
-import api.models.downstream.lossClaim.v2.AmendLossClaimHateoasData
 import api.models.errors._
+import api.models.response.lossClaim.v2.AmendLossClaimHateoasData
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._

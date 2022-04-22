@@ -19,8 +19,8 @@ package api.connectors.v2
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
-import api.models.domain.lossClaim.v2.{AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim}
-import api.models.downstream.lossClaim.v2.LossClaimResponse
+import api.endpoints.common.lossClaim.v2.domain.{AmendLossClaim, AmendLossClaimsOrderRequestBody, LossClaim}
+import api.models.response.lossClaim.v2.LossClaimResponse
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v2.models.des.{CreateLossClaimResponse, ListLossClaimsResponse, LossClaimId}

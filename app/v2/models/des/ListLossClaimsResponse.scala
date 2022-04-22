@@ -16,8 +16,8 @@
 
 package v2.models.des
 
+import api.endpoints.common.lossClaim.v2.domain.TypeOfClaim
 import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import api.models.domain.lossClaim.v2.TypeOfClaim
 import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.{AppConfig, FeatureSwitch}

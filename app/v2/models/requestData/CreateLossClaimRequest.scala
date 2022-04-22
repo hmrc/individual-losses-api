@@ -16,7 +16,7 @@
 
 package v2.models.requestData
 
+import api.endpoints.common.lossClaim.v2.domain.LossClaim
 import api.models.domain.Nino
-import api.models.domain.lossClaim.v2.LossClaim
 
 case class CreateLossClaimRequest(nino: Nino, lossClaim: LossClaim)

@@ -16,7 +16,7 @@
 
 package v2.controllers.requestParsers.validators
 
-import api.models.domain.lossClaim.v2.AmendLossClaimsOrderRequestBody
+import api.endpoints.common.lossClaim.v2.domain.AmendLossClaimsOrderRequestBody
 import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import api.validations.v2._
 import api.validations.{NinoValidation, Validator}

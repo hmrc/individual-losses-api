@@ -16,7 +16,7 @@
 
 package v2.models.des
 
-import api.models.domain.lossClaim.v2.TypeOfLoss
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import play.api.libs.json._
 import utils.enums.Enums
 

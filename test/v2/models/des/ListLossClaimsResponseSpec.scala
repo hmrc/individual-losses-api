@@ -16,11 +16,11 @@
 
 package v2.models.des
 
-import api.models.domain.lossClaim.v2.TypeOfClaim
+import api.endpoints.common.lossClaim.v2.domain.TypeOfClaim
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{GET, POST, PUT}
 import com.typesafe.config.ConfigFactory
-import mocks.MockAppConfig
+import config.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
