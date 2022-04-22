@@ -18,7 +18,7 @@ package routing
 
 import com.google.inject.ImplementedBy
 import config.{AppConfig, FeatureSwitch}
-import definition.Versions.{VERSION_2, VERSION_3}
+import definition.Versions.VERSION_3
 import play.api.routing.Router
 
 import javax.inject.Inject
@@ -39,14 +39,12 @@ trait VersionRoutingMap {
 case class VersionRoutingMapImpl @Inject()(
     appConfig: AppConfig,
     defaultRouter: Router,
-    v2Router: v2.Routes,
     v3Router: v3.Routes
 ) extends VersionRoutingMap {
 
   lazy val featureSwitch: FeatureSwitch = FeatureSwitch(appConfig.featureSwitch)
 
   val map: Map[String, Router] = Map(
-    VERSION_2 -> v2Router,
     VERSION_3 -> v3Router
   )
 }

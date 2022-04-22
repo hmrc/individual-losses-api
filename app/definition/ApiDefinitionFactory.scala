@@ -53,11 +53,6 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
         context = appConfig.apiGatewayContext,
         versions = Seq(
           APIVersion(
-            version = VERSION_2,
-            status = buildAPIStatus(VERSION_2),
-            endpointsEnabled = appConfig.endpointsEnabled(version = "2")
-          ),
-          APIVersion(
             version = VERSION_3,
             status = buildAPIStatus(VERSION_3),
             endpointsEnabled = appConfig.endpointsEnabled(version = "3")

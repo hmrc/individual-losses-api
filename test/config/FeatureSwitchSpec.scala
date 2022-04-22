@@ -47,15 +47,17 @@ class FeatureSwitchSpec extends UnitSpec {
     "config set" must {
       val featureSwitch = createFeatureSwitch("""
           |version-1.enabled = false
-          |version-2.enabled = true
+          |version-2.enabled = false
+          |version-3.enabled = true
         """.stripMargin)
 
       "return false for disabled versions" in {
         featureSwitch.isVersionEnabled("1.0") shouldBe false
+        featureSwitch.isVersionEnabled("2.0") shouldBe false
       }
 
       "return true for enabled versions" in {
-        featureSwitch.isVersionEnabled("2.0") shouldBe true
+        featureSwitch.isVersionEnabled("3.0") shouldBe true
       }
 
       "return false for non-version strings" in {
