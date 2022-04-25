@@ -16,10 +16,10 @@
 
 package v3.models.response.listBFLosses
 
+import api.endpoints.common.bfLoss.v3.domain.{ IncomeSourceType, LossType, TypeOfLoss }
 import api.models.domain.DownstreamTaxYear
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Json, OWrites, Reads, __}
-import v3.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
+import play.api.libs.json.{ Json, OWrites, Reads, __ }
 
 case class ListBFLossesItem(lossId: String,
                             businessId: String,

@@ -17,10 +17,10 @@
 package v3.connectors
 
 import api.connectors.DownstreamOutcome
+import api.connectors.v3.{LossClaimConnector, LossClaimConnectorSpec}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v3.models.errors._
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
 
 import scala.concurrent.Future

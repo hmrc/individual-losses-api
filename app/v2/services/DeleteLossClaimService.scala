@@ -16,11 +16,10 @@
 
 package v2.services
 
+import api.connectors.v2.LossClaimConnector
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.LossClaimConnector
-import v2.models.errors._
 import v2.models.requestData.DeleteLossClaimRequest
 
 import javax.inject.Inject

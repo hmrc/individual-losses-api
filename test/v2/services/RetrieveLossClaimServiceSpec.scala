@@ -16,14 +16,13 @@
 
 package v2.services
 
+import api.connectors.v2.MockLossClaimConnector
+import api.endpoints.common.lossClaim.v2.domain.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.common.lossClaim.v2.response.LossClaimResponse
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v2.mocks.connectors.MockLossClaimConnector
-import v2.models.des.LossClaimResponse
-import v2.models.domain.{ TypeOfClaim, TypeOfLoss }
-import v2.models.errors._
 import v2.models.requestData.RetrieveLossClaimRequest
 
 import scala.concurrent.Future

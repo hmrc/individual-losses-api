@@ -16,9 +16,10 @@
 
 package v2.controllers.requestParsers
 
+import api.controllers.requestParsers.RequestParser
+import api.endpoints.common.lossClaim.v2.domain.LossClaim
 import api.models.domain.Nino
 import v2.controllers.requestParsers.validators.CreateLossClaimValidator
-import v2.models.domain.LossClaim
 import v2.models.requestData._
 
 import javax.inject.Inject

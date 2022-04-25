@@ -17,11 +17,11 @@
 package v3.connectors
 
 import api.connectors.DownstreamOutcome
+import api.connectors.v3.{ LossClaimConnector, LossClaimConnectorSpec }
+import api.endpoints.common.lossClaim.v3.domain.{ TypeOfClaim, TypeOfLoss }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.errors._
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 

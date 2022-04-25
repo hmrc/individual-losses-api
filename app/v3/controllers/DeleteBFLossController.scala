@@ -16,15 +16,15 @@
 
 package v3.controllers
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors._
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v3.controllers.requestParsers.DeleteBFLossParser
@@ -32,8 +32,8 @@ import v3.models.errors._
 import v3.models.request.deleteBFLoss.DeleteBFLossRawData
 import v3.services._
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,

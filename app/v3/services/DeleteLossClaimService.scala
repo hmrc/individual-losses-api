@@ -16,15 +16,14 @@
 
 package v3.services
 
+import api.connectors.v3.LossClaimConnector
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.connectors.LossClaimConnector
-import v3.models.errors._
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 

@@ -18,7 +18,6 @@ package v2.controllers.requestParsers.validators
 
 import api.models.errors._
 import support.UnitSpec
-import v2.models.errors.LossIdFormatError
 import v2.models.requestData
 import v2.models.requestData.DeleteBFLossRawData
 

@@ -17,31 +17,19 @@
 package config
 
 import play.api.Configuration
+import routing.Version
 
-case class FeatureSwitch(value: Option[Configuration]) {
+case class FeatureSwitch(maybeConfig: Option[Configuration]) {
 
-  private val versionRegex = """(\d)\.\d""".r
+  def isVersionEnabled(version: Version): Boolean =
+    (for {
+      config  <- maybeConfig
+      enabled <- config.getOptional[Boolean](s"version-${version.configName}.enabled")
+    } yield enabled).getOrElse(false)
 
-  def isVersionEnabled(version: String): Boolean = {
-    val versionNoIfPresent: Option[String] =
-      version match {
-        case versionRegex(v) => Some(v)
-        case _               => None
-      }
-
-    val enabled = for {
-      versionNo <- versionNoIfPresent
-      config    <- value
-      enabled   <- config.getOptional[Boolean](s"version-$versionNo.enabled")
-    } yield enabled
-
-    enabled.getOrElse(false)
-  }
-
-  def isAmendLossClaimsOrderRouteEnabled: Boolean = {
-    value match {
+  def isAmendLossClaimsOrderRouteEnabled: Boolean =
+    maybeConfig match {
       case Some(configuration) => configuration.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
       case None                => false
     }
-  }
 }

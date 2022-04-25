@@ -16,9 +16,9 @@
 
 package v3.models.request.amendLossClaimsOrder
 
+import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.models.domain.lossClaim.TypeOfClaim
 
 class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
   val mtdJson = Json.parse("""{

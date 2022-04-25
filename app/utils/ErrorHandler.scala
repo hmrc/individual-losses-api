@@ -17,12 +17,12 @@
 package utils
 
 import api.models.errors._
-import definition.Versions
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
+import routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -104,5 +104,5 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
     Future.successful(Status(status)(Json.toJson(errorCode)))
   }
 
-  private def versionIfSpecified(request: RequestHeader) = Versions.getFromRequest(request).getOrElse("<unspecified>")
+  private def versionIfSpecified(request: RequestHeader): String = Versions.getFromRequest(request).map(_.name).getOrElse("<unspecified>")
 }

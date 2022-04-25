@@ -1,8 +1,8 @@
 # Brought-forward losses
 
-POST       /:nino/brought-forward-losses                                v3.controllers.CreateBFLossController.create(nino: String)
+POST       /:nino/brought-forward-losses                                api.endpoints.createBFLoss.v3.CreateBFLossController.create(nino: String)
 DELETE     /:nino/brought-forward-losses/:lossId                        v3.controllers.DeleteBFLossController.delete(nino: String, lossId: String)
-POST       /:nino/brought-forward-losses/:lossId/change-loss-amount     v3.controllers.AmendBFLossController.amend(nino: String, lossId: String)
+POST       /:nino/brought-forward-losses/:lossId/change-loss-amount     api.endpoints.amendBFLoss.v3.AmendBFLossController.amend(nino: String, lossId: String)
 GET        /:nino/brought-forward-losses/:lossId                        v3.controllers.RetrieveBFLossController.retrieve(nino: String, lossId: String)
 GET        /:nino/brought-forward-losses                                v3.controllers.ListBFLossesController.list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String])
 
@@ -15,4 +15,3 @@ POST       /:nino/loss-claims/:claimId/change-type-of-claim             v3.contr
 
 GET        /:nino/loss-claims                                           v3.controllers.ListLossClaimsController.list(nino: String, taxYearClaimedFor: Option[String], typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String])
 PUT        /:nino/loss-claims/order/:taxYearClaimedFor                  v3.controllers.AmendLossClaimsOrderController.amendClaimsOrder(nino: String, taxYearClaimedFor: String)
-

@@ -16,6 +16,8 @@
 
 package v2
 
+import api.endpoints.common.lossClaim.v2.response.LossClaimResponse
+import api.endpoints.createBFLoss.v2.response.CreateBFLossResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import v2.models.des._
@@ -27,8 +29,6 @@ package object services {
   type RetrieveBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[BFLossResponse]]
 
   type ListBFLossesOutcome = Either[ErrorWrapper, ResponseWrapper[ListBFLossesResponse[BFLossId]]]
-
-  type AmendBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[BFLossResponse]]
 
   type DeleteBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
 

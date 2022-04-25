@@ -18,14 +18,7 @@ package v3.models.errors
 
 import api.models.errors.MtdError
 
-//object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
-//object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object TaxYearClaimedForFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year claimed for is invalid")
-object LossIdFormatError            extends MtdError("FORMAT_LOSS_ID", "The provided loss ID is invalid")
-object ClaimIdFormatError           extends MtdError("FORMAT_CLAIM_ID", "The provided claim ID is invalid")
-object BusinessIdFormatError        extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid")
-object TypeOfLossFormatError        extends MtdError("FORMAT_TYPE_OF_LOSS", "The provided type of loss is invalid")
-object TypeOfClaimFormatError       extends MtdError("FORMAT_TYPE_OF_CLAIM", "The provided type of claim is invalid")
 
 object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99") {
 
@@ -33,15 +26,6 @@ object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be betw
     ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max")
 }
 
-// Rule Errors
-object RuleTaxYearNotSupportedError
-    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
-object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
-object RuleTaxYearRangeInvalid       extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required")
-object RuleTaxYearNotEndedError      extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The tax year for this brought forward loss has not yet ended")
-
-object RuleBusinessId
-    extends MtdError("RULE_BUSINESS_ID", "A Business ID must be supplied for a self-employment or a foreign property business type.")
 object RuleDuplicateSubmissionError      extends MtdError("RULE_DUPLICATE_SUBMISSION", "Submission already exists")
 object RuleDuplicateClaimSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "This claim matches a previous submission")
 

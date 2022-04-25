@@ -16,13 +16,12 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
 import api.models.errors._
-import api.validations.NinoValidation
+import api.validations.v3.{BusinessIdValidation, MinTaxYearValidation, TaxYearValidation, TypeOfClaimLossValidation}
+import api.validations.{NinoValidation, Validator}
 import config.FixedConfig
-import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.errors.TypeOfClaimFormatError
 import v3.models.request.listLossClaims.ListLossClaimsRawData
-import v3.validations.{BusinessIdValidation, MinTaxYearValidation, TaxYearValidation, TypeOfClaimLossValidation}
 
 class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with FixedConfig {
 

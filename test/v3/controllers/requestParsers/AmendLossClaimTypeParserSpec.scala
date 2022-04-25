@@ -16,14 +16,13 @@
 
 package v3.controllers.requestParsers
 
+import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.mocks.validators.MockAmendLossClaimTypeValidator
-import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.errors.RuleIncorrectOrEmptyBodyError
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 
 class AmendLossClaimTypeParserSpec extends UnitSpec {

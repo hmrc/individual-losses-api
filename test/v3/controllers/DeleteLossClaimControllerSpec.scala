@@ -27,7 +27,6 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockDeleteLossClaimRequestDataParser
 import v3.mocks.services.{MockAuditService, MockDeleteLossClaimService}
-import v3.models.errors._
 import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global

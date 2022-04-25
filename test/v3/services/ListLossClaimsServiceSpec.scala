@@ -16,15 +16,14 @@
 
 package v3.services
 
+import api.connectors.v3.MockLossClaimConnector
+import api.endpoints.common.lossClaim.v3.domain.{ TypeOfClaim, TypeOfLoss }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.mocks.connectors.MockLossClaimConnector
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.errors._
 import v3.models.request.listLossClaims.ListLossClaimsRequest
-import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
+import v3.models.response.listLossClaims.{ ListLossClaimsItem, ListLossClaimsResponse }
 
 import scala.concurrent.Future
 

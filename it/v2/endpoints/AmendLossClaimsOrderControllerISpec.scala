@@ -16,17 +16,17 @@
 
 package v2.endpoints
 
+import api.endpoints.common.lossClaim.v2.domain.{ Claim, TypeOfClaim }
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json, OWrites, Writes}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json, OWrites, Writes }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V2IntegrationBaseSpec
-import v2.models.domain.{Claim, TypeOfClaim}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 import v2.models.errors._
 import v2.models.requestData.DesTaxYear
-import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends V2IntegrationBaseSpec {
 
@@ -103,7 +103,7 @@ class AmendLossClaimsOrderControllerISpec extends V2IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUrl, Status.NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, desUrl, Status.NO_CONTENT)
         }
 
         val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
@@ -121,7 +121,7 @@ class AmendLossClaimsOrderControllerISpec extends V2IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUrl, Status.NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, desUrl, Status.NO_CONTENT)
         }
 
         val response: WSResponse = await(request().put(requestJson()))
@@ -140,7 +140,7 @@ class AmendLossClaimsOrderControllerISpec extends V2IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.onError(DesStub.PUT, desUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.PUT, desUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))

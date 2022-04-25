@@ -16,12 +16,11 @@
 
 package v2.services
 
+import api.connectors.v2.MockLossClaimConnector
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v2.mocks.connectors.MockLossClaimConnector
-import v2.models.errors._
 import v2.models.requestData.DeleteLossClaimRequest
 
 import scala.concurrent.Future

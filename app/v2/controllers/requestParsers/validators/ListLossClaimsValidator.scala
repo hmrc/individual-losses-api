@@ -16,12 +16,12 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import api.models.errors.MtdError
-import api.validations.NinoValidation
+import api.validations.v2._
+import api.validations.{NinoValidation, Validator}
 import config.FixedConfig
-import v2.models.domain.TypeOfLoss
 import v2.models.requestData.ListLossClaimsRawData
-import v2.validations._
 
 class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with FixedConfig {
 

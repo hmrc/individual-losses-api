@@ -16,9 +16,9 @@
 
 package definition
 
-import config.ConfidenceLevelConfig
+import config.{ConfidenceLevelConfig, MockAppConfig}
 import definition.APIStatus.{ALPHA, BETA}
-import mocks.MockAppConfig
+import routing.{Version2, Version3}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -35,10 +35,10 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       "default apiStatus to ALPHA" in new Test {
         MockAppConfig.apiGatewayContext returns "my/context"
         MockAppConfig.featureSwitch returns None anyNumberOfTimes ()
-        MockAppConfig.apiStatus(version = "2.0") returns "" anyNumberOfTimes ()
-        MockAppConfig.apiStatus(version = "3.0") returns "" anyNumberOfTimes ()
-        MockAppConfig.endpointsEnabled(version = "2") returns true anyNumberOfTimes ()
-        MockAppConfig.endpointsEnabled(version = "3") returns true anyNumberOfTimes ()
+        MockAppConfig.apiStatus(Version2) returns "" anyNumberOfTimes ()
+        MockAppConfig.apiStatus(Version3) returns "" anyNumberOfTimes ()
+        MockAppConfig.endpointsEnabled(version = Version2.configName) returns true anyNumberOfTimes ()
+        MockAppConfig.endpointsEnabled(version = Version3.configName) returns true anyNumberOfTimes ()
         MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes ()
 
         factory.definition shouldBe Definition(
@@ -61,8 +61,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             description = "An API for providing individual losses data",
             context = "my/context",
             versions = Seq(
-              APIVersion(version = "2.0", status = ALPHA, endpointsEnabled = true),
-              APIVersion(version = "3.0", status = ALPHA, endpointsEnabled = true)
+              APIVersion(Version2, status = ALPHA, endpointsEnabled = true),
+              APIVersion(Version3, status = ALPHA, endpointsEnabled = true)
             ),
             requiresTrust = None
           )
@@ -88,7 +88,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
   }
 
   "buildAPIStatus" when {
-    val anyVersion = "1.0"
+    val anyVersion = Version2
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
         MockAppConfig.apiStatus(version = anyVersion) returns "BETA"

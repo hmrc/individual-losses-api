@@ -20,11 +20,10 @@ import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.V2IntegrationBaseSpec
-import v2.models.errors._
-import v2.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class RetrieveLossClaimControllerISpec extends V2IntegrationBaseSpec {
 
@@ -100,7 +99,7 @@ class RetrieveLossClaimControllerISpec extends V2IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUrl, Status.OK, desResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, desUrl, Status.OK, desResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -119,7 +118,7 @@ class RetrieveLossClaimControllerISpec extends V2IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.onError(DesStub.GET, desUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.GET, desUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().get())

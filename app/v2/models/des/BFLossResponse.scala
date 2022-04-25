@@ -16,12 +16,13 @@
 
 package v2.models.des
 
+import api.endpoints.amendBFLoss.common.response.AmendBFLossHateoasData
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v2.models.domain.TypeOfLoss
 import v2.models.requestData.DesTaxYear
 
 case class BFLossResponse(businessId: Option[String], typeOfLoss: TypeOfLoss, lossAmount: BigDecimal, taxYear: String, lastModified: String)
@@ -52,7 +53,5 @@ object BFLossResponse extends HateoasLinks {
     }
   }
 }
-
-case class AmendBFLossHateoasData(nino: String, lossId: String) extends HateoasData
 
 case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData

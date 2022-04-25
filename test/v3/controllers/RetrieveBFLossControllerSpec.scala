@@ -17,6 +17,7 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.Nino
@@ -29,8 +30,6 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.requestParsers.MockRetrieveBFLossRequestDataParser
 import v3.mocks.services.MockRetrieveBFLossService
-import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.errors._
 import v3.models.request.retrieveBFLoss.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 import v3.models.response.retrieveBFLoss.{GetBFLossHateoasData, RetrieveBFLossResponse}
 

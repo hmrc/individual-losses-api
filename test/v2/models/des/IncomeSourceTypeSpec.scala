@@ -16,10 +16,10 @@
 
 package v2.models.des
 
+import api.endpoints.common.lossClaim.v2.domain.TypeOfLoss
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v2.models.des.IncomeSourceType._
-import v2.models.domain.TypeOfLoss
 
 class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 

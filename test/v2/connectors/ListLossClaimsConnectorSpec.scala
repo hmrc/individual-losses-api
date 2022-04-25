@@ -17,11 +17,12 @@
 package v2.connectors
 
 import api.connectors.DownstreamOutcome
+import api.connectors.v2.{LossClaimConnector, LossClaimConnectorSpec}
+import api.endpoints.common.lossClaim.v2.domain.TypeOfClaim
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v2.models.des._
-import v2.models.domain.TypeOfClaim
 import v2.models.requestData._
 
 import scala.concurrent.Future

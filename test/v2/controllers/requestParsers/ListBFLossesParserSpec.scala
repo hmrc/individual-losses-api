@@ -21,7 +21,6 @@ import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockListBFLossesValidator
 import v2.models.des.IncomeSourceType
-import v2.models.errors.LossIdFormatError
 import v2.models.requestData.{DesTaxYear, ListBFLossesRawData, ListBFLossesRequest}
 
 class ListBFLossesParserSpec extends UnitSpec {

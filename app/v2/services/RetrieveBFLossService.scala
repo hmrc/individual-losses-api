@@ -16,11 +16,10 @@
 
 package v2.services
 
+import api.connectors.v2.BFLossConnector
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.BFLossConnector
-import v2.models.errors._
 import v2.models.requestData.RetrieveBFLossRequest
 
 import javax.inject.Inject

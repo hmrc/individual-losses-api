@@ -17,9 +17,9 @@
 package v3.controllers.requestParsers.validators
 
 import api.models.errors.MtdError
-import api.validations.NinoValidation
+import api.validations.v3.ClaimIdValidation
+import api.validations.{NinoValidation, Validator}
 import v3.models.request.deleteLossClaim.DeleteLossClaimRawData
-import v3.validations.ClaimIdValidation
 
 class DeleteLossClaimValidator extends Validator[DeleteLossClaimRawData] {
 

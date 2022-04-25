@@ -17,6 +17,7 @@
 package v2.controllers
 
 import api.controllers.ControllerBaseSpec
+import api.endpoints.common.lossClaim.v2.domain.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.domain.Nino
@@ -30,7 +31,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockAmendLossClaimsOrderRequestDataParser
 import v2.mocks.services.{ MockAmendLossClaimsOrderService, MockAuditService }
 import v2.models.des.{ AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse }
-import v2.models.domain.{ AmendLossClaimsOrderRequestBody, Claim, TypeOfClaim }
 import v2.models.errors._
 import v2.models.requestData.{ AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, DesTaxYear }
 

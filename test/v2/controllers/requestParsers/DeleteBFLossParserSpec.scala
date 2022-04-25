@@ -20,7 +20,6 @@ import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockDeleteBFLossValidator
-import v2.models.errors.LossIdFormatError
 import v2.models.requestData.{DeleteBFLossRawData, DeleteBFLossRequest}
 
 class DeleteBFLossParserSpec extends UnitSpec {

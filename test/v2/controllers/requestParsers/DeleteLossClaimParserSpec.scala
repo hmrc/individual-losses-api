@@ -20,7 +20,6 @@ import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v2.mocks.validators.MockDeleteLossClaimValidator
-import v2.models.errors.ClaimIdFormatError
 import v2.models.requestData.{DeleteLossClaimRawData, DeleteLossClaimRequest}
 
 class DeleteLossClaimParserSpec extends UnitSpec {

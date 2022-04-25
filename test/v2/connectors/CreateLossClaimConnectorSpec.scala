@@ -17,12 +17,13 @@
 package v2.connectors
 
 import api.connectors.DownstreamOutcome
+import api.connectors.v2.{ LossClaimConnector, LossClaimConnectorSpec }
+import api.endpoints.common.lossClaim.v2.domain.{ LossClaim, TypeOfClaim, TypeOfLoss }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.models.des._
-import v2.models.domain._
 import v2.models.requestData._
 
 import scala.concurrent.Future
