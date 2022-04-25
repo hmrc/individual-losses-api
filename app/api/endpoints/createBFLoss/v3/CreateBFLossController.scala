@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package v3.controllers
+package api.endpoints.createBFLoss.v3
 
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.createBFLoss.v3.response.CreateBFLossHateoasData
 import api.endpoints.createBFLoss.v3.request.{CreateBFLossParser, CreateBFLossRawData}
+import api.endpoints.createBFLoss.v3.response.CreateBFLossHateoasData
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._

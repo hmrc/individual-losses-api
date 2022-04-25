@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package api.models.response.lossClaim.v2
+package api.endpoints.common.lossClaim.v2.response
 
-import api.endpoints.common.lossClaim.v2.domain.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.common.lossClaim.v2.domain.{ TypeOfClaim, TypeOfLoss }
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST}
+import api.models.hateoas.Method.{ DELETE, GET, POST }
 import config.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 
 class LossClaimResponseSpec extends UnitSpec with MockAppConfig {

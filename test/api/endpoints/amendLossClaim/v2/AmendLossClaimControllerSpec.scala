@@ -18,19 +18,19 @@ package api.endpoints.amendLossClaim.v2
 
 import api.controllers.ControllerBaseSpec
 import api.endpoints.amendLossClaim.v2.audit.AmendLossClaimAuditDetail
-import api.endpoints.amendLossClaim.v2.request.{AmendLossClaimRawData, AmendLossClaimRequest, MockAmendLossClaimParser}
-import api.endpoints.common.lossClaim.v2.domain.{AmendLossClaim, TypeOfClaim, TypeOfLoss}
+import api.endpoints.amendLossClaim.v2.request.{ AmendLossClaimRawData, AmendLossClaimRequest, MockAmendLossClaimParser }
+import api.endpoints.common.lossClaim.v2.domain.{ AmendLossClaim, TypeOfClaim, TypeOfLoss }
+import api.endpoints.common.lossClaim.v2.response.{ AmendLossClaimHateoasData, LossClaimResponse }
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import api.models.audit.{AuditError, AuditEvent, AuditResponse}
+import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.{ HateoasWrapper, Link }
 import api.models.outcomes.ResponseWrapper
-import api.models.response.lossClaim.v2.{AmendLossClaimHateoasData, LossClaimResponse}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.services._
 import v2.models.errors._

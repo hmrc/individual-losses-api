@@ -18,7 +18,7 @@ package api.connectors.v2
 
 import api.connectors.DownstreamOutcome
 import api.endpoints.amendLossClaim.v2.request.AmendLossClaimRequest
-import api.models.response.lossClaim.v2.LossClaimResponse
+import api.endpoints.common.lossClaim.v2.response.LossClaimResponse
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier

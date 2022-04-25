@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package v3.services
+package api.endpoints.createBFLoss.v3
 
 import api.connectors.v3.MockBFLossConnector
 import api.endpoints.common.bfLoss.v3.domain.TypeOfLoss
+import api.endpoints.createBFLoss.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
 import api.endpoints.createBFLoss.v3.response.CreateBFLossResponse
-import api.endpoints.createBFLoss.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.models.errors._
+import v3.services.CreateBFLossOutcome
 
 import scala.concurrent.Future
 

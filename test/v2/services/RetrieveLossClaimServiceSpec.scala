@@ -18,10 +18,10 @@ package v2.services
 
 import api.connectors.v2.MockLossClaimConnector
 import api.endpoints.common.lossClaim.v2.domain.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.common.lossClaim.v2.response.LossClaimResponse
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.response.lossClaim.v2.LossClaimResponse
 import api.services.ServiceSpec
 import v2.models.requestData.RetrieveLossClaimRequest
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.services
+package api.endpoints.createBFLoss.v3
 
 import api.connectors.v3.BFLossConnector
 import api.endpoints.createBFLoss.v3.request.CreateBFLossRequest
@@ -22,9 +22,10 @@ import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.models.errors._
+import v3.services.CreateBFLossOutcome
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class CreateBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 

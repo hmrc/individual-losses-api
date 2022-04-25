@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.models.response.lossClaim.v2
+package api.endpoints.common.lossClaim.v2.response
 
 import api.endpoints.common.lossClaim.v2.domain.{ TypeOfClaim, TypeOfLoss }
 import api.hateoas.{ HateoasLinks, HateoasLinksFactory }

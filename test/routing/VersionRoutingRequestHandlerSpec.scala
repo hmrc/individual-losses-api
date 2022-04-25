@@ -17,14 +17,14 @@
 package routing
 
 import akka.actor.ActorSystem
-import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
-import com.typesafe.config.{Config, ConfigFactory}
+import api.models.errors.{ InvalidAcceptHeaderError, NotFoundError, UnsupportedVersionError }
+import com.typesafe.config.{ Config, ConfigFactory }
 import config.MockAppConfig
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
+import play.api.http.{ HttpConfiguration, HttpErrorHandler, HttpFilters }
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.routing.Router
@@ -106,8 +106,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   }
 
   "Routing a request with v3" when {
-//    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.3.0+json")
-
     "the v3 endpoint exists" should {
       "use the v3 handler" in {
         implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.3.0+json")
@@ -149,20 +147,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
         requestHandler.routeRequest(buildRequest(s"$path")) shouldBe Some(handler)
       }
     }
-
-//    "if the request ends with a trailing slash" when {
-//      "handler found" should {
-//        "use it" in new Test {
-//          requestHandler.routeRequest(buildRequest(s"$path/")) shouldBe Some(handler)
-//        }
-//      }
-//
-//      "handler not found" should {
-//        "try without the trailing slash" in new Test {
-//          requestHandler.routeRequest(buildRequest(s"$path")) shouldBe Some(handler)
-//        }
-//      }
-//    }
   }
 
   "Routing requests to non-default router with no version" should {
@@ -177,6 +161,21 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
           status(result) shouldBe NOT_ACCEPTABLE
           contentAsJson(result) shouldBe Json.toJson(InvalidAcceptHeaderError)
+      }
+    }
+  }
+
+  "Routing requests with an incorrect URL" should {
+    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.3.0+json")
+    implicit val useConf: Config              = confWithAllEnabled
+
+    "return 404 with a NotFoundError" in new Test {
+      val request: RequestHeader = buildRequest("/missing_resource")
+      inside(requestHandler.routeRequest(request)) {
+        case Some(a: EssentialAction) =>
+          val result = a.apply(request)
+          status(result) shouldBe NOT_FOUND
+          contentAsJson(result) shouldBe Json.toJson(NotFoundError)
       }
     }
   }
@@ -203,7 +202,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     implicit val useConf: Config              = confWithV3Disabled
 
     "the version has a route for the resource" must {
-      "return 404 Not Found" in new Test {
+      "return 404 with an UnsupportedVersionError" in new Test {
         val request: RequestHeader = buildRequest("/resource")
 
         inside(requestHandler.routeRequest(request)) {
