@@ -59,7 +59,7 @@ class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMa
         case Left(InvalidHeader)   => invalidAcceptHeaderError
         case Left(VersionNotFound) => unsupportedVersionAction
 
-        case Right(version) => findRoute(request, version) getOrElse resourceNotFoundAction // unsupportedVersionAction // xxxx
+        case Right(version) => findRoute(request, version) getOrElse resourceNotFoundAction
       }
     )
 
