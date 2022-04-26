@@ -30,11 +30,10 @@ class VersionSpec extends UnitSpec {
       }
 
       "return an error if the Accept header value is invalid" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/XYZ.2.0+json"))) shouldBe Left(InvalidHeader)
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/XYZ.3.0+json"))) shouldBe Left(InvalidHeader)
       }
 
       "return the specified version" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.2.0+json"))) shouldBe Right(Version2)
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))) shouldBe Right(Version3)
       }
     }

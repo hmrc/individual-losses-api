@@ -26,7 +26,6 @@ object Version {
   implicit object VersionWrites extends Writes[Version] {
 
     def writes(version: Version): JsValue = version match {
-      case Version2 => Json.toJson(Version2.name)
       case Version3 => Json.toJson(Version3.name)
     }
   }
@@ -35,7 +34,6 @@ object Version {
 
     override def reads(version: JsValue): JsResult[Version] =
       version.validate[String].flatMap {
-        case Version2.name => JsSuccess(Version2)
         case Version3.name => JsSuccess(Version3)
         case _             => JsError("Unrecognised version")
       }
@@ -52,21 +50,14 @@ sealed trait Version {
   override def toString: String = name
 }
 
-case object Version2 extends Version {
-  val name       = "2.0"
-  val configName = "2"
-}
 case object Version3 extends Version {
   val name       = "3.0"
   val configName = "3"
-
-  override val maybePrevious: Option[Version] = Some(Version2)
 }
 
 object Versions {
 
   private val versionsByName: Map[String, Version] = Map(
-    Version2.name -> Version2,
     Version3.name -> Version3
   )
 

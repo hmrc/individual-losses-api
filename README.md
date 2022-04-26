@@ -53,7 +53,7 @@ Then go to http://localhost:9680/api-documentation/docs/preview and enter the fu
 appropriate port and version:
 
 ```
-http://localhost:9779/api/conf/2.0/application.raml
+http://localhost:9779/api/conf/3.0/application.raml
 ```
 
 ## Changelog
@@ -67,7 +67,7 @@ You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-chan
 ## API Reference / Documentation
 
 Available on
-the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api/2.0)
+the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api/3.0)
 
 ## License
 
