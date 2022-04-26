@@ -45,11 +45,6 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |    "context":"individuals/losses",
       |    "versions":[
       |      {
-      |        "version":"2.0",
-      |        "status":"RETIRED",
-      |        "endpointsEnabled":true
-      |      },
-      |      {
       |        "version":"3.0",
       |        "status":"ALPHA",
       |        "endpointsEnabled":true
@@ -73,10 +68,9 @@ class DocumentationISpec extends IntegrationBaseSpec {
       val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
       response.status shouldBe Status.NOT_FOUND
     }
-    "return the v2 documentation" in {
+    "return no v2 documentation" in {
       val response: WSResponse = await(buildRequest("/api/conf/2.0/application.raml").get())
-      response.status shouldBe Status.OK
-      response.body[String] should startWith("#%RAML 1.0")
+      response.status shouldBe Status.NOT_FOUND
     }
     "return the v3 documentation" in {
       val response: WSResponse = await(buildRequest("/api/conf/3.0/application.raml").get())

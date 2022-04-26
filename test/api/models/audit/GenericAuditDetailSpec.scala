@@ -27,13 +27,13 @@ class GenericAuditDetailSpec extends UnitSpec {
   val userType: String                     = "Agent"
   val agentReferenceNumber: Option[String] = Some("012345678")
   val correlationId: String                = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val versionNumber: String                = "2.0"
+  val versionNumber: String                = "3.0"
 
   val auditDetailJsonSuccess: JsValue = Json.parse(
     s"""
        |{
        |   "userType":"$userType",
-       |   "versionNumber": "2.0",
+       |   "versionNumber": "3.0",
        |   "agentReferenceNumber":"${agentReferenceNumber.get}",
        |   "taxYear":"$taxYear",
        |   "nino":"$nino",
@@ -59,7 +59,7 @@ class GenericAuditDetailSpec extends UnitSpec {
 
   val auditDetailModelSuccess: GenericAuditDetail = GenericAuditDetail(
     userType = userType,
-    versionNumber = "2.0",
+    versionNumber = "3.0",
     agentReferenceNumber = agentReferenceNumber,
     params = Map("nino" -> nino, "taxYear" -> taxYear),
     request = Some(
@@ -92,7 +92,7 @@ class GenericAuditDetailSpec extends UnitSpec {
        |{
        |   "userType":"$userType",
        |   "agentReferenceNumber":"${agentReferenceNumber.get}",
-       |   "versionNumber": "2.0",
+       |   "versionNumber": "3.0",
        |   "taxYear":"2020-2021",
        |   "nino":"$nino",
        |   "request": {
@@ -114,7 +114,7 @@ class GenericAuditDetailSpec extends UnitSpec {
   val invalidTaxYearAuditDetailModel: GenericAuditDetail = GenericAuditDetail(
     userType = userType,
     agentReferenceNumber = agentReferenceNumber,
-    versionNumber = "2.0",
+    versionNumber = "3.0",
     params = Map("nino" -> nino, "taxYear" -> "2020-2021"),
     request = Some(
       Json.parse(

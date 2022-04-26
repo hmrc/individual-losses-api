@@ -18,7 +18,7 @@ package config
 
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
-import routing.{Version2, Version3}
+import routing.Version3
 import support.UnitSpec
 
 class FeatureSwitchSpec extends UnitSpec {
@@ -27,7 +27,7 @@ class FeatureSwitchSpec extends UnitSpec {
     FeatureSwitch(Some(Configuration(ConfigFactory.parseString(config))))
 
   "version enabled" when {
-    val anyVersion = Version2
+    val anyVersion = Version3
 
     "no config" must {
       val featureSwitch = FeatureSwitch(None)
@@ -47,13 +47,8 @@ class FeatureSwitchSpec extends UnitSpec {
 
     "config set" must {
       val featureSwitch = createFeatureSwitch("""
-          |version-2.enabled = false
           |version-3.enabled = true
         """.stripMargin)
-
-      "return false for disabled versions" in {
-        featureSwitch.isVersionEnabled(Version2) shouldBe false
-      }
 
       "return true for enabled versions" in {
         featureSwitch.isVersionEnabled(Version3) shouldBe true
