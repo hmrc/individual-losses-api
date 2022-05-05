@@ -24,6 +24,7 @@ import play.api.http.Status
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v3.models.errors._
@@ -106,7 +107,10 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
     def request(): WSRequest = {
       setupStubs()
       buildRequest(url)
-        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
     }
 
   }
