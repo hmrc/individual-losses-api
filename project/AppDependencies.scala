@@ -25,7 +25,7 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-backend-play-28" % "5.24.0",
     "org.typelevel"                %% "cats-core"                 % "2.7.0",
     "com.chuusai"                  %% "shapeless"                 % "2.4.0-M1",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.13.1"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.13.2"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
