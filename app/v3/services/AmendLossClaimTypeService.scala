@@ -16,7 +16,7 @@
 
 package v3.services
 
-import api.connectors.v3.LossClaimConnector
+import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier

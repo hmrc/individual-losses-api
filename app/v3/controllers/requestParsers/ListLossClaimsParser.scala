@@ -17,10 +17,10 @@
 package v3.controllers.requestParsers
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.common.lossClaim.v3.domain.{ TypeOfClaim, TypeOfLoss }
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.domain.{DownstreamTaxYear, Nino}
 import v3.controllers.requestParsers.validators.ListLossClaimsValidator
-import v3.models.request.listLossClaims.{ ListLossClaimsRawData, ListLossClaimsRequest }
+import v3.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
 
 import javax.inject.Inject
 

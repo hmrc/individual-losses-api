@@ -16,9 +16,9 @@
 
 package v3.models.response.listLossClaims
 
-import api.endpoints.common.lossClaim.v3.domain.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{ GET, POST, PUT }
+import api.models.hateoas.Method.{GET, POST, PUT}
 import com.typesafe.config.ConfigFactory
 import config.MockAppConfig
 import play.api.Configuration

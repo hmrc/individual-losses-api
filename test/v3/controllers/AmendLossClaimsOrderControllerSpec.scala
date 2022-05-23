@@ -17,7 +17,7 @@
 package v3.controllers
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
+import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}

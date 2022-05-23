@@ -16,7 +16,7 @@
 
 package v3.models.request.amendLossClaimType
 
-import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
+import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import play.api.libs.json.{Json, OWrites, Reads}
 
 case class AmendLossClaimTypeRequestBody(typeOfClaim: TypeOfClaim)

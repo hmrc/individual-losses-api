@@ -16,7 +16,7 @@
 
 package v3.endpoints
 
-import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
+import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.domain.DownstreamTaxYear
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping

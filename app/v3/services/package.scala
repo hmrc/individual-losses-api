@@ -16,16 +16,16 @@
 
 package v3
 
-import api.endpoints.amendBFLoss.v3.response.AmendBFLossResponse
-import api.endpoints.createBFLoss.v3.response.CreateBFLossResponse
+import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
+import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
+import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
+import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
-import v3.models.response.createLossClaim.CreateLossClaimResponse
-import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
-import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 package object services {

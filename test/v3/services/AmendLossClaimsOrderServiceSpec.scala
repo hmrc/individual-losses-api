@@ -16,8 +16,8 @@
 
 package v3.services
 
-import api.connectors.v3.MockLossClaimConnector
-import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim
+import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
+import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper

@@ -16,7 +16,7 @@
 
 package v3.services
 
-import api.connectors.v3.MockLossClaimConnector
+import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper

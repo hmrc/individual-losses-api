@@ -1,14 +1,14 @@
 # Brought-forward losses
 
-POST       /:nino/brought-forward-losses                                api.endpoints.createBFLoss.v3.CreateBFLossController.create(nino: String)
-DELETE     /:nino/brought-forward-losses/:lossId                        v3.controllers.DeleteBFLossController.delete(nino: String, lossId: String)
-POST       /:nino/brought-forward-losses/:lossId/change-loss-amount     api.endpoints.amendBFLoss.v3.AmendBFLossController.amend(nino: String, lossId: String)
-GET        /:nino/brought-forward-losses/:lossId                        v3.controllers.RetrieveBFLossController.retrieve(nino: String, lossId: String)
-GET        /:nino/brought-forward-losses                                v3.controllers.ListBFLossesController.list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String])
+POST       /:nino/brought-forward-losses                                api.endpoints.bfLoss.create.v3.CreateBFLossController.create(nino: String)
+DELETE     /:nino/brought-forward-losses/:lossId                        api.endpoints.bfLoss.delete.v3.DeleteBFLossController.delete(nino: String, lossId: String)
+POST       /:nino/brought-forward-losses/:lossId/change-loss-amount     api.endpoints.bfLoss.amend.v3.AmendBFLossController.amend(nino: String, lossId: String)
+GET        /:nino/brought-forward-losses/:lossId                        api.endpoints.bfLoss.retrieve.v3.RetrieveBFLossController.retrieve(nino: String, lossId: String)
+GET        /:nino/brought-forward-losses                                api.endpoints.bfLoss.list.v3.ListBFLossesController.list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String])
 
 # Loss Claims
 
-POST       /:nino/loss-claims                                           v3.controllers.CreateLossClaimController.create(nino: String)
+POST       /:nino/loss-claims                                           api.endpoints.lossClaim.create.v3.CreateLossClaimController.create(nino: String)
 DELETE     /:nino/loss-claims/:claimId                                  v3.controllers.DeleteLossClaimController.delete(nino: String, claimId: String)
 GET        /:nino/loss-claims/:claimId                                  v3.controllers.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
 POST       /:nino/loss-claims/:claimId/change-type-of-claim             v3.controllers.AmendLossClaimTypeController.amend(nino: String, claimId: String)
