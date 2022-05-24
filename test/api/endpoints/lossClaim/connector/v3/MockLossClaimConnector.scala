@@ -17,19 +17,19 @@
 package api.endpoints.lossClaim.connector.v3
 
 import api.connectors.DownstreamOutcome
+import api.endpoints.lossClaim.amendOrder.v3.request.AmendLossClaimsOrderRequest
+import api.endpoints.lossClaim.amendType.v3.request.AmendLossClaimTypeRequest
+import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
+import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
+import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
+import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
+import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
+import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
-import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
-import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
-import v3.models.request.listLossClaims.ListLossClaimsRequest
-import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
-import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
-import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
-import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
