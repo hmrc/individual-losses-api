@@ -21,7 +21,7 @@ import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.models.errors._
 import api.services.DownstreamServiceSupport
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.services.RetrieveBFLossOutcome
+import api.services.v3.Outcomes.RetrieveBFLossOutcome
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }

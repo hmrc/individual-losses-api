@@ -17,17 +17,16 @@
 package api.endpoints.lossClaim.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.delete.v3.request.{ DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser }
-import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.endpoints.lossClaim.delete.v3.request.{DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.services.MockAuditService
 import api.endpoints.lossClaim.delete.v3
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

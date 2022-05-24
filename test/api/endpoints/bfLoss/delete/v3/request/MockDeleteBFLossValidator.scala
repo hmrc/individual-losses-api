@@ -26,7 +26,7 @@ class MockDeleteBFLossValidator extends MockFactory {
 
   object MockValidator {
 
-    def validate(data: DeleteBFLossRawData): CallHandler1[DeleteBFLossRawData, List[MtdError]] = {
+    def validate(data: DeleteBFLossRawData): CallHandler1[DeleteBFLossRawData, Seq[MtdError]] = {
       (mockValidator
         .validate(_: DeleteBFLossRawData))
         .expects(data)

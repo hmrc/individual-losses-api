@@ -19,10 +19,10 @@ package api.endpoints.lossClaim.create.v3
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.models.errors._
+import api.models.errors.v3.{ RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid }
 import api.services.DownstreamServiceSupport
+import api.services.v3.Outcomes.CreateLossClaimOutcome
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors._
-import v3.services.CreateLossClaimOutcome
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }

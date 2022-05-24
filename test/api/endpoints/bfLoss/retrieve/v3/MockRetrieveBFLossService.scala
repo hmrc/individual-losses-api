@@ -17,10 +17,10 @@
 package api.endpoints.bfLoss.retrieve.v3
 
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
+import api.services.v3.Outcomes.RetrieveBFLossOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.services.RetrieveBFLossOutcome
 
 import scala.concurrent.{ ExecutionContext, Future }
 

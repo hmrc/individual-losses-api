@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.amend.anyVersion.request
 
-import api.models.request.RawData
+import api.models.RawData
 import play.api.mvc.AnyContentAsJson
 
 case class AmendBFLossRawData(nino: String, lossId: String, body: AnyContentAsJson) extends RawData

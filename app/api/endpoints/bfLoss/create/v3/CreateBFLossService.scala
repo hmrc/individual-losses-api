@@ -19,10 +19,10 @@ package api.endpoints.bfLoss.create.v3
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.create.v3.request.CreateBFLossRequest
 import api.models.errors._
+import api.models.errors.v3.RuleDuplicateSubmissionError
 import api.services.DownstreamServiceSupport
+import api.services.v3.Outcomes.CreateBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors._
-import v3.services.CreateBFLossOutcome
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }

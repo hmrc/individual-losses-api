@@ -26,7 +26,7 @@ class MockRetrieveBFLossValidator extends MockFactory {
 
   object MockValidator {
 
-    def validate(data: RetrieveBFLossRawData): CallHandler1[RetrieveBFLossRawData, List[MtdError]] = {
+    def validate(data: RetrieveBFLossRawData): CallHandler1[RetrieveBFLossRawData, Seq[MtdError]] = {
       (mockValidator
         .validate(_: RetrieveBFLossRawData))
         .expects(data)

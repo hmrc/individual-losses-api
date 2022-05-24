@@ -26,7 +26,7 @@ class MockRetrieveLossClaimValidator extends MockFactory {
 
   object MockValidator {
 
-    def validate(data: RetrieveLossClaimRawData): CallHandler1[RetrieveLossClaimRawData, List[MtdError]] = {
+    def validate(data: RetrieveLossClaimRawData): CallHandler1[RetrieveLossClaimRawData, Seq[MtdError]] = {
       (mockValidator
         .validate(_: RetrieveLossClaimRawData))
         .expects(data)

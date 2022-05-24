@@ -17,28 +17,22 @@
 package api.endpoints.lossClaim.amendType.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.amendType.v3.request.{
-  AmendLossClaimTypeRawData,
-  AmendLossClaimTypeRequest,
-  AmendLossClaimTypeRequestBody,
-  MockAmendLossClaimTypeRequestDataParser
-}
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.endpoints.lossClaim.amendType.v3
+import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody, MockAmendLossClaimTypeRequestDataParser}
+import api.endpoints.lossClaim.amendType.v3.response.{AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.hateoas.MockHateoasFactory
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
+import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.services._
-import v3.models.errors._
-import api.endpoints.lossClaim.amendType.v3
-import api.endpoints.lossClaim.amendType.v3.response.{ AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

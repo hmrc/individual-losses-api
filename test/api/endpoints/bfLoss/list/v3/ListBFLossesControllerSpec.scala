@@ -19,8 +19,6 @@ package api.endpoints.bfLoss.list.v3
 import api.controllers.ControllerBaseSpec
 import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, TypeOfLoss}
 import api.endpoints.bfLoss.list.v3.request.{ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser}
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
@@ -31,6 +29,8 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import api.endpoints.bfLoss.list.v3
 import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
+import api.hateoas.MockHateoasFactory
+import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

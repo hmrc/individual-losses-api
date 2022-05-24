@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.services
+package api.services
 
 import api.models.audit.AuditEvent
 import play.api.libs.json.{Json, Writes}

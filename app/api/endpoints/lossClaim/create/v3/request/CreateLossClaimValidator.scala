@@ -17,10 +17,10 @@
 package api.endpoints.lossClaim.create.v3.request
 
 import api.models.errors.MtdError
+import api.models.errors.v3.TaxYearClaimedForFormatError
 import api.validations.v3._
 import api.validations.{JsonValidation, NinoValidation, Validator}
 import config.FixedConfig
-import v3.models.errors.TaxYearClaimedForFormatError
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {
 
@@ -32,27 +32,27 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     otherBodyFieldsValidator
   )
 
-  private def parameterFormatValidation: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: CreateLossClaimRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino)
     )
   }
 
   //  Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
-  private def enumValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+  private def enumValidator: CreateLossClaimRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfClaimLossValidation.validate),
       JsonValidation.validate[String](data.body.json \ "typeOfClaim")(TypeOfClaimValidation.validate)
     )
   }
 
-  private def bodyFormatValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: CreateLossClaimRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[CreateLossClaimRequestBody](data.body.json)
     )
   }
 
-  private def taxYearValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+  private def taxYearValidator: CreateLossClaimRawData => Seq[Seq[MtdError]] = { data =>
     val req = data.body.json.as[CreateLossClaimRequestBody]
     List(
       TaxYearValidation
@@ -63,7 +63,7 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     )
   }
 
-  private def otherBodyFieldsValidator: CreateLossClaimRawData => List[List[MtdError]] = { data =>
+  private def otherBodyFieldsValidator: CreateLossClaimRawData => Seq[Seq[MtdError]] = { data =>
     val req = data.body.json.as[CreateLossClaimRequestBody]
     List(
       MinTaxYearValidation.validate(req.taxYearClaimedFor, minimumTaxYearLossClaim),
@@ -72,5 +72,5 @@ class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with Fi
     )
   }
 
-  override def validate(data: CreateLossClaimRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: CreateLossClaimRawData): Seq[MtdError] = run(validationSet, data)
 }

@@ -17,18 +17,17 @@
 package api.endpoints.bfLoss.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser }
-import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.endpoints.bfLoss.delete.v3
+import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
+import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
 import api.models.outcomes.ResponseWrapper
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.services.MockAuditService
-import v3.models.errors._
-import api.endpoints.bfLoss.delete.v3
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -26,21 +26,21 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
 
   val validationSet = List(parameterFormatValidation, parameterValueValidation, bodyEnumValidator, bodyFormatValidator, bodyFieldValidator)
 
-  private def parameterFormatValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: AmendLossClaimsOrderRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       TaxYearValidation.validate(data.taxYearClaimedFor, TaxYearFormatError)
     )
   }
 
-  private def parameterValueValidation: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+  private def parameterValueValidation: AmendLossClaimsOrderRawData => Seq[Seq[MtdError]] = { data =>
     List(
       MinTaxYearValidation.validate(data.taxYearClaimedFor, minimumTaxYearLossClaim)
     )
   }
 
   //  Validate body fields (e.g. enums and ranges) that would otherwise fail at JsonFormatValidation with a less specific error
-  private def bodyEnumValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+  private def bodyEnumValidator: AmendLossClaimsOrderRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonValidation.validate[String](data.body.json \ "typeOfClaim") { value =>
         TypeOfClaim.parser.lift(value) match {
@@ -51,13 +51,13 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
     )
   }
 
-  private def bodyFormatValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: AmendLossClaimsOrderRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[AmendLossClaimsOrderRequestBody](data.body.json)
     )
   }
 
-  private def bodyFieldValidator: AmendLossClaimsOrderRawData => List[List[MtdError]] = { data =>
+  private def bodyFieldValidator: AmendLossClaimsOrderRawData => Seq[Seq[MtdError]] = { data =>
     val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
 
     val listOfLossClaimsValidator = req.listOfLossClaims.zipWithIndex.flatMap {
@@ -75,5 +75,5 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
     sequenceValidation ++ listOfLossClaimsValidator
   }
 
-  override def validate(data: AmendLossClaimsOrderRawData): List[MtdError] = run(validationSet, data).distinct
+  override def validate(data: AmendLossClaimsOrderRawData): Seq[MtdError] = run(validationSet, data).distinct
 }

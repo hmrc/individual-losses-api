@@ -26,7 +26,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
 
   private val validationSet = List(formatValidation, postFormatValidation)
 
-  private def formatValidation: ListLossClaimsRawData => List[List[MtdError]] =
+  private def formatValidation: ListLossClaimsRawData => Seq[Seq[MtdError]] =
     data =>
       List(
         NinoValidation.validate(data.nino),
@@ -36,7 +36,7 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
         data.typeOfClaim.map(validateClaimType).getOrElse(Nil)
     )
 
-  private def postFormatValidation: ListLossClaimsRawData => List[List[MtdError]] = { data =>
+  private def postFormatValidation: ListLossClaimsRawData => Seq[Seq[MtdError]] = { data =>
     List(
       data.taxYearClaimedFor.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil),
     )
@@ -49,5 +49,5 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
       case _                                  => List(TypeOfClaimFormatError)
     }
 
-  override def validate(data: ListLossClaimsRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: ListLossClaimsRawData): Seq[MtdError] = run(validationSet, data)
 }

@@ -20,7 +20,7 @@ import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.services.ListLossClaimsOutcome
+import api.services.v3.Outcomes.ListLossClaimsOutcome
 
 import scala.concurrent.{ ExecutionContext, Future }
 

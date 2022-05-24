@@ -22,7 +22,7 @@ import api.validations.NoValidationErrors
 
 object TypeOfClaimLossValidation {
 
-  def validate(typeOfLoss: String): List[MtdError] = {
+  def validate(typeOfLoss: String): Seq[MtdError] = {
     if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 

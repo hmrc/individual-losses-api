@@ -22,10 +22,10 @@ import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.domain.Nino
 import api.models.errors._
+import api.models.errors.v3.{ RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid }
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.models.errors._
-import v3.services.CreateLossClaimOutcome
+import api.services.v3.Outcomes.CreateLossClaimOutcome
 
 import scala.concurrent.Future
 

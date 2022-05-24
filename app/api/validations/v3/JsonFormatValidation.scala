@@ -16,22 +16,22 @@
 
 package api.validations.v3
 
-import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
 import play.api.Logger
 import play.api.libs.json._
-import utils.{EmptinessChecker, EmptyPathsResult}
+import utils.{ EmptinessChecker, EmptyPathsResult }
 
 object JsonFormatValidation {
 
   private val logger: Logger = Logger(this.getClass)
 
-  def validate[A: OFormat](data: JsValue): List[MtdError] =
+  def validate[A: OFormat](data: JsValue): Seq[MtdError] =
     validateOrRead(data) match {
       case Left(errors) => errors
       case Right(_)     => Nil
     }
 
-  def validateAndCheckNonEmpty[A: OFormat: EmptinessChecker](data: JsValue): List[MtdError] =
+  def validateAndCheckNonEmpty[A: OFormat: EmptinessChecker](data: JsValue): Seq[MtdError] =
     validateOrRead[A](data) match {
       case Left(schemaErrors) => schemaErrors
       case Right(body) =>
@@ -43,7 +43,7 @@ object JsonFormatValidation {
       case _ => Nil
     }
 
-  def validateOrRead[A: OFormat](data: JsValue): Either[List[MtdError], A] = {
+  def validateOrRead[A: OFormat](data: JsValue): Either[Seq[MtdError], A] = {
     if (data == JsObject.empty) {
       Left(List(RuleIncorrectOrEmptyBodyError))
     } else {
@@ -54,7 +54,7 @@ object JsonFormatValidation {
     }
   }
 
-  private def handleErrors(errors: Seq[(JsPath, Seq[JsonValidationError])]): List[MtdError] = {
+  private def handleErrors(errors: Seq[(JsPath, Seq[JsonValidationError])]): Seq[MtdError] = {
     val failures = errors.map {
       case (path: JsPath, Seq(JsonValidationError(Seq("error.path.missing"))))                              => MissingMandatoryField(path)
       case (path: JsPath, Seq(JsonValidationError(Seq(error: String)))) if error.contains("error.expected") => WrongFieldType(path)

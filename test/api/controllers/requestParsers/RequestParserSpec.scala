@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package v3.controllers.requestParsers
+package api.controllers.requestParsers
 
-import api.controllers.requestParsers.RequestParser
+import api.models.RawData
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.request.RawData
 import api.validations.Validator
 import support.UnitSpec
 

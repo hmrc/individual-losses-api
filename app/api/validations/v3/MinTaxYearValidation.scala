@@ -23,7 +23,7 @@ import api.validations.NoValidationErrors
 object MinTaxYearValidation {
 
   // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, minTaxYear: Int): List[MtdError] = {
+  def validate(taxYear: String, minTaxYear: Int): Seq[MtdError] = {
 
     val downstreamTaxYear = Integer.parseInt(DownstreamTaxYear.fromMtd(taxYear).value)
 

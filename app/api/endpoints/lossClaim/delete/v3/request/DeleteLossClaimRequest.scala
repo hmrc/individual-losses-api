@@ -16,6 +16,9 @@
 
 package api.endpoints.lossClaim.delete.v3.request
 
+import api.models.RawData
 import api.models.domain.Nino
+
+case class DeleteLossClaimRawData(nino: String, claimId: String) extends RawData
 
 case class DeleteLossClaimRequest(nino: Nino, claimId: String)

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.create.v3.request
+package api.models
 
-import api.models.request.RawData
-import play.api.mvc.AnyContentAsJson
-
-case class CreateLossClaimRawData(nino: String, body: AnyContentAsJson) extends RawData
+trait RawData

@@ -30,7 +30,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
   private val availableLossTypeNames =
     Seq(`uk-property-fhl`, `uk-property-non-fhl`, `self-employment`, `foreign-property-fhl-eea`, `foreign-property`).map(_.toString)
 
-  private def formatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
+  private def formatValidation: ListBFLossesRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       data.taxYearBroughtForwardFrom.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil),
@@ -39,12 +39,12 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
     )
   }
 
-  private def postFormatValidation: ListBFLossesRawData => List[List[MtdError]] = { data =>
+  private def postFormatValidation: ListBFLossesRawData => Seq[Seq[MtdError]] = { data =>
     List(
       data.taxYearBroughtForwardFrom.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil),
     )
   }
 
-  override def validate(data: ListBFLossesRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: ListBFLossesRawData): Seq[MtdError] = run(validationSet, data)
 
 }

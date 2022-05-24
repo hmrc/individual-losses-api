@@ -20,11 +20,11 @@ import api.endpoints.lossClaim.amendOrder.v3.request.AmendLossClaimsOrderRequest
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderResponse
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.errors._
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken }
 import api.models.outcomes.ResponseWrapper
 import api.services.DownstreamServiceSupport
+import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors._
-import v3.services.AmendLossClaimsOrderOutcome
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }

@@ -28,25 +28,25 @@ class AmendBFLossValidator extends Validator[AmendBFLossRawData] {
 
   private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyFieldsValidator)
 
-  private def parameterFormatValidation: AmendBFLossRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: AmendBFLossRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       LossIdValidation.validate(data.lossId)
     )
   }
 
-  private def bodyFormatValidator: AmendBFLossRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: AmendBFLossRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[AmendBFLossRequestBody](data.body.json)
     )
   }
 
-  private def bodyFieldsValidator: AmendBFLossRawData => List[List[MtdError]] = { data =>
+  private def bodyFieldsValidator: AmendBFLossRawData => Seq[Seq[MtdError]] = { data =>
     val req = data.body.json.as[AmendBFLossRequestBody]
     List(
       NumberValidation.validate(req.lossAmount, "/lossAmount")
     )
   }
 
-  override def validate(data: AmendBFLossRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: AmendBFLossRawData): Seq[MtdError] = run(validationSet, data)
 }

@@ -20,7 +20,7 @@ import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.services.DeleteLossClaimOutcome
+import api.services.v3.Outcomes.DeleteLossClaimOutcome
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -17,19 +17,19 @@
 package api.validations.v3
 
 import api.models.errors.MtdError
+import api.models.errors.v3.ValueFormatError
 import api.validations.NoValidationErrors
-import v3.models.errors.ValueFormatError
 
 object NumberValidation {
 
-  def validateOptional(field: Option[BigDecimal], path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): List[MtdError] = {
+  def validateOptional(field: Option[BigDecimal], path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): Seq[MtdError] = {
     field match {
       case None        => NoValidationErrors
       case Some(value) => validate(value, path, min, max)
     }
   }
 
-  def validate(field: BigDecimal, path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): List[MtdError] = {
+  def validate(field: BigDecimal, path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): Seq[MtdError] = {
     if (field >= min && field <= max && field.scale <= 2) {
       Nil
     } else {

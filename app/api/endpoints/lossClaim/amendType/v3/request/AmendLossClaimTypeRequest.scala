@@ -16,6 +16,10 @@
 
 package api.endpoints.lossClaim.amendType.v3.request
 
+import api.models.RawData
 import api.models.domain.Nino
+import play.api.mvc.AnyContentAsJson
+
+case class AmendLossClaimTypeRawData(nino: String, claimId: String, body: AnyContentAsJson) extends RawData
 
 case class AmendLossClaimTypeRequest(nino: Nino, claimId: String, amendLossClaimType: AmendLossClaimTypeRequestBody)

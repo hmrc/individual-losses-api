@@ -18,37 +18,37 @@ package api.endpoints.bfLoss.create.v3.request
 
 import api.models.errors._
 import api.validations.v3._
-import api.validations.{JsonValidation, NinoValidation, Validator}
+import api.validations.{ JsonValidation, NinoValidation, Validator }
 import config.FixedConfig
 import utils.CurrentDate
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
 @Singleton
 class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
 
   private val validationSet = List(parameterFormatValidation, typeOfLossValidator, bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
 
-  private def parameterFormatValidation: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: CreateBFLossRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino)
     )
   }
 
   // Validate body fields (e.g. enums) that would otherwise fail at JsonFormatValidation with a less specific error
-  private def typeOfLossValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def typeOfLossValidator: CreateBFLossRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonValidation.validate[String](data.body.json \ "typeOfLoss")(TypeOfBFLossValidation.validate)
     )
   }
 
-  private def bodyFormatValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: CreateBFLossRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[CreateBFLossRequestBody](data.body.json)
     )
   }
 
-  private def taxYearValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def taxYearValidator: CreateBFLossRawData => Seq[Seq[MtdError]] = { data =>
     val req = data.body.json.as[CreateBFLossRequestBody]
     List(
       TaxYearValidation
@@ -59,7 +59,7 @@ class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends
     )
   }
 
-  private def otherBodyFieldsValidator: CreateBFLossRawData => List[List[MtdError]] = { data =>
+  private def otherBodyFieldsValidator: CreateBFLossRawData => Seq[Seq[MtdError]] = { data =>
     val req = data.body.json.as[CreateBFLossRequestBody]
     List(
       MinTaxYearValidation.validate(req.taxYearBroughtForwardFrom, minimumTaxYearBFLoss),
@@ -69,5 +69,5 @@ class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends
     )
   }
 
-  override def validate(data: CreateBFLossRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: CreateBFLossRawData): Seq[MtdError] = run(validationSet, data)
 }

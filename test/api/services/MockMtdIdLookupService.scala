@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package api.mocks.connectors
+package api.services
 
-import api.connectors.{MtdIdLookupConnector, MtdIdLookupOutcome}
+import api.connectors.MtdIdLookupOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-trait MockMtdIdLookupConnector extends MockFactory {
+trait MockMtdIdLookupService extends MockFactory {
 
-  val mockMtdIdLookupConnector: MtdIdLookupConnector = mock[MtdIdLookupConnector]
+  val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
 
-  object MockedMtdIdLookupConnector {
+  object MockMtdIdLookupService {
 
     def lookup(nino: String): CallHandler[Future[MtdIdLookupOutcome]] = {
-      (mockMtdIdLookupConnector
-        .getMtdId(_: String)(_: HeaderCarrier, _: ExecutionContext))
+      (mockMtdIdLookupService
+        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
         .expects(nino, *, *)
     }
   }

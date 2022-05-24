@@ -17,12 +17,12 @@
 package api.validations.v3
 
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.models.errors.{MtdError, TypeOfLossFormatError}
+import api.models.errors.{ MtdError, TypeOfLossFormatError }
 import api.validations.NoValidationErrors
 
 object TypeOfBFLossValidation {
 
-  def validate(typeOfLoss: String): List[MtdError] = {
+  def validate(typeOfLoss: String): Seq[MtdError] = {
     if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 }

@@ -17,10 +17,10 @@
 package api.endpoints.bfLoss.delete.v3
 
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
+import api.services.v3.Outcomes.DeleteBFLossOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.services.DeleteBFLossOutcome
 
 import scala.concurrent.{ ExecutionContext, Future }
 

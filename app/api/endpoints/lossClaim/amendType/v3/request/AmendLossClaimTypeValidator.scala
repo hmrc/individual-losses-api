@@ -24,24 +24,24 @@ class AmendLossClaimTypeValidator extends Validator[AmendLossClaimTypeRawData] {
 
   val validationSet = List(parameterFormatValidation, typeOfClaimValidator, bodyFormatValidator)
 
-  private def parameterFormatValidation: AmendLossClaimTypeRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: AmendLossClaimTypeRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       ClaimIdValidation.validate(data.claimId)
     )
   }
 
-  private def bodyFormatValidator: AmendLossClaimTypeRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: AmendLossClaimTypeRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[AmendLossClaimTypeRequestBody](data.body.json)
     )
   }
 
-  private def typeOfClaimValidator: AmendLossClaimTypeRawData => List[List[MtdError]] = { data =>
+  private def typeOfClaimValidator: AmendLossClaimTypeRawData => Seq[Seq[MtdError]] = { data =>
     List(
       JsonValidation.validate[String](data.body.json \ "typeOfClaim")(TypeOfClaimValidation.validate)
     )
   }
 
-  override def validate(data: AmendLossClaimTypeRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: AmendLossClaimTypeRawData): Seq[MtdError] = run(validationSet, data)
 }

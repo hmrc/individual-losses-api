@@ -23,10 +23,10 @@ import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken }
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.models.errors._
-import v3.services.AmendLossClaimsOrderOutcome
+import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 
 import scala.concurrent.Future
 

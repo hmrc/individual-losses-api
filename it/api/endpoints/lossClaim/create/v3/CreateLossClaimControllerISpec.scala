@@ -17,6 +17,7 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.models.errors._
+import api.models.errors.v3._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -25,7 +26,6 @@ import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
 import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
-import v3.models.errors._
 
 class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 

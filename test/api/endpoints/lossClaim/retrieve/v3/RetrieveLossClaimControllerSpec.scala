@@ -17,21 +17,20 @@
 package api.endpoints.lossClaim.retrieve.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.endpoints.lossClaim.retrieve.v3.request.{ MockRetrieveLossClaimRequestDataParser, RetrieveLossClaimRawData, RetrieveLossClaimRequest }
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.retrieve.v3.request.{MockRetrieveLossClaimRequestDataParser, RetrieveLossClaimRawData, RetrieveLossClaimRequest}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.services.MockAuditService
 import api.endpoints.lossClaim.retrieve.v3
-import api.endpoints.lossClaim.retrieve.v3.response.{ GetLossClaimHateoasData, RetrieveLossClaimResponse }
+import api.endpoints.lossClaim.retrieve.v3.response.{GetLossClaimHateoasData, RetrieveLossClaimResponse}
+import api.hateoas.MockHateoasFactory
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

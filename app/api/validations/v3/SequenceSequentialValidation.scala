@@ -17,21 +17,20 @@
 package api.validations.v3
 
 import api.models.errors.MtdError
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken }
 import api.validations.NoValidationErrors
-import v3.models.errors.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken }
 
 object SequenceSequentialValidation {
 
-  def validate(sequences: Seq[Int]): List[MtdError] = {
-    val sortedList = sequences.sorted.toList
-
-    validateStartsWithOne(sortedList) ++ validateContinuous(sortedList)
+  def validate(sequences: Seq[Int]): Seq[MtdError] = {
+    val sorted = sequences.sorted.toList
+    validateStartsWithOne(sorted) ++ validateContinuous(sorted)
   }
 
-  private def validateStartsWithOne(sortedSequence: Seq[Int]): List[MtdError] =
+  private def validateStartsWithOne(sortedSequence: Seq[Int]): Seq[MtdError] =
     if (sortedSequence.headOption.contains(1)) Nil else List(RuleInvalidSequenceStart)
 
-  private def validateContinuous(sortedSequence: List[Int]): List[MtdError] = {
+  private def validateContinuous(sortedSequence: Seq[Int]): Seq[MtdError] = {
     val noGaps = sortedSequence.sliding(2).forall {
       case a :: b :: Nil => b - a == 1
       case _             => true

@@ -19,12 +19,12 @@ package api.endpoints.bfLoss.create.v3.request
 import api.endpoints.bfLoss.create.v3.request
 import api.mocks.MockCurrentDate
 import api.models.errors._
-import config.{AppConfig, MockAppConfig}
-import play.api.libs.json.{JsValue, Json}
+import api.models.errors.v3.ValueFormatError
+import config.{ AppConfig, MockAppConfig }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import utils.CurrentDate
-import v3.models.errors._
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

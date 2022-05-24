@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package api.mocks.hateoas
+package api.hateoas
 
-import api.hateoas.{HateoasFactory, HateoasLinksFactory, HateoasListLinksFactory}
-import api.models.hateoas.{HateoasData, HateoasWrapper}
+import api.models.hateoas.{ HateoasData, HateoasWrapper }
 import cats.Functor
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory

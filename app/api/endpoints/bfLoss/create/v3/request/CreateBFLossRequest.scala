@@ -16,6 +16,10 @@
 
 package api.endpoints.bfLoss.create.v3.request
 
+import api.models.RawData
 import api.models.domain.Nino
+import play.api.mvc.AnyContentAsJson
+
+case class CreateBFLossRawData(nino: String, body: AnyContentAsJson) extends RawData
 
 case class CreateBFLossRequest(nino: Nino, broughtForwardLoss: CreateBFLossRequestBody)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.mocks.services
+package api.services
 
 import api.models.audit.AuditEvent
 import org.scalamock.handlers.CallHandler
@@ -22,9 +22,8 @@ import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import v3.services.AuditService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockAuditService extends MockFactory {
 

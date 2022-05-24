@@ -24,16 +24,16 @@ trait RegexValidation {
 
   protected val error: MtdError
 
-  def validate(value: String): List[MtdError] =
+  def validate(value: String): Seq[MtdError] =
     RegexValidation.validate(error, value, regexFormat)
 
-  def validate(value: String, path: String): List[MtdError] =
+  def validate(value: String, path: String): Seq[MtdError] =
     RegexValidation.validate(error.copy(paths = Some(Seq(path))), value, regexFormat)
 }
 
 object RegexValidation {
 
-  private def validate(error: => MtdError, value: String, regexFormat: String): List[MtdError] = {
+  private def validate(error: => MtdError, value: String, regexFormat: String): Seq[MtdError] = {
     if (value.matches(regexFormat)) NoValidationErrors else List(error)
   }
 }

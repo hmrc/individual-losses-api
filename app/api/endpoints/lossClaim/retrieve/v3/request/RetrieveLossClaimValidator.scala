@@ -24,12 +24,12 @@ class RetrieveLossClaimValidator extends Validator[RetrieveLossClaimRawData] {
 
   private val validationSet = List(parameterFormatValidation)
 
-  private def parameterFormatValidation: RetrieveLossClaimRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: RetrieveLossClaimRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       ClaimIdValidation.validate(data.claimId)
     )
   }
 
-  override def validate(data: RetrieveLossClaimRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: RetrieveLossClaimRawData): Seq[MtdError] = run(validationSet, data)
 }

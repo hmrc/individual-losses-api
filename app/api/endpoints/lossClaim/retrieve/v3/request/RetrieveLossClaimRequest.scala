@@ -16,6 +16,9 @@
 
 package api.endpoints.lossClaim.retrieve.v3.request
 
+import api.models.RawData
 import api.models.domain.Nino
+
+case class RetrieveLossClaimRawData(nino: String, claimId: String) extends RawData
 
 case class RetrieveLossClaimRequest(nino: Nino, claimId: String)

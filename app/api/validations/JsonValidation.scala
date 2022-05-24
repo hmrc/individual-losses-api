@@ -24,7 +24,7 @@ import play.api.libs.json.{ JsError, JsLookupResult, JsSuccess, Reads }
   */
 object JsonValidation {
 
-  def validate[T: Reads](jsLookupResult: JsLookupResult)(validation: T => List[MtdError]): List[MtdError] = {
+  def validate[T: Reads](jsLookupResult: JsLookupResult)(validation: T => Seq[MtdError]): Seq[MtdError] = {
     jsLookupResult.validate[T] match {
       case JsSuccess(value, _) => validation(value)
       case _: JsError          => Nil

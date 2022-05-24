@@ -16,6 +16,10 @@
 
 package api.endpoints.lossClaim.create.v3.request
 
+import api.models.RawData
 import api.models.domain.Nino
+import play.api.mvc.AnyContentAsJson
+
+case class CreateLossClaimRawData(nino: String, body: AnyContentAsJson) extends RawData
 
 case class CreateLossClaimRequest(nino: Nino, lossClaim: CreateLossClaimRequestBody)

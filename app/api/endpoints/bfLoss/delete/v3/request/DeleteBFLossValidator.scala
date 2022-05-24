@@ -22,14 +22,14 @@ import api.validations.{ NinoValidation, Validator }
 
 class DeleteBFLossValidator extends Validator[DeleteBFLossRawData] {
 
-  private val validationSet = List(parameterFormatValidation)
+  private val validationSet: Seq[DeleteBFLossRawData => Seq[Seq[MtdError]]] = List(parameterFormatValidation)
 
-  private def parameterFormatValidation: DeleteBFLossRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: DeleteBFLossRawData => Seq[Seq[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino),
       LossIdValidation.validate(data.lossId)
     )
   }
 
-  override def validate(data: DeleteBFLossRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: DeleteBFLossRawData): Seq[MtdError] = run(validationSet, data)
 }

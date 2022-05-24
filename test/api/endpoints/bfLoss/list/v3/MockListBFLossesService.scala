@@ -20,7 +20,7 @@ import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.services.ListBFLossesOutcome
+import api.services.v3.Outcomes.ListBFLossesOutcome
 
 import scala.concurrent.{ ExecutionContext, Future }
 

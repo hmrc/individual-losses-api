@@ -20,19 +20,18 @@ import api.controllers.ControllerBaseSpec
 import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser}
 import api.endpoints.bfLoss.create.v3.response.{CreateBFLossHateoasData, CreateBFLossResponse}
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.hateoas.MockHateoasFactory
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
+import api.models.errors.v3.{RuleDuplicateSubmissionError, ValueFormatError}
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.mocks.services.MockAuditService
-import v3.models.errors._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

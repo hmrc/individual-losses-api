@@ -19,13 +19,13 @@ package api.endpoints.bfLoss.amend.v3
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.models.errors._
+import api.models.errors.v3.RuleLossAmountNotChanged
 import api.services.DownstreamServiceSupport
+import api.services.v3.Outcomes.AmendBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.errors._
-import v3.services.AmendBFLossOutcome
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class AmendBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 

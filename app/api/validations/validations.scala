@@ -16,8 +16,10 @@
 
 package api
 
+import api.models.errors.MtdError
+
 package object validations {
 
-  val NoValidationErrors = List()
+  val NoValidationErrors: Seq[MtdError] = Nil
 
 }

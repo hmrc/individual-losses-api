@@ -18,11 +18,11 @@ package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.endpoints.lossClaim.amendOrder.v3.request
 import api.models.errors._
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken, ValueFormatError }
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.libs.json.{ JsArray, JsValue, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v3.models.errors._
 
 class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidators {
 

@@ -22,10 +22,10 @@ import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.domain.Nino
 import api.models.errors._
+import api.models.errors.v3.{ RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid }
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.models.errors._
-import v3.services.AmendLossClaimTypeOutcome
+import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 
 import scala.concurrent.Future
 

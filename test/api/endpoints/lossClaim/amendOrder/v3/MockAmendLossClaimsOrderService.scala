@@ -20,7 +20,7 @@ import api.endpoints.lossClaim.amendOrder.v3.request.AmendLossClaimsOrderRequest
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.services.AmendLossClaimsOrderOutcome
+import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 
 import scala.concurrent.{ ExecutionContext, Future }
 
