@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.delete.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.lossClaim.delete.v3.request
 import api.models.domain.Nino
 
 import javax.inject.Inject
@@ -25,5 +24,5 @@ import javax.inject.Inject
 class DeleteLossClaimParser @Inject()(val validator: DeleteLossClaimValidator) extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
 
   override protected def requestFor(data: DeleteLossClaimRawData): DeleteLossClaimRequest =
-    request.DeleteLossClaimRequest(Nino(data.nino), data.claimId)
+    DeleteLossClaimRequest(Nino(data.nino), data.claimId)
 }

@@ -17,13 +17,12 @@
 package api.endpoints.lossClaim.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.delete.v3
-import api.endpoints.lossClaim.delete.v3.request.{DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser}
+import api.endpoints.lossClaim.delete.v3.request.{ DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser }
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +43,7 @@ class DeleteLossClaimControllerSpec
   val claimId: String       = "AAZZ1234567890a"
 
   val rawData: DeleteLossClaimRawData = DeleteLossClaimRawData(nino, claimId)
-  val request: DeleteLossClaimRequest = v3.request.DeleteLossClaimRequest(Nino(nino), claimId)
+  val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
 
   def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
     AuditEvent(

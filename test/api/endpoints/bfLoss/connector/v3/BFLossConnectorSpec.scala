@@ -16,21 +16,21 @@
 
 package api.endpoints.bfLoss.connector.v3
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.connectors.{ ConnectorSpec, DownstreamOutcome }
 import api.endpoints.bfLoss.amend.anyVersion.request.AmendBFLossRequestBody
-import api.endpoints.bfLoss.amend.v3.request
+import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
-import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
+import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
-import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, TypeOfLoss}
-import api.endpoints.bfLoss.list.v3
+import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
+import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
+import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
-import api.endpoints.bfLoss.{delete, retrieve}
 import api.mocks.MockHttpClient
 import api.models.ResponseWrapper
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
@@ -211,13 +211,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     }
 
     def amendBFLossResult(connector: BFLossConnector): DownstreamOutcome[AmendBFLossResponse] =
-      await(
-        connector.amendBFLoss(
-          request.AmendBFLossRequest(
-            nino = Nino(nino),
-            lossId = lossId,
-            amendBFLoss
-          )))
+      await(connector.amendBFLoss(AmendBFLossRequest(nino = Nino(nino), lossId = lossId, amendBFLoss)))
   }
 
   "delete BFLoss" when {
@@ -275,11 +269,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
     def deleteBFLossResult(connector: BFLossConnector): DownstreamOutcome[Unit] =
       await(
-        connector.deleteBFLoss(
-          delete.v3.request.DeleteBFLossRequest(
-            nino = Nino(nino),
-            lossId = lossId
-          )))
+        connector.deleteBFLoss(DeleteBFLossRequest(nino = Nino(nino), lossId = lossId))
+      )
   }
 
   "retrieveBFLoss" should {
@@ -292,16 +283,10 @@ class BFLossConnectorSpec extends ConnectorSpec {
       lastModified = "dateString"
     )
 
-    def retrieveBFLossResult(connector: BFLossConnector): DownstreamOutcome[RetrieveBFLossResponse] = {
+    def retrieveBFLossResult(connector: BFLossConnector): DownstreamOutcome[RetrieveBFLossResponse] =
       await(
-        connector.retrieveBFLoss(
-          retrieve.v3.request.RetrieveBFLossRequest(
-            nino = Nino(nino),
-            lossId = lossId
-          )
-        )
+        connector.retrieveBFLoss(RetrieveBFLossRequest(nino = Nino(nino), lossId = lossId))
       )
-    }
 
     "return a successful response and correlationId" when {
 
@@ -371,7 +356,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
       def request(taxYear: Option[DownstreamTaxYear] = None,
                   incomeSourceType: Option[IncomeSourceType] = None,
                   businessId: Option[String] = None): ListBFLossesRequest =
-        v3.request.ListBFLossesRequest(
+        ListBFLossesRequest(
           nino = Nino(nino),
           taxYearBroughtForwardFrom = taxYear,
           incomeSourceType = incomeSourceType,

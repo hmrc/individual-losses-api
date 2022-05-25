@@ -16,22 +16,22 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossParser, DeleteBFLossRawData}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossParser, DeleteBFLossRawData }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors._
 import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,

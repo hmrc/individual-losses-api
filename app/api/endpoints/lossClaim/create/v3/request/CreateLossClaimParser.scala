@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.create.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.lossClaim.create.v3.request
 import api.models.domain.Nino
 
 import javax.inject.Inject
@@ -25,5 +24,5 @@ import javax.inject.Inject
 class CreateLossClaimParser @Inject()(val validator: CreateLossClaimValidator) extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
 
   override protected def requestFor(data: CreateLossClaimRawData): CreateLossClaimRequest =
-    request.CreateLossClaimRequest(Nino(data.nino), data.body.json.as[CreateLossClaimRequestBody])
+    CreateLossClaimRequest(Nino(data.nino), data.body.json.as[CreateLossClaimRequestBody])
 }

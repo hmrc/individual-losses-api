@@ -18,7 +18,6 @@ package api.endpoints.bfLoss.retrieve.v3
 
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.endpoints.bfLoss.retrieve.v3
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.models.ResponseWrapper
@@ -37,7 +36,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
     lazy val service = new RetrieveBFLossService(connector)
   }
 
-  lazy val request: RetrieveBFLossRequest = v3.request.RetrieveBFLossRequest(Nino(nino), lossId)
+  lazy val request: RetrieveBFLossRequest = RetrieveBFLossRequest(Nino(nino), lossId)
 
   "retrieve bf loss" should {
     "return a Right" when {

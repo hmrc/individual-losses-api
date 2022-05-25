@@ -16,8 +16,7 @@
 
 package api.endpoints.bfLoss.amend.v3.request
 
-import api.endpoints.bfLoss.amend.anyVersion.request.{AmendBFLossRawData, AmendBFLossRequestBody}
-import api.endpoints.bfLoss.amend.v3.request
+import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json
@@ -39,7 +38,7 @@ class AmendBFLossParserSpec extends UnitSpec {
     "return an AmendBFLossRequest" when {
       "the validator returns no errors" in new Test {
         MockValidator.validate(data).returns(List())
-        parser.parseRequest(data) shouldBe Right(request.AmendBFLossRequest(Nino(nino), lossId, AmendBFLossRequestBody(lossAmount)))
+        parser.parseRequest(data) shouldBe Right(AmendBFLossRequest(Nino(nino), lossId, AmendBFLossRequestBody(lossAmount)))
       }
     }
     "return a single error" when {

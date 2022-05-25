@@ -16,7 +16,6 @@
 
 package api.endpoints.lossClaim.amendType.v3.request
 
-import api.endpoints.lossClaim.amendType.v3.request
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.domain.Nino
 import api.models.errors._
@@ -31,7 +30,7 @@ class AmendLossClaimTypeParserSpec extends UnitSpec {
   private val lossClaim = TypeOfClaim.`carry-forward`
 
   val data: AmendLossClaimTypeRawData =
-    request.AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
+    AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
 
   trait Test extends MockAmendLossClaimTypeValidator {
     lazy val parser = new AmendLossClaimTypeParser(mockValidator)

@@ -17,22 +17,22 @@
 package api.endpoints.bfLoss.amend.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.amend.anyVersion.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
-import api.endpoints.bfLoss.amend.v3.request.{AmendBFLossRequest, MockAmendBFLossParser}
+import api.endpoints.bfLoss.amend.v3.request.{ AmendBFLossRequest, MockAmendBFLossParser }
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleLossAmountNotChanged, ValueFormatError}
+import api.models.errors.v3.{ RuleLossAmountNotChanged, ValueFormatError }
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -64,7 +64,7 @@ class AmendBFLossControllerSpec
 
   val testHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a", method = GET, rel = "self")
 
-  val bfLossRequest: AmendBFLossRequest = request.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
+  val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
 
   val responseBody: JsValue = Json.parse(
     s"""
@@ -134,7 +134,7 @@ class AmendBFLossControllerSpec
           .returns(Right(bfLossRequest))
 
         MockAmendBFLossService
-          .amend(request.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+          .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
 
         MockHateoasFactory
@@ -190,7 +190,7 @@ class AmendBFLossControllerSpec
               .returns(Right(bfLossRequest))
 
             MockAmendBFLossService
-              .amend(request.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+              .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
               .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
 
             val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))

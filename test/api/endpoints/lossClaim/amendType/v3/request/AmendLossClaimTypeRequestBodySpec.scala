@@ -16,10 +16,9 @@
 
 package api.endpoints.lossClaim.amendType.v3.request
 
-import api.endpoints.lossClaim.amendType.v3.request
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 
 class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
@@ -71,7 +70,7 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
 
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._1}" in {
-          mtdJson(test._1).as[AmendLossClaimTypeRequestBody] shouldBe request.AmendLossClaimTypeRequestBody(test._2)
+          mtdJson(test._1).as[AmendLossClaimTypeRequestBody] shouldBe AmendLossClaimTypeRequestBody(test._2)
       })
     }
   }

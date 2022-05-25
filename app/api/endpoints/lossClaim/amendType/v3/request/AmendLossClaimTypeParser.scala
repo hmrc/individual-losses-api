@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.amendType.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.lossClaim.amendType.v3.request
 import api.models.domain.Nino
 
 import javax.inject.Inject
@@ -26,5 +25,5 @@ class AmendLossClaimTypeParser @Inject()(val validator: AmendLossClaimTypeValida
     extends RequestParser[AmendLossClaimTypeRawData, AmendLossClaimTypeRequest] {
 
   override protected def requestFor(data: AmendLossClaimTypeRawData): AmendLossClaimTypeRequest =
-    request.AmendLossClaimTypeRequest(Nino(data.nino), data.claimId, data.body.json.as[AmendLossClaimTypeRequestBody])
+    AmendLossClaimTypeRequest(Nino(data.nino), data.claimId, data.body.json.as[AmendLossClaimTypeRequestBody])
 }

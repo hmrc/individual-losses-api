@@ -17,9 +17,9 @@
 package api.endpoints.lossClaim.retrieve.v3.connector
 
 import api.connectors.DownstreamOutcome
-import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.retrieve.v3.request
+import api.endpoints.lossClaim.connector.v3.{ LossClaimConnector, LossClaimConnectorSpec }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import api.models.ResponseWrapper
 import api.models.domain.Nino
@@ -49,12 +49,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     def retrieveLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[RetrieveLossClaimResponse] = {
       await(
-        connector.retrieveLossClaim(
-          request.RetrieveLossClaimRequest(
-            nino = Nino(nino),
-            claimId = claimId
-          )
-        )
+        connector.retrieveLossClaim(RetrieveLossClaimRequest(nino = Nino(nino), claimId = claimId))
       )
     }
 

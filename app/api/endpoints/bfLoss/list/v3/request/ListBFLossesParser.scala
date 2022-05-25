@@ -18,8 +18,7 @@ package api.endpoints.bfLoss.list.v3.request
 
 import api.controllers.requestParsers.RequestParser
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.endpoints.bfLoss.list.v3.request
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{ DownstreamTaxYear, Nino }
 
 import javax.inject.Inject
 
@@ -34,7 +33,7 @@ class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends
       incomeSourceType <- typeOfLoss.toIncomeSourceType
     } yield incomeSourceType
 
-    request.ListBFLossesRequest(
+    ListBFLossesRequest(
       nino = Nino(data.nino),
       taxYearBroughtForwardFrom = taxYear.map(DownstreamTaxYear.fromMtd),
       incomeSourceType = BFIncomeSourceType,

@@ -17,8 +17,7 @@
 package api.endpoints.bfLoss.amend.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.bfLoss.amend.anyVersion.request.{AmendBFLossRawData, AmendBFLossRequestBody}
-import api.endpoints.bfLoss.amend.v3.request
+import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.models.domain.Nino
 
 import javax.inject.Inject
@@ -26,5 +25,5 @@ import javax.inject.Inject
 class AmendBFLossParser @Inject()(val validator: AmendBFLossValidator) extends RequestParser[AmendBFLossRawData, AmendBFLossRequest] {
 
   override protected def requestFor(data: AmendBFLossRawData): AmendBFLossRequest =
-    request.AmendBFLossRequest(Nino(data.nino), data.lossId, data.body.json.as[AmendBFLossRequestBody])
+    AmendBFLossRequest(Nino(data.nino), data.lossId, data.body.json.as[AmendBFLossRequestBody])
 }

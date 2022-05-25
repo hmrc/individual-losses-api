@@ -17,8 +17,7 @@
 package api.endpoints.bfLoss.list.v3.request
 
 import api.endpoints.bfLoss.domain.v3.IncomeSourceType
-import api.endpoints.bfLoss.list.v3.request
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
 import support.UnitSpec
 
@@ -50,7 +49,7 @@ class ListBFLossesParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData) shouldBe
           Right(
-            request.ListBFLossesRequest(
+            ListBFLossesRequest(
               nino = Nino(nino),
               taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`04`),
@@ -74,10 +73,10 @@ class ListBFLossesParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData) shouldBe
           Right(
-            request.ListBFLossesRequest(nino = Nino(nino),
-                                        taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
-                                        incomeSourceType = Some(IncomeSourceType.`02`),
-                                        businessId = Some(businessId))
+            ListBFLossesRequest(nino = Nino(nino),
+                                taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
+                                incomeSourceType = Some(IncomeSourceType.`02`),
+                                businessId = Some(businessId))
           )
       }
 
@@ -90,7 +89,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           .returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(request.ListBFLossesRequest(Nino(nino), None, None, None))
+          Right(ListBFLossesRequest(Nino(nino), None, None, None))
       }
     }
 

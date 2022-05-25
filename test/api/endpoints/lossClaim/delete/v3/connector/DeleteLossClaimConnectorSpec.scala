@@ -17,8 +17,8 @@
 package api.endpoints.lossClaim.delete.v3.connector
 
 import api.connectors.DownstreamOutcome
-import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
-import api.endpoints.lossClaim.delete.v3.request
+import api.endpoints.lossClaim.connector.v3.{ LossClaimConnector, LossClaimConnectorSpec }
+import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
@@ -84,10 +84,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     def deleteLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[Unit] =
       await(
-        connector.deleteLossClaim(
-          request.DeleteLossClaimRequest(
-            nino = Nino(nino),
-            claimId = claimId
-          )))
+        connector.deleteLossClaim(DeleteLossClaimRequest(nino = Nino(nino), claimId = claimId))
+      )
   }
 }

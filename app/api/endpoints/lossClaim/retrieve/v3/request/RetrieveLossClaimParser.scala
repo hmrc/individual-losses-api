@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.retrieve.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.lossClaim.retrieve.v3.request
 import api.models.domain.Nino
 
 import javax.inject.Inject
@@ -26,5 +25,5 @@ class RetrieveLossClaimParser @Inject()(val validator: RetrieveLossClaimValidato
     extends RequestParser[RetrieveLossClaimRawData, RetrieveLossClaimRequest] {
 
   override protected def requestFor(data: RetrieveLossClaimRawData): RetrieveLossClaimRequest =
-    request.RetrieveLossClaimRequest(Nino(data.nino), data.claimId)
+    RetrieveLossClaimRequest(Nino(data.nino), data.claimId)
 }

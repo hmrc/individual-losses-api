@@ -16,15 +16,14 @@
 
 package api.endpoints.lossClaim.create.v3.request
 
-import api.endpoints.lossClaim.create.v3.request
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 
 class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
 
-  val lossClaimSelfEmployment: CreateLossClaimRequestBody = request.CreateLossClaimRequestBody(
+  val lossClaimSelfEmployment: CreateLossClaimRequestBody = CreateLossClaimRequestBody(
     taxYearClaimedFor = "2019-20",
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
@@ -48,7 +47,7 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimUkPropertyNonFhl: CreateLossClaimRequestBody = request.CreateLossClaimRequestBody(
+  val lossClaimUkPropertyNonFhl: CreateLossClaimRequestBody = CreateLossClaimRequestBody(
     taxYearClaimedFor = "2019-20",
     typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
     typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`,
@@ -73,7 +72,7 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimForeignProperty: CreateLossClaimRequestBody = request.CreateLossClaimRequestBody(
+  val lossClaimForeignProperty: CreateLossClaimRequestBody = CreateLossClaimRequestBody(
     taxYearClaimedFor = "2019-20",
     typeOfLoss = TypeOfLoss.`foreign-property`,
     typeOfClaim = TypeOfClaim.`carry-forward`,

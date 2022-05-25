@@ -17,7 +17,6 @@
 package api.endpoints.bfLoss.retrieve.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.bfLoss.retrieve.v3.request
 import api.models.domain.Nino
 
 import javax.inject.Inject
@@ -25,5 +24,5 @@ import javax.inject.Inject
 class RetrieveBFLossParser @Inject()(val validator: RetrieveBFLossValidator) extends RequestParser[RetrieveBFLossRawData, RetrieveBFLossRequest] {
 
   override protected def requestFor(data: RetrieveBFLossRawData): RetrieveBFLossRequest =
-    request.RetrieveBFLossRequest(Nino(data.nino), data.lossId)
+    RetrieveBFLossRequest(Nino(data.nino), data.lossId)
 }

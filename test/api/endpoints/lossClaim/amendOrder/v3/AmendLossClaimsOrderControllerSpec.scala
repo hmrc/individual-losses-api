@@ -18,20 +18,25 @@ package api.endpoints.lossClaim.amendOrder.v3
 
 import api.controllers.ControllerBaseSpec
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, MockAmendLossClaimsOrderRequestDataParser}
-import api.endpoints.lossClaim.amendOrder.v3.response.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
+import api.endpoints.lossClaim.amendOrder.v3.request.{
+  AmendLossClaimsOrderRawData,
+  AmendLossClaimsOrderRequest,
+  AmendLossClaimsOrderRequestBody,
+  MockAmendLossClaimsOrderRequestDataParser
+}
+import api.endpoints.lossClaim.amendOrder.v3.response.{ AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse }
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
-import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError }
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -57,7 +62,7 @@ class AmendLossClaimsOrderControllerSpec
   val claimsList: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(claim))
 
   val amendLossClaimsOrderRequest: AmendLossClaimsOrderRequest =
-    request.AmendLossClaimsOrderRequest(Nino(nino), DownstreamTaxYear.fromMtd(taxYear), claimsList)
+    AmendLossClaimsOrderRequest(Nino(nino), DownstreamTaxYear.fromMtd(taxYear), claimsList)
   val amendLossClaimsOrderResponse: AmendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
   val testHateoasLink: Link = Link(href = s"/individuals/losses/$nino/loss-claims/order", method = GET, rel = "self")
@@ -197,7 +202,7 @@ class AmendLossClaimsOrderControllerSpec
     s"a ${error.code} error is returned from the parser" in new Test {
 
       MockAmendLossClaimsOrderRequestDataParser
-        .parseRequest(request.AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
+        .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
         .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
       val response: Future[Result] = controller.amendClaimsOrder(nino, taxYear)(fakePostRequest(requestBody))
@@ -215,7 +220,7 @@ class AmendLossClaimsOrderControllerSpec
     s"a ${error.code} error is returned from the service" in new Test {
 
       MockAmendLossClaimsOrderRequestDataParser
-        .parseRequest(request.AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
+        .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
         .returns(Right(amendLossClaimsOrderRequest))
 
       MockAmendLossClaimsOrderService

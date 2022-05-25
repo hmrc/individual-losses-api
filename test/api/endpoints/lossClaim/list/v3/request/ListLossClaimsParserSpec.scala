@@ -16,9 +16,8 @@
 
 package api.endpoints.lossClaim.list.v3.request
 
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.list.v3.request
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
 import support.UnitSpec
 
@@ -63,7 +62,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
         MockValidator.validate(inputData) returns Nil
 
         parser.parseRequest(inputData) shouldBe
-          Right(request.ListLossClaimsRequest(Nino(nino), None, None, None, None))
+          Right(ListLossClaimsRequest(Nino(nino), None, None, None, None))
       }
     }
 

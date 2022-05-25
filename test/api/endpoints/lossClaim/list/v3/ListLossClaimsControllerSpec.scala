@@ -17,18 +17,17 @@
 package api.endpoints.lossClaim.list.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.list.v3
-import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser}
-import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
+import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{ DownstreamTaxYear, Nino }
 import api.models.errors._
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -54,7 +53,7 @@ class ListLossClaimsControllerSpec
   val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
 
   val request: ListLossClaimsRequest =
-    v3.request.ListLossClaimsRequest(Nino(nino), Some(DownstreamTaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+    ListLossClaimsRequest(Nino(nino), Some(DownstreamTaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
   val testHateoasLink: Link       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")

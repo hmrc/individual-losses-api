@@ -17,21 +17,25 @@
 package api.endpoints.lossClaim.amendType.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.amendType.v3
-import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody, MockAmendLossClaimTypeRequestDataParser}
-import api.endpoints.lossClaim.amendType.v3.response.{AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.amendType.v3.request.{
+  AmendLossClaimTypeRawData,
+  AmendLossClaimTypeRequest,
+  AmendLossClaimTypeRequestBody,
+  MockAmendLossClaimTypeRequestDataParser
+}
+import api.endpoints.lossClaim.amendType.v3.response.{ AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import api.models.errors.v3.{ RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid }
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -62,7 +66,7 @@ class AmendLossClaimTypeControllerSpec
       "2018-07-13T12:13:48.763Z"
     )
 
-  val request: AmendLossClaimTypeRequest = v3.request.AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType)
+  val request: AmendLossClaimTypeRequest = AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType)
 
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
@@ -135,7 +139,7 @@ class AmendLossClaimTypeControllerSpec
           .returns(Right(request))
 
         MockAmendLossClaimTypeService
-          .amend(v3.request.AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
+          .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
@@ -167,7 +171,7 @@ class AmendLossClaimTypeControllerSpec
       s"a ${error.code} error is returned from the parser" in new Test {
 
         MockAmendLossClaimTypeRequestDataParser
-          .parseRequest(v3.request.AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
         val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
@@ -195,11 +199,11 @@ class AmendLossClaimTypeControllerSpec
       s"a ${error.code} error is returned from the service" in new Test {
 
         MockAmendLossClaimTypeRequestDataParser
-          .parseRequest(v3.request.AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
           .returns(Right(request))
 
         MockAmendLossClaimTypeService
-          .amend(v3.request.AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
+          .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
           .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
         val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))

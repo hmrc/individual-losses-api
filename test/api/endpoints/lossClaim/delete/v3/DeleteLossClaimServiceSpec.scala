@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.delete.v3
 
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.delete.v3
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.models.ResponseWrapper
 import api.models.domain.Nino
@@ -35,7 +34,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
     lazy val service = new DeleteLossClaimService(connector)
   }
 
-  lazy val request: DeleteLossClaimRequest = v3.request.DeleteLossClaimRequest(Nino(nino), claimId)
+  lazy val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
 
   "Delete Loss Claim" should {
     "return a right" when {

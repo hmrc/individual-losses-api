@@ -17,9 +17,8 @@
 package api.endpoints.lossClaim.list.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.list.v3.request
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.{ DownstreamTaxYear, Nino }
 
 import javax.inject.Inject
 
@@ -28,7 +27,7 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) ext
   override protected def requestFor(data: ListLossClaimsRawData): ListLossClaimsRequest = {
     val taxYear = data.taxYearClaimedFor
 
-    request.ListLossClaimsRequest(
+    ListLossClaimsRequest(
       Nino(data.nino),
       taxYear.map(DownstreamTaxYear.fromMtd),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift),

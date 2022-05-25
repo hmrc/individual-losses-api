@@ -16,12 +16,11 @@
 
 package api.endpoints.bfLoss.create.v3.request
 
-import api.endpoints.bfLoss.create.v3.request
 import api.mocks.MockCurrentDate
 import api.models.errors._
 import api.models.errors.v3.ValueFormatError
-import config.{AppConfig, MockAppConfig}
-import play.api.libs.json.{JsValue, Json}
+import config.{ AppConfig, MockAppConfig }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import utils.CurrentDate
@@ -67,88 +66,88 @@ class CreateBFLossValidatorSpec extends UnitSpec {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson()))) shouldBe Nil
       }
     }
 
     "return IncorrectOrEmptyBodySubmitted error" when {
       "an incorrect or empty body is supplied" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(emptyBody))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(emptyBody))) shouldBe
           List(RuleIncorrectOrEmptyBodyError)
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in new Test {
-        validator.validate(request.CreateBFLossRawData("A12344A", AnyContentAsJson(createRequestBodyJson()))) shouldBe
+        validator.validate(CreateBFLossRawData("A12344A", AnyContentAsJson(createRequestBodyJson()))) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2016")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2016")))) shouldBe
           List(TaxYearFormatError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))))
       }
 
       "a non-numeric tax year is supplied" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "XXXX-YY")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "XXXX-YY")))) shouldBe
           List(TaxYearFormatError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))))
       }
     }
 
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2017-19")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2017-19")))) shouldBe
           List(RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom"))))
       }
     }
 
     "return RuleTaxYearNotSupportedError error" when {
       "an out of range tax year is supplied" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2015-16")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2015-16")))) shouldBe
           List(RuleTaxYearNotSupportedError)
       }
     }
 
     "return RuleTaxYearNotEndedError error" when {
       "an out of range tax year is supplied" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2022-23")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2022-23")))) shouldBe
           List(RuleTaxYearNotEndedError)
       }
     }
 
     "return TypeOfLossValidation error" when {
       "an invalid loss type is submitted" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(typeOfLoss = "invalid")))) shouldBe
           List(TypeOfLossFormatError)
       }
     }
 
     "return ValueFormatError" when {
       "an invalid amount (Too high) is submitted" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100000000000.00))))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100000000000.00))))) shouldBe
           List(ValueFormatError.copy(paths = Some(List("/lossAmount"))))
       }
     }
 
     "return ValueFormatError" when {
       "an invalid amount (Negative) is submitted" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(-100.00))))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(-100.00))))) shouldBe
           List(ValueFormatError.copy(paths = Some(List("/lossAmount"))))
       }
     }
 
     "return ValueFormatError" when {
       "an invalid amount (3 decimal places) is submitted" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100.734))))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(lossAmount = BigDecimal(100.734))))) shouldBe
           List(ValueFormatError.copy(paths = Some(List("/lossAmount"))))
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid business id is provided" in new Test {
-        validator.validate(request.CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
+        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(businessId = "invalid")))) shouldBe
           List(BusinessIdFormatError)
       }
     }
@@ -156,7 +155,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     "return multiple errors" when {
       "request supplied has multiple errors" in new Test {
         validator.validate(
-          request.CreateBFLossRawData(
+          CreateBFLossRawData(
             validNino,
             AnyContentAsJson(
               createRequestBodyJson(typeOfLoss = "self-employment-class4", businessId = "wrong", taxYearBroughtForwardFrom = "2010-11")))) shouldBe

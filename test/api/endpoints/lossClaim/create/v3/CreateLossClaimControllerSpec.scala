@@ -17,20 +17,25 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody, MockCreateLossClaimParser}
-import api.endpoints.lossClaim.create.v3.response.{CreateLossClaimHateoasData, CreateLossClaimResponse}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.create.v3.request.{
+  CreateLossClaimRawData,
+  CreateLossClaimRequest,
+  CreateLossClaimRequestBody,
+  MockCreateLossClaimParser
+}
+import api.endpoints.lossClaim.create.v3.response.{ CreateLossClaimHateoasData, CreateLossClaimResponse }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.errors.v3._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -56,7 +61,7 @@ class CreateLossClaimControllerSpec
 
   val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
-  val lossClaimRequest: CreateLossClaimRequest = request.CreateLossClaimRequest(Nino(nino), lossClaim)
+  val lossClaimRequest: CreateLossClaimRequest = CreateLossClaimRequest(Nino(nino), lossClaim)
 
   val requestBody: JsValue = Json.parse(
     """
@@ -125,7 +130,7 @@ class CreateLossClaimControllerSpec
           .returns(Right(lossClaimRequest))
 
         MockCreateLossClaimService
-          .create(request.CreateLossClaimRequest(Nino(nino), lossClaim))
+          .create(CreateLossClaimRequest(Nino(nino), lossClaim))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
 
         MockHateoasFactory
@@ -148,7 +153,7 @@ class CreateLossClaimControllerSpec
       s"a ${error.code} error is returned from the parser" in new Test {
 
         MockCreateLossClaimRequestDataParser
-          .parseRequest(request.CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
@@ -183,11 +188,11 @@ class CreateLossClaimControllerSpec
       s"a ${error.code} error is returned from the service" in new Test {
 
         MockCreateLossClaimRequestDataParser
-          .parseRequest(request.CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
           .returns(Right(lossClaimRequest))
 
         MockCreateLossClaimService
-          .create(request.CreateLossClaimRequest(Nino(nino), lossClaim))
+          .create(CreateLossClaimRequest(Nino(nino), lossClaim))
           .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))

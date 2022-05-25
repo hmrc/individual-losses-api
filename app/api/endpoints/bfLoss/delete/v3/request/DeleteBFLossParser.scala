@@ -17,7 +17,6 @@
 package api.endpoints.bfLoss.delete.v3.request
 
 import api.controllers.requestParsers.RequestParser
-import api.endpoints.bfLoss.delete.v3.request
 import api.models.domain.Nino
 
 import javax.inject.Inject
@@ -25,5 +24,5 @@ import javax.inject.Inject
 class DeleteBFLossParser @Inject()(val validator: DeleteBFLossValidator) extends RequestParser[DeleteBFLossRawData, DeleteBFLossRequest] {
 
   override protected def requestFor(data: DeleteBFLossRawData): DeleteBFLossRequest =
-    request.DeleteBFLossRequest(Nino(data.nino), data.lossId)
+    DeleteBFLossRequest(Nino(data.nino), data.lossId)
 }

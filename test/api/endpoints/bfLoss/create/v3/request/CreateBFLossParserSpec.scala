@@ -16,7 +16,6 @@
 
 package api.endpoints.bfLoss.create.v3.request
 
-import api.endpoints.bfLoss.create.v3.request
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.models.domain.Nino
 import api.models.errors._
@@ -41,7 +40,7 @@ class CreateBFLossParserSpec extends UnitSpec {
   )
 
   val inputData: CreateBFLossRawData =
-    request.CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
+    CreateBFLossRawData(nino, AnyContentAsJson(requestBodyJson))
 
   trait Test extends MockCreateBFLossValidator {
     lazy val parser = new CreateBFLossParser(mockValidator)
