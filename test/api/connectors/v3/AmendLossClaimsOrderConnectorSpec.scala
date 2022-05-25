@@ -21,8 +21,8 @@ import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
 import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
+import api.models.ResponseWrapper
 import api.models.domain.{DownstreamTaxYear, Nino}
-import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

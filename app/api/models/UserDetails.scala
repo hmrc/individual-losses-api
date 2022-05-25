@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package api.models.outcomes
+package api.models
 
-case class ResponseWrapper[+T](correlationId: String, responseData: T)
+case class UserDetails(mtdId: String, userType: String, agentReferenceNumber: Option[String])

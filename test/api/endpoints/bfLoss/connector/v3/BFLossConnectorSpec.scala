@@ -16,22 +16,22 @@
 
 package api.endpoints.bfLoss.connector.v3
 
-import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.endpoints.bfLoss.amend.anyVersion.request.AmendBFLossRequestBody
 import api.endpoints.bfLoss.amend.v3.request
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
-import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
-import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
+import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, TypeOfLoss}
 import api.endpoints.bfLoss.list.v3
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
-import api.endpoints.bfLoss.{ delete, retrieve }
+import api.endpoints.bfLoss.{delete, retrieve}
 import api.mocks.MockHttpClient
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.ResponseWrapper
+import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.http.HeaderCarrier

@@ -16,7 +16,7 @@
 
 package api.services
 
-import api.models.auth.UserDetails
+import api.models.UserDetails
 import api.models.errors._
 import api.models.outcomes.AuthOutcome
 import config.AppConfig

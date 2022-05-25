@@ -22,13 +22,13 @@ import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRawData, 
 import api.endpoints.lossClaim.amendType.v3.response.{AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse}
 import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.hateoas.MockHateoasFactory
+import api.models.ResponseWrapper
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
-import api.models.outcomes.ResponseWrapper
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}

@@ -23,13 +23,13 @@ import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
-import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import api.endpoints.bfLoss.list.v3
 import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import api.hateoas.MockHateoasFactory
+import api.models.ResponseWrapper
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 
 import scala.concurrent.ExecutionContext.Implicits.global

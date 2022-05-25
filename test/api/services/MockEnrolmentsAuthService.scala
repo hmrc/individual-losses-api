@@ -16,14 +16,14 @@
 
 package api.services
 
-import api.models.auth.UserDetails
+import api.models.UserDetails
 import api.models.outcomes.AuthOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockEnrolmentsAuthService extends MockFactory {
 

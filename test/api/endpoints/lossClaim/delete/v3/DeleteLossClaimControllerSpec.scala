@@ -21,11 +21,11 @@ import api.endpoints.lossClaim.delete.v3.request.{DeleteLossClaimRawData, Delete
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import api.endpoints.lossClaim.delete.v3
+import api.models.ResponseWrapper
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -19,9 +19,9 @@ package api.endpoints.lossClaim.delete.v3.connector
 import api.connectors.DownstreamOutcome
 import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
 import api.endpoints.lossClaim.delete.v3.request
+import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 
 import scala.concurrent.Future
 

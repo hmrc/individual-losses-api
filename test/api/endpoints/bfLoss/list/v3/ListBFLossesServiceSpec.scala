@@ -21,9 +21,9 @@ import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.endpoints.bfLoss.list.v3
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
 import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
+import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 
 import scala.concurrent.Future

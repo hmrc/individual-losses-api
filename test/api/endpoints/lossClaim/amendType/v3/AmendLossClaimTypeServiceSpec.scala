@@ -16,14 +16,14 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
-import api.endpoints.lossClaim.amendType.v3.request.{ AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody }
+import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{ RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid }
-import api.models.outcomes.ResponseWrapper
+import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 

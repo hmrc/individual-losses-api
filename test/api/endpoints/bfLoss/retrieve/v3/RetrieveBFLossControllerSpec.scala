@@ -22,11 +22,11 @@ import api.endpoints.bfLoss.retrieve.v3
 import api.endpoints.bfLoss.retrieve.v3.request.{MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest}
 import api.endpoints.bfLoss.retrieve.v3.response.{GetBFLossHateoasData, RetrieveBFLossResponse}
 import api.hateoas.MockHateoasFactory
+import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
-import api.models.outcomes.ResponseWrapper
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result

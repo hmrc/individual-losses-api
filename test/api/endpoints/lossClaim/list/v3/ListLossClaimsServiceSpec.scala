@@ -17,13 +17,13 @@
 package api.endpoints.lossClaim.list.v3
 
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.endpoints.lossClaim.list.v3
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
+import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 
 import scala.concurrent.Future

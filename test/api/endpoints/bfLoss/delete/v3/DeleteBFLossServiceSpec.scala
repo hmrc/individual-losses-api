@@ -19,10 +19,10 @@ package api.endpoints.bfLoss.delete.v3
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.delete.v3
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
+import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
-import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 
 import scala.concurrent.Future

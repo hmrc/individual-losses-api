@@ -17,13 +17,13 @@
 package api.endpoints.lossClaim.list.v3.connector
 
 import api.connectors.DownstreamOutcome
-import api.endpoints.lossClaim.connector.v3.{ LossClaimConnector, LossClaimConnectorSpec }
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.endpoints.lossClaim.list.v3.request
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
+import api.models.ResponseWrapper
+import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 
 import scala.concurrent.Future
 

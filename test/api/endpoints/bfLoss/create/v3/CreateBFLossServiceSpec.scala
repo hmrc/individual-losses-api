@@ -17,13 +17,13 @@
 package api.endpoints.bfLoss.create.v3
 
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
-import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.errors.v3.RuleDuplicateSubmissionError
-import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.CreateBFLossOutcome
 
