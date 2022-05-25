@@ -16,7 +16,7 @@
 
 package api.validations.v3
 
-import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken }
+import api.models.errors.v3.{RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 import support.UnitSpec
 
 class SequenceSequentialValidationSpec extends UnitSpec {

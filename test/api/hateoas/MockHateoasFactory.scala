@@ -16,7 +16,7 @@
 
 package api.hateoas
 
-import api.models.hateoas.{ HateoasData, HateoasWrapper }
+import api.models.hateoas.{HateoasData, HateoasWrapper}
 import cats.Functor
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory

@@ -18,7 +18,7 @@ package api.endpoints.bfLoss.list.v3.request
 
 import api.endpoints.bfLoss.domain.v3.IncomeSourceType
 import api.endpoints.bfLoss.list.v3.request
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{DownstreamTaxYear, Nino}
 import api.models.errors._
 import support.UnitSpec
 

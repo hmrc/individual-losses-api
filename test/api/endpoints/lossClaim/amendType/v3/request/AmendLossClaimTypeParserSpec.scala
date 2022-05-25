@@ -30,7 +30,8 @@ class AmendLossClaimTypeParserSpec extends UnitSpec {
   private val claimId   = "AAZZ1234567890a"
   private val lossClaim = TypeOfClaim.`carry-forward`
 
-  val data: AmendLossClaimTypeRawData = request.AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
+  val data: AmendLossClaimTypeRawData =
+    request.AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(Json.obj("typeOfClaim" -> lossClaim.toString)))
 
   trait Test extends MockAmendLossClaimTypeValidator {
     lazy val parser = new AmendLossClaimTypeParser(mockValidator)

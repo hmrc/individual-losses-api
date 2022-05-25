@@ -20,8 +20,8 @@ import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.models.errors._
 import api.services.DownstreamServiceSupport
-import uk.gov.hmrc.http.HeaderCarrier
 import api.services.v3.Outcomes.ListLossClaimsOutcome
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

@@ -20,11 +20,11 @@ import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{ JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 

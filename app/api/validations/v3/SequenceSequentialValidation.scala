@@ -17,7 +17,7 @@
 package api.validations.v3
 
 import api.models.errors.MtdError
-import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken }
+import api.models.errors.v3.{RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 import api.validations.NoValidationErrors
 
 object SequenceSequentialValidation {

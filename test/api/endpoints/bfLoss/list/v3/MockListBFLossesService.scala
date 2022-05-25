@@ -17,12 +17,12 @@
 package api.endpoints.bfLoss.list.v3
 
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
+import api.services.v3.Outcomes.ListBFLossesOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import api.services.v3.Outcomes.ListBFLossesOutcome
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockListBFLossesService extends MockFactory {
 

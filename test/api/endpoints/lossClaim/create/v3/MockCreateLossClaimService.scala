@@ -17,12 +17,12 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
+import api.services.v3.Outcomes.CreateLossClaimOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import api.services.v3.Outcomes.CreateLossClaimOutcome
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockCreateLossClaimService extends MockFactory {
 

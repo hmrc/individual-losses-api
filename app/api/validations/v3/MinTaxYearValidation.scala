@@ -17,7 +17,7 @@
 package api.validations.v3
 
 import api.models.domain.DownstreamTaxYear
-import api.models.errors.{ MtdError, RuleTaxYearNotSupportedError }
+import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 import api.validations.NoValidationErrors
 
 object MinTaxYearValidation {

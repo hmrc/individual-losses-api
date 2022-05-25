@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.domain.v3
 
-import ReliefClaimed._
+import api.endpoints.lossClaim.domain.v3.ReliefClaimed._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

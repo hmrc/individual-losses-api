@@ -17,10 +17,10 @@
 package api.endpoints.lossClaim.retrieve.v3
 
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
+import api.services.v3.Outcomes.RetrieveLossClaimOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import api.services.v3.Outcomes.RetrieveLossClaimOutcome
 
 import scala.concurrent.{ExecutionContext, Future}
 

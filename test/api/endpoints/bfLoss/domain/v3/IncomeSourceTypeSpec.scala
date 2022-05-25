@@ -16,8 +16,7 @@
 
 package api.endpoints.bfLoss.domain.v3
 
-import api.endpoints.bfLoss.domain.v3.IncomeSourceType.{`01`, `02`, `03`, `04`, `15`}
-import IncomeSourceType._
+import api.endpoints.bfLoss.domain.v3.IncomeSourceType._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

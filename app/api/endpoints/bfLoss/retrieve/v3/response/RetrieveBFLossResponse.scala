@@ -16,10 +16,10 @@
 
 package api.endpoints.bfLoss.retrieve.v3.response
 
-import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, LossType, TypeOfLoss }
-import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
+import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, LossType, TypeOfLoss}
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.domain.DownstreamTaxYear
-import api.models.hateoas.{ HateoasData, Link }
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._

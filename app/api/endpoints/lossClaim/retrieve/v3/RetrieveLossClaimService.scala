@@ -20,11 +20,11 @@ import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.models.errors._
 import api.services.DownstreamServiceSupport
-import uk.gov.hmrc.http.HeaderCarrier
 import api.services.v3.Outcomes.RetrieveLossClaimOutcome
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 

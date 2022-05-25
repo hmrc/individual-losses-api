@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.amendType.v3.request
 
 import api.endpoints.lossClaim.amendType.v3.request
 import api.models.errors._
-import play.api.libs.json.{ JsObject, Json }
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 

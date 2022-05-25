@@ -16,8 +16,7 @@
 
 package api.endpoints.lossClaim.domain.v3
 
-import api.endpoints.lossClaim.domain.v3.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
-import TypeOfLoss._
+import api.endpoints.lossClaim.domain.v3.TypeOfLoss._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

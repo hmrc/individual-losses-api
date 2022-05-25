@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.domain.v3
 
-import api.endpoints.bfLoss.domain.v3.LossType.{ CLASS4, INCOME }
+import api.endpoints.bfLoss.domain.v3.LossType.{CLASS4, INCOME}
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

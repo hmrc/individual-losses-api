@@ -25,7 +25,7 @@ import api.services.v3.Outcomes.CreateBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class CreateBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 

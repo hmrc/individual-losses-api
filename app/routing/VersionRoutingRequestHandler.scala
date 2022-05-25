@@ -16,15 +16,15 @@
 
 package routing
 
-import api.models.errors.{ InvalidAcceptHeaderError, NotFoundError, UnsupportedVersionError }
-import config.{ AppConfig, FeatureSwitch }
-import play.api.http.{ DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters }
+import api.models.errors.{InvalidAcceptHeaderError, NotFoundError, UnsupportedVersionError}
+import config.{AppConfig, FeatureSwitch}
+import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.libs.json.Json
-import play.api.mvc.{ DefaultActionBuilder, Handler, RequestHeader, Results }
+import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
 import play.api.routing.Router
 import play.core.DefaultWebCommands
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMap,

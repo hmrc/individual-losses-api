@@ -16,8 +16,7 @@
 
 package api.endpoints.bfLoss.domain.v3
 
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss.{`foreign-property-fhl-eea`, `foreign-property`, `self-employment-class4`, `self-employment`, `uk-property-fhl`, `uk-property-non-fhl`}
-import TypeOfLoss._
+import api.endpoints.bfLoss.domain.v3.TypeOfLoss._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

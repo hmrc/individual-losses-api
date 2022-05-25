@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.amend.anyVersion.request
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class AmendBFLossRequestBodySpec extends UnitSpec {

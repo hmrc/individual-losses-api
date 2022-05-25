@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.domain.v3
 
-import IncomeSourceType._
+import api.endpoints.lossClaim.domain.v3.IncomeSourceType._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

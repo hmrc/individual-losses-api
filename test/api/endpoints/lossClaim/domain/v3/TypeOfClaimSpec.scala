@@ -16,8 +16,7 @@
 
 package api.endpoints.lossClaim.domain.v3
 
-import api.endpoints.lossClaim.domain.v3.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
-import TypeOfClaim._
+import api.endpoints.lossClaim.domain.v3.TypeOfClaim._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

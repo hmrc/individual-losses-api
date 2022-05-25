@@ -18,11 +18,11 @@ package api.endpoints.bfLoss.create.v3.request
 
 import api.models.errors._
 import api.validations.v3._
-import api.validations.{ JsonValidation, NinoValidation, Validator }
+import api.validations.{JsonValidation, NinoValidation, Validator}
 import config.FixedConfig
 import utils.CurrentDate
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {

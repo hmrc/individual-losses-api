@@ -46,7 +46,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val validationSet = List(levelOneValidations)
 
         val inputData: TestRawData = TestRawData("ABCDEF", "12345")
-        val result: Seq[MtdError] = validator.run(validationSet, inputData)
+        val result: Seq[MtdError]  = validator.run(validationSet, inputData)
         result.isEmpty shouldBe true
         levelOneValidationOne.called shouldBe 1
         levelOneValidationTwo.called shouldBe 1
@@ -71,7 +71,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val validationSet = List(levelOneValidations)
 
         val inputData: TestRawData = TestRawData("ABCDEF", "12345")
-        val result: Seq[MtdError] = validator.run(validationSet, inputData)
+        val result: Seq[MtdError]  = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1
         result.head shouldBe mockError
@@ -106,7 +106,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val validationSet = List(levelOneValidations, levelTwoValidations)
 
         val inputData: TestRawData = TestRawData("ABCDEF", "12345")
-        val result: Seq[MtdError] = validator.run(validationSet, inputData)
+        val result: Seq[MtdError]  = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1
         result.head shouldBe mockError
