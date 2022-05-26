@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers
+package api.controllers
 
 import api.models.RawData
 import api.models.domain.Nino

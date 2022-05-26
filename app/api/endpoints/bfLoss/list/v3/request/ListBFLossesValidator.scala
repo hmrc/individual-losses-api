@@ -18,8 +18,9 @@ package api.endpoints.bfLoss.list.v3.request
 
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss._
 import api.models.errors._
-import api.validations.v3.{BusinessIdValidation, MinTaxYearValidation, TaxYearValidation}
-import api.validations.{NinoValidation, Validator}
+import api.validations.v3.{BusinessIdValidation, TaxYearValidation}
+import api.validations.Validator
+import api.validations.anyVersion.{MinTaxYearValidation, NinoValidation}
 import config.FixedConfig
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {

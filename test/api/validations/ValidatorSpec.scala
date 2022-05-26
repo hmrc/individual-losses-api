@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators
+package api.validations
 
 import api.models.RawData
 import api.models.errors.MtdError
-import api.validations.Validator
 import org.scalamock.scalatest.MockFactory
 import support.UnitSpec
 
@@ -50,7 +49,6 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         result.isEmpty shouldBe true
         levelOneValidationOne.called shouldBe 1
         levelOneValidationTwo.called shouldBe 1
-
       }
     }
 

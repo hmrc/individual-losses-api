@@ -16,24 +16,24 @@
 
 package api.endpoints.lossClaim.amendOrder.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderParser, AmendLossClaimsOrderRawData}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.lossClaim.amendOrder.v3.request.{ AmendLossClaimsOrderParser, AmendLossClaimsOrderRawData }
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderHateoasData
 import api.hateoas.HateoasFactory
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors._
-import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError }
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthService,

@@ -16,19 +16,19 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsParser, ListLossClaimsRawData}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsParser, ListLossClaimsRawData }
 import api.endpoints.lossClaim.list.v3.response.ListLossClaimsHateoasData
 import api.hateoas.HateoasFactory
 import api.models.errors._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,

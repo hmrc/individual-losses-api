@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package api.validations.v3
+package api.validations.anyVersion
 
-import api.models.domain.DownstreamTaxYear
-import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
+import api.models.errors.MtdError
 import api.validations.NoValidationErrors
 
-object MinTaxYearValidation {
+trait RegexValidation {
+  protected val regexFormat: String
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, minTaxYear: Int): Seq[MtdError] = {
+  protected val error: MtdError
 
-    val downstreamTaxYear = Integer.parseInt(DownstreamTaxYear.fromMtd(taxYear).value)
+  def validate(value: String): Seq[MtdError] =
+    RegexValidation.validate(error, value, regexFormat)
 
-    if (downstreamTaxYear >= minTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
+  def validate(value: String, path: String): Seq[MtdError] =
+    RegexValidation.validate(error.copy(paths = Some(Seq(path))), value, regexFormat)
+}
+
+object RegexValidation {
+
+  private def validate(error: => MtdError, value: String, regexFormat: String): Seq[MtdError] = {
+    if (value.matches(regexFormat)) NoValidationErrors else List(error)
   }
 }

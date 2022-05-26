@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package api.validations.v3
+package api.validations.anyVersion
 
 import api.models.errors.MtdError
+import api.models.errors.v3.ValueFormatError
 import api.validations.NoValidationErrors
 
-trait RegexValidation {
-  protected val regexFormat: String
+object NumberValidation {
 
-  protected val error: MtdError
+  def validateOptional(field: Option[BigDecimal], path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): Seq[MtdError] = {
+    field match {
+      case None        => NoValidationErrors
+      case Some(value) => validate(value, path, min, max)
+    }
+  }
 
-  def validate(value: String): Seq[MtdError] =
-    RegexValidation.validate(error, value, regexFormat)
-
-  def validate(value: String, path: String): Seq[MtdError] =
-    RegexValidation.validate(error.copy(paths = Some(Seq(path))), value, regexFormat)
-}
-
-object RegexValidation {
-
-  private def validate(error: => MtdError, value: String, regexFormat: String): Seq[MtdError] = {
-    if (value.matches(regexFormat)) NoValidationErrors else List(error)
+  def validate(field: BigDecimal, path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): Seq[MtdError] = {
+    if (field >= min && field <= max && field.scale <= 2) {
+      Nil
+    } else {
+      List(
+        ValueFormatError.forPathAndRange(path, min.toString, max.toString)
+      )
+    }
   }
 }

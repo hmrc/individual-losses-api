@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.validations.v3
+package api.validations.anyVersion
 
 import api.models.errors.v3.ValueFormatError
 import org.scalacheck.Arbitrary

@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package api.validations
+package api.validations.anyVersion
 
-import api.models.errors.MtdError
-import play.api.libs.json.{JsError, JsLookupResult, JsSuccess, Reads}
+import api.models.domain.DownstreamTaxYear
+import api.models.errors.{ MtdError, RuleTaxYearNotSupportedError }
+import api.validations.NoValidationErrors
 
-/**
-  * Utilities to assist using validations where the value to validate comes from a JSON element
-  */
-object JsonValidation {
+object MinTaxYearValidation {
 
-  def validate[T: Reads](jsLookupResult: JsLookupResult)(validation: T => Seq[MtdError]): Seq[MtdError] = {
-    jsLookupResult.validate[T] match {
-      case JsSuccess(value, _) => validation(value)
-      case _: JsError          => Nil
-    }
+  // @param taxYear In format YYYY-YY
+  def validate(taxYear: String, minTaxYear: Int): Seq[MtdError] = {
+
+    val downstreamTaxYear = Integer.parseInt(DownstreamTaxYear.fromMtd(taxYear).value)
+
+    if (downstreamTaxYear >= minTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
   }
 }

@@ -17,8 +17,9 @@
 package api.endpoints.lossClaim.amendType.v3.request
 
 import api.models.errors.MtdError
-import api.validations.v3.{ClaimIdValidation, JsonFormatValidation, TypeOfClaimValidation}
-import api.validations.{JsonValidation, NinoValidation, Validator}
+import api.validations.v3.{ClaimIdValidation, TypeOfClaimValidation}
+import api.validations.Validator
+import api.validations.anyVersion.{JsonFormatValidation, JsonValidation, NinoValidation}
 
 class AmendLossClaimTypeValidator extends Validator[AmendLossClaimTypeRawData] {
 

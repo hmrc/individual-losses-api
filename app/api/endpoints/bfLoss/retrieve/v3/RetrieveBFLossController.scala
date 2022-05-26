@@ -16,19 +16,19 @@
 
 package api.endpoints.bfLoss.retrieve.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.bfLoss.retrieve.v3.request.{RetrieveBFLossParser, RetrieveBFLossRawData}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.bfLoss.retrieve.v3.request.{ RetrieveBFLossParser, RetrieveBFLossRawData }
 import api.endpoints.bfLoss.retrieve.v3.response.GetBFLossHateoasData
 import api.hateoas.HateoasFactory
 import api.models.errors._
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,

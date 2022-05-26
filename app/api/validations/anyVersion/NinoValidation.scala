@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers
+package api.validations.anyVersion
 
-import api.models.RawData
-import api.models.errors.{BadRequestError, ErrorWrapper}
-import api.validations.Validator
+import api.models.domain.Nino
+import api.models.errors.{ MtdError, NinoFormatError }
+import api.validations.NoValidationErrors
 
-trait RequestParser[Raw <: RawData, Request] {
-  val validator: Validator[Raw]
+object NinoValidation {
 
-  protected def requestFor(data: Raw): Request
+  private val ninoRegex =
+    "^([ACEHJLMOPRSWXY][A-CEGHJ-NPR-TW-Z]|B[A-CEHJ-NPR-TW-Z]|G[ACEGHJ-NPR-TW-Z]|" +
+      "[KT][A-CEGHJ-MPR-TW-Z]|N[A-CEGHJL-NPR-SW-Z]|Z[A-CEGHJ-NPR-TW-Y])[0-9]{6}[A-D ]?$"
 
-  def parseRequest(data: Raw): Either[ErrorWrapper, Request] = {
-    validator.validate(data) match {
-      case Nil        => Right(requestFor(data))
-      case err :: Nil => Left(ErrorWrapper(None, err, None))
-      case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
-    }
+  def validate(nino: String): Seq[MtdError] = {
+    if (Nino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(NinoFormatError)
   }
 }

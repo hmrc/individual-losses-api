@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.amendType.v3.request
+package api.controllers
 
-import api.controllers.RequestParser
-import api.models.domain.Nino
+import api.models.RawData
+import api.models.errors.{ BadRequestError, ErrorWrapper }
+import api.validations.Validator
 
-import javax.inject.Inject
+trait RequestParser[Raw <: RawData, Request] {
+  val validator: Validator[Raw]
 
-class AmendLossClaimTypeParser @Inject()(val validator: AmendLossClaimTypeValidator)
-    extends RequestParser[AmendLossClaimTypeRawData, AmendLossClaimTypeRequest] {
+  protected def requestFor(data: Raw): Request
 
-  override protected def requestFor(data: AmendLossClaimTypeRawData): AmendLossClaimTypeRequest =
-    AmendLossClaimTypeRequest(Nino(data.nino), data.claimId, data.body.json.as[AmendLossClaimTypeRequestBody])
+  def parseRequest(data: Raw): Either[ErrorWrapper, Request] = {
+    validator.validate(data) match {
+      case Nil        => Right(requestFor(data))
+      case err :: Nil => Left(ErrorWrapper(None, err, None))
+      case errs       => Left(ErrorWrapper(None, BadRequestError, Some(errs)))
+    }
+  }
 }

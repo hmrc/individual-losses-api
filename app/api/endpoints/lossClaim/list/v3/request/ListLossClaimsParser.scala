@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.list.v3.request
 
-import api.controllers.requestParsers.RequestParser
+import api.controllers.RequestParser
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.domain.{ DownstreamTaxYear, Nino }
 

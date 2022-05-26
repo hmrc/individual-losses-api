@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package api.validations
+package api.validations.anyVersion
 
-import api.models.domain.Nino
-import api.models.errors.{MtdError, NinoFormatError}
+import api.models.errors.MtdError
+import play.api.libs.json.{ JsError, JsLookupResult, JsSuccess, Reads }
 
-object NinoValidation {
+/**
+  * Utilities to assist using validations where the value to validate comes from a JSON element
+  */
+object JsonValidation {
 
-  private val ninoRegex =
-    "^([ACEHJLMOPRSWXY][A-CEGHJ-NPR-TW-Z]|B[A-CEHJ-NPR-TW-Z]|G[ACEGHJ-NPR-TW-Z]|" +
-      "[KT][A-CEGHJ-MPR-TW-Z]|N[A-CEGHJL-NPR-SW-Z]|Z[A-CEGHJ-NPR-TW-Y])[0-9]{6}[A-D ]?$"
-
-  def validate(nino: String): Seq[MtdError] = {
-    if (Nino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(NinoFormatError)
+  def validate[T: Reads](jsLookupResult: JsLookupResult)(validation: T => Seq[MtdError]): Seq[MtdError] = {
+    jsLookupResult.validate[T] match {
+      case JsSuccess(value, _) => validation(value)
+      case _: JsError          => Nil
+    }
   }
 }

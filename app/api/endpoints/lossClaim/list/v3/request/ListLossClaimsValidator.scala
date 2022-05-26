@@ -18,8 +18,9 @@ package api.endpoints.lossClaim.list.v3.request
 
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.errors._
-import api.validations.v3.{BusinessIdValidation, MinTaxYearValidation, TaxYearValidation, TypeOfClaimLossValidation}
-import api.validations.{NinoValidation, Validator}
+import api.validations.v3.{BusinessIdValidation, TaxYearValidation, TypeOfClaimLossValidation}
+import api.validations.Validator
+import api.validations.anyVersion.{MinTaxYearValidation, NinoValidation}
 import config.FixedConfig
 
 class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with FixedConfig {

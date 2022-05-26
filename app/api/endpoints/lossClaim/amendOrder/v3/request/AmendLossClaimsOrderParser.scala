@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.amendOrder.v3.request
 
-import api.controllers.requestParsers.RequestParser
+import api.controllers.RequestParser
 import api.models.domain.{ DownstreamTaxYear, Nino }
 
 import javax.inject.Inject

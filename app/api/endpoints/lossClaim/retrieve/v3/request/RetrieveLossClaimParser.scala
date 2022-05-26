@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.retrieve.v3.request
 
-import api.controllers.requestParsers.RequestParser
+import api.controllers.RequestParser
 import api.models.domain.Nino
 
 import javax.inject.Inject

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.validations
+package api.validations.anyVersion
 
 import api.models.errors._
 import play.api.libs.json.Json

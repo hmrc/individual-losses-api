@@ -18,8 +18,9 @@ package api.endpoints.bfLoss.amend.v3.request
 
 import api.endpoints.bfLoss.amend.anyVersion.request.{AmendBFLossRawData, AmendBFLossRequestBody}
 import api.models.errors.MtdError
-import api.validations.v3.{JsonFormatValidation, LossIdValidation, NumberValidation}
-import api.validations.{NinoValidation, Validator}
+import api.validations.v3.LossIdValidation
+import api.validations.Validator
+import api.validations.anyVersion.{JsonFormatValidation, NinoValidation, NumberValidation}
 
 import javax.inject.Singleton
 

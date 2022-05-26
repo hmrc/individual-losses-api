@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.list.v3.request
 
-import api.controllers.requestParsers.RequestParser
+import api.controllers.RequestParser
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.models.domain.{ DownstreamTaxYear, Nino }
 

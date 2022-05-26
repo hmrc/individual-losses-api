@@ -18,7 +18,8 @@ package api.endpoints.bfLoss.create.v3.request
 
 import api.models.errors._
 import api.validations.v3._
-import api.validations.{JsonValidation, NinoValidation, Validator}
+import api.validations.Validator
+import api.validations.anyVersion.{JsonFormatValidation, JsonValidation, MinTaxYearValidation, NinoValidation, NumberValidation}
 import config.FixedConfig
 import utils.CurrentDate
 

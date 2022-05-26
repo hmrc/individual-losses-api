@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.create.v3.request
 
-import api.controllers.requestParsers.RequestParser
+import api.controllers.RequestParser
 import api.models.domain.Nino
 
 import javax.inject.Inject

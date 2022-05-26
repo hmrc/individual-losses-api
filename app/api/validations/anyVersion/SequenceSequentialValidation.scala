@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package api.validations.v3
+package api.validations.anyVersion
 
 import api.models.errors.MtdError
-import api.models.errors.v3.{RuleInvalidSequenceStart, RuleSequenceOrderBroken}
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken }
 import api.validations.NoValidationErrors
 
 object SequenceSequentialValidation {
