@@ -17,7 +17,7 @@
 package api.validations.v3
 
 import api.models.domain.DownstreamTaxYear
-import api.models.errors.{ MtdError, RuleTaxYearNotEndedError }
+import api.models.errors.{MtdError, RuleTaxYearNotEndedError}
 import api.validations.NoValidationErrors
 import utils.CurrentDate
 
@@ -27,8 +27,7 @@ import java.time.format.DateTimeFormatter
 object TaxYearNotEndedValidation {
 
   // @param taxYear In format YYYY-YY
-  def validate(taxYear: String)(implicit dateProvider: CurrentDate): List[MtdError] = {
-
+  def validate(taxYear: String)(implicit dateProvider: CurrentDate): Seq[MtdError] = {
     val downstreamTaxYear      = Integer.parseInt(DownstreamTaxYear.fromMtd(taxYear).value)
     val currentDate: LocalDate = dateProvider.getCurrentDate
 
@@ -36,7 +35,6 @@ object TaxYearNotEndedValidation {
   }
 
   private def getCurrentTaxYear(date: LocalDate): Int = {
-
     lazy val taxYearStartDate: LocalDate = LocalDate.parse(
       date.getYear + "-04-06",
       DateTimeFormatter.ofPattern("yyyy-MM-dd")

@@ -23,7 +23,7 @@ object BusinessIdValidation {
 
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
-  def validate(businessId: String): List[MtdError] = {
+  def validate(businessId: String): Seq[MtdError] = {
     if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
   }
 

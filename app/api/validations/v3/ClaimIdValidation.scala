@@ -16,7 +16,8 @@
 
 package api.validations.v3
 
-import api.models.errors.{ ClaimIdFormatError, MtdError }
+import api.models.errors.{ClaimIdFormatError, MtdError}
+import api.validations.anyVersion.RegexValidation
 
 object ClaimIdValidation extends RegexValidation {
   override protected val regexFormat: String = "^[A-Za-z0-9]{15}$"

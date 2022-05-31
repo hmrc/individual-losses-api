@@ -16,7 +16,7 @@
 
 package api.controllers
 
-import api.models.auth.UserDetails
+import api.models.UserDetails
 import api.models.errors._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.Json

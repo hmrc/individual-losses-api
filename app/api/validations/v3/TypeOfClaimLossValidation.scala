@@ -16,13 +16,13 @@
 
 package api.validations.v3
 
-import api.endpoints.common.lossClaim.v3.domain.TypeOfLoss
-import api.models.errors.{ MtdError, TypeOfLossFormatError }
+import api.endpoints.lossClaim.domain.v3.TypeOfLoss
+import api.models.errors.{MtdError, TypeOfLossFormatError}
 import api.validations.NoValidationErrors
 
 object TypeOfClaimLossValidation {
 
-  def validate(typeOfLoss: String): List[MtdError] = {
+  def validate(typeOfLoss: String): Seq[MtdError] = {
     if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
 

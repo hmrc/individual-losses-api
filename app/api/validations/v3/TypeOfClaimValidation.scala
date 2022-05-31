@@ -16,20 +16,20 @@
 
 package api.validations.v3
 
-import api.endpoints.common.lossClaim.v3.domain.TypeOfClaim._
-import api.endpoints.common.lossClaim.v3.domain.TypeOfLoss._
-import api.endpoints.common.lossClaim.v3.domain.{ TypeOfClaim, TypeOfLoss }
-import api.models.errors.{ MtdError, TypeOfClaimFormatError }
+import api.endpoints.lossClaim.domain.v3.TypeOfClaim._
+import api.endpoints.lossClaim.domain.v3.TypeOfLoss._
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.errors.v3.RuleTypeOfClaimInvalid
+import api.models.errors.{MtdError, TypeOfClaimFormatError}
 import api.validations.NoValidationErrors
-import v3.models.errors.RuleTypeOfClaimInvalid
 
 object TypeOfClaimValidation {
 
-  def validate(typeOfClaim: String): List[MtdError] = {
+  def validate(typeOfClaim: String): Seq[MtdError] = {
     if (TypeOfClaim.parser.isDefinedAt(typeOfClaim)) NoValidationErrors else List(TypeOfClaimFormatError)
   }
 
-  def validateTypeOfClaimPermitted(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): List[MtdError] = {
+  def validateTypeOfClaimPermitted(typeOfClaim: TypeOfClaim, typeOfLoss: TypeOfLoss): Seq[MtdError] = {
     val permitted = typeOfLoss match {
       case `self-employment` =>
         typeOfClaim match {

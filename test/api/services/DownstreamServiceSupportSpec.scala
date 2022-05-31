@@ -17,8 +17,8 @@
 package api.services
 
 import api.connectors.DownstreamOutcome
+import api.models.ResponseWrapper
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 import cats.syntax.either._
 import support.UnitSpec
 

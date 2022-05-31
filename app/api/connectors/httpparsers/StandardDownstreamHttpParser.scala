@@ -17,8 +17,8 @@
 package api.connectors.httpparsers
 
 import api.connectors.DownstreamOutcome
+import api.models.ResponseWrapper
 import api.models.errors.{OutboundError, StandardDownstreamError}
-import api.models.outcomes.ResponseWrapper
 import play.api.http.Status._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}

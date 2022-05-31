@@ -17,7 +17,7 @@
 package routing
 
 import com.google.inject.ImplementedBy
-import config.{ AppConfig, FeatureSwitch }
+import config.{AppConfig, FeatureSwitch}
 import play.api.routing.Router
 
 import javax.inject.Inject
