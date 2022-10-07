@@ -32,14 +32,14 @@ object CreateBFLossRequestBody {
         Json.obj(
           "incomeSourceId"            -> loss.businessId,
           "incomeSourceType"          -> loss.typeOfLoss.toIncomeSourceType,
-          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
+          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).year,
           "broughtForwardLossAmount"  -> loss.lossAmount
         )
       case TypeOfLoss.`self-employment` | `self-employment-class4` =>
         Json.obj(
           "incomeSourceId"            -> loss.businessId,
           "lossType"                  -> loss.typeOfLoss.toLossType,
-          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
+          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).year,
           "broughtForwardLossAmount"  -> loss.lossAmount
         )
     }

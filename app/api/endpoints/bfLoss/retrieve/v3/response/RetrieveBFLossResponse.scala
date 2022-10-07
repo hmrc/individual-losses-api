@@ -38,7 +38,7 @@ object RetrieveBFLossResponse extends HateoasLinks {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      (__ \ "taxYear").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
+      (__ \ "taxYear").read[String].map(DownstreamTaxYear(_)).map(_.asMtd) and
       (__ \ "submissionDate").read[String]
   )(RetrieveBFLossResponse.apply _)
 
