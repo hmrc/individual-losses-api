@@ -31,7 +31,7 @@ class DownstreamTaxYearSpec extends UnitSpec {
 
     "converted to an mtd tax year" should {
       "construct a 1-year range from the previous year" in {
-        DownstreamTaxYear("2019").toMtd shouldBe "2018-19"
+        DownstreamTaxYear("2019").asMtd shouldBe "2018-19"
       }
     }
     "generate the most recent tax year" when {
