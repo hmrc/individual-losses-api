@@ -16,6 +16,7 @@
 
 package api.models.domain
 
+import config.FeatureSwitches
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -24,11 +25,30 @@ import java.time.format.DateTimeFormatter
   *
   * @param value the tax year string (where 2018 represents 2017-18)
   */
-case class DownstreamTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-  def toInt: Int                = value.toInt
+final case class DownstreamTaxYear private (private val value: String) {
 
-  def toMtd: String = (value.toInt - 1) + "-" + value.drop(2)
+  override def toString: String = value
+
+  val year: Int     = value.toInt
+  val asMtd: String = (value.toInt - 1) + "-" + value.drop(2)
+
+  /** The tax year in the pre-TYS downstream format, e.g. "2023-24".
+    */
+  val asDownstream: String = value
+
+  /** The tax year in the Tax Year Specific (TYS) downstream format, e.g. "23-24".
+    */
+  val asTysDownstream: String = {
+    val year2 = value.toInt - 2000
+    val year1 = year2 - 1
+    s"$year1-$year2"
+  }
+
+  /** Use this for downstream API endpoints that are known to be TYS.
+    */
+  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean =
+    featureSwitches.isTaxYearSpecificApiEnabled && year >= 2024
+
 }
 
 object DownstreamTaxYear {
@@ -38,6 +58,12 @@ object DownstreamTaxYear {
     */
   def fromMtd(taxYear: String): DownstreamTaxYear =
     DownstreamTaxYear(taxYear.take(2) + taxYear.drop(5))
+
+  def fromDownstream(taxYear: String): DownstreamTaxYear =
+    DownstreamTaxYear(taxYear)
+
+  def fromDownstreamInt(taxYear: Int): DownstreamTaxYear =
+    DownstreamTaxYear(taxYear.toString)
 
   def mostRecentTaxYear(date: LocalDate = LocalDate.now()): DownstreamTaxYear = {
     val limit = LocalDate.parse(s"${date.getYear}-04-05", DateTimeFormatter.ISO_DATE)
