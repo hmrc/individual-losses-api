@@ -16,24 +16,25 @@
 
 package api.endpoints.lossClaim.amendOrder.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.lossClaim.amendOrder.v3.request.{ AmendLossClaimsOrderParser, AmendLossClaimsOrderRawData }
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderParser, AmendLossClaimsOrderRawData}
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderHateoasData
 import api.hateoas.HateoasFactory
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
-import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError }
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utils.IdGenerator
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthService,
@@ -42,7 +43,8 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
                                                amendLossClaimsOrderParser: AmendLossClaimsOrderParser,
                                                hateoasFactory: HateoasFactory,
                                                auditService: AuditService,
-                                               cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                               cc: ControllerComponents,
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
 
@@ -51,6 +53,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
 
   def amendClaimsOrder(nino: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+      implicit val correlationId: String = idGenerator.getCorrelationId
       val rawData = AmendLossClaimsOrderRawData(nino, taxYearClaimedFor, AnyContentAsJson(request.body))
       val result =
         for {

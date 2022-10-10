@@ -34,7 +34,10 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends Downstrea
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendBFLoss(request: AmendBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendBFLossOutcome] = {
+  def amendBFLoss(request: AmendBFLossRequest)(implicit
+                                               hc: HeaderCarrier,
+                                               ec: ExecutionContext,
+                                               correlationId: String): Future[AmendBFLossOutcome] = {
 
     connector.amendBFLoss(request).map {
       mapToVendorDirect("amendBFLoss", errorMap)

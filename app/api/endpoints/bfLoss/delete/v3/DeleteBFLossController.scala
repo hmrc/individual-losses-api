@@ -16,22 +16,23 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossParser, DeleteBFLossRawData }
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossParser, DeleteBFLossRawData}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
 import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utils.IdGenerator
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -39,7 +40,8 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        deleteBFLossService: DeleteBFLossService,
                                        deleteBFLossParser: DeleteBFLossParser,
                                        auditService: AuditService,
-                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                       cc: ControllerComponents,
+                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
 
@@ -48,6 +50,7 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+      implicit val correlationId: String = idGenerator.getCorrelationId
       val rawData = DeleteBFLossRawData(nino, lossId)
       val result =
         for {

@@ -33,7 +33,9 @@ class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends 
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveLossClaimOutcome] = {
+  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                           ec: ExecutionContext,
+                                                           correlationId: String): Future[RetrieveLossClaimOutcome] = {
 
     connector.retrieveLossClaim(request).map {
       mapToVendorDirect("retrieveLossClaim", errorMap)

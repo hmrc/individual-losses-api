@@ -34,7 +34,10 @@ class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendLossClaimType(request: AmendLossClaimTypeRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AmendLossClaimTypeOutcome] = {
+  def amendLossClaimType(request: AmendLossClaimTypeRequest)(implicit
+                                                             hc: HeaderCarrier,
+                                                             ec: ExecutionContext,
+                                                             correlationId: String): Future[AmendLossClaimTypeOutcome] = {
 
     connector.amendLossClaimType(request).map {
       mapToVendorDirect("amendLossClaimType", errorMap)

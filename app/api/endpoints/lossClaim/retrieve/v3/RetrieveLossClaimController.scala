@@ -37,7 +37,9 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
                                             retrieveLossClaimParser: RetrieveLossClaimParser,
                                             hateoasFactory: HateoasFactory,
                                             auditService: AuditService,
-                                            cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                            cc: ControllerComponents)(implicit
+                                                                      ec: ExecutionContext,
+                                                                      correlationId: String)
     extends AuthorisedController(cc)
     with BaseController {
 

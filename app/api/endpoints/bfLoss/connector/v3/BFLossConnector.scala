@@ -37,38 +37,49 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit hc: HeaderCarrier,
-                                                             ec: ExecutionContext): Future[DownstreamOutcome[CreateBFLossResponse]] = {
+  def createBFLoss(createBFLossRequest: CreateBFLossRequest)(implicit
+                                                             hc: HeaderCarrier,
+                                                             ec: ExecutionContext,
+                                                             correlationId: String): Future[DownstreamOutcome[CreateBFLossResponse]] = {
     val nino = createBFLossRequest.nino.nino
 
     post(createBFLossRequest.broughtForwardLoss, IfsUri[CreateBFLossResponse](s"income-tax/brought-forward-losses/$nino"))
   }
 
-  def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit hc: HeaderCarrier,
-                                                          ec: ExecutionContext): Future[DownstreamOutcome[AmendBFLossResponse]] = {
+  def amendBFLoss(amendBFLossRequest: AmendBFLossRequest)(implicit
+                                                          hc: HeaderCarrier,
+                                                          ec: ExecutionContext,
+                                                          correlationId: String): Future[DownstreamOutcome[AmendBFLossResponse]] = {
     val nino   = amendBFLossRequest.nino.nino
     val lossId = amendBFLossRequest.lossId
 
     put(amendBFLossRequest.amendBroughtForwardLoss, IfsUri[AmendBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DownstreamOutcome[Unit]] = {
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit
+                                                 hc: HeaderCarrier,
+                                                 ec: ExecutionContext,
+                                                 correlationId: String): Future[DownstreamOutcome[Unit]] = {
     val nino   = request.nino.nino
     val lossId = request.lossId
 
     delete(DesUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
-  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier,
-                                                     ec: ExecutionContext): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
+  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit
+                                                     hc: HeaderCarrier,
+                                                     ec: ExecutionContext,
+                                                     correlationId: String): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
     val nino   = request.nino.nino
     val lossId = request.lossId
 
     get(IfsUri[RetrieveBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))
   }
 
-  def listBFLosses(request: ListBFLossesRequest)(implicit hc: HeaderCarrier,
-                                                 ec: ExecutionContext): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
+  def listBFLosses(request: ListBFLossesRequest)(implicit
+                                                 hc: HeaderCarrier,
+                                                 ec: ExecutionContext,
+                                                 correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
     val nino = request.nino.nino
     val pathParameters = Map(
       "taxYear"          -> request.taxYearBroughtForwardFrom.map(_.value),
