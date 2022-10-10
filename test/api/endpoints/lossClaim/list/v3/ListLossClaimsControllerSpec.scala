@@ -158,7 +158,7 @@ class ListLossClaimsControllerSpec
       lookupService = mockMtdIdLookupService,
       listLossClaimsService = mockListLossClaimsService,
       listLossClaimsParser = mockListLossClaimsRequestDataParser,
-      mockHateoasFactory,
+      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -166,6 +166,7 @@ class ListLossClaimsControllerSpec
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   "list" should {
