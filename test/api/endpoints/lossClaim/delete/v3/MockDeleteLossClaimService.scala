@@ -32,8 +32,12 @@ trait MockDeleteLossClaimService extends MockFactory {
 
     def delete(requestData: DeleteLossClaimRequest): CallHandler[Future[DeleteLossClaimOutcome]] = {
       (mockDeleteLossClaimService
-        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .deleteLossClaim(_: DeleteLossClaimRequest)(
+          _: HeaderCarrier,
+          _: ExecutionContext,
+          _: String)
+        )
+        .expects(requestData, *, *, *)
     }
   }
 }
