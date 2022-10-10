@@ -34,7 +34,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     "there is no appConfig.apiStatus" should {
       "default apiStatus to ALPHA" in new Test {
         MockAppConfig.apiGatewayContext returns "my/context"
-        MockAppConfig.featureSwitch returns None anyNumberOfTimes ()
+        MockAppConfig.featureSwitches returns None anyNumberOfTimes ()
         MockAppConfig.apiStatus(Version3) returns "" anyNumberOfTimes ()
         MockAppConfig.endpointsEnabled(version = Version3.configName) returns true anyNumberOfTimes ()
         MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes ()
