@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
   *
   * @param value the tax year string (where 2018 represents 2017-18)
   */
-final case class DownstreamTaxYear private (private val value: String) {
+final case class DownstreamTaxYear private(value: String) {
 
   override def toString: String = value
 
