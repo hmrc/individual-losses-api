@@ -38,45 +38,55 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                       ec: ExecutionContext): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
+  def createLossClaim(request: CreateLossClaimRequest)(implicit
+                                                       hc: HeaderCarrier,
+                                                       ec: ExecutionContext,
+                                                       correlationId: String): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
     val nino = request.nino.nino
 
     post(request.lossClaim, IfsUri[CreateLossClaimResponse](s"income-tax/claims-for-relief/$nino"))
   }
 
-  def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
+  def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest)(implicit
+                                                                               hc: HeaderCarrier,
+                                                                               ec: ExecutionContext,
+                                                                               correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
     val nino    = amendLossClaimTypeRequest.nino.nino
     val claimId = amendLossClaimTypeRequest.claimId
 
     put(amendLossClaimTypeRequest.amendLossClaimType, IfsUri[AmendLossClaimTypeResponse](s"income-tax/claims-for-relief/$nino/$claimId"))
   }
 
-  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                           ec: ExecutionContext): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
+  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit
+                                                           hc: HeaderCarrier,
+                                                           ec: ExecutionContext,
+                                                           correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
     val nino    = request.nino.nino
     val claimId = request.claimId
 
     get(IfsUri[RetrieveLossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId"))
   }
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit hc: HeaderCarrier,
-                                                     ec: ExecutionContext): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
+  def listLossClaims(request: ListLossClaimsRequest)(implicit
+                                                     hc: HeaderCarrier,
+                                                     ec: ExecutionContext,
+                                                     correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
     val nino = request.nino.nino
     val pathParameters = Map(
-      "taxYear"          -> request.taxYearClaimedFor.map(_.value),
+      "taxYear"          -> request.taxYearClaimedFor.map(_.toString),
       "incomeSourceId"   -> request.businessId,
       "incomeSourceType" -> request.typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> request.typeOfClaim.map(_.toReliefClaimed.toString)
     ).collect {
       case (key, Some(value)) => key -> value
     }
+
     get(IfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/$nino"), pathParameters.toSeq)
   }
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DownstreamOutcome[Unit]] = {
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                       ec: ExecutionContext,
+                                                       correlationId: String): Future[DownstreamOutcome[Unit]] = {
     val nino    = request.nino.nino
     val claimId = request.claimId
 
@@ -84,7 +94,8 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
   }
 
   def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
-                                                                 ec: ExecutionContext): Future[DownstreamOutcome[Unit]] = {
+                                                                 ec: ExecutionContext,
+                                                                 correlationId: String): Future[DownstreamOutcome[Unit]] = {
     val nino    = request.nino.nino
     val taxYear = request.taxYearClaimedFor
 
