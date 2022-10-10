@@ -24,13 +24,13 @@ import support.UnitSpec
 class FeatureSwitchSpec extends UnitSpec {
 
   private def createFeatureSwitch(config: String) =
-    FeatureSwitches(Some(Configuration(ConfigFactory.parseString(config))))
+    FeatureSwitches(Configuration(ConfigFactory.parseString(config)))
 
   "version enabled" when {
     val anyVersion = Version3
 
     "no config" must {
-      val featureSwitch = FeatureSwitches(None)
+      val featureSwitch = FeatureSwitches(Configuration.empty)
 
       "return false" in {
         featureSwitch.isVersionEnabled(anyVersion) shouldBe false
@@ -76,7 +76,7 @@ class FeatureSwitchSpec extends UnitSpec {
         featureSwitch.isAmendLossClaimsOrderRouteEnabled shouldBe false
       }
       "config is missing" in {
-        val featureSwitch = FeatureSwitches(None)
+        val featureSwitch = FeatureSwitches(Configuration.empty)
         featureSwitch.isAmendLossClaimsOrderRouteEnabled shouldBe false
       }
     }

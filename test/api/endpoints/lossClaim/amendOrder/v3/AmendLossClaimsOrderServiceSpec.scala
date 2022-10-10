@@ -32,8 +32,9 @@ import scala.concurrent.Future
 
 class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
-  val nino: String               = "AA123456A"
-  val taxYear: DownstreamTaxYear = DownstreamTaxYear.fromMtd("2019-20")
+  val nino: String                            = "AA123456A"
+  val taxYear: DownstreamTaxYear              = DownstreamTaxYear.fromMtd("2019-20")
+  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val lossClaimsOrder: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(
     TypeOfClaim.`carry-sideways`,

@@ -30,8 +30,9 @@ import scala.concurrent.Future
 
 class ListBFLossesServiceSpec extends ServiceSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  val nino: String                            = "AA123456A"
+  val lossId: String                          = "AAZZ1234567890a"
+  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockBFLossConnector {
     lazy val service = new ListBFLossesService(connector)
