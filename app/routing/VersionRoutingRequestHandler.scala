@@ -66,9 +66,6 @@ class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMa
     documentHandler orElse apiHandler
   }
 
-  /**
-    * If a route isn't found for this version, fall back to previous available.
-    */
   private def findRoute(request: RequestHeader, version: Version): Option[Handler] = {
     val found =
       if (featureSwitch.isVersionEnabled(version)) {
