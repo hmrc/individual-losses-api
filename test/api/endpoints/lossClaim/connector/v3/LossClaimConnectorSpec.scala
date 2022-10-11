@@ -22,8 +22,8 @@ import config.MockAppConfig
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  val nino: String = "AA123456A"
+  val claimId: String = "AAZZ1234567890ag"
 
   class IfsTest extends MockHttpClient with MockAppConfig {
 
@@ -49,5 +49,19 @@ class LossClaimConnectorSpec extends ConnectorSpec {
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+  }
+
+  class TysIfsTest extends MockHttpClient with MockAppConfig {
+
+    val connector: LossClaimConnector = new LossClaimConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
+
+    MockAppConfig.tysIfsBaseUrl returns baseUrl
+    MockAppConfig.tysIfsToken returns "TYS-IFS-token"
+    MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
+    MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
+
   }
 }

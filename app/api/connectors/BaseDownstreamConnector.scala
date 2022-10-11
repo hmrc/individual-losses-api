@@ -97,7 +97,7 @@ trait BaseDownstreamConnector extends Logging {
   }
 
   private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String =
-    s"${configFor(uri).baseUrl}/${uri.value}}"
+    s"${configFor(uri).baseUrl}/${uri.value}"
 
 
   private def getBackendHeaders[Resp](uri: DownstreamUri[Resp],
