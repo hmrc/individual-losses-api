@@ -71,8 +71,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       val appConfig: AppConfig = mockAppConfig
     }
     MockAppConfig.tysIfsBaseUrl returns baseUrl
-    MockAppConfig.tysIfsToken returns "ifs-token"
-    MockAppConfig.tysIfsEnvironment returns "ifs-environment"
+    MockAppConfig.tysIfsToken returns "TYS-IFS-token"
+    MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
     MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
 
     val qps = Seq("param1" -> "value1")
@@ -264,13 +264,13 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       "post" must {
         "posts with the required ifs headers and returns the result" in new TysIfsTest {
           implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-          val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
+          val requiredTysIfsHeadersPost: Seq[(String, String)] = requiredTysIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
           MockHttpClient
             .post(absoluteUrl,
               config = dummyIfsHeaderCarrierConfig,
               body,
-              requiredHeaders = requiredIfsHeadersPost,
+              requiredHeaders = requiredTysIfsHeadersPost,
               excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
             .returns(Future.successful(outcome))
 
@@ -286,7 +286,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             .get(absoluteUrl,
               config = dummyIfsHeaderCarrierConfig,
               parameters = qps,
-              requiredHeaders = requiredIfsHeaders,
+              requiredHeaders = requiredTysIfsHeaders,
               excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
             .returns(Future.successful(outcome))
 
@@ -301,7 +301,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
           MockHttpClient
             .delete(absoluteUrl,
               config = dummyIfsHeaderCarrierConfig,
-              requiredHeaders = requiredIfsHeaders,
+              requiredHeaders = requiredTysIfsHeaders,
               excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
             .returns(Future.successful(outcome))
 
@@ -312,13 +312,13 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       "put" must {
         "put with the required des headers and return result" in new TysIfsTest {
           implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-          val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
+          val requiredTysIfsHeadersPut: Seq[(String, String)] = requiredTysIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
           MockHttpClient
             .put(absoluteUrl,
               config = dummyIfsHeaderCarrierConfig,
               body,
-              requiredHeaders = requiredIfsHeadersPut,
+              requiredHeaders = requiredTysIfsHeadersPut,
               excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
             .returns(Future.successful(outcome))
 
@@ -340,7 +340,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
                   absoluteUrl,
                   config = dummyIfsHeaderCarrierConfig,
                   body,
-                  requiredHeaders = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json"),
+                  requiredHeaders = requiredTysIfsHeaders ++ Seq("Content-Type" -> "application/json"),
                   excludedHeaders = Seq(userContentType)
                 )
                 .returns(Future.successful(outcome))
