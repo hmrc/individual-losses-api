@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.list.v3.request
 
 import api.controllers.RequestParser
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 
 import javax.inject.Inject
 
@@ -29,7 +29,7 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) ext
 
     ListLossClaimsRequest(
       Nino(data.nino),
-      taxYear.map(DownstreamTaxYear.fromMtd),
+      taxYear.map(TaxYear.fromMtd),
       data.typeOfLoss.flatMap(TypeOfLoss.parser.lift),
       data.businessId,
       data.typeOfClaim.flatMap(TypeOfClaim.parser.lift)

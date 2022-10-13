@@ -25,7 +25,7 @@ import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{TaxYear, Nino}
 import api.models.errors._
 import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
 import api.models.hateoas.Method.GET
@@ -59,7 +59,7 @@ class AmendLossClaimsOrderControllerSpec
   val claimsList: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(claim))
 
   val amendLossClaimsOrderRequest: AmendLossClaimsOrderRequest =
-    AmendLossClaimsOrderRequest(Nino(nino), DownstreamTaxYear.fromMtd(taxYear), claimsList)
+    AmendLossClaimsOrderRequest(Nino(nino), TaxYear.fromMtd(taxYear), claimsList)
   val amendLossClaimsOrderResponse: AmendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
   val testHateoasLink: Link = Link(href = s"/individuals/losses/$nino/loss-claims/order", method = GET, rel = "self")

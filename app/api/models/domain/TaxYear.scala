@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
   *
   * @param value the tax year string (where 2018 represents 2017-18)
   */
-final case class DownstreamTaxYear private(value: String) {
+final case class TaxYear private(value: String) {
 
   override def toString: String = value
 
@@ -51,26 +51,26 @@ final case class DownstreamTaxYear private(value: String) {
 
 }
 
-object DownstreamTaxYear {
+object TaxYear {
 
   /**
     * @param taxYear tax year in MTD format (e.g. 2017-18)
     */
-  def fromMtd(taxYear: String): DownstreamTaxYear =
-    DownstreamTaxYear(taxYear.take(2) + taxYear.drop(5))
+  def fromMtd(taxYear: String): TaxYear =
+    TaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  def fromDownstream(taxYear: String): DownstreamTaxYear =
-    DownstreamTaxYear(taxYear)
+  def fromDownstream(taxYear: String): TaxYear =
+    TaxYear(taxYear)
 
-  def fromDownstreamInt(taxYear: Int): DownstreamTaxYear =
-    DownstreamTaxYear(taxYear.toString)
+  def fromDownstreamInt(taxYear: Int): TaxYear =
+    TaxYear(taxYear.toString)
 
-  def mostRecentTaxYear(date: LocalDate = LocalDate.now()): DownstreamTaxYear = {
+  def mostRecentTaxYear(date: LocalDate = LocalDate.now()): TaxYear = {
     val limit = LocalDate.parse(s"${date.getYear}-04-05", DateTimeFormatter.ISO_DATE)
     if (date.isBefore(limit)) {
-      DownstreamTaxYear(s"${date.getYear - 1}")
+      TaxYear(s"${date.getYear - 1}")
     } else {
-      DownstreamTaxYear(s"${date.getYear}")
+      TaxYear(s"${date.getYear}")
     }
   }
 }

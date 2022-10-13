@@ -23,7 +23,7 @@ import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLosse
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{TaxYear, Nino}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
@@ -53,7 +53,7 @@ class ListBFLossesControllerSpec
   val rawData: ListBFLossesRawData = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId))
 
   val request: ListBFLossesRequest =
-    ListBFLossesRequest(Nino(nino), Some(DownstreamTaxYear("2019")), Some(IncomeSourceType.`02`), Some(businessId))
+    ListBFLossesRequest(Nino(nino), Some(TaxYear("2019")), Some(IncomeSourceType.`02`), Some(businessId))
 
   val listHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
 

@@ -22,7 +22,7 @@ import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
 import api.models.ResponseWrapper
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 import api.models.errors._
 
 import scala.concurrent.Future
@@ -101,7 +101,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           )
           .returns(Future.successful(expected))
 
-        listLossClaimsResult(connector = connector, taxYear = Some(DownstreamTaxYear("2019"))) shouldBe expected
+        listLossClaimsResult(connector = connector, taxYear = Some(TaxYear("2019"))) shouldBe expected
       }
     }
 
@@ -251,7 +251,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
 
         listLossClaimsResult(
           connector = connector,
-          taxYear = Some(DownstreamTaxYear("2019")),
+          taxYear = Some(TaxYear("2019")),
           businessId = Some("testId"),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)
@@ -291,12 +291,12 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
           )
           .returns(Future.successful(expected))
 
-        listLossClaimsResult(connector = connector, Some(DownstreamTaxYear("2019"))) shouldBe expected
+        listLossClaimsResult(connector = connector, Some(TaxYear("2019"))) shouldBe expected
       }
     }
 
     def listLossClaimsResult(connector: LossClaimConnector,
-                             taxYear: Option[DownstreamTaxYear] = None,
+                             taxYear: Option[TaxYear] = None,
                              typeOfLoss: Option[TypeOfLoss] = None,
                              businessId: Option[String] = None,
                              claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]] =

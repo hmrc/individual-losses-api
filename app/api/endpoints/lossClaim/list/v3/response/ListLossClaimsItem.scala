@@ -17,7 +17,7 @@
 package api.endpoints.lossClaim.list.v3.response
 
 import api.endpoints.lossClaim.domain.v3.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
-import api.models.domain.DownstreamTaxYear
+import api.models.domain.TaxYear
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -36,7 +36,7 @@ object ListLossClaimsItem {
     (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
-      (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.asMtd) and
+      (JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) and
       (JsPath \ "claimId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
       (JsPath \ "submissionDate").read[String]

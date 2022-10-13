@@ -18,12 +18,12 @@ package api.endpoints.bfLoss.list.v3.request
 
 import api.endpoints.bfLoss.domain.v3.IncomeSourceType
 import api.models.RawData
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{TaxYear, Nino}
 
 case class ListBFLossesRawData(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String])
     extends RawData
 
 case class ListBFLossesRequest(nino: Nino,
-                               taxYearBroughtForwardFrom: Option[DownstreamTaxYear],
+                               taxYearBroughtForwardFrom: Option[TaxYear],
                                incomeSourceType: Option[IncomeSourceType],
                                businessId: Option[String])

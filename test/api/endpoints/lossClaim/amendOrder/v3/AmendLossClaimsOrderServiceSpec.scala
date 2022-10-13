@@ -22,7 +22,7 @@ import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderRespon
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.ResponseWrapper
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{TaxYear, Nino}
 import api.models.errors._
 import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
 import api.services.ServiceSpec
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
   val nino: String                            = "AA123456A"
-  val taxYear: DownstreamTaxYear              = DownstreamTaxYear.fromMtd("2019-20")
+  val taxYear: TaxYear              = TaxYear.fromMtd("2019-20")
   override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val lossClaimsOrder: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(

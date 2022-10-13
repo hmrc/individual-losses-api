@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
@@ -46,7 +46,7 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
         parser.parseRequest(data) shouldBe {
           Right(
             AmendLossClaimsOrderRequest(Nino(nino),
-                                        DownstreamTaxYear.fromMtd(taxYear),
+                                        TaxYear.fromMtd(taxYear),
                                         AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }

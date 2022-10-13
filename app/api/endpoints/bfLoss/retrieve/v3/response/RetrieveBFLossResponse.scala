@@ -18,7 +18,7 @@ package api.endpoints.bfLoss.retrieve.v3.response
 
 import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, LossType, TypeOfLoss}
 import api.hateoas.{HateoasLinks, HateoasLinksFactory}
-import api.models.domain.DownstreamTaxYear
+import api.models.domain.TaxYear
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
@@ -38,7 +38,7 @@ object RetrieveBFLossResponse extends HateoasLinks {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      (__ \ "taxYear").read[String].map(DownstreamTaxYear(_)).map(_.asMtd) and
+      (__ \ "taxYear").read[String].map(TaxYear(_)).map(_.asMtd) and
       (__ \ "submissionDate").read[String]
   )(RetrieveBFLossResponse.apply _)
 

@@ -23,7 +23,7 @@ import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsHateoasData, List
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.domain.{DownstreamTaxYear, Nino}
+import api.models.domain.{TaxYear, Nino}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
@@ -55,7 +55,7 @@ class ListLossClaimsControllerSpec
   val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
 
   val request: ListLossClaimsRequest =
-    ListLossClaimsRequest(Nino(nino), Some(DownstreamTaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+    ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
   val testHateoasLink: Link       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
