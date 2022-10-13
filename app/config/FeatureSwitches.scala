@@ -30,5 +30,6 @@ case class FeatureSwitches(featureSwitchConfig: Configuration) {
       featureSwitchConfig.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
 
   val isTaxYearSpecificApiEnabled: Boolean = isEnabled("tys-api.enabled")
+
   private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 }
