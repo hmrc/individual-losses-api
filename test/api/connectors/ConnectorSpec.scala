@@ -159,6 +159,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
   }
+
   protected trait DesTest extends ConnectorTest {
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders
