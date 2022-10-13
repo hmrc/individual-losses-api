@@ -48,13 +48,16 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
 
   def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = RetrieveLossClaimRawData(nino, claimId)
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](retrieveLossClaimParser.parseRequest(rawData))
           serviceResponse <- EitherT(retrieveLossClaimService.retrieveLossClaim(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, GetLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
           logger.info(

@@ -49,8 +49,11 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = DeleteLossClaimRawData(nino, claimId)
+
       val result =
         for {
           parsedRequest  <- EitherT.fromEither[Future](deleteLossClaimParser.parseRequest(rawData))

@@ -53,13 +53,16 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = CreateBFLossRawData(nino, AnyContentAsJson(request.body))
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](createBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory
               .wrap(serviceResponse.responseData, CreateBFLossHateoasData(nino, serviceResponse.responseData.lossId))
               .asRight[ErrorWrapper]

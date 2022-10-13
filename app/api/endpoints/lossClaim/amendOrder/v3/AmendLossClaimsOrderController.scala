@@ -53,13 +53,16 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
 
   def amendClaimsOrder(nino: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = AmendLossClaimsOrderRawData(nino, taxYearClaimedFor, AnyContentAsJson(request.body))
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](amendLossClaimsOrderParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendLossClaimsOrderService.amendLossClaimsOrder(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimsOrderHateoasData(nino)).asRight[ErrorWrapper])
         } yield {
           logger.info(

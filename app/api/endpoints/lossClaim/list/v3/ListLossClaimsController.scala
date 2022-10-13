@@ -52,14 +52,17 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
            businessId: Option[String],
            typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData =
         ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listLossClaimsParser.parseRequest(rawData))
           serviceResponse <- EitherT(listLossClaimsService.listLossClaims(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory
               .wrapList(serviceResponse.responseData, ListLossClaimsHateoasData(nino))
               .asRight[ErrorWrapper]

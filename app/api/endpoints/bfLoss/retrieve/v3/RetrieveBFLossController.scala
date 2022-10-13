@@ -47,13 +47,16 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = RetrieveBFLossRawData(nino, lossId)
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](retrieveBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(retrieveBFLossService.retrieveBFLoss(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, GetBFLossHateoasData(nino, lossId)).asRight[ErrorWrapper])
         } yield {
           logger.info(

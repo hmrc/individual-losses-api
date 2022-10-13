@@ -47,13 +47,16 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
   def list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = ListBFLossesRawData(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))
           serviceResponse <- EitherT(listBFLossesService.listBFLosses(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory
               .wrapList(serviceResponse.responseData, ListBFLossHateoasData(nino))
               .asRight[ErrorWrapper]

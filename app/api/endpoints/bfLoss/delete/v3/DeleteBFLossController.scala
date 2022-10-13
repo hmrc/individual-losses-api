@@ -50,8 +50,11 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = DeleteBFLossRawData(nino, lossId)
+
       val result =
         for {
           parsedRequest  <- EitherT.fromEither[Future](deleteBFLossParser.parseRequest(rawData))

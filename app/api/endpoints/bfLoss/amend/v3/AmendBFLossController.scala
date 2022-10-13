@@ -54,13 +54,16 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](amendBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendBFLossService.amendBFLoss(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendBFLossHateoasData(nino, lossId)).asRight[ErrorWrapper])
         } yield {
           logger.info(

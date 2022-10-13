@@ -53,13 +53,16 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
+
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = CreateLossClaimRawData(nino, AnyContentAsJson(request.body))
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](createLossClaimParser.parseRequest(rawData))
           serviceResponse <- EitherT(createLossClaimService.createLossClaim(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory
               .wrap(serviceResponse.responseData, CreateLossClaimHateoasData(nino, serviceResponse.responseData.claimId))
               .asRight[ErrorWrapper]
