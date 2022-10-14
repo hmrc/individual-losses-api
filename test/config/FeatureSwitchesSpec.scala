@@ -21,7 +21,7 @@ import play.api.Configuration
 import routing.Version3
 import support.UnitSpec
 
-class FeatureSwitchSpec extends UnitSpec {
+class FeatureSwitchesSpec extends UnitSpec {
 
   private def createFeatureSwitch(config: String) =
     FeatureSwitches(Configuration(ConfigFactory.parseString(config)))
@@ -46,7 +46,8 @@ class FeatureSwitchSpec extends UnitSpec {
     }
 
     "config set" must {
-      val featureSwitch = createFeatureSwitch("""
+      val featureSwitch = createFeatureSwitch(
+        """
           |version-3.enabled = true
         """.stripMargin)
 
@@ -59,7 +60,8 @@ class FeatureSwitchSpec extends UnitSpec {
   "isAmendLossClaimsOrderRouteEnabled" must {
     "return true" when {
       "config set to true" in {
-        val featureSwitch = createFeatureSwitch("""
+        val featureSwitch = createFeatureSwitch(
+          """
             |amend-loss-claim-order.enabled = true
             |""".stripMargin)
 
@@ -69,7 +71,8 @@ class FeatureSwitchSpec extends UnitSpec {
 
     "return false" when {
       "config set to false" in {
-        val featureSwitch = createFeatureSwitch("""
+        val featureSwitch = createFeatureSwitch(
+          """
             |amend-loss-claim-order.enabled = false
             |""".stripMargin)
 
@@ -78,6 +81,35 @@ class FeatureSwitchSpec extends UnitSpec {
       "config is missing" in {
         val featureSwitch = FeatureSwitches(Configuration.empty)
         featureSwitch.isAmendLossClaimsOrderRouteEnabled shouldBe false
+      }
+    }
+  }
+
+  "feature switch" should {
+    "be true" when {
+
+      "absent from the config" in {
+        val configuration = Configuration.empty
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isTaxYearSpecificApiEnabled shouldBe true
+      }
+
+      "enabled" in {
+        val configuration = Configuration("tys-api.enabled" -> true)
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isTaxYearSpecificApiEnabled shouldBe true
+
+      }
+    }
+
+    "be false" when {
+      "disabled" in {
+        val configuration = Configuration("tys-api.enabled" -> false)
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isTaxYearSpecificApiEnabled shouldBe false
       }
     }
   }

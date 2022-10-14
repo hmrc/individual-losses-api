@@ -33,3 +33,7 @@ case class FeatureSwitches(featureSwitchConfig: Configuration) {
 
   private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 }
+
+object FeatureSwitches {
+  def apply()(implicit appConfig: AppConfig): FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+}
