@@ -17,7 +17,7 @@
 package api.endpoints.lossClaim.list.v3.request
 
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 import api.models.errors._
 import support.UnitSpec
 
@@ -48,7 +48,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
           Right(
             ListLossClaimsRequest(
               nino = Nino(nino),
-              taxYearClaimedFor = Some(DownstreamTaxYear("2018")),
+              taxYearClaimedFor = Some(TaxYear("2018")),
               typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`),
               businessId = Some(businessId),
               typeOfClaim = Some(TypeOfClaim.`carry-sideways`)

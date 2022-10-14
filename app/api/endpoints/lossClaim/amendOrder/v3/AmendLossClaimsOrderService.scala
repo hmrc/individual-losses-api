@@ -33,8 +33,10 @@ class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) exten
 
   override val serviceName: String = this.getClass.getSimpleName
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit hc: HeaderCarrier,
-                                                                 ec: ExecutionContext): Future[AmendLossClaimsOrderOutcome] = {
+  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit
+                                                                 hc: HeaderCarrier,
+                                                                 ec: ExecutionContext,
+                                                                 correlationId: String): Future[AmendLossClaimsOrderOutcome] = {
 
     connector
       .amendLossClaimsOrder(request)

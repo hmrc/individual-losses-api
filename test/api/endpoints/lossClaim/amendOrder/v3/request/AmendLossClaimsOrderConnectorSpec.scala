@@ -21,7 +21,7 @@ import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.connector.v3.{ LossClaimConnector, LossClaimConnectorSpec }
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.ResponseWrapper
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -50,7 +50,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
 
         MockHttpClient
           .put(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.fromMtd(taxYear)}",
+            url = s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/${TaxYear.fromMtd(taxYear)}",
             config = dummyDesHeaderCarrierConfig,
             body = amendLossClaimsOrder,
             requiredHeaders = requiredDesHeadersPut,
@@ -67,7 +67,7 @@ class AmendLossClaimsOrderConnectorSpec extends LossClaimConnectorSpec {
         connector.amendLossClaimsOrder(
           AmendLossClaimsOrderRequest(
             nino = Nino(nino),
-            taxYearClaimedFor = DownstreamTaxYear.fromMtd(taxYear),
+            taxYearClaimedFor = TaxYear.fromMtd(taxYear),
             body = amendLossClaimsOrder
           )))
   }

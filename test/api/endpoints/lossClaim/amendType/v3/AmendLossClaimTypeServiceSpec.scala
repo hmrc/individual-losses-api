@@ -33,6 +33,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
+  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val requestBody: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 

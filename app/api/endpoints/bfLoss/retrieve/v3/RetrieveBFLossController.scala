@@ -16,19 +16,20 @@
 
 package api.endpoints.bfLoss.retrieve.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.bfLoss.retrieve.v3.request.{ RetrieveBFLossParser, RetrieveBFLossRawData }
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.endpoints.bfLoss.retrieve.v3.request.{RetrieveBFLossParser, RetrieveBFLossRawData}
 import api.endpoints.bfLoss.retrieve.v3.response.GetBFLossHateoasData
 import api.hateoas.HateoasFactory
 import api.models.errors._
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.IdGenerator
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -36,7 +37,8 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                          retrieveBFLossService: RetrieveBFLossService,
                                          retrieveBFLossParser: RetrieveBFLossParser,
                                          hateoasFactory: HateoasFactory,
-                                         cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                         cc: ControllerComponents,
+                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
 
@@ -45,12 +47,16 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = RetrieveBFLossRawData(nino, lossId)
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](retrieveBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(retrieveBFLossService.retrieveBFLoss(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, GetBFLossHateoasData(nino, lossId)).asRight[ErrorWrapper])
         } yield {
           logger.info(

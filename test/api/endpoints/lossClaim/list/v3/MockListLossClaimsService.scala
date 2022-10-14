@@ -32,8 +32,11 @@ trait MockListLossClaimsService extends MockFactory {
 
     def list(listBFLossRequest: ListLossClaimsRequest): CallHandler[Future[ListLossClaimsOutcome]] = {
       (mockListLossClaimsService
-        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(listBFLossRequest, *, *)
+        .listLossClaims(_: ListLossClaimsRequest)(
+          _: HeaderCarrier,
+          _: ExecutionContext,
+          _: String))
+        .expects(listBFLossRequest, *, *, *)
     }
   }
 }

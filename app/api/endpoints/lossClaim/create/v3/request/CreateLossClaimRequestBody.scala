@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.create.v3.request
 
 import api.endpoints.lossClaim.domain.v3.TypeOfLoss._
 import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.models.domain.DownstreamTaxYear
+import api.models.domain.TaxYear
 import play.api.libs.json._
 
 case class CreateLossClaimRequestBody(taxYearClaimedFor: String, typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, businessId: String)
@@ -30,14 +30,14 @@ object CreateLossClaimRequestBody {
     requestBody.typeOfLoss match {
       case `uk-property-non-fhl` | `foreign-property` =>
         Json.obj(
-          "taxYear"          -> DownstreamTaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
+          "taxYear"          -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
           "incomeSourceType" -> requestBody.typeOfLoss.toIncomeSourceType,
           "reliefClaimed"    -> requestBody.typeOfClaim.toReliefClaimed,
           "incomeSourceId"   -> requestBody.businessId
         )
       case `self-employment` =>
         Json.obj(
-          "taxYear"        -> DownstreamTaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
+          "taxYear"        -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
           "reliefClaimed"  -> requestBody.typeOfClaim.toReliefClaimed,
           "incomeSourceId" -> requestBody.businessId
         )

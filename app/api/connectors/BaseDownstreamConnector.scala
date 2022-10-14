@@ -16,123 +16,118 @@
 
 package api.connectors
 
-import api.connectors.DownstreamUri.{DesUri, IfsUri}
-import config.AppConfig
-import play.api.Logger
+import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import config.{AppConfig, FeatureSwitches}
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait BaseDownstreamConnector {
+trait BaseDownstreamConnector extends Logging {
   val http: HttpClient
   val appConfig: AppConfig
 
-  val logger: Logger = Logger(this.getClass)
-
   private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
 
-  def desHeaderCarrier(additionalHeaders: Seq[String] = Seq.empty)(implicit hc: HeaderCarrier): HeaderCarrier =
-    HeaderCarrier(
-      extraHeaders = hc.extraHeaders ++
-        // Contract headers
-        Seq(
-          "Authorization" -> s"Bearer ${appConfig.desToken}",
-          "Environment"   -> appConfig.desEnv
-        ) ++
-        // Other headers (i.e Gov-Test-Scenario, Content-Type)
-        hc.headers(additionalHeaders ++ appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
-    )
-
-  private def desHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier = {
-    val passThroughHeaders = hc
-      .headers(appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
-      .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
-
-    HeaderCarrier(
-      extraHeaders = hc.extraHeaders ++
-        // Contract headers
-        Seq(
-          "Authorization" -> s"Bearer ${appConfig.desToken}",
-          "Environment"   -> appConfig.desEnv
-        ) ++
-        additionalHeaders ++
-        passThroughHeaders
-    )
-  }
-
-  private def ifsHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier = {
-    val passThroughHeaders = hc
-      .headers(appConfig.ifsEnvironmentHeaders.getOrElse(Seq.empty))
-      .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
-
-    HeaderCarrier(
-      extraHeaders = hc.extraHeaders ++
-        // Contract headers
-        Seq(
-          "Authorization" -> s"Bearer ${appConfig.ifsToken}",
-          "Environment"   -> appConfig.ifsEnv
-        ) ++
-        additionalHeaders ++
-        passThroughHeaders
-    )
-  }
+  implicit protected lazy val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(
-      implicit ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
+    implicit ec: ExecutionContext,
+    hc: HeaderCarrier,
+    httpReads: HttpReads[DownstreamOutcome[Resp]],
+    correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doPost(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.POST(getBackendUri(uri), body)
     }
 
-    doPost(getBackendHeaders(uri, hc, jsonContentTypeHeader))
+    doPost(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
   }
 
-  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Seq.empty)(
-      implicit ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
+  def get[Resp](uri: DownstreamUri[Resp])(
+    implicit ec: ExecutionContext,
+    hc: HeaderCarrier,
+    httpReads: HttpReads[DownstreamOutcome[Resp]],
+    correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
-      http.GET(getBackendUri(uri), queryParams = queryParams)
+      http.GET(getBackendUri(uri))
 
-    doGet(getBackendHeaders(uri, hc))
+    doGet(getBackendHeaders(uri, hc, correlationId))
   }
 
-  def delete[Resp](uri: DownstreamUri[Resp])(implicit ec: ExecutionContext,
-                                             hc: HeaderCarrier,
-                                             httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
+  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)])(
+    implicit ec: ExecutionContext,
+    hc: HeaderCarrier,
+    httpReads: HttpReads[DownstreamOutcome[Resp]],
+    correlationId: String): Future[DownstreamOutcome[Resp]] = {
+
+    def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
+      http.GET(getBackendUri(uri), queryParams)
+
+    doGet(getBackendHeaders(uri, hc, correlationId))
+  }
+
+  def delete[Resp](uri: DownstreamUri[Resp])(
+    implicit ec: ExecutionContext,
+    hc: HeaderCarrier,
+    httpReads: HttpReads[DownstreamOutcome[Resp]],
+    correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doDelete(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.DELETE(getBackendUri(uri))
     }
 
-    doDelete(getBackendHeaders(uri, hc))
+    doDelete(getBackendHeaders(uri, hc, correlationId))
   }
 
   def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(
       implicit ec: ExecutionContext,
       hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
+      httpReads: HttpReads[DownstreamOutcome[Resp]],
+      correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doPut(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.PUT(getBackendUri(uri), body)
     }
 
-    doPut(getBackendHeaders(uri, hc, jsonContentTypeHeader))
+    doPut(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
   }
 
-  private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String = uri match {
-    case DesUri(value) => s"${appConfig.desBaseUrl}/$value"
-    case IfsUri(value) => s"${appConfig.ifsBaseUrl}/$value"
+  private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String =
+    s"${configFor(uri).baseUrl}/${uri.value}"
+
+
+  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp],
+                                      hc: HeaderCarrier,
+                                      correlationId: String,
+                                      additionalHeaders: (String, String)*): HeaderCarrier = {
+
+    val downstreamConfig = configFor(uri)
+
+    val passThroughHeaders = hc
+      .headers(downstreamConfig.environmentHeaders.getOrElse(Seq.empty))
+      .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
+
+    HeaderCarrier(
+      extraHeaders = hc.extraHeaders ++
+      // Contract headers
+        Seq(
+          "Authorization" -> s"Bearer ${downstreamConfig.token}",
+          "Environment"   -> downstreamConfig.env,
+          "CorrelationId" -> correlationId
+    ) ++
+        additionalHeaders ++
+        passThroughHeaders
+    )
   }
 
-  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp], hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier =
+  private def configFor[Resp](uri: DownstreamUri[Resp]) =
     uri match {
-      case DesUri(_) => desHeaderCarrier(hc, additionalHeaders: _*)
-      case IfsUri(_) => ifsHeaderCarrier(hc, additionalHeaders: _*)
+      case DesUri(_)                => appConfig.desDownstreamConfig
+      case IfsUri(_)                => appConfig.ifsDownstreamConfig
+      case TaxYearSpecificIfsUri(_) => appConfig.taxYearSpecificIfsDownstreamConfig
     }
 }

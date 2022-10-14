@@ -21,6 +21,7 @@ import definition.APIStatus.{ALPHA, BETA}
 import routing.Version3
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
+import play.api.Configuration
 
 class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
@@ -34,7 +35,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     "there is no appConfig.apiStatus" should {
       "default apiStatus to ALPHA" in new Test {
         MockAppConfig.apiGatewayContext returns "my/context"
-        MockAppConfig.featureSwitch returns None anyNumberOfTimes ()
+        MockAppConfig.featureSwitches returns Configuration.empty anyNumberOfTimes()
         MockAppConfig.apiStatus(Version3) returns "" anyNumberOfTimes ()
         MockAppConfig.endpointsEnabled(version = Version3.configName) returns true anyNumberOfTimes ()
         MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes ()

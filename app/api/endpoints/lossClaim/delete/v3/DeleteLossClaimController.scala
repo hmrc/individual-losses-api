@@ -16,21 +16,22 @@
 
 package api.endpoints.lossClaim.delete.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.lossClaim.delete.v3.request.{ DeleteLossClaimParser, DeleteLossClaimRawData }
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.endpoints.lossClaim.delete.v3.request.{DeleteLossClaimParser, DeleteLossClaimRawData}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utils.IdGenerator
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService,
@@ -38,7 +39,8 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
                                           deleteLossClaimService: DeleteLossClaimService,
                                           deleteLossClaimParser: DeleteLossClaimParser,
                                           auditService: AuditService,
-                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                          cc: ControllerComponents,
+                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
 
@@ -47,7 +49,11 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData = DeleteLossClaimRawData(nino, claimId)
+
       val result =
         for {
           parsedRequest  <- EitherT.fromEither[Future](deleteLossClaimParser.parseRequest(rawData))

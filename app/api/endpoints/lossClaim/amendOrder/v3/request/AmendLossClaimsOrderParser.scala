@@ -17,7 +17,7 @@
 package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.controllers.RequestParser
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderVa
 
   override protected def requestFor(data: AmendLossClaimsOrderRawData): AmendLossClaimsOrderRequest = {
 
-    val taxYear = DownstreamTaxYear.fromMtd(data.taxYearClaimedFor)
+    val taxYear = TaxYear.fromMtd(data.taxYearClaimedFor)
 
     AmendLossClaimsOrderRequest(Nino(data.nino), taxYear, data.body.json.as[AmendLossClaimsOrderRequestBody])
   }

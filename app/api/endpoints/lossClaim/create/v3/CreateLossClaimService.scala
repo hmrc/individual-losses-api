@@ -34,7 +34,9 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends Do
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CreateLossClaimOutcome] = {
+  def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
+                                                       ec: ExecutionContext,
+                                                       correlationId: String): Future[CreateLossClaimOutcome] = {
     connector.createLossClaim(request).map {
       mapToVendorDirect("createLossClaim", errorMap)
     }

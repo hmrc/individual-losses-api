@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.amendType.v3.response
 
 import api.endpoints.lossClaim.domain.v3.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 import api.hateoas.{HateoasLinks, HateoasLinksFactory}
-import api.models.domain.DownstreamTaxYear
+import api.models.domain.TaxYear
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
@@ -34,7 +34,7 @@ case class AmendLossClaimTypeResponse(taxYearClaimedFor: String,
 object AmendLossClaimTypeResponse extends HateoasLinks {
   implicit val writes: OWrites[AmendLossClaimTypeResponse] = Json.writes[AmendLossClaimTypeResponse]
   implicit val reads: Reads[AmendLossClaimTypeResponse] = (
-    (JsPath \ "taxYearClaimedFor").read[String].map(DownstreamTaxYear(_)).map(_.toMtd) and
+    (JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and

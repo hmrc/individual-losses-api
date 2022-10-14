@@ -30,7 +30,7 @@ import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.mocks.MockHttpClient
 import api.models.ResponseWrapper
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 import api.models.errors._
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
@@ -353,7 +353,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
 
-      def request(taxYear: Option[DownstreamTaxYear] = None,
+      def request(taxYear: Option[TaxYear] = None,
                   incomeSourceType: Option[IncomeSourceType] = None,
                   businessId: Option[String] = None): ListBFLossesRequest =
         ListBFLossesRequest(
@@ -383,7 +383,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
 
         mockHttpWithParameters("taxYear" -> "2019") returns Future.successful(expected)
 
-        await(connector.listBFLosses(request(taxYear = Some(DownstreamTaxYear("2019"))))) shouldBe expected
+        await(connector.listBFLosses(request(taxYear = Some(TaxYear("2019"))))) shouldBe expected
       }
 
       "provided with a income source id parameter" in new ListTest {
@@ -408,7 +408,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
         mockHttpWithParameters("taxYear" -> "2019", "incomeSourceId" -> "testId", "incomeSourceType" -> "01") returns Future.successful(expected)
 
         await(
-          connector.listBFLosses(request(taxYear = Some(DownstreamTaxYear("2019")),
+          connector.listBFLosses(request(taxYear = Some(TaxYear("2019")),
                                          businessId = Some("testId"),
                                          incomeSourceType = Some(IncomeSourceType.`01`)))) shouldBe expected
       }

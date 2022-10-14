@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package api.endpoints.bfLoss.list.v3.request
+package api.mocks
 
-import api.endpoints.bfLoss.domain.v3.IncomeSourceType
-import api.models.RawData
-import api.models.domain.{TaxYear, Nino}
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import utils.IdGenerator
 
-case class ListBFLossesRawData(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String])
-    extends RawData
+trait MockIdGenerator extends MockFactory {
 
-case class ListBFLossesRequest(nino: Nino,
-                               taxYearBroughtForwardFrom: Option[TaxYear],
-                               incomeSourceType: Option[IncomeSourceType],
-                               businessId: Option[String])
+  val mockIdGenerator: IdGenerator = mock[IdGenerator]
+
+  object MockIdGenerator {
+    def getCorrelationId: CallHandler[String] = (mockIdGenerator.getCorrelationId _).expects()
+  }
+}

@@ -17,13 +17,14 @@
 package api.endpoints.bfLoss.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser }
+import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser}
+import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,7 +38,8 @@ class DeleteBFLossControllerSpec
     with MockMtdIdLookupService
     with MockDeleteBFLossService
     with MockDeleteBFLossParser
-    with MockAuditService {
+    with MockAuditService
+    with MockIdGenerator {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -70,11 +72,13 @@ class DeleteBFLossControllerSpec
       deleteBFLossService = mockDeleteBFLossService,
       deleteBFLossParser = mockDeleteBFLossParser,
       auditService = mockAuditService,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   "delete" should {

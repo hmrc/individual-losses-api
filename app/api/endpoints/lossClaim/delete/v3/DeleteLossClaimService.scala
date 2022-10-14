@@ -33,7 +33,10 @@ class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends Do
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteLossClaimOutcome] = {
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit
+                                                       hc: HeaderCarrier,
+                                                       ec: ExecutionContext,
+                                                       correlationId: String): Future[DeleteLossClaimOutcome] = {
 
     connector.deleteLossClaim(request).map {
       mapToVendorDirect("deleteLossClaim", errorMap)

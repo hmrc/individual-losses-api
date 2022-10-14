@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.list.v3.request
 
 import api.endpoints.bfLoss.domain.v3.IncomeSourceType
-import api.models.domain.{ DownstreamTaxYear, Nino }
+import api.models.domain.{ TaxYear, Nino }
 import api.models.errors._
 import support.UnitSpec
 
@@ -51,7 +51,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           Right(
             ListBFLossesRequest(
               nino = Nino(nino),
-              taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
+              taxYearBroughtForwardFrom = Some(TaxYear("2018")),
               incomeSourceType = Some(IncomeSourceType.`04`),
               businessId = Some(businessId)
             )
@@ -74,7 +74,7 @@ class ListBFLossesParserSpec extends UnitSpec {
         parser.parseRequest(inputData) shouldBe
           Right(
             ListBFLossesRequest(nino = Nino(nino),
-                                taxYearBroughtForwardFrom = Some(DownstreamTaxYear("2018")),
+                                taxYearBroughtForwardFrom = Some(TaxYear("2018")),
                                 incomeSourceType = Some(IncomeSourceType.`02`),
                                 businessId = Some(businessId))
           )

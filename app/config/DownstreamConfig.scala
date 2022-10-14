@@ -16,20 +16,9 @@
 
 package config
 
-import play.api.Configuration
-import routing.Version
-
-case class FeatureSwitch(maybeConfig: Option[Configuration]) {
-
-  def isVersionEnabled(version: Version): Boolean =
-    (for {
-      config  <- maybeConfig
-      enabled <- config.getOptional[Boolean](s"version-${version.configName}.enabled")
-    } yield enabled).getOrElse(false)
-
-  def isAmendLossClaimsOrderRouteEnabled: Boolean =
-    maybeConfig match {
-      case Some(configuration) => configuration.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
-      case None                => false
-    }
-}
+case class DownstreamConfig(
+                             baseUrl: String,
+                             env: String,
+                             token: String,
+                             environmentHeaders: Option[Seq[String]]
+                           )

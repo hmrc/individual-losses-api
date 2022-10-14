@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.amendOrder.v3
 
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
-import api.models.domain.DownstreamTaxYear
+import api.models.domain.TaxYear
 import api.models.errors._
 import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -74,7 +74,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
     )
 
     def uri: String    = s"/$nino/loss-claims/order/$taxYear"
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${DownstreamTaxYear.fromMtd(taxYear)}"
+    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${TaxYear.fromMtd(taxYear)}"
 
     def errorBody(code: String): String =
       s"""

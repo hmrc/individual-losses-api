@@ -34,7 +34,9 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends Downstre
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteBFLossOutcome] = {
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier,
+                                                 ec: ExecutionContext,
+                                                 correlationId: String): Future[DeleteBFLossOutcome] = {
 
     connector.deleteBFLoss(request).map {
       mapToVendorDirect("deleteBFLoss", errorMap)

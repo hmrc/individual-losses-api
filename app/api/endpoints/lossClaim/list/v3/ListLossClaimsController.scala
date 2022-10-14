@@ -16,19 +16,20 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
-import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsParser, ListLossClaimsRawData }
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsParser, ListLossClaimsRawData}
 import api.endpoints.lossClaim.list.v3.response.ListLossClaimsHateoasData
 import api.hateoas.HateoasFactory
 import api.models.errors._
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.IdGenerator
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
@@ -37,7 +38,8 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
                                          listLossClaimsParser: ListLossClaimsParser,
                                          hateoasFactory: HateoasFactory,
                                          auditService: AuditService,
-                                         cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                         cc: ControllerComponents,
+                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController {
 
@@ -50,13 +52,17 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
            businessId: Option[String],
            typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
+      implicit val correlationId: String = idGenerator.getCorrelationId
+
       val rawData =
         ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
+
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](listLossClaimsParser.parseRequest(rawData))
           serviceResponse <- EitherT(listLossClaimsService.listLossClaims(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory
               .wrapList(serviceResponse.responseData, ListLossClaimsHateoasData(nino))
               .asRight[ErrorWrapper]

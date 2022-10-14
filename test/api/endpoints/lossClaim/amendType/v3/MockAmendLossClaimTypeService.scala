@@ -32,8 +32,11 @@ trait MockAmendLossClaimTypeService extends MockFactory {
 
     def amend(requestData: AmendLossClaimTypeRequest): CallHandler[Future[AmendLossClaimTypeOutcome]] = {
       (mockAmendLossClaimTypeService
-        .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .amendLossClaimType(_: AmendLossClaimTypeRequest)(
+          _: HeaderCarrier,
+          _: ExecutionContext,
+        _: String))
+        .expects(requestData, *, *, *)
     }
   }
 }

@@ -18,16 +18,17 @@ package api.endpoints.bfLoss.retrieve.v3
 
 import api.controllers.ControllerBaseSpec
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.endpoints.bfLoss.retrieve.v3.request.{ MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest }
-import api.endpoints.bfLoss.retrieve.v3.response.{ GetBFLossHateoasData, RetrieveBFLossResponse }
+import api.endpoints.bfLoss.retrieve.v3.request.{MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest}
+import api.endpoints.bfLoss.retrieve.v3.response.{GetBFLossHateoasData, RetrieveBFLossResponse}
 import api.hateoas.MockHateoasFactory
+import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import api.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
-import play.api.libs.json.{ JsValue, Json }
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -40,7 +41,8 @@ class RetrieveBFLossControllerSpec
     with MockMtdIdLookupService
     with MockRetrieveBFLossService
     with MockRetrieveBFLossParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockIdGenerator {
 
   val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String          = "AA123456A"
@@ -87,11 +89,13 @@ class RetrieveBFLossControllerSpec
       retrieveBFLossService = mockRetrieveBFLossService,
       retrieveBFLossParser = mockRetrieveBFLossParser,
       hateoasFactory = mockHateoasFactory,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   "retrieve" should {

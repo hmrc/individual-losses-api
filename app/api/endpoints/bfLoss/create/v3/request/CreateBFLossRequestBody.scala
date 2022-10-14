@@ -18,7 +18,7 @@ package api.endpoints.bfLoss.create.v3.request
 
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss._
-import api.models.domain.DownstreamTaxYear
+import api.models.domain.TaxYear
 import play.api.libs.json._
 
 case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal)
@@ -32,14 +32,14 @@ object CreateBFLossRequestBody {
         Json.obj(
           "incomeSourceId"            -> loss.businessId,
           "incomeSourceType"          -> loss.typeOfLoss.toIncomeSourceType,
-          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
+          "taxYearBroughtForwardFrom" -> TaxYear.fromMtd(loss.taxYearBroughtForwardFrom).year,
           "broughtForwardLossAmount"  -> loss.lossAmount
         )
       case TypeOfLoss.`self-employment` | `self-employment-class4` =>
         Json.obj(
           "incomeSourceId"            -> loss.businessId,
           "lossType"                  -> loss.typeOfLoss.toLossType,
-          "taxYearBroughtForwardFrom" -> DownstreamTaxYear.fromMtd(loss.taxYearBroughtForwardFrom).toInt,
+          "taxYearBroughtForwardFrom" -> TaxYear.fromMtd(loss.taxYearBroughtForwardFrom).year,
           "broughtForwardLossAmount"  -> loss.lossAmount
         )
     }
