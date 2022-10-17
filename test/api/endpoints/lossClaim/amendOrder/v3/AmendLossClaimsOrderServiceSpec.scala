@@ -88,7 +88,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         s"downstream returns $downstreamErrorCode" in new Test {
           MockedLossClaimConnector
             .amendLossClaimsOrder(request)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(downstreamErrorCode, "MESSAGE"))))))
 
           val result = await(service.amendLossClaimsOrder(request))
           result shouldBe Left(ErrorWrapper(Some(correlationId), error))

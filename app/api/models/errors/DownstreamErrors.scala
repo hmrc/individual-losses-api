@@ -16,24 +16,8 @@
 
 package api.models.errors
 
-import play.api.libs.json.{Json, Reads}
-
 sealed trait DownstreamError
 
 case class SingleError(error: MtdError)          extends DownstreamError
 case class MultipleErrors(errors: Seq[MtdError]) extends DownstreamError
 case class OutboundError(error: MtdError)        extends DownstreamError
-
-case class DownstreamErrorCode(code: String) {
-  def toMtd: MtdError = MtdError(code = code, message = "")
-}
-
-object DownstreamErrorCode {
-  implicit val reads: Reads[DownstreamErrorCode] = Json.reads[DownstreamErrorCode]
-}
-
-case class DownstreamErrors(errors: List[DownstreamErrorCode]) extends DownstreamError
-
-object DownstreamErrors {
-  def single(error: DownstreamErrorCode): DownstreamErrors = DownstreamErrors(List(error))
-}

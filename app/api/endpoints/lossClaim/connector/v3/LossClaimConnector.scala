@@ -101,7 +101,7 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[Unit](s"/income-tax/claims-for-relief/preferences/${taxYear.asTysDownstream}/$nino ")
+        TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYear.asTysDownstream}/$nino")
       } else {
         DesUri[Unit](s"income-tax/claims-for-relief/$nino/preferences/${taxYear.asDownstream}")
       }
