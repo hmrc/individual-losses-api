@@ -45,7 +45,7 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
                                                auditService: AuditService,
                                                cc: ControllerComponents,
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
+  extends AuthorisedController(cc)
     with BaseController {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -106,13 +106,27 @@ class AmendLossClaimsOrderController @Inject()(val authService: EnrolmentsAuthSe
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearRangeInvalid | RuleTaxYearNotSupportedError | MtdErrorWithCode(
-            RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCode(ClaimIdFormatError.code) | TypeOfClaimFormatError | MtdErrorWithCode(
-            ValueFormatError.code) | RuleInvalidSequenceStart | RuleSequenceOrderBroken | RuleLossClaimsMissing =>
+      case _
+        if errorWrapper.containsAnyOf(
+          BadRequestError,
+          NinoFormatError,
+          TaxYearFormatError,
+          RuleTaxYearRangeInvalid,
+          RuleTaxYearNotSupportedError,
+          RuleIncorrectOrEmptyBodyError,
+          ClaimIdFormatError,
+          TypeOfClaimFormatError,
+          ValueFormatError,
+          RuleInvalidSequenceStart,
+          RuleSequenceOrderBroken,
+          RuleLossClaimsMissing
+        ) =>
         BadRequest(Json.toJson(errorWrapper))
+
       case UnauthorisedError       => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError           => NotFound(Json.toJson(errorWrapper))
       case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case _                       => unhandledError(errorWrapper)
     }
   }
 
