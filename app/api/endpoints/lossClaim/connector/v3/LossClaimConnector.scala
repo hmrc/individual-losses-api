@@ -73,7 +73,7 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
                                                      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
     val nino = request.nino.nino
     val pathParameters = Map(
-      "taxYear"          -> request.taxYearClaimedFor.map(_.value),
+      "taxYear"          -> request.taxYearClaimedFor.map(_.asDownstream),
       "incomeSourceId"   -> request.businessId,
       "incomeSourceType" -> request.typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> request.typeOfClaim.map(_.toReliefClaimed.toString)
