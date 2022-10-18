@@ -30,14 +30,14 @@ object CreateLossClaimRequestBody {
     requestBody.typeOfLoss match {
       case `uk-property-non-fhl` | `foreign-property` =>
         Json.obj(
-          "taxYear"          -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
+          "taxYear"          -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).asDownstream,
           "incomeSourceType" -> requestBody.typeOfLoss.toIncomeSourceType,
           "reliefClaimed"    -> requestBody.typeOfClaim.toReliefClaimed,
           "incomeSourceId"   -> requestBody.businessId
         )
       case `self-employment` =>
         Json.obj(
-          "taxYear"        -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).value,
+          "taxYear"        -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).asDownstream,
           "reliefClaimed"  -> requestBody.typeOfClaim.toReliefClaimed,
           "incomeSourceId" -> requestBody.businessId
         )
