@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.connector.v3
 
-import api.connectors.DownstreamUri.{DesUri, IfsUri}
+import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.endpoints.lossClaim.amendOrder.v3.request.AmendLossClaimsOrderRequest
@@ -99,6 +99,16 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
     val nino    = request.nino.nino
     val taxYear = request.taxYearClaimedFor
 
-    put(request.body, DesUri[Unit](s"income-tax/claims-for-relief/$nino/preferences/$taxYear"))
+    val downstreamUri =
+      if (taxYear.useTaxYearSpecificApi) {
+        TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYear.asTysDownstream}/$nino")
+      } else {
+        DesUri[Unit](s"income-tax/claims-for-relief/$nino/preferences/${taxYear.asDownstream}")
+      }
+
+    put(
+      uri = downstreamUri,
+      body = request.body
+    )
   }
 }

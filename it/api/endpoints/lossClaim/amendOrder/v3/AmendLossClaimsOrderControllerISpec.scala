@@ -18,12 +18,12 @@ package api.endpoints.lossClaim.amendOrder.v3
 
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
-import api.models.domain.TaxYear
 import api.models.errors._
 import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
@@ -49,32 +49,46 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       """.stripMargin)
   }
 
+  private trait NonTysTest extends Test {
+    def taxYear: String           = "2020-21"
+    def downstreamTaxYear: String = "2021"
+    def downstreamUri: String     = s"/income-tax/claims-for-relief/$nino/preferences/$downstreamTaxYear"
+  }
+
+  private trait TysIfsTest extends Test {
+    def taxYear: String           = "2023-24"
+    def downstreamTaxYear: String = "23-24"
+    def downstreamUri: String     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
+  }
+
   private trait Test {
 
+    def taxYear: String
+    def downstreamTaxYear: String
+    def downstreamUri: String
+
     val nino: String    = "AA123456A"
-    val taxYear: String = "2019-20"
 
     val responseJson: JsValue = Json.parse(
       s"""
-        |{
-        |  "links": [
-        |    {
-        |      "href": "/individuals/losses/$nino/loss-claims/order",
-        |      "method": "PUT",
-        |      "rel": "amend-loss-claim-order"
-        |    },
-        |    {
-        |      "href": "/individuals/losses/$nino/loss-claims",
-        |      "method": "GET",
-        |      "rel": "self"
-        |    }
-        |  ]
-        |}
+         |{
+         |  "links": [
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/order",
+         |      "method": "PUT",
+         |      "rel": "amend-loss-claim-order"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    }
+         |  ]
+         |}
       """.stripMargin
     )
 
     def uri: String    = s"/$nino/loss-claims/order/$taxYear"
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/preferences/${TaxYear.fromMtd(taxYear)}"
 
     def errorBody(code: String): String =
       s"""
@@ -100,13 +114,29 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new Test {
+      "any valid request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, Status.NO_CONTENT)
+        }
+
+        val response: WSResponse = await(request().put(requestJson()))
+        response.status shouldBe Status.OK
+        response.json shouldBe responseJson
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "any valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, Status.NO_CONTENT)
         }
 
         val response: WSResponse = await(request().put(requestJson()))
@@ -118,33 +148,49 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "handle downstream errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
+      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedError: MtdError): Unit = {
+        s"downstream returns an $downstreamCode error" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
           response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedBody)
+          response.json shouldBe Json.toJson(expectedError)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXYEAR", Status.BAD_REQUEST, TaxYearFormatError)
-      serviceErrorTest(Status.CONFLICT, "CONFLICT_SEQUENCE_START", Status.BAD_REQUEST, RuleInvalidSequenceStart)
-      serviceErrorTest(Status.CONFLICT, "CONFLICT_NOT_SEQUENTIAL", Status.BAD_REQUEST, RuleSequenceOrderBroken)
-      serviceErrorTest(Status.CONFLICT, "CONFLICT_NOT_FULL_LIST", Status.BAD_REQUEST, RuleLossClaimsMissing)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
-      serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "UNPROCESSABLE_ENTITY", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      val errors = Seq(
+        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError),
+        (CONFLICT, "CONFLICT_SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
+        (CONFLICT, "CONFLICT_NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
+        (CONFLICT, "CONFLICT_NOT_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
+        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (Status.UNPROCESSABLE_ENTITY, "UNPROCESSABLE_ENTITY", NOT_FOUND, NotFoundError),
+        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError)
+      )
+
+      val extraTysErrors = Seq(
+        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
+        (CONFLICT, "NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
+        (CONFLICT, "SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
+        (CONFLICT, "NO_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
+        (NOT_FOUND, "CLAIM_NOT_FOUND", NOT_FOUND, NotFoundError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+
     }
 
     "handle validation errors according to spec" when {
@@ -152,8 +198,8 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
                               requestTaxYear: String,
                               requestBody: JsValue,
                               expectedStatus: Int,
-                              expectedBody: MtdError): Unit = {
-        s"validation fails with ${expectedBody.code} error" in new Test {
+                              expectedError: MtdError): Unit = {
+        s"validation fails with ${expectedError.code} error" in new NonTysTest {
 
           override val nino: String    = requestNino
           override val taxYear: String = requestTaxYear
@@ -166,7 +212,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
           val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestBody))
           response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedBody)
+          response.json shouldBe Json.toJson(expectedError)
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }

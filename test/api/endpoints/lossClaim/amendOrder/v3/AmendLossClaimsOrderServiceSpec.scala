@@ -22,9 +22,9 @@ import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderRespon
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.ResponseWrapper
-import api.models.domain.{TaxYear, Nino}
-import api.models.errors._
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
+import api.models.errors._
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 
@@ -83,27 +83,42 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
       }
     }
 
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "CONFLICT_SEQUENCE_START"   -> RuleInvalidSequenceStart,
-      "CONFLICT_NOT_SEQUENTIAL"   -> RuleSequenceOrderBroken,
-      "CONFLICT_NOT_FULL_LIST"    -> RuleLossClaimsMissing,
-      "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "UNPROCESSABLE_ENTITY"      -> NotFoundError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
-    ).foreach {
-      case (k, v) =>
-        s"a $k error is received from the connector" should {
-          s"return a $v MTD error" in new Test {
-            MockedLossClaimConnector
-              .amendLossClaimsOrder(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
+    "map errors according to spec" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit = {
+        s"downstream returns $downstreamErrorCode" in new Test {
+          MockedLossClaimConnector
+            .amendLossClaimsOrder(request)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(downstreamErrorCode, "MESSAGE"))))))
 
-            await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
-          }
+          val result = await(service.amendLossClaimsOrder(request))
+          result shouldBe Left(ErrorWrapper(Some(correlationId), error))
         }
+      }
+
+      val errors = Seq(
+        ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
+        ("INVALID_TAXYEAR", TaxYearFormatError),
+        ("CONFLICT_SEQUENCE_START", RuleInvalidSequenceStart),
+        ("CONFLICT_NOT_SEQUENTIAL",  RuleSequenceOrderBroken),
+        ("CONFLICT_NOT_FULL_LIST", RuleLossClaimsMissing),
+        ("INVALID_PAYLOAD", StandardDownstreamError),
+        ("UNPROCESSABLE_ENTITY", NotFoundError),
+        ("SERVER_ERROR", StandardDownstreamError),
+        ("SERVICE_UNAVAILABLE", StandardDownstreamError)
+      )
+
+      val extraTysErrors = Seq(
+        ("INVALID_TAX_YEAR", TaxYearFormatError),
+        ("INVALID_CORRELATIONID", StandardDownstreamError),
+        ("NOT_FOUND", NotFoundError),
+        ("NOT_SEQUENTIAL", RuleSequenceOrderBroken),
+        ("SEQUENCE_START", RuleInvalidSequenceStart),
+        ("NO_FULL_LIST", RuleLossClaimsMissing),
+        ("CLAIM_NOT_FOUND", NotFoundError),
+        ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 }
