@@ -57,7 +57,7 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
         val errorCode = statusCode match {
           case UNAUTHORIZED           => UnauthorisedError
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
-          case _                      => MtdError("INVALID_REQUEST", message)
+          case _                      => MtdError("INVALID_REQUEST", message, statusCode)
         }
 
         auditConnector.sendEvent(

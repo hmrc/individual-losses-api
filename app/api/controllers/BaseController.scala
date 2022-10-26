@@ -20,13 +20,16 @@ import api.models.errors.{ErrorWrapper, StandardDownstreamError}
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.mvc.Results.InternalServerError
+import play.api.mvc.Results.{InternalServerError, Status}
 
 import java.util.UUID
 
 trait BaseController {
 
   protected val logger = Logger(this.getClass)
+
+  protected def mapErrorResult(errorWrapper: ErrorWrapper): Result =
+    Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
 
   protected def unhandledError(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
     logger.error(

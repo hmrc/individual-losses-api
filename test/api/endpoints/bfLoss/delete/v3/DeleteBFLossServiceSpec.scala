@@ -29,8 +29,8 @@ import scala.concurrent.Future
 
 class DeleteBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  val nino: String                            = "AA123456A"
+  val lossId: String                          = "AAZZ1234567890a"
   override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockBFLossConnector {
@@ -52,7 +52,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -92,7 +92,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
           s"the connector call returns $k" in new Test {
             MockedBFLossConnector
               .deleteBFLoss(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
 
             await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

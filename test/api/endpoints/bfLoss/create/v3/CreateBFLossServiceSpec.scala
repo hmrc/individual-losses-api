@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.create.v3
 
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
-import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
+import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.models.ResponseWrapper
@@ -31,13 +31,11 @@ import scala.concurrent.Future
 
 class CreateBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  val nino: String                            = "AA123456A"
+  val lossId: String                          = "AAZZ1234567890a"
   override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val bfLoss: CreateBFLossRequestBody = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
-
-  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockBFLossConnector {
     lazy val service = new CreateBFLossService(connector)
@@ -58,7 +56,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -68,7 +66,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
 
     "one of the errors from downstream is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(expected)))
         val result: CreateBFLossOutcome = await(service.createBFLoss(request))
         result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
@@ -91,7 +89,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
           s"return a $v MTD error" in new Test {
             MockedBFLossConnector
               .createBFLoss(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE", v.httpStatus))))))
 
             await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

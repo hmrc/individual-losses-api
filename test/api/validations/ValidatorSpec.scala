@@ -19,6 +19,7 @@ package api.validations
 import api.models.RawData
 import api.models.errors.MtdError
 import org.scalamock.scalatest.MockFactory
+import play.api.http.Status.BAD_REQUEST
 import support.UnitSpec
 
 class ValidatorSpec extends UnitSpec with MockFactory {
@@ -57,7 +58,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         // Set up the mock validations
         val levelOneValidationOne = new MockFunctionObject("Level: 1    Validation 1")
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
-        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR")
+        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR", BAD_REQUEST)
 
         def levelOneValidations: TestRawData => Seq[Seq[MtdError]] = (_: TestRawData) => {
           List(
@@ -85,7 +86,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
         val levelTwoValidationOne = new MockFunctionObject("Level: 2    Validation 1")
         val levelTwoValidationTwo = new MockFunctionObject("Level: 2    Validation 2")
-        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR ON LEVEL 2")
+        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR ON LEVEL 2", BAD_REQUEST)
 
         def levelOneValidations: TestRawData => Seq[Seq[MtdError]] = (_: TestRawData) => {
           List(

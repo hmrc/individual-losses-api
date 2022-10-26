@@ -17,13 +17,13 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRequest, CreateLossClaimRequestBody}
+import api.endpoints.lossClaim.create.v3.request.{ CreateLossClaimRequest, CreateLossClaimRequestBody }
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
+import api.models.errors.v3.{ RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid }
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.CreateLossClaimOutcome
 
@@ -31,14 +31,12 @@ import scala.concurrent.Future
 
 class CreateLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  val nino: String                            = "AA123456A"
+  val claimId: String                         = "AAZZ1234567890a"
   override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val lossClaim: CreateLossClaimRequestBody =
     CreateLossClaimRequestBody("2018", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, "XKIS00000000988")
-
-  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new CreateLossClaimService(connector)
@@ -59,7 +57,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -69,7 +67,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
     "one of the errors from downstream is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
         val result: CreateLossClaimOutcome = await(service.createLossClaim(request))
         result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
@@ -94,7 +92,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
           s"return a $v MTD error" in new Test {
             MockedLossClaimConnector
               .createLossClaim(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE", v.httpStatus))))))
 
             await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

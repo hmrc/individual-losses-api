@@ -140,14 +140,14 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
           "be able to parse a single error" in {
             val httpResponse = HttpResponse(responseCode, singleErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-            httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, SingleError(MtdError("CODE", "MESSAGE"))))
+            httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, SingleError(MtdError("CODE", "MESSAGE", responseCode))))
           }
 
           "be able to parse multiple errors" in {
             val httpResponse = HttpResponse(responseCode, multipleErrorsJson, Map("CorrelationId" -> Seq(correlationId)))
 
             httpReads.read(method, url, httpResponse) shouldBe {
-              Left(ResponseWrapper(correlationId, MultipleErrors(Seq(MtdError("CODE 1", "MESSAGE 1"), MtdError("CODE 2", "MESSAGE 2")))))
+              Left(ResponseWrapper(correlationId, MultipleErrors(Seq(MtdError("CODE 1", "MESSAGE 1", BAD_REQUEST), MtdError("CODE 2", "MESSAGE 2", BAD_REQUEST)))))
             }
           }
 
@@ -155,7 +155,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
             val httpResponse = HttpResponse(responseCode, singleItemArrayOfErrorsJson, Map("CorrelationId" -> Seq(correlationId)))
 
             httpReads.read(method, url, httpResponse) shouldBe {
-              Left(ResponseWrapper(correlationId, SingleError(MtdError("CODE 1", "MESSAGE 1"))))
+              Left(ResponseWrapper(correlationId, SingleError(MtdError("CODE 1", "MESSAGE 1", BAD_REQUEST))))
             }
           }
 

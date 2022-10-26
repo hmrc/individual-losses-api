@@ -19,10 +19,21 @@ package api.models.errors
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class MtdError(code: String, message: String, paths: Option[Seq[String]] = None)
+trait HasHttpStatus {
+  val status: Int
+}
+
+case class MtdError(code: String, message: String, httpStatus: Int, paths: Option[Seq[String]] = None)
 
 object MtdError {
-  implicit val writes: OWrites[MtdError] = Json.writes[MtdError]
+
+  implicit val writes: OWrites[MtdError] = OWrites { err =>
+    // excludes httpStatus
+    Json.obj(
+      "code"    -> err.code,
+      "message" -> err.message
+    ) ++ (err.paths.map(paths => Json.obj("paths" -> paths)).getOrElse(JsObject.empty))
+  }
 
   implicit def genericWrites[T <: MtdError]: OWrites[T] =
     writes.contramap[T](c => c: MtdError)
@@ -30,6 +41,7 @@ object MtdError {
   implicit val reads: Reads[MtdError] = (
     (__ \ "code").read[String] and
       (__ \ "reason").read[String] and
+      (__ \ "httpStatus").read(0) and // being read from the downstream response, their HTTP status can be discarded
       Reads.pure(None)
   )(MtdError.apply _)
 }

@@ -71,7 +71,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -114,7 +114,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
           s"the connector call returns $k" in new Test {
             MockedLossClaimConnector
               .listLossClaims(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter"))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
 
             await(service.listLossClaims(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

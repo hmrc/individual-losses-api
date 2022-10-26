@@ -18,21 +18,26 @@ package api.endpoints.lossClaim.amendOrder.v3
 
 import api.controllers.ControllerBaseSpec
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, MockAmendLossClaimsOrderRequestDataParser}
-import api.endpoints.lossClaim.amendOrder.v3.response.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
+import api.endpoints.lossClaim.amendOrder.v3.request.{
+  AmendLossClaimsOrderRawData,
+  AmendLossClaimsOrderRequest,
+  AmendLossClaimsOrderRequestBody,
+  MockAmendLossClaimsOrderRequestDataParser
+}
+import api.endpoints.lossClaim.amendOrder.v3.response.{ AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse }
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{TaxYear, Nino}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
-import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
+import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError }
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -189,15 +194,15 @@ class AmendLossClaimsOrderControllerSpec
         UnauthorisedError
       )
 
-      badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
-      badRequestErrorsFromService.foreach(errorsFromServiceTester(_, BAD_REQUEST))
-      notFoundErrorsFromService.foreach(errorsFromServiceTester(_, NOT_FOUND))
-      forbiddenErrorsFromService.foreach(errorsFromServiceTester(_, FORBIDDEN))
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
+      badRequestErrorsFromParser.foreach(errorsFromParserTester)
+      badRequestErrorsFromService.foreach(errorsFromServiceTester)
+      notFoundErrorsFromService.foreach(errorsFromServiceTester)
+      forbiddenErrorsFromService.foreach(errorsFromServiceTester)
+      errorsFromServiceTester(StandardDownstreamError)
     }
   }
 
-  def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+  def errorsFromParserTester(error: MtdError): Unit = {
     s"a ${error.code} error is returned from the parser" in new Test {
 
       MockAmendLossClaimsOrderRequestDataParser
@@ -206,16 +211,16 @@ class AmendLossClaimsOrderControllerSpec
 
       val response: Future[Result] = controller.amendClaimsOrder(nino, taxYear)(fakePostRequest(requestBody))
 
-      status(response) shouldBe expectedStatus
+      status(response) shouldBe error.httpStatus
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-      val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+      val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
       MockedAuditService.verifyAuditEvent(event(auditResponse)).once
     }
   }
 
-  def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+  def errorsFromServiceTester(error: MtdError): Unit = {
     s"a ${error.code} error is returned from the service" in new Test {
 
       MockAmendLossClaimsOrderRequestDataParser
@@ -227,11 +232,11 @@ class AmendLossClaimsOrderControllerSpec
         .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
       val response: Future[Result] = controller.amendClaimsOrder(nino, taxYear)(fakePostRequest(requestBody))
-      status(response) shouldBe expectedStatus
+      status(response) shouldBe error.httpStatus
       contentAsJson(response) shouldBe Json.toJson(error)
       header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-      val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+      val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
       MockedAuditService.verifyAuditEvent(event(auditResponse)).once
     }
   }
