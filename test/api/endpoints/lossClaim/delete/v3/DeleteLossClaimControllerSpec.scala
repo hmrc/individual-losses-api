@@ -17,13 +17,13 @@
 package api.endpoints.lossClaim.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.delete.v3.request.{DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser}
+import api.endpoints.lossClaim.delete.v3.request.{ DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser }
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -102,7 +102,7 @@ class DeleteLossClaimControllerSpec
     }
 
     "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromParserTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
           MockDeleteLossClaimRequestDataParser
@@ -111,23 +111,23 @@ class DeleteLossClaimControllerSpec
 
           val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
 
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
           MockedAuditService.verifyAuditEvent(event(auditResponse)).once
         }
       }
 
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(ClaimIdFormatError, BAD_REQUEST)
+      errorsFromParserTester(BadRequestError)
+      errorsFromParserTester(NinoFormatError)
+      errorsFromParserTester(ClaimIdFormatError)
 
     }
 
     "handle downstream validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromServiceTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
           MockDeleteLossClaimRequestDataParser
@@ -139,20 +139,20 @@ class DeleteLossClaimControllerSpec
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
           val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
           MockedAuditService.verifyAuditEvent(event(auditResponse)).once
         }
       }
 
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)
+      errorsFromServiceTester(BadRequestError)
+      errorsFromServiceTester(StandardDownstreamError)
+      errorsFromServiceTester(NotFoundError)
+      errorsFromServiceTester(NinoFormatError)
+      errorsFromServiceTester(ClaimIdFormatError)
     }
   }
 }

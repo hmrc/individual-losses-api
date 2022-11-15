@@ -17,14 +17,14 @@
 package api.endpoints.bfLoss.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser}
+import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser }
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -103,7 +103,7 @@ class DeleteBFLossControllerSpec
     }
 
     "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromParserTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
           MockDeleteBFLossRequestDataParser
@@ -112,24 +112,23 @@ class DeleteBFLossControllerSpec
 
           val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
 
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
           MockedAuditService.verifyAuditEvent(event(auditResponse)).once
         }
       }
 
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NotFoundError, NOT_FOUND)
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(LossIdFormatError, BAD_REQUEST)
-
+      errorsFromParserTester(BadRequestError)
+      errorsFromParserTester(NotFoundError)
+      errorsFromParserTester(NinoFormatError)
+      errorsFromParserTester(LossIdFormatError)
     }
 
     "handle non-mdtp validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromServiceTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
           MockDeleteBFLossRequestDataParser
@@ -141,21 +140,21 @@ class DeleteBFLossControllerSpec
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
           val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
           MockedAuditService.verifyAuditEvent(event(auditResponse)).once
         }
       }
 
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(RuleDeleteAfterFinalDeclarationError, FORBIDDEN)
+      errorsFromServiceTester(BadRequestError)
+      errorsFromServiceTester(StandardDownstreamError)
+      errorsFromServiceTester(NotFoundError)
+      errorsFromServiceTester(NinoFormatError)
+      errorsFromServiceTester(LossIdFormatError)
+      errorsFromServiceTester(RuleDeleteAfterFinalDeclarationError)
     }
   }
 }

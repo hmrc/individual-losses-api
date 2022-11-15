@@ -38,7 +38,7 @@ object MtdError {
   implicit val reads: Reads[MtdError] = (
     (__ \ "code").read[String] and
       (__ \ "reason").read[String] and
-      (__ \ "httpStatus").read(0) and // being read from the downstream response, their HTTP status can be discarded
+      (__ \ "httpStatus").read(0) and // downstream response doesn't have this field
       Reads.pure(None)
   )(MtdError.apply _)
 }

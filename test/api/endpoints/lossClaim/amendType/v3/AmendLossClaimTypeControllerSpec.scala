@@ -17,21 +17,26 @@
 package api.endpoints.lossClaim.amendType.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody, MockAmendLossClaimTypeRequestDataParser}
-import api.endpoints.lossClaim.amendType.v3.response.{AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.amendType.v3.request.{
+  AmendLossClaimTypeRawData,
+  AmendLossClaimTypeRequest,
+  AmendLossClaimTypeRequestBody,
+  MockAmendLossClaimTypeRequestDataParser
+}
+import api.endpoints.lossClaim.amendType.v3.response.{ AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden}
+import api.models.errors.v3.{ RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden }
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -163,10 +168,10 @@ class AmendLossClaimTypeControllerSpec
         TypeOfClaimFormatError
       )
 
-      badRequestErrorsFromParser.foreach(errorsFromParserTester(_, BAD_REQUEST))
+      badRequestErrorsFromParser.foreach(errorsFromParserTester)
     }
 
-    def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+    def errorsFromParserTester(error: MtdError): Unit = {
       s"a ${error.code} error is returned from the parser" in new Test {
 
         MockAmendLossClaimTypeRequestDataParser
@@ -176,10 +181,10 @@ class AmendLossClaimTypeControllerSpec
         val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
 
         contentAsJson(response) shouldBe Json.toJson(error)
-        status(response) shouldBe expectedStatus
+        status(response) shouldBe error.httpStatus
         header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+        val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }
@@ -187,14 +192,14 @@ class AmendLossClaimTypeControllerSpec
 
   "handle downstream errors as per spec" when {
 
-    errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-    errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)
-    errorsFromServiceTester(RuleTypeOfClaimInvalidForbidden, FORBIDDEN)
-    errorsFromServiceTester(RuleClaimTypeNotChanged, FORBIDDEN)
-    errorsFromServiceTester(NotFoundError, NOT_FOUND)
-    errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
+    errorsFromServiceTester(NinoFormatError)
+    errorsFromServiceTester(ClaimIdFormatError)
+    errorsFromServiceTester(RuleTypeOfClaimInvalidForbidden)
+    errorsFromServiceTester(RuleClaimTypeNotChanged)
+    errorsFromServiceTester(NotFoundError)
+    errorsFromServiceTester(StandardDownstreamError)
 
-    def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+    def errorsFromServiceTester(error: MtdError): Unit = {
       s"a ${error.code} error is returned from the service" in new Test {
 
         MockAmendLossClaimTypeRequestDataParser
@@ -207,10 +212,10 @@ class AmendLossClaimTypeControllerSpec
 
         val response: Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
         contentAsJson(response) shouldBe Json.toJson(error)
-        status(response) shouldBe expectedStatus
+        status(response) shouldBe error.httpStatus
         header("X-CorrelationId", response) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+        val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse)).once
       }
     }

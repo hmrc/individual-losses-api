@@ -129,7 +129,7 @@ class RetrieveLossClaimControllerSpec
     }
 
     "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromParserTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
           MockRetrieveLossClaimRequestDataParser
@@ -139,18 +139,18 @@ class RetrieveLossClaimControllerSpec
           val response: Future[Result] = controller.retrieve(nino, claimId)(fakeRequest)
 
           contentAsJson(response) shouldBe Json.toJson(error)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(ClaimIdFormatError, BAD_REQUEST)
+      errorsFromParserTester(BadRequestError)
+      errorsFromParserTester(NinoFormatError)
+      errorsFromParserTester(ClaimIdFormatError)
     }
 
     "handle non-mdtp validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromServiceTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
           MockRetrieveLossClaimRequestDataParser
@@ -163,16 +163,16 @@ class RetrieveLossClaimControllerSpec
 
           val response: Future[Result] = controller.retrieve(nino, claimId)(fakeRequest)
           contentAsJson(response) shouldBe Json.toJson(error)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)
+      errorsFromServiceTester(BadRequestError)
+      errorsFromServiceTester(StandardDownstreamError)
+      errorsFromServiceTester(NotFoundError)
+      errorsFromServiceTester(NinoFormatError)
+      errorsFromServiceTester(ClaimIdFormatError)
     }
   }
 }

@@ -16,14 +16,14 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
-import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
+import api.endpoints.lossClaim.amendType.v3.request.{ AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody }
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden}
+import api.models.errors.v3.{ RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden }
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 
@@ -66,7 +66,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaimType(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -100,7 +100,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
           s"return a $v MTD error" in new Test {
             MockedLossClaimConnector
               .amendLossClaimType(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE", v.httpStatus))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
             await(service.amendLossClaimType(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
           }

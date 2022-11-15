@@ -18,17 +18,17 @@ package api.endpoints.bfLoss.retrieve.v3
 
 import api.controllers.ControllerBaseSpec
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.endpoints.bfLoss.retrieve.v3.request.{MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest}
-import api.endpoints.bfLoss.retrieve.v3.response.{GetBFLossHateoasData, RetrieveBFLossResponse}
+import api.endpoints.bfLoss.retrieve.v3.request.{ MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest }
+import api.endpoints.bfLoss.retrieve.v3.response.{ GetBFLossHateoasData, RetrieveBFLossResponse }
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -122,7 +122,7 @@ class RetrieveBFLossControllerSpec
     }
 
     "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromParserTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
           MockRetrieveBFLossRequestDataParser
@@ -132,19 +132,19 @@ class RetrieveBFLossControllerSpec
           val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
 
           contentAsJson(response) shouldBe Json.toJson(error)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromParserTester(NotFoundError, NOT_FOUND)
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
+      errorsFromParserTester(NinoFormatError)
+      errorsFromParserTester(LossIdFormatError)
+      errorsFromParserTester(NotFoundError)
+      errorsFromParserTester(BadRequestError)
     }
 
     "handle non-mdtp validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromServiceTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
           MockRetrieveBFLossRequestDataParser
@@ -157,16 +157,16 @@ class RetrieveBFLossControllerSpec
 
           val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
           contentAsJson(response) shouldBe Json.toJson(error)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(NotFoundError)
+      errorsFromServiceTester(NinoFormatError)
+      errorsFromServiceTester(LossIdFormatError)
+      errorsFromServiceTester(BadRequestError)
+      errorsFromServiceTester(StandardDownstreamError)
     }
   }
 }

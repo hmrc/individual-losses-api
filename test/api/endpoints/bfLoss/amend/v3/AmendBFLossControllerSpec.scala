@@ -17,23 +17,23 @@
 package api.endpoints.bfLoss.amend.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.amend.anyVersion.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
-import api.endpoints.bfLoss.amend.v3.request.{AmendBFLossRequest, MockAmendBFLossParser}
+import api.endpoints.bfLoss.amend.v3.request.{ AmendBFLossRequest, MockAmendBFLossParser }
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleLossAmountNotChanged, ValueFormatError}
+import api.models.errors.v3.{ RuleLossAmountNotChanged, ValueFormatError }
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -157,7 +157,7 @@ class AmendBFLossControllerSpec
 
     "return the error as per spec" when {
       "parser errors occur" should {
-        def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+        def errorsFromParserTester(error: MtdError): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
             MockAmendBFLossRequestDataParser
@@ -166,23 +166,23 @@ class AmendBFLossControllerSpec
 
             val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
 
-            status(result) shouldBe expectedStatus
+            status(result) shouldBe error.httpStatus
             contentAsJson(result) shouldBe Json.toJson(error)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+            val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
             MockedAuditService.verifyAuditEvent(event(auditResponse)).once
           }
         }
 
         val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (LossIdFormatError, BAD_REQUEST),
-          (ValueFormatError.copy(paths = Some(Seq("/lossAmount"))), BAD_REQUEST)
+          BadRequestError,
+          NinoFormatError,
+          LossIdFormatError,
+          ValueFormatError.copy(paths = Some(Seq("/lossAmount")))
         )
 
-        input.foreach(args => (errorsFromParserTester _).tupled(args))
+        input.foreach(errorsFromParserTester)
       }
 
       "service errors occur" should {

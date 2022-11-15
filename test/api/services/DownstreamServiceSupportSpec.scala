@@ -20,7 +20,6 @@ import api.connectors.DownstreamOutcome
 import api.models.ResponseWrapper
 import api.models.errors._
 import cats.syntax.either._
-import play.api.http.Status.BAD_REQUEST
 import support.UnitSpec
 
 class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSupport {
@@ -31,13 +30,13 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
   val ep            = "someEndpoint"
   val correlationId = "correllationId"
 
-  val downstreamError1        = MtdError("DOWNSTREAM_CODE1", "downstreammsg1", BAD_REQUEST)
-  val downstreamError2        = MtdError("DOWNSTREAM_CODE2", "downstreammsg2", BAD_REQUEST)
-  val downstreamError3        = MtdError("DOWNSTREAM_CODE_DOWNSTREAM", "downstreammsg3", BAD_REQUEST)
-  val downstreamErrorUnmapped = MtdError("DOWNSTREAM_UNMAPPED", "downstreammsg4", BAD_REQUEST)
+  val downstreamError1        = MtdError("DOWNSTREAM_CODE1", "downstreammsg1")
+  val downstreamError2        = MtdError("DOWNSTREAM_CODE2", "downstreammsg2")
+  val downstreamError3        = MtdError("DOWNSTREAM_CODE_DOWNSTREAM", "downstreammsg3")
+  val downstreamErrorUnmapped = MtdError("DOWNSTREAM_UNMAPPED", "downstreammsg4")
 
-  val error1 = MtdError("CODE1", "msg1", BAD_REQUEST)
-  val error2 = MtdError("CODE2", "msg2", BAD_REQUEST)
+  val error1 = MtdError("CODE1", "msg1")
+  val error2 = MtdError("CODE2", "msg2")
 
   val downstreamToMtdErrorMap: PartialFunction[String, MtdError] = {
     case "DOWNSTREAM_CODE1"           => error1

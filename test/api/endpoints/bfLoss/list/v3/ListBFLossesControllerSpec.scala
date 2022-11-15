@@ -17,18 +17,18 @@
 package api.endpoints.bfLoss.list.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, TypeOfLoss}
-import api.endpoints.bfLoss.list.v3.request.{ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser}
-import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
+import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
+import api.endpoints.bfLoss.list.v3.request.{ ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser }
+import api.endpoints.bfLoss.list.v3.response.{ ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse }
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -170,7 +170,7 @@ class ListBFLossesControllerSpec
     }
 
     "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromParserTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
           MockListBFLossesRequestDataParser
@@ -179,23 +179,23 @@ class ListBFLossesControllerSpec
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
 
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
-      errorsFromParserTester(BusinessIdFormatError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
+      errorsFromParserTester(BadRequestError)
+      errorsFromParserTester(NinoFormatError)
+      errorsFromParserTester(TaxYearFormatError)
+      errorsFromParserTester(TypeOfLossFormatError)
+      errorsFromParserTester(BusinessIdFormatError)
+      errorsFromParserTester(RuleTaxYearNotSupportedError)
+      errorsFromParserTester(RuleTaxYearRangeInvalid)
     }
 
     "handle non-mdtp validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromServiceTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
           MockListBFLossesRequestDataParser
@@ -207,19 +207,19 @@ class ListBFLossesControllerSpec
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromServiceTester(BusinessIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(BadRequestError)
+      errorsFromServiceTester(NinoFormatError)
+      errorsFromServiceTester(TaxYearFormatError)
+      errorsFromServiceTester(BusinessIdFormatError)
+      errorsFromServiceTester(TypeOfLossFormatError)
+      errorsFromServiceTester(NotFoundError)
+      errorsFromServiceTester(StandardDownstreamError)
     }
   }
 }

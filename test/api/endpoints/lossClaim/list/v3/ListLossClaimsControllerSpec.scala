@@ -17,18 +17,18 @@
 package api.endpoints.lossClaim.list.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser}
-import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
+import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -213,7 +213,7 @@ class ListLossClaimsControllerSpec
     }
 
     "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromParserTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the parser" in new Test {
 
           MockListLossClaimsRequestDataParser
@@ -222,24 +222,24 @@ class ListLossClaimsControllerSpec
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
 
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
-      errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
-      errorsFromParserTester(TypeOfClaimFormatError, BAD_REQUEST)
-      errorsFromParserTester(BusinessIdFormatError, BAD_REQUEST)
+      errorsFromParserTester(BadRequestError)
+      errorsFromParserTester(NinoFormatError)
+      errorsFromParserTester(TaxYearFormatError)
+      errorsFromParserTester(RuleTaxYearNotSupportedError)
+      errorsFromParserTester(RuleTaxYearRangeInvalid)
+      errorsFromParserTester(TypeOfLossFormatError)
+      errorsFromParserTester(TypeOfClaimFormatError)
+      errorsFromParserTester(BusinessIdFormatError)
     }
 
     "handle backend service errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
+      def errorsFromServiceTester(error: MtdError): Unit = {
         s"a ${error.code} error is returned from the service" in new Test {
 
           MockListLossClaimsRequestDataParser
@@ -251,20 +251,20 @@ class ListLossClaimsControllerSpec
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-          status(response) shouldBe expectedStatus
+          status(response) shouldBe error.httpStatus
           contentAsJson(response) shouldBe Json.toJson(error)
           header("X-CorrelationId", response) shouldBe Some(correlationId)
         }
       }
 
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
-      errorsFromServiceTester(BusinessIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TypeOfClaimFormatError, BAD_REQUEST)
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
+      errorsFromServiceTester(BadRequestError)
+      errorsFromServiceTester(NinoFormatError)
+      errorsFromServiceTester(TaxYearFormatError)
+      errorsFromServiceTester(TypeOfLossFormatError)
+      errorsFromServiceTester(BusinessIdFormatError)
+      errorsFromServiceTester(TypeOfClaimFormatError)
+      errorsFromServiceTester(NotFoundError)
+      errorsFromServiceTester(StandardDownstreamError)
     }
   }
 }

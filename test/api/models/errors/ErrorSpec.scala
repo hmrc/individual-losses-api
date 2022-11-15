@@ -32,9 +32,7 @@ class ErrorSpec extends UnitSpec {
     )
 
     "generate the correct JSON" in {
-      withClue("reads ignores the downstream HTTP status") {
-        json.as[MtdError] shouldBe MtdError(NinoFormatError.code, NinoFormatError.message, 0)
-      }
+      json.as[MtdError] shouldBe MtdError(NinoFormatError.code, NinoFormatError.message)
     }
   }
 }
