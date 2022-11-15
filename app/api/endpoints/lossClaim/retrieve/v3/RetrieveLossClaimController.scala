@@ -68,6 +68,6 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
             .withApiHeaders(serviceResponse.correlationId)
         }
 
-      result.leftMap(logAndReturnErrorResult).merge
+      result.leftMap(errorResult).merge
     }
 }

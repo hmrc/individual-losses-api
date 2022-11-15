@@ -79,6 +79,6 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
           }
         }
 
-      result.leftMap(logAndReturnErrorResult).merge
+      result.leftMap(errorResult).merge
     }
 }

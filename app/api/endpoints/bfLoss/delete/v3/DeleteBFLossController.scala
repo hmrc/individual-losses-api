@@ -75,7 +75,7 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
         }
 
       result.leftMap { errorWrapper =>
-        val result = logAndReturnErrorResult(errorWrapper)
+        val result = errorResult(errorWrapper)
 
         auditSubmission(
           GenericAuditDetail(

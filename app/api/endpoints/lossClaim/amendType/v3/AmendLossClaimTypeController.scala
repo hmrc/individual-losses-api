@@ -86,7 +86,7 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
         }
 
       result.leftMap { errorWrapper =>
-        val result = logAndReturnErrorResult(errorWrapper)
+        val result = errorResult(errorWrapper)
 
         auditSubmission(
           GenericAuditDetail(

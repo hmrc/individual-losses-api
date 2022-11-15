@@ -66,6 +66,6 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
             .withApiHeaders(serviceResponse.correlationId)
         }
 
-      result.leftMap(logAndReturnErrorResult).merge
+      result.leftMap(errorResult).merge
     }
 }

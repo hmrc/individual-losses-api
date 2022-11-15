@@ -24,8 +24,15 @@ import utils.Logging
 
 trait BaseController { self: Logging =>
 
-  protected def errorResult(errorWrapper: ErrorWrapper): Result =
+  protected def errorResult(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
+    val resCorrelationId = errorWrapper.correlationId
+    logger.warn(
+      s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+        s"Error response received with CorrelationId: $resCorrelationId")
+
     Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
+      .withApiHeaders(resCorrelationId)
+  }
 
   implicit class Response(result: Result) {
 
@@ -38,14 +45,5 @@ trait BaseController { self: Logging =>
 
       result.copy(header = result.header.copy(headers = result.header.headers ++ newHeaders))
     }
-  }
-
-  protected def logAndReturnErrorResult(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
-    val resCorrelationId = errorWrapper.correlationId
-    logger.warn(
-      s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-        s"Error response received with CorrelationId: $resCorrelationId")
-
-    errorResult(errorWrapper).withApiHeaders(resCorrelationId)
   }
 }
