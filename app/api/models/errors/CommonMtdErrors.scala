@@ -18,14 +18,23 @@ package api.models.errors
 
 import play.api.http.Status._
 
-object NinoFormatError        extends MtdError("FORMAT_NINO", "The provided NINO is invalid", BAD_REQUEST)
-object TaxYearFormatError     extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid", BAD_REQUEST)
-object AmountFormatError      extends MtdError("FORMAT_LOSS_AMOUNT", "The provided Loss amount is invalid", BAD_REQUEST)
-object BusinessIdFormatError  extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid", BAD_REQUEST)
-object ClaimIdFormatError     extends MtdError("FORMAT_CLAIM_ID", "The provided claim ID is invalid", BAD_REQUEST)
-object LossIdFormatError      extends MtdError("FORMAT_LOSS_ID", "The provided loss ID is invalid", BAD_REQUEST)
-object TypeOfLossFormatError  extends MtdError("FORMAT_TYPE_OF_LOSS", "The provided type of loss is invalid", BAD_REQUEST)
-object TypeOfClaimFormatError extends MtdError("FORMAT_TYPE_OF_CLAIM", "The provided type of claim is invalid", BAD_REQUEST)
+// MtdError types that are common across MTD APIs.
+
+// Format Errors
+object NinoFormatError          extends MtdError("FORMAT_NINO", "The provided NINO is invalid", BAD_REQUEST)
+object TaxYearFormatError       extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid", BAD_REQUEST)
+object ToDateFormatError        extends MtdError(code = "FORMAT_TO_DATE", message = "The provided toDate is invalid", BAD_REQUEST)
+object FromDateFormatError      extends MtdError(code = "FORMAT_FROM_DATE", message = "The provided fromDate is invalid", BAD_REQUEST)
+object BusinessIdFormatError    extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid", BAD_REQUEST)
+object PaymentIdFormatError     extends MtdError(code = "FORMAT_PAYMENT_ID", message = "The provided payment ID is invalid", BAD_REQUEST)
+object TransactionIdFormatError extends MtdError(code = "FORMAT_TRANSACTION_ID", message = "The provided transaction ID is invalid", BAD_REQUEST)
+object IdFormatError            extends MtdError(code = "FORMAT_ID", message = "The format of the ID is invalid", BAD_REQUEST)
+
+object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
+
+  def forPathAndRange(path: String, min: String, max: String): MtdError =
+    ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max")
+}
 
 //Standard Errors
 object NotFoundError           extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
@@ -50,11 +59,26 @@ object RuleTaxYearNotSupportedError
 object RuleIncorrectOrEmptyBodyError
     extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted", BAD_REQUEST)
 
-object RuleTaxYearRangeInvalid
-    extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required", BAD_REQUEST)
+object RuleTaxYearRangeInvalidError extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "A tax year range of one year is required", BAD_REQUEST)
+object RuleTaxYearNotEndedError     extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The specified tax year has not yet ended", BAD_REQUEST)
+object RuleDuplicateIdError         extends MtdError(code = "RULE_DUPLICATE_ID_NOT_ALLOWED", message = "Duplicate IDs are not allowed", BAD_REQUEST)
 
-object RuleTaxYearNotEndedError
-    extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The tax year for this brought forward loss has not yet ended", BAD_REQUEST)
+object RuleFromDateNotSupportedError
+    extends MtdError(code = "RULE_FROM_DATE_NOT_SUPPORTED", message = "The specified from date is too early", BAD_REQUEST)
+
+object RuleMissingToDateError
+    extends MtdError(code = "MISSING_TO_DATE", message = "The fromDate has been provided, but toDate is missing", BAD_REQUEST)
+
+object MissingFromDateError
+    extends MtdError(code = "MISSING_FROM_DATE", message = "The toDate has been provided, but fromDate is missing", BAD_REQUEST)
+
+object RangeToDateBeforeFromDateError
+    extends MtdError(code = "RANGE_TO_DATE_BEFORE_FROM_DATE", message = "The toDate cannot be earlier than the fromDate", BAD_REQUEST)
+
+object RuleDateRangeInvalidError extends MtdError(code = "RULE_DATE_RANGE_INVALID", message = "The specified date range is invalid", BAD_REQUEST)
+object RuleInvalidDateRangeError extends MtdError(code = "RULE_INVALID_DATE_RANGE", message = "The provided date range is invalid", BAD_REQUEST)
 
 object RuleBusinessId
     extends MtdError("RULE_BUSINESS_ID", "A Business ID must be supplied for a self-employment or a foreign property business type.", BAD_REQUEST)
+
+object NoTransactionDetailsFoundError extends MtdError(code = "NO_DETAILS_FOUND", message = "No transaction details found", BAD_REQUEST)

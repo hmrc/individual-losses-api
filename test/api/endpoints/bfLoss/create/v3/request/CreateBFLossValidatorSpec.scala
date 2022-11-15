@@ -18,9 +18,8 @@ package api.endpoints.bfLoss.create.v3.request
 
 import api.mocks.MockCurrentDate
 import api.models.errors._
-import api.models.errors.v3.ValueFormatError
-import config.{AppConfig, MockAppConfig}
-import play.api.libs.json.{JsValue, Json}
+import config.{ AppConfig, MockAppConfig }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import utils.CurrentDate
@@ -99,7 +98,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in new Test {
         validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2017-19")))) shouldBe
-          List(RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom"))))
+          List(RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))))
       }
     }
 

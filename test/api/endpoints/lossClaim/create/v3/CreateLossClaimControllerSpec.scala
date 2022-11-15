@@ -31,7 +31,6 @@ import api.models.ResponseWrapper
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
 import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
@@ -177,7 +176,7 @@ class CreateLossClaimControllerSpec
       TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor"))),
       RuleIncorrectOrEmptyBodyError,
       RuleTaxYearNotSupportedError,
-      RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearClaimedFor"))),
+      RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearClaimedFor"))),
       TypeOfLossFormatError,
       BusinessIdFormatError,
       RuleTypeOfClaimInvalid,

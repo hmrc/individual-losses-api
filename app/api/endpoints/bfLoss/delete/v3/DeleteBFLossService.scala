@@ -19,13 +19,12 @@ package api.endpoints.bfLoss.delete.v3
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
 import api.models.errors._
-import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.DeleteBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class DeleteBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 

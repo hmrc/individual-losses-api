@@ -16,8 +16,7 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.MtdError
-import api.models.errors.v3.ValueFormatError
+import api.models.errors.{MtdError, ValueFormatError}
 import api.validations.NoValidationErrors
 
 object NumberValidation {

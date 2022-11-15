@@ -17,15 +17,14 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.models.errors._
-import api.models.errors.v3._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsObject, JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
 
@@ -177,7 +176,7 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
         Status.BAD_REQUEST,
-        RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearClaimedFor")))
+        RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearClaimedFor")))
       )
       createLossClaimValidationErrorTest("AA123456A",
                                          generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),

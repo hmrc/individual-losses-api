@@ -19,13 +19,12 @@ package api.endpoints.lossClaim.amendType.v3
 import api.endpoints.lossClaim.amendType.v3.request.AmendLossClaimTypeRequest
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden}
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 

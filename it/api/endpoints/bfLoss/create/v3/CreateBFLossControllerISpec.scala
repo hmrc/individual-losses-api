@@ -17,16 +17,15 @@
 package api.endpoints.bfLoss.create.v3
 
 import api.models.errors._
-import api.models.errors.v3.{RuleDuplicateSubmissionError, ValueFormatError}
 import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json._
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorValidators {
 
@@ -138,7 +137,7 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
         validationErrorTest(
           "AA123456A",
           requestBody.update("/taxYearBroughtForwardFrom", JsString("2021-23")),
-          RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom")))
+          RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearBroughtForwardFrom")))
         )
         validationErrorTest(
           "AA123456A",

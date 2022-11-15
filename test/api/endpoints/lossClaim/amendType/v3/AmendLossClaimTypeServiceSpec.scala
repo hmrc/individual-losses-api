@@ -23,7 +23,6 @@ import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{ RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden }
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 

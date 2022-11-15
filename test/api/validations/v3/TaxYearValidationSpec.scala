@@ -51,7 +51,7 @@ class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
       val validationResult = TaxYearValidation.validate(invalidTaxYear, TaxYearFormatError)
       validationResult.isEmpty shouldBe false
       validationResult.length shouldBe 1
-      validationResult.head shouldBe RuleTaxYearRangeInvalid
+      validationResult.head shouldBe RuleTaxYearRangeInvalidError
 
     }
 
@@ -61,7 +61,7 @@ class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
       val validationResult = TaxYearValidation.validate(invalidTaxYear, TaxYearFormatError)
       validationResult.isEmpty shouldBe false
       validationResult.length shouldBe 1
-      validationResult.head shouldBe RuleTaxYearRangeInvalid
+      validationResult.head shouldBe RuleTaxYearRangeInvalidError
 
     }
 
@@ -71,7 +71,7 @@ class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
       val validationResult = TaxYearValidation.validate(invalidTaxYear, TaxYearFormatError)
       validationResult.isEmpty shouldBe false
       validationResult.length shouldBe 1
-      validationResult.head shouldBe RuleTaxYearRangeInvalid
+      validationResult.head shouldBe RuleTaxYearRangeInvalidError
 
     }
 

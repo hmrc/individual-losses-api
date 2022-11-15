@@ -17,14 +17,13 @@
 package api.endpoints.bfLoss.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser }
+import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser}
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
-import api.models.errors._
-import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.models.errors.{RuleDeleteAfterFinalDeclarationError, _}
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier

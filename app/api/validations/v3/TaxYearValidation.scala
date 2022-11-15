@@ -16,7 +16,7 @@
 
 package api.validations.v3
 
-import api.models.errors.{MtdError, RuleTaxYearRangeInvalid}
+import api.models.errors.{MtdError, RuleTaxYearRangeInvalidError}
 import api.validations.NoValidationErrors
 
 object TaxYearValidation {
@@ -32,7 +32,7 @@ object TaxYearValidation {
       if (end - start == 1) {
         NoValidationErrors
       } else {
-        List(RuleTaxYearRangeInvalid)
+        List(RuleTaxYearRangeInvalidError)
       }
     } else {
       List(taxYearFormatError)

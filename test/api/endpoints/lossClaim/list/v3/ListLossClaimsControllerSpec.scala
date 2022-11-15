@@ -232,7 +232,7 @@ class ListLossClaimsControllerSpec
       errorsFromParserTester(NinoFormatError)
       errorsFromParserTester(TaxYearFormatError)
       errorsFromParserTester(RuleTaxYearNotSupportedError)
-      errorsFromParserTester(RuleTaxYearRangeInvalid)
+      errorsFromParserTester(RuleTaxYearRangeInvalidError)
       errorsFromParserTester(TypeOfLossFormatError)
       errorsFromParserTester(TypeOfClaimFormatError)
       errorsFromParserTester(BusinessIdFormatError)

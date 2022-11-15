@@ -191,7 +191,7 @@ class ListBFLossesControllerSpec
       errorsFromParserTester(TypeOfLossFormatError)
       errorsFromParserTester(BusinessIdFormatError)
       errorsFromParserTester(RuleTaxYearNotSupportedError)
-      errorsFromParserTester(RuleTaxYearRangeInvalid)
+      errorsFromParserTester(RuleTaxYearRangeInvalidError)
     }
 
     "handle non-mdtp validation errors as per spec" when {

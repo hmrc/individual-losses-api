@@ -132,7 +132,7 @@ class ListBFLossesValidatorSpec extends UnitSpec {
           ListBFLossesRawData(nino = validNino,
                               taxYearBroughtForwardFrom = Some("2018-20"),
                               typeOfLoss = Some(validLossType),
-                              businessId = Some(validBusinessId))) shouldBe List(RuleTaxYearRangeInvalid)
+                              businessId = Some(validBusinessId))) shouldBe List(RuleTaxYearRangeInvalidError)
       }
     }
 

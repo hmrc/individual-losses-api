@@ -18,8 +18,7 @@ package api.endpoints.bfLoss.create.v3
 
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.create.v3.request.CreateBFLossRequest
-import api.models.errors._
-import api.models.errors.v3.RuleDuplicateSubmissionError
+import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.CreateBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier

@@ -22,8 +22,7 @@ import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors._
-import api.models.errors.v3.RuleDuplicateSubmissionError
+import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.CreateBFLossOutcome
 

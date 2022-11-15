@@ -28,7 +28,6 @@ import api.models.ResponseWrapper
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{ RuleLossAmountNotChanged, ValueFormatError }
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
 import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }

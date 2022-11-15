@@ -26,7 +26,6 @@ import api.models.ResponseWrapper
 import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{ RuleDuplicateSubmissionError, ValueFormatError }
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
 import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
@@ -168,7 +167,7 @@ class CreateBFLossControllerSpec
     val badRequestErrorsFromParser = List(
       NinoFormatError,
       TaxYearFormatError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
-      RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
+      RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
       RuleTaxYearNotSupportedError.copy(paths = Some(List("/taxYearBroughtForwardFrom"))),
       ValueFormatError.copy(paths = Some(List("/lossAmount"))),
       BusinessIdFormatError,

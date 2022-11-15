@@ -21,13 +21,12 @@ import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderRespon
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.ResponseWrapper
 import api.models.errors._
-import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 

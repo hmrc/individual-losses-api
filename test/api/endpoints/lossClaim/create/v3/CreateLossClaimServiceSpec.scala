@@ -17,13 +17,12 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRequest, CreateLossClaimRequestBody}
+import api.endpoints.lossClaim.create.v3.request.{ CreateLossClaimRequest, CreateLossClaimRequestBody }
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.CreateLossClaimOutcome
 

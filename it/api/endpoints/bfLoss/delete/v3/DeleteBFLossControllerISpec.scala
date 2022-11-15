@@ -16,8 +16,7 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.models.errors._
-import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
+import api.models.errors.{RuleDeleteAfterFinalDeclarationError, _}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status

@@ -19,7 +19,6 @@ package api.endpoints.lossClaim.amendOrder.v3
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.errors._
-import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError }
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -219,7 +218,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
       validationErrorTest("BADNINO", "2019-20", requestJson(), BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalid)
+      validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalidError)
       validationErrorTest("AA123456A", "2017-18", requestJson(), BAD_REQUEST, RuleTaxYearNotSupportedError)
       validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), BAD_REQUEST, TypeOfClaimFormatError)
       validationErrorTest("AA123456A", "2019-20", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)

@@ -66,7 +66,7 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
 
     "return RuleTaxYearRangeInvalid" when {
       "the tax year range is not a single year" in {
-        validator.validate(rawData(taxYearClaimedFor = Some("2018-20"))) shouldBe List(RuleTaxYearRangeInvalid)
+        validator.validate(rawData(taxYearClaimedFor = Some("2018-20"))) shouldBe List(RuleTaxYearRangeInvalidError)
       }
     }
 
