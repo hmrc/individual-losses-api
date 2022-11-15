@@ -17,8 +17,8 @@
 package api.endpoints.lossClaim.list.v3.request
 
 import api.controllers.RequestParser
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.models.domain.{ TaxYear, Nino }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.domain.{Nino, TaxYear}
 
 import javax.inject.Inject
 

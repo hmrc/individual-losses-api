@@ -17,9 +17,9 @@
 package api.endpoints.lossClaim.list.v3
 
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
@@ -29,8 +29,8 @@ import scala.concurrent.Future
 
 class ListLossClaimsServiceSpec extends ServiceSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  val nino: String                            = "AA123456A"
+  val claimId: String                         = "AAZZ1234567890a"
   override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockLossClaimConnector {

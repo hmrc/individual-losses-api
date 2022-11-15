@@ -19,16 +19,16 @@ package api.endpoints.lossClaim.amendOrder.v3
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.errors._
-import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError }
+import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status._
-import play.api.libs.json.{ JsValue, Json, OWrites, Writes }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsValue, Json, OWrites, Writes}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 

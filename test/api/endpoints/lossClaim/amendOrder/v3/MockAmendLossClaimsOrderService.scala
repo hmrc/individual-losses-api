@@ -32,10 +32,7 @@ trait MockAmendLossClaimsOrderService extends MockFactory {
 
     def amend(requestData: AmendLossClaimsOrderRequest): CallHandler[Future[AmendLossClaimsOrderOutcome]] = {
       (mockAmendLossClaimsOrderService
-        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequest)(
-          _: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
   }

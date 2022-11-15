@@ -23,7 +23,7 @@ import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLosse
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.domain.{TaxYear, Nino}
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}

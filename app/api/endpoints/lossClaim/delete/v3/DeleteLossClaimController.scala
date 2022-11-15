@@ -19,12 +19,10 @@ package api.endpoints.lossClaim.delete.v3
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
 import api.endpoints.lossClaim.delete.v3.request.{DeleteLossClaimParser, DeleteLossClaimRawData}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.errors._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -49,7 +47,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
 
       val rawData = DeleteLossClaimRawData(nino, claimId)
@@ -93,15 +90,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
         result
       }.merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError                                => InternalServerError(Json.toJson(errorWrapper))
-      case _                                                      => unhandledError(errorWrapper)
-    }
-  }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event: AuditEvent[GenericAuditDetail] = AuditEvent(

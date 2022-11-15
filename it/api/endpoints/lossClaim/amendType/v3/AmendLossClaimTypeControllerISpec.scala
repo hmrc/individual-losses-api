@@ -17,7 +17,7 @@
 package api.endpoints.lossClaim.amendType.v3
 
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -148,7 +148,7 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)
-      serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", Status.FORBIDDEN, RuleTypeOfClaimInvalid)
+      serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", Status.FORBIDDEN, RuleTypeOfClaimInvalidForbidden)
       serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleClaimTypeNotChanged)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError)

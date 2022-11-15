@@ -48,7 +48,6 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
 
   def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
 
       val rawData = RetrieveLossClaimRawData(nino, claimId)
@@ -57,7 +56,7 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
         for {
           parsedRequest   <- EitherT.fromEither[Future](retrieveLossClaimParser.parseRequest(rawData))
           serviceResponse <- EitherT(retrieveLossClaimService.retrieveLossClaim(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
+          vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, GetLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
@@ -74,13 +73,4 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
         result
       }.merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | ClaimIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                          => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError                                => InternalServerError(Json.toJson(errorWrapper))
-      case _                                                      => unhandledError(errorWrapper)
-    }
-  }
 }

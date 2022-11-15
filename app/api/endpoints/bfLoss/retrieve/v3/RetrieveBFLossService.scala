@@ -33,9 +33,8 @@ class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends Downst
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier,
-                                                     ec: ExecutionContext,
-                                                     correlationId: String): Future[RetrieveBFLossOutcome] = {
+  def retrieveBFLoss(
+      request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[RetrieveBFLossOutcome] = {
 
     connector.retrieveBFLoss(request).map {
       mapToVendorDirect("retrieveBFLoss", errorMap)

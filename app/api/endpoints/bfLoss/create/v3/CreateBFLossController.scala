@@ -22,7 +22,6 @@ import api.endpoints.bfLoss.create.v3.response.CreateBFLossHateoasData
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
-import api.models.errors.v3.{RuleDuplicateSubmissionError, ValueFormatError}
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
@@ -53,7 +52,6 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
 
       val rawData = CreateBFLossRawData(nino, AnyContentAsJson(request.body))
@@ -62,7 +60,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
         for {
           parsedRequest   <- EitherT.fromEither[Future](createBFLossParser.parseRequest(rawData))
           serviceResponse <- EitherT(createBFLossService.createBFLoss(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
+          vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
               .wrap(serviceResponse.responseData, CreateBFLossHateoasData(nino, serviceResponse.responseData.lossId))
               .asRight[ErrorWrapper]
@@ -106,19 +104,6 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
         result
       }.merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCode(
-            RuleTaxYearNotSupportedError.code) | RuleTaxYearRangeInvalid | TypeOfLossFormatError | BusinessIdFormatError | RuleBusinessId |
-          MtdErrorWithCode(ValueFormatError.code) | RuleTaxYearNotEndedError | MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(
-            RuleTaxYearRangeInvalid.code) =>
-        BadRequest(Json.toJson(errorWrapper))
-      case RuleDuplicateSubmissionError => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError                => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError      => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event: AuditEvent[GenericAuditDetail] = AuditEvent(

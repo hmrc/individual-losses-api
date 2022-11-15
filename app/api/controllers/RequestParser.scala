@@ -17,7 +17,7 @@
 package api.controllers
 
 import api.models.RawData
-import api.models.errors.{ BadRequestError, ErrorWrapper }
+import api.models.errors.{BadRequestError, ErrorWrapper}
 import api.validations.Validator
 
 trait RequestParser[Raw <: RawData, Request] {

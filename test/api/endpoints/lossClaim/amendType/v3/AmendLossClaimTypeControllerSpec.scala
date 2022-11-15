@@ -26,7 +26,7 @@ import api.models.ResponseWrapper
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden}
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -189,7 +189,7 @@ class AmendLossClaimTypeControllerSpec
 
     errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
     errorsFromServiceTester(ClaimIdFormatError, BAD_REQUEST)
-    errorsFromServiceTester(RuleTypeOfClaimInvalid, FORBIDDEN)
+    errorsFromServiceTester(RuleTypeOfClaimInvalidForbidden, FORBIDDEN)
     errorsFromServiceTester(RuleClaimTypeNotChanged, FORBIDDEN)
     errorsFromServiceTester(NotFoundError, NOT_FOUND)
     errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)

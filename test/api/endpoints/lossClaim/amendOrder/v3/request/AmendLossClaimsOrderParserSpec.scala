@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
-import api.models.domain.{ TaxYear, Nino }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson

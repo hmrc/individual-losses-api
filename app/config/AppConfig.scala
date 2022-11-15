@@ -43,7 +43,7 @@ trait AppConfig {
   def ifsEnvironmentHeaders: Option[Seq[String]]
 
   lazy val ifsDownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = ifsBaseUrl , env = ifsEnv, token = ifsToken, environmentHeaders = ifsEnvironmentHeaders)
+    DownstreamConfig(baseUrl = ifsBaseUrl, env = ifsEnv, token = ifsToken, environmentHeaders = ifsEnvironmentHeaders)
 
   // Tax Year Specific (TYS) IFS Config
   def tysIfsBaseUrl: String
@@ -90,7 +90,9 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
   def apiStatus(version: Version): String          = config.getString(s"api.${version.name}.status")
   def featureSwitches: Configuration               = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
-  def endpointsEnabled(version: String): Boolean   = config.getBoolean(s"feature-switch.version-$version.enabled") // Should this not be "api.version..." instead of "feature.switch.version..."?
+
+  def endpointsEnabled(version: String): Boolean =
+    config.getBoolean(s"feature-switch.version-$version.enabled") // Should this not be "api.version..." instead of "feature.switch.version..."?
 }
 
 trait FixedConfig {

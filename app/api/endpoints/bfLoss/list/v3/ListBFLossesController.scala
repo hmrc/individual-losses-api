@@ -47,7 +47,6 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
 
   def list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
 
       val rawData = ListBFLossesRawData(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
@@ -56,7 +55,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
         for {
           parsedRequest   <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))
           serviceResponse <- EitherT(listBFLossesService.listBFLosses(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
+          vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
               .wrapList(serviceResponse.responseData, ListBFLossHateoasData(nino))
               .asRight[ErrorWrapper]
@@ -85,15 +84,4 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
         result
       }.merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError | RuleTaxYearNotSupportedError |
-          RuleTaxYearRangeInvalid =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case _                       => unhandledError(errorWrapper)
-    }
-  }
 }

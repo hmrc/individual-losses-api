@@ -46,8 +46,7 @@ class FeatureSwitchesSpec extends UnitSpec {
     }
 
     "config set" must {
-      val featureSwitch = createFeatureSwitch(
-        """
+      val featureSwitch = createFeatureSwitch("""
           |version-3.enabled = true
         """.stripMargin)
 
@@ -60,8 +59,7 @@ class FeatureSwitchesSpec extends UnitSpec {
   "isAmendLossClaimsOrderRouteEnabled" must {
     "return true" when {
       "config set to true" in {
-        val featureSwitch = createFeatureSwitch(
-          """
+        val featureSwitch = createFeatureSwitch("""
             |amend-loss-claim-order.enabled = true
             |""".stripMargin)
 
@@ -71,8 +69,7 @@ class FeatureSwitchesSpec extends UnitSpec {
 
     "return false" when {
       "config set to false" in {
-        val featureSwitch = createFeatureSwitch(
-          """
+        val featureSwitch = createFeatureSwitch("""
             |amend-loss-claim-order.enabled = false
             |""".stripMargin)
 
@@ -89,14 +86,14 @@ class FeatureSwitchesSpec extends UnitSpec {
     "be true" when {
 
       "absent from the config" in {
-        val configuration = Configuration.empty
+        val configuration   = Configuration.empty
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isTaxYearSpecificApiEnabled shouldBe true
       }
 
       "enabled" in {
-        val configuration = Configuration("tys-api.enabled" -> true)
+        val configuration   = Configuration("tys-api.enabled" -> true)
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isTaxYearSpecificApiEnabled shouldBe true
@@ -106,7 +103,7 @@ class FeatureSwitchesSpec extends UnitSpec {
 
     "be false" when {
       "disabled" in {
-        val configuration = Configuration("tys-api.enabled" -> false)
+        val configuration   = Configuration("tys-api.enabled" -> false)
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isTaxYearSpecificApiEnabled shouldBe false

@@ -19,7 +19,7 @@ package api.endpoints.lossClaim.amendType.v3
 import api.endpoints.lossClaim.amendType.v3.request.AmendLossClaimTypeRequest
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden}
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 import uk.gov.hmrc.http.HeaderCarrier
@@ -48,7 +48,7 @@ class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "INVALID_PAYLOAD"           -> StandardDownstreamError,
-    "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
+    "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalidForbidden,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleClaimTypeNotChanged,
     "INVALID_CORRELATIONID"     -> StandardDownstreamError,

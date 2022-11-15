@@ -56,7 +56,7 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
     "a valid non-TYS request is supplied" should {
       "return a successful response with the correct correlationId" in new DesTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
-        val expected = Right(ResponseWrapper(correlationId, ()))
+        val expected         = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
           url = s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/2023",

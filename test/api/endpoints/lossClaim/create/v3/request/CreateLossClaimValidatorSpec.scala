@@ -17,9 +17,9 @@
 package api.endpoints.lossClaim.create.v3.request
 
 import api.models.errors._
-import api.models.errors.v3.{ RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError }
+import api.models.errors.v3.{RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError}
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{ JsObject, JsValue, Json }
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 

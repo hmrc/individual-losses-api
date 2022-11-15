@@ -22,7 +22,6 @@ import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeHateoasDa
 import api.hateoas.HateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
@@ -53,7 +52,6 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
 
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
 
       val rawData = AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(request.body))
@@ -62,7 +60,7 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
         for {
           parsedRequest   <- EitherT.fromEither[Future](amendLossClaimTypeParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendLossClaimTypeService.amendLossClaimType(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
+          vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimTypeHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
@@ -103,16 +101,6 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
         result
       }.merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) | ClaimIdFormatError | TypeOfClaimFormatError =>
-        BadRequest(Json.toJson(errorWrapper))
-      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError                                    => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError                          => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event: AuditEvent[GenericAuditDetail] = AuditEvent(auditType = "AmendLossClaim", transactionName = "amend-loss-claim", detail = details)

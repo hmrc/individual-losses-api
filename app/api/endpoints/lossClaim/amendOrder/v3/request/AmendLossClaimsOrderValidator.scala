@@ -18,9 +18,9 @@ package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.errors._
-import api.validations.v3._
 import api.validations.Validator
-import api.validations.anyVersion.{JsonFormatValidation, JsonValidation, MinTaxYearValidation, NinoValidation, NumberValidation, SequenceSequentialValidation}
+import api.validations.anyVersion._
+import api.validations.v3._
 import config.FixedConfig
 
 class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawData] with FixedConfig {

@@ -23,11 +23,12 @@ import play.api.Configuration
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
-  lazy val baseUrl          = "http://test-BaseUrl"
+  lazy val baseUrl                   = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val otherHeaders: Seq[(String, String)] = Seq(
@@ -134,7 +135,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           config = dummyHeaderCarrierConfig,
           body = body,
           requiredHeaders = requiredHeaders ++ Seq("Content-Type" -> "application/json"),
-          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          excludedHeaders = Seq("AnotherHeader"                   -> "HeaderValue")
         )
     }
 
@@ -145,7 +146,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           config = dummyHeaderCarrierConfig,
           body = body,
           requiredHeaders = requiredHeaders ++ Seq("Content-Type" -> "application/json"),
-          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+          excludedHeaders = Seq("AnotherHeader"                   -> "HeaderValue")
         )
     }
 

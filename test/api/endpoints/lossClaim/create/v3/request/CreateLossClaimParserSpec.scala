@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.create.v3.request
 
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json

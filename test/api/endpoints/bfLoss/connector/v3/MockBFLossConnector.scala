@@ -39,43 +39,31 @@ trait MockBFLossConnector extends MockFactory {
 
     def createBFLoss(createBFLossRequest: CreateBFLossRequest): CallHandler[Future[DownstreamOutcome[CreateBFLossResponse]]] = {
       (connector
-        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .createBFLoss(_: CreateBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(createBFLossRequest, *, *, *)
     }
 
     def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DownstreamOutcome[AmendBFLossResponse]]] = {
       (connector
-        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(amendBFLossRequest, *, *, *)
     }
 
     def deleteBFLoss(deleteBFLossRequest: DeleteBFLossRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(deleteBFLossRequest, *, *, *)
     }
 
     def retrieveBFLoss(request: RetrieveBFLossRequest): CallHandler[Future[DownstreamOutcome[RetrieveBFLossResponse]]] = {
       (connector
-        .retrieveBFLoss(_: RetrieveBFLossRequest)(
-          _: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 
     def listBFLosses(request: ListBFLossesRequest): CallHandler[Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]]] = {
       (connector
-        .listBFLosses(_: ListBFLossesRequest)(
-          _: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
   }

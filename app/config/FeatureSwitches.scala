@@ -27,7 +27,7 @@ case class FeatureSwitches(featureSwitchConfig: Configuration) {
     } yield enabled).getOrElse(false)
 
   def isAmendLossClaimsOrderRouteEnabled: Boolean =
-      featureSwitchConfig.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
+    featureSwitchConfig.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
 
   val isTaxYearSpecificApiEnabled: Boolean = isEnabled("tys-api.enabled")
 

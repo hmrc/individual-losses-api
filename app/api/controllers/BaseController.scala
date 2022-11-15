@@ -28,7 +28,7 @@ trait BaseController {
 
   protected val logger = Logger(this.getClass)
 
-  protected def mapErrorResult(errorWrapper: ErrorWrapper): Result =
+  protected def errorResult(errorWrapper: ErrorWrapper): Result =
     Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
 
   protected def unhandledError(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {

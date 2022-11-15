@@ -18,8 +18,8 @@ package api.endpoints.lossClaim.amendType.v3.request
 
 import api.connectors.DownstreamOutcome
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
-import api.endpoints.lossClaim.connector.v3.{ LossClaimConnector, LossClaimConnectorSpec }
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._

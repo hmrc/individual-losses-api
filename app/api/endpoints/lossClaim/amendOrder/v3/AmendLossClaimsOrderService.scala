@@ -63,14 +63,14 @@ class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) exten
     )
 
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"           -> TaxYearFormatError,
-      "INVALID_CORRELATIONID"      -> StandardDownstreamError,
-      "NOT_FOUND"                  -> NotFoundError,
-      "NOT_SEQUENTIAL"             -> RuleSequenceOrderBroken,
-      "SEQUENCE_START"             -> RuleInvalidSequenceStart,
-      "NO_FULL_LIST"               -> RuleLossClaimsMissing,
-      "CLAIM_NOT_FOUND"            -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+      "INVALID_TAX_YEAR"       -> TaxYearFormatError,
+      "INVALID_CORRELATIONID"  -> StandardDownstreamError,
+      "NOT_FOUND"              -> NotFoundError,
+      "NOT_SEQUENTIAL"         -> RuleSequenceOrderBroken,
+      "SEQUENCE_START"         -> RuleInvalidSequenceStart,
+      "NO_FULL_LIST"           -> RuleLossClaimsMissing,
+      "CLAIM_NOT_FOUND"        -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
     )
 
     errors ++ extraTysErrors

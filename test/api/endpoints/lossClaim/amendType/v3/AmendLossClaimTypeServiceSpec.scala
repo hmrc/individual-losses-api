@@ -23,7 +23,7 @@ import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalidForbidden}
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 
@@ -31,8 +31,8 @@ import scala.concurrent.Future
 
 class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  val nino: String                            = "AA123456A"
+  val claimId: String                         = "AAZZ1234567890a"
   override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val requestBody: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
@@ -87,7 +87,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
       "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
+      "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalidForbidden,
       "NOT_FOUND"                 -> NotFoundError,
       "CONFLICT"                  -> RuleClaimTypeNotChanged,
       "INVALID_CORRELATIONID"     -> StandardDownstreamError,

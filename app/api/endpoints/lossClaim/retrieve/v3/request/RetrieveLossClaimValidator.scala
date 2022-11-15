@@ -17,9 +17,9 @@
 package api.endpoints.lossClaim.retrieve.v3.request
 
 import api.models.errors.MtdError
-import api.validations.v3.ClaimIdValidation
 import api.validations.Validator
 import api.validations.anyVersion.NinoValidation
+import api.validations.v3.ClaimIdValidation
 
 class RetrieveLossClaimValidator extends Validator[RetrieveLossClaimRawData] {
 
