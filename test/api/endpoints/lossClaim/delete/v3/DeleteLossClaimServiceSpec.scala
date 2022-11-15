@@ -59,14 +59,14 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
+        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, StandardDownstreamError, None)
         MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.deleteLossClaim(request)) shouldBe Left(expected)
@@ -74,7 +74,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
           ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, StandardDownstreamError, None)
         MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.deleteLossClaim(request)) shouldBe Left(expected)
@@ -96,7 +96,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
               .deleteLossClaim(request)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
 
-            await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

@@ -16,20 +16,20 @@
 
 package api.endpoints.lossClaim.retrieve.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.lossClaim.retrieve.v3.request.{RetrieveLossClaimParser, RetrieveLossClaimRawData}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.lossClaim.retrieve.v3.request.{ RetrieveLossClaimParser, RetrieveLossClaimRawData }
 import api.endpoints.lossClaim.retrieve.v3.response.GetLossClaimHateoasData
 import api.hateoas.HateoasFactory
 import api.models.errors._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import utils.{ IdGenerator, Logging }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthService,
@@ -41,7 +41,8 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
                                             cc: ControllerComponents,
                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController {
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveLossClaimController", endpointName = "Retrieve a Loss Claim")
@@ -67,10 +68,6 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
             .withApiHeaders(serviceResponse.correlationId)
         }
 
-      result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
-        result
-      }.merge
+      result.leftMap(logAndReturnErrorResult).merge
     }
 }

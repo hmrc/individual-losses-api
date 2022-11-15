@@ -46,9 +46,8 @@ class CreateBFLossControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val lossId: String        = "AAZZ1234567890a"
+  val nino: String   = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   val bfLoss: CreateBFLossRequestBody = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
@@ -151,7 +150,7 @@ class CreateBFLossControllerSpec
 
         MockCreateBFLossRequestDataParser
           .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+          .returns(Left(ErrorWrapper(correlationId, error, None)))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
 
@@ -189,7 +188,7 @@ class CreateBFLossControllerSpec
 
         MockCreateBFLossService
           .create(CreateBFLossRequest(Nino(nino), bfLoss))
-          .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         contentAsJson(response) shouldBe Json.toJson(error)

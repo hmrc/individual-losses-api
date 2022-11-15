@@ -45,12 +45,11 @@ class ListLossClaimsControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId: String  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String           = "AA123456A"
-  val taxYear: String        = "2018-19"
-  val selfEmployment: String = "self-employment"
-  val businessId: String     = "businessId"
-  val claimType: String      = "carry-sideways"
+  val nino           = "AA123456A"
+  val taxYear        = "2018-19"
+  val selfEmployment = "self-employment"
+  val businessId     = "businessId"
+  val claimType      = "carry-sideways"
 
   val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
 
@@ -218,7 +217,7 @@ class ListLossClaimsControllerSpec
 
           MockListLossClaimsRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
 
@@ -248,7 +247,7 @@ class ListLossClaimsControllerSpec
 
           MockListLossClaimsService
             .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
           status(response) shouldBe error.httpStatus

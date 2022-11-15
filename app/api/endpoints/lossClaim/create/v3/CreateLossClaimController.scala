@@ -16,24 +16,24 @@
 
 package api.endpoints.lossClaim.create.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimParser, CreateLossClaimRawData}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.lossClaim.create.v3.request.{ CreateLossClaimParser, CreateLossClaimRawData }
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimHateoasData
 import api.hateoas.HateoasFactory
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.IdGenerator
+import utils.{ IdGenerator, Logging }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService,
@@ -45,7 +45,8 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
                                           cc: ControllerComponents,
                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController {
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateLossClaimController", endpointName = "Create a Loss Claim")
@@ -88,8 +89,7 @@ class CreateLossClaimController @Inject()(val authService: EnrolmentsAuthService
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result = logAndReturnErrorResult(errorWrapper)
 
         auditSubmission(
           GenericAuditDetail(

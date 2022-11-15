@@ -23,10 +23,10 @@ class ErrorSpec extends UnitSpec {
 
   "reads" should {
     val json = Json.parse(
-      """
+      s"""
         |{
-        |   "code": "FORMAT_NINO",
-        |   "reason": "The provided NINO is invalid"
+        |   "code": "${NinoFormatError.code}",
+        |   "reason": "${NinoFormatError.message}"
         |}
       """.stripMargin
     )

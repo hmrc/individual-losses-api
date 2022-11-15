@@ -59,7 +59,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
@@ -68,7 +68,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(expected)))
         val result: CreateBFLossOutcome = await(service.createBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
       }
     }
 
@@ -90,7 +90,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
               .createBFLoss(request)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.createBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

@@ -51,9 +51,8 @@ class CreateLossClaimControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val lossClaimId: String   = "AAZZ1234567890a"
+  val nino: String        = "AA123456A"
+  val lossClaimId: String = "AAZZ1234567890a"
 
   val lossClaim: CreateLossClaimRequestBody =
     CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
@@ -157,7 +156,7 @@ class CreateLossClaimControllerSpec
 
         MockCreateLossClaimRequestDataParser
           .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+          .returns(Left(ErrorWrapper(correlationId, error, None)))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
 
@@ -196,7 +195,7 @@ class CreateLossClaimControllerSpec
 
         MockCreateLossClaimService
           .create(CreateLossClaimRequest(Nino(nino), lossClaim))
-          .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
         val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
         status(response) shouldBe error.httpStatus

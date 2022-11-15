@@ -21,10 +21,12 @@ import api.models.errors._
 import support.UnitSpec
 
 class DeleteBFLossParserSpec extends UnitSpec {
-  val nino: String   = "AA123456B"
-  val lossId: String = "someLossId"
 
+  val nino: String                   = "AA123456B"
+  val lossId: String                 = "someLossId"
   val inputData: DeleteBFLossRawData = DeleteBFLossRawData(nino, lossId)
+
+  implicit val correlationId: String = "X-123"
 
   trait Test extends MockDeleteBFLossValidator {
     lazy val parser = new DeleteBFLossParser(mockValidator)
@@ -49,7 +51,7 @@ class DeleteBFLossParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
@@ -58,7 +60,7 @@ class DeleteBFLossParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, LossIdFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
       }
     }
   }

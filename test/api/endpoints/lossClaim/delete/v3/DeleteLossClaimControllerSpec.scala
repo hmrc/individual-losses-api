@@ -40,9 +40,8 @@ class DeleteLossClaimControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val claimId: String       = "AAZZ1234567890a"
+  val nino: String    = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   val rawData: DeleteLossClaimRawData = DeleteLossClaimRawData(nino, claimId)
   val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
@@ -107,7 +106,7 @@ class DeleteLossClaimControllerSpec
 
           MockDeleteLossClaimRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
 
@@ -136,7 +135,7 @@ class DeleteLossClaimControllerSpec
 
           MockDeleteLossClaimService
             .delete(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
           status(response) shouldBe error.httpStatus

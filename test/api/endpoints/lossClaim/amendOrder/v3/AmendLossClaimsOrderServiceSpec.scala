@@ -67,7 +67,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
@@ -76,7 +76,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimsOrderOutcome = await(service.amendLossClaimsOrder(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
       }
     }
 
@@ -88,7 +88,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
             .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(downstreamErrorCode, "MESSAGE", error.httpStatus))))))
 
           val result = await(service.amendLossClaimsOrder(request))
-          result shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
       }
 

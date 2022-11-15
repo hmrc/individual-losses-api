@@ -44,7 +44,6 @@ class ListBFLossesControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
-  val correlationId: String  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String           = "AA123456A"
   val taxYear: String        = "2018-19"
   val selfEmployment: String = "self-employment"
@@ -175,7 +174,7 @@ class ListBFLossesControllerSpec
 
           MockListBFLossesRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
 
@@ -204,7 +203,7 @@ class ListBFLossesControllerSpec
 
           MockListBFLossesService
             .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
           status(response) shouldBe error.httpStatus

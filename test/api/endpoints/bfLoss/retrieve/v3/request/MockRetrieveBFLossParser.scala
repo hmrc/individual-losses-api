@@ -22,12 +22,14 @@ import org.scalamock.scalatest.MockFactory
 
 trait MockRetrieveBFLossParser extends MockFactory {
 
+  implicit val correlationId: String = "X-123"
+
   val mockRetrieveBFLossParser: RetrieveBFLossParser = mock[RetrieveBFLossParser]
 
   object MockRetrieveBFLossRequestDataParser {
 
     def parseRequest(data: RetrieveBFLossRawData): CallHandler[Either[ErrorWrapper, RetrieveBFLossRequest]] = {
-      (mockRetrieveBFLossParser.parseRequest(_: RetrieveBFLossRawData)).expects(data)
+      (mockRetrieveBFLossParser.parseRequest(_: RetrieveBFLossRawData)(_: String)).expects(data, *)
     }
   }
 

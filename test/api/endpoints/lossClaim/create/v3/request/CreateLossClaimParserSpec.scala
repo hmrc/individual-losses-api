@@ -29,6 +29,8 @@ class CreateLossClaimParserSpec extends UnitSpec {
   private val taxYear    = "2019-20"
   private val businessId = "XAIS01234567890"
 
+  implicit val correlationId: String = "X-123"
+
   private val requestBodyJson = Json.parse(
     s"""
        |{
@@ -68,7 +70,7 @@ class CreateLossClaimParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(rawData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
@@ -77,7 +79,7 @@ class CreateLossClaimParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(rawData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
       }
     }
   }

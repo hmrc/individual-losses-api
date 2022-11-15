@@ -16,25 +16,25 @@
 
 package api.endpoints.bfLoss.amend.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
 import api.endpoints.bfLoss.amend.anyVersion.request.AmendBFLossRawData
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossParser
 import api.hateoas.HateoasFactory
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.IdGenerator
+import utils.{ IdGenerator, Logging }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -46,7 +46,8 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                       cc: ControllerComponents,
                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController {
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendBFLossController", endpointName = "Amend a Brought Forward Loss Amount")
@@ -86,8 +87,7 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result = logAndReturnErrorResult(errorWrapper)
 
         auditSubmission(
           GenericAuditDetail(

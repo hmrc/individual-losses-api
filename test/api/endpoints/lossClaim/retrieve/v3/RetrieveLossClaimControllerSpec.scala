@@ -17,18 +17,18 @@
 package api.endpoints.lossClaim.retrieve.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.retrieve.v3.request.{MockRetrieveLossClaimRequestDataParser, RetrieveLossClaimRawData, RetrieveLossClaimRequest}
-import api.endpoints.lossClaim.retrieve.v3.response.{GetLossClaimHateoasData, RetrieveLossClaimResponse}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.retrieve.v3.request.{ MockRetrieveLossClaimRequestDataParser, RetrieveLossClaimRawData, RetrieveLossClaimRequest }
+import api.endpoints.lossClaim.retrieve.v3.response.{ GetLossClaimHateoasData, RetrieveLossClaimResponse }
 import api.hateoas.MockHateoasFactory
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -45,12 +45,11 @@ class RetrieveLossClaimControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val claimId: String       = "AAZZ1234567890a"
-  val businessId            = "XKIS00000000988"
-  val lastModified          = "2018-07-13T12:13:48.763Z"
-  val taxYear               = "2017-18"
+  val nino         = "AA123456A"
+  val claimId      = "AAZZ1234567890a"
+  val businessId   = "XKIS00000000988"
+  val lastModified = "2018-07-13T12:13:48.763Z"
+  val taxYear      = "2017-18"
 
   val rawData: RetrieveLossClaimRawData = RetrieveLossClaimRawData(nino, claimId)
   val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(Nino(nino), claimId)
@@ -128,13 +127,13 @@ class RetrieveLossClaimControllerSpec
       }
     }
 
-    "handle mdtp validation errors as per spec" when {
+    "handle MTD validation errors as per spec" when {
       def errorsFromParserTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
+        s"the parser returns ${error.code}" in new Test {
 
           MockRetrieveLossClaimRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.retrieve(nino, claimId)(fakeRequest)
 
@@ -149,9 +148,9 @@ class RetrieveLossClaimControllerSpec
       errorsFromParserTester(ClaimIdFormatError)
     }
 
-    "handle non-mdtp validation errors as per spec" when {
+    "handle downstream errors as per spec" when {
       def errorsFromServiceTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the service" in new Test {
+        s"the service returns ${error.code}" in new Test {
 
           MockRetrieveLossClaimRequestDataParser
             .parseRequest(rawData)
@@ -159,7 +158,7 @@ class RetrieveLossClaimControllerSpec
 
           MockRetrieveLossClaimService
             .retrieve(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.retrieve(nino, claimId)(fakeRequest)
           contentAsJson(response) shouldBe Json.toJson(error)

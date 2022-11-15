@@ -21,7 +21,7 @@ import api.endpoints.bfLoss.delete.v3
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors.{RuleDeleteAfterFinalDeclarationError, _}
+import api.models.errors._
 import api.services.ServiceSpec
 
 import scala.concurrent.Future
@@ -55,14 +55,14 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
+        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, StandardDownstreamError, None)
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Left(expected)
@@ -70,7 +70,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
           ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, StandardDownstreamError, None)
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.deleteBFLoss(request)) shouldBe Left(expected)
@@ -93,7 +93,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
               .deleteBFLoss(request)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
 
-            await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

@@ -60,7 +60,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
@@ -69,7 +69,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
         val result: CreateLossClaimOutcome = await(service.createLossClaim(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
       }
     }
 
@@ -93,7 +93,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
               .createLossClaim(request)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.createLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

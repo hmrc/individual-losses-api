@@ -17,13 +17,13 @@
 package api.endpoints.bfLoss.delete.v3
 
 import api.controllers.ControllerBaseSpec
-import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser}
+import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser }
 import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
-import api.models.errors.{RuleDeleteAfterFinalDeclarationError, _}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.errors._
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,9 +40,8 @@ class DeleteBFLossControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val lossId: String        = "AAZZ1234567890a"
+  val nino: String   = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   val rawData: DeleteBFLossRawData = DeleteBFLossRawData(nino, lossId)
   val request: DeleteBFLossRequest = DeleteBFLossRequest(Nino(nino), lossId)
@@ -107,7 +106,7 @@ class DeleteBFLossControllerSpec
 
           MockDeleteBFLossRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
 
@@ -136,7 +135,7 @@ class DeleteBFLossControllerSpec
 
           MockDeleteBFLossService
             .delete(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
           status(response) shouldBe error.httpStatus

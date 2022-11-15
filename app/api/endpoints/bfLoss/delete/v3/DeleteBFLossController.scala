@@ -16,20 +16,20 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossParser, DeleteBFLossRawData}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossParser, DeleteBFLossRawData }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.IdGenerator
+import utils.{ IdGenerator, Logging }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
@@ -40,7 +40,8 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                        cc: ControllerComponents,
                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController {
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteBFLossController", endpointName = "Delete a Brought Forward Loss")
@@ -74,8 +75,7 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result = logAndReturnErrorResult(errorWrapper)
 
         auditSubmission(
           GenericAuditDetail(

@@ -44,9 +44,8 @@ class RetrieveBFLossControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val lossId: String        = "AAZZ1234567890a"
+  val nino: String   = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   val rawData: RetrieveBFLossRawData = RetrieveBFLossRawData(nino, lossId)
   val request: RetrieveBFLossRequest = RetrieveBFLossRequest(Nino(nino), lossId)
@@ -127,7 +126,7 @@ class RetrieveBFLossControllerSpec
 
           MockRetrieveBFLossRequestDataParser
             .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
 
@@ -153,7 +152,7 @@ class RetrieveBFLossControllerSpec
 
           MockRetrieveBFLossService
             .retrieve(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
           val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
           contentAsJson(response) shouldBe Json.toJson(error)

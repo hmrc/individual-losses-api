@@ -48,7 +48,6 @@ class AmendBFLossControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val correlationId: String  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   val nino: String           = "AA123456A"
   val lossId: String         = "AAZZ1234567890a"
   val lossAmount: BigDecimal = BigDecimal(2345.67)
@@ -161,7 +160,7 @@ class AmendBFLossControllerSpec
 
             MockAmendBFLossRequestDataParser
               .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(correlationId, error, None)))
 
             val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
 
@@ -194,7 +193,7 @@ class AmendBFLossControllerSpec
 
             MockAmendBFLossService
               .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
 

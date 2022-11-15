@@ -52,12 +52,11 @@ class AmendLossClaimsOrderControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val claimType: String     = "carry-sideways"
-  val id: String            = "1234568790ABCDE"
-  val sequence: Int         = 1
-  val nino: String          = "AA123456A"
-  val taxYear: String       = "2019-20"
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val claimType: String = "carry-sideways"
+  val id: String        = "1234568790ABCDE"
+  val sequence: Int     = 1
+  val nino: String      = "AA123456A"
+  val taxYear: String   = "2019-20"
 
   val claim: Claim                                = Claim(id, sequence)
   val claimsList: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(claim))
@@ -206,7 +205,7 @@ class AmendLossClaimsOrderControllerSpec
 
       MockAmendLossClaimsOrderRequestDataParser
         .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
-        .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+        .returns(Left(ErrorWrapper(correlationId, error, None)))
 
       val response: Future[Result] = controller.amendClaimsOrder(nino, taxYear)(fakePostRequest(requestBody))
 
@@ -228,7 +227,7 @@ class AmendLossClaimsOrderControllerSpec
 
       MockAmendLossClaimsOrderService
         .amend(amendLossClaimsOrderRequest)
-        .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
+        .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
 
       val response: Future[Result] = controller.amendClaimsOrder(nino, taxYear)(fakePostRequest(requestBody))
       status(response) shouldBe error.httpStatus

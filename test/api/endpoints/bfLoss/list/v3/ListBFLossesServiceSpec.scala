@@ -20,7 +20,7 @@ import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.endpoints.bfLoss.list.v3
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
+import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
@@ -60,14 +60,14 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.listBFLosses(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.listBFLosses(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
+        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, StandardDownstreamError, None)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listBFLosses(request)) shouldBe Left(expected)
@@ -76,7 +76,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
           ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(Some(correlationId), StandardDownstreamError, None)
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, StandardDownstreamError, None)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listBFLosses(request)) shouldBe Left(expected)
@@ -99,7 +99,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
               .listBFLosses(request)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
 
-            await(service.listBFLosses(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.listBFLosses(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

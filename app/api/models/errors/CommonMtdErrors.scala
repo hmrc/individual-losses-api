@@ -21,14 +21,14 @@ import play.api.http.Status._
 // MtdError types that are common across MTD APIs.
 
 // Format Errors
-object NinoFormatError          extends MtdError("FORMAT_NINO", "The provided NINO is invalid", BAD_REQUEST)
-object TaxYearFormatError       extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid", BAD_REQUEST)
-object ToDateFormatError        extends MtdError(code = "FORMAT_TO_DATE", message = "The provided toDate is invalid", BAD_REQUEST)
-object FromDateFormatError      extends MtdError(code = "FORMAT_FROM_DATE", message = "The provided fromDate is invalid", BAD_REQUEST)
-object BusinessIdFormatError    extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid", BAD_REQUEST)
-object PaymentIdFormatError     extends MtdError(code = "FORMAT_PAYMENT_ID", message = "The provided payment ID is invalid", BAD_REQUEST)
-object TransactionIdFormatError extends MtdError(code = "FORMAT_TRANSACTION_ID", message = "The provided transaction ID is invalid", BAD_REQUEST)
-object IdFormatError            extends MtdError(code = "FORMAT_ID", message = "The format of the ID is invalid", BAD_REQUEST)
+object NinoFormatError          extends MtdError("FORMAT_NINO", "The NINO format is invalid", BAD_REQUEST)
+object TaxYearFormatError       extends MtdError("FORMAT_TAX_YEAR", "The taxYear format is invalid", BAD_REQUEST)
+object ToDateFormatError        extends MtdError(code = "FORMAT_TO_DATE", message = "The toDate format is invalid", BAD_REQUEST)
+object FromDateFormatError      extends MtdError(code = "FORMAT_FROM_DATE", message = "The fromDate format is invalid", BAD_REQUEST)
+object BusinessIdFormatError    extends MtdError("FORMAT_BUSINESS_ID", "The Business ID format is invalid", BAD_REQUEST)
+object PaymentIdFormatError     extends MtdError(code = "FORMAT_PAYMENT_ID", message = "The payment ID format is invalid", BAD_REQUEST)
+object TransactionIdFormatError extends MtdError(code = "FORMAT_TRANSACTION_ID", message = "The transaction ID format is invalid", BAD_REQUEST)
+object IdFormatError            extends MtdError(code = "FORMAT_ID", message = "The ID format is invalid", BAD_REQUEST)
 
 object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
 

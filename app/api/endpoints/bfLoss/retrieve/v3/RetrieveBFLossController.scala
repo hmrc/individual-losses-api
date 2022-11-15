@@ -26,7 +26,7 @@ import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import utils.{IdGenerator, Logging}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,7 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
                                          cc: ControllerComponents,
                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController {
+    with BaseController with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveBFLossController", endpointName = "Retrieve a Brought Forward Loss")
@@ -66,10 +66,6 @@ class RetrieveBFLossController @Inject()(val authService: EnrolmentsAuthService,
             .withApiHeaders(serviceResponse.correlationId)
         }
 
-      result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
-        result
-      }.merge
+      result.leftMap(logAndReturnErrorResult).merge
     }
 }

@@ -23,7 +23,7 @@ import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors.{RuleLossAmountNotChanged, _}
+import api.models.errors._
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendBFLossOutcome
 
@@ -68,7 +68,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
@@ -77,7 +77,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
         val result: AmendBFLossOutcome = await(service.amendBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
       }
     }
 
@@ -99,7 +99,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
               .amendBFLoss(request)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }
