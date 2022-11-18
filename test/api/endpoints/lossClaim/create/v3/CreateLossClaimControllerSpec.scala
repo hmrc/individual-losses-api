@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.create.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.lossClaim.create.v3.request.{
   CreateLossClaimRawData,
   CreateLossClaimRequest,
@@ -26,44 +26,32 @@ import api.endpoints.lossClaim.create.v3.request.{
 import api.endpoints.lossClaim.create.v3.response.{ CreateLossClaimHateoasData, CreateLossClaimResponse }
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.hateoas.MockHateoasFactory
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ AnyContentAsJson, Result }
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateLossClaimControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockCreateLossClaimService
     with MockCreateLossClaimParser
-    with MockHateoasFactory
-    with MockAuditService
-    with MockIdGenerator {
+    with MockHateoasFactory {
 
-  val nino: String        = "AA123456A"
-  val lossClaimId: String = "AAZZ1234567890a"
+  private val lossClaimId             = "AAZZ1234567890a"
+  private val lossClaim               = CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
+  private val testHateoasLink         = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  private val lossClaimRequest        = CreateLossClaimRequest(Nino(nino), lossClaim)
+  private val createLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
 
-  val lossClaim: CreateLossClaimRequestBody =
-    CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
-
-  val createLossClaimResponse: CreateLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
-
-  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-
-  val lossClaimRequest: CreateLossClaimRequest = CreateLossClaimRequest(Nino(nino), lossClaim)
-
-  val requestBody: JsValue = Json.parse(
+  private val requestBody = Json.parse(
     """
       |{
       |    "selfEmploymentId": "XKIS00000000988",
@@ -74,7 +62,7 @@ class CreateLossClaimControllerSpec
     """.stripMargin
   )
 
-  val responseBody: JsValue = Json.parse(
+  private val mtdResponseJson = Json.parse(
     """
       |{
       |  "claimId": "AAZZ1234567890a",
@@ -89,25 +77,59 @@ class CreateLossClaimControllerSpec
     """.stripMargin
   )
 
-  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "CreateLossClaim",
-      transactionName = "create-loss-claim",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        versionNumber = "3.0",
-        params = Map("nino" -> nino),
-        request = Some(requestBody),
-        `X-CorrelationId` = correlationId,
-        response = auditResponse
-      )
-    )
+  "create" should {
+    "return CREATED" when {
+      "the request is valid" in new RunControllerTest {
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+        protected def setupMocks(): Unit = {
+          MockCreateLossClaimRequestDataParser
+            .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+            .returns(Right(lossClaimRequest))
 
-    val controller = new CreateLossClaimController(
+          MockCreateLossClaimService
+            .create(CreateLossClaimRequest(Nino(nino), lossClaim))
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
+
+          MockHateoasFactory
+            .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
+            .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
+        }
+
+        runOkTestWithAudit(expectedStatus = CREATED, maybeExpectedResponseBody = Some(mtdResponseJson))
+      }
+    }
+  }
+
+  "return the error as per spec" when {
+    "the parser validation fails" in new RunControllerTest {
+      protected def setupMocks(): Unit = {
+        MockCreateLossClaimRequestDataParser
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+      }
+
+      runErrorTestWithAudit(NinoFormatError)
+    }
+
+    "the service returns an error" in new RunControllerTest {
+
+      protected def setupMocks(): Unit = {
+        MockCreateLossClaimRequestDataParser
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Right(lossClaimRequest))
+
+        MockCreateLossClaimService
+          .create(CreateLossClaimRequest(Nino(nino), lossClaim))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalid, None))))
+      }
+
+      runErrorTestWithAudit(RuleTypeOfClaimInvalid)
+    }
+  }
+
+  private trait RunControllerTest extends RunTest with AuditEventChecking {
+
+    private val controller = new CreateLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       createLossClaimService = mockCreateLossClaimService,
@@ -118,102 +140,21 @@ class CreateLossClaimControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
+    protected def callController(): Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
 
-  "create" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
-        MockCreateLossClaimRequestDataParser
-          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Right(lossClaimRequest))
-
-        MockCreateLossClaimService
-          .create(CreateLossClaimRequest(Nino(nino), lossClaim))
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
-
-        MockHateoasFactory
-          .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
-          .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
-
-        val result: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
-        status(result) shouldBe CREATED
-        contentAsJson(result) shouldBe responseBody
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(CREATED, None, Some(responseBody))
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-      }
-    }
-  }
-
-  "handle mdtp validation errors as per spec" when {
-    def errorsFromParserTester(error: MtdError): Unit = {
-      s"a ${error.code} error is returned from the parser" in new Test {
-
-        MockCreateLossClaimRequestDataParser
-          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-        val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
-
-        status(response) shouldBe error.httpStatus
-        contentAsJson(response) shouldBe Json.toJson(error)
-        header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-      }
-    }
-
-    val badRequestErrorsFromParser = List(
-      BadRequestError,
-      NinoFormatError,
-      TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor"))),
-      RuleIncorrectOrEmptyBodyError,
-      RuleTaxYearNotSupportedError,
-      RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearClaimedFor"))),
-      TypeOfLossFormatError,
-      BusinessIdFormatError,
-      RuleTypeOfClaimInvalid,
-      TypeOfClaimFormatError
-    )
-
-    badRequestErrorsFromParser.foreach(errorsFromParserTester)
-  }
-
-  "handle non-mdtp validation errors as per spec" when {
-    def errorsFromServiceTester(error: MtdError): Unit = {
-      s"a ${error.code} error is returned from the service" in new Test {
-
-        MockCreateLossClaimRequestDataParser
-          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Right(lossClaimRequest))
-
-        MockCreateLossClaimService
-          .create(CreateLossClaimRequest(Nino(nino), lossClaim))
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
-
-        val response: Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
-        status(response) shouldBe error.httpStatus
-        contentAsJson(response) shouldBe Json.toJson(error)
-        header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-      }
-    }
-
-    errorsFromServiceTester(BadRequestError)
-    errorsFromServiceTester(StandardDownstreamError)
-    errorsFromServiceTester(RuleDuplicateClaimSubmissionError)
-    errorsFromServiceTester(NinoFormatError)
-    errorsFromServiceTester(NotFoundError)
-    errorsFromServiceTester(RuleTypeOfClaimInvalid)
-    errorsFromServiceTester(RulePeriodNotEnded)
-    errorsFromServiceTester(RuleNoAccountingPeriod)
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "CreateLossClaim",
+        transactionName = "create-loss-claim",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          versionNumber = "3.0",
+          params = Map("nino" -> nino),
+          request = maybeRequestBody,
+          `X-CorrelationId` = correlationId,
+          response = auditResponse
+        )
+      )
   }
 }

@@ -16,55 +16,80 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser }
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import play.api.libs.json.Json
+import api.services.MockAuditService
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteBFLossControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockDeleteBFLossService
     with MockDeleteBFLossParser
-    with MockAuditService
-    with MockIdGenerator {
+    with MockAuditService {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  private val lossId  = "AAZZ1234567890a"
+  private val rawData = DeleteBFLossRawData(nino, lossId)
+  private val request = DeleteBFLossRequest(Nino(nino), lossId)
 
-  val rawData: DeleteBFLossRawData = DeleteBFLossRawData(nino, lossId)
-  val request: DeleteBFLossRequest = DeleteBFLossRequest(Nino(nino), lossId)
+  "delete" should {
+    "return NoContent" when {
+      "the request is valid" in new RunControllerTest {
 
-  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "DeleteBroughtForwardLoss",
-      transactionName = "delete-brought-forward-loss",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        versionNumber = "3.0",
-        params = Map("nino" -> nino, "lossId" -> lossId),
-        request = None,
-        `X-CorrelationId` = correlationId,
-        response = auditResponse
-      )
-    )
+        protected def setupMocks(): Unit = {
+          MockDeleteBFLossRequestDataParser
+            .parseRequest(rawData)
+            .returns(Right(request))
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+          MockDeleteBFLossService
+            .delete(request)
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+        }
 
-    val controller = new DeleteBFLossController(
+        runOkTestWithAudit(expectedStatus = NO_CONTENT, maybeExpectedResponseBody = None)
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockDeleteBFLossRequestDataParser
+            .parseRequest(rawData)
+            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+        }
+
+        runErrorTestWithAudit(NinoFormatError)
+      }
+
+      "the service returns an error" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockDeleteBFLossRequestDataParser
+            .parseRequest(rawData)
+            .returns(Right(request))
+
+          MockDeleteBFLossService
+            .delete(request)
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDeleteAfterFinalDeclarationError, None))))
+        }
+
+        runErrorTestWithAudit(RuleDeleteAfterFinalDeclarationError)
+      }
+    }
+  }
+
+  private trait RunControllerTest extends RunTest with AuditEventChecking {
+
+    private val controller = new DeleteBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       deleteBFLossService = mockDeleteBFLossService,
@@ -74,85 +99,23 @@ class DeleteBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
+    protected def callController(): Future[Result] = controller.delete(nino, lossId)(fakeRequest)
+
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "DeleteBroughtForwardLoss",
+        transactionName = "delete-brought-forward-loss",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          versionNumber = "3.0",
+          params = Map("nino" -> nino, "lossId" -> lossId),
+          request = maybeRequestBody,
+          `X-CorrelationId` = correlationId,
+          response = auditResponse
+        )
+      )
+
   }
 
-  "delete" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
-        MockDeleteBFLossRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
-
-        MockDeleteBFLossService
-          .delete(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        val result: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-        status(result) shouldBe NO_CONTENT
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-      }
-    }
-
-    "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
-
-          MockDeleteBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-          val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-
-          status(response) shouldBe error.httpStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-        }
-      }
-
-      errorsFromParserTester(BadRequestError)
-      errorsFromParserTester(NotFoundError)
-      errorsFromParserTester(NinoFormatError)
-      errorsFromParserTester(LossIdFormatError)
-    }
-
-    "handle non-mdtp validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the service" in new Test {
-
-          MockDeleteBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockDeleteBFLossService
-            .delete(request)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
-
-          val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-          status(response) shouldBe error.httpStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-        }
-      }
-
-      errorsFromServiceTester(BadRequestError)
-      errorsFromServiceTester(StandardDownstreamError)
-      errorsFromServiceTester(NotFoundError)
-      errorsFromServiceTester(NinoFormatError)
-      errorsFromServiceTester(LossIdFormatError)
-      errorsFromServiceTester(RuleDeleteAfterFinalDeclarationError)
-    }
-  }
 }

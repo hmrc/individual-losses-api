@@ -16,55 +16,78 @@
 
 package api.endpoints.lossClaim.delete.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.lossClaim.delete.v3.request.{ DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser }
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import play.api.libs.json.Json
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteLossClaimControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockDeleteLossClaimService
-    with MockDeleteLossClaimRequestDataParser
-    with MockAuditService
-    with MockIdGenerator {
+    with MockDeleteLossClaimRequestDataParser {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  private val claimId = "AAZZ1234567890a"
+  private val rawData = DeleteLossClaimRawData(nino, claimId)
+  private val request = DeleteLossClaimRequest(Nino(nino), claimId)
 
-  val rawData: DeleteLossClaimRawData = DeleteLossClaimRawData(nino, claimId)
-  val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
+  "delete" should {
+    "return NO_CONTENT" when {
+      "the request is valid" in new RunControllerTest {
 
-  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "DeleteLossClaim",
-      transactionName = "delete-loss-claim",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        versionNumber = "3.0",
-        params = Map("nino" -> nino, "claimId" -> claimId),
-        request = None,
-        `X-CorrelationId` = correlationId,
-        response = auditResponse
-      )
-    )
+        protected def setupMocks(): Unit = {
+          MockDeleteLossClaimRequestDataParser
+            .parseRequest(rawData)
+            .returns(Right(request))
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+          MockDeleteLossClaimService
+            .delete(request)
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+        }
 
-    val controller = new DeleteLossClaimController(
+        runOkTestWithAudit(expectedStatus = NO_CONTENT, maybeExpectedResponseBody = None)
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockDeleteLossClaimRequestDataParser
+            .parseRequest(rawData)
+            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+        }
+
+        runErrorTestWithAudit(NinoFormatError)
+      }
+
+      "the service returns an error" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockDeleteLossClaimRequestDataParser
+            .parseRequest(rawData)
+            .returns(Right(request))
+
+          MockDeleteLossClaimService
+            .delete(request)
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, ClaimIdFormatError, None))))
+        }
+
+        runErrorTestWithAudit(ClaimIdFormatError)
+      }
+    }
+  }
+
+  private trait RunControllerTest extends RunTest with AuditEventChecking {
+
+    private val controller = new DeleteLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       deleteLossClaimService = mockDeleteLossClaimService,
@@ -74,84 +97,21 @@ class DeleteLossClaimControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
+    protected def callController(): Future[Result] = controller.delete(nino, claimId)(fakeRequest)
 
-  "delete" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
-        MockDeleteLossClaimRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
-
-        MockDeleteLossClaimService
-          .delete(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        val result: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
-        status(result) shouldBe NO_CONTENT
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-      }
-    }
-
-    "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
-
-          MockDeleteLossClaimRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-          val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
-
-          status(response) shouldBe error.httpStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-        }
-      }
-
-      errorsFromParserTester(BadRequestError)
-      errorsFromParserTester(NinoFormatError)
-      errorsFromParserTester(ClaimIdFormatError)
-
-    }
-
-    "handle downstream validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the service" in new Test {
-
-          MockDeleteLossClaimRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockDeleteLossClaimService
-            .delete(request)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
-
-          val response: Future[Result] = controller.delete(nino, claimId)(fakeRequest)
-          status(response) shouldBe error.httpStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-        }
-      }
-
-      errorsFromServiceTester(BadRequestError)
-      errorsFromServiceTester(StandardDownstreamError)
-      errorsFromServiceTester(NotFoundError)
-      errorsFromServiceTester(NinoFormatError)
-      errorsFromServiceTester(ClaimIdFormatError)
-    }
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "DeleteLossClaim",
+        transactionName = "delete-loss-claim",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          versionNumber = "3.0",
+          params = Map("nino" -> nino, "claimId" -> claimId),
+          request = maybeRequestBody,
+          `X-CorrelationId` = correlationId,
+          response = auditResponse
+        )
+      )
   }
 }

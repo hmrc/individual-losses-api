@@ -16,50 +16,41 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
 import api.hateoas.MockHateoasFactory
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
 import api.models.hateoas.Method.{ GET, POST }
 import api.models.hateoas.{ HateoasWrapper, Link }
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockListLossClaimsService
     with MockListLossClaimsRequestDataParser
-    with MockHateoasFactory
-    with MockAuditService
-    with MockIdGenerator {
+    with MockHateoasFactory {
 
-  val nino           = "AA123456A"
-  val taxYear        = "2018-19"
-  val selfEmployment = "self-employment"
-  val businessId     = "businessId"
-  val claimType      = "carry-sideways"
+  private val taxYear        = "2018-19"
+  private val selfEmployment = "self-employment"
+  private val businessId     = "businessId"
+  private val claimType      = "carry-sideways"
 
-  val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
+  private val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
+  private val request = ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
-  val request: ListLossClaimsRequest =
-    ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+  private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val testHateoasLink: Link       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
-
-  val response: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
+  private val response: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
     Seq(
       ListLossClaimsItem("businessId",
                          TypeOfClaim.`carry-sideways`,
@@ -77,7 +68,7 @@ class ListLossClaimsControllerSpec
                          "2020-07-13T12:13:48.763Z")
     ))
 
-  val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
+  private val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
     Seq(
       HateoasWrapper(
         ListLossClaimsItem("XAIS12345678910",
@@ -101,7 +92,7 @@ class ListLossClaimsControllerSpec
       )
     ))
 
-  val responseJson: JsValue = Json.parse(
+  private val mtdResponseJson = Json.parse(
     """
       |{
       |    "claims": [
@@ -149,121 +140,89 @@ class ListLossClaimsControllerSpec
     """.stripMargin
   )
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    val controller = new ListLossClaimsController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      listLossClaimsService = mockListLossClaimsService,
-      listLossClaimsParser = mockListLossClaimsRequestDataParser,
-      hateoasFactory = mockHateoasFactory,
-      auditService = mockAuditService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
-
   "list" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
+    "return UK" when {
+      "the request is valid" in new RunControllerTest {
 
-        MockListLossClaimsRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
-
-        MockListLossClaimsService
-          .list(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrapList(response, ListLossClaimsHateoasData(nino))
-          .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
-
-        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-        status(result) shouldBe OK
-        contentAsJson(result) shouldBe responseJson
-      }
-    }
-
-    "return MATCHING_RESOURCE_NOT_FOUND" when {
-      "the request received is valid but an empty list of claims is returned from downstream" in new Test {
-
-        MockListLossClaimsRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
-
-        MockListLossClaimsService
-          .list(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
-
-        MockHateoasFactory
-          .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
-          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
-
-        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-        status(result) shouldBe NOT_FOUND
-        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
-      }
-    }
-
-    "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
-
-          MockListLossClaimsRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-
-          status(response) shouldBe error.httpStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-        }
-      }
-
-      errorsFromParserTester(BadRequestError)
-      errorsFromParserTester(NinoFormatError)
-      errorsFromParserTester(TaxYearFormatError)
-      errorsFromParserTester(RuleTaxYearNotSupportedError)
-      errorsFromParserTester(RuleTaxYearRangeInvalidError)
-      errorsFromParserTester(TypeOfLossFormatError)
-      errorsFromParserTester(TypeOfClaimFormatError)
-      errorsFromParserTester(BusinessIdFormatError)
-    }
-
-    "handle backend service errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError): Unit = {
-        s"a ${error.code} error is returned from the service" in new Test {
-
+        protected def setupMocks(): Unit = {
           MockListLossClaimsRequestDataParser
             .parseRequest(rawData)
             .returns(Right(request))
 
           MockListLossClaimsService
             .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, error, None))))
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-          status(response) shouldBe error.httpStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
+          MockHateoasFactory
+            .wrapList(response, ListLossClaimsHateoasData(nino))
+            .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
         }
+
+        runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockListLossClaimsRequestDataParser
+            .parseRequest(rawData)
+            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+        }
+
+        runErrorTest(NinoFormatError)
       }
 
-      errorsFromServiceTester(BadRequestError)
-      errorsFromServiceTester(NinoFormatError)
-      errorsFromServiceTester(TaxYearFormatError)
-      errorsFromServiceTester(TypeOfLossFormatError)
-      errorsFromServiceTester(BusinessIdFormatError)
-      errorsFromServiceTester(TypeOfClaimFormatError)
-      errorsFromServiceTester(NotFoundError)
-      errorsFromServiceTester(StandardDownstreamError)
+      "the service returns an error" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockListLossClaimsRequestDataParser
+            .parseRequest(rawData)
+            .returns(Right(request))
+
+          MockListLossClaimsService
+            .list(request)
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfClaimFormatError, None))))
+        }
+
+        runErrorTest(TypeOfClaimFormatError)
+      }
+
+      "the request received is valid but an empty list of claims is returned from downstream" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockListLossClaimsRequestDataParser
+            .parseRequest(rawData)
+            .returns(Right(request))
+
+          MockListLossClaimsService
+            .list(request)
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
+
+          MockHateoasFactory
+            .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
+            .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
+        }
+
+        runErrorTest(NotFoundError)
+      }
     }
+  }
+
+  private trait RunControllerTest extends RunTest {
+
+    private val controller = new ListLossClaimsController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      listLossClaimsService = mockListLossClaimsService,
+      listLossClaimsParser = mockListLossClaimsRequestDataParser,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] =
+      controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
   }
 }

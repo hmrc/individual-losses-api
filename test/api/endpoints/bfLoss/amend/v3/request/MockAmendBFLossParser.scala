@@ -23,8 +23,6 @@ import org.scalamock.scalatest.MockFactory
 
 trait MockAmendBFLossParser extends MockFactory {
 
-  implicit val correlationId: String = "X-123"
-
   val mockAmendBFLossRequestDataParser: AmendBFLossParser = mock[AmendBFLossParser]
 
   object MockAmendBFLossRequestDataParser {

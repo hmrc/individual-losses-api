@@ -22,8 +22,6 @@ import org.scalamock.scalatest.MockFactory
 
 trait MockRetrieveLossClaimRequestDataParser extends MockFactory {
 
-  implicit val correlationId: String = "X-123"
-
   val mockRetrieveLossClaimRequestDataParser: RetrieveLossClaimParser = mock[RetrieveLossClaimParser]
 
   object MockRetrieveLossClaimRequestDataParser {

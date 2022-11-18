@@ -22,8 +22,6 @@ import org.scalamock.scalatest.MockFactory
 
 trait MockCreateLossClaimParser extends MockFactory {
 
-  implicit val correlationId: String = "X-123"
-
   val mockCreateLossClaimParser: CreateLossClaimParser = mock[CreateLossClaimParser]
 
   object MockCreateLossClaimRequestDataParser {

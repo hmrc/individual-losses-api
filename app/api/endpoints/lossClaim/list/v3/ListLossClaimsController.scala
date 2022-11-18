@@ -21,7 +21,7 @@ import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsParser, ListLossC
 import api.endpoints.lossClaim.list.v3.response.ListLossClaimsHateoasData
 import api.hateoas.HateoasFactory
 import api.models.errors._
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
@@ -37,7 +37,6 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
                                          listLossClaimsService: ListLossClaimsService,
                                          listLossClaimsParser: ListLossClaimsParser,
                                          hateoasFactory: HateoasFactory,
-                                         auditService: AuditService,
                                          cc: ControllerComponents,
                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)

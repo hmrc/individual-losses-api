@@ -16,45 +16,37 @@
 
 package api.endpoints.bfLoss.amend.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
 import api.endpoints.bfLoss.amend.v3.request.{ AmendBFLossRequest, MockAmendBFLossParser }
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.hateoas.MockHateoasFactory
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ AnyContentAsJson, Result }
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendBFLossControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockAmendBFLossService
     with MockAmendBFLossParser
-    with MockHateoasFactory
-    with MockAuditService
-    with MockIdGenerator {
+    with MockHateoasFactory {
 
-  val nino: String           = "AA123456A"
-  val lossId: String         = "AAZZ1234567890a"
-  val lossAmount: BigDecimal = BigDecimal(2345.67)
+  private val lossId      = "AAZZ1234567890a"
+  private val lossAmount  = BigDecimal(2345.67)
+  private val amendBFLoss = AmendBFLossRequestBody(lossAmount)
 
-  val amendBFLoss: AmendBFLossRequestBody = AmendBFLossRequestBody(lossAmount)
-
-  val amendBFLossResponse: AmendBFLossResponse = AmendBFLossResponse(
+  private val amendBFLossResponse = AmendBFLossResponse(
     businessId = "XBIS12345678910",
     typeOfLoss = TypeOfLoss.`self-employment`,
     lossAmount = lossAmount,
@@ -62,11 +54,10 @@ class AmendBFLossControllerSpec
     lastModified = "2022-07-13T12:13:48.763Z"
   )
 
-  val testHateoasLink: Link = Link(href = "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a", method = GET, rel = "self")
+  private val testHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a", method = GET, rel = "self")
+  private val bfLossRequest   = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
 
-  val bfLossRequest: AmendBFLossRequest = AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
-
-  val responseBody: JsValue = Json.parse(
+  private val mtdResponseJson = Json.parse(
     s"""
       |{
       |    "businessId": "XBIS12345678910",
@@ -85,7 +76,7 @@ class AmendBFLossControllerSpec
     """.stripMargin
   )
 
-  val requestBody: JsValue = Json.parse(
+  private val requestBody: JsValue = Json.parse(
     s"""
       |{
       |  "lossAmount": $lossAmount
@@ -93,25 +84,60 @@ class AmendBFLossControllerSpec
     """.stripMargin
   )
 
-  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "AmendBroughtForwardLoss",
-      transactionName = "amend-brought-forward-loss",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        versionNumber = "3.0",
-        params = Map("nino" -> nino, "lossId" -> lossId),
-        request = Some(requestBody),
-        `X-CorrelationId` = correlationId,
-        response = auditResponse
-      )
-    )
+  "amend" should {
+    "return OK" when {
+      "the request is valid" in new RunControllerTest {
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+        protected def setupMocks(): Unit = {
+          MockAmendBFLossRequestDataParser
+            .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
+            .returns(Right(bfLossRequest))
 
-    val controller = new AmendBFLossController(
+          MockAmendBFLossService
+            .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
+
+          MockHateoasFactory
+            .wrap(amendBFLossResponse, AmendBFLossHateoasData(nino, lossId))
+            .returns(HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink)))
+        }
+
+        runOkTestWithAudit(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockAmendBFLossRequestDataParser
+            .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
+            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+        }
+
+        runErrorTestWithAudit(NinoFormatError)
+      }
+
+      "the service returns an error" in new RunControllerTest {
+
+        protected def setupMocks(): Unit = {
+          MockAmendBFLossRequestDataParser
+            .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
+            .returns(Right(bfLossRequest))
+
+          MockAmendBFLossService
+            .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleLossAmountNotChanged))))
+        }
+
+        runErrorTestWithAudit(RuleLossAmountNotChanged)
+      }
+    }
+  }
+
+  private trait RunControllerTest extends RunTest with AuditEventChecking {
+
+    private val controller = new AmendBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       amendBFLossService = mockAmendBFLossService,
@@ -122,101 +148,21 @@ class AmendBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
+    protected def callController(): Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
 
-  "amend" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
-        MockAmendBFLossRequestDataParser
-          .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-          .returns(Right(bfLossRequest))
-
-        MockAmendBFLossService
-          .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
-
-        MockHateoasFactory
-          .wrap(amendBFLossResponse, AmendBFLossHateoasData(nino, lossId))
-          .returns(HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink)))
-
-        val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
-        status(result) shouldBe OK
-        contentAsJson(result) shouldBe responseBody
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseBody))
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-      }
-    }
-
-    "return the error as per spec" when {
-      "parser errors occur" should {
-        def errorsFromParserTester(error: MtdError): Unit = {
-          s"a ${error.code} error is returned from the parser" in new Test {
-
-            MockAmendBFLossRequestDataParser
-              .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-              .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-            val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
-
-            status(result) shouldBe error.httpStatus
-            contentAsJson(result) shouldBe Json.toJson(error)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-            val auditResponse: AuditResponse = AuditResponse(error.httpStatus, Some(Seq(AuditError(error.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-          }
-        }
-
-        val input = Seq(
-          BadRequestError,
-          NinoFormatError,
-          LossIdFormatError,
-          ValueFormatError.copy(paths = Some(Seq("/lossAmount")))
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "AmendBroughtForwardLoss",
+        transactionName = "amend-brought-forward-loss",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          versionNumber = "3.0",
+          params = Map("nino" -> nino, "lossId" -> lossId),
+          request = maybeRequestBody,
+          `X-CorrelationId` = correlationId,
+          response = auditResponse
         )
-
-        input.foreach(errorsFromParserTester)
-      }
-
-      "service errors occur" should {
-        def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $mtdError error is returned from the service" in new Test {
-
-            MockAmendBFLossRequestDataParser
-              .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-              .returns(Right(bfLossRequest))
-
-            MockAmendBFLossService
-              .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
-              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
-
-            val result: Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(mtdError)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-          }
-        }
-
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (LossIdFormatError, BAD_REQUEST),
-          (RuleLossAmountNotChanged, FORBIDDEN),
-          (NotFoundError, NOT_FOUND),
-          (StandardDownstreamError, INTERNAL_SERVER_ERROR)
-        )
-
-        input.foreach(args => (serviceErrors _).tupled(args))
-      }
-    }
+      )
   }
 }
