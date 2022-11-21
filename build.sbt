@@ -31,8 +31,12 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test(),
     retrieveManaged := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
-    scalaVersion := "2.12.16",
-    scalacOptions ++= Seq("-Xfatal-warnings", "-Wconf:src=routes/.*:silent", "-feature", "-language:higherKinds")
+    scalaVersion := "2.13.8",
+    scalacOptions ++= Seq(
+      "-Xfatal-warnings",
+      "-Wconf:src=routes/.*:silent",
+      "-feature",
+      "-language:higherKinds")
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"

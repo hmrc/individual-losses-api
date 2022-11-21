@@ -36,7 +36,7 @@ object TaxYearNotEndedValidation {
 
   private def getCurrentTaxYear(date: LocalDate): Int = {
     lazy val taxYearStartDate: LocalDate = LocalDate.parse(
-      date.getYear + "-04-06",
+      s"$date.getYear,  -04-06",
       DateTimeFormatter.ofPattern("yyyy-MM-dd")
     )
 

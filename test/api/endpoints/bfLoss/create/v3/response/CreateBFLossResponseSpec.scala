@@ -65,7 +65,7 @@ class CreateBFLossResponseSpec extends UnitSpec {
       val hateoasFactory = new HateoasFactory(mockAppConfig)
       val nino           = "someNino"
       val lossId         = "lossId"
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
     }
 
     "expose the correct links for create" in new Test {

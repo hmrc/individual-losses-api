@@ -110,7 +110,7 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
         BadRequest(Json.toJson(errorWrapper))
       case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError                                    => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError                          => InternalServerError(Json.toJson(errorWrapper))
+      case _                          => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
