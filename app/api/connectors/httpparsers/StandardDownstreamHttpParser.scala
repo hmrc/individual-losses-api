@@ -18,7 +18,7 @@ package api.connectors.httpparsers
 
 import api.connectors.DownstreamOutcome
 import api.models.ResponseWrapper
-import api.models.errors.{OutboundError, StandardDownstreamError}
+import api.models.errors.{OutboundError, InternalError}
 import play.api.http.Status._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
@@ -37,7 +37,7 @@ object StandardDownstreamHttpParser extends HttpParser {
       doRead(OK, url, response) { correlationId =>
         response.validateJson[A] match {
           case Some(ref) => Right(ResponseWrapper(correlationId, ref))
-          case None      => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
+          case None      => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
         }
     }
 
@@ -61,8 +61,8 @@ object StandardDownstreamHttpParser extends HttpParser {
         successOutcomeFactory(correlationId)
 
       case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY => Left(ResponseWrapper(correlationId, parseErrors(response)))
-      case INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE                           => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
-      case _                                                                     => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
+      case INTERNAL_SERVER_ERROR | SERVICE_UNAVAILABLE                           => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+      case _                                                                     => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
     }
   }
 }

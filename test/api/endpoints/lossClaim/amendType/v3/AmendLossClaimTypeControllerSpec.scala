@@ -16,30 +16,25 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.lossClaim.amendType.v3.request.{
-  AmendLossClaimTypeRawData,
-  AmendLossClaimTypeRequest,
-  AmendLossClaimTypeRequestBody,
-  MockAmendLossClaimTypeRequestDataParser
-}
-import api.endpoints.lossClaim.amendType.v3.response.{ AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse }
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody, MockAmendLossClaimTypeRequestDataParser}
+import api.endpoints.lossClaim.amendType.v3.response.{AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimTypeControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAmendLossClaimTypeService
     with MockAmendLossClaimTypeRequestDataParser
@@ -92,56 +87,47 @@ class AmendLossClaimTypeControllerSpec
 
   "amend" should {
     "return OK" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockAmendLossClaimTypeRequestDataParser
+          .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockAmendLossClaimTypeRequestDataParser
-            .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
-            .returns(Right(request))
+        MockAmendLossClaimTypeService
+          .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-          MockAmendLossClaimTypeService
-            .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-          MockHateoasFactory
-            .wrap(response, AmendLossClaimTypeHateoasData(nino, claimId))
+        MockHateoasFactory
+          .wrap(response, AmendLossClaimTypeHateoasData(nino, claimId))
             .returns(HateoasWrapper(response, Seq(testHateoasLink)))
-        }
 
         runOkTestWithAudit(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
     "return the error as per spec" when {
-      "the parser validation fails" in new RunControllerTest {
-
-        protected def setupMocks(): Unit = {
-          MockAmendLossClaimTypeRequestDataParser
-            .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-        }
+      "the parser validation fails" in new Test {
+        MockAmendLossClaimTypeRequestDataParser
+          .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
         runErrorTestWithAudit(NinoFormatError)
       }
 
-      "the service returns an error" in new RunControllerTest {
+      "the service returns an error" in new Test {
+        MockAmendLossClaimTypeRequestDataParser
+          .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockAmendLossClaimTypeRequestDataParser
-            .parseRequest(AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(requestBody)))
-            .returns(Right(request))
-
-          MockAmendLossClaimTypeService
-            .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalidForbidden, None))))
-        }
+        MockAmendLossClaimTypeService
+          .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalidForbidden, None))))
 
         runErrorTestWithAudit(RuleTypeOfClaimInvalidForbidden)
       }
     }
   }
 
-  private trait RunControllerTest extends RunTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     private val controller = new AmendLossClaimTypeController(
       authService = mockEnrolmentsAuthService,

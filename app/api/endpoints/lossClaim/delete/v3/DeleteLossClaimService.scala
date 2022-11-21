@@ -47,7 +47,7 @@ class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends Do
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
-    "SERVER_ERROR"              -> StandardDownstreamError,
-    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
   )
 }

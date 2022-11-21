@@ -16,16 +16,16 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser}
+import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.Method.{ GET, POST }
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 
@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListLossClaimsService
     with MockListLossClaimsRequestDataParser
@@ -142,75 +142,63 @@ class ListLossClaimsControllerSpec
 
   "list" should {
     "return UK" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockListLossClaimsRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
+        MockListLossClaimsService
+          .list(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-          MockListLossClaimsService
-            .list(request)
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-          MockHateoasFactory
-            .wrapList(response, ListLossClaimsHateoasData(nino))
+        MockHateoasFactory
+          .wrapList(response, ListLossClaimsHateoasData(nino))
             .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
-        }
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
     "return the error as per spec" when {
-      "the parser validation fails" in new RunControllerTest {
-
-        protected def setupMocks(): Unit = {
-          MockListLossClaimsRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-        }
+      "the parser validation fails" in new Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
         runErrorTest(NinoFormatError)
       }
 
-      "the service returns an error" in new RunControllerTest {
+      "the service returns an error" in new Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockListLossClaimsRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockListLossClaimsService
-            .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfClaimFormatError, None))))
-        }
+        MockListLossClaimsService
+          .list(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfClaimFormatError, None))))
 
         runErrorTest(TypeOfClaimFormatError)
       }
 
-      "the request received is valid but an empty list of claims is returned from downstream" in new RunControllerTest {
+      "the request received is valid but an empty list of claims is returned from downstream" in new Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockListLossClaimsRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
+        MockListLossClaimsService
+          .list(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
 
-          MockListLossClaimsService
-            .list(request)
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
-
-          MockHateoasFactory
-            .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
+        MockHateoasFactory
+          .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
             .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
-        }
 
         runErrorTest(NotFoundError)
       }
     }
   }
 
-  private trait RunControllerTest extends RunTest {
+  private trait Test extends ControllerTest {
 
     private val controller = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,

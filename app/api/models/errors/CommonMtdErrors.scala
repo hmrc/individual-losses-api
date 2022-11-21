@@ -28,7 +28,8 @@ object FromDateFormatError      extends MtdError(code = "FORMAT_FROM_DATE", mess
 object BusinessIdFormatError    extends MtdError("FORMAT_BUSINESS_ID", "The Business ID format is invalid", BAD_REQUEST)
 object PaymentIdFormatError     extends MtdError(code = "FORMAT_PAYMENT_ID", message = "The payment ID format is invalid", BAD_REQUEST)
 object TransactionIdFormatError extends MtdError(code = "FORMAT_TRANSACTION_ID", message = "The transaction ID format is invalid", BAD_REQUEST)
-object IdFormatError            extends MtdError(code = "FORMAT_ID", message = "The ID format is invalid", BAD_REQUEST)
+
+object IdFormatError extends MtdError(code = "FORMAT_ID", message = "The ID format is invalid", BAD_REQUEST)
 
 object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
 
@@ -37,15 +38,32 @@ object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be betw
 }
 
 //Standard Errors
-object NotFoundError           extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
-object StandardDownstreamError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred", INTERNAL_SERVER_ERROR)
-object BadRequestError         extends MtdError("INVALID_REQUEST", "Invalid request", BAD_REQUEST)
-object BVRError                extends MtdError("BUSINESS_ERROR", "Business validation error", BAD_REQUEST)
+object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
+
+object InternalError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred", INTERNAL_SERVER_ERROR)
+
+object BadRequestError extends MtdError("INVALID_REQUEST", "Invalid request", BAD_REQUEST)
+
+object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error", BAD_REQUEST)
+
 object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error", INTERNAL_SERVER_ERROR)
-object InvalidBodyTypeError    extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body", BAD_REQUEST)
+
+object InvalidHttpMethodError extends MtdError("INVALID_HTTP_METHOD", "Invalid HTTP method", METHOD_NOT_ALLOWED)
+
+object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body", UNSUPPORTED_MEDIA_TYPE)
 
 //Authorisation Errors
-object UnauthorisedError       extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", FORBIDDEN)
+
+/**
+  * Authentication OK but not allowed access to the requested resource
+  */
+object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", FORBIDDEN)
+
+/**
+  * Some code returns a 401 where it should be a 403, so this error object exists until that can be sorted out.
+  */
+object UnauthorisedErrorWith401 extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", UNAUTHORIZED)
+
 object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized", UNAUTHORIZED)
 
 // Accept header Errors

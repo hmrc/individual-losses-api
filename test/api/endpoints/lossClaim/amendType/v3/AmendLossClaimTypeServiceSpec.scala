@@ -16,10 +16,10 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
-import api.endpoints.lossClaim.amendType.v3.request.{ AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody }
+import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
@@ -78,21 +78,21 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedLossClaimConnector.amendLossClaimType(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimTypeOutcome = await(service.amendLossClaimType(request))
-        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-      "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalidForbidden,
-      "NOT_FOUND"                 -> NotFoundError,
-      "CONFLICT"                  -> RuleClaimTypeNotChanged,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
-      "UNEXPECTED_ERROR"          -> StandardDownstreamError
+      "INVALID_CLAIM_ID" -> ClaimIdFormatError,
+      "INVALID_PAYLOAD" -> InternalError,
+      "INVALID_CLAIM_TYPE" -> RuleTypeOfClaimInvalidForbidden,
+      "NOT_FOUND" -> NotFoundError,
+      "CONFLICT" -> RuleClaimTypeNotChanged,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError,
+      "UNEXPECTED_ERROR" -> InternalError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

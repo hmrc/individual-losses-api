@@ -48,6 +48,6 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends Do
     case "INVALID_CLAIM_TYPE"                                                                 => RuleTypeOfClaimInvalid
     case "TAX_YEAR_NOT_SUPPORTED"                                                             => RuleTaxYearNotSupportedError
     case "NO_ACCOUNTING_PERIOD"                                                               => RuleNoAccountingPeriod
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" => StandardDownstreamError
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" => InternalError
   }
 }

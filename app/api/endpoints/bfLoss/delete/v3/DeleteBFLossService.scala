@@ -46,7 +46,7 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends Downstre
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
-    "SERVER_ERROR"              -> StandardDownstreamError,
-    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
   )
 }

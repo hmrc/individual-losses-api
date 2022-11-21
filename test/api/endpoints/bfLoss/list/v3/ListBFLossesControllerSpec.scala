@@ -16,24 +16,24 @@
 
 package api.endpoints.bfLoss.list.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
-import api.endpoints.bfLoss.list.v3.request.{ ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser }
-import api.endpoints.bfLoss.list.v3.response.{ ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, TypeOfLoss}
+import api.endpoints.bfLoss.list.v3.request.{ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser}
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.Method.{ GET, POST }
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListBFLossesControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListBFLossesService
     with MockListBFLossesParser
@@ -100,75 +100,63 @@ class ListBFLossesControllerSpec
 
   "list" should {
     "return OK" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockListBFLossesRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockListBFLossesRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
+        MockListBFLossesService
+          .list(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-          MockListBFLossesService
-            .list(request)
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-          MockHateoasFactory
-            .wrapList(response, ListBFLossHateoasData(nino))
+        MockHateoasFactory
+          .wrapList(response, ListBFLossHateoasData(nino))
             .returns(HateoasWrapper(hateoasResponse, Seq(createHateoasLink, listHateoasLink)))
-        }
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
     "return the error as per spec" when {
-      "the request received is valid but an empty list of losses is returned from downstream" in new RunControllerTest {
+      "the request received is valid but an empty list of losses is returned from downstream" in new Test {
+        MockListBFLossesRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockListBFLossesRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
+        MockListBFLossesService
+          .list(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListBFLossesResponse(Nil)))))
 
-          MockListBFLossesService
-            .list(request)
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, ListBFLossesResponse(Nil)))))
-
-          MockHateoasFactory
-            .wrapList(ListBFLossesResponse(List.empty[ListBFLossesItem]), ListBFLossHateoasData(nino))
+        MockHateoasFactory
+          .wrapList(ListBFLossesResponse(List.empty[ListBFLossesItem]), ListBFLossHateoasData(nino))
             .returns(HateoasWrapper(ListBFLossesResponse(List.empty[HateoasWrapper[ListBFLossesItem]]), Seq(createHateoasLink)))
-        }
 
         runErrorTest(NotFoundError)
       }
 
-      "the parser validation fails" in new RunControllerTest {
-
-        protected def setupMocks(): Unit = {
-          MockListBFLossesRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-        }
+      "the parser validation fails" in new Test {
+        MockListBFLossesRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
         runErrorTest(NinoFormatError)
       }
 
-      "the service returns an error" in new RunControllerTest {
+      "the service returns an error" in new Test {
+        MockListBFLossesRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockListBFLossesRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockListBFLossesService
-            .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfLossFormatError, None))))
-        }
+        MockListBFLossesService
+          .list(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfLossFormatError, None))))
 
         runErrorTest(TypeOfLossFormatError)
       }
     }
   }
 
-  private trait RunControllerTest extends RunTest {
+  private trait Test extends ControllerTest {
 
     private val controller = new ListBFLossesController(
       authService = mockEnrolmentsAuthService,

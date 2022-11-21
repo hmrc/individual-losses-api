@@ -81,8 +81,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, StandardDownstreamError, None)
+        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(expected)
@@ -90,8 +90,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, StandardDownstreamError, None)
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, InternalError)))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listLossClaims(request)) shouldBe Left(expected)
@@ -100,14 +100,14 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
-      "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
-      "NOT_FOUND"                 -> NotFoundError,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+      "INVALID_TAXYEAR" -> TaxYearFormatError,
+      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
+      "INVALID_CLAIM_TYPE" -> TypeOfClaimFormatError,
+      "NOT_FOUND" -> NotFoundError,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError
     ).foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {

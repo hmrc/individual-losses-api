@@ -16,30 +16,25 @@
 
 package api.endpoints.lossClaim.create.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.lossClaim.create.v3.request.{
-  CreateLossClaimRawData,
-  CreateLossClaimRequest,
-  CreateLossClaimRequestBody,
-  MockCreateLossClaimParser
-}
-import api.endpoints.lossClaim.create.v3.response.{ CreateLossClaimHateoasData, CreateLossClaimResponse }
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody, MockCreateLossClaimParser}
+import api.endpoints.lossClaim.create.v3.response.{CreateLossClaimHateoasData, CreateLossClaimResponse}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateLossClaimControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreateLossClaimService
     with MockCreateLossClaimParser
@@ -79,21 +74,18 @@ class CreateLossClaimControllerSpec
 
   "create" should {
     "return CREATED" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockCreateLossClaimRequestDataParser
+          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Right(lossClaimRequest))
 
-        protected def setupMocks(): Unit = {
-          MockCreateLossClaimRequestDataParser
-            .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-            .returns(Right(lossClaimRequest))
+        MockCreateLossClaimService
+          .create(CreateLossClaimRequest(Nino(nino), lossClaim))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
 
-          MockCreateLossClaimService
-            .create(CreateLossClaimRequest(Nino(nino), lossClaim))
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
-
-          MockHateoasFactory
-            .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
+        MockHateoasFactory
+          .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
             .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
-        }
 
         runOkTestWithAudit(expectedStatus = CREATED, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -101,33 +93,28 @@ class CreateLossClaimControllerSpec
   }
 
   "return the error as per spec" when {
-    "the parser validation fails" in new RunControllerTest {
-      protected def setupMocks(): Unit = {
-        MockCreateLossClaimRequestDataParser
-          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-      }
+    "the parser validation fails" in new Test {
+      MockCreateLossClaimRequestDataParser
+        .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+        .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
       runErrorTestWithAudit(NinoFormatError)
     }
 
-    "the service returns an error" in new RunControllerTest {
+    "the service returns an error" in new Test {
+      MockCreateLossClaimRequestDataParser
+        .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
+        .returns(Right(lossClaimRequest))
 
-      protected def setupMocks(): Unit = {
-        MockCreateLossClaimRequestDataParser
-          .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Right(lossClaimRequest))
-
-        MockCreateLossClaimService
-          .create(CreateLossClaimRequest(Nino(nino), lossClaim))
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalid, None))))
-      }
+      MockCreateLossClaimService
+        .create(CreateLossClaimRequest(Nino(nino), lossClaim))
+        .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalid, None))))
 
       runErrorTestWithAudit(RuleTypeOfClaimInvalid)
     }
   }
 
-  private trait RunControllerTest extends RunTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     private val controller = new CreateLossClaimController(
       authService = mockEnrolmentsAuthService,

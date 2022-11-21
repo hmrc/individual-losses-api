@@ -78,20 +78,20 @@ class AmendBFLossServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
         val result: AmendBFLossOutcome = await(service.amendBFLoss(request))
-        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_LOSS_ID"           -> LossIdFormatError,
-      "NOT_FOUND"                 -> NotFoundError,
-      "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "CONFLICT"                  -> RuleLossAmountNotChanged,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
-      "UNEXPECTED_ERROR"          -> StandardDownstreamError
+      "INVALID_LOSS_ID" -> LossIdFormatError,
+      "NOT_FOUND" -> NotFoundError,
+      "INVALID_PAYLOAD" -> InternalError,
+      "CONFLICT" -> RuleLossAmountNotChanged,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError,
+      "UNEXPECTED_ERROR" -> InternalError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

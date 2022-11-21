@@ -46,12 +46,12 @@ class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends
   private def errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-    "INVALID_PAYLOAD"           -> StandardDownstreamError,
+    "INVALID_PAYLOAD"           -> InternalError,
     "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalidForbidden,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleClaimTypeNotChanged,
-    "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-    "SERVER_ERROR"              -> StandardDownstreamError,
-    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    "INVALID_CORRELATIONID"     -> InternalError,
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
   )
 }

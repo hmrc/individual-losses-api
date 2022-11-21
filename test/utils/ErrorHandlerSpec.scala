@@ -124,7 +124,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         val result: Future[Result] = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
         status(result) shouldBe METHOD_NOT_ALLOWED
 
-        contentAsJson(result) shouldBe Json.toJson(MtdError("INVALID_REQUEST", "test", BAD_REQUEST))
+        contentAsJson(result) shouldBe Json.toJson(InvalidHttpMethodError)
       }
     }
   }
@@ -164,7 +164,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         val result: Future[Result] = handler.onServerError(requestHeader, new Exception with NoStackTrace)
         status(result) shouldBe INTERNAL_SERVER_ERROR
 
-        contentAsJson(result) shouldBe Json.toJson(StandardDownstreamError)
+        contentAsJson(result) shouldBe Json.toJson(InternalError)
       }
     }
   }

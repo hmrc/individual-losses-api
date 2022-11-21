@@ -49,21 +49,21 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
         val response                   = HttpResponse(OK, invalidJson, Map.empty[String, Seq[String]])
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(StandardDownstreamError)
+        result shouldBe Left(InternalError)
       }
 
       "backend doesn't return any data" in {
         val response                   = HttpResponse(OK, "")
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(StandardDownstreamError)
+        result shouldBe Left(InternalError)
       }
 
       "the json cannot be read" in {
         val response                   = HttpResponse(OK, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(StandardDownstreamError)
+        result shouldBe Left(InternalError)
       }
     }
 
@@ -90,7 +90,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
         val response                   = HttpResponse(INTERNAL_SERVER_ERROR, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(StandardDownstreamError)
+        result shouldBe Left(InternalError)
       }
     }
   }

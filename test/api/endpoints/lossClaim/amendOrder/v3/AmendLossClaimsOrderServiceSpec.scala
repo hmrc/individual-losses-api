@@ -17,12 +17,12 @@
 package api.endpoints.lossClaim.amendOrder.v3
 
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{ AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody }
+import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
@@ -76,7 +76,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(expected)))
         val result: AmendLossClaimsOrderOutcome = await(service.amendLossClaimsOrder(request))
-        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }
 
@@ -98,15 +98,15 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         ("CONFLICT_SEQUENCE_START", RuleInvalidSequenceStart),
         ("CONFLICT_NOT_SEQUENTIAL", RuleSequenceOrderBroken),
         ("CONFLICT_NOT_FULL_LIST", RuleLossClaimsMissing),
-        ("INVALID_PAYLOAD", StandardDownstreamError),
+        ("INVALID_PAYLOAD", InternalError),
         ("UNPROCESSABLE_ENTITY", NotFoundError),
-        ("SERVER_ERROR", StandardDownstreamError),
-        ("SERVICE_UNAVAILABLE", StandardDownstreamError)
+        ("SERVER_ERROR", InternalError),
+        ("SERVICE_UNAVAILABLE", InternalError)
       )
 
       val extraTysErrors = Seq(
         ("INVALID_TAX_YEAR", TaxYearFormatError),
-        ("INVALID_CORRELATIONID", StandardDownstreamError),
+        ("INVALID_CORRELATIONID", InternalError),
         ("NOT_FOUND", NotFoundError),
         ("NOT_SEQUENTIAL", RuleSequenceOrderBroken),
         ("SEQUENCE_START", RuleInvalidSequenceStart),

@@ -62,8 +62,8 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, StandardDownstreamError, None)
+        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Left(expected)
@@ -71,8 +71,8 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
 
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, StandardDownstreamError, None)
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, InternalError)))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
         MockedBFLossConnector.retrieveBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.retrieveBFLoss(request)) shouldBe Left(expected)
@@ -81,11 +81,11 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_LOSS_ID"           -> LossIdFormatError,
-      "NOT_FOUND"                 -> NotFoundError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+      "INVALID_LOSS_ID" -> LossIdFormatError,
+      "NOT_FOUND" -> NotFoundError,
+      "SERVER_ERROR" -> InternalError,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError
     ).foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {

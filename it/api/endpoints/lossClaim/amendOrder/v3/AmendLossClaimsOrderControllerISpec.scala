@@ -171,15 +171,15 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
         (CONFLICT, "CONFLICT_SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
         (CONFLICT, "CONFLICT_NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
         (CONFLICT, "CONFLICT_NOT_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
         (Status.UNPROCESSABLE_ENTITY, "UNPROCESSABLE_ENTITY", NOT_FOUND, NotFoundError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError)
+        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
       val extraTysErrors = Seq(
         (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
         (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
         (CONFLICT, "NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
         (CONFLICT, "SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),

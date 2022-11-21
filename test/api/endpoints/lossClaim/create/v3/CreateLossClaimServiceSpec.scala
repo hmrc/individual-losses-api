@@ -17,9 +17,9 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.create.v3.request.{ CreateLossClaimRequest, CreateLossClaimRequestBody }
+import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRequest, CreateLossClaimRequestBody}
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
@@ -69,22 +69,22 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
         val result: CreateLossClaimOutcome = await(service.createLossClaim(request))
-        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }
 
     Map(
-      "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
-      "DUPLICATE"                   -> RuleDuplicateClaimSubmissionError,
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "DUPLICATE" -> RuleDuplicateClaimSubmissionError,
       "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
-      "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,
-      "INCOME_SOURCE_NOT_FOUND"     -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
-      "NO_ACCOUNTING_PERIOD"        -> RuleNoAccountingPeriod,
-      "INVALID_PAYLOAD"             -> StandardDownstreamError,
-      "SERVER_ERROR"                -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"         -> StandardDownstreamError,
-      "INVALID_CORRELATIONID"       -> StandardDownstreamError
+      "INVALID_CLAIM_TYPE" -> RuleTypeOfClaimInvalid,
+      "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "NO_ACCOUNTING_PERIOD" -> RuleNoAccountingPeriod,
+      "INVALID_PAYLOAD" -> InternalError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError,
+      "INVALID_CORRELATIONID" -> InternalError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

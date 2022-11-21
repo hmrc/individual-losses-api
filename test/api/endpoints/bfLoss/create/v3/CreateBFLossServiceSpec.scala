@@ -68,20 +68,20 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedBFLossConnector.createBFLoss(request).returns(Future.successful(Left(expected)))
         val result: CreateBFLossOutcome = await(service.createBFLoss(request))
-        result shouldBe Left(ErrorWrapper(correlationId, StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "DUPLICATE_SUBMISSION"      -> RuleDuplicateSubmissionError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
-      "TAX_YEAR_NOT_ENDED"        -> RuleTaxYearNotEndedError,
-      "INCOME_SOURCE_NOT_FOUND"   -> NotFoundError,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-      "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+      "DUPLICATE_SUBMISSION" -> RuleDuplicateSubmissionError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "TAX_YEAR_NOT_ENDED" -> RuleTaxYearNotEndedError,
+      "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "INVALID_PAYLOAD" -> InternalError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {

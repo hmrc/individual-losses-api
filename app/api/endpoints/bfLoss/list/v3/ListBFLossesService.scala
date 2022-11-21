@@ -45,7 +45,7 @@ class ListBFLossesService @Inject()(connector: BFLossConnector) extends Downstre
     "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
     "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
     "NOT_FOUND"                 -> NotFoundError,
-    "SERVER_ERROR"              -> StandardDownstreamError,
-    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
   )
 }

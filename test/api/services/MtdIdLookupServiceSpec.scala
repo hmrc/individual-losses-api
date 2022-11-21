@@ -64,7 +64,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
 
     "a downstream error occurs the service" should {
       "proxy the error to the caller" in new Test {
-        val connectorResponse = Left(StandardDownstreamError)
+        val connectorResponse = Left(InternalError)
 
         MockedMtdIdLookupConnector
           .lookup(nino)

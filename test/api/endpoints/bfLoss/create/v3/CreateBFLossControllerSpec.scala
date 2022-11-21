@@ -16,25 +16,25 @@
 
 package api.endpoints.bfLoss.create.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser }
-import api.endpoints.bfLoss.create.v3.response.{ CreateBFLossHateoasData, CreateBFLossResponse }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser}
+import api.endpoints.bfLoss.create.v3.response.{CreateBFLossHateoasData, CreateBFLossResponse}
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateBFLossControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreateBFLossService
     with MockCreateBFLossParser
@@ -75,21 +75,18 @@ class CreateBFLossControllerSpec
 
   "create" should {
     "return Created" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockCreateBFLossRequestDataParser
+          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+          .returns(Right(bfLossRequest))
 
-        protected def setupMocks(): Unit = {
-          MockCreateBFLossRequestDataParser
-            .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-            .returns(Right(bfLossRequest))
+        MockCreateBFLossService
+          .create(CreateBFLossRequest(Nino(nino), bfLoss))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, createBFLossResponse))))
 
-          MockCreateBFLossService
-            .create(CreateBFLossRequest(Nino(nino), bfLoss))
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, createBFLossResponse))))
-
-          MockHateoasFactory
-            .wrap(createBFLossResponse, CreateBFLossHateoasData(nino, lossId))
+        MockHateoasFactory
+          .wrap(createBFLossResponse, CreateBFLossHateoasData(nino, lossId))
             .returns(HateoasWrapper(createBFLossResponse, Seq(testHateoasLink)))
-        }
 
         runOkTestWithAudit(expectedStatus = CREATED, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -97,34 +94,28 @@ class CreateBFLossControllerSpec
   }
 
   "return the error as per spec" when {
-    "the parser validation fails" in new RunControllerTest {
-
-      protected def setupMocks(): Unit = {
-        MockCreateBFLossRequestDataParser
-          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-      }
+    "the parser validation fails" in new Test {
+      MockCreateBFLossRequestDataParser
+        .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+        .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
       runErrorTestWithAudit(NinoFormatError)
     }
 
-    "the service returns an error" in new RunControllerTest {
+    "the service returns an error" in new Test {
+      MockCreateBFLossRequestDataParser
+        .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
+        .returns(Right(bfLossRequest))
 
-      protected def setupMocks(): Unit = {
-        MockCreateBFLossRequestDataParser
-          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Right(bfLossRequest))
-
-        MockCreateBFLossService
-          .create(CreateBFLossRequest(Nino(nino), bfLoss))
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDuplicateSubmissionError, None))))
-      }
+      MockCreateBFLossService
+        .create(CreateBFLossRequest(Nino(nino), bfLoss))
+        .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDuplicateSubmissionError, None))))
 
       runErrorTestWithAudit(RuleDuplicateSubmissionError)
     }
   }
 
-  private trait RunControllerTest extends RunTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     private val controller = new CreateBFLossController(
       authService = mockEnrolmentsAuthService,

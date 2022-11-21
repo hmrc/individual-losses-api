@@ -20,7 +20,7 @@ import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.endpoints.bfLoss.list.v3
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
@@ -66,8 +66,8 @@ class ListBFLossesServiceSpec extends ServiceSpec {
 
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(StandardDownstreamError))
-        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, StandardDownstreamError, None)
+        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listBFLosses(request)) shouldBe Left(expected)
@@ -75,8 +75,8 @@ class ListBFLossesServiceSpec extends ServiceSpec {
 
       "the connector call returns multiple errors including a downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, StandardDownstreamError)))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, StandardDownstreamError, None)
+          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, InternalError)))
+        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listBFLosses(request)) shouldBe Left(expected)
@@ -85,12 +85,12 @@ class ListBFLossesServiceSpec extends ServiceSpec {
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
-      "NOT_FOUND"                 -> NotFoundError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+      "INVALID_TAXYEAR" -> TaxYearFormatError,
+      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
+      "NOT_FOUND" -> NotFoundError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError
     ).foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {

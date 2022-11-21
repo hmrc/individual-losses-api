@@ -16,16 +16,16 @@
 
 package api.endpoints.bfLoss.retrieve.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.endpoints.bfLoss.retrieve.v3.request.{ MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest }
-import api.endpoints.bfLoss.retrieve.v3.response.{ GetBFLossHateoasData, RetrieveBFLossResponse }
+import api.endpoints.bfLoss.retrieve.v3.request.{MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest}
+import api.endpoints.bfLoss.retrieve.v3.response.{GetBFLossHateoasData, RetrieveBFLossResponse}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 
@@ -74,56 +74,47 @@ class RetrieveBFLossControllerSpec
 
   "retrieve" should {
     "return OK" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockRetrieveBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockRetrieveBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
+        MockRetrieveBFLossService
+          .retrieve(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-          MockRetrieveBFLossService
-            .retrieve(request)
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-          MockHateoasFactory
-            .wrap(response, GetBFLossHateoasData(nino, lossId))
+        MockHateoasFactory
+          .wrap(response, GetBFLossHateoasData(nino, lossId))
             .returns(HateoasWrapper(response, Seq(testHateoasLink)))
-        }
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
     "return the error as per spec" when {
-      "the parser validation fails" in new RunControllerTest {
-
-        protected def setupMocks(): Unit = {
-          MockRetrieveBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-        }
+      "the parser validation fails" in new Test {
+        MockRetrieveBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
         runErrorTest(NinoFormatError)
       }
 
-      "the service returns an error" in new RunControllerTest {
+      "the service returns an error" in new Test {
+        MockRetrieveBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockRetrieveBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockRetrieveBFLossService
-            .retrieve(request)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, LossIdFormatError, None))))
-        }
+        MockRetrieveBFLossService
+          .retrieve(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, LossIdFormatError, None))))
 
         runErrorTest(LossIdFormatError)
       }
     }
   }
 
-  private trait RunControllerTest extends RunTest {
+  private trait Test extends ControllerTest {
 
     private val controller = new RetrieveBFLossController(
       authService = mockEnrolmentsAuthService,

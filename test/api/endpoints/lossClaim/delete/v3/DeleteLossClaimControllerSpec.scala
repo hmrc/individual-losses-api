@@ -16,10 +16,10 @@
 
 package api.endpoints.lossClaim.delete.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.lossClaim.delete.v3.request.{ DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.lossClaim.delete.v3.request.{DeleteLossClaimRawData, DeleteLossClaimRequest, MockDeleteLossClaimRequestDataParser}
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.JsValue
@@ -40,52 +40,43 @@ class DeleteLossClaimControllerSpec
 
   "delete" should {
     "return NO_CONTENT" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockDeleteLossClaimRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockDeleteLossClaimRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockDeleteLossClaimService
-            .delete(request)
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-        }
+        MockDeleteLossClaimService
+          .delete(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(expectedStatus = NO_CONTENT, maybeExpectedResponseBody = None)
       }
     }
 
     "return the error as per spec" when {
-      "the parser validation fails" in new RunControllerTest {
-
-        protected def setupMocks(): Unit = {
-          MockDeleteLossClaimRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-        }
+      "the parser validation fails" in new Test {
+        MockDeleteLossClaimRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
         runErrorTestWithAudit(NinoFormatError)
       }
 
-      "the service returns an error" in new RunControllerTest {
+      "the service returns an error" in new Test {
+        MockDeleteLossClaimRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-        protected def setupMocks(): Unit = {
-          MockDeleteLossClaimRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockDeleteLossClaimService
-            .delete(request)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, ClaimIdFormatError, None))))
-        }
+        MockDeleteLossClaimService
+          .delete(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, ClaimIdFormatError, None))))
 
         runErrorTestWithAudit(ClaimIdFormatError)
       }
     }
   }
 
-  private trait RunControllerTest extends RunTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     private val controller = new DeleteLossClaimController(
       authService = mockEnrolmentsAuthService,

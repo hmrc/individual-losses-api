@@ -16,31 +16,26 @@
 
 package api.endpoints.lossClaim.amendOrder.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{
-  AmendLossClaimsOrderRawData,
-  AmendLossClaimsOrderRequest,
-  AmendLossClaimsOrderRequestBody,
-  MockAmendLossClaimsOrderRequestDataParser
-}
-import api.endpoints.lossClaim.amendOrder.v3.response.{ AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse }
+import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, MockAmendLossClaimsOrderRequestDataParser}
+import api.endpoints.lossClaim.amendOrder.v3.response.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import api.models.domain.{ Nino, TaxYear }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimsOrderControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAmendLossClaimsOrderService
     with MockAmendLossClaimsOrderRequestDataParser
@@ -96,56 +91,47 @@ class AmendLossClaimsOrderControllerSpec
 
   "amendLossClaimsOrder" should {
     "return OK" when {
-      "the request is valid" in new RunControllerTest {
+      "the request is valid" in new Test {
+        MockAmendLossClaimsOrderRequestDataParser
+          .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
+          .returns(Right(amendLossClaimsOrderRequest))
 
-        protected def setupMocks(): Unit = {
-          MockAmendLossClaimsOrderRequestDataParser
-            .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
-            .returns(Right(amendLossClaimsOrderRequest))
+        MockAmendLossClaimsOrderService
+          .amend(amendLossClaimsOrderRequest)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimsOrderResponse))))
 
-          MockAmendLossClaimsOrderService
-            .amend(amendLossClaimsOrderRequest)
-            .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimsOrderResponse))))
-
-          MockHateoasFactory
-            .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(nino))
+        MockHateoasFactory
+          .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(nino))
             .returns(HateoasWrapper(amendLossClaimsOrderResponse, Seq(testHateoasLink)))
-        }
 
         runOkTestWithAudit(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
     "return the error as per spec" when {
-      "the parser validation fails" in new RunControllerTest {
-
-        protected def setupMocks(): Unit = {
-          MockAmendLossClaimsOrderRequestDataParser
-            .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-        }
+      "the parser validation fails" in new Test {
+        MockAmendLossClaimsOrderRequestDataParser
+          .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
         runErrorTestWithAudit(NinoFormatError)
       }
 
-      "the service returns an error" in new RunControllerTest {
+      "the service returns an error" in new Test {
+        MockAmendLossClaimsOrderRequestDataParser
+          .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
+          .returns(Right(amendLossClaimsOrderRequest))
 
-        protected def setupMocks(): Unit = {
-          MockAmendLossClaimsOrderRequestDataParser
-            .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
-            .returns(Right(amendLossClaimsOrderRequest))
-
-          MockAmendLossClaimsOrderService
-            .amend(amendLossClaimsOrderRequest)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleSequenceOrderBroken, None))))
-        }
+        MockAmendLossClaimsOrderService
+          .amend(amendLossClaimsOrderRequest)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleSequenceOrderBroken, None))))
 
         runErrorTestWithAudit(RuleSequenceOrderBroken)
       }
     }
   }
 
-  private trait RunControllerTest extends RunTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     private val controller = new AmendLossClaimsOrderController(
       authService = mockEnrolmentsAuthService,
