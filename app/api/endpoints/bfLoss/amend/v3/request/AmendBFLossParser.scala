@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.amend.v3.request
 
 import api.controllers.RequestParser
-import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
+import api.endpoints.bfLoss.amend.anyVersion.request.{AmendBFLossRawData, AmendBFLossRequestBody}
 import api.models.domain.Nino
 
 import javax.inject.Inject

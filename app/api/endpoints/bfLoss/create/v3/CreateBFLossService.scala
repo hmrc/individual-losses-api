@@ -18,8 +18,7 @@ package api.endpoints.bfLoss.create.v3
 
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.create.v3.request.CreateBFLossRequest
-import api.models.errors._
-import api.models.errors.v3.RuleDuplicateSubmissionError
+import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.CreateBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,9 +49,9 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends Downstre
     case "TAX_YEAR_NOT_SUPPORTED"    => RuleTaxYearNotSupportedError
     case "INCOME_SOURCE_NOT_FOUND"   => NotFoundError
     case "TAX_YEAR_NOT_ENDED"        => RuleTaxYearNotEndedError
-    case "INVALID_CORRELATIONID"     => StandardDownstreamError
-    case "INVALID_PAYLOAD"           => StandardDownstreamError
-    case "SERVER_ERROR"              => StandardDownstreamError
-    case "SERVICE_UNAVAILABLE"       => StandardDownstreamError
+    case "INVALID_CORRELATIONID"     => InternalError
+    case "INVALID_PAYLOAD"           => InternalError
+    case "SERVER_ERROR"              => InternalError
+    case "SERVICE_UNAVAILABLE"       => InternalError
   }
 }

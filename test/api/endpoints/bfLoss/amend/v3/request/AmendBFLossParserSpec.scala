@@ -30,6 +30,8 @@ class AmendBFLossParserSpec extends UnitSpec {
   private val lossAmount = 3.00
   private val data       = AmendBFLossRawData(nino, lossId, AnyContentAsJson(Json.obj("lossAmount" -> lossAmount)))
 
+  implicit val correlationId: String = "X-123"
+
   trait Test extends MockAmendBFLossValidator {
     lazy val parser = new AmendBFLossParser(mockValidator)
   }
@@ -44,13 +46,14 @@ class AmendBFLossParserSpec extends UnitSpec {
     "return a single error" when {
       "the validator returns a single error" in new Test {
         MockValidator.validate(data).returns(List(NinoFormatError))
-        parser.parseRequest(data) shouldBe Left(ErrorWrapper(None, NinoFormatError, None))
+        parser.parseRequest(data) shouldBe Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
     }
     "return multiple errors" when {
       "the validator returns multiple errors" in new Test {
         MockValidator.validate(data).returns(List(NinoFormatError, RuleIncorrectOrEmptyBodyError))
-        parser.parseRequest(data) shouldBe Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
+        parser.parseRequest(data) shouldBe Left(
+          ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
       }
     }
   }

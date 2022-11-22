@@ -32,10 +32,7 @@ trait MockRetrieveBFLossService extends MockFactory {
 
     def retrieve(retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[RetrieveBFLossOutcome]] = {
       (mockRetrieveBFLossService
-        .retrieveBFLoss(_: RetrieveBFLossRequest)(
-          _: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(retrieveBFLossRequest, *, *, *)
     }
   }

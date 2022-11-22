@@ -47,10 +47,11 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
     post(request.lossClaim, IfsUri[CreateLossClaimResponse](s"income-tax/claims-for-relief/$nino"))
   }
 
-  def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest)(implicit
-                                                                               hc: HeaderCarrier,
-                                                                               ec: ExecutionContext,
-                                                                               correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
+  def amendLossClaimType(amendLossClaimTypeRequest: AmendLossClaimTypeRequest)(
+      implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
     val nino    = amendLossClaimTypeRequest.nino.nino
     val claimId = amendLossClaimTypeRequest.claimId
 
@@ -84,9 +85,8 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
     get(IfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/$nino"), pathParameters.toSeq)
   }
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                       ec: ExecutionContext,
-                                                       correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def deleteLossClaim(
+      request: DeleteLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
     val nino    = request.nino.nino
     val claimId = request.claimId
 

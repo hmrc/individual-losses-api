@@ -16,57 +16,71 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossRawData, DeleteBFLossRequest, MockDeleteBFLossParser}
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.Json
+import api.services.MockAuditService
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteBFLossControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockDeleteBFLossService
     with MockDeleteBFLossParser
-    with MockAuditService
-    with MockIdGenerator {
+    with MockAuditService {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val lossId: String        = "AAZZ1234567890a"
+  private val lossId  = "AAZZ1234567890a"
+  private val rawData = DeleteBFLossRawData(nino, lossId)
+  private val request = DeleteBFLossRequest(Nino(nino), lossId)
 
-  val rawData: DeleteBFLossRawData = DeleteBFLossRawData(nino, lossId)
-  val request: DeleteBFLossRequest = DeleteBFLossRequest(Nino(nino), lossId)
+  "delete" should {
+    "return NoContent" when {
+      "the request is valid" in new Test {
+        MockDeleteBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "DeleteBroughtForwardLoss",
-      transactionName = "delete-brought-forward-loss",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        versionNumber = "3.0",
-        params = Map("nino" -> nino, "lossId" -> lossId),
-        request = None,
-        `X-CorrelationId` = correlationId,
-        response = auditResponse
-      )
-    )
+        MockDeleteBFLossService
+          .delete(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+        runOkTestWithAudit(expectedStatus = NO_CONTENT, maybeExpectedResponseBody = None)
+      }
+    }
 
-    val controller = new DeleteBFLossController(
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+        MockDeleteBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+
+        runErrorTestWithAudit(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+        MockDeleteBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
+
+        MockDeleteBFLossService
+          .delete(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDeleteAfterFinalDeclarationError, None))))
+
+        runErrorTestWithAudit(RuleDeleteAfterFinalDeclarationError)
+      }
+    }
+  }
+
+  private trait Test extends ControllerTest with AuditEventChecking {
+
+    private val controller = new DeleteBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       deleteBFLossService = mockDeleteBFLossService,
@@ -76,86 +90,23 @@ class DeleteBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
+    protected def callController(): Future[Result] = controller.delete(nino, lossId)(fakeRequest)
+
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "DeleteBroughtForwardLoss",
+        transactionName = "delete-brought-forward-loss",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          versionNumber = "3.0",
+          params = Map("nino" -> nino, "lossId" -> lossId),
+          request = maybeRequestBody,
+          `X-CorrelationId` = correlationId,
+          response = auditResponse
+        )
+      )
+
   }
 
-  "delete" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
-        MockDeleteBFLossRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
-
-        MockDeleteBFLossService
-          .delete(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        val result: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-        status(result) shouldBe NO_CONTENT
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-      }
-    }
-
-    "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
-
-          MockDeleteBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
-
-          val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-
-          status(response) shouldBe expectedStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-        }
-      }
-
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NotFoundError, NOT_FOUND)
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(LossIdFormatError, BAD_REQUEST)
-
-    }
-
-    "handle non-mdtp validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the service" in new Test {
-
-          MockDeleteBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockDeleteBFLossService
-            .delete(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
-
-          val response: Future[Result] = controller.delete(nino, lossId)(fakeRequest)
-          status(response) shouldBe expectedStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
-        }
-      }
-
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(RuleDeleteAfterFinalDeclarationError, FORBIDDEN)
-    }
-  }
 }

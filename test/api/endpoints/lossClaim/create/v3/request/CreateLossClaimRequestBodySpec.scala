@@ -16,9 +16,9 @@
 
 package api.endpoints.lossClaim.create.v3.request
 
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {

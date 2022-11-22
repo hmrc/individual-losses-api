@@ -18,7 +18,6 @@ package api.endpoints.bfLoss.amend.v3.request
 
 import api.endpoints.bfLoss.amend.anyVersion.request.AmendBFLossRawData
 import api.models.errors._
-import api.models.errors.v3.ValueFormatError
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec

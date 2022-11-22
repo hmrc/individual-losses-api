@@ -40,12 +40,12 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
 
   val downstreamToMtdErrorMap: PartialFunction[String, MtdError] = {
     case "DOWNSTREAM_CODE1"           => error1
-    case "DOWNSTREAM_CODE2"           => error2
-    case "DOWNSTREAM_CODE_DOWNSTREAM" => StandardDownstreamError
+    case "DOWNSTREAM_CODE2" => error2
+    case "DOWNSTREAM_CODE_DOWNSTREAM" => InternalError
   }
 
   val mapToError: ResponseWrapper[D] => Either[ErrorWrapper, ResponseWrapper[D]] = { _: ResponseWrapper[D] =>
-    ErrorWrapper(Some(correlationId), error1, None).asLeft[ResponseWrapper[V]]
+    ErrorWrapper(correlationId, error1, None).asLeft[ResponseWrapper[V]]
   }
 
   override val serviceName = "someService"
@@ -68,7 +68,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
       "the specified mapping function returns a failure" must {
         "use that as the failure result" in {
           mapToVendor(ep, downstreamToMtdErrorMap)(mapToError)(goodResponse) shouldBe
-            ErrorWrapper(Some(correlationId), error1, None).asLeft
+            ErrorWrapper(correlationId, error1, None).asLeft
         }
       }
     }
@@ -105,7 +105,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
         val singleErrorResponse = ResponseWrapper(correlationId, SingleError(downstreamError1)).asLeft
 
         handler(singleErrorResponse) shouldBe
-          ErrorWrapper(Some(correlationId), error1, None).asLeft
+          ErrorWrapper(correlationId, error1, None).asLeft
       }
     }
 
@@ -114,7 +114,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
         val singleErrorResponse = ResponseWrapper(correlationId, SingleError(downstreamErrorUnmapped)).asLeft
 
         handler(singleErrorResponse) shouldBe
-          ErrorWrapper(Some(correlationId), StandardDownstreamError, None).asLeft
+          ErrorWrapper(correlationId, InternalError, None).asLeft
       }
     }
 
@@ -123,7 +123,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
         val outboundErrorResponse = ResponseWrapper(correlationId, OutboundError(downstreamError1)).asLeft
 
         handler(outboundErrorResponse) shouldBe
-          ErrorWrapper(Some(correlationId), downstreamError1, None).asLeft
+          ErrorWrapper(correlationId, downstreamError1, None).asLeft
       }
     }
   }
@@ -134,7 +134,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
         val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(downstreamError1, downstreamError2))).asLeft
 
         handler(multipleErrorResponse) shouldBe
-          ErrorWrapper(Some(correlationId), BadRequestError, Some(Seq(error1, error2))).asLeft
+          ErrorWrapper(correlationId, BadRequestError, Some(Seq(error1, error2))).asLeft
       }
 
       "one of the mtd errors is a DownstreamError" must {
@@ -142,7 +142,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
           val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(downstreamError1, downstreamError3))).asLeft
 
           handler(multipleErrorResponse) shouldBe
-            ErrorWrapper(Some(correlationId), StandardDownstreamError, None).asLeft
+            ErrorWrapper(correlationId, InternalError, None).asLeft
         }
       }
 
@@ -151,7 +151,7 @@ class DownstreamServiceSupportSpec extends UnitSpec with DownstreamServiceSuppor
           val multipleErrorResponse = ResponseWrapper(correlationId, MultipleErrors(Seq(downstreamError1, downstreamErrorUnmapped))).asLeft
 
           handler(multipleErrorResponse) shouldBe
-            ErrorWrapper(Some(correlationId), StandardDownstreamError, None).asLeft
+            ErrorWrapper(correlationId, InternalError, None).asLeft
         }
       }
     }

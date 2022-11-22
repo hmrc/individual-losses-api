@@ -32,9 +32,7 @@ trait MockAmendBFLossService extends MockFactory {
 
     def amend(requestData: AmendBFLossRequest): CallHandler[Future[AmendBFLossOutcome]] = {
       (mockAmendBFLossService
-        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
   }

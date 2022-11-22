@@ -17,11 +17,12 @@
 package api.validations.anyVersion
 
 import api.models.errors.MtdError
+import play.api.http.Status.BAD_REQUEST
 import support.UnitSpec
 
 class RegexValidationSpec extends UnitSpec {
 
-  object TestError extends MtdError("SOME_ERR", "some message")
+  object TestError extends MtdError("SOME_ERR", "some message", BAD_REQUEST)
 
   object TestValidator extends RegexValidation {
     override protected val regexFormat           = "[a-z]{3}[0-9]{3}"

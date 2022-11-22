@@ -19,13 +19,12 @@ package api.endpoints.bfLoss.amend.v3
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.models.errors._
-import api.models.errors.v3.RuleLossAmountNotChanged
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.AmendBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class AmendBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 
@@ -50,9 +49,9 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends Downstrea
       "INVALID_LOSS_ID"           -> LossIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
       "CONFLICT"                  -> RuleLossAmountNotChanged,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-      "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+      "INVALID_CORRELATIONID"     -> InternalError,
+      "INVALID_PAYLOAD"           -> InternalError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
     )
 }

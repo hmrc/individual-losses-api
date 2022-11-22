@@ -17,16 +17,15 @@
 package api.endpoints.bfLoss.create.v3
 
 import api.models.errors._
-import api.models.errors.v3.{RuleDuplicateSubmissionError, ValueFormatError}
 import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json._
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorValidators {
 
@@ -138,7 +137,7 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
         validationErrorTest(
           "AA123456A",
           requestBody.update("/taxYearBroughtForwardFrom", JsString("2021-23")),
-          RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearBroughtForwardFrom")))
+          RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearBroughtForwardFrom")))
         )
         validationErrorTest(
           "AA123456A",
@@ -174,14 +173,14 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
         }
 
         serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError)
-        serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, StandardDownstreamError)
+        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_ENDED", BAD_REQUEST, RuleTaxYearNotEndedError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
         serviceErrorTest(CONFLICT, "DUPLICATE_SUBMISSION", FORBIDDEN, RuleDuplicateSubmissionError)
         serviceErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
-        serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError)
-        serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError)
+        serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       }
     }
   }

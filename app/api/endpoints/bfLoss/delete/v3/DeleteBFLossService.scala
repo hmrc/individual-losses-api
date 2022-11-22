@@ -19,13 +19,12 @@ package api.endpoints.bfLoss.delete.v3
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
 import api.models.errors._
-import api.models.errors.v3.RuleDeleteAfterFinalDeclarationError
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.DeleteBFLossOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class DeleteBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
 
@@ -34,9 +33,8 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends Downstre
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit hc: HeaderCarrier,
-                                                 ec: ExecutionContext,
-                                                 correlationId: String): Future[DeleteBFLossOutcome] = {
+  def deleteBFLoss(
+      request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DeleteBFLossOutcome] = {
 
     connector.deleteBFLoss(request).map {
       mapToVendorDirect("deleteBFLoss", errorMap)
@@ -48,7 +46,7 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends Downstre
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
-    "SERVER_ERROR"              -> StandardDownstreamError,
-    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
   )
 }

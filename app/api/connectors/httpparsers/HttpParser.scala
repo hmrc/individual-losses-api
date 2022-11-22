@@ -37,7 +37,6 @@ trait HttpParser extends Logging {
     }
 
     def parseResult[T](json: JsValue)(implicit reads: Reads[T]): Option[T] = json.validate[T] match {
-
       case JsSuccess(value, _) => Some(value)
       case JsError(error) =>
         logger.warn(s"[KnownJsonResponse][validateJson] Unable to parse JSON: $error")
@@ -57,7 +56,7 @@ trait HttpParser extends Logging {
     }
     lazy val unableToParseJsonError = {
       logger.warn(s"unable to parse errors from response: ${response.body}")
-      OutboundError(StandardDownstreamError)
+      OutboundError(InternalError)
     }
 
     singleError orElse multipleErrors getOrElse unableToParseJsonError

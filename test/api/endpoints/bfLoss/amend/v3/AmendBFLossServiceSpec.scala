@@ -24,7 +24,6 @@ import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.errors.v3.RuleLossAmountNotChanged
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendBFLossOutcome
 
@@ -32,8 +31,9 @@ import scala.concurrent.Future
 
 class AmendBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  private val nino   = "AA123456A"
+  private val lossId = "AAZZ1234567890a"
+
   override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val bfLoss: AmendBFLossRequestBody = AmendBFLossRequestBody(256.78)
@@ -45,8 +45,6 @@ class AmendBFLossServiceSpec extends ServiceSpec {
     "2019-20",
     "2018-07-13T12:13:48.763Z"
   )
-
-  val serviceUnavailableError: MtdError = MtdError("SERVICE_UNAVAILABLE", "doesn't matter")
 
   trait Test extends MockBFLossConnector {
     lazy val service = new AmendBFLossService(connector)
@@ -71,29 +69,29 @@ class AmendBFLossServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), someError, None))
+        await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "one of the errors from downstream is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
-        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, serviceUnavailableError)))
+        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
         MockedBFLossConnector.amendBFLoss(request).returns(Future.successful(Left(expected)))
         val result: AmendBFLossOutcome = await(service.amendBFLoss(request))
-        result shouldBe Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
+        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }
 
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_LOSS_ID"           -> LossIdFormatError,
-      "NOT_FOUND"                 -> NotFoundError,
-      "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "CONFLICT"                  -> RuleLossAmountNotChanged,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
-      "UNEXPECTED_ERROR"          -> StandardDownstreamError
+      "INVALID_LOSS_ID" -> LossIdFormatError,
+      "NOT_FOUND" -> NotFoundError,
+      "INVALID_PAYLOAD" -> InternalError,
+      "CONFLICT" -> RuleLossAmountNotChanged,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError,
+      "UNEXPECTED_ERROR" -> InternalError
     ).foreach {
       case (k, v) =>
         s"a $k error is received from the connector" should {
@@ -102,7 +100,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
               .amendBFLoss(request)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
 
-            await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(Some(correlationId), v, None))
+            await(service.amendBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
           }
         }
     }

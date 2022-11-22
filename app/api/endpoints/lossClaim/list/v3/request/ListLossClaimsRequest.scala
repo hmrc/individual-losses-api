@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.list.v3.request
 
 import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.RawData
-import api.models.domain.{TaxYear, Nino}
+import api.models.domain.{Nino, TaxYear}
 
 case class ListLossClaimsRawData(nino: String,
                                  taxYearClaimedFor: Option[String],

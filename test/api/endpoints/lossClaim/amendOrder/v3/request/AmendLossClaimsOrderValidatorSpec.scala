@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.models.errors._
-import api.models.errors.v3.{ RuleInvalidSequenceStart, RuleSequenceOrderBroken, ValueFormatError }
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{ JsArray, JsValue, Json }
 import play.api.mvc.AnyContentAsJson
@@ -65,7 +64,7 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
     "return RuleTaxYearRangeInvalid" when {
       "tax year gap is higher than 1" in {
         validator.validate(AmendLossClaimsOrderRawData(validNino, "2020-22", AnyContentAsJson(mtdRequest))) shouldBe
-          List(RuleTaxYearRangeInvalid)
+          List(RuleTaxYearRangeInvalidError)
       }
     }
 

@@ -46,8 +46,8 @@ class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends 
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
-    "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-    "SERVER_ERROR"              -> StandardDownstreamError,
-    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    "INVALID_CORRELATIONID"     -> InternalError,
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
   )
 }

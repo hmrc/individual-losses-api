@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.create.v3.request
 
 import api.models.errors._
-import api.models.errors.v3.{ RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError }
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{ JsObject, JsValue, Json }
 import play.api.mvc.AnyContentAsJson
@@ -91,7 +90,7 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
     "return RuleTaxYearRangeExceededError error" when {
       "a tax year is provided with a range greater than a year" in {
         validator.validate(CreateLossClaimRawData(validNino, AnyContentAsJson(requestBodyJson(taxYearClaimedFor = "2019-21")))) shouldBe
-          List(RuleTaxYearRangeInvalid.copy(paths = Some(List("/taxYearClaimedFor"))))
+          List(RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearClaimedFor"))))
       }
     }
 

@@ -21,13 +21,12 @@ import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderRespon
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.ResponseWrapper
 import api.models.errors._
-import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
@@ -57,20 +56,20 @@ class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) exten
       "CONFLICT_NOT_SEQUENTIAL"   -> RuleSequenceOrderBroken,
       "CONFLICT_NOT_FULL_LIST"    -> RuleLossClaimsMissing,
       "UNPROCESSABLE_ENTITY"      -> NotFoundError,
-      "INVALID_PAYLOAD"           -> StandardDownstreamError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+      "INVALID_PAYLOAD"           -> InternalError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
     )
 
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"           -> TaxYearFormatError,
-      "INVALID_CORRELATIONID"      -> StandardDownstreamError,
-      "NOT_FOUND"                  -> NotFoundError,
-      "NOT_SEQUENTIAL"             -> RuleSequenceOrderBroken,
-      "SEQUENCE_START"             -> RuleInvalidSequenceStart,
-      "NO_FULL_LIST"               -> RuleLossClaimsMissing,
-      "CLAIM_NOT_FOUND"            -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+      "INVALID_TAX_YEAR"       -> TaxYearFormatError,
+      "INVALID_CORRELATIONID"  -> InternalError,
+      "NOT_FOUND"              -> NotFoundError,
+      "NOT_SEQUENTIAL"         -> RuleSequenceOrderBroken,
+      "SEQUENCE_START"         -> RuleInvalidSequenceStart,
+      "NO_FULL_LIST"           -> RuleLossClaimsMissing,
+      "CLAIM_NOT_FOUND"        -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
     )
 
     errors ++ extraTysErrors

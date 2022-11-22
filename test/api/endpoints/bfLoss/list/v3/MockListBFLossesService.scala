@@ -32,10 +32,7 @@ trait MockListBFLossesService extends MockFactory {
 
     def list(listBFLossRequest: ListBFLossesRequest): CallHandler[Future[ListBFLossesOutcome]] = {
       (mockListBFLossesService
-        .listBFLosses(_: ListBFLossesRequest)(
-          _: HeaderCarrier,
-          _: ExecutionContext,
-          _: String))
+        .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(listBFLossRequest, *, *, *)
     }
   }

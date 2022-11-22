@@ -53,7 +53,7 @@ trait DownstreamServiceSupport {
 
     lazy val defaultErrorMapping: String => MtdError = { code =>
       logger.warn(s"[$serviceName] [$endpointName] - No mapping found for error code $code")
-      StandardDownstreamError
+      InternalError
     }
 
     downstreamOutcome match {
@@ -62,20 +62,20 @@ trait DownstreamServiceSupport {
       case Left(ResponseWrapper(correlationId, MultipleErrors(errors))) =>
         val mtdErrors = errors.map(error => errorMap.applyOrElse(error.code, defaultErrorMapping))
 
-        if (mtdErrors.contains(StandardDownstreamError)) {
+        if (mtdErrors.contains(InternalError)) {
           logger.warn(
             s"[$serviceName] [$endpointName] [CorrelationId - $correlationId]" +
               s" - downstream returned ${errors.map(_.code).mkString(",")}. Revert to ISE")
-          Left(ErrorWrapper(Some(correlationId), StandardDownstreamError, None))
+          Left(ErrorWrapper(correlationId, InternalError, None))
         } else {
-          Left(ErrorWrapper(Some(correlationId), BadRequestError, Some(mtdErrors)))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(mtdErrors)))
         }
 
       case Left(ResponseWrapper(correlationId, SingleError(error))) =>
-        Left(ErrorWrapper(Some(correlationId), errorMap.applyOrElse(error.code, defaultErrorMapping), None))
+        Left(ErrorWrapper(correlationId, errorMap.applyOrElse(error.code, defaultErrorMapping), None))
 
       case Left(ResponseWrapper(correlationId, OutboundError(error))) =>
-        Left(ErrorWrapper(Some(correlationId), error, None))
+        Left(ErrorWrapper(correlationId, error, None))
     }
   }
 

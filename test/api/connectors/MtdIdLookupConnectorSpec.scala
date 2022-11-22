@@ -17,7 +17,7 @@
 package api.connectors
 
 import api.mocks.MockHttpClient
-import api.models.errors.StandardDownstreamError
+import api.models.errors.InternalError
 import config.MockAppConfig
 
 import scala.concurrent.Future
@@ -58,10 +58,10 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
             url = s"$baseUrl/mtd-identifier-lookup/nino/$nino",
             config = dummyIfsHeaderCarrierConfig
           )
-          .returns(Future.successful(Left(StandardDownstreamError)))
+          .returns(Future.successful(Left(InternalError)))
 
         val result: MtdIdLookupOutcome = await(connector.getMtdId(nino))
-        result shouldBe Left(StandardDownstreamError)
+        result shouldBe Left(InternalError)
       }
     }
   }

@@ -20,7 +20,7 @@ import api.models.errors._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
-import play.api.http.Status.UNSUPPORTED_MEDIA_TYPE
+import play.api.http.Status.{BAD_REQUEST, UNSUPPORTED_MEDIA_TYPE}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, RequestHeader, Result}
 import play.api.test.FakeRequest
@@ -124,7 +124,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         val result: Future[Result] = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
         status(result) shouldBe METHOD_NOT_ALLOWED
 
-        contentAsJson(result) shouldBe Json.toJson(MtdError("INVALID_REQUEST", "test"))
+        contentAsJson(result) shouldBe Json.toJson(InvalidHttpMethodError)
       }
     }
   }
@@ -164,7 +164,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         val result: Future[Result] = handler.onServerError(requestHeader, new Exception with NoStackTrace)
         status(result) shouldBe INTERNAL_SERVER_ERROR
 
-        contentAsJson(result) shouldBe Json.toJson(StandardDownstreamError)
+        contentAsJson(result) shouldBe Json.toJson(InternalError)
       }
     }
   }

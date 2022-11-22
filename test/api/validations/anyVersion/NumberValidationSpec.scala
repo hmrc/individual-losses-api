@@ -16,7 +16,7 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.v3.ValueFormatError
+import api.models.errors.ValueFormatError
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import support.UnitSpec

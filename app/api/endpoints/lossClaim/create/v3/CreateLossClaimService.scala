@@ -19,13 +19,12 @@ package api.endpoints.lossClaim.create.v3
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.models.errors._
-import api.models.errors.v3.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
 import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.CreateLossClaimOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
@@ -34,9 +33,8 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends Do
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def createLossClaim(request: CreateLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                       ec: ExecutionContext,
-                                                       correlationId: String): Future[CreateLossClaimOutcome] = {
+  def createLossClaim(
+      request: CreateLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[CreateLossClaimOutcome] = {
     connector.createLossClaim(request).map {
       mapToVendorDirect("createLossClaim", errorMap)
     }
@@ -50,6 +48,6 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends Do
     case "INVALID_CLAIM_TYPE"                                                                 => RuleTypeOfClaimInvalid
     case "TAX_YEAR_NOT_SUPPORTED"                                                             => RuleTaxYearNotSupportedError
     case "NO_ACCOUNTING_PERIOD"                                                               => RuleNoAccountingPeriod
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" => StandardDownstreamError
+    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" => InternalError
   }
 }

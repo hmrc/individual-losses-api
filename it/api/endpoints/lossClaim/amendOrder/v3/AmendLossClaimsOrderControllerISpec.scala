@@ -19,16 +19,15 @@ package api.endpoints.lossClaim.amendOrder.v3
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.errors._
-import api.models.errors.v3.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, ValueFormatError}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json, OWrites, Writes}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json._
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
@@ -67,7 +66,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
     def downstreamTaxYear: String
     def downstreamUri: String
 
-    val nino: String    = "AA123456A"
+    val nino: String = "AA123456A"
 
     val responseJson: JsValue = Json.parse(
       s"""
@@ -88,7 +87,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def uri: String    = s"/$nino/loss-claims/order/$taxYear"
+    def uri: String = s"/$nino/loss-claims/order/$taxYear"
 
     def errorBody(code: String): String =
       s"""
@@ -159,8 +158,8 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
-          response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedError)
+          response.status shouldBe expectedStatus
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
         }
@@ -172,15 +171,15 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
         (CONFLICT, "CONFLICT_SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
         (CONFLICT, "CONFLICT_NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
         (CONFLICT, "CONFLICT_NOT_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
         (Status.UNPROCESSABLE_ENTITY, "UNPROCESSABLE_ENTITY", NOT_FOUND, NotFoundError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError)
+        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
       val extraTysErrors = Seq(
         (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
         (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
         (CONFLICT, "NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
         (CONFLICT, "SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
@@ -217,28 +216,28 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", "2019-20", requestJson(), Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BadDate", requestJson(), Status.BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", "2020-22", requestJson(), Status.BAD_REQUEST, RuleTaxYearRangeInvalid)
-      validationErrorTest("AA123456A", "2017-18", requestJson(), Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-      validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), Status.BAD_REQUEST, TypeOfClaimFormatError)
-      validationErrorTest("AA123456A", "2019-20", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      validationErrorTest("BADNINO", "2019-20", requestJson(), BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalidError)
+      validationErrorTest("AA123456A", "2017-18", requestJson(), BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), BAD_REQUEST, TypeOfClaimFormatError)
+      validationErrorTest("AA123456A", "2019-20", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       validationErrorTest(
         "AA123456A",
         "2019-20",
         requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))),
-        Status.BAD_REQUEST,
+        BAD_REQUEST,
         ClaimIdFormatError.copy(paths = Some(Seq("/listOfLossClaims/0/claimId")))
       )
       validationErrorTest(
         "AA123456A",
         "2019-20",
         requestJson(listOfLossClaims = Range(1, 101).map(Claim("1234567890ABEF1", _))),
-        Status.BAD_REQUEST,
+        BAD_REQUEST,
         ValueFormatError.forPathAndRange("/listOfLossClaims/99/sequence", "1", "99")
       )
-      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim2, claim3)), Status.BAD_REQUEST, RuleInvalidSequenceStart)
-      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1, claim3)), Status.BAD_REQUEST, RuleSequenceOrderBroken)
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim2, claim3)), BAD_REQUEST, RuleInvalidSequenceStart)
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1, claim3)), BAD_REQUEST, RuleSequenceOrderBroken)
     }
   }
 }

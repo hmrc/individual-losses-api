@@ -22,7 +22,7 @@ import config.MockAppConfig
 
 class LossClaimConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890ag"
 
   class IfsTest extends MockHttpClient with MockAppConfig {

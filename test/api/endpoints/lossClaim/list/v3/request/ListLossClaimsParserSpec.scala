@@ -16,8 +16,8 @@
 
 package api.endpoints.lossClaim.list.v3.request
 
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.models.domain.{ TaxYear, Nino }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 
@@ -25,6 +25,8 @@ class ListLossClaimsParserSpec extends UnitSpec {
 
   private val nino       = "AA123456B"
   private val businessId = "XAIS01234567890"
+
+  implicit val correlationId: String = "X-123"
 
   trait Test extends MockListLossClaimsValidator {
     lazy val parser = new ListLossClaimsParser(mockValidator)
@@ -74,14 +76,14 @@ class ListLossClaimsParserSpec extends UnitSpec {
         MockValidator.validate(inputData) returns List(NinoFormatError)
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "handle multiple errors" in new Test {
         MockValidator.validate(inputData) returns List(NinoFormatError, LossIdFormatError)
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
       }
     }
   }

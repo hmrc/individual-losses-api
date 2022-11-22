@@ -21,11 +21,11 @@ import api.models.errors._
 import api.models.outcomes.AuthOutcome
 import config.AppConfig
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, AuthorisationException, AuthorisedFunctions, ConfidenceLevel, Enrolment, Enrolments, MissingBearerToken}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 
@@ -67,7 +67,7 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
             user
           case None =>
             logger.warn(s"[EnrolmentsAuthService][authorised] No AgentReferenceNumber defined on agent enrolment.")
-            Left(StandardDownstreamError)
+            Left(InternalError)
         }
       case unexpected =>
         logger.error(s"[EnrolmentsAuthService][authorised] Unexpected AuthorisedFunction: $unexpected")
@@ -78,7 +78,7 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
       case _: AuthorisationException => Future.successful(Left(UnauthorisedError))
       case error =>
         logger.warn(s"[EnrolmentsAuthService][authorised] An unexpected error occurred: $error")
-        Future.successful(Left(StandardDownstreamError))
+        Future.successful(Left(InternalError))
     }
   }
 

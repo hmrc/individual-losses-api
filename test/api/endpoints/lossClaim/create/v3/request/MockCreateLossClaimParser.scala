@@ -27,7 +27,7 @@ trait MockCreateLossClaimParser extends MockFactory {
   object MockCreateLossClaimRequestDataParser {
 
     def parseRequest(data: CreateLossClaimRawData): CallHandler[Either[ErrorWrapper, CreateLossClaimRequest]] = {
-      (mockCreateLossClaimParser.parseRequest(_: CreateLossClaimRawData)).expects(data)
+      (mockCreateLossClaimParser.parseRequest(_: CreateLossClaimRawData)(_: String)).expects(data, *)
     }
   }
 

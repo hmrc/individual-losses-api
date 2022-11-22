@@ -16,42 +16,34 @@
 
 package api.endpoints.bfLoss.retrieve.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.endpoints.bfLoss.retrieve.v3.request.{MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest}
 import api.endpoints.bfLoss.retrieve.v3.response.{GetBFLossHateoasData, RetrieveBFLossResponse}
 import api.hateoas.MockHateoasFactory
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveBFLossControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockRetrieveBFLossService
     with MockRetrieveBFLossParser
-    with MockHateoasFactory
-    with MockIdGenerator {
+    with MockHateoasFactory {
 
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String          = "AA123456A"
-  val lossId: String        = "AAZZ1234567890a"
+  private val lossId  = "AAZZ1234567890a"
+  private val rawData = RetrieveBFLossRawData(nino, lossId)
+  private val request = RetrieveBFLossRequest(Nino(nino), lossId)
 
-  val rawData: RetrieveBFLossRawData = RetrieveBFLossRawData(nino, lossId)
-  val request: RetrieveBFLossRequest = RetrieveBFLossRequest(Nino(nino), lossId)
-
-  val response: RetrieveBFLossResponse = RetrieveBFLossResponse(
+  private val response = RetrieveBFLossResponse(
     taxYearBroughtForwardFrom = "2017-18",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
     businessId = "XKIS00000000988",
@@ -59,9 +51,9 @@ class RetrieveBFLossControllerSpec
     lastModified = "2018-07-13T12:13:48.763Z"
   )
 
-  val testHateoasLink: Link = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
-  val responseJson: JsValue = Json.parse(
+  private val mtdResponseJson = Json.parse(
     """
       |{
       |    "businessId": "XKIS00000000988",
@@ -80,28 +72,9 @@ class RetrieveBFLossControllerSpec
     """.stripMargin
   )
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    val controller = new RetrieveBFLossController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      retrieveBFLossService = mockRetrieveBFLossService,
-      retrieveBFLossParser = mockRetrieveBFLossParser,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
-
   "retrieve" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
+    "return OK" when {
+      "the request is valid" in new Test {
         MockRetrieveBFLossRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
@@ -112,61 +85,48 @@ class RetrieveBFLossControllerSpec
 
         MockHateoasFactory
           .wrap(response, GetBFLossHateoasData(nino, lossId))
-          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
+            .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
-        val result: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
-        contentAsJson(result) shouldBe responseJson
-        status(result) shouldBe OK
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
+        runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
-    "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+        MockRetrieveBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
-          MockRetrieveBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
-
-          val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
-
-          contentAsJson(response) shouldBe Json.toJson(error)
-          status(response) shouldBe expectedStatus
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-        }
+        runErrorTest(NinoFormatError)
       }
 
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromParserTester(NotFoundError, NOT_FOUND)
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-    }
+      "the service returns an error" in new Test {
+        MockRetrieveBFLossRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
 
-    "handle non-mdtp validation errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the service" in new Test {
+        MockRetrieveBFLossService
+          .retrieve(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, LossIdFormatError, None))))
 
-          MockRetrieveBFLossRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockRetrieveBFLossService
-            .retrieve(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
-
-          val response: Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
-          contentAsJson(response) shouldBe Json.toJson(error)
-          status(response) shouldBe expectedStatus
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-        }
+        runErrorTest(LossIdFormatError)
       }
-
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(LossIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
     }
   }
+
+  private trait Test extends ControllerTest {
+
+    private val controller = new RetrieveBFLossController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      retrieveBFLossService = mockRetrieveBFLossService,
+      retrieveBFLossParser = mockRetrieveBFLossParser,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
+  }
+
 }

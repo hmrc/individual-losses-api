@@ -26,6 +26,8 @@ class RetrieveLossClaimParserSpec extends UnitSpec {
   private val claimId = "AAZZ1234567890a"
   private val data    = RetrieveLossClaimRawData(nino, claimId)
 
+  implicit val correlationId: String = "X-123"
+
   trait Test extends MockRetrieveLossClaimValidator {
     lazy val parser = new RetrieveLossClaimParser(mockValidator)
   }
@@ -40,13 +42,13 @@ class RetrieveLossClaimParserSpec extends UnitSpec {
     "return a single error" when {
       "the validator returns a single error" in new Test {
         MockValidator.validate(data).returns(List(NinoFormatError))
-        parser.parseRequest(data) shouldBe Left(ErrorWrapper(None, NinoFormatError, None))
+        parser.parseRequest(data) shouldBe Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
     }
     "return multiple errors" when {
       "the validator returns multiple errors" in new Test {
         MockValidator.validate(data).returns(List(NinoFormatError, ClaimIdFormatError))
-        parser.parseRequest(data) shouldBe Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, ClaimIdFormatError))))
+        parser.parseRequest(data) shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, ClaimIdFormatError))))
       }
     }
   }

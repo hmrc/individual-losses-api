@@ -16,23 +16,22 @@
 
 package api.controllers
 
-import api.models.errors.{ErrorWrapper, StandardDownstreamError}
-import play.api.Logger
+import api.models.errors.ErrorWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.mvc.Results.InternalServerError
+import play.api.mvc.Results.Status
+import utils.Logging
 
-import java.util.UUID
+trait BaseController { self: Logging =>
 
-trait BaseController {
-
-  protected val logger = Logger(this.getClass)
-
-  protected def unhandledError(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
-    logger.error(
+  protected def errorResult(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
+    val resCorrelationId = errorWrapper.correlationId
+    logger.warn(
       s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-        s"Unhandled error: $errorWrapper")
-    InternalServerError(Json.toJson(StandardDownstreamError))
+        s"Error response received with CorrelationId: $resCorrelationId")
+
+    Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
+      .withApiHeaders(resCorrelationId)
   }
 
   implicit class Response(result: Result) {
@@ -45,22 +44,6 @@ trait BaseController {
       )
 
       result.copy(header = result.header.copy(headers = result.header.headers ++ newHeaders))
-    }
-  }
-
-  protected def getCorrelationId(errorWrapper: ErrorWrapper): String = {
-    errorWrapper.correlationId match {
-      case Some(correlationId) =>
-        logger.warn(
-          s"[${logger.underlyingLogger}] - " +
-            s"Error received from downstream ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
-      case None =>
-        val correlationId = UUID.randomUUID().toString
-        logger.warn(
-          s"[${getClass.getSimpleName}] -" +
-            s"Validation error: ${Json.toJson(errorWrapper)} with correlationId: $correlationId")
-        correlationId
     }
   }
 }

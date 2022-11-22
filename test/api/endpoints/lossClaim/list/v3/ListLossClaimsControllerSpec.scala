@@ -16,51 +16,41 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser}
 import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 import api.hateoas.MockHateoasFactory
-import api.mocks.MockIdGenerator
 import api.models.ResponseWrapper
-import api.models.domain.{TaxYear, Nino}
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
-    extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+  extends ControllerBaseSpec
+    with ControllerTestRunner
     with MockListLossClaimsService
     with MockListLossClaimsRequestDataParser
-    with MockHateoasFactory
-    with MockAuditService
-    with MockIdGenerator {
+    with MockHateoasFactory {
 
-  val correlationId: String  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  val nino: String           = "AA123456A"
-  val taxYear: String        = "2018-19"
-  val selfEmployment: String = "self-employment"
-  val businessId: String     = "businessId"
-  val claimType: String      = "carry-sideways"
+  private val taxYear        = "2018-19"
+  private val selfEmployment = "self-employment"
+  private val businessId     = "businessId"
+  private val claimType      = "carry-sideways"
 
-  val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
+  private val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
+  private val request = ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
-  val request: ListLossClaimsRequest =
-    ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+  private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
 
-  val testHateoasLink: Link       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  val testCreateHateoasLink: Link = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
-
-  val response: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
+  private val response: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
     Seq(
       ListLossClaimsItem("businessId",
                          TypeOfClaim.`carry-sideways`,
@@ -78,7 +68,7 @@ class ListLossClaimsControllerSpec
                          "2020-07-13T12:13:48.763Z")
     ))
 
-  val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
+  private val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
     Seq(
       HateoasWrapper(
         ListLossClaimsItem("XAIS12345678910",
@@ -102,7 +92,7 @@ class ListLossClaimsControllerSpec
       )
     ))
 
-  val responseJson: JsValue = Json.parse(
+  private val mtdResponseJson = Json.parse(
     """
       |{
       |    "claims": [
@@ -150,29 +140,9 @@ class ListLossClaimsControllerSpec
     """.stripMargin
   )
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    val controller = new ListLossClaimsController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      listLossClaimsService = mockListLossClaimsService,
-      listLossClaimsParser = mockListLossClaimsRequestDataParser,
-      hateoasFactory = mockHateoasFactory,
-      auditService = mockAuditService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
-
   "list" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
+    "return UK" when {
+      "the request is valid" in new Test {
         MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
@@ -183,17 +153,34 @@ class ListLossClaimsControllerSpec
 
         MockHateoasFactory
           .wrapList(response, ListLossClaimsHateoasData(nino))
-          .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
+            .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
-        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-        status(result) shouldBe OK
-        contentAsJson(result) shouldBe responseJson
+        runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
-    "return MATCHING_RESOURCE_NOT_FOUND" when {
-      "the request received is valid but an empty list of claims is returned from downstream" in new Test {
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
+        runErrorTest(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
+
+        MockListLossClaimsService
+          .list(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfClaimFormatError, None))))
+
+        runErrorTest(TypeOfClaimFormatError)
+      }
+
+      "the request received is valid but an empty list of claims is returned from downstream" in new Test {
         MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
@@ -204,67 +191,26 @@ class ListLossClaimsControllerSpec
 
         MockHateoasFactory
           .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
-          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
+            .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
 
-        val result: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-        status(result) shouldBe NOT_FOUND
-        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+        runErrorTest(NotFoundError)
       }
     }
+  }
 
-    "handle mdtp validation errors as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
+  private trait Test extends ControllerTest {
 
-          MockListLossClaimsRequestDataParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+    private val controller = new ListLossClaimsController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      listLossClaimsService = mockListLossClaimsService,
+      listLossClaimsParser = mockListLossClaimsRequestDataParser,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
 
-          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-
-          status(response) shouldBe expectedStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-        }
-      }
-
-      errorsFromParserTester(BadRequestError, BAD_REQUEST)
-      errorsFromParserTester(NinoFormatError, BAD_REQUEST)
-      errorsFromParserTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearNotSupportedError, BAD_REQUEST)
-      errorsFromParserTester(RuleTaxYearRangeInvalid, BAD_REQUEST)
-      errorsFromParserTester(TypeOfLossFormatError, BAD_REQUEST)
-      errorsFromParserTester(TypeOfClaimFormatError, BAD_REQUEST)
-      errorsFromParserTester(BusinessIdFormatError, BAD_REQUEST)
-    }
-
-    "handle backend service errors as per spec" when {
-      def errorsFromServiceTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the service" in new Test {
-
-          MockListLossClaimsRequestDataParser
-            .parseRequest(rawData)
-            .returns(Right(request))
-
-          MockListLossClaimsService
-            .list(request)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), error, None))))
-
-          val response: Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
-          status(response) shouldBe expectedStatus
-          contentAsJson(response) shouldBe Json.toJson(error)
-          header("X-CorrelationId", response) shouldBe Some(correlationId)
-        }
-      }
-
-      errorsFromServiceTester(BadRequestError, BAD_REQUEST)
-      errorsFromServiceTester(NinoFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TaxYearFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TypeOfLossFormatError, BAD_REQUEST)
-      errorsFromServiceTester(BusinessIdFormatError, BAD_REQUEST)
-      errorsFromServiceTester(TypeOfClaimFormatError, BAD_REQUEST)
-      errorsFromServiceTester(NotFoundError, NOT_FOUND)
-      errorsFromServiceTester(StandardDownstreamError, INTERNAL_SERVER_ERROR)
-    }
+    protected def callController(): Future[Result] =
+      controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
   }
 }

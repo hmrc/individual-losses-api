@@ -16,21 +16,21 @@
 
 package api.endpoints.bfLoss.connector.v3
 
-import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.endpoints.bfLoss.amend.anyVersion.request.AmendBFLossRequestBody
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
-import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
-import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
+import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, TypeOfLoss}
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.mocks.MockHttpClient
 import api.models.ResponseWrapper
-import api.models.domain.{ TaxYear, Nino }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
@@ -408,9 +408,8 @@ class BFLossConnectorSpec extends ConnectorSpec {
         mockHttpWithParameters("taxYear" -> "2019", "incomeSourceId" -> "testId", "incomeSourceType" -> "01") returns Future.successful(expected)
 
         await(
-          connector.listBFLosses(request(taxYear = Some(TaxYear("2019")),
-                                         businessId = Some("testId"),
-                                         incomeSourceType = Some(IncomeSourceType.`01`)))) shouldBe expected
+          connector.listBFLosses(
+            request(taxYear = Some(TaxYear("2019")), businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`)))) shouldBe expected
       }
     }
 

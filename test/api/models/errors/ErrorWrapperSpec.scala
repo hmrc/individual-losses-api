@@ -16,49 +16,40 @@
 
 package api.models.errors
 
+import api.models.audit.AuditError
 import play.api.libs.json.Json
 import support.UnitSpec
 
 class ErrorWrapperSpec extends UnitSpec {
 
-  val correlationId = "X-123"
+  private val correlationId = "X-123"
+  private val ninoFormatJson = Json.parse(
+    s"""
+       |{
+       |   "code": "${NinoFormatError.code}",
+       |   "message": "${NinoFormatError.message}"
+       |}
+      """.stripMargin
+  )
 
   "Rendering a error response with one error" should {
-    val error = ErrorWrapper(None, NinoFormatError, Some(Seq.empty))
-
-    val json = Json.parse(
-      """
-        |{
-        |   "code": "FORMAT_NINO",
-        |   "message": "The provided NINO is invalid"
-        |}
-      """.stripMargin
-    )
+    val error = ErrorWrapper(correlationId, NinoFormatError, Some(Seq.empty))
 
     "generate the correct JSON" in {
-      Json.toJson(error) shouldBe json
+      Json.toJson(error) shouldBe ninoFormatJson
     }
   }
 
   "Rendering a error response with one error and an empty sequence of errors" should {
-    val error = ErrorWrapper(None, NinoFormatError, Some(Seq.empty))
-
-    val json = Json.parse(
-      """
-        |{
-        |   "code": "FORMAT_NINO",
-        |   "message": "The provided NINO is invalid"
-        |}
-      """.stripMargin
-    )
+    val error = ErrorWrapper(correlationId, NinoFormatError, Some(Seq.empty))
 
     "generate the correct JSON" in {
-      Json.toJson(error) shouldBe json
+      Json.toJson(error) shouldBe ninoFormatJson
     }
   }
 
   "Rendering a error response with two errors" should {
-    val error = ErrorWrapper(None,
+    val error = ErrorWrapper(correlationId,
                              BadRequestError,
                              Some(
                                Seq(
@@ -68,26 +59,41 @@ class ErrorWrapperSpec extends UnitSpec {
                              ))
 
     val json = Json.parse(
-      """
-        |{
-        |   "code": "INVALID_REQUEST",
-        |   "message": "Invalid request",
-        |   "errors": [
-        |       {
-        |         "code": "FORMAT_NINO",
-        |         "message": "The provided NINO is invalid"
-        |       },
-        |       {
-        |         "code": "FORMAT_TAX_YEAR",
-        |         "message": "The provided tax year is invalid"
-        |       }
-        |   ]
-        |}
+      s"""
+         |{
+         |   "code": "${BadRequestError.code}",
+         |   "message": "${BadRequestError.message}",
+         |   "errors": [
+         |       {
+         |         "code": "${NinoFormatError.code}",
+         |         "message": "${NinoFormatError.message}"
+         |       },
+         |       {
+         |         "code": "${TaxYearFormatError.code}",
+         |         "message": "${TaxYearFormatError.message}"
+         |       }
+         |   ]
+         |}
       """.stripMargin
     )
 
     "generate the correct JSON" in {
       Json.toJson(error) shouldBe json
+    }
+  }
+
+  "rendering an audit error" should {
+    "render correctly" when {
+      "there is one error" in {
+        val errorWrapper = ErrorWrapper(correlationId, BadRequestError)
+
+        errorWrapper.auditErrors shouldBe Seq(AuditError(BadRequestError.code))
+      }
+      "there are multiple errors" in {
+        val errorWrapper = ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError)))
+
+        errorWrapper.auditErrors shouldBe Seq(AuditError(NinoFormatError.code), AuditError(TaxYearFormatError.code))
+      }
     }
   }
 

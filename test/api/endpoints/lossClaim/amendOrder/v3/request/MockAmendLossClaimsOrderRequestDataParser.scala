@@ -27,7 +27,7 @@ trait MockAmendLossClaimsOrderRequestDataParser extends MockFactory {
   object MockAmendLossClaimsOrderRequestDataParser {
 
     def parseRequest(data: AmendLossClaimsOrderRawData): CallHandler[Either[ErrorWrapper, AmendLossClaimsOrderRequest]] = {
-      (mockAmendLossClaimsRequestDataParser.parseRequest(_: AmendLossClaimsOrderRawData)).expects(data)
+      (mockAmendLossClaimsRequestDataParser.parseRequest(_: AmendLossClaimsOrderRawData)(_: String)).expects(data, *)
     }
   }
 }

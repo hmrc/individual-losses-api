@@ -33,9 +33,8 @@ class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends Downst
     */
   override val serviceName: String = this.getClass.getSimpleName
 
-  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier,
-                                                     ec: ExecutionContext,
-                                                     correlationId: String): Future[RetrieveBFLossOutcome] = {
+  def retrieveBFLoss(
+      request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[RetrieveBFLossOutcome] = {
 
     connector.retrieveBFLoss(request).map {
       mapToVendorDirect("retrieveBFLoss", errorMap)
@@ -46,8 +45,8 @@ class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends Downst
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
-    "INVALID_CORRELATIONID"     -> StandardDownstreamError,
-    "SERVER_ERROR"              -> StandardDownstreamError,
-    "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+    "INVALID_CORRELATIONID"     -> InternalError,
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
   )
 }

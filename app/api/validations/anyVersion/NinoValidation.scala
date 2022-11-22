@@ -17,7 +17,7 @@
 package api.validations.anyVersion
 
 import api.models.domain.Nino
-import api.models.errors.{ MtdError, NinoFormatError }
+import api.models.errors.{MtdError, NinoFormatError}
 import api.validations.NoValidationErrors
 
 object NinoValidation {

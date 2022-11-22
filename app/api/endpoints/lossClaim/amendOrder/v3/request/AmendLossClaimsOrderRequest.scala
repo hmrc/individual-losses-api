@@ -17,7 +17,7 @@
 package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.models.RawData
-import api.models.domain.{TaxYear, Nino}
+import api.models.domain.{Nino, TaxYear}
 import play.api.mvc.AnyContentAsJson
 
 case class AmendLossClaimsOrderRawData(nino: String, taxYearClaimedFor: String, body: AnyContentAsJson) extends RawData

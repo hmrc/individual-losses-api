@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.list.v3.request
 
 import api.endpoints.bfLoss.domain.v3.IncomeSourceType
-import api.models.domain.{ TaxYear, Nino }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 
@@ -26,6 +26,8 @@ class ListBFLossesParserSpec extends UnitSpec {
   private val nino       = "AA123456B"
   private val taxYear    = "2017-18"
   private val businessId = "XAIS01234567890"
+
+  implicit val correlationId: String = "X-123"
 
   trait Test extends MockListBFLossesValidator {
     lazy val parser = new ListBFLossesParser(mockValidator)
@@ -103,7 +105,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "handle multiple errors" in new Test {
@@ -112,7 +114,7 @@ class ListBFLossesParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, LossIdFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, LossIdFormatError))))
       }
     }
   }

@@ -16,20 +16,20 @@
 
 package api.endpoints.bfLoss.list.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.bfLoss.list.v3.request.{ListBFLossesParser, ListBFLossesRawData}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.bfLoss.list.v3.request.{ ListBFLossesParser, ListBFLossesRawData }
 import api.endpoints.bfLoss.list.v3.response.ListBFLossHateoasData
 import api.hateoas.HateoasFactory
 import api.models.errors._
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import utils.{ IdGenerator, Logging }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
@@ -40,14 +40,14 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
                                        cc: ControllerComponents,
                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController {
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "LisBFLossesController", endpointName = "List Brought Forward Losses")
 
   def list(nino: String, taxYearBroughtForwardFrom: Option[String], typeOfLoss: Option[String], businessId: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
 
       val rawData = ListBFLossesRawData(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
@@ -56,7 +56,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
         for {
           parsedRequest   <- EitherT.fromEither[Future](listBFLossesParser.parseRequest(rawData))
           serviceResponse <- EitherT(listBFLossesService.listBFLosses(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
+          vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
               .wrapList(serviceResponse.responseData, ListBFLossHateoasData(nino))
               .asRight[ErrorWrapper]
@@ -79,21 +79,6 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
           }
         }
 
-      result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
-        result
-      }.merge
+      result.leftMap(errorResult).merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfLossFormatError | BusinessIdFormatError | RuleTaxYearNotSupportedError |
-          RuleTaxYearRangeInvalid =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case _                       => unhandledError(errorWrapper)
-    }
-  }
 }

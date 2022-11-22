@@ -16,25 +16,24 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeParser, AmendLossClaimTypeRawData}
+import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.endpoints.lossClaim.amendType.v3.request.{ AmendLossClaimTypeParser, AmendLossClaimTypeRawData }
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeHateoasData
 import api.hateoas.HateoasFactory
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors._
-import api.models.errors.v3.{RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.IdGenerator
+import utils.{ IdGenerator, Logging }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthService,
@@ -46,14 +45,14 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
                                              cc: ControllerComponents,
                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController {
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimTypeController", endpointName = "Amend a Loss Claim Type")
 
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
 
       val rawData = AmendLossClaimTypeRawData(nino, claimId, AnyContentAsJson(request.body))
@@ -62,7 +61,7 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
         for {
           parsedRequest   <- EitherT.fromEither[Future](amendLossClaimTypeParser.parseRequest(rawData))
           serviceResponse <- EitherT(amendLossClaimTypeService.amendLossClaimType(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
+          vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendLossClaimTypeHateoasData(nino, claimId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
@@ -87,8 +86,7 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
         }
 
       result.leftMap { errorWrapper =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result        = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val result = errorResult(errorWrapper)
 
         auditSubmission(
           GenericAuditDetail(
@@ -103,16 +101,6 @@ class AmendLossClaimTypeController @Inject()(val authService: EnrolmentsAuthServ
         result
       }.merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) | ClaimIdFormatError | TypeOfClaimFormatError =>
-        BadRequest(Json.toJson(errorWrapper))
-      case RuleClaimTypeNotChanged | RuleTypeOfClaimInvalid => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError                                    => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError                          => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event: AuditEvent[GenericAuditDetail] = AuditEvent(auditType = "AmendLossClaim", transactionName = "amend-loss-claim", detail = details)
