@@ -113,7 +113,7 @@ class AmendBFLossResponseSpec extends UnitSpec {
       // WLOG
       val bfLossResponse: AmendBFLossResponse = responseWith(typeOfLoss = TypeOfLoss.`self-employment`)
 
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
     }
 
     "expose the correct links" in new Test {

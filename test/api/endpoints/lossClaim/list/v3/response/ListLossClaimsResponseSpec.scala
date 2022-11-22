@@ -145,8 +145,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
     "expose the correct top level links for list" when {
       "amend-loss-claim-order.enabled = true" in {
-        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-        MockAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = true"))).anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+        MockAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = true"))).anyNumberOfTimes()
         ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
@@ -155,8 +155,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
           )
       }
       "amend-loss-claim-order.enabled = false" in {
-        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
-        MockAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = false"))).anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+        MockAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = false"))).anyNumberOfTimes()
         ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
@@ -166,7 +166,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
     }
 
     "expose the correct item level links for list" in {
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
       ListLossClaimsResponse.LinksFactory.itemLinks(
         mockAppConfig,
         ListLossClaimsHateoasData(nino),

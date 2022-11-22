@@ -16,7 +16,7 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
+import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import play.api.Logger
 import play.api.libs.json._
 import utils.{ EmptinessChecker, EmptyPathsResult }
@@ -48,8 +48,10 @@ object JsonFormatValidation {
       Left(List(RuleIncorrectOrEmptyBodyError))
     } else {
       data.validate[A] match {
-        case JsSuccess(a, _)                                          => Right(a)
-        case JsError(errors: Seq[(JsPath, Seq[JsonValidationError])]) => Left(handleErrors(errors))
+        case JsSuccess(a, _)                       => Right(a)
+        case JsError(errors)                       => Left(handleErrors(errors.asInstanceOf[Seq[(JsPath, Seq[JsonValidationError])]]))
+
+        // case JsError(errors: Seq[(JsPath, Seq[JsonValidationError])]) => Left(handleErrors(errors))
       }
     }
   }

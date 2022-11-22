@@ -98,7 +98,7 @@ class DeleteBFLossControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
       }
     }
 
@@ -117,7 +117,7 @@ class DeleteBFLossControllerSpec
           header("X-CorrelationId", response) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
         }
       }
 
@@ -146,7 +146,7 @@ class DeleteBFLossControllerSpec
           header("X-CorrelationId", response) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
         }
       }
 

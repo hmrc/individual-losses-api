@@ -56,7 +56,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
 
-  class DesTest extends MockHttpClient with MockAppConfig {
+  class DesLocalTest extends MockHttpClient with MockAppConfig {
 
     val connector: BFLossConnector = new BFLossConnector(
       http = mockHttpClient,
@@ -217,7 +217,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
   "delete BFLoss" when {
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new DesTest {
+      "return a successful response with the correct correlationId" in new DesLocalTest {
         val expected = Right(ResponseWrapper(correlationId, ()))
 
         MockHttpClient
@@ -234,7 +234,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     }
 
     "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new DesTest {
+      "return an unsuccessful response with the correct correlationId and a single error" in new DesLocalTest {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -251,7 +251,7 @@ class BFLossConnectorSpec extends ConnectorSpec {
     }
 
     "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new DesTest {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new DesLocalTest {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         MockHttpClient
