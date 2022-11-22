@@ -34,6 +34,7 @@ lazy val microservice = Project(appName, file("."))
     scalaVersion := "2.13.8",
     scalacOptions ++= Seq(
       "-Xfatal-warnings",
+      "-Xlint:-byname-implicit",
       "-Wconf:src=routes/.*:silent",
       "-feature",
       "-language:higherKinds")
