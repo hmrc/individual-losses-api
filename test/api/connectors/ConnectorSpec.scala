@@ -16,7 +16,6 @@
 
 package api.connectors
 
-//import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
 import api.mocks.MockHttpClient
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
