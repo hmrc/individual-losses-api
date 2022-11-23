@@ -18,7 +18,7 @@ package api.endpoints.bfLoss.connector.v3
 
 import api.connectors.DownstreamUri.{ DesUri, IfsUri, TaxYearSpecificIfsUri }
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome, DownstreamUri }
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.create.v3.request.CreateBFLossRequest

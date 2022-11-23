@@ -20,7 +20,7 @@ import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.endpoints.bfLoss.list.v3
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
+import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
@@ -67,7 +67,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
     "return a downstream error" when {
       "the connector call returns a single downstream error" in new Test {
         val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
+        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, InternalError, None)
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.listBFLosses(request)) shouldBe Left(expected)
@@ -82,16 +82,31 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         await(service.listBFLosses(request)) shouldBe Left(expected)
       }
     }
+    def errorMap: Map[String, MtdError] = {
 
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR" -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE" -> TypeOfLossFormatError,
-      "NOT_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> InternalError,
-      "SERVICE_UNAVAILABLE" -> InternalError
-    ).foreach {
+      val errors = Map(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_TAXYEAR"           -> TaxYearFormatError,
+        "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
+        "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
+        "INVALID_CORRELATIONID"     -> InternalError,
+        "NOT_FOUND"                 -> NotFoundError,
+        "SERVER_ERROR"              -> InternalError,
+        "SERVICE_UNAVAILABLE"       -> InternalError
+      )
+
+      val extraTysErrors = Map(
+        "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+        "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+        "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
+        "INVALID_CORRELATION_ID"    -> InternalError,
+        "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+      )
+
+      errors ++ extraTysErrors
+    }
+
+    errorMap.foreach {
       case (k, v) =>
         s"return a ${v.code} error" when {
           s"the connector call returns $k" in new Test {
