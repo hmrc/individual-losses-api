@@ -16,15 +16,16 @@
 
 package api.connectors
 
+//import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
 import api.mocks.MockHttpClient
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.Configuration
-import play.api.http.{HeaderNames, MimeTypes, Status}
+import play.api.http.{ HeaderNames, MimeTypes, Status }
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
@@ -128,6 +129,17 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
+    protected def willGetWithParameters[T](url: String, parameters: (String, String)*): CallHandler[Future[T]] = {
+      MockHttpClient
+        .get(
+          url = url,
+          parameters = parameters,
+          config = dummyHeaderCarrierConfig,
+          requiredHeaders = requiredHeaders,
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        )
+    }
+
     protected def willPost[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
       MockHttpClient
         .post(
@@ -159,6 +171,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )
     }
+
   }
 
   protected trait DesTest extends ConnectorTest {
