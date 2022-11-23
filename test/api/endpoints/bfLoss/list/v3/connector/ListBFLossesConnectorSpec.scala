@@ -69,7 +69,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
         val expected         = Right(ResponseWrapper(correlationId, response))
 
-        willGetWithParameters(
+        willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
           parameters = "taxYear" -> taxYear.asDownstream
         ).returns(Future.successful(expected))
@@ -82,7 +82,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "a valid non-TYS request with a income source id parameter provided is supplied" in new IfsTest with Test {
         val expected = Right(ResponseWrapper(correlationId, response))
 
-        willGetWithParameters(
+        willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
           parameters = "incomeSourceId" -> "testId"
         ).returns(Future.successful(expected))
@@ -95,7 +95,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "a valid non-TYS request with a income source type parameter provided is supplied" in new IfsTest with Test {
         val expected = Right(ResponseWrapper(correlationId, response))
 
-        willGetWithParameters(
+        willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
           parameters = "incomeSourceType" -> "02"
         ).returns(Future.successful(expected))
@@ -109,7 +109,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
         val expected         = Right(ResponseWrapper(correlationId, response))
 
-        willGetWithParameters(
+        willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
           parameters = "taxYear" -> taxYear.asDownstream,
           "incomeSourceId"   -> "testId",
