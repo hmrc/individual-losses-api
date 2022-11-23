@@ -49,7 +49,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
   }
 
   "listBFLosses" when {
-    "return a successful response with the correct correlationId" should {
+    "downstream returns OK" should {
       val response =
         ListBFLossesResponse(Seq(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
 

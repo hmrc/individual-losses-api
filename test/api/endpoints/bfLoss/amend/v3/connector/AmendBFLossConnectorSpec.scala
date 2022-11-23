@@ -44,7 +44,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
   }
 
   "amendBFLosses" when {
-    "return a successful response with the correct correlationId" should {
+    "downstream returns OK" should {
 
       val response: AmendBFLossResponse = AmendBFLossResponse(
         businessId = "XKIS00000000988",

@@ -43,7 +43,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
   }
 
   "createBFLosses" when {
-    "return a successful response with the correct correlationId" should {
+    "downstream returns OK" should {
 
       val response: CreateBFLossResponse = CreateBFLossResponse(lossId)
 

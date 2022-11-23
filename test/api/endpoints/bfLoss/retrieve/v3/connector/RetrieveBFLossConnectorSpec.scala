@@ -42,7 +42,7 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
   }
 
   "retrieveBFLosses" when {
-    "return a successful response with the correct correlationId" should {
+    "downstream returns OK" should {
       val response: RetrieveBFLossResponse = RetrieveBFLossResponse(
         businessId = "fakeId",
         typeOfLoss = TypeOfLoss.`self-employment`,
