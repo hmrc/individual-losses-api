@@ -69,9 +69,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
         val expected         = Right(ResponseWrapper(correlationId, response))
 
+        val queryParams: Seq[(String, String)] = Seq(
+          ("taxYear", taxYear.asDownstream)
+        )
+
         willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-          parameters = "taxYear" -> taxYear.asDownstream
+          queryParams = queryParams,
         ).returns(Future.successful(expected))
 
         val request: ListBFLossesRequest = makeRequest(taxYear = Some(taxYear))
@@ -82,9 +86,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "a valid non-TYS request with a income source id parameter provided is supplied" in new IfsTest with Test {
         val expected = Right(ResponseWrapper(correlationId, response))
 
+        val queryParams: Seq[(String, String)] = Seq(
+          ("incomeSourceId", "testId")
+        )
+
         willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-          parameters = "incomeSourceId" -> "testId"
+          queryParams = queryParams,
         ).returns(Future.successful(expected))
 
         val request: ListBFLossesRequest = makeRequest(businessId = Some("testId"))
@@ -95,9 +103,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "a valid non-TYS request with a income source type parameter provided is supplied" in new IfsTest with Test {
         val expected = Right(ResponseWrapper(correlationId, response))
 
+        val queryParams: Seq[(String, String)] = Seq(
+          ("incomeSourceType", "02")
+        )
+
         willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-          parameters = "incomeSourceType" -> "02"
+          queryParams = queryParams,
         ).returns(Future.successful(expected))
 
         val request: ListBFLossesRequest = makeRequest(incomeSourceType = Some(IncomeSourceType.`02`))
@@ -109,11 +121,15 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
         val expected         = Right(ResponseWrapper(correlationId, response))
 
+        val queryParams: Seq[(String, String)] = Seq(
+          ("taxYear", taxYear.asDownstream),
+          ("incomeSourceId", "testId"),
+          ("incomeSourceType", "01"),
+        )
+
         willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-          parameters = "taxYear" -> taxYear.asDownstream,
-          "incomeSourceId"   -> "testId",
-          "incomeSourceType" -> "01"
+          queryParams = queryParams,
         ).returns(Future.successful(expected))
 
         val request: ListBFLossesRequest =

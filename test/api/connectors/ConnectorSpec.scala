@@ -118,21 +118,11 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected val requiredHeaders: Seq[(String, String)]
 
-    protected def willGet[T](url: String): CallHandler[Future[T]] = {
+    protected def willGet[T](url: String, queryParams: Seq[(String, String)] = Nil): CallHandler[Future[T]] = {
       MockHttpClient
         .get(
           url = url,
-          config = dummyHeaderCarrierConfig,
-          requiredHeaders = requiredHeaders,
-          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        )
-    }
-
-    protected def willGet[T](url: String, parameters: (String, String)*): CallHandler[Future[T]] = {
-      MockHttpClient
-        .get(
-          url = url,
-          parameters = parameters,
+          parameters = queryParams,
           config = dummyHeaderCarrierConfig,
           requiredHeaders = requiredHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
