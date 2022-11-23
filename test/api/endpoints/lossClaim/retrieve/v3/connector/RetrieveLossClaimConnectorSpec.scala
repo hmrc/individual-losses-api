@@ -55,7 +55,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "return a successful response and correlationId" when {
 
-      "provided with a valid request" in new IfsTest {
+      "provided with a valid request" in new IfsLocalTest {
         val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
 
         MockHttpClient
@@ -73,7 +73,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "return an unsuccessful response" when {
 
-      "provided with a single error" in new IfsTest {
+      "provided with a single error" in new IfsLocalTest {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -88,7 +88,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
         retrieveLossClaimResult(connector) shouldBe expected
       }
 
-      "provided with multiple errors" in new IfsTest {
+      "provided with multiple errors" in new IfsLocalTest {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockHttpClient

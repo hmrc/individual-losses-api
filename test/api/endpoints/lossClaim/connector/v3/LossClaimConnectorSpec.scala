@@ -25,7 +25,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890ag"
 
-  class IfsTest extends MockHttpClient with MockAppConfig {
+  class IfsLocalTest extends MockHttpClient with MockAppConfig {
 
     val connector: LossClaimConnector = new LossClaimConnector(
       http = mockHttpClient,
@@ -38,7 +38,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
     MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
 
-  class DesTest extends MockHttpClient with MockAppConfig {
+  class DesLocalTest extends MockHttpClient with MockAppConfig {
 
     val connector: LossClaimConnector = new LossClaimConnector(
       http = mockHttpClient,
@@ -51,7 +51,7 @@ class LossClaimConnectorSpec extends ConnectorSpec {
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
-  class TysIfsTest extends MockHttpClient with MockAppConfig {
+  class TysIfsLocalTest extends MockHttpClient with MockAppConfig {
 
     val connector: LossClaimConnector = new LossClaimConnector(
       http = mockHttpClient,
