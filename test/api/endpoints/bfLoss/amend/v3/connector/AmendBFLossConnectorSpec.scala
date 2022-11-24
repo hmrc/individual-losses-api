@@ -43,18 +43,16 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
 
   }
 
-  "amendBFLosses" when {
-    "downstream returns OK" should {
-
-      val response: AmendBFLossResponse = AmendBFLossResponse(
-        businessId = "XKIS00000000988",
-        typeOfLoss = TypeOfLoss.`self-employment`,
-        lossAmount = 500.13,
-        taxYearBroughtForwardFrom = "2019-20",
-        lastModified = "2018-07-13T12:13:48.763Z"
-      )
-
-      "a valid non-TYS request with no provided parameters is supplied" in new IfsTest with Test {
+  "amendBFLosses" should {
+    "return the expected response for a non-TYS request" when {
+      "downstream returns OK" in new IfsTest with Test {
+        val response: AmendBFLossResponse = AmendBFLossResponse(
+          businessId = "XKIS00000000988",
+          typeOfLoss = TypeOfLoss.`self-employment`,
+          lossAmount = 500.13,
+          taxYearBroughtForwardFrom = "2019-20",
+          lastModified = "2018-07-13T12:13:48.763Z"
+        )
         val expected = Right(ResponseWrapper(correlationId, response))
 
         willPut(
@@ -64,10 +62,8 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
 
         await(connector.amendBFLoss(request)) shouldBe expected
       }
-    }
 
-    "return an unsuccessful response" should {
-      "a non-valid request with a single error be supplied" in new IfsTest with Test {
+      "downstream returns a single error" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         willPut(
@@ -78,7 +74,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         await(connector.amendBFLoss(request)) shouldBe expected
       }
 
-      "a non-valid request with multiple errors be supplied" in new IfsTest with Test {
+      "downstream returns multiple errors" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         willPut(

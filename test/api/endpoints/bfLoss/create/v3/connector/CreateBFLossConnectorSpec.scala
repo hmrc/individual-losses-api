@@ -42,13 +42,11 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
 
   }
 
-  "createBFLosses" when {
-    "downstream returns OK" should {
-
-      val response: CreateBFLossResponse = CreateBFLossResponse(lossId)
-
-      "a valid non-TYS request with no provided parameters is supplied" in new IfsTest with Test {
-        val expected = Right(ResponseWrapper(correlationId, response))
+  "createBFLosses" should {
+    "return the expected response for a non-TYS request" when {
+      "downstream returns OK" in new IfsTest with Test {
+        val response: CreateBFLossResponse = CreateBFLossResponse(lossId)
+        val expected                       = Right(ResponseWrapper(correlationId, response))
 
         willPost(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
@@ -57,10 +55,8 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
 
         await(connector.createBFLoss(request)) shouldBe expected
       }
-    }
 
-    "return an unsuccessful response" should {
-      "a non-valid request with a single error be supplied" in new IfsTest with Test {
+      "downstream returns a single error" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         willPost(
@@ -71,7 +67,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
         await(connector.createBFLoss(request)) shouldBe expected
       }
 
-      "a non-valid request with multiple errors be supplied" in new IfsTest with Test {
+      "downstream returns multiple errors" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         willPost(

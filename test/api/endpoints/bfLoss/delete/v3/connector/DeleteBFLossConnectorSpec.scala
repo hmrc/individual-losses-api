@@ -39,10 +39,9 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
   }
 
-  "deleteBFLosses" when {
-    "return a successful response with the correct correlationId" should {
-
-      "a valid non-TYS request with no provided parameters is supplied" in new DesTest with Test {
+  "deleteBFLosses" should {
+    "return the expected response for a non-TYS request" when {
+      "downstream returns OK" in new DesTest with Test {
         val expected = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(
@@ -51,10 +50,8 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
         await(connector.deleteBFLoss(request)) shouldBe expected
       }
-    }
 
-    "return an unsuccessful response" should {
-      "a non-valid request with a single error be supplied" in new DesTest with Test {
+      "downstream returns a single error" in new DesTest with Test {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         willDelete(
@@ -64,7 +61,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
         await(connector.deleteBFLoss(request)) shouldBe expected
       }
 
-      "a non-valid request with a multiple errors be supplied" in new DesTest with Test {
+      "downstream returns multiple errors" in new DesTest with Test {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
 
         willDelete(
