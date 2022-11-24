@@ -24,7 +24,7 @@ import api.services.v3.Outcomes.ListLossClaimsOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
 
@@ -39,15 +39,28 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Dow
     }
   }
 
-  private def errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAXYEAR"           -> TaxYearFormatError,
-    "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-    "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
-    "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "INVALID_CORRELATIONID"     -> InternalError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
-  )
+  private def errorMap: Map[String, MtdError] = {
+    val downstreamErrors = Map(
+      "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
+      "INVALID_TAXYEAR"             -> TaxYearFormatError,
+      "INVALID_INCOMESOURCEID"      -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCETYPE"    -> TypeOfLossFormatError,
+      "INVALID_CLAIM_TYPE"          -> TypeOfClaimFormatError,
+      "NOT_FOUND"                   -> NotFoundError,
+      "INVALID_CORRELATIONID"       -> InternalError,
+      "SERVER_ERROR"                -> InternalError,
+      "SERVICE_UNAVAILABLE"         -> InternalError,
+      "RULE_TAX_YEAR_RANGE_INVALID" -> RuleTaxYearRangeInvalidError
+    )
+
+    val tysErrors = Map(
+      "INVALID_CORRELATION_ID"    -> InternalError,
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+    )
+
+    downstreamErrors ++ tysErrors
+  }
 }

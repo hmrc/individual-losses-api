@@ -34,9 +34,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
   trait Test {
     _: ConnectorTest =>
-
     val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
   }
 
   "list LossClaims" when {
@@ -64,17 +62,37 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             ))
           ))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(s"$baseUrl/income-tax/claims-for-relief/$nino") returns Future.successful(expected)
 
         listLossClaimsResult(connector) shouldBe expected
+      }
+
+      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
+
+        val expected = Right(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
+
+        willGet(s"$baseUrl/income-tax/claims-for-relief/23-24/$nino") returns Future.successful(expected)
+
+        listLossClaimsResult(connector, Some(TaxYear.fromMtd("2023-24"))) shouldBe expected
       }
     }
 
@@ -102,15 +120,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             ))
           ))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("taxYear", "2019")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("taxYear", "2019"))) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, taxYear = Some(TaxYear("2019"))) shouldBe expected
       }
@@ -140,17 +150,39 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             ))
           ))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("incomeSourceId", "testId")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("incomeSourceId", "testId"))) returns Future.successful(
+          expected)
 
         listLossClaimsResult(connector = connector, businessId = Some("testId")) shouldBe expected
+      }
+
+      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
+
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
+
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Seq(("incomeSourceId", "testId"))) returns Future
+          .successful(expected)
+
+        listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some("testId")) shouldBe expected
       }
     }
 
@@ -178,17 +210,41 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             ))
           ))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("incomeSourceType", "02")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(
+          url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+          queryParams = Seq(("incomeSourceType", "02"))
+        ) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
+      }
+
+      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
+
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
+
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Seq(("incomeSourceType", "02"))) returns Future.successful(
+          expected)
+
+        listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
       }
     }
 
@@ -216,22 +272,12 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             ))
           ))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("claimType", "CSGI")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("claimType", "CSGI"))) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
-    }
 
-    "provided with all parameters" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
+      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
 
         val expected = Left(
           ResponseWrapper(
@@ -254,19 +300,47 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             ))
           ))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("taxYear", "2019"), ("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(
+          url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
+          queryParams = Seq(("claimType", "CSGI"))
+        ) returns Future.successful(expected)
+
+        listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
+      }
+    }
+
+    "provided with all parameters" should {
+      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
+
+        val expected = Left(
+          ResponseWrapper(
+            correlationId,
+            ListLossClaimsResponse(Seq(
+              ListLossClaimsItem("businessId",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId",
+                                 Some(1),
+                                 "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem("businessId1",
+                                 TypeOfClaim.`carry-sideways`,
+                                 TypeOfLoss.`self-employment`,
+                                 "2020",
+                                 "claimId1",
+                                 Some(2),
+                                 "2020-07-13T12:13:48.763Z")
+            ))
+          ))
+
+        willGet(
+          url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
+          queryParams = Seq(("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI"))
+        ) returns Future.successful(expected)
 
         listLossClaimsResult(
           connector = connector,
-          taxYear = Some(TaxYear("2019")),
+          taxYear = Some(TaxYear("2024")),
           businessId = Some("testId"),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)
@@ -279,17 +353,18 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq()) returns Future.successful(expected)
 
         listLossClaimsResult(connector) shouldBe expected
+      }
+
+      "return an unsuccessful response with the correct correlationId and a single error for a TYS tax year" in new TysIfsTest with Test {
+
+        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
+
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Seq()) returns Future.successful(expected)
+
+        listLossClaimsResult(connector, Some(TaxYear.fromMtd("2023-24"))) shouldBe expected
       }
     }
 
@@ -298,17 +373,18 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            parameters = Seq(("taxYear", "2019")),
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("taxYear", "2019"))) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, Some(TaxYear("2019"))) shouldBe expected
+      }
+
+      "return an unsuccessful response with the correct correlationId and multiple errors for TYS tax year" in new TysIfsTest with Test {
+
+        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
+
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino") returns Future.successful(expected)
+
+        listLossClaimsResult(connector = connector, Some(TaxYear("2024"))) shouldBe expected
       }
     }
 

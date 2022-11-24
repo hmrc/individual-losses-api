@@ -16,16 +16,16 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser}
-import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
+import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 
@@ -33,19 +33,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListLossClaimsService
     with MockListLossClaimsRequestDataParser
     with MockHateoasFactory {
 
-  private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
   private val businessId     = "businessId"
   private val claimType      = "carry-sideways"
-
-  private val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
-  private val request = ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
   private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
@@ -140,9 +136,25 @@ class ListLossClaimsControllerSpec
     """.stripMargin
   )
 
+  trait NonTysTest extends Test {
+    override def taxYear: String       = "2018-19"
+    val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
+
+    val request: ListLossClaimsRequest =
+      ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+  }
+
+  trait TysTest extends Test {
+    override def taxYear: String       = "2023-2024"
+    val rawData: ListLossClaimsRawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
+
+    val request: ListLossClaimsRequest =
+      ListLossClaimsRequest(Nino(nino), Some(TaxYear("2024")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+  }
+
   "list" should {
-    "return UK" when {
-      "the request is valid" in new Test {
+    "return OK" when {
+      "the request is valid" in new NonTysTest with Test {
         MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
@@ -153,14 +165,30 @@ class ListLossClaimsControllerSpec
 
         MockHateoasFactory
           .wrapList(response, ListLossClaimsHateoasData(nino))
-            .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
+          .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
+
+        runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
+      }
+
+      "the request is valid for a TYS tax year" in new TysTest with Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
+
+        MockListLossClaimsService
+          .list(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        MockHateoasFactory
+          .wrapList(response, ListLossClaimsHateoasData(nino))
+          .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
     "return the error as per spec" when {
-      "the parser validation fails" in new Test {
+      "the parser validation fails" in new NonTysTest with Test {
         MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
@@ -168,7 +196,15 @@ class ListLossClaimsControllerSpec
         runErrorTest(NinoFormatError)
       }
 
-      "the service returns an error" in new Test {
+      "the parser validation fails for a TYS tax year" in new TysTest with Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, TaxYearFormatError, None)))
+
+        runErrorTest(TaxYearFormatError)
+      }
+
+      "the service returns an error" in new NonTysTest with Test {
         MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
@@ -180,7 +216,19 @@ class ListLossClaimsControllerSpec
         runErrorTest(TypeOfClaimFormatError)
       }
 
-      "the request received is valid but an empty list of claims is returned from downstream" in new Test {
+      "the service returns an error for a TYS tax year" in new TysTest with Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
+
+        MockListLossClaimsService
+          .list(request)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfLossFormatError, None))))
+
+        runErrorTest(TypeOfLossFormatError)
+      }
+
+      "the request received is valid but an empty list of claims is returned from downstream" in new NonTysTest with Test {
         MockListLossClaimsRequestDataParser
           .parseRequest(rawData)
           .returns(Right(request))
@@ -191,15 +239,32 @@ class ListLossClaimsControllerSpec
 
         MockHateoasFactory
           .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
-            .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
+          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
+
+        runErrorTest(NotFoundError)
+      }
+
+      "the request received is valid but an empty list of claims is returned from downstream for a TYS tax year" in new TysTest with Test {
+        MockListLossClaimsRequestDataParser
+          .parseRequest(rawData)
+          .returns(Right(request))
+
+        MockListLossClaimsService
+          .list(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
+
+        MockHateoasFactory
+          .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
+          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
 
         runErrorTest(NotFoundError)
       }
     }
   }
 
-  private trait Test extends ControllerTest {
+  trait Test extends ControllerTest {
 
+    def taxYear: String
     private val controller = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
