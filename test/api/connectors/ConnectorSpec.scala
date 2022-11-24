@@ -20,11 +20,11 @@ import api.mocks.MockHttpClient
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.Configuration
-import play.api.http.{HeaderNames, MimeTypes, Status}
+import play.api.http.{ HeaderNames, MimeTypes, Status }
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
@@ -118,10 +118,11 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected val requiredHeaders: Seq[(String, String)]
 
-    protected def willGet[T](url: String): CallHandler[Future[T]] = {
+    protected def willGet[T](url: String, queryParams: Seq[(String, String)] = Nil): CallHandler[Future[T]] = {
       MockHttpClient
         .get(
           url = url,
+          parameters = queryParams,
           config = dummyHeaderCarrierConfig,
           requiredHeaders = requiredHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -159,6 +160,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )
     }
+
   }
 
   protected trait DesTest extends ConnectorTest {
