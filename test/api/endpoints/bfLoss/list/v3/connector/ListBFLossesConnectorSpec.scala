@@ -41,6 +41,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       businessId = businessId
     )
 
+  def makeResponse(taxYear: TaxYear = TaxYear("2019")): ListBFLossesResponse[ListBFLossesItem] =
+    ListBFLossesResponse(
+      Seq(
+        ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified")
+      )
+    )
+
   trait Test {
     _: ConnectorTest =>
 
@@ -51,24 +58,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
   "listBFLosses" should {
     "return the expected response for a non-TYS request" when {
       "downstream returns OK" when {
-        val response =
-          ListBFLossesResponse(Seq(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
-
-        "the connector sends a request with no query params" in new IfsTest with Test {
-          val expected = Right(ResponseWrapper(correlationId, response))
-
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-          ).returns(Future.successful(expected))
-
-          val request: ListBFLossesRequest = makeRequest()
-
-          await(connector.listBFLosses(request)) shouldBe expected
-        }
-
-        "a valid non-TYS request with a tax year parameter provided is supplied" in new IfsTest with Test {
+        "the connector sends a request with a tax year parameter provided is supplied" in new IfsTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
-          val expected         = Right(ResponseWrapper(correlationId, response))
+
+          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear = taxYear)
+          val request: ListBFLossesRequest                     = makeRequest(taxYear = Some(taxYear))
+
+          val expected = Right(ResponseWrapper(correlationId, response))
 
           val queryParams: Seq[(String, String)] = Seq(
             ("taxYear", taxYear.asDownstream)
@@ -79,13 +75,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
             queryParams = queryParams,
           ).returns(Future.successful(expected))
 
-          val request: ListBFLossesRequest = makeRequest(taxYear = Some(taxYear))
-
           await(connector.listBFLosses(request)) shouldBe expected
         }
 
-        "a valid non-TYS request with a income source id parameter provided is supplied" in new IfsTest with Test {
-          val expected = Right(ResponseWrapper(correlationId, response))
+        "the connector sends a request with a income source id parameter provided is supplied" in new IfsTest with Test {
+          val request: ListBFLossesRequest                     = makeRequest(businessId = Some("testId"))
+          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse()
+          val expected                                         = Right(ResponseWrapper(correlationId, response))
 
           val queryParams: Seq[(String, String)] = Seq(
             ("incomeSourceId", "testId")
@@ -96,12 +92,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
             queryParams = queryParams,
           ).returns(Future.successful(expected))
 
-          val request: ListBFLossesRequest = makeRequest(businessId = Some("testId"))
-
           await(connector.listBFLosses(request)) shouldBe expected
         }
 
         "a valid non-TYS request with a income source type parameter provided is supplied" in new IfsTest with Test {
+          val request: ListBFLossesRequest                     = makeRequest(incomeSourceType = Some(IncomeSourceType.`02`))
+          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse()
+
           val expected = Right(ResponseWrapper(correlationId, response))
 
           val queryParams: Seq[(String, String)] = Seq(
@@ -113,28 +110,28 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
             queryParams = queryParams,
           ).returns(Future.successful(expected))
 
-          val request: ListBFLossesRequest = makeRequest(incomeSourceType = Some(IncomeSourceType.`02`))
-
           await(connector.listBFLosses(request)) shouldBe expected
         }
 
         "a valid non-TYS request with all parameters provided is supplied" in new IfsTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
-          val expected         = Right(ResponseWrapper(correlationId, response))
+
+          val request: ListBFLossesRequest =
+            makeRequest(taxYear = Some(taxYear), businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`))
+          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear)
+
+          val expected = Right(ResponseWrapper(correlationId, response))
 
           val queryParams: Seq[(String, String)] = Seq(
-            ("taxYear", taxYear.asDownstream),
             ("incomeSourceId", "testId"),
             ("incomeSourceType", "01"),
+            ("taxYear", taxYear.asDownstream),
           )
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
             queryParams = queryParams,
           ).returns(Future.successful(expected))
-
-          val request: ListBFLossesRequest =
-            makeRequest(taxYear = Some(taxYear), businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`))
 
           await(connector.listBFLosses(request)) shouldBe expected
         }
@@ -164,5 +161,47 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         await(connector.listBFLosses(request)) shouldBe expected
       }
     }
+
+    "return the expected response for a TYS request" when {
+      "downstream returns OK" when {
+        "the connector sends a request with a tax year parameter provided is supplied" in new TysIfsTest with Test {
+          def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+
+          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear = taxYear)
+          val request: ListBFLossesRequest                     = makeRequest(taxYear = Some(taxYear))
+
+          val expected = Right(ResponseWrapper(correlationId, response))
+
+          willGet(
+            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
+          ).returns(Future.successful(expected))
+
+          await(connector.listBFLosses(request)) shouldBe expected
+        }
+
+        "a valid non-TYS request with all parameters provided is supplied" in new TysIfsTest with Test {
+          def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+
+          val request: ListBFLossesRequest =
+            makeRequest(taxYear = Some(taxYear), businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`))
+          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear)
+
+          val expected = Right(ResponseWrapper(correlationId, response))
+
+          val queryParams: Seq[(String, String)] = Seq(
+            ("incomeSourceId", "testId"),
+            ("incomeSourceType", "01"),
+          )
+
+          willGet(
+            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
+            queryParams = queryParams,
+          ).returns(Future.successful(expected))
+
+          await(connector.listBFLosses(request)) shouldBe expected
+        }
+      }
+    }
+
   }
 }
