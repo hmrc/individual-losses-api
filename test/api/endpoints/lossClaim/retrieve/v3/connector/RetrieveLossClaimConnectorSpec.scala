@@ -16,9 +16,9 @@
 
 package api.endpoints.lossClaim.retrieve.v3.connector
 
-import api.connectors.DownstreamOutcome
-import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.endpoints.lossClaim.connector.v3.LossClaimConnector
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import api.models.ResponseWrapper
@@ -28,7 +28,17 @@ import api.models.errors._
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
+class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
+
+  val nino: String    = "AA123456A"
+  val claimId: String = "AAZZ1234567890ag"
+
+  trait Test {
+    _: ConnectorTest =>
+
+    val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+  }
 
   "retrieve LossClaim" should {
 
@@ -55,7 +65,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "return a successful response and correlationId" when {
 
-      "provided with a valid request" in new IfsTest {
+      "provided with a valid request" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
 
         MockHttpClient
@@ -73,7 +83,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
 
     "return an unsuccessful response" when {
 
-      "provided with a single error" in new IfsTest {
+      "provided with a single error" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -88,7 +98,7 @@ class RetrieveLossClaimConnectorSpec extends LossClaimConnectorSpec {
         retrieveLossClaimResult(connector) shouldBe expected
       }
 
-      "provided with multiple errors" in new IfsTest {
+      "provided with multiple errors" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
         MockHttpClient

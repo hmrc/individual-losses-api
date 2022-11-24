@@ -16,23 +16,32 @@
 
 package api.endpoints.lossClaim.list.v3.connector
 
-import api.connectors.DownstreamOutcome
-import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.endpoints.lossClaim.connector.v3.LossClaimConnector
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
+import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
 
 import scala.concurrent.Future
 
-class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
+class ListLossClaimsConnectorSpec extends ConnectorSpec {
+
+  val nino: String    = "AA123456A"
+  val claimId: String = "AAZZ1234567890ag"
+
+  trait Test {
+    _: ConnectorTest =>
+
+    val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+  }
 
   "list LossClaims" when {
-
     "a valid request is supplied with no query parameters" should {
-      "return a successful response with the correct correlationId" in new IfsTest {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Right(
           ResponseWrapper(
             correlationId,
@@ -69,7 +78,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a tax year parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Left(
           ResponseWrapper(
             correlationId,
@@ -106,7 +115,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a income source id parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Left(
           ResponseWrapper(
             correlationId,
@@ -143,7 +152,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a income source type parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Left(
           ResponseWrapper(
             correlationId,
@@ -180,7 +189,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with a claim type parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Left(
           ResponseWrapper(
             correlationId,
@@ -217,7 +226,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "provided with all parameters" should {
-      "return a successful response with the correct correlationId" in new IfsTest {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Left(
           ResponseWrapper(
             correlationId,
@@ -260,7 +269,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new IfsTest {
+      "return an unsuccessful response with the correct correlationId and a single error" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
         MockHttpClient
@@ -278,7 +287,7 @@ class ListLossClaimsConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new IfsTest {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new IfsTest with Test {
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
 
         MockHttpClient
