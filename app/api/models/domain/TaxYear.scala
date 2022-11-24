@@ -31,7 +31,7 @@ final case class TaxYear private (private val value: String) {
   override def toString: String = value
 
   val year: Int     = value.toInt
-  val asMtd: String = (value.toInt - 1) + "-" + value.drop(2)
+  val asMtd: String = (value.toInt - 1).toString + "-" + value.drop(2)
 
   /** The tax year in the pre-TYS downstream format, e.g. "2023-24".
     */

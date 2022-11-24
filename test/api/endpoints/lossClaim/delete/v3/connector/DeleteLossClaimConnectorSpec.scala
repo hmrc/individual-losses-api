@@ -16,8 +16,8 @@
 
 package api.endpoints.lossClaim.delete.v3.connector
 
-import api.connectors.DownstreamOutcome
-import api.endpoints.lossClaim.connector.v3.{LossClaimConnector, LossClaimConnectorSpec}
+import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.models.ResponseWrapper
 import api.models.domain.Nino
@@ -25,12 +25,22 @@ import api.models.errors._
 
 import scala.concurrent.Future
 
-class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
+class DeleteLossClaimConnectorSpec extends ConnectorSpec {
+
+  val nino: String    = "AA123456A"
+  val claimId: String = "AAZZ1234567890ag"
+
+  trait Test {
+    _: ConnectorTest =>
+
+    val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+  }
 
   "delete LossClaim" when {
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new DesTest {
+      "return a successful response with the correct correlationId" in new DesTest with Test {
         val expected = Right(ResponseWrapper(correlationId, ()))
 
         MockHttpClient
@@ -47,7 +57,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new DesTest {
+      "return an unsuccessful response with the correct correlationId and a single error" in new DesTest with Test {
 
         val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
 
@@ -65,7 +75,7 @@ class DeleteLossClaimConnectorSpec extends LossClaimConnectorSpec {
     }
 
     "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new DesTest {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new DesTest with Test {
 
         val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
 
