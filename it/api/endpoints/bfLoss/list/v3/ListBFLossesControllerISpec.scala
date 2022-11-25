@@ -141,6 +141,12 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
     def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino"
   }
 
+  private trait TysIfsTest extends Test {
+    override def taxYearBroughtForwardFrom: Option[String] = Some("2023-24")
+
+    def downstreamUrl: String = s"/income-tax/brought-forward-losses/23-24/$nino"
+  }
+
   "Calling the ListBFLosses endpoint" should {
 
     "return a 200 status code" when {
@@ -162,9 +168,8 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       }
 
       "querying with specific typeOfLoss" in new NonTysTest {
-        override val taxYearBroughtForwardFrom: Option[String] = None
-        override val typeOfLoss: Option[String]                = Some("uk-property-fhl")
-        override val businessId: Option[String]                = None
+        override val typeOfLoss: Option[String] = Some("uk-property-fhl")
+        override val businessId: Option[String] = None
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -182,7 +187,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
 
       "querying with businessId, taxYear and typeOfLoss" in new NonTysTest {
         override def taxYearBroughtForwardFrom: Option[String] = Some("2019-20")
-        override val typeOfLoss: Option[String]                = Some("self-employment")
+        override val typeOfLoss: Option[String]                = Some("uk-property-fhl")
         override val businessId: Option[String]                = Some("XKIS00000000988")
 
         override def setupStubs(): StubMapping = {
@@ -191,7 +196,29 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(DownstreamStub.GET,
                                    downstreamUrl,
-                                   Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020"),
+                                   Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020", "incomeSourceType" -> "04"),
+                                   OK,
+                                   downstreamResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "querying with businessId, typeOfLoss and a Tax Year Specific (TYS) taxYear" in new TysIfsTest {
+        override val typeOfLoss: Option[String] = Some("uk-property-fhl")
+        override val businessId: Option[String] = Some("XKIS00000000988")
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.GET,
+                                   downstreamUrl,
+                                   Map("incomeSourceId" -> "XKIS00000000988", "incomeSourceType" -> "04"),
                                    OK,
                                    downstreamResponseJson)
         }
@@ -231,6 +258,13 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
       serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+
+      // TYS Errors
+      serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", BAD_REQUEST, TypeOfLossFormatError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
     }
 
     "handle validation errors according to spec" when {
