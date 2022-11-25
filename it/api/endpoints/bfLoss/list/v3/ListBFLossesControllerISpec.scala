@@ -19,101 +19,32 @@ package api.endpoints.bfLoss.list.v3
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.http.Status._
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
 
-  val downstreamResponseJson: JsValue =
-    Json.parse(s"""
-       |[
-       |  {
-       |    "incomeSourceId": "XAIS12345678911",
-       |    "lossType": "INCOME",
-       |    "broughtForwardLossAmount": 345.67,
-       |    "taxYear": "2019",
-       |    "lossId": "AAZZ1234567890A",
-       |    "submissionDate": "2020-07-13T12:13:48.763Z"
-       |  },
-       |  {
-       |    "incomeSourceId": "XAIS12345678912",
-       |    "incomeSourceType": "04",
-       |    "broughtForwardLossAmount": 385.67,
-       |    "taxYear": "2020",
-       |    "lossId": "AAZZ1234567890B",
-       |    "submissionDate": "2020-08-13T12:13:48.763Z"
-       |  }
-       |]
-     """.stripMargin)
-
   private trait Test {
 
-    val nino: String                              = "AA123456A"
-    val taxYearBroughtForwardFrom: Option[String] = None
-    val typeOfLoss: Option[String]                = None
-    val businessId: Option[String]                = None
+    val nino: String               = "AA123456A"
+    val typeOfLoss: Option[String] = None
+    val businessId: Option[String] = None
 
-    def uri: String = s"/$nino/brought-forward-losses"
+    def taxYearBroughtForwardFrom: Option[String] = None
 
-    val responseJson: JsValue = Json.parse(s"""{
-         |  "losses": [
-         |    {
-         |      "lossId": "AAZZ1234567890A",
-         |      "businessId": "XAIS12345678911",
-         |      "typeOfLoss": "self-employment",
-         |      "lossAmount": 345.67,
-         |      "taxYearBroughtForwardFrom": "2018-19",
-         |      "lastModified": "2020-07-13T12:13:48.763Z",
-         |      "links": [
-         |        {
-         |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890A",
-         |          "rel": "self",
-         |          "method": "GET"
-         |        }
-         |      ]
-         |    },
-         |    {
-         |      "lossId": "AAZZ1234567890B",
-         |      "businessId": "XAIS12345678912",
-         |      "typeOfLoss": "uk-property-fhl",
-         |      "lossAmount": 385.67,
-         |      "taxYearBroughtForwardFrom": "2019-20",
-         |      "lastModified": "2020-08-13T12:13:48.763Z",
-         |      "links": [
-         |        {
-         |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890B",
-         |          "rel": "self",
-         |          "method": "GET"
-         |        }
-         |      ]
-         |    }
-         |  ],
-         |  "links": [
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses",
-         |      "rel": "self",
-         |      "method": "GET"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses",
-         |      "rel": "create-brought-forward-loss",
-         |      "method": "POST"
-         |    }
-         |  ]
-         |}
-     """.stripMargin)
+    def mtdUri: String = s"/$nino/brought-forward-losses"
 
-    def queryParams: Seq[(String, String)] =
+    def mtdQueryParams: Seq[(String, String)] =
       Seq("taxYearBroughtForwardFrom" -> taxYearBroughtForwardFrom, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
         .collect {
           case (k, Some(v)) => (k, v)
         }
 
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino"
+    def downstreamUrl: String
 
     def errorBody(code: String): String =
       s"""
@@ -127,36 +58,110 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
-        .addQueryStringParameters(queryParams: _*)
+      buildRequest(mtdUri)
+        .addQueryStringParameters(mtdQueryParams: _*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.3.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
+    val downstreamResponseJson: JsValue =
+      Json.parse(s"""
+                    |[
+                    |  {
+                    |    "incomeSourceId": "XAIS12345678911",
+                    |    "lossType": "INCOME",
+                    |    "broughtForwardLossAmount": 345.67,
+                    |    "taxYear": "2019",
+                    |    "lossId": "AAZZ1234567890A",
+                    |    "submissionDate": "2020-07-13T12:13:48.763Z"
+                    |  },
+                    |  {
+                    |    "incomeSourceId": "XAIS12345678912",
+                    |    "incomeSourceType": "04",
+                    |    "broughtForwardLossAmount": 385.67,
+                    |    "taxYear": "2020",
+                    |    "lossId": "AAZZ1234567890B",
+                    |    "submissionDate": "2020-08-13T12:13:48.763Z"
+                    |  }
+                    |]
+     """.stripMargin)
+
+    val responseJson: JsValue = Json.parse(s"""{
+                                              |  "losses": [
+                                              |    {
+                                              |      "lossId": "AAZZ1234567890A",
+                                              |      "businessId": "XAIS12345678911",
+                                              |      "typeOfLoss": "self-employment",
+                                              |      "lossAmount": 345.67,
+                                              |      "taxYearBroughtForwardFrom": "2018-19",
+                                              |      "lastModified": "2020-07-13T12:13:48.763Z",
+                                              |      "links": [
+                                              |        {
+                                              |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890A",
+                                              |          "rel": "self",
+                                              |          "method": "GET"
+                                              |        }
+                                              |      ]
+                                              |    },
+                                              |    {
+                                              |      "lossId": "AAZZ1234567890B",
+                                              |      "businessId": "XAIS12345678912",
+                                              |      "typeOfLoss": "uk-property-fhl",
+                                              |      "lossAmount": 385.67,
+                                              |      "taxYearBroughtForwardFrom": "2019-20",
+                                              |      "lastModified": "2020-08-13T12:13:48.763Z",
+                                              |      "links": [
+                                              |        {
+                                              |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890B",
+                                              |          "rel": "self",
+                                              |          "method": "GET"
+                                              |        }
+                                              |      ]
+                                              |    }
+                                              |  ],
+                                              |  "links": [
+                                              |    {
+                                              |      "href": "/individuals/losses/$nino/brought-forward-losses",
+                                              |      "rel": "self",
+                                              |      "method": "GET"
+                                              |    },
+                                              |    {
+                                              |      "href": "/individuals/losses/$nino/brought-forward-losses",
+                                              |      "rel": "create-brought-forward-loss",
+                                              |      "method": "POST"
+                                              |    }
+                                              |  ]
+                                              |}
+     """.stripMargin)
+  }
+
+  private trait NonTysTest extends Test {
+    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino"
   }
 
   "Calling the ListBFLosses endpoint" should {
 
     "return a 200 status code" when {
 
-      "query for all losses" in new Test {
+      "query for all losses" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map.empty, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map.empty, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying with specific typeOfLoss" in new Test {
+      "querying with specific typeOfLoss" in new NonTysTest {
         override val taxYearBroughtForwardFrom: Option[String] = None
         override val typeOfLoss: Option[String]                = Some("uk-property-fhl")
         override val businessId: Option[String]                = None
@@ -165,18 +170,18 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map("incomeSourceType" -> "04"), Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("incomeSourceType" -> "04"), OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying with businessId, taxYear and typeOfLoss" in new Test {
-        override val taxYearBroughtForwardFrom: Option[String] = Some("2019-20")
+      "querying with businessId, taxYear and typeOfLoss" in new NonTysTest {
+        override def taxYearBroughtForwardFrom: Option[String] = Some("2019-20")
         override val typeOfLoss: Option[String]                = Some("self-employment")
         override val businessId: Option[String]                = Some("XKIS00000000988")
 
@@ -185,29 +190,29 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(DownstreamStub.GET,
-                                   ifsUrl,
+                                   downstreamUrl,
                                    Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020"),
-                                   Status.OK,
+                                   OK,
                                    downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
     "handle errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
+      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $downstreamCode error" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, Map.empty, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, Map.empty, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().get())
@@ -218,14 +223,14 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXYEAR", Status.BAD_REQUEST, TaxYearFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCEID", BAD_REQUEST, BusinessIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCETYPE", BAD_REQUEST, TypeOfLossFormatError)
+      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "handle validation errors according to spec" when {
@@ -235,7 +240,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
                               requestBusinessId: Option[String],
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
-        s"validation fails with ${expectedBody.code} error" in new Test {
+        s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
           override val nino: String                              = requestNino
           override val taxYearBroughtForwardFrom: Option[String] = requestTaxYear
@@ -255,12 +260,12 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", None, None, None, Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", Some("XXXX-YY"), None, None, Status.BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", Some("2017-18"), None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-      validationErrorTest("AA123456A", Some("2019-21"), None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
-      validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, Status.BAD_REQUEST, TypeOfLossFormatError)
-      validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), Status.BAD_REQUEST, BusinessIdFormatError)
+      validationErrorTest("BADNINO", None, None, None, BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", Some("XXXX-YY"), None, None, BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", Some("2017-18"), None, None, BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", Some("2019-21"), None, None, BAD_REQUEST, RuleTaxYearRangeInvalidError)
+      validationErrorTest("AA123456A", None, Some("bad-loss-type"), None, BAD_REQUEST, TypeOfLossFormatError)
+      validationErrorTest("AA123456A", None, Some("self-employment"), Some("bad-self-employment-id"), BAD_REQUEST, BusinessIdFormatError)
     }
 
   }
