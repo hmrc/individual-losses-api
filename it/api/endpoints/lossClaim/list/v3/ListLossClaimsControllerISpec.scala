@@ -168,7 +168,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map.empty, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("taxYear" -> "2020"), Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())

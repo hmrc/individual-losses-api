@@ -82,6 +82,8 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
     ).collect {
       case (key, Some(value)) => key -> value
     }
+    println(taxYearClaimedFor)
+    println(pathParameters)
 
     val (uri: DownstreamUri[ListLossClaimsResponse[ListLossClaimsItem]], downstreamSpecificParameters) = taxYearClaimedFor match {
       case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
@@ -91,6 +93,7 @@ class LossClaimConnector @Inject()(val http: HttpClient, val appConfig: AppConfi
         )
       case _ => (IfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${nino.nino}"), pathParameters)
     }
+    println(downstreamSpecificParameters)
 
     get(uri, downstreamSpecificParameters.toSeq)
   }
