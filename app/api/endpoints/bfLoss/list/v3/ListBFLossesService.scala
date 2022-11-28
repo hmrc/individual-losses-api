@@ -51,7 +51,7 @@ class ListBFLossesService @Inject()(connector: BFLossConnector) extends Downstre
       "SERVICE_UNAVAILABLE"       -> InternalError
     )
 
-    val extraTysError = Map(
+    val extraTysErrors = Map(
       "INVALID_TAX_YEAR"          -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
       "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
@@ -59,6 +59,6 @@ class ListBFLossesService @Inject()(connector: BFLossConnector) extends Downstre
       "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
     )
 
-    errors ++ extraTysError
+    errors ++ extraTysErrors
   }
 }

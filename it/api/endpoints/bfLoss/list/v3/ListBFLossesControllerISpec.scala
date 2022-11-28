@@ -88,52 +88,54 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
                     |]
      """.stripMargin)
 
-    val responseJson: JsValue = Json.parse(s"""{
-                                              |  "losses": [
-                                              |    {
-                                              |      "lossId": "AAZZ1234567890A",
-                                              |      "businessId": "XAIS12345678911",
-                                              |      "typeOfLoss": "self-employment",
-                                              |      "lossAmount": 345.67,
-                                              |      "taxYearBroughtForwardFrom": "2018-19",
-                                              |      "lastModified": "2020-07-13T12:13:48.763Z",
-                                              |      "links": [
-                                              |        {
-                                              |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890A",
-                                              |          "rel": "self",
-                                              |          "method": "GET"
-                                              |        }
-                                              |      ]
-                                              |    },
-                                              |    {
-                                              |      "lossId": "AAZZ1234567890B",
-                                              |      "businessId": "XAIS12345678912",
-                                              |      "typeOfLoss": "uk-property-fhl",
-                                              |      "lossAmount": 385.67,
-                                              |      "taxYearBroughtForwardFrom": "2019-20",
-                                              |      "lastModified": "2020-08-13T12:13:48.763Z",
-                                              |      "links": [
-                                              |        {
-                                              |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890B",
-                                              |          "rel": "self",
-                                              |          "method": "GET"
-                                              |        }
-                                              |      ]
-                                              |    }
-                                              |  ],
-                                              |  "links": [
-                                              |    {
-                                              |      "href": "/individuals/losses/$nino/brought-forward-losses",
-                                              |      "rel": "self",
-                                              |      "method": "GET"
-                                              |    },
-                                              |    {
-                                              |      "href": "/individuals/losses/$nino/brought-forward-losses",
-                                              |      "rel": "create-brought-forward-loss",
-                                              |      "method": "POST"
-                                              |    }
-                                              |  ]
-                                              |}
+    val responseJson: JsValue =
+      Json.parse(s"""
+                    |{
+                    |  "losses": [
+                    |    {
+                    |      "lossId": "AAZZ1234567890A",
+                    |      "businessId": "XAIS12345678911",
+                    |      "typeOfLoss": "self-employment",
+                    |      "lossAmount": 345.67,
+                    |      "taxYearBroughtForwardFrom": "2018-19",
+                    |      "lastModified": "2020-07-13T12:13:48.763Z",
+                    |      "links": [
+                    |        {
+                    |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890A",
+                    |          "rel": "self",
+                    |          "method": "GET"
+                    |        }
+                    |      ]
+                    |    },
+                    |    {
+                    |      "lossId": "AAZZ1234567890B",
+                    |      "businessId": "XAIS12345678912",
+                    |      "typeOfLoss": "uk-property-fhl",
+                    |      "lossAmount": 385.67,
+                    |      "taxYearBroughtForwardFrom": "2019-20",
+                    |      "lastModified": "2020-08-13T12:13:48.763Z",
+                    |      "links": [
+                    |        {
+                    |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890B",
+                    |          "rel": "self",
+                    |          "method": "GET"
+                    |        }
+                    |      ]
+                    |    }
+                    |  ],
+                    |  "links": [
+                    |    {
+                    |      "href": "/individuals/losses/$nino/brought-forward-losses",
+                    |      "rel": "self",
+                    |      "method": "GET"
+                    |    },
+                    |    {
+                    |      "href": "/individuals/losses/$nino/brought-forward-losses",
+                    |      "rel": "create-brought-forward-loss",
+                    |      "method": "POST"
+                    |    }
+                    |  ]
+                    |}
      """.stripMargin)
   }
 
