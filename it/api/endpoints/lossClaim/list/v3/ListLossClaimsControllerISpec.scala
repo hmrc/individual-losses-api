@@ -32,31 +32,32 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 
   val downstreamResponseJson: JsValue =
     Json.parse(s"""[
-        |    {
-        |        "incomeSourceId": "XAIS12345678910",
-        |        "incomeSourceType": "02",
-        |        "reliefClaimed": "CSGI",
-        |        "taxYearClaimedFor": "2020",
-        |        "claimId": "AAZZ1234567890A",
-        |        "sequence": 1,
-        |        "submissionDate": "2020-07-13T12:13:763Z"
-        |    },
-        |    {
-        |        "incomeSourceId": "XAIS12345678911",
-        |        "reliefClaimed": "CSGI",
-        |        "taxYearClaimedFor": "2021",
-        |        "claimId": "AAZZ1234567890B",
-        |        "sequence": 2,
-        |        "submissionDate": "2021-11-10T11:56:728Z"
-        |    }
-        |]
-        |
+                  |    {
+                  |        "incomeSourceId": "XAIS12345678910",
+                  |        "incomeSourceType": "02",
+                  |        "reliefClaimed": "CSGI",
+                  |        "taxYearClaimedFor": "2020",
+                  |        "claimId": "AAZZ1234567890A",
+                  |        "sequence": 1,
+                  |        "submissionDate": "2020-07-13T12:13:763Z"
+                  |    },
+                  |    {
+                  |        "incomeSourceId": "XAIS12345678911",
+                  |        "reliefClaimed": "CSGI",
+                  |        "taxYearClaimedFor": "2021",
+                  |        "claimId": "AAZZ1234567890B",
+                  |        "sequence": 2,
+                  |        "submissionDate": "2021-11-10T11:56:728Z"
+                  |    }
+                  |]
+                  |
      """.stripMargin)
 
   private trait Test {
 
+    def taxYear: Option[String]
+    def downstreamUrl: String
     val nino                       = "AA123456A"
-    val taxYear: Option[String]    = Some("2019-20")
     val typeOfLoss: Option[String] = None
     val businessId: Option[String] = None
     val claimType: Option[String]  = None
@@ -119,13 +120,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                                               |}
      """.stripMargin)
 
-    def queryParams: Seq[(String, String)] =
-      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
-        .collect {
-          case (k, Some(v)) => (k, v)
-        }
-
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino"
+    def queryParams: Seq[(String, String)]
 
     def errorBody(code: String): String =
       s"""
@@ -148,17 +143,41 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     }
   }
 
+  private trait NonTysTest extends Test {
+    def taxYear: Option[String] = Some("2019-20")
+
+    def downstreamUrl: String = s"/income-tax/claims-for-relief/$nino"
+
+    def queryParams: Seq[(String, String)] =
+      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
+        .collect {
+          case (k, Some(v)) => (k, v)
+        }
+  }
+
+  private trait TysIfsTest extends Test {
+    def taxYear: Option[String] = Some("2023-24")
+
+    def downstreamUrl: String = s"/income-tax/claims-for-relief/23-24/$nino"
+
+    def queryParams: Seq[(String, String)] =
+      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
+        .collect {
+          case (k, Some(v)) => (k, v)
+        }
+  }
+
   "Calling the ListLossClaims endpoint" should {
 
     "return a 200 status code" when {
 
-      "query for everything" in new Test {
+      "query for everything" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map.empty, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map.empty, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -167,67 +186,82 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying for a specific typeOfLoss" in new Test {
+      "query for everything for a TYS tax year" in new TysIfsTest {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map.empty, Status.OK, downstreamResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe Status.OK
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "querying for a specific typeOfLoss" in new NonTysTest {
         override val typeOfLoss: Option[String] = Some("uk-property-non-fhl")
 
         val downstreamResponse: JsValue =
           Json.parse(s"""[
-                 |    {
-                 |        "incomeSourceId": "XAIS12345678910",
-                 |        "incomeSourceType": "02",
-                 |        "reliefClaimed": "CSGI",
-                 |        "taxYearClaimedFor": "2020",
-                 |        "claimId": "AAZZ1234567890A",
-                 |        "sequence": 1,
-                 |        "submissionDate": "2020-07-13T12:13:763Z"
-                 |    }
-                 |]
-               |""".stripMargin)
+                        |    {
+                        |        "incomeSourceId": "XAIS12345678910",
+                        |        "incomeSourceType": "02",
+                        |        "reliefClaimed": "CSGI",
+                        |        "taxYearClaimedFor": "2020",
+                        |        "claimId": "AAZZ1234567890A",
+                        |        "sequence": 1,
+                        |        "submissionDate": "2020-07-13T12:13:763Z"
+                        |    }
+                        |]
+                        |""".stripMargin)
 
         override val responseJson: JsValue = Json.parse(s"""
-             |{
-             |    "claims": [
-             |        {
-             |            "businessId": "XAIS12345678910",
-             |            "typeOfLoss": "uk-property-non-fhl",
-             |            "typeOfClaim": "carry-sideways",
-             |            "taxYearClaimedFor": "2019-20",
-             |            "claimId": "AAZZ1234567890A",
-             |            "sequence": 1,
-             |            "lastModified": "2020-07-13T12:13:763Z",
-             |            "links" : [
-             |             {
-             |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
-             |               "rel": "self",
-             |               "method": "GET"
-             |             }
-             |            ]
-             |        }
-             |    ],
-             |    "links": [
-             |      {
-             |        "href": "/individuals/losses/$nino/loss-claims",
-             |        "rel": "self",
-             |        "method": "GET"
-             |      },
-             |      {
-             |        "href": "/individuals/losses/$nino/loss-claims",
-             |        "rel": "create-loss-claim",
-             |        "method": "POST"
-             |      },
-             |      {
-             |        "href": "/individuals/losses/$nino/loss-claims/order",
-             |        "rel": "amend-loss-claim-order",
-             |        "method": "PUT"
-             |      }
-             |    ]
-             |}""".stripMargin)
+                                                           |{
+                                                           |    "claims": [
+                                                           |        {
+                                                           |            "businessId": "XAIS12345678910",
+                                                           |            "typeOfLoss": "uk-property-non-fhl",
+                                                           |            "typeOfClaim": "carry-sideways",
+                                                           |            "taxYearClaimedFor": "2019-20",
+                                                           |            "claimId": "AAZZ1234567890A",
+                                                           |            "sequence": 1,
+                                                           |            "lastModified": "2020-07-13T12:13:763Z",
+                                                           |            "links" : [
+                                                           |             {
+                                                           |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
+                                                           |               "rel": "self",
+                                                           |               "method": "GET"
+                                                           |             }
+                                                           |            ]
+                                                           |        }
+                                                           |    ],
+                                                           |    "links": [
+                                                           |      {
+                                                           |        "href": "/individuals/losses/$nino/loss-claims",
+                                                           |        "rel": "self",
+                                                           |        "method": "GET"
+                                                           |      },
+                                                           |      {
+                                                           |        "href": "/individuals/losses/$nino/loss-claims",
+                                                           |        "rel": "create-loss-claim",
+                                                           |        "method": "POST"
+                                                           |      },
+                                                           |      {
+                                                           |        "href": "/individuals/losses/$nino/loss-claims/order",
+                                                           |        "rel": "amend-loss-claim-order",
+                                                           |        "method": "PUT"
+                                                           |      }
+                                                           |    ]
+                                                           |}""".stripMargin)
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Map("incomeSourceType" -> "02"), Status.OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("incomeSourceType" -> "02"), Status.OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request().get())
@@ -236,62 +270,62 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying for specific taxYear and businessId" in new Test {
+      "querying for specific taxYear and businessId" in new NonTysTest {
         override val taxYear: Option[String]    = Some("2019-20")
         override val businessId: Option[String] = Some("XAIS12345678911")
 
         val downstreamResponse: JsValue =
           Json.parse(s"""
-               |[
-               |    {
-               |        "incomeSourceId": "XAIS12345678911",
-               |        "reliefClaimed": "CSGI",
-               |        "taxYearClaimedFor": "2020",
-               |        "claimId": "AAZZ1234567890B",
-               |        "sequence": 1,
-               |        "submissionDate": "2020-07-13T12:13:763Z"
-               |    }
-               |]
+                        |[
+                        |    {
+                        |        "incomeSourceId": "XAIS12345678911",
+                        |        "reliefClaimed": "CSGI",
+                        |        "taxYearClaimedFor": "2020",
+                        |        "claimId": "AAZZ1234567890B",
+                        |        "sequence": 1,
+                        |        "submissionDate": "2020-07-13T12:13:763Z"
+                        |    }
+                        |]
      """.stripMargin)
 
         override val responseJson: JsValue = Json.parse(s"""
-             |{
-             |    "claims": [
-             |        {
-             |            "businessId": "XAIS12345678911",
-             |            "typeOfLoss": "self-employment",
-             |            "typeOfClaim": "carry-sideways",
-             |            "taxYearClaimedFor": "2019-20",
-             |            "claimId": "AAZZ1234567890B",
-             |            "sequence": 1,
-             |            "lastModified": "2020-07-13T12:13:763Z",
-             |            "links" : [
-             |             {
-             |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890B",
-             |               "rel": "self",
-             |               "method": "GET"
-             |             }
-             |            ]
-             |        }
-             |    ],
-             |    "links": [
-             |      {
-             |        "href": "/individuals/losses/$nino/loss-claims",
-             |        "rel": "self",
-             |        "method": "GET"
-             |      },
-             |      {
-             |        "href": "/individuals/losses/$nino/loss-claims",
-             |        "rel": "create-loss-claim",
-             |        "method": "POST"
-             |      },
-             |      {
-             |        "href": "/individuals/losses/$nino/loss-claims/order",
-             |        "rel": "amend-loss-claim-order",
-             |        "method": "PUT"
-             |      }
-             |    ]
-             |}
+                                                           |{
+                                                           |    "claims": [
+                                                           |        {
+                                                           |            "businessId": "XAIS12345678911",
+                                                           |            "typeOfLoss": "self-employment",
+                                                           |            "typeOfClaim": "carry-sideways",
+                                                           |            "taxYearClaimedFor": "2019-20",
+                                                           |            "claimId": "AAZZ1234567890B",
+                                                           |            "sequence": 1,
+                                                           |            "lastModified": "2020-07-13T12:13:763Z",
+                                                           |            "links" : [
+                                                           |             {
+                                                           |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890B",
+                                                           |               "rel": "self",
+                                                           |               "method": "GET"
+                                                           |             }
+                                                           |            ]
+                                                           |        }
+                                                           |    ],
+                                                           |    "links": [
+                                                           |      {
+                                                           |        "href": "/individuals/losses/$nino/loss-claims",
+                                                           |        "rel": "self",
+                                                           |        "method": "GET"
+                                                           |      },
+                                                           |      {
+                                                           |        "href": "/individuals/losses/$nino/loss-claims",
+                                                           |        "rel": "create-loss-claim",
+                                                           |        "method": "POST"
+                                                           |      },
+                                                           |      {
+                                                           |        "href": "/individuals/losses/$nino/loss-claims/order",
+                                                           |        "rel": "amend-loss-claim-order",
+                                                           |        "method": "PUT"
+                                                           |      }
+                                                           |    ]
+                                                           |}
      """.stripMargin)
 
         override def setupStubs(): StubMapping = {
@@ -299,7 +333,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(DownstreamStub.GET,
-                                   ifsUrl,
+                                   downstreamUrl,
                                    queryParams = Map("incomeSourceId" -> "XAIS12345678911", "taxYear" -> "2020"),
                                    Status.OK,
                                    downstreamResponse)
@@ -312,8 +346,82 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       }
     }
 
+    "querying for specific taxYear and businessId" in new NonTysTest {
+      override val businessId: Option[String] = Some("XAIS12345678911")
+
+      val downstreamResponse: JsValue =
+        Json.parse(s"""
+                      |[
+                      |    {
+                      |        "incomeSourceId": "XAIS12345678911",
+                      |        "reliefClaimed": "CSGI",
+                      |        "taxYearClaimedFor": "2020",
+                      |        "claimId": "AAZZ1234567890B",
+                      |        "sequence": 1,
+                      |        "submissionDate": "2020-07-13T12:13:763Z"
+                      |    }
+                      |]
+     """.stripMargin)
+
+      override val responseJson: JsValue = Json.parse(s"""
+                                                         |{
+                                                         |    "claims": [
+                                                         |        {
+                                                         |            "businessId": "XAIS12345678911",
+                                                         |            "typeOfLoss": "self-employment",
+                                                         |            "typeOfClaim": "carry-sideways",
+                                                         |            "taxYearClaimedFor": "2019-20",
+                                                         |            "claimId": "AAZZ1234567890B",
+                                                         |            "sequence": 1,
+                                                         |            "lastModified": "2020-07-13T12:13:763Z",
+                                                         |            "links" : [
+                                                         |             {
+                                                         |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890B",
+                                                         |               "rel": "self",
+                                                         |               "method": "GET"
+                                                         |             }
+                                                         |            ]
+                                                         |        }
+                                                         |    ],
+                                                         |    "links": [
+                                                         |      {
+                                                         |        "href": "/individuals/losses/$nino/loss-claims",
+                                                         |        "rel": "self",
+                                                         |        "method": "GET"
+                                                         |      },
+                                                         |      {
+                                                         |        "href": "/individuals/losses/$nino/loss-claims",
+                                                         |        "rel": "create-loss-claim",
+                                                         |        "method": "POST"
+                                                         |      },
+                                                         |      {
+                                                         |        "href": "/individuals/losses/$nino/loss-claims/order",
+                                                         |        "rel": "amend-loss-claim-order",
+                                                         |        "method": "PUT"
+                                                         |      }
+                                                         |    ]
+                                                         |}
+     """.stripMargin)
+
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        AuthStub.authorised()
+        MtdIdLookupStub.ninoFound(nino)
+        DownstreamStub.onSuccess(DownstreamStub.GET,
+                                 downstreamUrl,
+                                 queryParams = Map("incomeSourceId" -> "XAIS12345678911"),
+                                 Status.OK,
+                                 downstreamResponse)
+      }
+
+      val response: WSResponse = await(request().get())
+      response.json shouldBe responseJson
+      response.status shouldBe Status.OK
+      response.header("Content-Type") shouldBe Some("application/json")
+    }
+
     "return a 404 status code" when {
-      "an empty array (no loss claims exists) is returned from backend" in new Test {
+      "an empty array (no loss claims exists) is returned from backend" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -321,14 +429,14 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(
             DownstreamStub.GET,
-            ifsUrl,
+            downstreamUrl,
             Map.empty,
             Status.OK,
             Json.parse("""
-                |[
-                |
-                |]
-                |""".stripMargin)
+                         |[
+                         |
+                         |]
+                         |""".stripMargin)
           )
         }
 
@@ -340,21 +448,21 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "return a 500 status code" when {
-      "empty loss claims object inside the array is returned from backend" in new Test {
+      "empty loss claims object inside the array is returned from backend" in new NonTysTest {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(
             DownstreamStub.GET,
-            ifsUrl,
+            downstreamUrl,
             Map.empty,
             Status.OK,
             Json.parse("""
-                |[
-                |{}
-                |]
-                |""".stripMargin)
+                         |[
+                         |{}
+                         |]
+                         |""".stripMargin)
           )
         }
 
@@ -366,13 +474,13 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 
     "handle errors according to spec" when {
       def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
+        s"downstream returns an $ifsCode error" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, Map.empty, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, Map.empty, ifsStatus, errorBody(ifsCode))
           }
 
           val response: WSResponse = await(request().get())
@@ -382,15 +490,27 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXYEAR", Status.BAD_REQUEST, TaxYearFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError)
+      val errors = Seq(
+        (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
+        (Status.BAD_REQUEST, "INVALID_TAXYEAR", Status.BAD_REQUEST, TaxYearFormatError),
+        (Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError),
+        (Status.BAD_REQUEST, "INVALID_INCOMESOURCETYPE", Status.BAD_REQUEST, TypeOfLossFormatError),
+        (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError),
+        (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
+        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError),
+        (Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError)
+      )
+
+      val tysErrors = Seq(
+        (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
+        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
+        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
+        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", Status.BAD_REQUEST, TypeOfLossFormatError),
+        (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      )
+
+      (errors ++ tysErrors).foreach(_ => (serviceErrorTest _).tupled)
     }
 
     "handle validation errors according to spec" when {
@@ -401,7 +521,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                               requestClaimType: Option[String],
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
-        s"validation fails with ${expectedBody.code} error" in new Test {
+        s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
           override val nino: String               = requestNino
           override val taxYear: Option[String]    = requestTaxYear
@@ -422,13 +542,17 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("AA1234", None, None, None, None, Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", Some("XXXX-YY"), None, None, None, Status.BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", Some("2018-19"), None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-      validationErrorTest("AA123456A", Some("2019-21"), None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
-      validationErrorTest("AA123456A", None, Some("employment"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError)
-      validationErrorTest("AA123456A", None, Some("self-employment"), Some("XKIS0000000"), None, Status.BAD_REQUEST, BusinessIdFormatError)
-      validationErrorTest("AA123456A", None, None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+      val errors = Seq(
+        ("AA1234", None, None, None, None, Status.BAD_REQUEST, NinoFormatError),
+        ("AA123456A", Some("XXXX-YY"), None, None, None, Status.BAD_REQUEST, TaxYearFormatError),
+        ("AA123456A", Some("2018-19"), None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
+        ("AA123456A", Some("2019-21"), None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        ("AA123456A", None, Some("employment"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError),
+        ("AA123456A", None, Some("self-employment"), Some("XKIS0000000"), None, Status.BAD_REQUEST, BusinessIdFormatError),
+        ("AA123456A", None, None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+      )
+
+      errors.foreach(_ => (validationErrorTest _).tupled)
     }
 
   }
