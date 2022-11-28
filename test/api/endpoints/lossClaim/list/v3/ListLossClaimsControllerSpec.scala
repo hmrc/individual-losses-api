@@ -16,16 +16,16 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.list.v3.request.{ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser}
-import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
+import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 
@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListLossClaimsControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListLossClaimsService
     with MockListLossClaimsRequestDataParser
@@ -153,7 +153,7 @@ class ListLossClaimsControllerSpec
 
         MockHateoasFactory
           .wrapList(response, ListLossClaimsHateoasData(nino))
-            .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
+          .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -191,7 +191,7 @@ class ListLossClaimsControllerSpec
 
         MockHateoasFactory
           .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
-            .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
+          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
 
         runErrorTest(NotFoundError)
       }
