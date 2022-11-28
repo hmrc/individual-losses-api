@@ -144,11 +144,11 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    override def taxYear: Option[String] = Some("2019-20")
+    def taxYear: Option[String] = Some("2019-20")
 
-    override def downstreamUrl: String = s"/income-tax/claims-for-relief/$nino"
+    def downstreamUrl: String = s"/income-tax/claims-for-relief/$nino"
 
-    override def queryParams: Seq[(String, String)] =
+    def queryParams: Seq[(String, String)] =
       Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
         .collect {
           case (k, Some(v)) => (k, v)
@@ -156,11 +156,11 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
   }
 
   private trait TysIfsTest extends Test {
-    override def taxYear: Option[String] = Some("2023-24")
+    def taxYear: Option[String] = Some("2023-24")
 
-    override def downstreamUrl: String = s"/income-tax/claims-for-relief/23-24/$nino"
+    def downstreamUrl: String = s"/income-tax/claims-for-relief/23-24/$nino"
 
-    override def queryParams: Seq[(String, String)] =
+    def queryParams: Seq[(String, String)] =
       Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
         .collect {
           case (k, Some(v)) => (k, v)
