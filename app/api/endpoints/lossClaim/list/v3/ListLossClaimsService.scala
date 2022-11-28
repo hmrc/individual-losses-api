@@ -40,20 +40,19 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Dow
   }
 
   private def errorMap: Map[String, MtdError] = {
-    val downstreamErrors = Map(
-      "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
-      "INVALID_TAXYEAR"             -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID"      -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE"    -> TypeOfLossFormatError,
-      "INVALID_CLAIM_TYPE"          -> TypeOfClaimFormatError,
-      "NOT_FOUND"                   -> NotFoundError,
-      "INVALID_CORRELATIONID"       -> InternalError,
-      "SERVER_ERROR"                -> InternalError,
-      "SERVICE_UNAVAILABLE"         -> InternalError,
-      "RULE_TAX_YEAR_RANGE_INVALID" -> RuleTaxYearRangeInvalidError
+    val errors = Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_TAXYEAR"           -> TaxYearFormatError,
+      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
+      "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "INVALID_CORRELATIONID"     -> InternalError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError,
     )
 
-    val tysErrors = Map(
+    val extraTysErrors = Map(
       "INVALID_CORRELATION_ID"    -> InternalError,
       "INVALID_TAX_YEAR"          -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
@@ -61,6 +60,6 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Dow
       "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
     )
 
-    downstreamErrors ++ tysErrors
+    errors ++ extraTysErrors
   }
 }
