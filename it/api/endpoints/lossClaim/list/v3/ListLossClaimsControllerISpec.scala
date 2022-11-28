@@ -120,7 +120,11 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
                                               |}
      """.stripMargin)
 
-    def queryParams: Seq[(String, String)]
+    def mtdQueryParams: Seq[(String, String)] =
+      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
+        .collect {
+          case (k, Some(v)) => (k, v)
+        }
 
     def errorBody(code: String): String =
       s"""
@@ -135,7 +139,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
-        .addQueryStringParameters(queryParams: _*)
+        .addQueryStringParameters(mtdQueryParams: _*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.3.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
@@ -147,24 +151,12 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     def taxYear: Option[String] = Some("2019-20")
 
     def downstreamUrl: String = s"/income-tax/claims-for-relief/$nino"
-
-    def queryParams: Seq[(String, String)] =
-      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
-        .collect {
-          case (k, Some(v)) => (k, v)
-        }
   }
 
   private trait TysIfsTest extends Test {
     def taxYear: Option[String] = Some("2023-24")
 
     def downstreamUrl: String = s"/income-tax/claims-for-relief/23-24/$nino"
-
-    def queryParams: Seq[(String, String)] =
-      Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
-        .collect {
-          case (k, Some(v)) => (k, v)
-        }
   }
 
   "Calling the ListLossClaims endpoint" should {
@@ -172,7 +164,6 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     "return a 200 status code" when {
 
       "query for everything" in new NonTysTest {
-
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
