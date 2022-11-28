@@ -177,6 +177,21 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
+      "query for everything where a tax year is not given" in new NonTysTest {
+        override def taxYear: Option[String] = None
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map.empty, Status.OK, downstreamResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe Status.OK
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
       "query for everything for a TYS tax year" in new TysIfsTest {
 
         override def setupStubs(): StubMapping = {
