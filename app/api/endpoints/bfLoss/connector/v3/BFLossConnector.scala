@@ -82,25 +82,26 @@ class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) 
                                                  correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
     import request._
 
-    val pathParameters = Map(
-      "incomeSourceId"   -> businessId,
-      "incomeSourceType" -> incomeSourceType.map(_.toString)
-    )
-
-    def collectParams[A](map: Map[A, Option[A]]): Map[A, A] = map.collect {
-      case (key, Some(value)) => key -> value
-    }
+    val queryParams = List(
+      businessId.map("incomeSourceId"         -> _),
+      incomeSourceType.map("incomeSourceType" -> _.toString)
+    ).flatten
 
     taxYearBroughtForwardFrom match {
-      case Some(taxYear) if (taxYear.useTaxYearSpecificApi) =>
+      case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
         get(
           TaxYearSpecificIfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${taxYear.asTysDownstream}/${nino.nino}"),
-          collectParams(pathParameters).toSeq
+          queryParams
         )
       case _ =>
+        val params = taxYearBroughtForwardFrom match {
+          case Some(taxYear) => queryParams :+ "taxYear" -> taxYear.asDownstream
+          case None          => queryParams
+        }
+
         get(
           IfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${nino.nino}"),
-          collectParams(pathParameters ++ Map("taxYear" -> taxYearBroughtForwardFrom.map(_.asDownstream))).toSeq
+          params
         )
     }
 
