@@ -16,26 +16,31 @@
 
 package api.endpoints.lossClaim.amendOrder.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, MockAmendLossClaimsOrderRequestDataParser}
-import api.endpoints.lossClaim.amendOrder.v3.response.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
+import api.endpoints.lossClaim.amendOrder.v3.request.{
+  AmendLossClaimsOrderRawData,
+  AmendLossClaimsOrderRequest,
+  AmendLossClaimsOrderRequestBody,
+  MockAmendLossClaimsOrderRequestDataParser
+}
+import api.endpoints.lossClaim.amendOrder.v3.response.{ AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse }
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, TaxYear}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendLossClaimsOrderControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAmendLossClaimsOrderService
     with MockAmendLossClaimsOrderRequestDataParser
@@ -102,9 +107,14 @@ class AmendLossClaimsOrderControllerSpec
 
         MockHateoasFactory
           .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(nino))
-            .returns(HateoasWrapper(amendLossClaimsOrderResponse, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(amendLossClaimsOrderResponse, Seq(testHateoasLink)))
 
-        runOkTestWithAudit(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
+        runOkTestWithAudit(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(mtdResponseJson),
+          maybeAuditRequestBody = Some(requestBody),
+          maybeAuditResponseBody = Some(mtdResponseJson)
+        )
       }
     }
 
@@ -114,7 +124,7 @@ class AmendLossClaimsOrderControllerSpec
           .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
-        runErrorTestWithAudit(NinoFormatError)
+        runErrorTestWithAudit(NinoFormatError, maybeAuditRequestBody = Some(requestBody))
       }
 
       "the service returns an error" in new Test {
@@ -126,7 +136,7 @@ class AmendLossClaimsOrderControllerSpec
           .amend(amendLossClaimsOrderRequest)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleSequenceOrderBroken, None))))
 
-        runErrorTestWithAudit(RuleSequenceOrderBroken)
+        runErrorTestWithAudit(RuleSequenceOrderBroken, maybeAuditRequestBody = Some(requestBody))
       }
     }
   }

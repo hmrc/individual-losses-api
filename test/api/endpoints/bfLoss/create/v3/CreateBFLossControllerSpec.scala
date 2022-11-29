@@ -16,25 +16,25 @@
 
 package api.endpoints.bfLoss.create.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser}
-import api.endpoints.bfLoss.create.v3.response.{CreateBFLossHateoasData, CreateBFLossResponse}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser }
+import api.endpoints.bfLoss.create.v3.response.{ CreateBFLossHateoasData, CreateBFLossResponse }
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreateBFLossService
     with MockCreateBFLossParser
@@ -86,9 +86,14 @@ class CreateBFLossControllerSpec
 
         MockHateoasFactory
           .wrap(createBFLossResponse, CreateBFLossHateoasData(nino, lossId))
-            .returns(HateoasWrapper(createBFLossResponse, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(createBFLossResponse, Seq(testHateoasLink)))
 
-        runOkTestWithAudit(expectedStatus = CREATED, maybeExpectedResponseBody = Some(mtdResponseJson))
+        runOkTestWithAudit(
+          expectedStatus = CREATED,
+          maybeAuditRequestBody = Some(requestBody),
+          maybeExpectedResponseBody = Some(mtdResponseJson),
+          maybeAuditResponseBody = Some(mtdResponseJson)
+        )
       }
     }
   }
@@ -99,7 +104,7 @@ class CreateBFLossControllerSpec
         .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
         .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
-      runErrorTestWithAudit(NinoFormatError)
+      runErrorTestWithAudit(NinoFormatError, maybeAuditRequestBody = Some(requestBody))
     }
 
     "the service returns an error" in new Test {
@@ -111,7 +116,7 @@ class CreateBFLossControllerSpec
         .create(CreateBFLossRequest(Nino(nino), bfLoss))
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDuplicateSubmissionError, None))))
 
-      runErrorTestWithAudit(RuleDuplicateSubmissionError)
+      runErrorTestWithAudit(RuleDuplicateSubmissionError, maybeAuditRequestBody = Some(requestBody))
     }
   }
 
