@@ -16,25 +16,30 @@
 
 package api.endpoints.lossClaim.create.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody, MockCreateLossClaimParser}
-import api.endpoints.lossClaim.create.v3.response.{CreateLossClaimHateoasData, CreateLossClaimResponse}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.endpoints.lossClaim.create.v3.request.{
+  CreateLossClaimRawData,
+  CreateLossClaimRequest,
+  CreateLossClaimRequestBody,
+  MockCreateLossClaimParser
+}
+import api.endpoints.lossClaim.create.v3.response.{ CreateLossClaimHateoasData, CreateLossClaimResponse }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateLossClaimControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreateLossClaimService
     with MockCreateLossClaimParser
@@ -85,9 +90,14 @@ class CreateLossClaimControllerSpec
 
         MockHateoasFactory
           .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
-            .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
 
-        runOkTestWithAudit(expectedStatus = CREATED, maybeExpectedResponseBody = Some(mtdResponseJson))
+        runOkTestWithAudit(
+          expectedStatus = CREATED,
+          maybeAuditRequestBody = Some(requestBody),
+          maybeExpectedResponseBody = Some(mtdResponseJson),
+          maybeAuditResponseBody = Some(mtdResponseJson)
+        )
       }
     }
   }
@@ -98,7 +108,7 @@ class CreateLossClaimControllerSpec
         .parseRequest(CreateLossClaimRawData(nino, AnyContentAsJson(requestBody)))
         .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
-      runErrorTestWithAudit(NinoFormatError)
+      runErrorTestWithAudit(NinoFormatError, maybeAuditRequestBody = Some(requestBody))
     }
 
     "the service returns an error" in new Test {
@@ -110,7 +120,7 @@ class CreateLossClaimControllerSpec
         .create(CreateLossClaimRequest(Nino(nino), lossClaim))
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalid, None))))
 
-      runErrorTestWithAudit(RuleTypeOfClaimInvalid)
+      runErrorTestWithAudit(RuleTypeOfClaimInvalid, maybeAuditRequestBody = Some(requestBody))
     }
   }
 

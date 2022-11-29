@@ -18,20 +18,20 @@ package api.controllers
 
 import api.controllers.ControllerTestRunner.validNino
 import api.mocks.MockIdGenerator
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors.MtdError
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import play.api.http.{HeaderNames, MimeTypes, Status}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
+import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import play.api.http.{ HeaderNames, MimeTypes, Status }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsEmpty, ControllerComponents, Result }
 import play.api.test.Helpers.stubControllerComponents
-import play.api.test.{FakeRequest, ResultExtractors}
+import play.api.test.{ FakeRequest, ResultExtractors }
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors {
+class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors with MockAuditService {
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
@@ -61,7 +61,10 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
       status(result) shouldBe expectedStatus
       header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-      maybeExpectedResponseBody.foreach(jsBody => contentAsJson(result) shouldBe jsBody)
+      maybeExpectedResponseBody match {
+        case Some(jsBody) => contentAsJson(result) shouldBe jsBody
+        case None         => contentType(result) shouldBe empty
+      }
     }
 
     protected def runErrorTest(expectedError: MtdError): Unit = {
@@ -76,16 +79,17 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
     protected def callController(): Future[Result]
   }
 
-  trait AuditEventChecking extends MockAuditService {
+  trait AuditEventChecking {
     _: ControllerTest =>
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail]
 
     protected def runOkTestWithAudit(expectedStatus: Int,
                                      maybeExpectedResponseBody: Option[JsValue] = None,
-                                     maybeAuditRequestBody: Option[JsValue] = None): Unit = {
+                                     maybeAuditRequestBody: Option[JsValue] = None,
+                                     maybeAuditResponseBody: Option[JsValue] = None): Unit = {
       runOkTest(expectedStatus, maybeExpectedResponseBody)
-      checkAuditOkEvent(expectedStatus, maybeAuditRequestBody)
+      checkAuditOkEvent(expectedStatus, maybeAuditRequestBody, maybeAuditResponseBody)
     }
 
     protected def runErrorTestWithAudit(expectedError: MtdError, maybeAuditRequestBody: Option[JsValue] = None): Unit = {
@@ -93,8 +97,8 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
       checkAuditErrorEvent(expectedError, maybeAuditRequestBody)
     }
 
-    protected def checkAuditOkEvent(expectedStatus: Int, maybeRequestBody: Option[JsValue]): Unit = {
-      val auditResponse: AuditResponse = AuditResponse(expectedStatus, None, None)
+    protected def checkAuditOkEvent(expectedStatus: Int, maybeRequestBody: Option[JsValue], maybeAuditResponseBody: Option[JsValue]): Unit = {
+      val auditResponse: AuditResponse = AuditResponse(expectedStatus, None, maybeAuditResponseBody)
       MockedAuditService.verifyAuditEvent(event(auditResponse, maybeRequestBody)).once
     }
 

@@ -22,7 +22,6 @@ import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import cats.data.EitherT
 import cats.implicits._
-import play.api.http.MimeTypes
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -71,7 +70,6 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
           NoContent
             .withApiHeaders(vendorResponse.correlationId)
-            .as(MimeTypes.JSON)
         }
 
       result.leftMap { errorWrapper =>

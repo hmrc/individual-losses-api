@@ -16,34 +16,34 @@
 
 package api.endpoints.bfLoss.amend.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.bfLoss.amend.anyVersion.request.{AmendBFLossRawData, AmendBFLossRequestBody}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, AmendBFLossRequestBody }
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
-import api.endpoints.bfLoss.amend.v3.request.{AmendBFLossRequest, MockAmendBFLossParser}
+import api.endpoints.bfLoss.amend.v3.request.{ AmendBFLossRequest, MockAmendBFLossParser }
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import api.models.hateoas.{ HateoasWrapper, Link }
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAmendBFLossService
     with MockAmendBFLossParser
     with MockHateoasFactory {
 
-  private val lossId = "AAZZ1234567890a"
-  private val lossAmount = BigDecimal(2345.67)
+  private val lossId      = "AAZZ1234567890a"
+  private val lossAmount  = BigDecimal(2345.67)
   private val amendBFLoss = AmendBFLossRequestBody(lossAmount)
 
   private val amendBFLossResponse = AmendBFLossResponse(
@@ -97,9 +97,14 @@ class AmendBFLossControllerSpec
 
         MockHateoasFactory
           .wrap(amendBFLossResponse, AmendBFLossHateoasData(nino, lossId))
-            .returns(HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink)))
 
-        runOkTestWithAudit(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
+        runOkTestWithAudit(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(mtdResponseJson),
+          maybeAuditRequestBody = Some(requestBody),
+          maybeAuditResponseBody = Some(mtdResponseJson)
+        )
       }
     }
 
@@ -109,7 +114,7 @@ class AmendBFLossControllerSpec
           .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
           .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
 
-        runErrorTestWithAudit(NinoFormatError)
+        runErrorTestWithAudit(NinoFormatError, maybeAuditRequestBody = Some(requestBody))
       }
 
       "the service returns an error" in new Test {
@@ -121,7 +126,7 @@ class AmendBFLossControllerSpec
           .amend(AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleLossAmountNotChanged))))
 
-        runErrorTestWithAudit(RuleLossAmountNotChanged)
+        runErrorTestWithAudit(RuleLossAmountNotChanged, maybeAuditRequestBody = Some(requestBody))
       }
     }
   }
