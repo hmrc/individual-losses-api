@@ -16,23 +16,23 @@
 
 package api.endpoints.bfLoss.connector.v3
 
-import api.connectors.DownstreamUri.{DesUri, IfsUri}
+import api.connectors.DownstreamUri.{ DesUri, IfsUri, TaxYearSpecificIfsUri }
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.create.v3.request.CreateBFLossRequest
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
+import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
@@ -80,15 +80,30 @@ class BFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) 
                                                  hc: HeaderCarrier,
                                                  ec: ExecutionContext,
                                                  correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
-    val nino = request.nino.nino
-    val pathParameters = Map(
-      "taxYear"          -> request.taxYearBroughtForwardFrom.map(_.asDownstream),
-      "incomeSourceId"   -> request.businessId,
-      "incomeSourceType" -> request.incomeSourceType.map(_.toString)
-    ).collect {
-      case (key, Some(value)) => key -> value
+    import request._
+
+    val queryParams = List(
+      businessId.map("incomeSourceId"         -> _),
+      incomeSourceType.map("incomeSourceType" -> _.toString)
+    ).flatten
+
+    taxYearBroughtForwardFrom match {
+      case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
+        get(
+          TaxYearSpecificIfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${taxYear.asTysDownstream}/${nino.nino}"),
+          queryParams
+        )
+      case _ =>
+        val params = taxYearBroughtForwardFrom match {
+          case Some(taxYear) => queryParams :+ "taxYear" -> taxYear.asDownstream
+          case None          => queryParams
+        }
+
+        get(
+          IfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${nino.nino}"),
+          params
+        )
     }
 
-    get(IfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/$nino"), pathParameters.toSeq)
   }
 }
