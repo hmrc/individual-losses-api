@@ -54,9 +54,6 @@ object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting tex
 
 //Authentication/Authorisation errors
 
-/**
-  * Some code returns a 401 where it should be a 403, so this error object exists until that can be sorted out.
-  */
 object ClientNotAuthenticatedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", UNAUTHORIZED)
 
 /**
