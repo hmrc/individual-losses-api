@@ -447,7 +447,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().get())
-        response.json shouldBe Json.toJson(NotFoundError)
+        response.json shouldBe NotFoundError.asJson
         response.status shouldBe Status.NOT_FOUND
         response.header("Content-Type") shouldBe Some("application/json")
       }

@@ -158,7 +158,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
-          response.json shouldBe Json.toJson(expectedError)
+          response.json shouldBe expectedError.asJson
           response.status shouldBe expectedStatus
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
@@ -211,7 +211,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
           val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestBody))
           response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedError)
+          response.json shouldBe expectedError.asJson
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
