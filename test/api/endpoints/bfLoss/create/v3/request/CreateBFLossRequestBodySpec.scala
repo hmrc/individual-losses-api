@@ -95,21 +95,22 @@ class CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators {
   }
 
   "writes" when {
-    "passed a valid BroughtForwardLoss Employment model" should {
+    "writing a BroughtForwardLoss Employment instance" should {
       Seq(TypeOfLoss.`self-employment`, TypeOfLoss.`self-employment-class4`).foreach(
         typeOfLoss =>
           s"return valid JSON with incomeSourceType set correctly for $typeOfLoss" in {
-            val model = CreateBFLossRequestBody(typeOfLoss = typeOfLoss,
-                                                businessId = "XKIS00000000988",
-                                                taxYearBroughtForwardFrom = "2019-20",
-                                                lossAmount = 255.50)
-            val json: JsValue = Json.parse(s"""{
-                                              |   "incomeSourceId": "XKIS00000000988",
-                                              |	  "lossType":"${typeOfLoss.toLossType.get}",
-                                              |	  "taxYearBroughtForwardFrom": 2020,
-                                              |	  "broughtForwardLossAmount": 255.50
-                                              |}""".stripMargin)
-            Json.toJson(model) shouldBe json
+            val requestObject = CreateBFLossRequestBody(typeOfLoss = typeOfLoss,
+                                                        businessId = "XKIS00000000988",
+                                                        taxYearBroughtForwardFrom = "2019-20",
+                                                        lossAmount = 255.50)
+            val expectedJson: JsValue = Json.parse(s"""
+               |{
+               |   "incomeSourceId": "XKIS00000000988",
+               |	  "lossType":"${typeOfLoss.toLossType.get}",
+               |	  "taxYearBroughtForwardFrom": 2020,
+               |	  "broughtForwardLossAmount": 255.50
+               |}""".stripMargin)
+            Json.toJson(requestObject) shouldBe expectedJson
         }
       )
     }
@@ -134,17 +135,18 @@ class CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators {
     "passed a valid BroughtForwardLoss Foreign Property model" should {
       Seq(TypeOfLoss.`foreign-property-fhl-eea`, TypeOfLoss.`foreign-property`).foreach(
         typeOfLoss =>
-          s"return valid JSON with incomeSourceType set correctly for $typeOfLoss" in {
+          s"return valid JSON with incomeSourceType for $typeOfLoss" in {
             val model = CreateBFLossRequestBody(typeOfLoss = typeOfLoss,
                                                 businessId = "XKIS00000000988",
                                                 taxYearBroughtForwardFrom = "2019-20",
                                                 lossAmount = 255.50)
-            val json: JsValue = Json.parse(s"""{
-                                              |   "incomeSourceId": "XKIS00000000988",
-                                              |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType.get}",
-                                              |	  "taxYearBroughtForwardFrom": 2020,
-                                              |	  "broughtForwardLossAmount": 255.50
-                                              |}""".stripMargin)
+            val json: JsValue = Json.parse(s"""
+              |{
+              |   "incomeSourceId": "XKIS00000000988",
+              |	  "incomeSourceType":"${typeOfLoss.toIncomeSourceType.get}",
+              |	  "taxYearBroughtForwardFrom": 2020,
+              |	  "broughtForwardLossAmount": 255.50
+              |}""".stripMargin)
             Json.toJson(model) shouldBe json
         }
       )

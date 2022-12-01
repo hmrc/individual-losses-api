@@ -67,7 +67,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
               s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
                 s"Empty response received with correlationId: ${serviceResponse.correlationId}")
 
-            NotFound(Json.toJson(NotFoundError))
+            NotFound(NotFoundError.asJson)
               .withApiHeaders(serviceResponse.correlationId)
           } else {
             logger.info(

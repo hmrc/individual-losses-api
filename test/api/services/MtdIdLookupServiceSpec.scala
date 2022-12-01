@@ -50,7 +50,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
 
     "a not authorised error occurs the service" should {
       "proxy the error to the caller" in new Test {
-        val connectorResponse = Left(UnauthorisedError)
+        val connectorResponse = Left(ClientNotAuthorisedError)
 
         MockedMtdIdLookupConnector
           .lookup(nino)
