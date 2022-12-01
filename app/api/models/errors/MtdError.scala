@@ -19,7 +19,9 @@ package api.models.errors
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class MtdError(code: String, message: String, httpStatus: Int = 0, paths: Option[Seq[String]] = None)
+case class MtdError(code: String, message: String, httpStatus: Int = 0, paths: Option[Seq[String]] = None) {
+  val asJson: JsObject = Json.toJson(this).as[JsObject]
+}
 
 object MtdError {
 

@@ -17,7 +17,7 @@
 package api.services
 
 import api.models.UserDetails
-import api.models.errors.{InternalError, UnauthorisedError}
+import api.models.errors.{InternalError, ClientNotAuthorisedError}
 import config.{ConfidenceLevelConfig, MockAppConfig}
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
@@ -208,7 +208,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
         MockAppConfig.confidenceLevelCheckEnabled.returns(ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = false))
 
-        val expected = Left(UnauthorisedError)
+        val expected = Left(ClientNotAuthorisedError)
 
         MockedAuthConnector
           .authorised(EmptyPredicate, authRetrievals)
@@ -225,7 +225,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
         MockAppConfig.confidenceLevelCheckEnabled.returns(ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = false))
 
-        val expected = Left(UnauthorisedError)
+        val expected = Left(ClientNotAuthorisedError)
 
         MockedAuthConnector
           .authorised(EmptyPredicate, authRetrievals)
