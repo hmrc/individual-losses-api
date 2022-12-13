@@ -16,29 +16,25 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.controllers._
 import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsParser, ListLossClaimsRawData }
 import api.endpoints.lossClaim.list.v3.response.ListLossClaimsHateoasData
 import api.hateoas.HateoasFactory
-import api.models.errors._
 import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import utils.{ IdGenerator, Logging }
 
 import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
-                                         val lookupService: MtdIdLookupService,
-                                         listLossClaimsService: ListLossClaimsService,
-                                         listLossClaimsParser: ListLossClaimsParser,
-                                         hateoasFactory: HateoasFactory,
-                                         cc: ControllerComponents,
-                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService,
+                                          val lookupService: MtdIdLookupService,
+                                          service: ListLossClaimsService,
+                                          parser: ListLossClaimsParser,
+                                          hateoasFactory: HateoasFactory,
+                                          cc: ControllerComponents,
+                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -52,38 +48,18 @@ class ListLossClaimsController @Inject()(val authService: EnrolmentsAuthService,
            businessId: Option[String],
            typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData =
         ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
 
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](listLossClaimsParser.parseRequest(rawData))
-          serviceResponse <- EitherT(listLossClaimsService.listLossClaims(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory
-              .wrapList(serviceResponse.responseData, ListLossClaimsHateoasData(nino))
-              .asRight[ErrorWrapper]
-          )
-        } yield {
-          if (vendorResponse.payload.claims.isEmpty) {
-            logger.info(
-              s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-                s"Empty response received with correlationId: ${serviceResponse.correlationId}")
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.listLossClaims)
+          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) => ListLossClaimsHateoasData(nino)))
 
-            NotFound(Json.toJson(NotFoundError))
-              .withApiHeaders(serviceResponse.correlationId)
-          } else {
-            logger.info(
-              s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-                s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
-
-            Ok(Json.toJson(vendorResponse))
-              .withApiHeaders(serviceResponse.correlationId)
-          }
-        }
-
-      result.leftMap(errorResult).merge
+      requestHandler.handleRequest(rawData)
     }
+
 }

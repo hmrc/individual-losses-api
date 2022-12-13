@@ -16,28 +16,23 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.controllers._
 import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossParser, DeleteBFLossRawData }
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
-import cats.data.EitherT
-import cats.implicits._
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{ IdGenerator, Logging }
 
 import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
-                                       val lookupService: MtdIdLookupService,
-                                       deleteBFLossService: DeleteBFLossService,
-                                       deleteBFLossParser: DeleteBFLossParser,
-                                       auditService: AuditService,
-                                       cc: ControllerComponents,
-                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
+                                        val lookupService: MtdIdLookupService,
+                                        service: DeleteBFLossService,
+                                        parser: DeleteBFLossParser,
+                                        auditService: AuditService,
+                                        cc: ControllerComponents,
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -47,54 +42,23 @@ class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData = DeleteBFLossRawData(nino, lossId)
 
-      val result =
-        for {
-          parsedRequest  <- EitherT.fromEither[Future](deleteBFLossParser.parseRequest(rawData))
-          vendorResponse <- EitherT(deleteBFLossService.deleteBFLoss(parsedRequest))
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.deleteBFLoss)
+          .withAuditing(
+            AuditHandler(
+              auditService,
+              auditType = "DeleteBroughtForwardLoss",
+              transactionName = "delete-brought-forward-loss",
+              params = Map("nino" -> nino, "lossId" -> lossId)
+            ))
 
-          auditSubmission(
-            GenericAuditDetail(request.userDetails,
-                               Map("nino" -> nino, "lossId" -> lossId),
-                               None,
-                               vendorResponse.correlationId,
-                               AuditResponse(httpStatus = NO_CONTENT, response = Right(None)))
-          )
-
-          NoContent
-            .withApiHeaders(vendorResponse.correlationId)
-        }
-
-      result.leftMap { errorWrapper =>
-        val result = errorResult(errorWrapper)
-
-        auditSubmission(
-          GenericAuditDetail(
-            request.userDetails,
-            Map("nino" -> nino, "lossId" -> lossId),
-            None,
-            correlationId,
-            AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
-          )
-        )
-
-        result
-      }.merge
+      requestHandler.handleRequest(rawData)
     }
 
-  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
-      auditType = "DeleteBroughtForwardLoss",
-      transactionName = "delete-brought-forward-loss",
-      detail = details
-    )
-    auditService.auditEvent(event)
-  }
 }

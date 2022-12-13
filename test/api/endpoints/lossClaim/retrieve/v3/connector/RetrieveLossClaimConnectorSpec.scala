@@ -84,7 +84,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
     "return an unsuccessful response" when {
       "provided with a single error" in new IfsTest with Test {
 
-        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
 
         MockHttpClient
           .get(
@@ -100,7 +100,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
       "provided with multiple errors" in new IfsTest with Test {
 
-        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ClaimIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, ClaimIdFormatError.asDownstream))))
 
         MockHttpClient
           .get(
@@ -115,4 +115,5 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
       }
     }
   }
+
 }

@@ -16,30 +16,34 @@
 
 package api.endpoints.bfLoss.list.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
 import api.models.errors._
-import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.ListBFLossesOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import api.services.{ BaseService, DownstreamResponseMappingSupport }
+import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ListBFLossesService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
+class ListBFLossesService @Inject() (connector: BFLossConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
 
-  override val serviceName: String = this.getClass.getSimpleName
+  def listBFLosses(request: ListBFLossesRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListBFLossesOutcome] =
+    connector
+      .listBFLosses(request)
+      .map {
+        case Left(err) =>
+          Left(mapDownstreamErrors(errorMap)(err))
 
-  def listBFLosses(request: ListBFLossesRequest)(implicit
-                                                 hc: HeaderCarrier,
-                                                 ec: ExecutionContext,
-                                                 correlationId: String): Future[ListBFLossesOutcome] = {
-    connector.listBFLosses(request).map {
-      mapToVendorDirect("listBFLosses", downstreamErrorMap)
-    }
-  }
+        case Right(responseWrapper) if responseWrapper.responseData.losses.isEmpty =>
+          Left(ErrorWrapper(ctx.correlationId, NotFoundError))
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+        case Right(result) =>
+          Right(result)
+      }
+
+  private def errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAXYEAR"           -> TaxYearFormatError,
@@ -61,4 +65,5 @@ class ListBFLossesService @Inject()(connector: BFLossConnector) extends Downstre
 
     errors ++ extraTysErrors
   }
+
 }

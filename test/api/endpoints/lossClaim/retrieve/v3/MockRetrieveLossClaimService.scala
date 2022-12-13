@@ -16,13 +16,13 @@
 
 package api.endpoints.lossClaim.retrieve.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.services.v3.Outcomes.RetrieveLossClaimOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockRetrieveLossClaimService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockRetrieveLossClaimService extends MockFactory {
 
     def retrieve(retrieveLossClaimRequest: RetrieveLossClaimRequest): CallHandler[Future[RetrieveLossClaimOutcome]] = {
       (mockRetrieveLossClaimService
-        .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(retrieveLossClaimRequest, *, *, *)
+        .retrieveLossClaim(_: RetrieveLossClaimRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(retrieveLossClaimRequest, *, *)
     }
+
   }
+
 }

@@ -125,8 +125,8 @@ class CreateBFLossControllerSpec
     private val controller = new CreateBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      createBFLossService = mockCreateBFLossService,
-      createBFLossParser = mockCreateBFLossParser,
+      service = mockCreateBFLossService,
+      parser = mockCreateBFLossParser,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
@@ -144,9 +144,9 @@ class CreateBFLossControllerSpec
           agentReferenceNumber = None,
           versionNumber = "3.0",
           params = Map("nino" -> nino),
-          request = maybeRequestBody,
+          requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
-          response = auditResponse
+          auditResponse = auditResponse
         )
       )
 

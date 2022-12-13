@@ -16,14 +16,11 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import play.api.Logger
+import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
 import play.api.libs.json._
-import utils.{EmptinessChecker, EmptyPathsResult}
+import utils.{ EmptinessChecker, EmptyPathsResult, Logging }
 
-object JsonFormatValidation {
-
-  private val logger: Logger = Logger(this.getClass)
+object JsonFormatValidation extends Logging {
 
   def validate[A: OFormat](data: JsValue): Seq[MtdError] =
     validateOrRead(data) match {
@@ -48,8 +45,8 @@ object JsonFormatValidation {
       Left(List(RuleIncorrectOrEmptyBodyError))
     } else {
       data.validate[A] match {
-        case JsSuccess(a, _)                       => Right(a)
-        case JsError(errors)                       => Left(handleErrors(errors.asInstanceOf[Seq[(JsPath, Seq[JsonValidationError])]]))
+        case JsSuccess(a, _) => Right(a)
+        case JsError(errors) => Left(handleErrors(errors.asInstanceOf[Seq[(JsPath, Seq[JsonValidationError])]]))
       }
     }
   }
@@ -81,6 +78,7 @@ object JsonFormatValidation {
         .toString()
         .replace("(", "/")
         .replace(")", "")
+
   }
 
   private case class MissingMandatoryField(path: JsPath) extends JsonFormatValidationFailure(path, "Missing mandatory field")

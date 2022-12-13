@@ -17,9 +17,9 @@
 package api.controllers
 
 import api.models.errors._
-import api.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
+import api.services.{ EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService }
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{ Action, AnyContent }
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,13 +39,14 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
       def action(nino: String): Action[AnyContent] = authorisedAction(nino).async {
         Future.successful(Ok(Json.obj()))
       }
+
     }
 
     lazy val target = new TestController()
   }
 
-  val nino: String  = "AA123456A"
-  val mtdId: String = "X123567890"
+  val nino  = "AA123456A"
+  val mtdId = "X123567890"
 
   val predicate: Predicate = Enrolment("HMRC-MTD-IT")
     .withIdentifier("MTDITID", mtdId)
@@ -164,4 +165,5 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
       status(result) shouldBe FORBIDDEN
     }
   }
+
 }

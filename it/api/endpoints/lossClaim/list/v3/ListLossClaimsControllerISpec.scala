@@ -31,26 +31,26 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
   val lossAmount = 531.99
 
   val downstreamResponseJson: JsValue =
-    Json.parse(s"""[
-                  |    {
-                  |        "incomeSourceId": "XAIS12345678910",
-                  |        "incomeSourceType": "02",
-                  |        "reliefClaimed": "CSGI",
-                  |        "taxYearClaimedFor": "2020",
-                  |        "claimId": "AAZZ1234567890A",
-                  |        "sequence": 1,
-                  |        "submissionDate": "2020-07-13T12:13:763Z"
-                  |    },
-                  |    {
-                  |        "incomeSourceId": "XAIS12345678911",
-                  |        "reliefClaimed": "CSGI",
-                  |        "taxYearClaimedFor": "2021",
-                  |        "claimId": "AAZZ1234567890B",
-                  |        "sequence": 2,
-                  |        "submissionDate": "2021-11-10T11:56:728Z"
-                  |    }
-                  |]
-                  |
+    Json.parse(s"""
+      | [
+      |    {
+      |        "incomeSourceId": "XAIS12345678910",
+      |        "incomeSourceType": "02",
+      |        "reliefClaimed": "CSGI",
+      |        "taxYearClaimedFor": "2020",
+      |        "claimId": "AAZZ1234567890A",
+      |        "sequence": 1,
+      |        "submissionDate": "2020-07-13T12:13:763Z"
+      |    },
+      |    {
+      |        "incomeSourceId": "XAIS12345678911",
+      |        "reliefClaimed": "CSGI",
+      |        "taxYearClaimedFor": "2021",
+      |        "claimId": "AAZZ1234567890B",
+      |        "sequence": 2,
+      |        "submissionDate": "2021-11-10T11:56:728Z"
+      |    }
+      | ]
      """.stripMargin)
 
   private trait Test {
@@ -65,65 +65,65 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     def uri: String = s"/$nino/loss-claims"
 
     val responseJson: JsValue = Json.parse(s"""
-                                              |{
-                                              |    "claims": [
-                                              |        {
-                                              |            "businessId": "XAIS12345678910",
-                                              |            "typeOfLoss": "uk-property-non-fhl",
-                                              |            "typeOfClaim": "carry-sideways",
-                                              |            "taxYearClaimedFor": "2019-20",
-                                              |            "claimId": "AAZZ1234567890A",
-                                              |            "sequence": 1,
-                                              |            "lastModified": "2020-07-13T12:13:763Z",
-                                              |            "links" : [
-                                              |             {
-                                              |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
-                                              |               "rel": "self",
-                                              |               "method": "GET"
-                                              |             }
-                                              |            ]
-                                              |        },
-                                              |        {
-                                              |            "businessId": "XAIS12345678911",
-                                              |            "typeOfLoss": "self-employment",
-                                              |            "typeOfClaim": "carry-sideways",
-                                              |            "taxYearClaimedFor": "2020-21",
-                                              |            "claimId": "AAZZ1234567890B",
-                                              |            "sequence": 2,
-                                              |            "lastModified": "2021-11-10T11:56:728Z",
-                                              |            "links" : [
-                                              |             {
-                                              |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890B",
-                                              |               "rel": "self",
-                                              |               "method": "GET"
-                                              |             }
-                                              |            ]
-                                              |        }
-                                              |    ],
-                                              |    "links": [
-                                              |      {
-                                              |        "href": "/individuals/losses/$nino/loss-claims",
-                                              |        "rel": "self",
-                                              |        "method": "GET"
-                                              |      },
-                                              |      {
-                                              |        "href": "/individuals/losses/$nino/loss-claims",
-                                              |        "rel": "create-loss-claim",
-                                              |        "method": "POST"
-                                              |      },
-                                              |      {
-                                              |        "href": "/individuals/losses/$nino/loss-claims/order",
-                                              |        "rel": "amend-loss-claim-order",
-                                              |        "method": "PUT"
-                                              |      }
-                                              |    ]
-                                              |}
+      |{
+      |    "claims": [
+      |        {
+      |            "businessId": "XAIS12345678910",
+      |            "typeOfLoss": "uk-property-non-fhl",
+      |            "typeOfClaim": "carry-sideways",
+      |            "taxYearClaimedFor": "2019-20",
+      |            "claimId": "AAZZ1234567890A",
+      |            "sequence": 1,
+      |            "lastModified": "2020-07-13T12:13:763Z",
+      |            "links" : [
+      |             {
+      |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
+      |               "rel": "self",
+      |               "method": "GET"
+      |             }
+      |            ]
+      |        },
+      |        {
+      |            "businessId": "XAIS12345678911",
+      |            "typeOfLoss": "self-employment",
+      |            "typeOfClaim": "carry-sideways",
+      |            "taxYearClaimedFor": "2020-21",
+      |            "claimId": "AAZZ1234567890B",
+      |            "sequence": 2,
+      |            "lastModified": "2021-11-10T11:56:728Z",
+      |            "links" : [
+      |             {
+      |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890B",
+      |               "rel": "self",
+      |               "method": "GET"
+      |             }
+      |            ]
+      |        }
+      |    ],
+      |    "links": [
+      |      {
+      |        "href": "/individuals/losses/$nino/loss-claims",
+      |        "rel": "self",
+      |        "method": "GET"
+      |      },
+      |      {
+      |        "href": "/individuals/losses/$nino/loss-claims",
+      |        "rel": "create-loss-claim",
+      |        "method": "POST"
+      |      },
+      |      {
+      |        "href": "/individuals/losses/$nino/loss-claims/order",
+      |        "rel": "amend-loss-claim-order",
+      |        "method": "PUT"
+      |      }
+      |    ]
+      |}
      """.stripMargin)
 
     def mtdQueryParams: Seq[(String, String)] =
       Seq("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> claimType)
-        .collect {
-          case (k, Some(v)) => (k, v)
+        .collect { case (k, Some(v)) =>
+          (k, v)
         }
 
     def errorBody(code: String): String =
@@ -145,6 +145,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   private trait NonTysTest extends Test {
@@ -212,56 +213,56 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 
         val downstreamResponse: JsValue =
           Json.parse(s"""[
-                        |    {
-                        |        "incomeSourceId": "XAIS12345678910",
-                        |        "incomeSourceType": "02",
-                        |        "reliefClaimed": "CSGI",
-                        |        "taxYearClaimedFor": "2020",
-                        |        "claimId": "AAZZ1234567890A",
-                        |        "sequence": 1,
-                        |        "submissionDate": "2020-07-13T12:13:763Z"
-                        |    }
-                        |]
-                        |""".stripMargin)
+            |    {
+            |        "incomeSourceId": "XAIS12345678910",
+            |        "incomeSourceType": "02",
+            |        "reliefClaimed": "CSGI",
+            |        "taxYearClaimedFor": "2020",
+            |        "claimId": "AAZZ1234567890A",
+            |        "sequence": 1,
+            |        "submissionDate": "2020-07-13T12:13:763Z"
+            |    }
+            |]
+            |""".stripMargin)
 
         override val responseJson: JsValue = Json.parse(s"""
-                                                           |{
-                                                           |    "claims": [
-                                                           |        {
-                                                           |            "businessId": "XAIS12345678910",
-                                                           |            "typeOfLoss": "uk-property-non-fhl",
-                                                           |            "typeOfClaim": "carry-sideways",
-                                                           |            "taxYearClaimedFor": "2019-20",
-                                                           |            "claimId": "AAZZ1234567890A",
-                                                           |            "sequence": 1,
-                                                           |            "lastModified": "2020-07-13T12:13:763Z",
-                                                           |            "links" : [
-                                                           |             {
-                                                           |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
-                                                           |               "rel": "self",
-                                                           |               "method": "GET"
-                                                           |             }
-                                                           |            ]
-                                                           |        }
-                                                           |    ],
-                                                           |    "links": [
-                                                           |      {
-                                                           |        "href": "/individuals/losses/$nino/loss-claims",
-                                                           |        "rel": "self",
-                                                           |        "method": "GET"
-                                                           |      },
-                                                           |      {
-                                                           |        "href": "/individuals/losses/$nino/loss-claims",
-                                                           |        "rel": "create-loss-claim",
-                                                           |        "method": "POST"
-                                                           |      },
-                                                           |      {
-                                                           |        "href": "/individuals/losses/$nino/loss-claims/order",
-                                                           |        "rel": "amend-loss-claim-order",
-                                                           |        "method": "PUT"
-                                                           |      }
-                                                           |    ]
-                                                           |}""".stripMargin)
+          |{
+          |    "claims": [
+          |        {
+          |            "businessId": "XAIS12345678910",
+          |            "typeOfLoss": "uk-property-non-fhl",
+          |            "typeOfClaim": "carry-sideways",
+          |            "taxYearClaimedFor": "2019-20",
+          |            "claimId": "AAZZ1234567890A",
+          |            "sequence": 1,
+          |            "lastModified": "2020-07-13T12:13:763Z",
+          |            "links" : [
+          |             {
+          |               "href" : "/individuals/losses/$nino/loss-claims/AAZZ1234567890A",
+          |               "rel": "self",
+          |               "method": "GET"
+          |             }
+          |            ]
+          |        }
+          |    ],
+          |    "links": [
+          |      {
+          |        "href": "/individuals/losses/$nino/loss-claims",
+          |        "rel": "self",
+          |        "method": "GET"
+          |      },
+          |      {
+          |        "href": "/individuals/losses/$nino/loss-claims",
+          |        "rel": "create-loss-claim",
+          |        "method": "POST"
+          |      },
+          |      {
+          |        "href": "/individuals/losses/$nino/loss-claims/order",
+          |        "rel": "amend-loss-claim-order",
+          |        "method": "PUT"
+          |      }
+          |    ]
+          |}""".stripMargin)
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -338,11 +339,12 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET,
-                                   downstreamUrl,
-                                   queryParams = Map("incomeSourceId" -> "XAIS12345678911", "taxYear" -> "2020"),
-                                   Status.OK,
-                                   downstreamResponse)
+          DownstreamStub.onSuccess(
+            DownstreamStub.GET,
+            downstreamUrl,
+            queryParams = Map("incomeSourceId" -> "XAIS12345678911", "taxYear" -> "2020"),
+            Status.OK,
+            downstreamResponse)
         }
 
         val response: WSResponse = await(request().get())
@@ -413,11 +415,12 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         AuditStub.audit()
         AuthStub.authorised()
         MtdIdLookupStub.ninoFound(nino)
-        DownstreamStub.onSuccess(DownstreamStub.GET,
-                                 downstreamUrl,
-                                 queryParams = Map("incomeSourceId" -> "XAIS12345678911"),
-                                 Status.OK,
-                                 downstreamResponse)
+        DownstreamStub.onSuccess(
+          DownstreamStub.GET,
+          downstreamUrl,
+          queryParams = Map("incomeSourceId" -> "XAIS12345678911"),
+          Status.OK,
+          downstreamResponse)
       }
 
       val response: WSResponse = await(request().get())
@@ -562,4 +565,5 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     }
 
   }
+
 }

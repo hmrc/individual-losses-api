@@ -27,9 +27,8 @@ import scala.concurrent.Future
 
 class DeleteLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: String                            = "AA123456A"
-  val claimId: String                         = "AAZZ1234567890a"
-  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String    = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
     lazy val service = new DeleteLossClaimService(connector)
@@ -55,7 +54,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -63,42 +62,29 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
       }
     }
 
-    "return a downstream error" when {
-      "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
-        MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
+    "map errors according to spec" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
 
-        await(service.deleteLossClaim(request)) shouldBe Left(expected)
-      }
-      "the connector call returns multiple errors including a downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, InternalError)))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
-        MockedLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
+          MockedLossClaimConnector
+            .deleteLossClaim(request)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-        await(service.deleteLossClaim(request)) shouldBe Left(expected)
-      }
-    }
-
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_CLAIM_ID" -> ClaimIdFormatError,
-      "NOT_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> InternalError,
-      "SERVICE_UNAVAILABLE" -> InternalError,
-      "UNEXPECTED_ERROR" -> InternalError
-    ).foreach {
-      case (k, v) =>
-        s"return a ${v.code} error" when {
-          s"the connector call returns $k" in new Test {
-            MockedLossClaimConnector
-              .deleteLossClaim(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
-
-            await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
-          }
+          private val result = await(service.deleteLossClaim(request))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
+
+      val errors: Seq[(String, MtdError)] = List(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+        "NOT_FOUND"                 -> NotFoundError,
+        "SERVER_ERROR"              -> InternalError,
+        "SERVICE_UNAVAILABLE"       -> InternalError,
+        "UNEXPECTED_ERROR"          -> InternalError
+      )
+
+      errors.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

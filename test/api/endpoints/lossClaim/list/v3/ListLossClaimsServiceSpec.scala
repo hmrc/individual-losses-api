@@ -29,9 +29,8 @@ import scala.concurrent.Future
 
 class ListLossClaimsServiceSpec extends ServiceSpec {
 
-  val nino: String                            = "AA123456A"
-  val claimId: String                         = "AAZZ1234567890a"
-  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String    = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockLossClaimConnector {
     lazy val service                        = new ListLossClaimsService(connector)
@@ -46,20 +45,22 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
             correlationId,
             ListLossClaimsResponse(
               Seq(
-                ListLossClaimsItem("testId",
-                                   TypeOfClaim.`carry-sideways`,
-                                   TypeOfLoss.`self-employment`,
-                                   "2020",
-                                   "claimId",
-                                   Some(1),
-                                   "2020-07-13T12:13:48.763Z"),
-                ListLossClaimsItem("testId2",
-                                   TypeOfClaim.`carry-sideways`,
-                                   TypeOfLoss.`self-employment`,
-                                   "2020",
-                                   "claimId2",
-                                   Some(1),
-                                   "2020-07-13T12:13:48.763Z")
+                ListLossClaimsItem(
+                  "testId",
+                  TypeOfClaim.`carry-sideways`,
+                  TypeOfLoss.`self-employment`,
+                  "2020",
+                  "claimId",
+                  Some(1),
+                  "2020-07-13T12:13:48.763Z"),
+                ListLossClaimsItem(
+                  "testId2",
+                  TypeOfClaim.`carry-sideways`,
+                  TypeOfLoss.`self-employment`,
+                  "2020",
+                  "claimId2",
+                  Some(1),
+                  "2020-07-13T12:13:48.763Z")
               ))
           )
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
@@ -75,20 +76,22 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
             correlationId,
             ListLossClaimsResponse(
               Seq(
-                ListLossClaimsItem("testId",
-                                   TypeOfClaim.`carry-sideways`,
-                                   TypeOfLoss.`self-employment`,
-                                   "2024",
-                                   "claimId",
-                                   Some(1),
-                                   "2020-07-13T12:13:48.763Z"),
-                ListLossClaimsItem("testId2",
-                                   TypeOfClaim.`carry-sideways`,
-                                   TypeOfLoss.`self-employment`,
-                                   "2024",
-                                   "claimId2",
-                                   Some(1),
-                                   "2020-07-13T12:13:48.763Z")
+                ListLossClaimsItem(
+                  "testId",
+                  TypeOfClaim.`carry-sideways`,
+                  TypeOfLoss.`self-employment`,
+                  "2024",
+                  "claimId",
+                  Some(1),
+                  "2020-07-13T12:13:48.763Z"),
+                ListLossClaimsItem(
+                  "testId2",
+                  TypeOfClaim.`carry-sideways`,
+                  TypeOfLoss.`self-employment`,
+                  "2024",
+                  "claimId2",
+                  Some(1),
+                  "2020-07-13T12:13:48.763Z")
               ))
           )
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
@@ -99,7 +102,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -107,56 +110,40 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
       }
     }
 
-    "return a downstream error" when {
-      "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
-        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, InternalError, None)
-        MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
+    "map errors according to spec" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
 
-        await(service.listLossClaims(request)) shouldBe Left(expected)
-      }
+          MockedLossClaimConnector
+            .listLossClaims(request)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-      "the connector call returns multiple errors including a downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, InternalError)))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
-        MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
-
-        await(service.listLossClaims(request)) shouldBe Left(expected)
-      }
-    }
-
-    val errors = Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
-      "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
-      "NOT_FOUND"                 -> NotFoundError,
-      "INVALID_CORRELATIONID"     -> InternalError,
-      "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError,
-    )
-
-    val extraTysErrors = Map(
-      "INVALID_CORRELATION_ID"    -> InternalError,
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-      "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
-    )
-
-    (errors ++ extraTysErrors).foreach {
-      case (k, v) =>
-        s"return a ${v.code} error" when {
-          s"the connector call returns $k" in new Test {
-            MockedLossClaimConnector
-              .listLossClaims(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
-
-            await(service.listLossClaims(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
-          }
+          private val result = await(service.listLossClaims(request))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
+
+      val errors = List(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_TAXYEAR"           -> TaxYearFormatError,
+        "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
+        "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
+        "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
+        "NOT_FOUND"                 -> NotFoundError,
+        "INVALID_CORRELATIONID"     -> InternalError,
+        "SERVER_ERROR"              -> InternalError,
+        "SERVICE_UNAVAILABLE"       -> InternalError
+      )
+
+      val extraTysErrors = List(
+        "INVALID_CORRELATION_ID"    -> InternalError,
+        "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+        "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+        "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
+        "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

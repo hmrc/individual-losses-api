@@ -19,11 +19,11 @@ package api.endpoints.bfLoss.retrieve.v3.connector
 import api.connectors.ConnectorSpec
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.models.errors.{ LossIdFormatError, MultipleErrors, NinoFormatError, SingleError }
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.models.ResponseWrapper
 import api.models.domain.Nino
+import api.models.errors.{ DownstreamErrors, LossIdFormatError, NinoFormatError }
 
 import scala.concurrent.Future
 
@@ -54,31 +54,32 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, response))
 
         willGet(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
         ).returns(Future.successful(expected))
 
         await(connector.retrieveBFLoss(request)) shouldBe expected
       }
 
       "downstream returns a single error" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
 
         willGet(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
         ).returns(Future.successful(expected))
 
         await(connector.retrieveBFLoss(request)) shouldBe expected
       }
 
       "downstream returns multiple errors" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, LossIdFormatError.asDownstream))))
 
         willGet(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
         ).returns(Future.successful(expected))
 
         await(connector.retrieveBFLoss(request)) shouldBe expected
       }
     }
   }
+
 }

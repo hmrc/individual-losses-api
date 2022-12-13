@@ -44,21 +44,23 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Right(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
@@ -72,21 +74,23 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Right(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
@@ -102,25 +106,27 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("taxYear", "2019"))) returns Future.successful(expected)
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("taxYear", "2019"))) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, taxYear = Some(TaxYear("2019"))) shouldBe expected
       }
@@ -132,25 +138,27 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("incomeSourceId", "testId"))) returns Future.successful(
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future.successful(
           expected)
 
         listLossClaimsResult(connector = connector, businessId = Some("testId")) shouldBe expected
@@ -161,25 +169,27 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Seq(("incomeSourceId", "testId"))) returns Future
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
           .successful(expected)
 
         listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some("testId")) shouldBe expected
@@ -192,27 +202,29 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
         willGet(
           url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-          queryParams = Seq(("incomeSourceType", "02"))
+          queryParams = List(("incomeSourceType", "02"))
         ) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
@@ -223,28 +235,33 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Seq(("incomeSourceType", "02"))) returns Future.successful(
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = List(("incomeSourceType", "02"))) returns Future.successful(
           expected)
 
-        listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
+        listLossClaimsResult(
+          connector = connector,
+          Some(TaxYear.fromMtd("2023-24")),
+          typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
       }
     }
 
@@ -254,25 +271,27 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("claimType", "CSGI"))) returns Future.successful(expected)
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("claimType", "CSGI"))) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
@@ -282,30 +301,35 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
         willGet(
           url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
-          queryParams = Seq(("claimType", "CSGI"))
+          queryParams = List(("claimType", "CSGI"))
         ) returns Future.successful(expected)
 
-        listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
+        listLossClaimsResult(
+          connector = connector,
+          Some(TaxYear.fromMtd("2023-24")),
+          claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
       }
     }
 
@@ -315,27 +339,29 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         val expected = Left(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(Seq(
-              ListLossClaimsItem("businessId",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId",
-                                 Some(1),
-                                 "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem("businessId1",
-                                 TypeOfClaim.`carry-sideways`,
-                                 TypeOfLoss.`self-employment`,
-                                 "2020",
-                                 "claimId1",
-                                 Some(2),
-                                 "2020-07-13T12:13:48.763Z")
+            ListLossClaimsResponse(List(
+              ListLossClaimsItem(
+                "businessId",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId",
+                Some(1),
+                "2020-07-13T12:13:48.763Z"),
+              ListLossClaimsItem(
+                "businessId1",
+                TypeOfClaim.`carry-sideways`,
+                TypeOfLoss.`self-employment`,
+                "2020",
+                "claimId1",
+                Some(2),
+                "2020-07-13T12:13:48.763Z")
             ))
           ))
 
         willGet(
           url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
-          queryParams = Seq(("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI"))
+          queryParams = List(("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI"))
         ) returns Future.successful(expected)
 
         listLossClaimsResult(
@@ -351,18 +377,18 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new IfsTest with Test {
 
-        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
 
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq()) returns Future.successful(expected)
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Nil) returns Future.successful(expected)
 
         listLossClaimsResult(connector) shouldBe expected
       }
 
       "return an unsuccessful response with the correct correlationId and a single error for a TYS tax year" in new TysIfsTest with Test {
 
-        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
 
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Seq()) returns Future.successful(expected)
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Nil) returns Future.successful(expected)
 
         listLossClaimsResult(connector, Some(TaxYear.fromMtd("2023-24"))) shouldBe expected
       }
@@ -370,18 +396,14 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new IfsTest with Test {
-
-        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Seq(("taxYear", "2019"))) returns Future.successful(expected)
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, TaxYearFormatError.asDownstream))))
+        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("taxYear", "2019"))) returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, Some(TaxYear("2019"))) shouldBe expected
       }
 
       "return an unsuccessful response with the correct correlationId and multiple errors for TYS tax year" in new TysIfsTest with Test {
-
-        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, TaxYearFormatError))))
-
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, TaxYearFormatError.asDownstream))))
         willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino") returns Future.successful(expected)
 
         listLossClaimsResult(connector = connector, Some(TaxYear("2024"))) shouldBe expected
@@ -403,4 +425,5 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             typeOfClaim = claimType
           )))
   }
+
 }

@@ -16,32 +16,24 @@
 
 package api.endpoints.bfLoss.amend.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.models.errors._
-import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.AmendBFLossOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import api.services.{ BaseService, DownstreamResponseMappingSupport }
+import cats.implicits._
+import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class AmendBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
+class AmendBFLossService @Inject() (connector: BFLossConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
-
-  def amendBFLoss(request: AmendBFLossRequest)(implicit
-                                               hc: HeaderCarrier,
-                                               ec: ExecutionContext,
-                                               correlationId: String): Future[AmendBFLossOutcome] = {
-
-    connector.amendBFLoss(request).map {
-      mapToVendorDirect("amendBFLoss", errorMap)
-    }
-  }
+  def amendBFLoss(request: AmendBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendBFLossOutcome] =
+    connector
+      .amendBFLoss(request)
+      .map(x => x.leftMap(mapDownstreamErrors(errorMap)))
 
   private def errorMap: Map[String, MtdError] =
     Map(
@@ -54,4 +46,5 @@ class AmendBFLossService @Inject()(connector: BFLossConnector) extends Downstrea
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError
     )
+
 }

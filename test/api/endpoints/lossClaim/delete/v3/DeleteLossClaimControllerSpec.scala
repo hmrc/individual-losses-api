@@ -81,8 +81,8 @@ class DeleteLossClaimControllerSpec
     private val controller = new DeleteLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      deleteLossClaimService = mockDeleteLossClaimService,
-      deleteLossClaimParser = mockDeleteLossClaimRequestDataParser,
+      service = mockDeleteLossClaimService,
+      parser = mockDeleteLossClaimRequestDataParser,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -99,9 +99,9 @@ class DeleteLossClaimControllerSpec
           agentReferenceNumber = None,
           versionNumber = "3.0",
           params = Map("nino" -> nino, "claimId" -> claimId),
-          request = maybeRequestBody,
+          requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
-          response = auditResponse
+          auditResponse = auditResponse
         )
       )
   }

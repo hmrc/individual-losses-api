@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package utils
+package api.services
 
-import java.util.UUID
-import javax.inject.{Inject, Singleton}
+import api.controllers.RequestContextImplicits
 
-@Singleton
-class IdGenerator @Inject()() {
-
-  def generateCorrelationId: String = UUID.randomUUID().toString
-}
+trait BaseService extends RequestContextImplicits

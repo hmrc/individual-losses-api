@@ -17,10 +17,11 @@
 package api.models.errors
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.json.{JsObject, JsPath, Json, OWrites}
 
-case class MtdError(code: String, message: String, httpStatus: Int = 0, paths: Option[Seq[String]] = None) {
-  val asJson: JsObject = Json.toJson(this).as[JsObject]
+case class MtdError(code: String, message: String, httpStatus: Int, paths: Option[Seq[String]] = None) {
+  val asJson: JsObject                  = Json.toJson(this).as[JsObject]
+  val asDownstream: DownstreamErrorCode = DownstreamErrorCode(code)
 }
 
 object MtdError {
@@ -37,14 +38,4 @@ object MtdError {
   implicit def genericWrites[T <: MtdError]: OWrites[T] =
     writes.contramap[T](c => c: MtdError)
 
-  implicit val reads: Reads[MtdError] = (
-    (__ \ "code").read[String] and
-      (__ \ "reason").read[String] and
-      (__ \ "httpStatus").read(0) and // downstream response doesn't have this field
-      Reads.pure(None)
-  )(MtdError.apply _)
-}
-
-object MtdErrorWithCode {
-  def unapply(arg: MtdError): Option[String] = Some(arg.code)
 }

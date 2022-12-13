@@ -136,8 +136,8 @@ class AmendBFLossControllerSpec
     private val controller = new AmendBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      amendBFLossService = mockAmendBFLossService,
-      amendBFLossParser = mockAmendBFLossRequestDataParser,
+      service = mockAmendBFLossService,
+      parser = mockAmendBFLossRequestDataParser,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
@@ -155,9 +155,9 @@ class AmendBFLossControllerSpec
           agentReferenceNumber = None,
           versionNumber = "3.0",
           params = Map("nino" -> nino, "lossId" -> lossId),
-          request = maybeRequestBody,
+          requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
-          response = auditResponse
+          auditResponse = auditResponse
         )
       )
   }

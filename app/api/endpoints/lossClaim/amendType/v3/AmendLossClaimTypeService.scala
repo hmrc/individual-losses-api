@@ -16,32 +16,24 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.amendType.v3.request.AmendLossClaimTypeRequest
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.errors._
-import api.services.DownstreamServiceSupport
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import api.services.{ BaseService, DownstreamResponseMappingSupport }
+import cats.implicits._
+import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
+class AmendLossClaimTypeService @Inject() (connector: LossClaimConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
-
-  def amendLossClaimType(request: AmendLossClaimTypeRequest)(implicit
-                                                             hc: HeaderCarrier,
-                                                             ec: ExecutionContext,
-                                                             correlationId: String): Future[AmendLossClaimTypeOutcome] = {
-
-    connector.amendLossClaimType(request).map {
-      mapToVendorDirect("amendLossClaimType", errorMap)
-    }
-  }
+  def amendLossClaimType(request: AmendLossClaimTypeRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendLossClaimTypeOutcome] =
+    connector
+      .amendLossClaimType(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
   private def errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
@@ -54,4 +46,5 @@ class AmendLossClaimTypeService @Inject()(connector: LossClaimConnector) extends
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )
+
 }

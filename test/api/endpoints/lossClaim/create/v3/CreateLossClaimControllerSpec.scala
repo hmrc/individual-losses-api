@@ -129,8 +129,8 @@ class CreateLossClaimControllerSpec
     private val controller = new CreateLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      createLossClaimService = mockCreateLossClaimService,
-      createLossClaimParser = mockCreateLossClaimParser,
+      service = mockCreateLossClaimService,
+      parser = mockCreateLossClaimParser,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
@@ -148,9 +148,9 @@ class CreateLossClaimControllerSpec
           agentReferenceNumber = None,
           versionNumber = "3.0",
           params = Map("nino" -> nino),
-          request = maybeRequestBody,
+          requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
-          response = auditResponse
+          auditResponse = auditResponse
         )
       )
   }

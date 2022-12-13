@@ -16,14 +16,14 @@
 
 package api.endpoints.bfLoss.list.v3.connector
 
-import api.connectors.ConnectorSpec
+import api.connectors.{ ConnectorSpec, DownstreamOutcome }
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
 import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
-import api.models.errors.{ LossIdFormatError, MultipleErrors, NinoFormatError, SingleError }
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
+import api.models.errors.{ DownstreamErrors, LossIdFormatError, NinoFormatError }
 
 import scala.concurrent.Future
 
@@ -72,10 +72,11 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams,
+            queryParams = queryParams
           ).returns(Future.successful(expected))
 
-          await(connector.listBFLosses(request)) shouldBe expected
+          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+          result shouldBe expected
         }
 
         "the connector sends a request with a income source id parameter provided is supplied" in new IfsTest with Test {
@@ -89,10 +90,11 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams,
+            queryParams = queryParams
           ).returns(Future.successful(expected))
 
-          await(connector.listBFLosses(request)) shouldBe expected
+          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+          result shouldBe expected
         }
 
         "a valid non-TYS request with a income source type parameter provided is supplied" in new IfsTest with Test {
@@ -107,10 +109,11 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams,
+            queryParams = queryParams
           ).returns(Future.successful(expected))
 
-          await(connector.listBFLosses(request)) shouldBe expected
+          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+          result shouldBe expected
         }
 
         "a valid non-TYS request with all parameters provided is supplied" in new IfsTest with Test {
@@ -125,40 +128,43 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
           val queryParams: Seq[(String, String)] = Seq(
             ("incomeSourceId", "testId"),
             ("incomeSourceType", "01"),
-            ("taxYear", taxYear.asDownstream),
+            ("taxYear", taxYear.asDownstream)
           )
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams,
+            queryParams = queryParams
           ).returns(Future.successful(expected))
 
-          await(connector.listBFLosses(request)) shouldBe expected
+          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+          result shouldBe expected
         }
       }
 
       "downstream returns a single error" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
 
         willGet(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino"
         ).returns(Future.successful(expected))
 
         val request: ListBFLossesRequest = makeRequest()
 
-        await(connector.listBFLosses(request)) shouldBe expected
+        val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+        result shouldBe expected
       }
 
       "downstream returns multiple errors" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
+        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, LossIdFormatError.asDownstream))))
 
         willGet(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino"
         ).returns(Future.successful(expected))
 
         val request: ListBFLossesRequest = makeRequest()
 
-        await(connector.listBFLosses(request)) shouldBe expected
+        val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+        result shouldBe expected
       }
     }
 
@@ -173,10 +179,11 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
           val expected = Right(ResponseWrapper(correlationId, response))
 
           willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
+            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino"
           ).returns(Future.successful(expected))
 
-          await(connector.listBFLosses(request)) shouldBe expected
+          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+          result shouldBe expected
         }
 
         "a valid non-TYS request with all parameters provided is supplied" in new TysIfsTest with Test {
@@ -190,18 +197,20 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
           val queryParams: Seq[(String, String)] = Seq(
             ("incomeSourceId", "testId"),
-            ("incomeSourceType", "01"),
+            ("incomeSourceType", "01")
           )
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
-            queryParams = queryParams,
+            queryParams = queryParams
           ).returns(Future.successful(expected))
 
-          await(connector.listBFLosses(request)) shouldBe expected
+          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
+          result shouldBe expected
         }
       }
     }
 
   }
+
 }

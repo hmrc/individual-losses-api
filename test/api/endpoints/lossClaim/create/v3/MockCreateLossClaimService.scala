@@ -16,13 +16,13 @@
 
 package api.endpoints.lossClaim.create.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.services.v3.Outcomes.CreateLossClaimOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockCreateLossClaimService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockCreateLossClaimService extends MockFactory {
 
     def create(requestData: CreateLossClaimRequest): CallHandler[Future[CreateLossClaimOutcome]] = {
       (mockCreateLossClaimService
-        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .createLossClaim(_: CreateLossClaimRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
+
   }
+
 }

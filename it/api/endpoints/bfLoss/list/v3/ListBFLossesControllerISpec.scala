@@ -40,8 +40,8 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
 
     def mtdQueryParams: Seq[(String, String)] =
       Seq("taxYearBroughtForwardFrom" -> taxYearBroughtForwardFrom, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId)
-        .collect {
-          case (k, Some(v)) => (k, v)
+        .collect { case (k, Some(v)) =>
+          (k, v)
         }
 
     def downstreamUrl: String
@@ -137,6 +137,7 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
                     |  ]
                     |}
      """.stripMargin)
+
   }
 
   private trait NonTysTest extends Test {
@@ -196,11 +197,12 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET,
-                                   downstreamUrl,
-                                   Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020", "incomeSourceType" -> "04"),
-                                   OK,
-                                   downstreamResponseJson)
+          DownstreamStub.onSuccess(
+            DownstreamStub.GET,
+            downstreamUrl,
+            Map("incomeSourceId" -> "XKIS00000000988", "taxYear" -> "2020", "incomeSourceType" -> "04"),
+            OK,
+            downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -218,11 +220,12 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET,
-                                   downstreamUrl,
-                                   Map("incomeSourceId" -> "XKIS00000000988", "incomeSourceType" -> "04"),
-                                   OK,
-                                   downstreamResponseJson)
+          DownstreamStub.onSuccess(
+            DownstreamStub.GET,
+            downstreamUrl,
+            Map("incomeSourceId" -> "XKIS00000000988", "incomeSourceType" -> "04"),
+            OK,
+            downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -305,4 +308,5 @@ class ListBFLossesControllerISpec extends V3IntegrationBaseSpec {
     }
 
   }
+
 }
