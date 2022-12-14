@@ -33,7 +33,7 @@ class AmendBFLossService @Inject() (connector: BFLossConnector) extends BaseServ
   def amendBFLoss(request: AmendBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendBFLossOutcome] =
     connector
       .amendBFLoss(request)
-      .map(x => x.leftMap(mapDownstreamErrors(errorMap)))
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
   private def errorMap: Map[String, MtdError] =
     Map(
