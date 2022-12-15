@@ -16,33 +16,25 @@
 
 package api.endpoints.lossClaim.retrieve.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.models.errors._
-import api.services.DownstreamServiceSupport
+import api.services.BaseService
 import api.services.v3.Outcomes.RetrieveLossClaimOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
+class RetrieveLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
+  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[RetrieveLossClaimOutcome] =
+    connector
+      .retrieveLossClaim(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit hc: HeaderCarrier,
-                                                           ec: ExecutionContext,
-                                                           correlationId: String): Future[RetrieveLossClaimOutcome] = {
-
-    connector.retrieveLossClaim(request).map {
-      mapToVendorDirect("retrieveLossClaim", errorMap)
-    }
-  }
-
-  private def errorMap: Map[String, MtdError] = Map(
+  private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
@@ -50,4 +42,5 @@ class RetrieveLossClaimService @Inject()(connector: LossClaimConnector) extends 
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )
+
 }

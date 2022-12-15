@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package api.models.errors
+package api.controllers
 
+import api.models.errors.ErrorWrapper
 import play.api.libs.json.Json
-import support.UnitSpec
+import play.api.mvc.Result
+import play.api.mvc.Results.Status
 
-class ErrorSpec extends UnitSpec {
+case class ErrorHandling(errorHandler: PartialFunction[ErrorWrapper, Result])
 
-  "reads" should {
-    val json = Json.parse(
-      s"""
-        |{
-        |   "code": "${NinoFormatError.code}",
-        |   "reason": "${NinoFormatError.message}"
-        |}
-      """.stripMargin
-    )
+object ErrorHandling {
 
-    "generate the correct JSON" in {
-      json.as[MtdError] shouldBe MtdError(NinoFormatError.code, NinoFormatError.message)
-    }
+  val Default: ErrorHandling = ErrorHandling { case errorWrapper: ErrorWrapper =>
+    Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
   }
+
 }

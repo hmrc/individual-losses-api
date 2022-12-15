@@ -125,8 +125,8 @@ class RetrieveLossClaimControllerSpec
     private val controller = new RetrieveLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      retrieveLossClaimService = mockRetrieveLossClaimService,
-      retrieveLossClaimParser = mockRetrieveLossClaimRequestDataParser,
+      service = mockRetrieveLossClaimService,
+      parser = mockRetrieveLossClaimRequestDataParser,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

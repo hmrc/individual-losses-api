@@ -18,7 +18,7 @@ package api.validations.anyVersion
 
 import api.models.errors.RuleIncorrectOrEmptyBodyError
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{ Json, OFormat }
 import shapeless.HNil
 import support.UnitSpec
 import utils.EmptinessChecker
@@ -52,14 +52,14 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{ "field1" : "Something" }""")
 
         val validationResult = JsonFormatValidation.validateOrRead[TestDataObject](json)
-        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/field2")))))
+        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/field2")))))
       }
 
       "required field is missing in array object" in {
         val json = Json.parse("""{ "arrayField" : [{ "field1" : "Something" }]}""")
 
         val validationResult = JsonFormatValidation.validateOrRead[TestDataWrapper](json)
-        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/arrayField/0/field2")))))
+        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/arrayField/0/field2")))))
       }
 
       "required field is missing in multiple array objects" in {
@@ -69,7 +69,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         validationResult shouldBe Left(
           List(
             RuleIncorrectOrEmptyBodyError.copy(
-              paths = Some(Seq(
+              paths = Some(List(
                 "/arrayField/0/field2",
                 "/arrayField/1/field2"
               )))))
@@ -86,14 +86,14 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{"field": "value"}""")
 
         val validationResult = JsonFormatValidation.validateOrRead[TestDataObject](json)
-        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/field1", "/field2")))))
+        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/field1", "/field2")))))
       }
 
       "a field is supplied with the wrong data type" in {
         val json = Json.parse("""{"field1": true, "field2": "value"}""")
 
         val validationResult = JsonFormatValidation.validateOrRead[TestDataObject](json)
-        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/field1")))))
+        validationResult shouldBe Left(List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/field1")))))
       }
     }
   }
@@ -103,7 +103,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
       val json = Json.parse("""{ "field1" : "Something" }""")
 
       val validationResult = JsonFormatValidation.validate[TestDataObject](json)
-      validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/field2"))))
+      validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/field2"))))
     }
 
     "detect empty objects" in {
@@ -117,7 +117,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
       val json             = Json.parse("""{ "arrayField": [] }""")
       val validationResult = JsonFormatValidation.validateAndCheckNonEmpty[TestDataWrapper](json)
 
-      validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/arrayField"))))
+      validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/arrayField"))))
     }
 
     "return no error when all objects are non-empty" in {
@@ -127,4 +127,5 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
       validationResult shouldBe Nil
     }
   }
+
 }

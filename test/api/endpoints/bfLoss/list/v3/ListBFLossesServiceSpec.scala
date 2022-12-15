@@ -25,66 +25,73 @@ import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.services.ServiceSpec
+import api.services.v3.Outcomes.ListBFLossesOutcome
 
 import scala.concurrent.Future
 
 class ListBFLossesServiceSpec extends ServiceSpec {
 
-  val nino: String                            = "AA123456A"
-  val lossId: String                          = "AAZZ1234567890a"
-  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  private val nino   = "AA123456A"
+  private val lossId = "AAZZ1234567890a"
 
-  trait Test extends MockBFLossConnector {
+  private trait Test extends MockBFLossConnector {
     lazy val service = new ListBFLossesService(connector)
   }
 
-  lazy val request: ListBFLossesRequest = v3.request.ListBFLossesRequest(Nino(nino), None, None, None)
+  private lazy val request: ListBFLossesRequest = v3.request.ListBFLossesRequest(Nino(nino), None, None, None)
 
-  val response: ListBFLossesResponse[ListBFLossesItem] =
-    ListBFLossesResponse(Seq(ListBFLossesItem(lossId, "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
+  private val response: ListBFLossesResponse[ListBFLossesItem] =
+    ListBFLossesResponse(List(ListBFLossesItem(lossId, "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
+
+  private val emptyListResponse: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Nil)
+
+  private def downstreamResponse(data: ListBFLossesResponse[ListBFLossesItem]): ResponseWrapper[ListBFLossesResponse[ListBFLossesItem]] =
+    ResponseWrapper(correlationId, data)
 
   "retrieve the list of bf losses" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val downstreamResponse: ResponseWrapper[ListBFLossesResponse[ListBFLossesItem]] =
-          ResponseWrapper(correlationId, response)
-        MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Right(downstreamResponse)))
+        private val responseWrapper = downstreamResponse(response)
+        MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Right(responseWrapper)))
 
-        await(service.listBFLosses(request)) shouldBe Right(downstreamResponse)
+        private val result: ListBFLossesOutcome = await(service.listBFLosses(request))
+        result shouldBe Right(responseWrapper)
+      }
+
+      "return a Left(NotFoundError)" when {
+        "the connector returns an empty list" in new Test {
+          private val responseWrapper = downstreamResponse(emptyListResponse)
+          MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Right(responseWrapper)))
+
+          private val result: ListBFLossesOutcome = await(service.listBFLosses(request))
+          result shouldBe Left(ErrorWrapper(correlationId, NotFoundError, None))
+        }
       }
     }
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
-        val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
+        private val someError          = MtdError("SOME_CODE", "some message", BAD_REQUEST)
+        private val downstreamResponse = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.listBFLosses(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
+        private val result: ListBFLossesOutcome = await(service.listBFLosses(request))
+        result shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
-    "return a downstream error" when {
-      "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
-        val expected: ErrorWrapper                           = ErrorWrapper(correlationId, InternalError, None)
-        MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
+    "map errors according to spec" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
+          MockedBFLossConnector
+            .listBFLosses(request)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-        await(service.listBFLosses(request)) shouldBe Left(expected)
-      }
+          private val result = await(service.listBFLosses(request))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
+        }
 
-      "the connector call returns multiple errors including a downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, InternalError)))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
-        MockedBFLossConnector.listBFLosses(request).returns(Future.successful(Left(downstreamResponse)))
-
-        await(service.listBFLosses(request)) shouldBe Left(expected)
-      }
-    }
-    def errorMap: Map[String, MtdError] = {
-
-      val errors = Map(
+      val errors = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_TAXYEAR"           -> TaxYearFormatError,
         "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
@@ -95,7 +102,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         "SERVICE_UNAVAILABLE"       -> InternalError
       )
 
-      val extraTysErrors = Map(
+      val extraTysErrors = List(
         "INVALID_TAX_YEAR"          -> TaxYearFormatError,
         "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
         "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
@@ -103,20 +110,8 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
       )
 
-      errors ++ extraTysErrors
-    }
-
-    errorMap.foreach {
-      case (k, v) =>
-        s"return a ${v.code} error" when {
-          s"the connector call returns $k" in new Test {
-            MockedBFLossConnector
-              .listBFLosses(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
-
-            await(service.listBFLosses(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
-          }
-        }
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

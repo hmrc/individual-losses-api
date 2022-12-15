@@ -16,34 +16,25 @@
 
 package api.endpoints.bfLoss.create.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.create.v3.request.CreateBFLossRequest
-import api.models.errors.{RuleDuplicateSubmissionError, _}
-import api.services.DownstreamServiceSupport
+import api.models.errors.{ RuleDuplicateSubmissionError, _ }
+import api.services.BaseService
 import api.services.v3.Outcomes.CreateBFLossOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-class CreateBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
+class CreateBFLossService @Inject() (connector: BFLossConnector) extends BaseService {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
+  def createBFLoss(request: CreateBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[CreateBFLossOutcome] =
+    connector
+      .createBFLoss(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  def createBFLoss(request: CreateBFLossRequest)(implicit
-                                                 hc: HeaderCarrier,
-                                                 ec: ExecutionContext,
-                                                 correlationId: String): Future[CreateBFLossOutcome] = {
-
-    connector.createBFLoss(request).map {
-      mapToVendorDirect("createBFLoss", errorMap)
-    }
-  }
-
-  private def errorMap: PartialFunction[String, MtdError] = {
+  private val errorMap: PartialFunction[String, MtdError] = {
     case "INVALID_TAXABLE_ENTITY_ID" => NinoFormatError
     case "DUPLICATE_SUBMISSION"      => RuleDuplicateSubmissionError
     case "TAX_YEAR_NOT_SUPPORTED"    => RuleTaxYearNotSupportedError
@@ -54,4 +45,5 @@ class CreateBFLossService @Inject()(connector: BFLossConnector) extends Downstre
     case "SERVER_ERROR"              => InternalError
     case "SERVICE_UNAVAILABLE"       => InternalError
   }
+
 }

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package utils
+package api.connectors.httpparsers
 
-import java.util.UUID
-import javax.inject.{Inject, Singleton}
+import play.api.libs.json.{Json, Reads}
 
-@Singleton
-class IdGenerator @Inject()() {
+trait HttpParserSpec {
+  // WLOG if Reads tested elsewhere
+  case class SomeModel(data: String)
 
-  def generateCorrelationId: String = UUID.randomUUID().toString
+  object SomeModel {
+    implicit val reads: Reads[SomeModel] = Json.reads
+  }
+
 }

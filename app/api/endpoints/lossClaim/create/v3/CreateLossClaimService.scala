@@ -16,31 +16,25 @@
 
 package api.endpoints.lossClaim.create.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.models.errors._
-import api.services.DownstreamServiceSupport
+import api.services.BaseService
 import api.services.v3.Outcomes.CreateLossClaimOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
+class CreateLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
+  def createLossClaim(request: CreateLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[CreateLossClaimOutcome] =
+    connector
+      .createLossClaim(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  def createLossClaim(
-      request: CreateLossClaimRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[CreateLossClaimOutcome] = {
-    connector.createLossClaim(request).map {
-      mapToVendorDirect("createLossClaim", errorMap)
-    }
-  }
-
-  private def errorMap: PartialFunction[String, MtdError] = {
+  private val errorMap: PartialFunction[String, MtdError] = {
     case "INVALID_TAXABLE_ENTITY_ID"                                                          => NinoFormatError
     case "DUPLICATE"                                                                          => RuleDuplicateClaimSubmissionError
     case "INCOME_SOURCE_NOT_FOUND"                                                            => NotFoundError
@@ -50,4 +44,5 @@ class CreateLossClaimService @Inject()(connector: LossClaimConnector) extends Do
     case "NO_ACCOUNTING_PERIOD"                                                               => RuleNoAccountingPeriod
     case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" => InternalError
   }
+
 }

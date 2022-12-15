@@ -16,32 +16,25 @@
 
 package api.endpoints.bfLoss.delete.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
 import api.models.errors._
-import api.services.DownstreamServiceSupport
+import api.services.BaseService
 import api.services.v3.Outcomes.DeleteBFLossOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class DeleteBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
+class DeleteBFLossService @Inject() (connector: BFLossConnector) extends BaseService {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[DeleteBFLossOutcome] =
+    connector
+      .deleteBFLoss(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  def deleteBFLoss(
-      request: DeleteBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DeleteBFLossOutcome] = {
-
-    connector.deleteBFLoss(request).map {
-      mapToVendorDirect("deleteBFLoss", errorMap)
-    }
-  }
-
-  private def errorMap: Map[String, MtdError] = Map(
+  private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
@@ -49,4 +42,5 @@ class DeleteBFLossService @Inject()(connector: BFLossConnector) extends Downstre
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )
+
 }

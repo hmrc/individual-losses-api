@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package utils
+package api.models.errors
 
-import java.util.UUID
-import javax.inject.{Inject, Singleton}
+import play.api.http.Status.BAD_REQUEST
+import play.api.libs.json.Json
+import support.UnitSpec
 
-@Singleton
-class IdGenerator @Inject()() {
+class MtdErrorSpec extends UnitSpec {
 
-  def generateCorrelationId: String = UUID.randomUUID().toString
+  "writes" should {
+    "generate the correct JSON" in {
+      Json.toJson(MtdError("CODE", "some message", BAD_REQUEST)) shouldBe Json.parse(
+        """
+          |{
+          |   "code": "CODE",
+          |   "message": "some message"
+          |}
+        """.stripMargin
+      )
+    }
+  }
+
 }

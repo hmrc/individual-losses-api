@@ -16,31 +16,26 @@
 
 package api.endpoints.lossClaim.retrieve.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.controllers._
 import api.endpoints.lossClaim.retrieve.v3.request.{ RetrieveLossClaimParser, RetrieveLossClaimRawData }
 import api.endpoints.lossClaim.retrieve.v3.response.GetLossClaimHateoasData
 import api.hateoas.HateoasFactory
-import api.models.errors._
 import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import utils.{ IdGenerator, Logging }
 
 import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthService,
-                                            val lookupService: MtdIdLookupService,
-                                            retrieveLossClaimService: RetrieveLossClaimService,
-                                            retrieveLossClaimParser: RetrieveLossClaimParser,
-                                            hateoasFactory: HateoasFactory,
-                                            cc: ControllerComponents,
-                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthService,
+                                             val lookupService: MtdIdLookupService,
+                                             service: RetrieveLossClaimService,
+                                             parser: RetrieveLossClaimParser,
+                                             hateoasFactory: HateoasFactory,
+                                             cc: ControllerComponents,
+                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -48,25 +43,17 @@ class RetrieveLossClaimController @Inject()(val authService: EnrolmentsAuthServi
 
   def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData = RetrieveLossClaimRawData(nino, claimId)
 
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](retrieveLossClaimParser.parseRequest(rawData))
-          serviceResponse <- EitherT(retrieveLossClaimService.retrieveLossClaim(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, GetLossClaimHateoasData(nino, claimId)).asRight[ErrorWrapper])
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.retrieveLossClaim)
+          .withHateoasResult(hateoasFactory)(GetLossClaimHateoasData(nino, claimId))
 
-          Ok(Json.toJson(vendorResponse))
-            .withApiHeaders(serviceResponse.correlationId)
-        }
-
-      result.leftMap(errorResult).merge
+      requestHandler.handleRequest(rawData)
     }
+
 }

@@ -16,38 +16,30 @@
 
 package api.endpoints.lossClaim.delete.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.models.errors._
-import api.services.DownstreamServiceSupport
+import api.services.BaseService
 import api.services.v3.Outcomes.DeleteLossClaimOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-class DeleteLossClaimService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
+class DeleteLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[DeleteLossClaimOutcome] =
+    connector
+      .deleteLossClaim(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit
-                                                       hc: HeaderCarrier,
-                                                       ec: ExecutionContext,
-                                                       correlationId: String): Future[DeleteLossClaimOutcome] = {
-
-    connector.deleteLossClaim(request).map {
-      mapToVendorDirect("deleteLossClaim", errorMap)
-    }
-  }
-
-  private def errorMap: Map[String, MtdError] = Map(
+  private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )
+
 }

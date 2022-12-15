@@ -16,32 +16,25 @@
 
 package api.endpoints.bfLoss.retrieve.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.models.errors._
-import api.services.DownstreamServiceSupport
+import api.services.BaseService
 import api.services.v3.Outcomes.RetrieveBFLossOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends DownstreamServiceSupport {
+class RetrieveBFLossService @Inject() (connector: BFLossConnector) extends BaseService {
 
-  /**
-    * Service name for logging
-    */
-  override val serviceName: String = this.getClass.getSimpleName
+  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[RetrieveBFLossOutcome] =
+    connector
+      .retrieveBFLoss(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  def retrieveBFLoss(
-      request: RetrieveBFLossRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[RetrieveBFLossOutcome] = {
-
-    connector.retrieveBFLoss(request).map {
-      mapToVendorDirect("retrieveBFLoss", errorMap)
-    }
-  }
-
-  private def errorMap: Map[String, MtdError] = Map(
+  private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
@@ -49,4 +42,5 @@ class RetrieveBFLossService @Inject()(connector: BFLossConnector) extends Downst
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )
+
 }

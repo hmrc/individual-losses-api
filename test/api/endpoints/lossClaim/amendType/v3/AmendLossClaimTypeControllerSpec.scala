@@ -142,8 +142,8 @@ class AmendLossClaimTypeControllerSpec
     private val controller = new AmendLossClaimTypeController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      amendLossClaimTypeService = mockAmendLossClaimTypeService,
-      amendLossClaimTypeParser = mockAmendLossClaimTypeRequestDataParser,
+      service = mockAmendLossClaimTypeService,
+      parser = mockAmendLossClaimTypeRequestDataParser,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
@@ -161,9 +161,9 @@ class AmendLossClaimTypeControllerSpec
           agentReferenceNumber = None,
           versionNumber = "3.0",
           params = Map("nino" -> nino, "claimId" -> claimId),
-          request = maybeRequestBody,
+          requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
-          response = auditResponse
+          auditResponse = auditResponse
         )
       )
 

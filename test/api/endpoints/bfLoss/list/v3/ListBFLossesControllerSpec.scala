@@ -16,24 +16,24 @@
 
 package api.endpoints.bfLoss.list.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.bfLoss.domain.v3.{IncomeSourceType, TypeOfLoss}
-import api.endpoints.bfLoss.list.v3.request.{ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser}
-import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
+import api.endpoints.bfLoss.list.v3.request.{ ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser }
+import api.endpoints.bfLoss.list.v3.response.{ ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
-import play.api.libs.json.{JsValue, Json}
+import api.models.hateoas.Method.{ GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListBFLossesControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListBFLossesService
     with MockListBFLossesParser
@@ -56,7 +56,7 @@ class ListBFLossesControllerSpec
     Link(href = s"/individuals/losses/TC663795B/brought-forward-losses/$lossId", method = GET, rel = "self")
 
   // WLOG
-  private val responseItem: ListBFLossesItem                   = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
+  private val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
   private val response: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Seq(responseItem))
 
   private val hateoasResponse: ListBFLossesResponse[HateoasWrapper[ListBFLossesItem]] = ListBFLossesResponse(
@@ -111,29 +111,13 @@ class ListBFLossesControllerSpec
 
         MockHateoasFactory
           .wrapList(response, ListBFLossHateoasData(nino))
-            .returns(HateoasWrapper(hateoasResponse, Seq(createHateoasLink, listHateoasLink)))
+          .returns(HateoasWrapper(hateoasResponse, Seq(createHateoasLink, listHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
     }
 
     "return the error as per spec" when {
-      "the request received is valid but an empty list of losses is returned from downstream" in new Test {
-        MockListBFLossesRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
-
-        MockListBFLossesService
-          .list(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListBFLossesResponse(Nil)))))
-
-        MockHateoasFactory
-          .wrapList(ListBFLossesResponse(List.empty[ListBFLossesItem]), ListBFLossHateoasData(nino))
-            .returns(HateoasWrapper(ListBFLossesResponse(List.empty[HateoasWrapper[ListBFLossesItem]]), Seq(createHateoasLink)))
-
-        runErrorTest(NotFoundError)
-      }
-
       "the parser validation fails" in new Test {
         MockListBFLossesRequestDataParser
           .parseRequest(rawData)
@@ -161,8 +145,8 @@ class ListBFLossesControllerSpec
     private val controller = new ListBFLossesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      listBFLossesService = mockListBFLossesService,
-      listBFLossesParser = mockListBFLossesParser,
+      service = mockListBFLossesService,
+      parser = mockListBFLossesParser,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -170,4 +154,5 @@ class ListBFLossesControllerSpec
 
     protected def callController(): Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
   }
+
 }

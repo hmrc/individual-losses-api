@@ -16,13 +16,13 @@
 
 package api.endpoints.bfLoss.retrieve.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.services.v3.Outcomes.RetrieveBFLossOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockRetrieveBFLossService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockRetrieveBFLossService extends MockFactory {
 
     def retrieve(retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[RetrieveBFLossOutcome]] = {
       (mockRetrieveBFLossService
-        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(retrieveBFLossRequest, *, *, *)
+        .retrieveBFLoss(_: RetrieveBFLossRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(retrieveBFLossRequest, *, *)
     }
+
   }
+
 }

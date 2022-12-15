@@ -16,37 +16,29 @@
 
 package api.endpoints.bfLoss.amend.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.controllers._
 import api.endpoints.bfLoss.amend.anyVersion.request.AmendBFLossRawData
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossParser
 import api.hateoas.HateoasFactory
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import api.models.errors._
 import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
-import cats.data.EitherT
-import cats.implicits._
-import play.api.http.MimeTypes
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.JsValue
 import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{ IdGenerator, Logging }
 
 import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
-                                      val lookupService: MtdIdLookupService,
-                                      amendBFLossService: AmendBFLossService,
-                                      amendBFLossParser: AmendBFLossParser,
-                                      hateoasFactory: HateoasFactory,
-                                      auditService: AuditService,
-                                      cc: ControllerComponents,
-                                      idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
+                                       val lookupService: MtdIdLookupService,
+                                       service: AmendBFLossService,
+                                       parser: AmendBFLossParser,
+                                       hateoasFactory: HateoasFactory,
+                                       auditService: AuditService,
+                                       cc: ControllerComponents,
+                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -54,61 +46,25 @@ class AmendBFLossController @Inject()(val authService: EnrolmentsAuthService,
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
 
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](amendBFLossParser.parseRequest(rawData))
-          serviceResponse <- EitherT(amendBFLossService.amendBFLoss(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendBFLossHateoasData(nino, lossId)).asRight[ErrorWrapper])
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.amendBFLoss)
+          .withHateoasResult(hateoasFactory)(AmendBFLossHateoasData(nino, lossId))
+          .withAuditing(AuditHandler(
+            auditService,
+            auditType = "AmendBroughtForwardLoss",
+            transactionName = "amend-brought-forward-loss",
+            params = Map("nino" -> nino, "lossId" -> lossId),
+            requestBody = Some(request.body),
+            includeResponse = true
+          ))
 
-          val responseJson: JsValue = Json.toJson(vendorResponse)
-
-          auditSubmission(
-            GenericAuditDetail(
-              request.userDetails,
-              Map("nino" -> nino, "lossId" -> lossId),
-              Some(request.body),
-              serviceResponse.correlationId,
-              AuditResponse(httpStatus = OK, response = Right(Some(responseJson)))
-            )
-          )
-
-          Ok(responseJson)
-            .withApiHeaders(serviceResponse.correlationId)
-            .as(MimeTypes.JSON)
-        }
-
-      result.leftMap { errorWrapper =>
-        val result = errorResult(errorWrapper)
-
-        auditSubmission(
-          GenericAuditDetail(
-            request.userDetails,
-            Map("nino" -> nino, "lossId" -> lossId),
-            Some(request.body),
-            correlationId,
-            AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
-          )
-        )
-
-        result
-      }.merge
+      requestHandler.handleRequest(rawData)
     }
 
-  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
-      auditType = "AmendBroughtForwardLoss",
-      transactionName = "amend-brought-forward-loss",
-      detail = details
-    )
-    auditService.auditEvent(event)
-  }
 }

@@ -28,9 +28,8 @@ import scala.concurrent.Future
 
 class DeleteBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String                            = "AA123456A"
-  val lossId: String                          = "AAZZ1234567890a"
-  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String   = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   trait Test extends MockBFLossConnector {
     lazy val service = new DeleteBFLossService(connector)
@@ -51,7 +50,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -59,43 +58,30 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       }
     }
 
-    "return a downstream error" when {
-      "the connector call returns a single downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[SingleError] = ResponseWrapper(correlationId, SingleError(InternalError))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
-        MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
+    "map errors according to spec" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
+          MockedBFLossConnector
+            .deleteBFLoss(request)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-        await(service.deleteBFLoss(request)) shouldBe Left(expected)
-      }
-      "the connector call returns multiple errors including a downstream error" in new Test {
-        val downstreamResponse: ResponseWrapper[MultipleErrors] =
-          ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, InternalError)))
-        val expected: ErrorWrapper = ErrorWrapper(correlationId, InternalError, None)
-        MockedBFLossConnector.deleteBFLoss(request).returns(Future.successful(Left(downstreamResponse)))
-
-        await(service.deleteBFLoss(request)) shouldBe Left(expected)
-      }
-    }
-
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_LOSS_ID" -> LossIdFormatError,
-      "NOT_FOUND" -> NotFoundError,
-      "CONFLICT" -> RuleDeleteAfterFinalDeclarationError,
-      "SERVER_ERROR" -> InternalError,
-      "SERVICE_UNAVAILABLE" -> InternalError,
-      "UNEXPECTED_ERROR" -> InternalError
-    ).foreach {
-      case (k, v) =>
-        s"return a ${v.code} error" when {
-          s"the connector call returns $k" in new Test {
-            MockedBFLossConnector
-              .deleteBFLoss(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "doesn't matter", v.httpStatus))))))
-
-            await(service.deleteBFLoss(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
-          }
+          private val result = await(service.deleteBFLoss(request))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
+
+      val errors: Seq[(String, MtdError)] = List(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_LOSS_ID"           -> LossIdFormatError,
+        "NOT_FOUND"                 -> NotFoundError,
+        "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
+        "SERVER_ERROR"              -> InternalError,
+        "SERVICE_UNAVAILABLE"       -> InternalError,
+        "UNEXPECTED_ERROR"          -> InternalError
+      )
+
+      errors.foreach(args => (serviceError _).tupled(args))
     }
+
   }
+
 }

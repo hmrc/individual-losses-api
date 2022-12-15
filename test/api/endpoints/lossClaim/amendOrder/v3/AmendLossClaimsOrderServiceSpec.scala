@@ -17,12 +17,12 @@
 package api.endpoints.lossClaim.amendOrder.v3
 
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
+import api.endpoints.lossClaim.amendOrder.v3.request.{ AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody }
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
@@ -31,9 +31,8 @@ import scala.concurrent.Future
 
 class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
-  val nino: String                            = "AA123456A"
-  val taxYear: TaxYear                        = TaxYear.fromMtd("2019-20")
-  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String     = "AA123456A"
+  val taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
   val lossClaimsOrder: AmendLossClaimsOrderRequestBody = AmendLossClaimsOrderRequestBody(
     TypeOfClaim.`carry-sideways`,
@@ -63,20 +62,11 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.amendLossClaimsOrder(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
-      }
-    }
-
-    "one of the errors is a DownstreamError" should {
-      "return a single error if there are multiple errors" in new Test {
-        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
-        MockedLossClaimConnector.amendLossClaimsOrder(request).returns(Future.successful(Left(expected)))
-        val result: AmendLossClaimsOrderOutcome = await(service.amendLossClaimsOrder(request))
-        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }
 
@@ -85,14 +75,14 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         s"downstream returns $downstreamErrorCode" in new Test {
           MockedLossClaimConnector
             .amendLossClaimsOrder(request)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(downstreamErrorCode, "MESSAGE", error.httpStatus))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          val result = await(service.amendLossClaimsOrder(request))
+          val result: AmendLossClaimsOrderOutcome = await(service.amendLossClaimsOrder(request))
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
       }
 
-      val errors = Seq(
+      val errors = List(
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("INVALID_TAXYEAR", TaxYearFormatError),
         ("CONFLICT_SEQUENCE_START", RuleInvalidSequenceStart),
@@ -104,7 +94,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         ("SERVICE_UNAVAILABLE", InternalError)
       )
 
-      val extraTysErrors = Seq(
+      val extraTysErrors = List(
         ("INVALID_TAX_YEAR", TaxYearFormatError),
         ("INVALID_CORRELATIONID", InternalError),
         ("NOT_FOUND", NotFoundError),
@@ -118,4 +108,5 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
       (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

@@ -44,11 +44,12 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   object V2Handler      extends Handler
   object V3Handler      extends Handler
 
-  private val defaultRouter = Router.from {
-    case GET(p"") => DefaultHandler
+  private val defaultRouter = Router.from { case GET(p"") =>
+    DefaultHandler
   }
-  private val v3Router = Router.from {
-    case GET(p"/resource") => V3Handler
+
+  private val v3Router = Router.from { case GET(p"/resource") =>
+    V3Handler
   }
 
   private val routingMap = new VersionRoutingMap {
@@ -68,7 +69,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     val httpConfiguration: HttpConfiguration = HttpConfiguration("context")
     private val errorHandler                 = mock[HttpErrorHandler]
     private val filters                      = mock[HttpFilters]
-    (() => filters.filters).stubs().returns(Seq.empty)
+    (() => filters.filters).stubs().returns(Nil)
 
     MockAppConfig.featureSwitches.returns(Configuration(conf))
 
@@ -80,6 +81,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
         .foldLeft(FakeRequest("GET", path)) { (req, accept) =>
           req.withHeaders((ACCEPT, accept))
         }
+
   }
 
   "Routing requests with no version" should {
@@ -121,8 +123,8 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     }
   }
 
-  private def handleWithVersionRoutes(path: String, handler: Handler, conf: Config = confWithAllEnabled)(
-      implicit acceptHeader: Option[String]): Unit = {
+  private def handleWithVersionRoutes(path: String, handler: Handler, conf: Config = confWithAllEnabled)(implicit
+      acceptHeader: Option[String]): Unit = {
 
     implicit val useConf: Config = conf
 
@@ -144,12 +146,11 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
     "return 406" in new Test {
       val request: RequestHeader = buildRequest("/resource")
-      inside(requestHandler.routeRequest(request)) {
-        case Some(a: EssentialAction) =>
-          val result = a.apply(request)
+      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
+        val result = a.apply(request)
 
-          status(result) shouldBe NOT_ACCEPTABLE
-          contentAsJson(result) shouldBe InvalidAcceptHeaderError.asJson
+        status(result) shouldBe NOT_ACCEPTABLE
+        contentAsJson(result) shouldBe InvalidAcceptHeaderError.asJson
       }
     }
   }
@@ -160,11 +161,10 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
     "return 404 with a NotFoundError" in new Test {
       val request: RequestHeader = buildRequest("/missing_resource")
-      inside(requestHandler.routeRequest(request)) {
-        case Some(a: EssentialAction) =>
-          val result = a.apply(request)
-          status(result) shouldBe NOT_FOUND
-          contentAsJson(result) shouldBe NotFoundError.asJson
+      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
+        val result = a.apply(request)
+        status(result) shouldBe NOT_FOUND
+        contentAsJson(result) shouldBe NotFoundError.asJson
       }
     }
   }
@@ -176,12 +176,11 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "return 404" in new Test {
       val request: RequestHeader = buildRequest("/resource")
 
-      inside(requestHandler.routeRequest(request)) {
-        case Some(a: EssentialAction) =>
-          val result = a.apply(request)
+      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
+        val result = a.apply(request)
 
-          status(result) shouldBe NOT_FOUND
-          contentAsJson(result) shouldBe UnsupportedVersionError.asJson
+        status(result) shouldBe NOT_FOUND
+        contentAsJson(result) shouldBe UnsupportedVersionError.asJson
       }
     }
   }
@@ -194,14 +193,14 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
       "return 404 with an UnsupportedVersionError" in new Test {
         val request: RequestHeader = buildRequest("/resource")
 
-        inside(requestHandler.routeRequest(request)) {
-          case Some(a: EssentialAction) =>
-            val result = a.apply(request)
+        inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
+          val result = a.apply(request)
 
-            status(result) shouldBe NOT_FOUND
-            contentAsJson(result) shouldBe UnsupportedVersionError.asJson
+          status(result) shouldBe NOT_FOUND
+          contentAsJson(result) shouldBe UnsupportedVersionError.asJson
         }
       }
     }
   }
+
 }

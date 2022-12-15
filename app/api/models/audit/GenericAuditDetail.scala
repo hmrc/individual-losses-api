@@ -24,11 +24,12 @@ case class GenericAuditDetail(userType: String,
                               agentReferenceNumber: Option[String],
                               versionNumber: String,
                               params: Map[String, String],
-                              request: Option[JsValue],
+                              requestBody: Option[JsValue],
                               `X-CorrelationId`: String,
-                              response: AuditResponse)
+                              auditResponse: AuditResponse)
 
 object GenericAuditDetail {
+
   implicit val writes: OWrites[GenericAuditDetail] = (
     (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and
@@ -41,7 +42,7 @@ object GenericAuditDetail {
 
   def apply(userDetails: UserDetails,
             params: Map[String, String],
-            request: Option[JsValue],
+            requestBody: Option[JsValue],
             `X-CorrelationId`: String,
             auditResponse: AuditResponse): GenericAuditDetail = {
 
@@ -50,9 +51,9 @@ object GenericAuditDetail {
       agentReferenceNumber = userDetails.agentReferenceNumber,
       versionNumber = "3.0",
       params = params,
-      request = request,
+      requestBody = requestBody,
       `X-CorrelationId` = `X-CorrelationId`,
-      response = auditResponse
+      auditResponse = auditResponse
     )
   }
 }

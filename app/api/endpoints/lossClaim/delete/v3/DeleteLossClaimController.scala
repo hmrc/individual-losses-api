@@ -16,30 +16,24 @@
 
 package api.endpoints.lossClaim.delete.v3
 
-import api.controllers.{ AuthorisedController, BaseController, EndpointLogContext }
+import api.controllers._
 import api.endpoints.lossClaim.delete.v3.request.{ DeleteLossClaimParser, DeleteLossClaimRawData }
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
-import cats.data.EitherT
-import cats.implicits._
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{ IdGenerator, Logging }
 
 import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService,
-                                          val lookupService: MtdIdLookupService,
-                                          deleteLossClaimService: DeleteLossClaimService,
-                                          deleteLossClaimParser: DeleteLossClaimParser,
-                                          auditService: AuditService,
-                                          cc: ControllerComponents,
-                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class DeleteLossClaimController @Inject() (val authService: EnrolmentsAuthService,
+                                           val lookupService: MtdIdLookupService,
+                                           service: DeleteLossClaimService,
+                                           parser: DeleteLossClaimParser,
+                                           auditService: AuditService,
+                                           cc: ControllerComponents,
+                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -47,54 +41,23 @@ class DeleteLossClaimController @Inject()(val authService: EnrolmentsAuthService
 
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData = DeleteLossClaimRawData(nino, claimId)
 
-      val result =
-        for {
-          parsedRequest  <- EitherT.fromEither[Future](deleteLossClaimParser.parseRequest(rawData))
-          vendorResponse <- EitherT(deleteLossClaimService.deleteLossClaim(parsedRequest))
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${vendorResponse.correlationId}")
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.deleteLossClaim)
+          .withAuditing(
+            AuditHandler(
+              auditService,
+              auditType = "DeleteLossClaim",
+              transactionName = "delete-loss-claim",
+              params = Map("nino" -> nino, "claimId" -> claimId)
+            ))
 
-          auditSubmission(
-            GenericAuditDetail(request.userDetails,
-                               Map("nino" -> nino, "claimId" -> claimId),
-                               None,
-                               vendorResponse.correlationId,
-                               AuditResponse(httpStatus = NO_CONTENT, response = Right(None)))
-          )
-
-          NoContent
-            .withApiHeaders(vendorResponse.correlationId)
-        }
-
-      result.leftMap { errorWrapper =>
-        val result = errorResult(errorWrapper)
-
-        auditSubmission(
-          GenericAuditDetail(
-            request.userDetails,
-            Map("nino" -> nino, "claimId" -> claimId),
-            None,
-            correlationId,
-            AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
-          )
-        )
-
-        result
-      }.merge
+      requestHandler.handleRequest(rawData)
     }
 
-  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event: AuditEvent[GenericAuditDetail] = AuditEvent(
-      auditType = "DeleteLossClaim",
-      transactionName = "delete-loss-claim",
-      detail = details
-    )
-    auditService.auditEvent(event)
-  }
 }

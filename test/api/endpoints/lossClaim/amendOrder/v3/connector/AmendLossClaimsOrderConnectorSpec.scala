@@ -18,11 +18,11 @@ package api.endpoints.lossClaim.amendOrder.v3.connector
 
 import api.connectors.ConnectorSpec
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
+import api.endpoints.lossClaim.amendOrder.v3.request.{ AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody }
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{ Nino, TaxYear }
 
 import scala.concurrent.Future
 
@@ -82,4 +82,5 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
       }
     }
   }
+
 }

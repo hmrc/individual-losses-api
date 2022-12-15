@@ -119,8 +119,8 @@ class RetrieveBFLossControllerSpec
     private val controller = new RetrieveBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      retrieveBFLossService = mockRetrieveBFLossService,
-      retrieveBFLossParser = mockRetrieveBFLossParser,
+      service = mockRetrieveBFLossService,
+      parser = mockRetrieveBFLossParser,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

@@ -16,39 +16,32 @@
 
 package api.endpoints.lossClaim.amendOrder.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.amendOrder.v3.request.AmendLossClaimsOrderRequest
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderResponse
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.ResponseWrapper
 import api.models.errors._
-import api.services.DownstreamServiceSupport
+import api.services.BaseService
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
+class AmendLossClaimsOrderService @Inject() (connector: LossClaimConnector) extends BaseService {
 
-  override val serviceName: String = this.getClass.getSimpleName
-
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit
-                                                                 hc: HeaderCarrier,
-                                                                 ec: ExecutionContext,
-                                                                 correlationId: String): Future[AmendLossClaimsOrderOutcome] = {
+  def amendLossClaimsOrder(
+      request: AmendLossClaimsOrderRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendLossClaimsOrderOutcome] = {
 
     connector
       .amendLossClaimsOrder(request)
       .map {
-        mapToVendorDirect("amendLossClaimsOrder", errorMap)
-      }
-      .map {
-        case Left(errorWrapper) => Left(errorWrapper)
-        case Right(response)    => Right(ResponseWrapper(response.correlationId, AmendLossClaimsOrderResponse()))
+        case Left(err)       => Left(mapDownstreamErrors(errorMap)(err))
+        case Right(response) => Right(ResponseWrapper(response.correlationId, AmendLossClaimsOrderResponse()))
       }
   }
 
-  private def errorMap: Map[String, MtdError] = {
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAXYEAR"           -> TaxYearFormatError,
@@ -69,9 +62,10 @@ class AmendLossClaimsOrderService @Inject()(connector: LossClaimConnector) exten
       "SEQUENCE_START"         -> RuleInvalidSequenceStart,
       "NO_FULL_LIST"           -> RuleLossClaimsMissing,
       "CLAIM_NOT_FOUND"        -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
     )
 
     errors ++ extraTysErrors
   }
+
 }

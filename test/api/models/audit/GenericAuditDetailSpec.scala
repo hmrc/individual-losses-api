@@ -62,7 +62,7 @@ class GenericAuditDetailSpec extends UnitSpec {
     versionNumber = "3.0",
     agentReferenceNumber = agentReferenceNumber,
     params = Map("nino" -> nino, "taxYear" -> taxYear),
-    request = Some(
+    requestBody = Some(
       Json.parse(
         """
         |{
@@ -71,7 +71,7 @@ class GenericAuditDetailSpec extends UnitSpec {
         """.stripMargin
       )),
     `X-CorrelationId` = correlationId,
-    response = AuditResponse(
+    auditResponse = AuditResponse(
       OK,
       Right(Some(Json.parse(s"""
            |{
@@ -116,7 +116,7 @@ class GenericAuditDetailSpec extends UnitSpec {
     agentReferenceNumber = agentReferenceNumber,
     versionNumber = "3.0",
     params = Map("nino" -> nino, "taxYear" -> "2020-2021"),
-    request = Some(
+    requestBody = Some(
       Json.parse(
         """
         |{
@@ -125,7 +125,7 @@ class GenericAuditDetailSpec extends UnitSpec {
       """.stripMargin
       )),
     `X-CorrelationId` = correlationId,
-    response = AuditResponse(BAD_REQUEST, Left(Seq(AuditError(TaxYearFormatError.code))))
+    auditResponse = AuditResponse(BAD_REQUEST, Left(Seq(AuditError(TaxYearFormatError.code))))
   )
 
   "GenericAuditDetail" when {

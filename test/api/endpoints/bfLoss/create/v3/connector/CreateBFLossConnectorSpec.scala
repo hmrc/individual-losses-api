@@ -21,7 +21,6 @@ import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.models.errors.{ LossIdFormatError, MultipleErrors, NinoFormatError, SingleError }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 
@@ -55,28 +54,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
 
         await(connector.createBFLoss(request)) shouldBe expected
       }
-
-      "downstream returns a single error" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, SingleError(NinoFormatError)))
-
-        willPost(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-          body = requestBody
-        ).returns(Future.successful(expected))
-
-        await(connector.createBFLoss(request)) shouldBe expected
-      }
-
-      "downstream returns multiple errors" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, LossIdFormatError))))
-
-        willPost(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-          body = requestBody
-        ).returns(Future.successful(expected))
-
-        await(connector.createBFLoss(request)) shouldBe expected
-      }
     }
   }
+
 }

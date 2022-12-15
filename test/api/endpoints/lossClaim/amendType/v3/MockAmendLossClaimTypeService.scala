@@ -16,13 +16,13 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.amendType.v3.request.AmendLossClaimTypeRequest
 import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockAmendLossClaimTypeService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockAmendLossClaimTypeService extends MockFactory {
 
     def amend(requestData: AmendLossClaimTypeRequest): CallHandler[Future[AmendLossClaimTypeOutcome]] = {
       (mockAmendLossClaimTypeService
-        .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
+
   }
+
 }

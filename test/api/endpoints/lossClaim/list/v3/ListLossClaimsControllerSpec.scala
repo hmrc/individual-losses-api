@@ -52,42 +52,46 @@ class ListLossClaimsControllerSpec
 
   private val response: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
     Seq(
-      ListLossClaimsItem("businessId",
-                         TypeOfClaim.`carry-sideways`,
-                         TypeOfLoss.`self-employment`,
-                         "2020",
-                         "claimId",
-                         Some(1),
-                         "2020-07-13T12:13:48.763Z"),
-      ListLossClaimsItem("businessId1",
-                         TypeOfClaim.`carry-sideways`,
-                         TypeOfLoss.`self-employment`,
-                         "2020",
-                         "claimId1",
-                         Some(2),
-                         "2020-07-13T12:13:48.763Z")
+      ListLossClaimsItem(
+        "businessId",
+        TypeOfClaim.`carry-sideways`,
+        TypeOfLoss.`self-employment`,
+        "2020",
+        "claimId",
+        Some(1),
+        "2020-07-13T12:13:48.763Z"),
+      ListLossClaimsItem(
+        "businessId1",
+        TypeOfClaim.`carry-sideways`,
+        TypeOfLoss.`self-employment`,
+        "2020",
+        "claimId1",
+        Some(2),
+        "2020-07-13T12:13:48.763Z")
     ))
 
   private val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
     Seq(
       HateoasWrapper(
-        ListLossClaimsItem("XAIS12345678910",
-                           TypeOfClaim.`carry-sideways`,
-                           TypeOfLoss.`self-employment`,
-                           "2020-21",
-                           "AAZZ1234567890A",
-                           Some(1),
-                           "2020-07-13T12:13:48.763Z"),
+        ListLossClaimsItem(
+          "XAIS12345678910",
+          TypeOfClaim.`carry-sideways`,
+          TypeOfLoss.`self-employment`,
+          "2020-21",
+          "AAZZ1234567890A",
+          Some(1),
+          "2020-07-13T12:13:48.763Z"),
         Seq(testHateoasLink)
       ),
       HateoasWrapper(
-        ListLossClaimsItem("XAIS12345678911",
-                           TypeOfClaim.`carry-sideways`,
-                           TypeOfLoss.`uk-property-non-fhl`,
-                           "2020-21",
-                           "AAZZ1234567890B",
-                           Some(2),
-                           "2020-07-13T12:13:48.763Z"),
+        ListLossClaimsItem(
+          "XAIS12345678911",
+          TypeOfClaim.`carry-sideways`,
+          TypeOfLoss.`uk-property-non-fhl`,
+          "2020-21",
+          "AAZZ1234567890B",
+          Some(2),
+          "2020-07-13T12:13:48.763Z"),
         Seq(testHateoasLink)
       )
     ))
@@ -179,22 +183,6 @@ class ListLossClaimsControllerSpec
 
         runErrorTest(TypeOfClaimFormatError)
       }
-
-      "the request received is valid but an empty list of claims is returned from downstream" in new Test {
-        MockListLossClaimsRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
-
-        MockListLossClaimsService
-          .list(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ListLossClaimsResponse(Nil)))))
-
-        MockHateoasFactory
-          .wrapList(ListLossClaimsResponse(List.empty[ListLossClaimsItem]), ListLossClaimsHateoasData(nino))
-          .returns(HateoasWrapper(ListLossClaimsResponse(List.empty[HateoasWrapper[ListLossClaimsItem]]), Seq(testCreateHateoasLink)))
-
-        runErrorTest(NotFoundError)
-      }
     }
   }
 
@@ -203,8 +191,8 @@ class ListLossClaimsControllerSpec
     private val controller = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      listLossClaimsService = mockListLossClaimsService,
-      listLossClaimsParser = mockListLossClaimsRequestDataParser,
+      service = mockListLossClaimsService,
+      parser = mockListLossClaimsRequestDataParser,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -212,5 +200,7 @@ class ListLossClaimsControllerSpec
 
     protected def callController(): Future[Result] =
       controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
+
   }
+
 }

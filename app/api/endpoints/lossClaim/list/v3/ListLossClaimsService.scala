@@ -16,30 +16,33 @@
 
 package api.endpoints.lossClaim.list.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.models.errors._
-import api.services.DownstreamServiceSupport
+import api.services.BaseService
 import api.services.v3.Outcomes.ListLossClaimsOutcome
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends DownstreamServiceSupport {
+class ListLossClaimsService @Inject() (connector: LossClaimConnector) extends BaseService {
 
-  override val serviceName: String = this.getClass.getSimpleName
+  def listLossClaims(request: ListLossClaimsRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListLossClaimsOutcome] =
+    connector
+      .listLossClaims(request)
+      .map {
+        case Left(err) =>
+          Left(mapDownstreamErrors(errorMap)(err))
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit
-                                                     hc: HeaderCarrier,
-                                                     ec: ExecutionContext,
-                                                     correlationId: String): Future[ListLossClaimsOutcome] = {
-    connector.listLossClaims(request).map {
-      mapToVendorDirect("listLossClaims", errorMap)
-    }
-  }
+        case Right(responseWrapper) if responseWrapper.responseData.claims.isEmpty =>
+          Left(ErrorWrapper(ctx.correlationId, NotFoundError))
 
-  private def errorMap: Map[String, MtdError] = {
+        case Right(result) =>
+          Right(result)
+      }
+
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAXYEAR"           -> TaxYearFormatError,
@@ -49,7 +52,7 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Dow
       "NOT_FOUND"                 -> NotFoundError,
       "INVALID_CORRELATIONID"     -> InternalError,
       "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
     )
 
     val extraTysErrors = Map(
@@ -62,4 +65,5 @@ class ListLossClaimsService @Inject()(connector: LossClaimConnector) extends Dow
 
     errors ++ extraTysErrors
   }
+
 }

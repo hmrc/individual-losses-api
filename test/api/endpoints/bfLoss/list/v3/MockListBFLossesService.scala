@@ -16,13 +16,13 @@
 
 package api.endpoints.bfLoss.list.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
 import api.services.v3.Outcomes.ListBFLossesOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockListBFLossesService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockListBFLossesService extends MockFactory {
 
     def list(listBFLossRequest: ListBFLossesRequest): CallHandler[Future[ListBFLossesOutcome]] = {
       (mockListBFLossesService
-        .listBFLosses(_: ListBFLossesRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(listBFLossRequest, *, *, *)
+        .listBFLosses(_: ListBFLossesRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(listBFLossRequest, *, *)
     }
+
   }
+
 }

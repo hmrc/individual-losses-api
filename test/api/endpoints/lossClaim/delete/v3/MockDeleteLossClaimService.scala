@@ -16,13 +16,13 @@
 
 package api.endpoints.lossClaim.delete.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.services.v3.Outcomes.DeleteLossClaimOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockDeleteLossClaimService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockDeleteLossClaimService extends MockFactory {
 
     def delete(requestData: DeleteLossClaimRequest): CallHandler[Future[DeleteLossClaimOutcome]] = {
       (mockDeleteLossClaimService
-        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .deleteLossClaim(_: DeleteLossClaimRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
+
   }
+
 }

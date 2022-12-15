@@ -21,7 +21,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.HttpResponse
 import utils.Logging
 
-import scala.util.{Success, Try}
+import scala.util.{ Success, Try }
 
 trait HttpParser extends Logging {
 
@@ -42,18 +42,17 @@ trait HttpParser extends Logging {
         logger.warn(s"[KnownJsonResponse][validateJson] Unable to parse JSON: $error")
         None
     }
+
   }
 
   def retrieveCorrelationId(response: HttpResponse): String = response.header("CorrelationId").getOrElse("")
 
-  private val multipleErrorReads: Reads[Seq[MtdError]] = (__ \ "failures").read[Seq[MtdError]]
+  private val multipleErrorReads: Reads[Seq[DownstreamErrorCode]] = (__ \ "failures").read[Seq[DownstreamErrorCode]]
 
   def parseErrors(response: HttpResponse): DownstreamError = {
-    val singleError = response.validateJson[MtdError].map(SingleError)
-    lazy val multipleErrors = response.validateJson(multipleErrorReads).map {
-      case Nil :+ err => SingleError(err)
-      case other      => MultipleErrors(other)
-    }
+    val singleError         = response.validateJson[DownstreamErrorCode].map(err => DownstreamErrors(List(err)))
+    lazy val multipleErrors = response.validateJson(multipleErrorReads).map(errs => DownstreamErrors(errs))
+
     lazy val unableToParseJsonError = {
       logger.warn(s"unable to parse errors from response: ${response.body}")
       OutboundError(InternalError)

@@ -16,13 +16,13 @@
 
 package api.endpoints.lossClaim.list.v3
 
+import api.controllers.RequestContext
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.services.v3.Outcomes.ListLossClaimsOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockListLossClaimsService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockListLossClaimsService extends MockFactory {
 
     def list(listBFLossRequest: ListLossClaimsRequest): CallHandler[Future[ListLossClaimsOutcome]] = {
       (mockListLossClaimsService
-        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(listBFLossRequest, *, *, *)
+        .listLossClaims(_: ListLossClaimsRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(listBFLossRequest, *, *)
     }
+
   }
+
 }

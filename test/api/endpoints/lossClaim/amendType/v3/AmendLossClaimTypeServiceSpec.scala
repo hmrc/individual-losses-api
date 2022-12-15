@@ -16,23 +16,21 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
-import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
+import api.endpoints.lossClaim.amendType.v3.request.{ AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody }
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors._
 import api.services.ServiceSpec
-import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
 
 import scala.concurrent.Future
 
 class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
-  val nino: String                            = "AA123456A"
-  val claimId: String                         = "AAZZ1234567890a"
-  override implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val nino: String    = "AA123456A"
+  val claimId: String = "AAZZ1234567890a"
 
   val requestBody: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
@@ -65,7 +63,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
     "return that wrapped error as-is" when {
       "the connector returns an outbound error" in new Test {
-        val someError: MtdError                                = MtdError("SOME_CODE", "some message")
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedLossClaimConnector.amendLossClaimType(request).returns(Future.successful(Left(downstreamResponse)))
 
@@ -73,37 +71,33 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
       }
     }
 
-    "one of the errors from downstream is a DownstreamError" should {
-      "return a single error if there are multiple errors" in new Test {
-        val expected: ResponseWrapper[MultipleErrors] = ResponseWrapper(correlationId, MultipleErrors(Seq(NinoFormatError, ServiceUnavailableError)))
-        MockedLossClaimConnector.amendLossClaimType(request).returns(Future.successful(Left(expected)))
-        val result: AmendLossClaimTypeOutcome = await(service.amendLossClaimType(request))
-        result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
-      }
-    }
+    "map errors according to spec" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
+          MockedLossClaimConnector
+            .amendLossClaimType(request)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_CLAIM_ID" -> ClaimIdFormatError,
-      "INVALID_PAYLOAD" -> InternalError,
-      "INVALID_CLAIM_TYPE" -> RuleTypeOfClaimInvalidForbidden,
-      "NOT_FOUND" -> NotFoundError,
-      "CONFLICT" -> RuleClaimTypeNotChanged,
-      "INVALID_CORRELATIONID" -> InternalError,
-      "SERVER_ERROR" -> InternalError,
-      "SERVICE_UNAVAILABLE" -> InternalError,
-      "UNEXPECTED_ERROR" -> InternalError
-    ).foreach {
-      case (k, v) =>
-        s"a $k error is received from the connector" should {
-          s"return a $v MTD error" in new Test {
-            MockedLossClaimConnector
-              .amendLossClaimType(request)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, SingleError(MtdError(k, "MESSAGE"))))))
-
-            await(service.amendLossClaimType(request)) shouldBe Left(ErrorWrapper(correlationId, v, None))
-          }
+          private val result = await(service.amendLossClaimType(request))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
+
+      val errors: Seq[(String, MtdError)] = List(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+        "INVALID_PAYLOAD"           -> InternalError,
+        "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalidForbidden,
+        "NOT_FOUND"                 -> NotFoundError,
+        "CONFLICT"                  -> RuleClaimTypeNotChanged,
+        "INVALID_CORRELATIONID"     -> InternalError,
+        "SERVER_ERROR"              -> InternalError,
+        "SERVICE_UNAVAILABLE"       -> InternalError,
+        "UNEXPECTED_ERROR"          -> InternalError
+      )
+
+      errors.foreach(args => (serviceError _).tupled(args))
+
     }
   }
+
 }

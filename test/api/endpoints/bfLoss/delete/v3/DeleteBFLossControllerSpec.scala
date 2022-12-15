@@ -83,8 +83,8 @@ class DeleteBFLossControllerSpec
     private val controller = new DeleteBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      deleteBFLossService = mockDeleteBFLossService,
-      deleteBFLossParser = mockDeleteBFLossParser,
+      service = mockDeleteBFLossService,
+      parser = mockDeleteBFLossParser,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -101,9 +101,9 @@ class DeleteBFLossControllerSpec
           agentReferenceNumber = None,
           versionNumber = "3.0",
           params = Map("nino" -> nino, "lossId" -> lossId),
-          request = maybeRequestBody,
+          requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
-          response = auditResponse
+          auditResponse = auditResponse
         )
       )
 

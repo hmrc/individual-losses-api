@@ -142,6 +142,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
     "return 401 with error body" when {
       "AuthorisationException thrown" in new Test() {
         val result: Future[Result] = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
+        // TODO This really should be FORBIDDEN (403), but would need to be changed across all the APIs at once (if at all).
         status(result) shouldBe UNAUTHORIZED
 
         contentAsJson(result) shouldBe ClientNotAuthorisedError.asJson
@@ -167,4 +168,5 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       }
     }
   }
+
 }

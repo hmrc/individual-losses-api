@@ -16,13 +16,13 @@
 
 package api.endpoints.bfLoss.delete.v3
 
+import api.controllers.RequestContext
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
 import api.services.v3.Outcomes.DeleteBFLossOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockDeleteBFLossService extends MockFactory {
 
@@ -32,8 +32,10 @@ trait MockDeleteBFLossService extends MockFactory {
 
     def delete(requestData: DeleteBFLossRequest): CallHandler[Future[DeleteBFLossOutcome]] = {
       (mockDeleteBFLossService
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+        .deleteBFLoss(_: DeleteBFLossRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
+
   }
+
 }
