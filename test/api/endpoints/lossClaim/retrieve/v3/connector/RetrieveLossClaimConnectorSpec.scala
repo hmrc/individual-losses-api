@@ -23,7 +23,6 @@ import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors._
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -67,40 +66,6 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
       "provided with a valid request" in new IfsTest with Test {
 
         val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
-
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
-
-        retrieveLossClaimResult(connector) shouldBe expected
-      }
-    }
-
-    "return an unsuccessful response" when {
-      "provided with a single error" in new IfsTest with Test {
-
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
-
-        MockHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
-
-        retrieveLossClaimResult(connector) shouldBe expected
-      }
-
-      "provided with multiple errors" in new IfsTest with Test {
-
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, ClaimIdFormatError.asDownstream))))
 
         MockHttpClient
           .get(

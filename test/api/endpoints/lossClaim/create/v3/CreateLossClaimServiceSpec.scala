@@ -66,7 +66,9 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
     "one of the errors from downstream is a DownstreamError" should {
       "return a single error if there are multiple errors" in new Test {
         val expected: ResponseWrapper[DownstreamErrors] =
-          ResponseWrapper(correlationId, DownstreamErrors(Seq(NinoFormatError.asDownstream, ServiceUnavailableError.asDownstream)))
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors(Seq(DownstreamErrorCode(NinoFormatError.code), DownstreamErrorCode(ServiceUnavailableError.code))))
 
         MockedLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
         val result: CreateLossClaimOutcome = await(service.createLossClaim(request))

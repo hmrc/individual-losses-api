@@ -22,7 +22,6 @@ import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
@@ -60,42 +59,6 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Right(ResponseWrapper(correlationId, response))
-
-        MockHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
-            body = amendLossClaimType,
-            requiredHeaders = requiredIfsHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
-
-        amendLossClaimTypeResult(connector) shouldBe expected
-      }
-    }
-
-    "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
-
-        MockHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
-            body = amendLossClaimType,
-            requiredHeaders = requiredIfsHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
-
-        amendLossClaimTypeResult(connector) shouldBe expected
-      }
-    }
-
-    "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, ClaimIdFormatError.asDownstream))))
 
         MockHttpClient
           .put(

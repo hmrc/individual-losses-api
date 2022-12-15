@@ -20,14 +20,13 @@ import api.controllers.RequestContext
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.models.errors._
+import api.services.BaseService
 import api.services.v3.Outcomes.ListLossClaimsOutcome
-import api.services.{ BaseService, DownstreamResponseMappingSupport }
-import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ListLossClaimsService @Inject() (connector: LossClaimConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
+class ListLossClaimsService @Inject() (connector: LossClaimConnector) extends BaseService {
 
   def listLossClaims(request: ListLossClaimsRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListLossClaimsOutcome] =
     connector
@@ -43,7 +42,7 @@ class ListLossClaimsService @Inject() (connector: LossClaimConnector) extends Ba
           Right(result)
       }
 
-  private def errorMap: Map[String, MtdError] = {
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAXYEAR"           -> TaxYearFormatError,

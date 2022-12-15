@@ -20,22 +20,21 @@ import api.controllers.RequestContext
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.models.errors._
+import api.services.BaseService
 import api.services.v3.Outcomes.CreateLossClaimOutcome
-import api.services.{ BaseService, DownstreamResponseMappingSupport }
 import cats.implicits._
-import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class CreateLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
+class CreateLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService {
 
   def createLossClaim(request: CreateLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[CreateLossClaimOutcome] =
     connector
       .createLossClaim(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  private def errorMap: PartialFunction[String, MtdError] = {
+  private val errorMap: PartialFunction[String, MtdError] = {
     case "INVALID_TAXABLE_ENTITY_ID"                                                          => NinoFormatError
     case "DUPLICATE"                                                                          => RuleDuplicateClaimSubmissionError
     case "INCOME_SOURCE_NOT_FOUND"                                                            => NotFoundError

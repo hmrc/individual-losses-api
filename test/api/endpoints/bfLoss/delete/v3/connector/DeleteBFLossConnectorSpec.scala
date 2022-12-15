@@ -21,7 +21,6 @@ import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.delete.v3.request.DeleteBFLossRequest
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors.{ DownstreamErrors, LossIdFormatError, NinoFormatError }
 
 import scala.concurrent.Future
 
@@ -43,26 +42,6 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
     "return the expected response for a non-TYS request" when {
       "downstream returns OK" in new DesTest with Test {
         val expected = Right(ResponseWrapper(correlationId, ()))
-
-        willDelete(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-        ).returns(Future.successful(expected))
-
-        await(connector.deleteBFLoss(request)) shouldBe expected
-      }
-
-      "downstream returns a single error" in new DesTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
-
-        willDelete(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-        ).returns(Future.successful(expected))
-
-        await(connector.deleteBFLoss(request)) shouldBe expected
-      }
-
-      "downstream returns multiple errors" in new DesTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, LossIdFormatError.asDownstream))))
 
         willDelete(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"

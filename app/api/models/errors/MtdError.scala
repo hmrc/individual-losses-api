@@ -17,11 +17,10 @@
 package api.models.errors
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsObject, JsPath, Json, OWrites}
+import play.api.libs.json.{ JsObject, JsPath, Json, OWrites }
 
 case class MtdError(code: String, message: String, httpStatus: Int, paths: Option[Seq[String]] = None) {
-  val asJson: JsObject                  = Json.toJson(this).as[JsObject]
-  val asDownstream: DownstreamErrorCode = DownstreamErrorCode(code)
+  val asJson: JsObject = Json.toJson(this).as[JsObject]
 }
 
 object MtdError {

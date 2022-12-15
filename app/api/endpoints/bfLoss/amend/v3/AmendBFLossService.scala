@@ -20,22 +20,21 @@ import api.controllers.RequestContext
 import api.endpoints.bfLoss.amend.v3.request.AmendBFLossRequest
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.models.errors._
+import api.services.BaseService
 import api.services.v3.Outcomes.AmendBFLossOutcome
-import api.services.{ BaseService, DownstreamResponseMappingSupport }
 import cats.implicits._
-import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class AmendBFLossService @Inject() (connector: BFLossConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
+class AmendBFLossService @Inject() (connector: BFLossConnector) extends BaseService {
 
   def amendBFLoss(request: AmendBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendBFLossOutcome] =
     connector
       .amendBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  private def errorMap: Map[String, MtdError] =
+  private val errorMap: Map[String, MtdError] =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_LOSS_ID"           -> LossIdFormatError,

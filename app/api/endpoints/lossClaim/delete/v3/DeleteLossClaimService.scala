@@ -20,22 +20,21 @@ import api.controllers.RequestContext
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.models.errors._
+import api.services.BaseService
 import api.services.v3.Outcomes.DeleteLossClaimOutcome
-import api.services.{ BaseService, DownstreamResponseMappingSupport }
 import cats.implicits._
-import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class DeleteLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
+class DeleteLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService {
 
   def deleteLossClaim(request: DeleteLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[DeleteLossClaimOutcome] =
     connector
       .deleteLossClaim(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  private def errorMap: Map[String, MtdError] = Map(
+  private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,

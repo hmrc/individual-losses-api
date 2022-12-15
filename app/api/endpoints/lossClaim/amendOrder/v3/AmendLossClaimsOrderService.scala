@@ -22,14 +22,13 @@ import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderRespon
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.models.ResponseWrapper
 import api.models.errors._
+import api.services.BaseService
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
-import api.services.{ BaseService, DownstreamResponseMappingSupport }
-import utils.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class AmendLossClaimsOrderService @Inject() (connector: LossClaimConnector) extends BaseService with DownstreamResponseMappingSupport with Logging {
+class AmendLossClaimsOrderService @Inject() (connector: LossClaimConnector) extends BaseService {
 
   def amendLossClaimsOrder(
       request: AmendLossClaimsOrderRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendLossClaimsOrderOutcome] = {
@@ -42,7 +41,7 @@ class AmendLossClaimsOrderService @Inject() (connector: LossClaimConnector) exte
       }
   }
 
-  private def errorMap: Map[String, MtdError] = {
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAXYEAR"           -> TaxYearFormatError,

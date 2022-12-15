@@ -23,7 +23,6 @@ import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
-import api.models.errors._
 
 import scala.concurrent.Future
 
@@ -371,42 +370,6 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)
         ) shouldBe expected
-      }
-    }
-
-    "a request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new IfsTest with Test {
-
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = Nil) returns Future.successful(expected)
-
-        listLossClaimsResult(connector) shouldBe expected
-      }
-
-      "return an unsuccessful response with the correct correlationId and a single error for a TYS tax year" in new TysIfsTest with Test {
-
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = Nil) returns Future.successful(expected)
-
-        listLossClaimsResult(connector, Some(TaxYear.fromMtd("2023-24"))) shouldBe expected
-      }
-    }
-
-    "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, TaxYearFormatError.asDownstream))))
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("taxYear", "2019"))) returns Future.successful(expected)
-
-        listLossClaimsResult(connector = connector, Some(TaxYear("2019"))) shouldBe expected
-      }
-
-      "return an unsuccessful response with the correct correlationId and multiple errors for TYS tax year" in new TysIfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(List(NinoFormatError.asDownstream, TaxYearFormatError.asDownstream))))
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino") returns Future.successful(expected)
-
-        listLossClaimsResult(connector = connector, Some(TaxYear("2024"))) shouldBe expected
       }
     }
 

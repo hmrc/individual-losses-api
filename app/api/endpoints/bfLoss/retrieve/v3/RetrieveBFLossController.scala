@@ -36,7 +36,6 @@ class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService
                                           cc: ControllerComponents,
                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =

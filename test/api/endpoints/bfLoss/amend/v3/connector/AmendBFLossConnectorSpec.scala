@@ -24,7 +24,6 @@ import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.domain.v3.TypeOfLoss
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors.{ DownstreamErrors, LossIdFormatError, NinoFormatError }
 
 import scala.concurrent.Future
 
@@ -54,28 +53,6 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
           lastModified = "2018-07-13T12:13:48.763Z"
         )
         val expected = Right(ResponseWrapper(correlationId, response))
-
-        willPut(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
-          body = requestBody
-        ).returns(Future.successful(expected))
-
-        await(connector.amendBFLoss(request)) shouldBe expected
-      }
-
-      "downstream returns a single error" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors.single(NinoFormatError.asDownstream)))
-
-        willPut(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
-          body = requestBody
-        ).returns(Future.successful(expected))
-
-        await(connector.amendBFLoss(request)) shouldBe expected
-      }
-
-      "downstream returns multiple errors" in new IfsTest with Test {
-        val expected = Left(ResponseWrapper(correlationId, DownstreamErrors(Seq(NinoFormatError.asDownstream, LossIdFormatError.asDownstream))))
 
         willPut(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
