@@ -38,7 +38,7 @@ class AmendLossClaimTypeService @Inject() (connector: LossClaimConnector) extend
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "INVALID_PAYLOAD"           -> InternalError,
-    "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalidForbidden,
+    "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleClaimTypeNotChanged,
     "INVALID_CORRELATIONID"     -> InternalError,

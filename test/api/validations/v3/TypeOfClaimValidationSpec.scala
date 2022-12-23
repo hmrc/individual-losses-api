@@ -16,8 +16,8 @@
 
 package api.validations.v3
 
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.models.errors.{ RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
 import support.UnitSpec
 
 class TypeOfClaimValidationSpec extends UnitSpec {
@@ -32,13 +32,15 @@ class TypeOfClaimValidationSpec extends UnitSpec {
 
       def checkValid(typeOfClaim: String): Unit =
         s"provided with a string of '$typeOfClaim'" in {
-          TypeOfClaimValidation.validate(typeOfClaim) shouldBe Nil
+          val result = TypeOfClaimValidation.validate(typeOfClaim)
+          result shouldBe Nil
         }
     }
 
     "return a TypeOfLossFormatError" when {
       "provided with an unknown type of claim" in {
-        TypeOfClaimValidation.validate("invalid") shouldBe List(TypeOfClaimFormatError)
+        val result = TypeOfClaimValidation.validate("invalid")
+        result shouldBe List(TypeOfClaimFormatError)
       }
     }
   }
@@ -49,27 +51,32 @@ class TypeOfClaimValidationSpec extends UnitSpec {
     }
 
     "a typeOfLoss is uk-property-non-fhl" must {
-      permitOnly(TypeOfLoss.`uk-property-non-fhl`,
-                 Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
+      permitOnly(
+        TypeOfLoss.`uk-property-non-fhl`,
+        Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
     }
 
     "a typeOfLoss is foreign-property" must {
-      permitOnly(TypeOfLoss.`foreign-property`,
-                 Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
+      permitOnly(
+        TypeOfLoss.`foreign-property`,
+        Seq(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
     }
 
     def permitOnly(typeOfLoss: TypeOfLoss, permittedTypesOfClaim: Seq[TypeOfClaim]): Unit = {
       permittedTypesOfClaim.foreach(typeOfClaim =>
         s"permit $typeOfLoss with $typeOfClaim" in {
-          TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe Nil
-      })
+          val result = TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss)
+          result shouldBe Nil
+        })
 
       TypeOfClaim.values
         .filterNot(permittedTypesOfClaim.contains)
         .foreach(typeOfClaim =>
           s"not permit $typeOfLoss with $typeOfClaim" in {
-            TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss) shouldBe List(RuleTypeOfClaimInvalid)
-        })
+            val result = TypeOfClaimValidation.validateTypeOfClaimPermitted(typeOfClaim, typeOfLoss)
+            result shouldBe List(RuleTypeOfClaimInvalid)
+          })
     }
   }
+
 }
