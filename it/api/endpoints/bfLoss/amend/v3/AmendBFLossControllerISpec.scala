@@ -162,14 +162,15 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
           ("AA1123A", "XAIS12345678910", requestJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "XAIS1234dfxgchjbn5678910", requestJson, BAD_REQUEST, LossIdFormatError),
           ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST, ValueFormatError.copy(paths = Some(Seq("/lossAmount")))),
-          ("AA123456A",
-           "XAIS12345678910",
-           Json.parse(s"""
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            Json.parse(s"""
                                                          |{
                                                          |
                                                          |}""".stripMargin),
-           BAD_REQUEST,
-           RuleIncorrectOrEmptyBodyError)
+            BAD_REQUEST,
+            RuleIncorrectOrEmptyBodyError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -196,7 +197,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
           (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-          (CONFLICT, "CONFLICT", FORBIDDEN, RuleLossAmountNotChanged),
+          (CONFLICT, "CONFLICT", BAD_REQUEST, RuleLossAmountNotChanged),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
@@ -207,4 +208,5 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
       }
     }
   }
+
 }

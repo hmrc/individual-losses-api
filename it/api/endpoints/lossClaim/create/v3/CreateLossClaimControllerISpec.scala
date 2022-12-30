@@ -19,7 +19,7 @@ package api.endpoints.lossClaim.create.v3
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{ JsObject, JsValue, Json }
 import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
@@ -115,11 +115,11 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
-        response.status shouldBe Status.CREATED
+        response.status shouldBe CREATED
         response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
@@ -127,73 +127,75 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
     }
 
-    "return 403 FORBIDDEN" when {
-      createErrorTest(Status.CONFLICT, "DUPLICATE", Status.FORBIDDEN, RuleDuplicateClaimSubmissionError)
-      createErrorTest(Status.UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", Status.FORBIDDEN, RulePeriodNotEnded)
-      createErrorTest(Status.UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", Status.FORBIDDEN, RuleNoAccountingPeriod)
+    "return 400 BAD_REQUEST" when {
+      createErrorTest(CONFLICT, "DUPLICATE", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
+      createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
     }
 
     "return 404 NOT FOUND" when {
-      createErrorTest(Status.NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", Status.NOT_FOUND, NotFoundError)
+      createErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
     }
 
     "return 400 (Bad Request) with paths for the missing mandatory field" when {
       createLossClaimValidationErrorTest(
         "AA123456A",
         Json.obj("typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim),
-        Status.BAD_REQUEST,
+        BAD_REQUEST,
         RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/businessId")))
       )
     }
 
     "return 400 (Bad Request)" when {
 
-      createErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      createErrorTest(Status.UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(Status.UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
-      createLossClaimValidationErrorTest("BADNINO",
-                                         generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"),
-                                         Status.BAD_REQUEST,
-                                         NinoFormatError)
+      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"), BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest(
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
-        Status.BAD_REQUEST,
+        BAD_REQUEST,
         TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor")))
       )
-      createLossClaimValidationErrorTest("AA123456A", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      createLossClaimValidationErrorTest("AA123456A",
-                                         generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
-                                         Status.BAD_REQUEST,
-                                         RuleTaxYearNotSupportedError)
+      createLossClaimValidationErrorTest("AA123456A", Json.obj(), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      createLossClaimValidationErrorTest(
+        "AA123456A",
+        generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
+        BAD_REQUEST,
+        RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest(
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
-        Status.BAD_REQUEST,
+        BAD_REQUEST,
         RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearClaimedFor")))
       )
-      createLossClaimValidationErrorTest("AA123456A",
-                                         generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),
-                                         Status.BAD_REQUEST,
-                                         TypeOfLossFormatError)
-      createLossClaimValidationErrorTest("AA123456A",
-                                         generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"),
-                                         Status.BAD_REQUEST,
-                                         BusinessIdFormatError)
-      createLossClaimValidationErrorTest("AA123456A",
-                                         generateLossClaim(businessId, typeOfLoss, taxYear, "carry-sideways-fhl"),
-                                         Status.BAD_REQUEST,
-                                         RuleTypeOfClaimInvalid)
-      createLossClaimValidationErrorTest("AA123456A",
-                                         generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward-type"),
-                                         Status.BAD_REQUEST,
-                                         TypeOfClaimFormatError)
+      createLossClaimValidationErrorTest(
+        "AA123456A",
+        generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),
+        BAD_REQUEST,
+        TypeOfLossFormatError)
+      createLossClaimValidationErrorTest(
+        "AA123456A",
+        generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"),
+        BAD_REQUEST,
+        BusinessIdFormatError)
+      createLossClaimValidationErrorTest(
+        "AA123456A",
+        generateLossClaim(businessId, typeOfLoss, taxYear, "carry-sideways-fhl"),
+        BAD_REQUEST,
+        RuleTypeOfClaimInvalid)
+      createLossClaimValidationErrorTest(
+        "AA123456A",
+        generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward-type"),
+        BAD_REQUEST,
+        TypeOfClaimFormatError)
     }
 
     def createErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
@@ -231,4 +233,5 @@ class CreateLossClaimControllerISpec extends V3IntegrationBaseSpec {
       }
     }
   }
+
 }

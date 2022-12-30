@@ -39,6 +39,7 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
                                           |    "lossAmount": 256.78
                                           |}
       """.stripMargin)
+
   private trait Test {
     val nino           = "AA123456A"
     def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino"
@@ -90,6 +91,7 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
          |        "reason": "downstream message"
          |      }
       """.stripMargin
+
   }
 
   "Calling the create BFLoss endpoint" should {
@@ -146,9 +148,10 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
         )
         validationErrorTest("AA123456A", requestBody.update("/lossAmount", JsNumber(12.345)), ValueFormatError.copy(paths = Some(Seq("/lossAmount"))))
         validationErrorTest("AA123456A", requestBody.update("/businessId", JsString("badBusinessId")), BusinessIdFormatError)
-        validationErrorTest("AA123456A",
-                            requestBody.removeProperty("/lossAmount"),
-                            RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/lossAmount"))))
+        validationErrorTest(
+          "AA123456A",
+          requestBody.removeProperty("/lossAmount"),
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/lossAmount"))))
         validationErrorTest("AA123456A", requestBody.update("/typeOfLoss", JsString("bad-loss-type")), TypeOfLossFormatError)
         validationErrorTest("AA123456A", requestBody.update("/taxYearBroughtForwardFrom", JsString("2090-91")), RuleTaxYearNotEndedError)
       }
@@ -177,11 +180,12 @@ class CreateBFLossControllerISpec extends V3IntegrationBaseSpec with JsonErrorVa
         serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_ENDED", BAD_REQUEST, RuleTaxYearNotEndedError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
-        serviceErrorTest(CONFLICT, "DUPLICATE_SUBMISSION", FORBIDDEN, RuleDuplicateSubmissionError)
+        serviceErrorTest(CONFLICT, "DUPLICATE_SUBMISSION", BAD_REQUEST, RuleDuplicateSubmissionError)
         serviceErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
         serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       }
     }
   }
+
 }

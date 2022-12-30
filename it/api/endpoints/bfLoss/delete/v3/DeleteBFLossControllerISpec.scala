@@ -16,15 +16,15 @@
 
 package api.endpoints.bfLoss.delete.v3
 
-import api.models.errors.{RuleDeleteAfterFinalDeclarationError, _}
+import api.models.errors.{ RuleDeleteAfterFinalDeclarationError, _ }
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
-import play.api.libs.json.{JsObject, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.http.Status._
+import play.api.libs.json.{ JsObject, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
 
@@ -67,11 +67,11 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, desUrl, Status.NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, desUrl, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
-        response.status shouldBe Status.NO_CONTENT
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
@@ -95,13 +95,13 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDeleteAfterFinalDeclarationError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
+      serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
+      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "handle validation errors according to spec" when {
@@ -124,9 +124,10 @@ class DeleteBFLossControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", "AAZZ1234567890a", Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADLOSSID", Status.BAD_REQUEST, LossIdFormatError)
+      validationErrorTest("BADNINO", "AAZZ1234567890a", BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BADLOSSID", BAD_REQUEST, LossIdFormatError)
     }
 
   }
+
 }

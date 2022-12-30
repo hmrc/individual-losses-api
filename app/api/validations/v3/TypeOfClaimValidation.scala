@@ -45,4 +45,5 @@ object TypeOfClaimValidation {
 
     if (permitted) NoValidationErrors else List(RuleTypeOfClaimInvalid)
   }
+
 }

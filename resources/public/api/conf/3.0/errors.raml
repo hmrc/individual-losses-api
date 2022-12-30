@@ -146,7 +146,7 @@ traits:
                     code: RULE_TAX_YEAR_NOT_ENDED
   ruleNoChangeTypeOfClaim:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -210,7 +210,7 @@ traits:
                 description: The format of the type of claim is not valid.
                 value:
                   code: FORMAT_TYPE_OF_CLAIM
-  ruleTypeOfClaim400:
+  ruleTypeOfClaim:
     responses:
       400:
         body:
@@ -243,20 +243,9 @@ traits:
                 description: 'The format of the supplied claim type is not valid.'
                 value:
                   code: FORMAT_TYPE_OF_CLAIM
-  ruleTypeOfClaim403:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleTypeOfClaim:
-                description: The type of claim supplied is not valid.
-                value:
-                  code: RULE_TYPE_OF_CLAIM_INVALID
   rulePeriodNotEnded:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -267,7 +256,7 @@ traits:
                   code: RULE_PERIOD_NOT_ENDED
   ruleAccountingPeriodNotEnded:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -289,7 +278,7 @@ traits:
                   code: FORMAT_CLAIM_ID
   ruleDuplicateSubmission:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -300,7 +289,7 @@ traits:
                   code: RULE_DUPLICATE_SUBMISSION
   ruleDuplicateClaimSubmission:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -311,7 +300,7 @@ traits:
                   code: RULE_DUPLICATE_SUBMISSION
   ruleDeleteAfterFinalDeclaration:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -322,7 +311,7 @@ traits:
                   code: RULE_DELETE_AFTER_FINAL_DECLARATION
   ruleNoChangeLossAmount:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -333,7 +322,7 @@ traits:
                   code: RULE_NO_CHANGE
   ruleNoAccountingPeriod:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse

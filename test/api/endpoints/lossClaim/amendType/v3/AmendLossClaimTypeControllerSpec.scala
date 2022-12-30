@@ -130,9 +130,9 @@ class AmendLossClaimTypeControllerSpec
 
         MockAmendLossClaimTypeService
           .amend(AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType))
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalidForbidden, None))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalid, None))))
 
-        runErrorTestWithAudit(RuleTypeOfClaimInvalidForbidden, maybeAuditRequestBody = Some(requestBody))
+        runErrorTestWithAudit(RuleTypeOfClaimInvalid, maybeAuditRequestBody = Some(requestBody))
       }
     }
   }
@@ -168,4 +168,5 @@ class AmendLossClaimTypeControllerSpec
       )
 
   }
+
 }

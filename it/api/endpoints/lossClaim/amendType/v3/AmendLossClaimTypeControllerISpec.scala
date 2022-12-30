@@ -19,7 +19,7 @@ package api.endpoints.lossClaim.amendType.v3
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
@@ -113,12 +113,12 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
@@ -143,15 +143,15 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", Status.FORBIDDEN, RuleTypeOfClaimInvalidForbidden)
-      serviceErrorTest(Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleClaimTypeNotChanged)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_CLAIM_ID", BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleClaimTypeNotChanged)
+      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
+      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "handle validation errors according to spec" when {
@@ -178,10 +178,11 @@ class AmendLossClaimTypeControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", "AAZZ1234567890a", requestJson, Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADClaimId", requestJson, Status.BAD_REQUEST, ClaimIdFormatError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj(), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj("typeOfClaim" -> "xxx"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+      validationErrorTest("BADNINO", "AAZZ1234567890a", requestJson, BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BADClaimId", requestJson, BAD_REQUEST, ClaimIdFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj(), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj("typeOfClaim" -> "xxx"), BAD_REQUEST, TypeOfClaimFormatError)
     }
   }
+
 }

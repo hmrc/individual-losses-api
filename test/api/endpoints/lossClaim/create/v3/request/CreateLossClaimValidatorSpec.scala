@@ -142,4 +142,5 @@ class CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
       }
     }
   }
+
 }
