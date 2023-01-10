@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,21 +49,6 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
   object TestClass {
     implicit val format: Format[TestClass] = Json.format[TestClass]
-  }
-
-  "validateRetrieveResponse" when {
-    "passed an empty response" should {
-      "return a NotFoundError error" in {
-        mapping.validateRetrieveResponse(ResponseWrapper(correlationId, TestClass(None))) shouldBe
-          Left(ErrorWrapper(correlationId, NotFoundError))
-      }
-    }
-    "passed anything else" should {
-      "pass it through" in {
-        mapping.validateRetrieveResponse(ResponseWrapper(correlationId, NotFoundError)) shouldBe
-          Right(ResponseWrapper(correlationId, NotFoundError))
-      }
-    }
   }
 
   "mapping Downstream errors" when {
