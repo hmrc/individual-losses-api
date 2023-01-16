@@ -51,21 +51,6 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
     implicit val format: Format[TestClass] = Json.format[TestClass]
   }
 
-  "validateRetrieveResponse" when {
-    "passed an empty response" should {
-      "return a NotFoundError error" in {
-        mapping.validateRetrieveResponse(ResponseWrapper(correlationId, TestClass(None))) shouldBe
-          Left(ErrorWrapper(correlationId, NotFoundError))
-      }
-    }
-    "passed anything else" should {
-      "pass it through" in {
-        mapping.validateRetrieveResponse(ResponseWrapper(correlationId, NotFoundError)) shouldBe
-          Right(ResponseWrapper(correlationId, NotFoundError))
-      }
-    }
-  }
-
   "mapping Downstream errors" when {
     "single error" when {
       "the error code is in the map provided" must {
