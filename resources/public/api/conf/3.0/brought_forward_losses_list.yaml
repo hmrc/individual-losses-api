@@ -1,0 +1,115 @@
+summary: List Brought Forward Losses
+description: |
+  This endpoint allows a developer to retrieve a list of all brought forward losses that have incurred before joining MTD.
+  A National Insurance number must be provided
+  
+  ### Test data
+  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+  <table>
+    <thead>
+        <tr>
+            <th>Header Value (Gov-Test-Scenario)</th>
+            <th>Scenario</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><p>N/A - DEFAULT</p></td>
+            <td><p>Simulates success response with multiple business types.</p></td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td><p>SELF_EMPLOYMENT</p></td>
+            <td><p>Simulates success response with only self-employment.</p></td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td><p>UK_PROPERTY</p></td>
+            <td><p>Simulates success response with only UK property.</p></td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td><p>FOREIGN_PROPERTY</p></td>
+            <td><p>Simulates success response with only foreign property.</p></td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td><p>NOT_FOUND</p></td>
+            <td><p>Simulates the scenario where no data is found.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearBroughtForwardFrom'
+  - $ref: './common/queryParameters.yaml#/components/parameters/businessId'
+  - $ref: './common/queryParameters.yaml#/components/parameters/typeOfLossBroughtForward'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - read:self-assessment
+
+responses:
+  "200":
+    description: Success
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/broughtForwardLosses/listBFLoss/list_response.json'
+        examples:
+          example-1:
+            description: Example Response
+            value:
+              $ref: './examples/broughtForwardLosses/listBFLoss/list_response.json'
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_TAX_YEAR:
+            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_TAX_YEAR_RANGE_INVALID:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+          FORMAT_TYPE_OF_LOSS:
+            $ref: './common/errors.yaml#/components/examples/formatTypeOfLoss'
+          FORMAT_BUSINESS_ID:
+            $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFound'

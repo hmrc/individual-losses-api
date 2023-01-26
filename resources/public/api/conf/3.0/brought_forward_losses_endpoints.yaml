@@ -1,0 +1,16 @@
+post:
+  $ref: "./brought_forward_losses_create.yaml"
+  summary: Create a Brought Forward Loss
+  security:
+    - User-Restricted:
+        - write:self-assessment
+get:
+  $ref: "./brought_forward_losses_list.yaml"
+  summary: List Brought Forward Losses
+  security:
+    - User-Restricted:
+        - read:self-assessment
+  parameters:
+    - $ref: './common/queryParameters.yaml#/components/parameters/businessId'
+    - $ref: './common/queryParameters.yaml#/components/parameters/typeOfLossBroughtForward'
+    - $ref: './common/queryParameters.yaml#/components/parameters/taxYearBroughtForwardFrom'

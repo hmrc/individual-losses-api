@@ -1,0 +1,78 @@
+summary: Delete a Loss Claim
+description: |
+  This endpoint allows a developer to delete an existing Loss Claim.
+  A National Insurance number and Claim ID must be provided.
+  
+  ### Test data
+  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+  <table>
+    <thead>
+        <tr>
+            <th>Header Value (Gov-Test-Scenario)</th>
+            <th>Scenario</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><p>N/A - DEFAULT</p></td>
+            <td><p>Simulate success scenario</p></td>
+        </tr>
+        <tr>
+           <td><p>NOT_FOUND</p></td>
+           <td><p>Simulates the scenario where no data is found.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - write:self-assessment
+
+responses:
+  "204":
+    description: Success (No Content)
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+    content: {}
+
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_CLAIM_ID:
+            $ref: './common/errors.yaml#/components/examples/formatClaimId'
+
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFound'

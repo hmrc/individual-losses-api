@@ -1,0 +1,169 @@
+post:
+  summary: Amend a Loss Claim Type
+  description: |
+    This endpoint allows a developer to change the type of claim for an existing loss claim type.
+    A National Insurance Number and Claim ID must be provided.
+    
+    ### Test data
+    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+    <table>
+      <thead>
+          <tr>
+              <th>Header Value (Gov-Test-Scenario)</th>
+              <th>Scenario</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td><p>N/A - DEFAULT</p></td>
+              <td><p>Simulates success response.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>FP_FORWARD</p></td>
+              <td><p>Simulates a Foreign Property carried forward scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>FP_SIDEWAYS</p></td>
+              <td><p>Simulates a Foreign Property carried sideways scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NONFHL_FORWARD</p></td>
+              <td><p>Simulates a Non-FHL carried forward scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NONFHL_FORWARD_TO_SIDEWAYS</p></td>
+              <td><p>Simulates a Non-FHL carried forward to sideways scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NONFHL_SIDEWAYS</p></td>
+              <td><p>Simulates a Non-FHL carried sideways scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NONFHL_SIDEWAYS_FHL</p></td>
+              <td><p>Simulates a FHL carried sideways scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>SE_FORWARD</p></td>
+              <td><p>Simulates a Self Employment carried forward scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>SE_SIDEWAYS</p></td>
+              <td><p>Simulates a Self Employment carried sideways scenario.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NO_CHANGE</p></td>
+              <td><p>Simulates the scenario where the relief type has not changed.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>TYPE_OF_CLAIM_INVALID</p></td>
+              <td><p>Simulates the scenario where a claim type is invalid for the income source.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NOT_FOUND</p></td>
+              <td><p>Simulates the scenario where no data is found.</p></td>
+          </tr>
+      </tbody>
+    </table>
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/lossClaims/amendLossClaimType/amend_request.json'
+        examples:
+          example-1:
+            description: Default Example
+            value:
+              $ref: './examples/lossClaims/amendLossClaimType/amend_request.json'
+
+  responses:
+    "200":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/lossClaims/amendLossClaimType/amend_response.json'
+          examples:
+            example-1:
+              description: Example Response
+              value:
+                $ref: './examples/lossClaims/amendLossClaimType/amend_response.json'
+
+
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_CLAIM_ID:
+              $ref: './common/errors.yaml#/components/examples/formatClaimId'
+            RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+            FORMAT_TYPE_OF_CLAIM:
+              $ref: './common/errors.yaml#/components/examples/formatTypeOfClaim'
+            RULE_TYPE_OF_CLAIM_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTypeOfClaimInvalid'
+            RULE_NO_CHANGE:
+              $ref: './common/errors.yaml#/components/examples/ruleNoChangeLossClaim'
+
+
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'
