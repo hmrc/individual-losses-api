@@ -1,6 +1,8 @@
 get:
   $ref: "./loss_claims_retrieve.yaml"
   summary: Retrieve a Loss Claim
+  tags:
+    - Loss Claims
   security:
     - User-Restricted:
         - read:self-assessment

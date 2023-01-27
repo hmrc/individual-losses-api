@@ -29,6 +29,9 @@ put:
       </tbody>
     </table>
 
+  tags:
+    - Loss Claims
+
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
     - $ref: './common/pathParameters.yaml#/components/parameters/taxYearClaimedFor'

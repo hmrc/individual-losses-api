@@ -44,6 +44,9 @@ description: |
     </tbody>
   </table>
 
+tags:
+  - Brought Forward Losses  
+
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/queryParameters.yaml#/components/parameters/taxYearBroughtForwardFrom'

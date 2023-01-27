@@ -64,4 +64,4 @@ paths:
   /individuals/losses/{nino}/loss-claims/{claimId}/change-type-of-claim:
     $ref: "./loss_claims_amend_type.yaml"
   /individuals/losses/{nino}/loss-claims/order/{taxYearClaimedFor}:
-    $ref: "./loss_claims_amend_order.yaml"
+    $ref: "./loss_claims_amend_order_endpoints.yaml"

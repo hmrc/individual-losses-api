@@ -31,6 +31,9 @@ description: |
     </tbody>
   </table>
 
+tags:
+  - Brought Forward Losses
+
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
