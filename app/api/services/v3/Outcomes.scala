@@ -30,26 +30,28 @@ import api.models.errors.ErrorWrapper
 
 object Outcomes {
 
-  type CreateBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[CreateBFLossResponse]]
+  type ServiceOutcome[I] = Either[ErrorWrapper, ResponseWrapper[I]]
 
-  type RetrieveBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[RetrieveBFLossResponse]]
+  type CreateBFLossOutcome = ServiceOutcome[CreateBFLossResponse]
 
-  type ListBFLossesOutcome = Either[ErrorWrapper, ResponseWrapper[ListBFLossesResponse[ListBFLossesItem]]]
+  type RetrieveBFLossOutcome = ServiceOutcome[RetrieveBFLossResponse]
 
-  type AmendBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[AmendBFLossResponse]]
+  type ListBFLossesOutcome = ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]
 
-  type DeleteBFLossOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
+  type AmendBFLossOutcome = ServiceOutcome[AmendBFLossResponse]
 
-  type CreateLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[CreateLossClaimResponse]]
+  type DeleteBFLossOutcome = ServiceOutcome[Unit]
 
-  type RetrieveLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[RetrieveLossClaimResponse]]
+  type CreateLossClaimOutcome = ServiceOutcome[CreateLossClaimResponse]
 
-  type ListLossClaimsOutcome = Either[ErrorWrapper, ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]]]
+  type RetrieveLossClaimOutcome = ServiceOutcome[RetrieveLossClaimResponse]
 
-  type AmendLossClaimTypeOutcome = Either[ErrorWrapper, ResponseWrapper[AmendLossClaimTypeResponse]]
+  type ListLossClaimsOutcome = ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]
 
-  type DeleteLossClaimOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
+  type AmendLossClaimTypeOutcome = ServiceOutcome[AmendLossClaimTypeResponse]
 
-  type AmendLossClaimsOrderOutcome = Either[ErrorWrapper, ResponseWrapper[AmendLossClaimsOrderResponse]]
+  type DeleteLossClaimOutcome = ServiceOutcome[Unit]
+
+  type AmendLossClaimsOrderOutcome = ServiceOutcome[AmendLossClaimsOrderResponse]
 
 }
