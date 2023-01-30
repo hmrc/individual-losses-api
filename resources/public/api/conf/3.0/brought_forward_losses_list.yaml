@@ -1,7 +1,7 @@
 summary: List Brought Forward Losses
 description: |
   This endpoint allows a developer to retrieve a list of all brought forward losses that have incurred before joining MTD.
-  A National Insurance number must be provided
+  A National Insurance number must be provided.
   
   ### Test data
   <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
@@ -53,7 +53,6 @@ parameters:
   - $ref: './common/queryParameters.yaml#/components/parameters/businessId'
   - $ref: './common/queryParameters.yaml#/components/parameters/typeOfLossBroughtForward'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
-  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
   - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 

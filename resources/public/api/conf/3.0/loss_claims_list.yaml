@@ -48,7 +48,6 @@ parameters:
   - $ref: './common/queryParameters.yaml#/components/parameters/typeOfLossLosses'
   - $ref: './common/queryParameters.yaml#/components/parameters/typeOfClaim'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
-  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
   - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 

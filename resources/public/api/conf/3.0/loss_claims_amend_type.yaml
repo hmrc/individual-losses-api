@@ -141,6 +141,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/formatNino'
             FORMAT_CLAIM_ID:
               $ref: './common/errors.yaml#/components/examples/formatClaimId'
+            FORMAT_VALUE:
+              $ref: './common/errors.yaml#/components/examples/formatValue'
             RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
             FORMAT_TYPE_OF_CLAIM:

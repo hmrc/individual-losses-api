@@ -68,11 +68,11 @@ responses:
             description: Self-Employment Loss
             value:
               $ref: './examples/broughtForwardLosses/retrieveBFLoss/retrieve_se_response.json'
-          example-1:
+          example-2:
             description: UK FHL Property Loss
             value:
               $ref: './examples/broughtForwardLosses/retrieveBFLoss/retrieve_uk_property_fhl_response.json'
-          example-1:
+          example-3:
             description: Foreign Property Loss
             value:
               $ref: './examples/broughtForwardLosses/retrieveBFLoss/retrieve_foreign_property_response.json'

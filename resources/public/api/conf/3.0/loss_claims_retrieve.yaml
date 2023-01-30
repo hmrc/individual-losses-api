@@ -68,11 +68,11 @@ responses:
             description: Self-Employment Loss Claim
             value:
               $ref: './examples/lossClaims/retrieveLossClaim/retrieve_request_self_employment_claims.json'
-          example-1:
+          example-2:
             description: UK Property Loss Claim
             value:
               $ref: './examples/lossClaims/retrieveLossClaim/retrieve_request_property_claims.json'
-          example-1:
+          example-3:
             description: Foreign Property Loss Claim
             value:
               $ref: './examples/lossClaims/retrieveLossClaim/retrieve_request_foreign_property_claims.json'
