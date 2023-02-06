@@ -144,17 +144,6 @@ traits:
                   description: The submission has been made before the tax year it relates to has ended.
                   value:
                     code: RULE_TAX_YEAR_NOT_ENDED
-  ruleNoChangeTypeOfClaim:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleNoChangeTypeOfClaim:
-                description: The remote endpoint has indicated that the requested type of claim is already active.
-                value:
-                  code: RULE_ALREADY_EXISTS
   formatLossType:
     responses:
       400:
@@ -221,17 +210,6 @@ traits:
                 description: The type of claim supplied is not valid.
                 value:
                   code: RULE_TYPE_OF_CLAIM_INVALID
-  formatClaimTypeSandboxOnly:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatClaimType:
-                description: '[This error is only available in Sandbox] The format of the supplied claim type is not valid.'
-                value:
-                  code: FORMAT_TYPE_OF_CLAIM
   formatClaimType:
     responses:
       400:
@@ -243,17 +221,6 @@ traits:
                 description: 'The format of the supplied claim type is not valid.'
                 value:
                   code: FORMAT_TYPE_OF_CLAIM
-  rulePeriodNotEnded:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              rulePeriodNotEnded:
-                description: The Loss claim has been made too soon.
-                value:
-                  code: RULE_PERIOD_NOT_ENDED
   ruleAccountingPeriodNotEnded:
     responses:
       400:
@@ -331,17 +298,6 @@ traits:
                 description: There is no accounting period for the year of the claim.
                 value:
                   code: RULE_NO_ACCOUNTING_PERIOD
-  formatSequence:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatSequence:
-                description: The format of the supplied sequence number is not valid.
-                value:
-                  code: FORMAT_SEQUENCE
   RuleInvalidSequenceStart:
     responses:
       400:
