@@ -17,7 +17,6 @@
 package api.endpoints.lossClaim.list.v3.connector
 
 import api.connectors.{ ConnectorSpec, DownstreamOutcome }
-import api.endpoints.lossClaim.connector.v3.ListLossClaimsConnector
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }

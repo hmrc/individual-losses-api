@@ -17,7 +17,7 @@
 package api.endpoints.lossClaim.list.v3
 
 import api.controllers.RequestContext
-import api.endpoints.lossClaim.connector.v3.ListLossClaimsConnector
+import api.endpoints.lossClaim.list.v3.connector.ListLossClaimsConnector
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.models.errors._
 import api.services.BaseService
