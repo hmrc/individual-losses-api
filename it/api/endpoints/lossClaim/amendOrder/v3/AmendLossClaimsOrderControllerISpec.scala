@@ -48,55 +48,6 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       """.stripMargin)
   }
 
-  private trait Test {
-
-    val nino              = "AA123456A"
-    val taxYear           = "2023-24"
-    val downstreamTaxYear = "23-24"
-    val downstreamUri     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
-
-    val responseJson: JsValue = Json.parse(
-      s"""
-         |{
-         |  "links": [
-         |    {
-         |      "href": "/individuals/losses/$nino/loss-claims/order",
-         |      "method": "PUT",
-         |      "rel": "amend-loss-claim-order"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/loss-claims",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    }
-         |  ]
-         |}
-      """.stripMargin
-    )
-
-    def uri = s"/$nino/loss-claims/order/$taxYear"
-
-    def errorBody(code: String): String =
-      s"""
-         |{
-         |  "code": "$code",
-         |  "reason": "downstream message"
-         |}
-      """.stripMargin
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.3.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
-        )
-    }
-
-  }
-
   "Calling the Amend Loss Claims Order V3 endpoint" should {
 
     "return a 200 status code" when {
@@ -185,19 +136,9 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
         }
       }
 
-      val errors = Seq(
+      val errors = List(
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError),
-        (CONFLICT, "CONFLICT_SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
-        (CONFLICT, "CONFLICT_NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
-        (CONFLICT, "CONFLICT_NOT_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
         (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-        (Status.UNPROCESSABLE_ENTITY, "UNPROCESSABLE_ENTITY", NOT_FOUND, NotFoundError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-      )
-
-      val extraTysErrors = Seq(
         (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
         (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
@@ -205,11 +146,62 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
         (CONFLICT, "SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
         (CONFLICT, "NO_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
         (NOT_FOUND, "CLAIM_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(args => (serviceErrorTest _).tupled(args))
 
+    }
+
+  }
+
+  private trait Test {
+
+    val nino              = "AA123456A"
+    val taxYear           = "2023-24"
+    val downstreamTaxYear = "23-24"
+    val downstreamUri     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
+
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |  "links": [
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/order",
+         |      "method": "PUT",
+         |      "rel": "amend-loss-claim-order"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    }
+         |  ]
+         |}
+      """.stripMargin
+    )
+
+    def uri = s"/$nino/loss-claims/order/$taxYear"
+
+    def errorBody(code: String): String =
+      s"""
+         |{
+         |  "code": "$code",
+         |  "reason": "downstream message"
+         |}
+      """.stripMargin
+
+    def setupStubs(): StubMapping
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
     }
 
   }
