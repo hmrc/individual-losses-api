@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.connector.v3
+package api.endpoints.lossClaim.list.v3.connector
 
-import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import api.connectors.DownstreamUri.{ IfsUri, TaxYearSpecificIfsUri }
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome, DownstreamUri }
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
+import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
 import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
-class ListLossClaimsConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def listLossClaims(request: ListLossClaimsRequest)(implicit
-                                                     hc: HeaderCarrier,
-                                                     ec: ExecutionContext,
-                                                     correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
     import request._
 
     val pathParameters = Map(
@@ -41,8 +41,8 @@ class ListLossClaimsConnector @Inject()(val http: HttpClient, val appConfig: App
       "incomeSourceId"   -> businessId,
       "incomeSourceType" -> typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> typeOfClaim.map(_.toReliefClaimed.toString)
-    ).collect {
-      case (key, Some(value)) => key -> value
+    ).collect { case (key, Some(value)) =>
+      key -> value
     }
 
     val (uri: DownstreamUri[ListLossClaimsResponse[ListLossClaimsItem]], downstreamSpecificParameters) = taxYearClaimedFor match {
