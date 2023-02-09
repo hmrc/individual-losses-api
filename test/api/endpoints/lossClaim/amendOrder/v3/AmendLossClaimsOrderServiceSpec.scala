@@ -84,17 +84,6 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
       val errors = List(
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
-        ("INVALID_TAXYEAR", TaxYearFormatError),
-        ("CONFLICT_SEQUENCE_START", RuleInvalidSequenceStart),
-        ("CONFLICT_NOT_SEQUENTIAL", RuleSequenceOrderBroken),
-        ("CONFLICT_NOT_FULL_LIST", RuleLossClaimsMissing),
-        ("INVALID_PAYLOAD", InternalError),
-        ("UNPROCESSABLE_ENTITY", NotFoundError),
-        ("SERVER_ERROR", InternalError),
-        ("SERVICE_UNAVAILABLE", InternalError)
-      )
-
-      val extraTysErrors = List(
         ("INVALID_TAX_YEAR", TaxYearFormatError),
         ("INVALID_CORRELATIONID", InternalError),
         ("NOT_FOUND", NotFoundError),
@@ -102,10 +91,13 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         ("SEQUENCE_START", RuleInvalidSequenceStart),
         ("NO_FULL_LIST", RuleLossClaimsMissing),
         ("CLAIM_NOT_FOUND", NotFoundError),
-        ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
+        ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+        ("INVALID_PAYLOAD", InternalError),
+        ("SERVER_ERROR", InternalError),
+        ("SERVICE_UNAVAILABLE", InternalError)
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      errors.foreach(args => (serviceError _).tupled(args))
     }
   }
 

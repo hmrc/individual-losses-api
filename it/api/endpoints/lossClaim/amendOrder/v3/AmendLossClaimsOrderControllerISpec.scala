@@ -48,25 +48,12 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       """.stripMargin)
   }
 
-  private trait NonTysTest extends Test {
-    def taxYear: String           = "2020-21"
-    def downstreamTaxYear: String = "2021"
-    def downstreamUri: String     = s"/income-tax/claims-for-relief/$nino/preferences/$downstreamTaxYear"
-  }
-
-  private trait TysIfsTest extends Test {
-    def taxYear: String           = "2023-24"
-    def downstreamTaxYear: String = "23-24"
-    def downstreamUri: String     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
-  }
-
   private trait Test {
 
-    def taxYear: String
-    def downstreamTaxYear: String
-    def downstreamUri: String
-
-    val nino: String = "AA123456A"
+    val nino              = "AA123456A"
+    val taxYear           = "2023-24"
+    val downstreamTaxYear = "23-24"
+    val downstreamUri     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
 
     val responseJson: JsValue = Json.parse(
       s"""
@@ -87,7 +74,7 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def uri: String = s"/$nino/loss-claims/order/$taxYear"
+    def uri = s"/$nino/loss-claims/order/$taxYear"
 
     def errorBody(code: String): String =
       s"""
@@ -107,29 +94,14 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   "Calling the Amend Loss Claims Order V3 endpoint" should {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new NonTysTest {
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, Status.NO_CONTENT)
-        }
-
-        val response: WSResponse = await(request().put(requestJson()))
-        response.status shouldBe Status.OK
-        response.json shouldBe responseJson
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "any valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
+      "any valid request is made for a Tax Year Specific tax year" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -146,9 +118,57 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
       }
     }
 
+    "handle validation errors according to spec" when {
+      def validationErrorTest(requestNino: String,
+                              requestTaxYear: String,
+                              requestBody: JsValue,
+                              expectedStatus: Int,
+                              expectedError: MtdError): Unit = {
+        s"validation fails with ${expectedError.code} error" in new Test {
+
+          override val nino: String    = requestNino
+          override val taxYear: String = requestTaxYear
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestBody))
+          response.status shouldBe expectedStatus
+          response.json shouldBe expectedError.asJson
+          response.header("Content-Type") shouldBe Some("application/json")
+        }
+      }
+
+      validationErrorTest("BADNINO", "2019-20", requestJson(), BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalidError)
+      validationErrorTest("AA123456A", "2017-18", requestJson(), BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), BAD_REQUEST, TypeOfClaimFormatError)
+      validationErrorTest("AA123456A", "2023-24", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      validationErrorTest(
+        "AA123456A",
+        "2019-20",
+        requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))),
+        BAD_REQUEST,
+        ClaimIdFormatError.copy(paths = Some(Seq("/listOfLossClaims/0/claimId")))
+      )
+      validationErrorTest(
+        "AA123456A",
+        "2019-20",
+        requestJson(listOfLossClaims = Range(1, 101).map(Claim("1234567890ABEF1", _))),
+        BAD_REQUEST,
+        ValueFormatError.forPathAndRange("/listOfLossClaims/99/sequence", "1", "99")
+      )
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim2, claim3)), BAD_REQUEST, RuleInvalidSequenceStart)
+      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1, claim3)), BAD_REQUEST, RuleSequenceOrderBroken)
+    }
+
     "handle downstream errors according to spec" when {
       def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedError: MtdError): Unit = {
-        s"downstream returns an $downstreamCode error" in new NonTysTest {
+        s"downstream returns $downstreamCode" in new Test {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -192,52 +212,6 @@ class AmendLossClaimsOrderControllerISpec extends V3IntegrationBaseSpec {
 
     }
 
-    "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String,
-                              requestTaxYear: String,
-                              requestBody: JsValue,
-                              expectedStatus: Int,
-                              expectedError: MtdError): Unit = {
-        s"validation fails with ${expectedError.code} error" in new NonTysTest {
-
-          override val nino: String    = requestNino
-          override val taxYear: String = requestTaxYear
-
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestBody))
-          response.status shouldBe expectedStatus
-          response.json shouldBe expectedError.asJson
-          response.header("Content-Type") shouldBe Some("application/json")
-        }
-      }
-
-      validationErrorTest("BADNINO", "2019-20", requestJson(), BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearFormatError)
-      validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalidError)
-      validationErrorTest("AA123456A", "2017-18", requestJson(), BAD_REQUEST, RuleTaxYearNotSupportedError)
-      validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), BAD_REQUEST, TypeOfClaimFormatError)
-      validationErrorTest("AA123456A", "2019-20", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      validationErrorTest(
-        "AA123456A",
-        "2019-20",
-        requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))),
-        BAD_REQUEST,
-        ClaimIdFormatError.copy(paths = Some(Seq("/listOfLossClaims/0/claimId")))
-      )
-      validationErrorTest(
-        "AA123456A",
-        "2019-20",
-        requestJson(listOfLossClaims = Range(1, 101).map(Claim("1234567890ABEF1", _))),
-        BAD_REQUEST,
-        ValueFormatError.forPathAndRange("/listOfLossClaims/99/sequence", "1", "99")
-      )
-      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim2, claim3)), BAD_REQUEST, RuleInvalidSequenceStart)
-      validationErrorTest("AA123456A", "2019-20", requestJson(listOfLossClaims = Seq(claim1, claim3)), BAD_REQUEST, RuleSequenceOrderBroken)
-    }
   }
+
 }

@@ -52,14 +52,14 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
     val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
-  "amendLossClaimsOrderV3" when {
-    "a valid non-TYS request is supplied" should {
-      "return a successful response with the correct correlationId" in new DesTest with Test {
+  "amendLossClaimsOrder" when {
+    "given a tax year prior to 2023-24" should {
+      "return a success response" in new TysIfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
         val expected         = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
-          url = s"$baseUrl/income-tax/claims-for-relief/$nino/preferences/2023",
+          url = s"$baseUrl/income-tax/claims-for-relief/preferences/22-23/$nino",
           body = amendLossClaimsOrder
         ).returns(Future.successful(expected))
 
@@ -67,8 +67,8 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
       }
     }
 
-    "a valid TYS specific request is supplied" should {
-      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+    "given a 2023-24 tax year" should {
+      "return a success response" in new TysIfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
         val expected = Right(ResponseWrapper(correlationId, ()))
