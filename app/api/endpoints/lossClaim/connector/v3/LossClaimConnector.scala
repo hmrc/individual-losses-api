@@ -77,15 +77,12 @@ class LossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConf
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
+
     val nino    = request.nino.nino
     val taxYear = request.taxYearClaimedFor
 
     val downstreamUri =
-      if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYear.asTysDownstream}/$nino")
-      } else {
-        DesUri[Unit](s"income-tax/claims-for-relief/$nino/preferences/${taxYear.asDownstream}")
-      }
+      TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYear.asTysDownstream}/$nino")
 
     put(
       uri = downstreamUri,
