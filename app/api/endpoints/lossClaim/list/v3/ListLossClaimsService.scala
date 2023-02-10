@@ -17,7 +17,7 @@
 package api.endpoints.lossClaim.list.v3
 
 import api.controllers.RequestContext
-import api.endpoints.lossClaim.connector.v3.LossClaimConnector
+import api.endpoints.lossClaim.list.v3.connector.ListLossClaimsConnector
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.models.errors._
 import api.services.BaseService
@@ -26,7 +26,7 @@ import api.services.v3.Outcomes.ListLossClaimsOutcome
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ListLossClaimsService @Inject() (connector: LossClaimConnector) extends BaseService {
+class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) extends BaseService {
 
   def listLossClaims(request: ListLossClaimsRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListLossClaimsOutcome] =
     connector

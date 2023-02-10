@@ -18,15 +18,13 @@ package api.endpoints.lossClaim.connector.v3
 
 import api.connectors.DownstreamUri.{ DesUri, IfsUri, TaxYearSpecificIfsUri }
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome, DownstreamUri }
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import api.endpoints.lossClaim.amendOrder.v3.request.AmendLossClaimsOrderRequest
 import api.endpoints.lossClaim.amendType.v3.request.AmendLossClaimTypeRequest
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
-import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import config.AppConfig
@@ -65,33 +63,6 @@ class LossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConf
     val claimId = request.claimId
 
     get(IfsUri[RetrieveLossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId"))
-  }
-
-  def listLossClaims(request: ListLossClaimsRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
-    import request._
-
-    val pathParameters = Map(
-      "taxYear"          -> taxYearClaimedFor.map(_.asDownstream),
-      "incomeSourceId"   -> businessId,
-      "incomeSourceType" -> typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
-      "claimType"        -> typeOfClaim.map(_.toReliefClaimed.toString)
-    ).collect { case (key, Some(value)) =>
-      key -> value
-    }
-
-    val (uri: DownstreamUri[ListLossClaimsResponse[ListLossClaimsItem]], downstreamSpecificParameters) = taxYearClaimedFor match {
-      case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
-        (
-          TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/${nino.nino}"),
-          pathParameters.filterNot { case (key, _) => key == "taxYear" }
-        )
-      case _ => (IfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${nino.nino}"), pathParameters)
-    }
-
-    get(uri, downstreamSpecificParameters.toSeq)
   }
 
   def deleteLossClaim(
