@@ -18,6 +18,8 @@ package api.fixtures
 
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.models.domain.TaxYear
+import play.api.libs.json.{ JsValue, Json }
 
 object ListLossClaimsFixtures {
 
@@ -31,17 +33,135 @@ object ListLossClaimsFixtures {
     lastModified = "2020-07-13T12:13:48.763Z"
   )
 
-  def singleListLossClaimsResponseModel(taxYear: String): ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
+  def claimHateoasLink(nino: String, claimId: String): JsValue = Json.parse(
+    s"""
+       |[
+       |  {
+       |    "href" : "/individuals/losses/$nino/loss-claims/$claimId",
+       |    "rel": "self",
+       |    "method": "GET"
+       |  }
+       |]
+       |""".stripMargin
+  )
+
+  def nonFhlClaimMtdJson(taxYear: String, nino: String): JsValue = Json.parse(
+    s"""
+       |{
+       |  "businessId": "XAIS12345678910",
+       |  "typeOfLoss": "uk-property-non-fhl",
+       |  "typeOfClaim": "carry-sideways",
+       |  "taxYearClaimedFor": "${TaxYear.fromMtd(taxYear).asMtd}",
+       |  "claimId": "AAZZ1234567890A",
+       |  "sequence": 1,
+       |  "lastModified": "2020-07-13T12:13:763Z",
+       |  "links": ${claimHateoasLink(nino, "AAZZ1234567890A")}
+       |}
+     """.stripMargin
+  )
+
+  def selfEmploymentClaimMtdJson(taxYear: String, nino: String): JsValue = Json.parse(
+    s"""
+       |{
+       |  "businessId": "XAIS12345678911",
+       |  "typeOfLoss": "self-employment",
+       |  "typeOfClaim": "carry-sideways",
+       |  "taxYearClaimedFor": "${TaxYear.fromMtd(taxYear).asMtd}",
+       |  "claimId": "AAZZ1234567890B",
+       |  "sequence": 1,
+       |  "lastModified": "2020-07-13T12:13:763Z",
+       |  "links" : ${claimHateoasLink(nino, "AAZZ1234567890B")}
+       |}
+       |""".stripMargin
+  )
+
+  def singleClaimResponseModel(taxYear: String): ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
     List(listLossClaimsModel(taxYear))
   )
 
-  val multipleListLossClaimsResponseModel: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
+  val multipleClaimsResponseModel: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
     List(
       listLossClaimsModel("2019-20"),
       listLossClaimsModel("2020-21"),
       listLossClaimsModel("2021-22"),
       listLossClaimsModel("2022-23")
     )
+  )
+
+  def nonFhlDownstreamResponseJson(taxYear: String): JsValue = Json.parse(
+    s"""
+       |[
+       |  {
+       |    "incomeSourceId": "XAIS12345678910",
+       |    "incomeSourceType": "02",
+       |    "reliefClaimed": "CSGI",
+       |    "taxYearClaimedFor": "${TaxYear.fromMtd(taxYear).asDownstream}",
+       |    "claimId": "AAZZ1234567890A",
+       |    "sequence": 1,
+       |    "submissionDate": "2020-07-13T12:13:763Z"
+       |  }
+       |]
+   """.stripMargin
+  )
+
+  def selfEmploymentDownstreamResponseJson(taxYear: String): JsValue = Json.parse(
+    s"""
+       |[
+       |  {
+       |    "incomeSourceId": "XAIS12345678911",
+       |    "reliefClaimed": "CSGI",
+       |    "taxYearClaimedFor": "${TaxYear.fromMtd(taxYear).asDownstream}",
+       |    "claimId": "AAZZ1234567890B",
+       |    "sequence": 1,
+       |    "submissionDate": "2020-07-13T12:13:763Z"
+       |  }
+       |]
+   """.stripMargin
+  )
+
+  def mtdResponseJson(nino: String, taxYears: List[String]): JsValue = Json.parse(s"""
+       |{
+       |  "claims": [${taxYears.map(nonFhlClaimMtdJson(_, nino)).mkString(",")}],
+       |  "links": [
+       |    {
+       |      "href": "/individuals/losses/$nino/loss-claims",
+       |      "rel": "self",
+       |      "method": "GET"
+       |    },
+       |    {
+       |      "href": "/individuals/losses/$nino/loss-claims",
+       |      "rel": "create-loss-claim",
+       |      "method": "POST"
+       |    },
+       |    {
+       |      "href": "/individuals/losses/$nino/loss-claims/order",
+       |      "rel": "amend-loss-claim-order",
+       |      "method": "PUT"
+       |    }
+       |  ]
+       |}
+   """.stripMargin)
+
+  def baseHateoasLinks(nino: String): JsValue = Json.parse(
+    s"""
+      |[
+      |  {
+      |    "href": "/individuals/losses/$nino/loss-claims",
+      |    "method": "GET",
+      |    "rel": "self"
+      |  },
+      |  {
+      |    "href": "/individuals/losses/$nino/loss-claims",
+      |    "method": "POST",
+      |    "rel": "create-loss-claim"
+      |  },
+      |  {
+      |    "href": "/individuals/losses/$nino/loss-claims/order",
+      |    "method": "PUT",
+      |    "rel": "amend-loss-claim-order"
+      |  }
+      |]
+      |""".stripMargin
   )
 
 }

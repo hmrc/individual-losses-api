@@ -16,11 +16,14 @@
 
 package api.endpoints.lossClaim.list.v3.connector
 
-import api.connectors.DownstreamUri.{ IfsUri, TaxYearSpecificIfsUri }
+import api.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome, DownstreamUri }
+import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.models.ResponseWrapper
+import api.models.domain.TaxYear
+import api.models.errors.{ DownstreamErrorCode, DownstreamErrors }
 import config.AppConfig
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 
@@ -30,14 +33,18 @@ import scala.concurrent.{ ExecutionContext, Future }
 @Singleton
 class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
+  type ListLossClaimsOutcome = DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]
+
+  private val DEFAULT_TAX_YEARS: Seq[TaxYear] = List("2019-20", "2020-21", "2021-22", "2022-23").map(TaxYear.fromMtd)
+
+  private val NOT_FOUND_CODE = "NOT_FOUND"
+
+  def listLossClaims(
+      request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[ListLossClaimsOutcome] = {
+
     import request._
 
     val pathParameters = Map(
-      "taxYear"          -> taxYearClaimedFor.map(_.asDownstream),
       "incomeSourceId"   -> businessId,
       "incomeSourceType" -> typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> typeOfClaim.map(_.toReliefClaimed.toString)
@@ -45,16 +52,52 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
       key -> value
     }
 
-    val (uri: DownstreamUri[ListLossClaimsResponse[ListLossClaimsItem]], downstreamSpecificParameters) = taxYearClaimedFor match {
-      case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
-        (
-          TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/${nino.nino}"),
-          pathParameters.filterNot { case (key, _) => key == "taxYear" }
-        )
-      case _ => (IfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${nino.nino}"), pathParameters)
+    taxYearClaimedFor match {
+      case Some(taxYear) => makeRequestForTaxYear(taxYear, nino.nino, pathParameters)
+      case _             => makeRequestForDefaultTaxYears(nino.nino, pathParameters)
     }
+  }
 
-    get(uri, downstreamSpecificParameters.toSeq)
+  private def makeRequestForDefaultTaxYears(nino: String, params: Map[String, String])(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[ListLossClaimsOutcome] = {
+
+    val requests = DEFAULT_TAX_YEARS.map(makeRequestForTaxYear(_, nino, params))
+
+    Future.sequence(requests).map(combineResponses)
+  }
+
+  private def combineResponses(responses: Seq[ListLossClaimsOutcome])(implicit correlationId: String): ListLossClaimsOutcome = {
+    responses.find(isError) match {
+      case Some(error) => error
+      case _ =>
+        val claims = responses.collect({ case Right(success) => success.responseData.claims }).flatten
+
+        if (claims.isEmpty) {
+          Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(NOT_FOUND_CODE))))
+        } else {
+          Right(ResponseWrapper(correlationId, ListLossClaimsResponse(claims)))
+        }
+    }
+  }
+
+  private def isError(outcome: ListLossClaimsOutcome): Boolean = {
+    outcome match {
+      case Right(_)                                          => false
+      case Left(ResponseWrapper(_, DownstreamErrors(codes))) => codes.exists(_.code != NOT_FOUND_CODE)
+      case Left(_)                                           => true
+    }
+  }
+
+  private def makeRequestForTaxYear(taxYear: TaxYear, nino: String, params: Map[String, String])(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
+
+    val uri = TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/$nino")
+
+    get(uri, params.toSeq)
   }
 
 }

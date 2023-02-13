@@ -134,7 +134,7 @@ class AmendBFLossControllerISpec extends V3IntegrationBaseSpec {
       }
     }
 
-    "return errors ae per the spec" when {
+    "return errors as per the spec" when {
       "validation error occurs" when {
         def validationErrorTest(requestNino: String,
                                 requestLossId: String,
