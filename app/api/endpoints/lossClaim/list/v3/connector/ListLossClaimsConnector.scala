@@ -44,7 +44,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
 
     import request._
 
-    val pathParameters = Map(
+    val params = Map(
       "incomeSourceId"   -> businessId,
       "incomeSourceType" -> typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> typeOfClaim.map(_.toReliefClaimed.toString)
@@ -52,20 +52,16 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
       key -> value
     }
 
+    def send(taxYear: TaxYear): Future[ListLossClaimsOutcome] = get(
+      uri =
+        TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/${nino.nino}"),
+      queryParams = params.toSeq
+    )
+
     taxYearClaimedFor match {
-      case Some(taxYear) => makeRequestForTaxYear(taxYear, nino.nino, pathParameters)
-      case _             => makeRequestForDefaultTaxYears(nino.nino, pathParameters)
+      case Some(taxYear) => send(taxYear)
+      case _             => Future.traverse(DEFAULT_TAX_YEARS)(send).map(combineResponses)
     }
-  }
-
-  private def makeRequestForDefaultTaxYears(nino: String, params: Map[String, String])(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[ListLossClaimsOutcome] = {
-
-    val requests = DEFAULT_TAX_YEARS.map(makeRequestForTaxYear(_, nino, params))
-
-    Future.sequence(requests).map(combineResponses)
   }
 
   private def combineResponses(responses: Seq[ListLossClaimsOutcome])(implicit correlationId: String): ListLossClaimsOutcome = {
@@ -84,16 +80,6 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
       case Left(ResponseWrapper(_, DownstreamErrors(codes))) => codes.exists(_.code != NOT_FOUND_CODE)
       case Left(_)                                           => true
     }
-  }
-
-  private def makeRequestForTaxYear(taxYear: TaxYear, nino: String, params: Map[String, String])(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[ListLossClaimsOutcome] = {
-
-    val uri = TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/$nino")
-
-    get(uri, params.toSeq)
   }
 
 }
