@@ -119,29 +119,6 @@ object ListLossClaimsFixtures {
    """.stripMargin
   )
 
-  def mtdResponseJson(nino: String, taxYears: List[String]): JsValue = Json.parse(s"""
-       |{
-       |  "claims": [${taxYears.map(nonFhlClaimMtdJson(_, nino)).mkString(",")}],
-       |  "links": [
-       |    {
-       |      "href": "/individuals/losses/$nino/loss-claims",
-       |      "rel": "self",
-       |      "method": "GET"
-       |    },
-       |    {
-       |      "href": "/individuals/losses/$nino/loss-claims",
-       |      "rel": "create-loss-claim",
-       |      "method": "POST"
-       |    },
-       |    {
-       |      "href": "/individuals/losses/$nino/loss-claims/order",
-       |      "rel": "amend-loss-claim-order",
-       |      "method": "PUT"
-       |    }
-       |  ]
-       |}
-   """.stripMargin)
-
   def baseHateoasLinks(nino: String): JsValue = Json.parse(
     s"""
       |[
