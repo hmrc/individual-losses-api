@@ -43,7 +43,7 @@ class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) exten
           Right(result)
       }
 
-  private def errorMap(taxYear: Option[TaxYear]): Map[String, MtdError] = {
+  private def errorMap(maybeTaxYear: Option[TaxYear]): Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
@@ -55,7 +55,7 @@ class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) exten
       "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError
     )
 
-    val taxYearErrors = taxYear match {
+    val taxYearErrors = maybeTaxYear match {
       case Some(_) =>
         Map(
           "INVALID_TAX_YEAR"       -> TaxYearFormatError,

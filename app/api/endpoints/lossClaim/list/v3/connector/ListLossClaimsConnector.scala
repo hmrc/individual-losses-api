@@ -44,7 +44,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
 
     import request._
 
-    val params = Map(
+    val params = List(
       "incomeSourceId"   -> businessId,
       "incomeSourceType" -> typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> typeOfClaim.map(_.toReliefClaimed.toString)
@@ -55,7 +55,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
     def send(taxYear: TaxYear): Future[ListLossClaimsOutcome] = get(
       uri =
         TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/${nino.nino}"),
-      queryParams = params.toSeq
+      queryParams = params
     )
 
     taxYearClaimedFor match {
