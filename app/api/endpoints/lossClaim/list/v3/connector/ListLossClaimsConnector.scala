@@ -69,16 +69,12 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
   }
 
   private def combineResponses(responses: Seq[ListLossClaimsOutcome])(implicit correlationId: String): ListLossClaimsOutcome = {
-    responses.find(isError) match {
-      case Some(error) => error
-      case _ =>
-        val claims = responses.collect({ case Right(success) => success.responseData.claims }).flatten
+    lazy val claims = responses.collect({ case Right(success) => success.responseData.claims }).flatten
 
-        if (claims.isEmpty) {
-          Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(NOT_FOUND_CODE))))
-        } else {
-          Right(ResponseWrapper(correlationId, ListLossClaimsResponse(claims)))
-        }
+    responses.find(isError) match {
+      case Some(error)         => error
+      case _ if claims.isEmpty => Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(NOT_FOUND_CODE))))
+      case _                   => Right(ResponseWrapper(correlationId, ListLossClaimsResponse(claims)))
     }
   }
 
@@ -93,7 +89,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
   private def makeRequestForTaxYear(taxYear: TaxYear, nino: String, params: Map[String, String])(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
+      correlationId: String): Future[ListLossClaimsOutcome] = {
 
     val uri = TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/$nino")
 
