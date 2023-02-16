@@ -1,0 +1,22 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatLossId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundLossId
+  - errors.ruleDeleteAfterFinalDeclaration
+displayName: Delete a Brought Forward Loss
+description: |
+    This endpoint allows a developer to delete an existing brought forward loss. A National Insurance number and Loss ID must be provided.
+    The user should be aware that where a loss has been used as part of a successful final declaration activity,
+    deletion will be blocked and an error code will be returned. In such a case, the user can amend the loss amount to zero.
+(annotations.sandboxData): !include scenarios/broughtForwardLosses_delete.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+responses:
+  204:
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

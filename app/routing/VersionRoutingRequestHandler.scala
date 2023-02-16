@@ -26,12 +26,12 @@ import play.core.DefaultWebCommands
 import javax.inject.{ Inject, Singleton }
 
 @Singleton
-class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMap,
-                                             errorHandler: HttpErrorHandler,
-                                             httpConfiguration: HttpConfiguration,
-                                             config: AppConfig,
-                                             filters: HttpFilters,
-                                             action: DefaultActionBuilder)
+class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingMap,
+                                              errorHandler: HttpErrorHandler,
+                                              httpConfiguration: HttpConfiguration,
+                                              config: AppConfig,
+                                              filters: HttpFilters,
+                                              action: DefaultActionBuilder)
     extends DefaultHttpRequestHandler(
       webCommands = new DefaultWebCommands,
       optDevContext = None,
@@ -65,8 +65,7 @@ class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMa
     documentHandler orElse apiHandler
   }
 
-  /**
-    * If a route isn't found for this version, fall back to previous available.
+  /** If a route isn't found for this version, fall back to previous available.
     */
   private def findRoute(request: RequestHeader, version: Version): Option[Handler] = {
     val found =
@@ -95,4 +94,5 @@ class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMa
         }
       }
   }
+
 }

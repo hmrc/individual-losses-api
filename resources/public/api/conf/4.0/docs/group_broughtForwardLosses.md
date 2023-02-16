@@ -1,0 +1,1 @@
+Resources related to a customer’s financial data for their brought forward losses.

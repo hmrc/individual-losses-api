@@ -1,0 +1,17 @@
+post:
+  $ref: "./loss_claims_create.yaml"
+  summary: Create a Loss Claim
+  security:
+    - User-Restricted:
+        - write:self-assessment
+get:
+  $ref: "./loss_claims_list.yaml"
+  summary: List Loss Claims
+  security:
+    - User-Restricted:
+        - read:self-assessment
+  parameters:
+    - $ref: './common/queryParameters.yaml#/components/parameters/taxYearClaimedFor'
+    - $ref: './common/queryParameters.yaml#/components/parameters/businessId'
+    - $ref: './common/queryParameters.yaml#/components/parameters/typeOfLossLosses'
+    - $ref: './common/queryParameters.yaml#/components/parameters/typeOfClaim'

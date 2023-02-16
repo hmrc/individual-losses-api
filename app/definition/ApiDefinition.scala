@@ -16,7 +16,7 @@
 
 package definition
 
-import play.api.libs.json.{Format, Json, OFormat}
+import play.api.libs.json.{ Format, Json, OFormat }
 import routing.Version
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.enums.Enums
@@ -65,6 +65,7 @@ case class APIDefinition(name: String, description: String, context: String, ver
   private def uniqueVersions: Boolean = {
     !versions.map(_.version).groupBy(identity).view.mapValues(_.size).exists(_._2 > 1)
   }
+
 }
 
 object APIDefinition {
