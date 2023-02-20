@@ -17,14 +17,14 @@
 package definition
 
 import config.AppConfig
-import routing.{Version, Version3}
+import routing.{ Version, Version3, Version4 }
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
 @Singleton
-class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
+class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
 
   private val readScope  = "read:self-assessment"
   private val writeScope = "write:self-assessment"
@@ -56,6 +56,11 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
             version = Version3,
             status = buildAPIStatus(Version3),
             endpointsEnabled = appConfig.endpointsEnabled(version = Version3.configName)
+          ),
+          APIVersion(
+            version = Version4,
+            status = buildAPIStatus(Version4),
+            endpointsEnabled = appConfig.endpointsEnabled(version = Version4.configName)
           )
         ),
         requiresTrust = None
@@ -70,4 +75,5 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
         APIStatus.ALPHA
       }
   }
+
 }
