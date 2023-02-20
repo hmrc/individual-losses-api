@@ -51,6 +51,11 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |        "version":"3.0",
       |        "status":"ALPHA",
       |        "endpointsEnabled":true
+      |      },
+      |      {
+      |        "version":"4.0",
+      |        "status":"ALPHA",
+      |        "endpointsEnabled":true
       |      }
       |    ]
       |  }
@@ -80,10 +85,15 @@ class DocumentationISpec extends IntegrationBaseSpec {
       response.status shouldBe Status.OK
       response.body[String] should startWith("#%RAML 1.0")
     }
+    "return the v4 documentation" in {
+      val response: WSResponse = await(buildRequest("/api/conf/4.0/application.raml").get())
+      response.status shouldBe Status.OK
+      response.body[String] should startWith("#%RAML 1.0")
+    }
   }
 
   "an OAS documentation request" must {
-    "return the documentation that passes OAS V3 parser" in {
+    "return the V3 documentation that passes OAS V3 parser" in {
       val response: WSResponse = await(buildRequest("/api/conf/3.0/application.yaml").get())
       response.status shouldBe Status.OK
 
@@ -96,6 +106,21 @@ class DocumentationISpec extends IntegrationBaseSpec {
       openAPI.get.getOpenapi shouldBe "3.0.3"
       openAPI.get.getInfo.getTitle shouldBe "Individual Losses (MTD)"
       openAPI.get.getInfo.getVersion shouldBe "3.0"
+    }
+
+    "return the V4 documentation that passes OAS V3 parser" in {
+      val response: WSResponse = await(buildRequest("/api/conf/4.0/application.yaml").get())
+      response.status shouldBe Status.OK
+
+      val contents     = response.body[String]
+      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+      parserResult.isSuccess shouldBe true
+
+      val openAPI = Option(parserResult.get.getOpenAPI)
+      openAPI.isEmpty shouldBe false
+      openAPI.get.getOpenapi shouldBe "3.0.3"
+      openAPI.get.getInfo.getTitle shouldBe "Individual Losses (MTD)"
+      openAPI.get.getInfo.getVersion shouldBe "4.0"
     }
   }
 

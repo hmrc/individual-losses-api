@@ -19,7 +19,7 @@ package definition
 import config.{ ConfidenceLevelConfig, MockAppConfig }
 import definition.APIStatus.{ ALPHA, BETA }
 import play.api.Configuration
-import routing.Version3
+import routing.{ Version3, Version4 }
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -37,8 +37,12 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext.returns("my/context")
         MockAppConfig.featureSwitches.returns(Configuration.empty).anyNumberOfTimes()
         MockAppConfig.apiStatus(Version3).returns("").anyNumberOfTimes()
+        MockAppConfig.apiStatus(Version4).returns("").anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(version = Version3.configName).returns(true).anyNumberOfTimes()
-        MockAppConfig.confidenceLevelCheckEnabled.returns(ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true)).anyNumberOfTimes ()
+        MockAppConfig.endpointsEnabled(version = Version4.configName).returns(true).anyNumberOfTimes()
+        MockAppConfig.confidenceLevelCheckEnabled
+          .returns(ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true))
+          .anyNumberOfTimes()
 
         factory.definition shouldBe Definition(
           scopes = Seq(
@@ -60,7 +64,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             description = "An API for providing individual losses data",
             context = "my/context",
             versions = Seq(
-              APIVersion(Version3, status = ALPHA, endpointsEnabled = true)
+              APIVersion(Version3, status = ALPHA, endpointsEnabled = true),
+              APIVersion(Version4, status = ALPHA, endpointsEnabled = true)
             ),
             requiresTrust = None
           )
@@ -73,15 +78,13 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     Seq(
       (true, ConfidenceLevel.L200),
       (false, ConfidenceLevel.L50)
-    ).foreach {
-      case (definitionEnabled, cl) =>
-        s"confidence-level-check.definition.enabled is $definitionEnabled in config" should {
-          s"return $cl" in new Test {
-            MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = definitionEnabled,
-                                                                                    authValidationEnabled = true)
-            factory.confidenceLevel shouldBe cl
-          }
+    ).foreach { case (definitionEnabled, cl) =>
+      s"confidence-level-check.definition.enabled is $definitionEnabled in config" should {
+        s"return $cl" in new Test {
+          MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = definitionEnabled, authValidationEnabled = true)
+          factory.confidenceLevel shouldBe cl
         }
+      }
     }
   }
 
@@ -101,4 +104,5 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       }
     }
   }
+
 }
