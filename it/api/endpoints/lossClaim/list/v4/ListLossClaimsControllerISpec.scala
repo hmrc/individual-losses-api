@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.list.v4
 
-import api.fixtures.v3.ListLossClaimsFixtures._
+import api.fixtures.v4.ListLossClaimsFixtures._
 import api.models.domain.TaxYear
 import api.models.errors._
 import play.api.http.HeaderNames.ACCEPT
@@ -37,7 +37,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     val businessId: Option[String]  = None
     val typeOfClaim: Option[String] = None
 
-    def mtdUrl: String = s"/$nino/loss-claims/$taxYear"
+    def mtdUrl: String = s"/$nino/$taxYear/loss-claims"
 
     def downstreamUrl(taxYear: String = "2019-20"): String = s"/income-tax/claims-for-relief/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino"
 
