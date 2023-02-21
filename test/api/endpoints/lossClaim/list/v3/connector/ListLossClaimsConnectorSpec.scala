@@ -20,7 +20,7 @@ import api.connectors.{ ConnectorSpec, DownstreamOutcome }
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
-import api.fixtures.ListLossClaimsFixtures._
+import api.fixtures.v3.ListLossClaimsFixtures._
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
 import api.models.errors.{ DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError }

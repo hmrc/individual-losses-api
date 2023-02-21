@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.list.v3
+package api.endpoints.lossClaim.list.v4
 
 import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
-import api.fixtures.v3.ListLossClaimsFixtures.multipleClaimsResponseModel
+import api.endpoints.lossClaim.list.v4.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
+import api.endpoints.lossClaim.list.v4.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
+import api.fixtures.v4.ListLossClaimsFixtures.multipleClaimsResponseModel
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
@@ -45,8 +45,8 @@ class ListLossClaimsControllerSpec
   private val businessId     = "businessId"
   private val claimType      = "carry-sideways"
 
-  private val rawData = ListLossClaimsRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))
-  private val request = ListLossClaimsRequest(Nino(nino), Some(TaxYear("2019")), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+  private val rawData = ListLossClaimsRawData(nino, taxYear, Some(selfEmployment), Some(businessId), Some(claimType))
+  private val request = ListLossClaimsRequest(Nino(nino), TaxYear("2019"), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
 
   private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
@@ -180,7 +180,7 @@ class ListLossClaimsControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
+      controller.list(nino, taxYear, Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
 
   }
 
