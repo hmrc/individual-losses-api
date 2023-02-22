@@ -19,7 +19,7 @@ package api.endpoints.lossClaim.list.v4
 import api.endpoints.lossClaim.list.v4.connector.MockListLossClaimsConnector
 import api.endpoints.lossClaim.list.v4.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v4.response.{ ListLossClaimsItem, ListLossClaimsResponse }
-import api.fixtures.v4.ListLossClaimsFixtures.{ multipleClaimsResponseModel, singleClaimResponseModel }
+import api.fixtures.v4.ListLossClaimsFixtures.singleClaimResponseModel
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
@@ -43,16 +43,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
 
   "retrieve the list of bf losses" should {
     "return a Right" when {
+
       "the connector call is successful" in new Test {
-        val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]] =
-          ResponseWrapper(correlationId, multipleClaimsResponseModel)
-        MockedListLossClaimsConnector.listLossClaims(request()).returns(Future.successful(Right(downstreamResponse)))
-
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request()))
-        result shouldBe Right(downstreamResponse)
-      }
-
-      "the connector call is successful with a tax year" in new Test {
         private val taxYear = TaxYear.fromMtd("2023-24")
         private val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]] =
           ResponseWrapper(

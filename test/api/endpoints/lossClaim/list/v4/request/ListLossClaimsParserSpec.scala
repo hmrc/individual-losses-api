@@ -38,7 +38,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
         val inputData: ListLossClaimsRawData =
           ListLossClaimsRawData(
             nino = nino,
-            taxYearClaimedFor = "2017-18",
+            taxYearClaimedFor = "2020-21",
             typeOfLoss = Some("uk-property-non-fhl"),
             businessId = Some(businessId),
             typeOfClaim = Some("carry-sideways")
@@ -50,7 +50,7 @@ class ListLossClaimsParserSpec extends UnitSpec {
           Right(
             ListLossClaimsRequest(
               nino = Nino(nino),
-              taxYearClaimedFor = TaxYear("2018"),
+              taxYearClaimedFor = TaxYear("2021"),
               typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`),
               businessId = Some(businessId),
               typeOfClaim = Some(TypeOfClaim.`carry-sideways`)
@@ -59,18 +59,18 @@ class ListLossClaimsParserSpec extends UnitSpec {
 
       "map missing parameters to None" in new Test {
         val inputData: ListLossClaimsRawData =
-          ListLossClaimsRawData(nino, "2018-19", None, None, None)
+          ListLossClaimsRawData(nino, "2020-21", None, None, None)
 
         MockValidator.validate(inputData) returns Nil
 
         parser.parseRequest(inputData) shouldBe
-          Right(ListLossClaimsRequest(Nino(nino), TaxYear("2019"), None, None, None))
+          Right(ListLossClaimsRequest(Nino(nino), TaxYear("2021"), None, None, None))
       }
     }
 
     "invalid input" should {
       // WLOG - validation is mocked
-      val inputData = ListLossClaimsRawData("nino", "2018-19", None, None, None)
+      val inputData = ListLossClaimsRawData("nino", "2020-21", None, None, None)
 
       "handle a single error" in new Test {
         MockValidator.validate(inputData) returns List(NinoFormatError)

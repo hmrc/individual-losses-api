@@ -20,7 +20,7 @@ import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v4.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
 import api.endpoints.lossClaim.list.v4.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
-import api.fixtures.v4.ListLossClaimsFixtures.multipleClaimsResponseModel
+import api.fixtures.v4.ListLossClaimsFixtures.singleClaimResponseModel
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
@@ -134,10 +134,10 @@ class ListLossClaimsControllerSpec
 
         MockListLossClaimsService
           .list(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, multipleClaimsResponseModel))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))))
 
         MockHateoasFactory
-          .wrapList(multipleClaimsResponseModel, ListLossClaimsHateoasData(nino))
+          .wrapList(singleClaimResponseModel(taxYear), ListLossClaimsHateoasData(nino))
           .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
