@@ -1,15 +1,5 @@
 components:
   parameters:
-    taxYearClaimedFor:
-      in: query
-      name: taxYearClaimedFor
-      description: |
-        The tax year to which the claim applies. The start year and end year must not span two tax years. The minimum tax year is 2019-20. No gaps are allowed, for example, 2022-24 is not valid.
-      schema:
-        type: string
-        pattern: ^2[0-9]{3}-[0-9]{2}$
-        example: 2019-20
-      required: false
     businessId:
       in: query
       name: businessId
@@ -44,7 +34,7 @@ components:
       in: query
       name: typeOfClaim
       description: |
-        The type of claim to be applied.
+        The type of claim to be applied. If no parameter value is supplied, all claim types (carry-forward and carry-sideways) will be returned.
       schema:
         type: string
         enum: [ carry-sideways ]

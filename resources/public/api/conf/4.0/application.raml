@@ -54,12 +54,19 @@ documentation:
         delete: !include broughtForwardLosses_delete.raml
         /change-loss-amount:
           post: !include broughtForwardLosses_amend.raml
+    /{taxYearClaimedFor}:
+      uriParameters:
+        taxYearClaimedFor:
+          description: 'The tax year to which the claim applies. The start year and end year must not span two tax years. The minimum tax year is 2019-20. No gaps are allowed, for example, 2022-24 is not valid.'
+          type: string
+          example: "2022-23"
+      /loss-claims:
+        (annotations.group):
+          name: Loss Claims
+          description: !include docs/group_lossClaims.md
+        get: !include lossClaims_list.raml
     /loss-claims:
-      (annotations.group):
-        name: Loss Claims
-        description: !include docs/group_lossClaims.md
       post: !include lossClaims_create.raml
-      get: !include lossClaims_list.raml
       /{claimId}:
         uriParameters:
           claimId:
