@@ -1,0 +1,2 @@
+GET /:nino/:taxYearClaimedFor/loss-claims   api.endpoints.lossClaim.list.v4.ListLossClaimsController.list(nino: String, taxYearClaimedFor: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String])
+GET /:nino/loss-claims                      api.controllers.DeprecatedController.version4(nino: String)

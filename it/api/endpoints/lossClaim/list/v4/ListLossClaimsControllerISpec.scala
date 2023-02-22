@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.list.v3
+package api.endpoints.lossClaim.list.v4
 
-import api.fixtures.v3.ListLossClaimsFixtures._
+import api.fixtures.v4.ListLossClaimsFixtures._
 import api.models.domain.TaxYear
 import api.models.errors._
 import play.api.http.HeaderNames.ACCEPT
@@ -32,17 +32,17 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
   private trait Test {
 
     val nino                        = "AA123456A"
-    val taxYear: Option[String]     = Some("2019-20")
+    val taxYear: String             = "2019-20"
     val typeOfLoss: Option[String]  = None
     val businessId: Option[String]  = None
     val typeOfClaim: Option[String] = None
 
-    def mtdUrl: String = s"/$nino/loss-claims"
+    def mtdUrl: String = s"/$nino/$taxYear/loss-claims"
 
     def downstreamUrl(taxYear: String = "2019-20"): String = s"/income-tax/claims-for-relief/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino"
 
     def mtdQueryParams: Seq[(String, String)] =
-      List("taxYearClaimedFor" -> taxYear, "typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> typeOfClaim)
+      List("typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> typeOfClaim)
         .collect { case (k, Some(v)) =>
           (k, v)
         }
@@ -70,7 +70,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       buildRequest(mtdUrl)
         .addQueryStringParameters(mtdQueryParams: _*)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
@@ -90,58 +90,6 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
 
         override def setupStubs(): Unit = {
           stubDownstream(nonFhlDownstreamResponseJson("2019-20"))
-        }
-
-        val response: WSResponse = await(request().get())
-        response.json shouldBe responseJson
-        response.status shouldBe Status.OK
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "query for everything where a tax year is not given" in new Test {
-        override val taxYear: Option[String] = None
-
-        val responseJson: JsValue = Json.parse(s"""
-             |{
-             |    "claims": [
-             |        ${nonFhlClaimMtdJson("2019-20", nino)},
-             |        ${nonFhlClaimMtdJson("2020-21", nino)},
-             |        ${nonFhlClaimMtdJson("2021-22", nino)},
-             |        ${nonFhlClaimMtdJson("2022-23", nino)}
-             |    ],
-             |    "links": ${baseHateoasLinks(nino)}
-             |}""".stripMargin)
-
-        override def setupStubs(): Unit = {
-          stubDownstream(nonFhlDownstreamResponseJson("2019-20"), "2019-20")
-          stubDownstream(nonFhlDownstreamResponseJson("2020-21"), "2020-21")
-          stubDownstream(nonFhlDownstreamResponseJson("2021-22"), "2021-22")
-          stubDownstream(nonFhlDownstreamResponseJson("2022-23"), "2022-23")
-        }
-
-        val response: WSResponse = await(request().get())
-        response.json shouldBe responseJson
-        response.status shouldBe Status.OK
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      "query where a tax year is not given and some response are 404 NOT_FOUND" in new Test {
-        override val taxYear: Option[String] = None
-
-        val responseJson: JsValue = Json.parse(s"""
-             |{
-             |    "claims": [
-             |        ${nonFhlClaimMtdJson("2019-20", nino)},
-             |        ${nonFhlClaimMtdJson("2021-22", nino)}
-             |    ],
-             |    "links": ${baseHateoasLinks(nino)}
-             |}""".stripMargin)
-
-        override def setupStubs(): Unit = {
-          stubDownstream(nonFhlDownstreamResponseJson("2019-20"), "2019-20")
-          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2020-21"), Map.empty, Status.NOT_FOUND, errorBody("NOT_FOUND"))
-          stubDownstream(nonFhlDownstreamResponseJson("2021-22"), "2021-22")
-          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2022-23"), Map.empty, Status.NOT_FOUND, errorBody("NOT_FOUND"))
         }
 
         val response: WSResponse = await(request().get())
@@ -229,6 +177,15 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         response.status shouldBe Status.NOT_FOUND
         response.header("Content-Type") shouldBe Some("application/json")
       }
+
+      "the request is made without a tax year path parameter" in new Test {
+        override def mtdUrl: String = s"/$nino/loss-claims"
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe NotFoundError.asJson
+        response.status shouldBe Status.NOT_FOUND
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
     }
 
     "return a 500 status code" when {
@@ -273,44 +230,9 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       errors.foreach(args => (serviceErrorTest _).tupled(args))
     }
 
-    "handle downstream errors according to spec without a tax year" when {
-      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $downstreamCode error" in new Test {
-          override val taxYear: Option[String] = None
-
-          override def setupStubs(): Unit = {
-            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2019-20"), Map.empty, downstreamStatus, errorBody(downstreamCode))
-            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2020-21"), Map.empty, downstreamStatus, errorBody(downstreamCode))
-            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2021-22"), Map.empty, downstreamStatus, errorBody(downstreamCode))
-            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2022-23"), Map.empty, downstreamStatus, errorBody(downstreamCode))
-          }
-
-          val response: WSResponse = await(request().get())
-          response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedBody)
-          response.header("Content-Type") shouldBe Some("application/json")
-        }
-      }
-
-      val errors = List(
-        (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
-        (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError),
-        (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
-        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", Status.BAD_REQUEST, TypeOfLossFormatError),
-        (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.INTERNAL_SERVER_ERROR, InternalError)
-      )
-
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
-    }
-
     "handle validation errors according to spec" when {
       def validationErrorTest(requestNino: String,
-                              requestTaxYear: Option[String],
+                              requestTaxYear: String,
                               requestTypeOfLoss: Option[String],
                               requestSelfEmploymentId: Option[String],
                               requestTypeOfClaim: Option[String],
@@ -319,7 +241,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String                = requestNino
-          override val taxYear: Option[String]     = requestTaxYear
+          override val taxYear: String             = requestTaxYear
           override val typeOfLoss: Option[String]  = requestTypeOfLoss
           override val businessId: Option[String]  = requestSelfEmploymentId
           override val typeOfClaim: Option[String] = requestTypeOfClaim
@@ -332,13 +254,13 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
       }
 
       val errors = List(
-        ("AA1234", None, None, None, None, Status.BAD_REQUEST, NinoFormatError),
-        ("AA123456A", Some("XXXX-YY"), None, None, None, Status.BAD_REQUEST, TaxYearFormatError),
-        ("AA123456A", Some("2018-19"), None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
-        ("AA123456A", Some("2019-21"), None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
-        ("AA123456A", None, Some("employment"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError),
-        ("AA123456A", None, Some("self-employment"), Some("XKIS0000000"), None, Status.BAD_REQUEST, BusinessIdFormatError),
-        ("AA123456A", None, None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+        ("AA1234", "2019-20", None, None, None, Status.BAD_REQUEST, NinoFormatError),
+        ("AA123456A", "XXXX-YY", None, None, None, Status.BAD_REQUEST, TaxYearFormatError),
+        ("AA123456A", "2018-19", None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
+        ("AA123456A", "2019-21", None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        ("AA123456A", "2019-20", Some("employment"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError),
+        ("AA123456A", "2019-20", Some("self-employment"), Some("XKIS0000000"), None, Status.BAD_REQUEST, BusinessIdFormatError),
+        ("AA123456A", "2019-20", None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
       )
 
       errors.foreach(args => (validationErrorTest _).tupled(args))
