@@ -57,7 +57,6 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
         result shouldBe Right(downstreamResponse)
       }
     }
-
     "return a Left(NotFoundError)" when {
       "the connector returns an empty list" in new Test {
         private val taxYear = TaxYear.fromMtd("2023-24")
