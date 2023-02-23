@@ -37,7 +37,7 @@ class ListLossClaimsControllerISpec extends V3IntegrationBaseSpec {
     val businessId: Option[String]  = None
     val typeOfClaim: Option[String] = None
 
-    def mtdUrl: String = s"/$nino/$taxYear/loss-claims"
+    def mtdUrl: String = s"/$nino/loss-claims/$taxYear/list"
 
     def downstreamUrl(taxYear: String = "2019-20"): String = s"/income-tax/claims-for-relief/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino"
 
