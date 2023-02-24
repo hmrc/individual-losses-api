@@ -16,10 +16,13 @@
 
 package config
 
+import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
 import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
+
+import scala.util.Try
 
 class DocumentationISpec extends IntegrationBaseSpec {
 
@@ -90,35 +93,35 @@ class DocumentationISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-//    "return the V3 documentation that passes OAS V3 parser" in {
-//      val response: WSResponse = await(buildRequest("/api/conf/3.0/application.yaml").get())
-//      response.status shouldBe Status.OK
-//
-//      val contents     = response.body[String]
-//      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
-//      parserResult.isSuccess shouldBe true
-//
-//      val openAPI = Option(parserResult.get.getOpenAPI)
-//      openAPI.isEmpty shouldBe false
-//      openAPI.get.getOpenapi shouldBe "3.0.3"
-//      openAPI.get.getInfo.getTitle shouldBe "Individual Losses (MTD)"
-//      openAPI.get.getInfo.getVersion shouldBe "3.0"
-//    }
-//
-//    "return the V4 documentation that passes OAS V3 parser" in {
-//      val response: WSResponse = await(buildRequest("/api/conf/4.0/application.yaml").get())
-//      response.status shouldBe Status.OK
-//
-//      val contents     = response.body[String]
-//      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
-//      parserResult.isSuccess shouldBe true
-//
-//      val openAPI = Option(parserResult.get.getOpenAPI)
-//      openAPI.isEmpty shouldBe false
-//      openAPI.get.getOpenapi shouldBe "3.0.3"
-//      openAPI.get.getInfo.getTitle shouldBe "Individual Losses (MTD)"
-//      openAPI.get.getInfo.getVersion shouldBe "4.0"
-//    }
+    "return the V3 documentation that passes OAS V3 parser" in {
+      val response: WSResponse = await(buildRequest("/api/conf/3.0/application.yaml").get())
+      response.status shouldBe Status.OK
+
+      val contents     = response.body[String]
+      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+      parserResult.isSuccess shouldBe true
+
+      val openAPI = Option(parserResult.get.getOpenAPI)
+      openAPI.isEmpty shouldBe false
+      openAPI.get.getOpenapi shouldBe "3.0.3"
+      openAPI.get.getInfo.getTitle shouldBe "Individual Losses (MTD)"
+      openAPI.get.getInfo.getVersion shouldBe "3.0"
+    }
+
+    "return the V4 documentation that passes OAS V3 parser" in {
+      val response: WSResponse = await(buildRequest("/api/conf/4.0/application.yaml").get())
+      response.status shouldBe Status.OK
+
+      val contents     = response.body[String]
+      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+      parserResult.isSuccess shouldBe true
+
+      val openAPI = Option(parserResult.get.getOpenAPI)
+      openAPI.isEmpty shouldBe false
+      openAPI.get.getOpenapi shouldBe "3.0.3"
+      openAPI.get.getInfo.getTitle shouldBe "Individual Losses (MTD)"
+      openAPI.get.getInfo.getVersion shouldBe "4.0"
+    }
   }
 
 }
