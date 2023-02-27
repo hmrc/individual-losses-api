@@ -59,7 +59,7 @@ paths:
     $ref: "./brought_forward_losses_amend.yaml"
   /individuals/losses/{nino}/loss-claims:
     $ref: "./loss_claims_create.yaml"
-  /individuals/losses/{nino}/loss-claims/{taxYearClaimedFor}/list:
+  /individuals/losses/{nino}/loss-claims/tax-year/{taxYearClaimedFor}:
     $ref: "./loss_claims_list.yaml"
   /individuals/losses/{nino}/loss-claims/{claimId}:
     $ref: "./loss_claims_claimId_endpoints.yaml"
