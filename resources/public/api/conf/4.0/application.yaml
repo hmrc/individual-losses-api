@@ -59,11 +59,11 @@ paths:
     $ref: "./brought_forward_losses_amend.yaml"
   /individuals/losses/{nino}/loss-claims:
     $ref: "./loss_claims_create.yaml"
-  /individuals/losses/{nino}/loss-claims/tax-year/{taxYearClaimedFor}:
-    $ref: "./loss_claims_list.yaml"
   /individuals/losses/{nino}/loss-claims/{claimId}:
     $ref: "./loss_claims_claimId_endpoints.yaml"
   /individuals/losses/{nino}/loss-claims/{claimId}/change-type-of-claim:
     $ref: "./loss_claims_amend_type.yaml"
+  /individuals/losses/{nino}/loss-claims/tax-year/{taxYearClaimedFor}:
+    $ref: "./loss_claims_list.yaml"
   /individuals/losses/{nino}/loss-claims/order/{taxYearClaimedFor}:
     $ref: "./loss_claims_amend_order_endpoints.yaml"
