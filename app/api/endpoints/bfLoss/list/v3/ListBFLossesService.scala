@@ -17,8 +17,9 @@
 package api.endpoints.bfLoss.list.v3
 
 import api.controllers.RequestContext
-import api.endpoints.bfLoss.connector.v3.BFLossConnector
+import api.endpoints.bfLoss.list.v3.connector.ListBFLossesConnector
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
+import api.models.domain.TaxYear
 import api.models.errors._
 import api.services.BaseService
 import api.services.v3.Outcomes.ListBFLossesOutcome
@@ -26,14 +27,14 @@ import api.services.v3.Outcomes.ListBFLossesOutcome
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ListBFLossesService @Inject() (connector: BFLossConnector) extends BaseService {
+class ListBFLossesService @Inject() (connector: ListBFLossesConnector) extends BaseService {
 
   def listBFLosses(request: ListBFLossesRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListBFLossesOutcome] =
     connector
       .listBFLosses(request)
       .map {
         case Left(err) =>
-          Left(mapDownstreamErrors(errorMap)(err))
+          Left(mapDownstreamErrors(errorMap(request.taxYearBroughtForwardFrom))(err))
 
         case Right(responseWrapper) if responseWrapper.responseData.losses.isEmpty =>
           Left(ErrorWrapper(ctx.correlationId, NotFoundError))
@@ -42,19 +43,12 @@ class ListBFLossesService @Inject() (connector: BFLossConnector) extends BaseSer
           Right(result)
       }
 
-  private val errorMap: Map[String, MtdError] = {
+  private def errorMap(maybeTaxYear: Option[TaxYear]): Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
-      "INVALID_CORRELATIONID"     -> InternalError,
       "NOT_FOUND"                 -> NotFoundError,
       "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError
-    )
-
-    val extraTysErrors = Map(
+      "SERVICE_UNAVAILABLE"       -> InternalError,
       "INVALID_TAX_YEAR"          -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
       "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
@@ -62,7 +56,20 @@ class ListBFLossesService @Inject() (connector: BFLossConnector) extends BaseSer
       "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
     )
 
-    errors ++ extraTysErrors
+    val taxYearErrors = maybeTaxYear match {
+      case Some(_) =>
+        Map(
+          "INVALID_TAX_YEAR"       -> TaxYearFormatError,
+          "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+        )
+      case _ =>
+        Map(
+          "INVALID_TAX_YEAR"       -> InternalError,
+          "TAX_YEAR_NOT_SUPPORTED" -> InternalError
+        )
+    }
+
+    errors ++ taxYearErrors
   }
 
 }
