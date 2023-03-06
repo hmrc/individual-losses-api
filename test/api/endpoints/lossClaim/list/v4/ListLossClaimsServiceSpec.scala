@@ -30,8 +30,8 @@ import scala.concurrent.Future
 
 class ListLossClaimsServiceSpec extends ServiceSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  val nino    = "AA123456A"
+  val claimId = "AAZZ1234567890a"
 
   trait Test extends MockListLossClaimsConnector {
     lazy val service = new ListLossClaimsService(connector)

@@ -117,7 +117,7 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
 
     "handle errors according to spec" when {
       def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $downstreamCode error" in new Test {
+        s"downstream returns $downstreamCode" in new Test {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -135,20 +135,14 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
       }
 
       serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCEID", BAD_REQUEST, BusinessIdFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCETYPE", BAD_REQUEST, TypeOfLossFormatError)
       serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-
-      // TYS Errors
       serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError)
       serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError)
       serviceErrorTest(BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", BAD_REQUEST, TypeOfLossFormatError)
       serviceErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "handle validation errors according to spec" when {
@@ -158,7 +152,7 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
                               requestBusinessId: Option[String],
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
-        s"validation fails with ${expectedBody.code} error" in new Test {
+        s"validation fails with ${expectedBody.code}" in new Test {
 
           override val nino: String                      = requestNino
           override val taxYearBroughtForwardFrom: String = requestTaxYear
@@ -230,74 +224,74 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
 
     val downstreamResponseJson: JsValue =
       Json.parse(s"""
-                    |[
-                    |  {
-                    |    "incomeSourceId": "XAIS12345678911",
-                    |    "lossType": "INCOME",
-                    |    "broughtForwardLossAmount": 345.67,
-                    |    "taxYear": "2019",
-                    |    "lossId": "AAZZ1234567890A",
-                    |    "submissionDate": "2020-07-13T12:13:48.763Z"
-                    |  },
-                    |  {
-                    |    "incomeSourceId": "XAIS12345678912",
-                    |    "incomeSourceType": "04",
-                    |    "broughtForwardLossAmount": 385.67,
-                    |    "taxYear": "2020",
-                    |    "lossId": "AAZZ1234567890B",
-                    |    "submissionDate": "2020-08-13T12:13:48.763Z"
-                    |  }
-                    |]
+       |[
+       |  {
+       |    "incomeSourceId": "XAIS12345678911",
+       |    "lossType": "INCOME",
+       |    "broughtForwardLossAmount": 345.67,
+       |    "taxYear": "2019",
+       |    "lossId": "AAZZ1234567890A",
+       |    "submissionDate": "2020-07-13T12:13:48.763Z"
+       |  },
+       |  {
+       |    "incomeSourceId": "XAIS12345678912",
+       |    "incomeSourceType": "04",
+       |    "broughtForwardLossAmount": 385.67,
+       |    "taxYear": "2020",
+       |    "lossId": "AAZZ1234567890B",
+       |    "submissionDate": "2020-08-13T12:13:48.763Z"
+       |  }
+       |]
      """.stripMargin)
 
     val responseJson: JsValue =
       Json.parse(s"""
-                    |{
-                    |  "losses": [
-                    |    {
-                    |      "lossId": "AAZZ1234567890A",
-                    |      "businessId": "XAIS12345678911",
-                    |      "typeOfLoss": "self-employment",
-                    |      "lossAmount": 345.67,
-                    |      "taxYearBroughtForwardFrom": "2018-19",
-                    |      "lastModified": "2020-07-13T12:13:48.763Z",
-                    |      "links": [
-                    |        {
-                    |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890A",
-                    |          "rel": "self",
-                    |          "method": "GET"
-                    |        }
-                    |      ]
-                    |    },
-                    |    {
-                    |      "lossId": "AAZZ1234567890B",
-                    |      "businessId": "XAIS12345678912",
-                    |      "typeOfLoss": "uk-property-fhl",
-                    |      "lossAmount": 385.67,
-                    |      "taxYearBroughtForwardFrom": "2019-20",
-                    |      "lastModified": "2020-08-13T12:13:48.763Z",
-                    |      "links": [
-                    |        {
-                    |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890B",
-                    |          "rel": "self",
-                    |          "method": "GET"
-                    |        }
-                    |      ]
-                    |    }
-                    |  ],
-                    |  "links": [
-                    |    {
-                    |      "href": "/individuals/losses/$nino/brought-forward-losses",
-                    |      "rel": "self",
-                    |      "method": "GET"
-                    |    },
-                    |    {
-                    |      "href": "/individuals/losses/$nino/brought-forward-losses",
-                    |      "rel": "create-brought-forward-loss",
-                    |      "method": "POST"
-                    |    }
-                    |  ]
-                    |}
+        |{
+        |  "losses": [
+        |    {
+        |      "lossId": "AAZZ1234567890A",
+        |      "businessId": "XAIS12345678911",
+        |      "typeOfLoss": "self-employment",
+        |      "lossAmount": 345.67,
+        |      "taxYearBroughtForwardFrom": "2018-19",
+        |      "lastModified": "2020-07-13T12:13:48.763Z",
+        |      "links": [
+        |        {
+        |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890A",
+        |          "rel": "self",
+        |          "method": "GET"
+        |        }
+        |      ]
+        |    },
+        |    {
+        |      "lossId": "AAZZ1234567890B",
+        |      "businessId": "XAIS12345678912",
+        |      "typeOfLoss": "uk-property-fhl",
+        |      "lossAmount": 385.67,
+        |      "taxYearBroughtForwardFrom": "2019-20",
+        |      "lastModified": "2020-08-13T12:13:48.763Z",
+        |      "links": [
+        |        {
+        |          "href": "/individuals/losses/$nino/brought-forward-losses/AAZZ1234567890B",
+        |          "rel": "self",
+        |          "method": "GET"
+        |        }
+        |      ]
+        |    }
+        |  ],
+        |  "links": [
+        |    {
+        |      "href": "/individuals/losses/$nino/brought-forward-losses",
+        |      "rel": "self",
+        |      "method": "GET"
+        |    },
+        |    {
+        |      "href": "/individuals/losses/$nino/brought-forward-losses",
+        |      "rel": "create-brought-forward-loss",
+        |      "method": "POST"
+        |    }
+        |  ]
+        |}
      """.stripMargin)
 
   }

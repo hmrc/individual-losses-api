@@ -42,27 +42,17 @@ class ListBFLossesService @Inject() (connector: ListBFLossesConnector) extends B
           Right(result)
       }
 
-  private val errorMap: Map[String, MtdError] = {
-    val errors = Map(
+  private val errorMap: Map[String, MtdError] =
+    Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
-      "INVALID_CORRELATIONID"     -> InternalError,
-      "NOT_FOUND"                 -> NotFoundError,
-      "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError
-    )
-
-    val extraTysErrors = Map(
       "INVALID_TAX_YEAR"          -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
       "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+      "NOT_FOUND"                 -> NotFoundError,
       "INVALID_CORRELATION_ID"    -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
     )
-
-    errors ++ extraTysErrors
-  }
 
 }
