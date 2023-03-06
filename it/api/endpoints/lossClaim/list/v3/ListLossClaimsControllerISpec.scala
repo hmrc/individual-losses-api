@@ -20,7 +20,7 @@ import api.fixtures.v3.ListLossClaimsFixtures._
 import api.models.domain.TaxYear
 import api.models.errors._
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
@@ -57,8 +57,8 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
     def setupStubs(): Unit = {}
 
-    def stubDownstream(response: JsValue, taxYear: String = "2019-20", params: Map[String, String] = Map.empty, status: Int = Status.OK): Unit = {
-      DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl(taxYear), params, status, response)
+    def stubDownstream(response: JsValue, taxYear: String = "2019-20", params: Map[String, String] = Map.empty): Unit = {
+      DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl(taxYear), params, OK, response)
     }
 
     def request(): WSRequest = {
@@ -94,7 +94,7 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
@@ -121,11 +121,11 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "query where a tax year is not given and some response are 404 NOT_FOUND" in new Test {
+      "query where a tax year is not given and some responses are 404 NOT_FOUND" in new Test {
         override val taxYear: Option[String] = None
 
         val responseJson: JsValue = Json.parse(s"""
@@ -139,14 +139,14 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         override def setupStubs(): Unit = {
           stubDownstream(nonFhlDownstreamResponseJson("2019-20"), "2019-20")
-          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2020-21"), Map.empty, Status.NOT_FOUND, errorBody("NOT_FOUND"))
+          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2020-21"), Map.empty, NOT_FOUND, errorBody("NOT_FOUND"))
           stubDownstream(nonFhlDownstreamResponseJson("2021-22"), "2021-22")
-          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2022-23"), Map.empty, Status.NOT_FOUND, errorBody("NOT_FOUND"))
+          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl("2022-23"), Map.empty, NOT_FOUND, errorBody("NOT_FOUND"))
         }
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
@@ -167,7 +167,7 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
@@ -191,7 +191,7 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
@@ -213,7 +213,7 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.json shouldBe responseJson
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -226,7 +226,7 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.json shouldBe NotFoundError.asJson
-        response.status shouldBe Status.NOT_FOUND
+        response.status shouldBe NOT_FOUND
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -238,7 +238,7 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.INTERNAL_SERVER_ERROR
+        response.status shouldBe INTERNAL_SERVER_ERROR
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -258,16 +258,16 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
       }
 
       val errors = List(
-        (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
-        (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError),
-        (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
-        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
-        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", Status.BAD_REQUEST, TypeOfLossFormatError),
-        (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+        (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_CLAIM_TYPE", BAD_REQUEST, TypeOfClaimFormatError),
+        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+        (BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", BAD_REQUEST, TypeOfLossFormatError),
+        (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
       errors.foreach(args => (serviceErrorTest _).tupled(args))
@@ -293,16 +293,16 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
       }
 
       val errors = List(
-        (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
-        (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError),
-        (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
-        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", Status.BAD_REQUEST, TypeOfLossFormatError),
-        (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.INTERNAL_SERVER_ERROR, InternalError)
+        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+        (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_CLAIM_TYPE", BAD_REQUEST, TypeOfClaimFormatError),
+        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+        (BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", BAD_REQUEST, TypeOfLossFormatError),
+        (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", INTERNAL_SERVER_ERROR, InternalError)
       )
 
       errors.foreach(args => (serviceErrorTest _).tupled(args))
@@ -332,13 +332,13 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
       }
 
       val errors = List(
-        ("AA1234", None, None, None, None, Status.BAD_REQUEST, NinoFormatError),
-        ("AA123456A", Some("XXXX-YY"), None, None, None, Status.BAD_REQUEST, TaxYearFormatError),
-        ("AA123456A", Some("2018-19"), None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
-        ("AA123456A", Some("2019-21"), None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
-        ("AA123456A", None, Some("employment"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError),
-        ("AA123456A", None, Some("self-employment"), Some("XKIS0000000"), None, Status.BAD_REQUEST, BusinessIdFormatError),
-        ("AA123456A", None, None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
+        ("AA1234", None, None, None, None, BAD_REQUEST, NinoFormatError),
+        ("AA123456A", Some("XXXX-YY"), None, None, None, BAD_REQUEST, TaxYearFormatError),
+        ("AA123456A", Some("2018-19"), None, None, None, BAD_REQUEST, RuleTaxYearNotSupportedError),
+        ("AA123456A", Some("2019-21"), None, None, None, BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        ("AA123456A", None, Some("employment"), None, None, BAD_REQUEST, TypeOfLossFormatError),
+        ("AA123456A", None, Some("self-employment"), Some("XKIS0000000"), None, BAD_REQUEST, BusinessIdFormatError),
+        ("AA123456A", None, None, None, Some("FORWARD"), BAD_REQUEST, TypeOfClaimFormatError)
       )
 
       errors.foreach(args => (validationErrorTest _).tupled(args))

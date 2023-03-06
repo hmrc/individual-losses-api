@@ -103,22 +103,6 @@ class BFLossConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
     taxYearBroughtForwardFrom match {
       case Some(taxYear) => send(taxYear)
       case _             => Future.traverse(DEFAULT_TAX_YEARS)(send).map(combineResponses)
-
-      //      case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
-//        get(
-//          TaxYearSpecificIfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${taxYear.asTysDownstream}/${nino.nino}"),
-//          queryParams
-//        )
-//      case _ =>
-//        val params = taxYearBroughtForwardFrom match {
-//          case Some(taxYear) => queryParams :+ "taxYear" -> taxYear.asDownstream
-//          case None          => queryParams
-//        }
-//
-//        get(
-//          IfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${nino.nino}"),
-//          params
-//        )
     }
   }
 
