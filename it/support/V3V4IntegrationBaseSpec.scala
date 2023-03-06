@@ -16,7 +16,7 @@
 
 package support
 
-trait V3IntegrationBaseSpec extends IntegrationBaseSpec {
+trait V3V4IntegrationBaseSpec extends IntegrationBaseSpec {
   override def servicesConfig: Map[String, String] = Map(
     "microservice.services.des.host"           -> mockHost,
     "microservice.services.des.port"           -> mockPort,

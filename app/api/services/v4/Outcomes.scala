@@ -16,13 +16,13 @@
 
 package api.services.v4
 
+import api.endpoints.bfLoss.list.v4.response.{ ListBFLossesItem, ListBFLossesResponse }
 import api.endpoints.lossClaim.list.v4.response.{ ListLossClaimsItem, ListLossClaimsResponse }
-import api.models.ResponseWrapper
-import api.models.errors.ErrorWrapper
+import api.services.anyVersion.Outcomes.ServiceOutcome
 
 object Outcomes {
 
-  type ServiceOutcome[I] = Either[ErrorWrapper, ResponseWrapper[I]]
+  type ListBFLossesOutcome = ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]
 
   type ListLossClaimsOutcome = ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]
 

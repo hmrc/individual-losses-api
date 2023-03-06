@@ -23,7 +23,7 @@ import play.api.libs.json.{ JsValue, Json }
 
 object ListLossClaimsFixtures {
 
-  def listLossClaimsModel(taxYear: String): ListLossClaimsItem = ListLossClaimsItem(
+  def listLossClaim(taxYear: String): ListLossClaimsItem = ListLossClaimsItem(
     businessId = "testId",
     typeOfClaim = TypeOfClaim.`carry-sideways`,
     typeOfLoss = TypeOfLoss.`self-employment`,
@@ -76,15 +76,15 @@ object ListLossClaimsFixtures {
   )
 
   def singleClaimResponseModel(taxYear: String): ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
-    List(listLossClaimsModel(taxYear))
+    List(listLossClaim(taxYear))
   )
 
   val multipleClaimsResponseModel: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
     List(
-      listLossClaimsModel("2019-20"),
-      listLossClaimsModel("2020-21"),
-      listLossClaimsModel("2021-22"),
-      listLossClaimsModel("2022-23")
+      listLossClaim("2019-20"),
+      listLossClaim("2020-21"),
+      listLossClaim("2021-22"),
+      listLossClaim("2022-23")
     )
   )
 

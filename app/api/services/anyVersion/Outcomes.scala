@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package api.validations.v3
+package api.services.anyVersion
 
-import api.models.errors.{BusinessIdFormatError, MtdError}
-import api.validations.NoValidationErrors
+import api.models.ResponseWrapper
+import api.models.errors.ErrorWrapper
 
-object BusinessIdValidation {
+object Outcomes {
 
-  private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
-
-  def validate(businessId: String): Seq[MtdError] = {
-    if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
-  }
+  type ServiceOutcome[I] = Either[ErrorWrapper, ResponseWrapper[I]]
 
 }

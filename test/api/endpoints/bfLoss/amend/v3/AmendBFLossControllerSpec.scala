@@ -21,7 +21,7 @@ import api.endpoints.bfLoss.amend.anyVersion.request.{ AmendBFLossRawData, Amend
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
 import api.endpoints.bfLoss.amend.v3.request.{ AmendBFLossRequest, MockAmendBFLossParser }
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }

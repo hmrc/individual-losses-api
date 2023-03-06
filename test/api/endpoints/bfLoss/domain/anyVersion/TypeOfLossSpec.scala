@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package api.endpoints.bfLoss.domain.v3
+package api.endpoints.bfLoss.domain.anyVersion
 
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss._
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

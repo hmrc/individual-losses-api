@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.endpoints.bfLoss.domain.v3
+package api.endpoints.bfLoss.domain.anyVersion
 
 import play.api.libs.json.Format
 import utils.enums.Enums

@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package api.endpoints.bfLoss.domain.v3
+package api.validations.anyVersion
 
-import api.endpoints.bfLoss.domain.v3.LossType.{CLASS4, INCOME}
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
+import api.models.errors.{ BusinessIdFormatError, MtdError }
+import api.validations.NoValidationErrors
 
-class LossTypeSpec extends UnitSpec with EnumJsonSpecSupport {
+object BusinessIdValidation {
 
-  testRoundTrip[LossType](("INCOME", INCOME), ("CLASS4", CLASS4))
+  private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
+
+  def validate(businessId: String): Seq[MtdError] = {
+    if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
+  }
+
 }

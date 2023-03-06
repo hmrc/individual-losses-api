@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.list.v3.request
 
-import api.endpoints.bfLoss.domain.v3.IncomeSourceType
+import api.endpoints.bfLoss.domain.anyVersion.IncomeSourceType
 import api.models.RawData
 import api.models.domain.{Nino, TaxYear}
 

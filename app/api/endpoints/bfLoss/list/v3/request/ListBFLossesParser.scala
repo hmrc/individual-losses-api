@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.list.v3.request
 
 import api.controllers.RequestParser
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.models.domain.{Nino, TaxYear}
 
 import javax.inject.Inject

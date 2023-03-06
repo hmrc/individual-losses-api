@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.list.v3.response
 
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.hateoas.{HateoasFactory, HateoasLinks}
 import api.models.hateoas.Method.{GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
