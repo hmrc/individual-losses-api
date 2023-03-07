@@ -44,7 +44,7 @@ class ListBFLossesConnector @Inject() (val http: HttpClient, val appConfig: AppC
 
     get(
       TaxYearSpecificIfsUri[ListBFLossesResponse[ListBFLossesItem]](
-        s"income-tax/brought-forward-losses/${taxYearBroughtForwardFrom.asTysDownstream}/${nino.nino}"
+        s"income-tax/brought-forward-losses/${taxYearBroughtForwardFrom.asTysDownstream}/$nino"
       ),
       queryParams
     )

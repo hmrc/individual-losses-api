@@ -19,7 +19,7 @@ package api.endpoints.bfLoss.list.v3.request
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss._
 import api.models.errors._
 import api.validations.Validator
-import api.validations.anyVersion.{BusinessIdValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation}
+import api.validations.anyVersion.{ BusinessIdValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation }
 import config.FixedConfig
 
 class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedConfig {
@@ -41,7 +41,7 @@ class ListBFLossesValidator extends Validator[ListBFLossesRawData] with FixedCon
 
   private def postFormatValidation: ListBFLossesRawData => Seq[Seq[MtdError]] = { data =>
     List(
-      data.taxYearBroughtForwardFrom.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil),
+      data.taxYearBroughtForwardFrom.map(MinTaxYearValidation.validate(_, minimumTaxYearBFLoss)).getOrElse(Nil)
     )
   }
 
