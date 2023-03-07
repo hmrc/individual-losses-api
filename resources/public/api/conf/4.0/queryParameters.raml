@@ -38,15 +38,6 @@ traits:
         description: 'An identifier for the business, unique to the customer.<br><br>Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`'
         example: 'XBIS00000001319'
         required: false
-  taxYearBroughtForwardFrom:
-    queryParameters:
-      taxYearBroughtForwardFrom:
-        description: |
-          The tax year to which the loss applies in the format YYYY-YY. The minimum tax year is 2018-19. The tax year must have ended.
-          No gaps are allowed, for example, 2020-22 is not valid.<br><br>
-          For 2023-24 and onwards, data must be requested individually by tax year.
-        example: "2023-24"
-        required: false
   typeOfClaim:
     queryParameters:
       typeOfClaim:

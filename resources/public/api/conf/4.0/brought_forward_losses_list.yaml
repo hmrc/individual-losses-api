@@ -49,7 +49,7 @@ tags:
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
-  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearBroughtForwardFrom'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYearBroughtForwardFrom'
   - $ref: './common/queryParameters.yaml#/components/parameters/businessId'
   - $ref: './common/queryParameters.yaml#/components/parameters/typeOfLossBroughtForward'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'

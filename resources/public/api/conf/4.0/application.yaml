@@ -57,6 +57,8 @@ paths:
     $ref: "./brought_forward_losses_lossId_endpoints.yaml"
   /individuals/losses/{nino}/brought-forward-losses/{lossId}/change-loss-amount:
     $ref: "./brought_forward_losses_amend.yaml"
+  /individuals/losses/{nino}/brought-forward-losses/tax-year/{taxYearBroughtForwardFrom}:
+    $ref: "./brought_forward_losses_list.yaml"
   /individuals/losses/{nino}/loss-claims:
     $ref: "./loss_claims_create.yaml"
   /individuals/losses/{nino}/loss-claims/tax-year/{taxYearClaimedFor}:
