@@ -68,7 +68,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
           result shouldBe downstreamResponse
         }
 
-        "a valid non-TYS request with all parameters" in new TysIfsTest with Test {
+        "a valid request with all parameters" in new TysIfsTest with Test {
           val responseData: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear)
           val request: ListBFLossesRequest =
             makeRequest(taxYear = taxYear, businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`))
