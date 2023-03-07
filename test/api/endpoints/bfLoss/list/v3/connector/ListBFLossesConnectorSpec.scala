@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.list.v3.connector
 
 import api.connectors.{ ConnectorSpec, DownstreamOutcome }
-import api.endpoints.bfLoss.domain.v3.IncomeSourceType
+import api.endpoints.bfLoss.domain.anyVersion.IncomeSourceType
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
 import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
 import api.fixtures.v3.ListBFLossesFixtures._

@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.retrieve.v3
 
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.models.ResponseWrapper

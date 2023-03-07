@@ -19,7 +19,7 @@ package api.endpoints.bfLoss.create.v3
 import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser }
 import api.endpoints.bfLoss.create.v3.response.{ CreateBFLossHateoasData, CreateBFLossResponse }
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }

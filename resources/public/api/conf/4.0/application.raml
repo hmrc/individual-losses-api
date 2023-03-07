@@ -43,7 +43,16 @@ documentation:
         name: Brought Forward Losses
         description: !include docs/group_broughtForwardLosses.md
       post: !include broughtForwardLosses_create.raml
-      get: !include broughtForwardLosses_list.raml
+      /tax-year:
+        /{taxYearBroughtForwardFrom}:
+          uriParameters:
+            taxYearBroughtForwardFrom:
+              description: |
+                The tax year to which the loss applies in the format YYYY-YY. The minimum tax year is 2018-19. The tax year must have ended.
+                No gaps are allowed, for example, 2020-22 is not valid.
+              type: string
+              example: "2022-23"
+          get: !include broughtForwardLosses_list.raml
       /{lossId}:
         uriParameters:
           lossId:

@@ -26,7 +26,7 @@ class DeprecatedControllerSpec extends ControllerBaseSpec {
 
   "version4" should {
     "return a 404" in new Test {
-      private val result = controller.version4()(fakeGetRequest)
+      private val result = controller.version4NotFound()(fakeGetRequest)
 
       status(result) shouldBe NOT_FOUND
       contentAsJson(result) shouldBe NotFoundError.asJson

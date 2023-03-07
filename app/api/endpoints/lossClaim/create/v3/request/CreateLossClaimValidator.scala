@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.create.v3.request
 
 import api.models.errors.{MtdError, TaxYearClaimedForFormatError}
 import api.validations.Validator
-import api.validations.anyVersion.{JsonFormatValidation, JsonValidation, MinTaxYearValidation, NinoValidation}
+import api.validations.anyVersion.{BusinessIdValidation, JsonFormatValidation, JsonValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation}
 import api.validations.v3._
 import config.FixedConfig
 

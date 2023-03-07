@@ -16,7 +16,7 @@
 
 package support
 
-trait V3IntegrationBaseSpec extends IntegrationBaseSpec {
+trait V3V4IntegrationBaseSpec extends IntegrationBaseSpec {
   override def servicesConfig: Map[String, String] = Map(
     "microservice.services.des.host"           -> mockHost,
     "microservice.services.des.port"           -> mockPort,
@@ -30,6 +30,7 @@ trait V3IntegrationBaseSpec extends IntegrationBaseSpec {
     "microservice.services.auth.port"          -> mockPort,
     "auditing.consumer.baseUri.port"           -> mockPort,
     "feature-switch.version-2.enabled"         -> "false",
-    "feature-switch.version-3.enabled"         -> "true"
+    "feature-switch.version-3.enabled"         -> "true",
+    "feature-switch.version-4.enabled"         -> "true"
   )
 }

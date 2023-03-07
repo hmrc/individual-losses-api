@@ -42,17 +42,18 @@ class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) exten
           Right(result)
       }
 
-  private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError,
-    "INVALID_CORRELATION_ID"    -> InternalError,
-    "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
-    "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
-    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
-  )
+  private val errorMap: Map[String, MtdError] =
+    Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError,
+      "INVALID_CORRELATION_ID"    -> InternalError,
+      "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+    )
 
 }

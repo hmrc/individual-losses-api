@@ -35,7 +35,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
 
   type ListLossClaimsOutcome = DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]
 
-  private val DEFAULT_TAX_YEARS: Seq[TaxYear] = List("2019-20", "2020-21", "2021-22", "2022-23").map(TaxYear.fromMtd)
+  private val DEFAULT_TAX_YEARS = List("2019-20", "2020-21", "2021-22", "2022-23").map(TaxYear.fromMtd)
 
   private val NOT_FOUND_CODE = "NOT_FOUND"
 
@@ -65,7 +65,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
   }
 
   private def combineResponses(responses: Seq[ListLossClaimsOutcome])(implicit correlationId: String): ListLossClaimsOutcome = {
-    lazy val claims = responses.collect({ case Right(success) => success.responseData.claims }).flatten
+    lazy val claims: Seq[ListLossClaimsItem] = responses.collect({ case Right(success) => success.responseData.claims }).flatten
 
     responses.find(isError) match {
       case Some(error)         => error

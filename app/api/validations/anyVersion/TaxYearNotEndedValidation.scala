@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package api.validations.v3
+package api.validations.anyVersion
 
 import api.models.domain.TaxYear
-import api.models.errors.{MtdError, RuleTaxYearNotEndedError}
+import api.models.errors.{ MtdError, RuleTaxYearNotEndedError }
 import api.validations.NoValidationErrors
 import utils.CurrentDate
 
@@ -42,4 +42,5 @@ object TaxYearNotEndedValidation {
 
     if (date.isBefore(taxYearStartDate)) date.getYear else date.getYear + 1
   }
+
 }

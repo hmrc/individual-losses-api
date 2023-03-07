@@ -65,9 +65,9 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
             correlationId,
             ListLossClaimsResponse(
               List(
-                listLossClaimsModel("2019-20"),
-                listLossClaimsModel("2020-21"),
-                listLossClaimsModel("2022-23")
+                listLossClaim("2019-20"),
+                listLossClaim("2020-21"),
+                listLossClaim("2022-23")
               )
             )
           )

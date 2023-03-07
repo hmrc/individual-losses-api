@@ -23,10 +23,10 @@ import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.V3IntegrationBaseSpec
+import support.V3V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class DeleteLossClaimControllerISpec extends V3IntegrationBaseSpec {
+class DeleteLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
 
   private trait Test {
 

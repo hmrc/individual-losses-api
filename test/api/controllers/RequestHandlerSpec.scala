@@ -23,7 +23,7 @@ import api.models.errors.{ ErrorWrapper, NinoFormatError }
 import api.models.hateoas.{ HateoasData, HateoasWrapper, Link }
 import api.models.{ RawData, ResponseWrapper, UserDetails }
 import api.services.MockAuditService
-import api.services.v3.Outcomes.ServiceOutcome
+import api.services.anyVersion.Outcomes.ServiceOutcome
 import config.AppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{ HeaderNames, Status }

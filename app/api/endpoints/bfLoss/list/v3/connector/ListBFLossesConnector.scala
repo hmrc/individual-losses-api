@@ -49,8 +49,7 @@ class ListBFLossesConnector @Inject() (val http: HttpClient, val appConfig: AppC
     ).flatten
 
     def send(taxYear: TaxYear): Future[ListBFLossesOutcome] = get(
-      uri =
-        TaxYearSpecificIfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${taxYear.asTysDownstream}/${nino.nino}"),
+      uri = TaxYearSpecificIfsUri[ListBFLossesResponse[ListBFLossesItem]](s"income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino"),
       queryParams = queryParams
     )
 

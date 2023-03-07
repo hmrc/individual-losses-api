@@ -20,7 +20,7 @@ import api.connectors.ConnectorSpec
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 

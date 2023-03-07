@@ -17,17 +17,18 @@
 package api.controllers
 
 import api.models.errors.NotFoundError
-
-import javax.inject._
 import play.api.mvc._
 import utils.Logging
+
+import javax.inject._
 
 @Singleton
 class DeprecatedController @Inject() (cc: ControllerComponents) extends AbstractController(cc) with Logging {
 
-  def version4(unused: Any*): Action[AnyContent] = Action { request =>
+  /** For endpoints that were deprecated in the previous version and gone from the current version.
+    */
+  def version4NotFound(unused: Any*): Action[AnyContent] = Action { implicit request =>
     logger.info(s"Request for deprecated endpoint received: V4 ${request.method} ${request.path}")
-
     NotFound(NotFoundError.asJson)
   }
 

@@ -14,29 +14,22 @@
  * limitations under the License.
  */
 
-package api.validations.v3
+package api.endpoints.bfLoss.list.v4.request
 
-import api.models.errors.{ MtdError, RuleTaxYearRangeInvalidError }
-import api.validations.NoValidationErrors
+import api.models.errors.ErrorWrapper
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
 
-object TaxYearValidation {
+trait MockListBFLossesParser extends MockFactory {
 
-  val taxYearFormat = "20[1-9][0-9]\\-[1-9][0-9]"
+  val mockListBFLossesParser: ListBFLossesParser = mock[ListBFLossesParser]
 
-  def validate(taxYear: String, taxYearFormatError: MtdError): Seq[MtdError] = {
-    if (taxYear.matches(taxYearFormat)) {
+  object MockListBFLossesRequestDataParser {
 
-      val start = taxYear.substring(2, 4).toInt
-      val end   = taxYear.substring(5, 7).toInt
-
-      if (end - start == 1) {
-        NoValidationErrors
-      } else {
-        List(RuleTaxYearRangeInvalidError)
-      }
-    } else {
-      List(taxYearFormatError)
+    def parseRequest(data: ListBFLossesRawData): CallHandler[Either[ErrorWrapper, ListBFLossesRequest]] = {
+      (mockListBFLossesParser.parseRequest(_: ListBFLossesRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

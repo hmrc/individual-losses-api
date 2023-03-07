@@ -23,10 +23,10 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.V3IntegrationBaseSpec
+import support.V3V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class RetrieveLossClaimControllerISpec extends V3IntegrationBaseSpec {
+class RetrieveLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
 
   val businessId   = "XKIS00000000988"
   val lastModified = "2018-07-13T12:13:48.763Z"
