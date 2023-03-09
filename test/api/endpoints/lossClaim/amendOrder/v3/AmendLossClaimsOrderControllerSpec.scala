@@ -16,25 +16,20 @@
 
 package api.endpoints.lossClaim.amendOrder.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{
-  AmendLossClaimsOrderRawData,
-  AmendLossClaimsOrderRequest,
-  AmendLossClaimsOrderRequestBody,
-  MockAmendLossClaimsOrderRequestDataParser
-}
-import api.endpoints.lossClaim.amendOrder.v3.response.{ AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse }
+import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, MockAmendLossClaimsOrderRequestDataParser}
+import api.endpoints.lossClaim.amendOrder.v3.response.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import api.models.domain.{ Nino, TaxYear }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.models.hateoas.Method.{GET, PUT}
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -56,7 +51,10 @@ class AmendLossClaimsOrderControllerSpec
     AmendLossClaimsOrderRequest(Nino(nino), TaxYear.fromMtd(taxYear), claimsList)
   private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
-  private val testHateoasLink = Link(href = s"/individuals/losses/$nino/loss-claims/order", method = GET, rel = "self")
+  private val testHateoasLink = Seq(
+    Link(href = s"/individuals/losses/$nino/loss-claims/order/$taxYear", method = PUT, rel = "self"),
+    Link(href = s"individuals/losses/{nino}/loss-claims", method = GET, rel = "list-loss-claims"),
+  )
 
   private val requestBody = Json.parse(
     """
@@ -107,7 +105,7 @@ class AmendLossClaimsOrderControllerSpec
 
         MockHateoasFactory
           .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(nino))
-          .returns(HateoasWrapper(amendLossClaimsOrderResponse, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(amendLossClaimsOrderResponse, testHateoasLink))
 
         runOkTestWithAudit(
           expectedStatus = OK,

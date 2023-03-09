@@ -30,11 +30,11 @@ object AmendLossClaimsOrderResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
       import data._
       Seq(
-        amendLossClaimOrder(appConfig, nino),
+        amendLossClaimOrder(appConfig, nino, taxYearClaimedFor),
         listLossClaim(appConfig, nino)
       )
     }
   }
 }
 
-case class AmendLossClaimsOrderHateoasData(nino: String) extends HateoasData
+case class AmendLossClaimsOrderHateoasData(nino: String, taxYearClaimedFor: String) extends HateoasData

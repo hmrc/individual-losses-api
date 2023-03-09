@@ -39,7 +39,7 @@ object ListLossClaimsResponse extends HateoasLinks {
         createLossClaim(appConfig, data.nino)
       )
 
-      val extraLinks = if (featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino)) else Seq()
+      val extraLinks = if (featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino, data.taxYearClaimedFor)) else Seq()
 
       baseLinks ++ extraLinks
     }
@@ -54,4 +54,4 @@ object ListLossClaimsResponse extends HateoasLinks {
   }
 }
 
-case class ListLossClaimsHateoasData(nino: String) extends HateoasData
+case class ListLossClaimsHateoasData(nino: String, taxYearClaimedFor: String) extends HateoasData
