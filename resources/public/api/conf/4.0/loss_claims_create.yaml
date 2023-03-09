@@ -1,7 +1,7 @@
 post:
   summary: Create a Loss Claim
   description: |
-    This endpoint allows a developer to create a Loss Claim against an income source for a specific tax year. Claims cannot be made until after the End of Period Statement.
+    This endpoint allows a developer to create a Loss Claim against an income source for a specific tax year. Claims cannot be made until after the end of the accounting period.
     A National Insurance number must be provided.
     
     ### Test data
