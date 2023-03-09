@@ -119,7 +119,7 @@ object ListLossClaimsFixtures {
    """.stripMargin
   )
 
-  def baseHateoasLinks(nino: String): JsValue = Json.parse(
+  def baseHateoasLinks(taxYear: String, nino: String): JsValue = Json.parse(
     s"""
       |[
       |  {
@@ -133,7 +133,7 @@ object ListLossClaimsFixtures {
       |    "rel": "create-loss-claim"
       |  },
       |  {
-      |    "href": "/individuals/losses/$nino/loss-claims/order",
+      |    "href": "/individuals/losses/$nino/loss-claims/order/${TaxYear.fromMtd(taxYear).asMtd}",
       |    "method": "PUT",
       |    "rel": "amend-loss-claim-order"
       |  }

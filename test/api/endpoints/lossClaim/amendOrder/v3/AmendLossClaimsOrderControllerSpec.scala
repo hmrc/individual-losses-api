@@ -53,7 +53,7 @@ class AmendLossClaimsOrderControllerSpec
 
   private val testHateoasLink = Seq(
     Link(href = s"/individuals/losses/$nino/loss-claims/order/$taxYear", method = PUT, rel = "self"),
-    Link(href = s"individuals/losses/{nino}/loss-claims", method = GET, rel = "list-loss-claims"),
+    Link(href = s"/individuals/losses/$nino/loss-claims", method = GET, rel = "list-loss-claims"),
   )
 
   private val requestBody = Json.parse(
@@ -83,9 +83,15 @@ class AmendLossClaimsOrderControllerSpec
       |{
       |   "links":[
       |      {
-      |        "href":"/individuals/losses/AA123456A/loss-claims/order",
-      |        "rel":"self",
-      |        "method":"GET"
+      |        "href":"/individuals/losses/AA123456A/loss-claims/order/2019-20",
+      |        "method":"PUT",
+      |        "rel":"self"
+      |
+      |      },
+      |      {
+      |        "href":"/individuals/losses/AA123456A/loss-claims",
+      |        "method":"GET",
+      |        "rel":"list-loss-claims"
       |      }
       |   ]
       |}
@@ -104,7 +110,7 @@ class AmendLossClaimsOrderControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimsOrderResponse))))
 
         MockHateoasFactory
-          .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(nino))
+          .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear))
           .returns(HateoasWrapper(amendLossClaimsOrderResponse, testHateoasLink))
 
         runOkTestWithAudit(
