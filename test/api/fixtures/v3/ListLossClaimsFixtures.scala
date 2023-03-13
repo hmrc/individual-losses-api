@@ -131,11 +131,6 @@ object ListLossClaimsFixtures {
       |    "href": "/individuals/losses/$nino/loss-claims",
       |    "method": "POST",
       |    "rel": "create-loss-claim"
-      |  },
-      |  {
-      |    "href": "/individuals/losses/$nino/loss-claims/order",
-      |    "method": "PUT",
-      |    "rel": "amend-loss-claim-order"
       |  }
       |]
       |""".stripMargin

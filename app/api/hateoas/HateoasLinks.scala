@@ -17,13 +17,13 @@
 package api.hateoas
 
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
+import api.models.hateoas.Method.{ DELETE, GET, POST, PUT }
 import api.models.hateoas.RelType._
 import config.AppConfig
 
 trait HateoasLinks {
 
-  //Domain URIs
+  // Domain URIs
   private def bfLossBaseUri(appConfig: AppConfig, nino: String): String =
     s"/${appConfig.apiGatewayContext}/$nino/brought-forward-losses"
 
@@ -48,7 +48,7 @@ trait HateoasLinks {
   private def lossClaimChangeRequest(appConfig: AppConfig, nino: String, lossId: String): String =
     lossClaimUri(appConfig, nino, lossId) + "/change-type-of-claim"
 
-  //API resource links
+  // API resource links
   def createBfLoss(appConfig: AppConfig, nino: String): Link =
     Link(href = bfLossBaseUri(appConfig, nino), method = POST, rel = CREATE_BF_LOSS)
 
@@ -75,12 +75,10 @@ trait HateoasLinks {
   def deleteLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = DELETE, rel = DELETE_LOSS_CLAIM)
 
-  def amendLossClaimOrder(appConfig: AppConfig, nino: String): Link =
-    Link(href = lossClaimOrderUri(appConfig, nino), method = PUT, rel = AMEND_LOSS_CLAIM_ORDER)
-
   def amendLossClaimOrder(appConfig: AppConfig, nino: String, taxYearClaimedFor: String): Link =
     Link(href = lossClaimOrderTaxYearClaimedForUri(appConfig, nino, taxYearClaimedFor), method = PUT, rel = AMEND_LOSS_CLAIM_ORDER)
 
   def listLossClaim(appConfig: AppConfig, nino: String): Link =
     Link(href = lossClaimsBaseUri(appConfig, nino), method = GET, rel = SELF)
+
 }

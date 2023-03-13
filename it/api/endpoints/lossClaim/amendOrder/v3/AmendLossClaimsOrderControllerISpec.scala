@@ -183,7 +183,7 @@ class AmendLossClaimsOrderControllerISpec extends V3V4IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def uri = s"/$nino/loss-claims/order/$taxYear"
+    def uri: String = s"/$nino/loss-claims/order/$taxYear"
 
     def errorBody(code: String): String =
       s"""

@@ -33,13 +33,14 @@ object ListLossClaimsResponse extends HateoasLinks {
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListLossClaimsResponse, ListLossClaimsItem, ListLossClaimsHateoasData] {
     override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] = {
+      import data._
       val featureSwitch = FeatureSwitches(appConfig.featureSwitches)
       val baseLinks = Seq(
-        listLossClaim(appConfig, data.nino),
-        createLossClaim(appConfig, data.nino)
+        listLossClaim(appConfig, nino),
+        createLossClaim(appConfig, nino)
       )
 
-      val extraLinks = if (featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, data.nino, data.taxYearClaimedFor)) else Seq()
+      val extraLinks = if (featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, nino, taxYearClaimedFor)) else Seq()
 
       baseLinks ++ extraLinks
     }

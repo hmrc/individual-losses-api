@@ -133,7 +133,7 @@ object ListLossClaimsFixtures {
       |    "rel": "create-loss-claim"
       |  },
       |  {
-      |    "href": "/individuals/losses/$nino/loss-claims/order/${TaxYear.fromMtd(taxYear).asMtd}",
+      |    "href": "/individuals/losses/$nino/loss-claims/order/$taxYear",
       |    "method": "PUT",
       |    "rel": "amend-loss-claim-order"
       |  }
