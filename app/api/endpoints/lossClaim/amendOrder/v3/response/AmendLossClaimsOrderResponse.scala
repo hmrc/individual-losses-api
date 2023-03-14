@@ -18,6 +18,7 @@ package api.endpoints.lossClaim.amendOrder.v3.response
 
 import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.hateoas.{HateoasData, Link}
+import api.models.hateoas.RelType.{LIST_LOSS_CLAIMS}
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
 
@@ -31,7 +32,7 @@ object AmendLossClaimsOrderResponse extends HateoasLinks {
       import data._
       Seq(
         amendLossClaimOrder(appConfig, nino, taxYearClaimedFor),
-        listLossClaim(appConfig, nino)
+        listLossClaim(appConfig, nino, LIST_LOSS_CLAIMS)
       )
     }
   }

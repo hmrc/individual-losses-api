@@ -52,7 +52,7 @@ class AmendLossClaimsOrderControllerSpec
   private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
   private val testHateoasLink = Seq(
-    Link(href = s"/individuals/losses/$nino/loss-claims/order/$taxYear", method = PUT, rel = "self"),
+    Link(href = s"/individuals/losses/$nino/loss-claims/order/$taxYear", method = PUT, rel = "amend-loss-claim-order"),
     Link(href = s"/individuals/losses/$nino/loss-claims", method = GET, rel = "list-loss-claims"),
   )
 
@@ -85,7 +85,7 @@ class AmendLossClaimsOrderControllerSpec
       |      {
       |        "href":"/individuals/losses/AA123456A/loss-claims/order/2019-20",
       |        "method":"PUT",
-      |        "rel":"self"
+      |        "rel":"amend-loss-claim-order"
       |
       |      },
       |      {

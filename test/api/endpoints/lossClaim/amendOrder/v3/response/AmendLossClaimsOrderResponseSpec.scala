@@ -41,7 +41,7 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
         AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(mockAppConfig, AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims/order/$taxYear", PUT, "amend-loss-claim-order"),
-            Link(s"/individuals/losses/$nino/loss-claims", GET, "self")
+            Link(s"/individuals/losses/$nino/loss-claims", GET, "list-loss-claims")
           )
       }
     }

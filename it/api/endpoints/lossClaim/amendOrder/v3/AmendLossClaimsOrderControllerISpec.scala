@@ -176,7 +176,7 @@ class AmendLossClaimsOrderControllerISpec extends V3V4IntegrationBaseSpec {
          |    {
          |      "href": "/individuals/losses/$nino/loss-claims",
          |      "method": "GET",
-         |      "rel": "self"
+         |      "rel": "list-loss-claims"
          |    }
          |  ]
          |}
