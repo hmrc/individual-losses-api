@@ -169,21 +169,21 @@ class AmendLossClaimsOrderControllerISpec extends V3V4IntegrationBaseSpec {
          |{
          |  "links": [
          |    {
-         |      "href": "/individuals/losses/$nino/loss-claims/order",
+         |      "href": "/individuals/losses/$nino/loss-claims/order/$taxYear",
          |      "method": "PUT",
          |      "rel": "amend-loss-claim-order"
          |    },
          |    {
          |      "href": "/individuals/losses/$nino/loss-claims",
          |      "method": "GET",
-         |      "rel": "self"
+         |      "rel": "list-loss-claims"
          |    }
          |  ]
          |}
       """.stripMargin
     )
 
-    def uri = s"/$nino/loss-claims/order/$taxYear"
+    def uri: String = s"/$nino/loss-claims/order/$taxYear"
 
     def errorBody(code: String): String =
       s"""

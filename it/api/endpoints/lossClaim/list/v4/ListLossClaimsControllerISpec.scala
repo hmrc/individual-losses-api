@@ -84,8 +84,8 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
       "query for everything with a tax year" in new Test {
         val responseJson: JsValue = Json.parse(s"""
              |{
-             |    "claims": [${nonFhlClaimMtdJson("2019-20", nino)}],
-             |    "links": ${baseHateoasLinks(nino)}
+             |    "claims": [${nonFhlClaimMtdJson(taxYear, nino)}],
+             |    "links": ${baseHateoasLinks(taxYear, nino)}
              |}""".stripMargin)
 
         override def setupStubs(): Unit = {
@@ -105,8 +105,8 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val responseJson: JsValue = Json.parse(s"""
              |{
-             |    "claims": [${nonFhlClaimMtdJson("2019-20", nino)}],
-             |    "links": ${baseHateoasLinks(nino)}
+             |    "claims": [${nonFhlClaimMtdJson(taxYear, nino)}],
+             |    "links": ${baseHateoasLinks(taxYear, nino)}
              |}""".stripMargin)
 
         override def setupStubs(): Unit = {
@@ -127,8 +127,8 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
         val responseJson: JsValue = Json.parse(
           s"""
              |{
-             |    "claims": [${selfEmploymentClaimMtdJson("2019-20", nino)}],
-             |    "links": ${baseHateoasLinks(nino)}
+             |    "claims": [${selfEmploymentClaimMtdJson(taxYear, nino)}],
+             |    "links": ${baseHateoasLinks(taxYear, nino)}
              |}
           """.stripMargin
         )
@@ -150,8 +150,8 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
         val responseJson: JsValue = Json.parse(s"""
              |{
-             |    "claims": [${selfEmploymentClaimMtdJson("2019-20", nino)}],
-             |    "links": ${baseHateoasLinks(nino)}
+             |    "claims": [${selfEmploymentClaimMtdJson(taxYear, nino)}],
+             |    "links": ${baseHateoasLinks(taxYear, nino)}
              |}
        """.stripMargin)
 

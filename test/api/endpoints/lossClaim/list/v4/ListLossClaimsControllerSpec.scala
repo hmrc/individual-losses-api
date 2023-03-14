@@ -137,7 +137,7 @@ class ListLossClaimsControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))))
 
         MockHateoasFactory
-          .wrapList(singleClaimResponseModel(taxYear), ListLossClaimsHateoasData(nino))
+          .wrapList(singleClaimResponseModel(taxYear), ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear))
           .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))

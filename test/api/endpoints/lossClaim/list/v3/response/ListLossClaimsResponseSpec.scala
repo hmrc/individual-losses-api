@@ -16,9 +16,9 @@
 
 package api.endpoints.lossClaim.list.v3.response
 
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{GET, POST, PUT}
+import api.models.hateoas.Method.{ GET, POST }
 import com.typesafe.config.ConfigFactory
 import config.MockAppConfig
 import play.api.Configuration
@@ -28,25 +28,28 @@ import support.UnitSpec
 class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   val nino: String = "AA123456A"
+  val taxYear      = "2018-19"
 
   "json writes" must {
     "output as per spec" in {
       Json.toJson(
         ListLossClaimsResponse(Seq(
-          ListLossClaimsItem("XAIS12345678910",
-                             TypeOfClaim.`carry-sideways`,
-                             TypeOfLoss.`self-employment`,
-                             "2020-21",
-                             "AAZZ1234567890A",
-                             Some(1),
-                             "2020-07-13T12:13:48.763Z"),
-          ListLossClaimsItem("XAIS12345678912",
-                             TypeOfClaim.`carry-sideways`,
-                             TypeOfLoss.`self-employment`,
-                             "2020-21",
-                             "AAZZ1234567890B",
-                             Some(2),
-                             "2020-07-13T12:13:48.763Z")
+          ListLossClaimsItem(
+            "XAIS12345678910",
+            TypeOfClaim.`carry-sideways`,
+            TypeOfLoss.`self-employment`,
+            "2020-21",
+            "AAZZ1234567890A",
+            Some(1),
+            "2020-07-13T12:13:48.763Z"),
+          ListLossClaimsItem(
+            "XAIS12345678912",
+            TypeOfClaim.`carry-sideways`,
+            TypeOfLoss.`self-employment`,
+            "2020-21",
+            "AAZZ1234567890B",
+            Some(2),
+            "2020-07-13T12:13:48.763Z")
         ))) shouldBe
         Json.parse(
           """
@@ -76,6 +79,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
         )
     }
   }
+
   "json reads" must {
     "work for downstream response" in {
       // Note we ignore all but the claimId currently...
@@ -116,27 +120,30 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
       downstreamResponseJson.as[ListLossClaimsResponse[ListLossClaimsItem]] shouldBe
         ListLossClaimsResponse(
           Seq(
-            ListLossClaimsItem("000000000000001",
-                               TypeOfClaim.`carry-sideways`,
-                               TypeOfLoss.`self-employment`,
-                               "2019-20",
-                               "000000000000011",
-                               Some(1),
-                               "2020-07-13T12:13:48.763Z"),
-            ListLossClaimsItem("000000000000002",
-                               TypeOfClaim.`carry-sideways`,
-                               TypeOfLoss.`uk-property-non-fhl`,
-                               "2019-20",
-                               "000000000000022",
-                               Some(2),
-                               "2020-07-13T12:13:48.763Z"),
-            ListLossClaimsItem("000000000000003",
-                               TypeOfClaim.`carry-forward`,
-                               TypeOfLoss.`foreign-property`,
-                               "2019-20",
-                               "000000000000033",
-                               Some(3),
-                               "2020-07-13T12:13:48.763Z")
+            ListLossClaimsItem(
+              "000000000000001",
+              TypeOfClaim.`carry-sideways`,
+              TypeOfLoss.`self-employment`,
+              "2019-20",
+              "000000000000011",
+              Some(1),
+              "2020-07-13T12:13:48.763Z"),
+            ListLossClaimsItem(
+              "000000000000002",
+              TypeOfClaim.`carry-sideways`,
+              TypeOfLoss.`uk-property-non-fhl`,
+              "2019-20",
+              "000000000000022",
+              Some(2),
+              "2020-07-13T12:13:48.763Z"),
+            ListLossClaimsItem(
+              "000000000000003",
+              TypeOfClaim.`carry-forward`,
+              TypeOfLoss.`foreign-property`,
+              "2019-20",
+              "000000000000033",
+              Some(3),
+              "2020-07-13T12:13:48.763Z")
           ))
     }
   }
@@ -150,8 +157,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
         ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
-            Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim"),
-            Link(s"/individuals/losses/$nino/loss-claims/order", PUT, "amend-loss-claim-order")
+            Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
           )
       }
       "amend-loss-claim-order.enabled = false" in {
@@ -170,17 +176,19 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
       ListLossClaimsResponse.LinksFactory.itemLinks(
         mockAppConfig,
         ListLossClaimsHateoasData(nino),
-        ListLossClaimsItem("businessId",
-                           TypeOfClaim.`carry-sideways`,
-                           TypeOfLoss.`self-employment`,
-                           "2020",
-                           "claimId",
-                           Some(1),
-                           "2020-07-13T12:13:48.763Z")
+        ListLossClaimsItem(
+          "businessId",
+          TypeOfClaim.`carry-sideways`,
+          TypeOfLoss.`self-employment`,
+          "2020",
+          "claimId",
+          Some(1),
+          "2020-07-13T12:13:48.763Z")
       ) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self")
         )
     }
   }
+
 }
