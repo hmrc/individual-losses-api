@@ -39,7 +39,7 @@ class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
 
     def mtdUrl: String = s"/$nino/loss-claims/tax-year/$taxYear"
 
-    def downstreamUrl(taxYear: String = "2019-20"): String = s"/income-tax/claims-for-relief/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino"
+    def downstreamUrl(taxYear: String = "2019-20"): String = s"/income-tax/${TaxYear.fromMtd(taxYear).asTysDownstream}/claims-for-relief/$nino"
 
     def mtdQueryParams: Seq[(String, String)] =
       List("typeOfLoss" -> typeOfLoss, "businessId" -> businessId, "typeOfClaim" -> typeOfClaim)
