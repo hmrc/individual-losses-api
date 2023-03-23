@@ -46,14 +46,14 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
   "list LossClaims" when {
     "a valid request is supplied with only the tax year parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
-        willGet(s"$baseUrl/income-tax/claims-for-relief/23-24/$nino") returns Future.successful(success("2023-24"))
+        willGet(s"$baseUrl/income-tax/23-24/claims-for-relief/$nino") returns Future.successful(success("2023-24"))
         listLossClaimsResult(connector, TaxYear.fromMtd("2023-24")) shouldBe success("2023-24")
       }
     }
 
     "provided with a income source id parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
+        willGet(url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
           .successful(success("2023-24"))
 
         listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), businessId = Some("testId")) shouldBe success("2023-24")
@@ -63,7 +63,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     "provided with a income source type parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
-          url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
+          url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           queryParams = List(("incomeSourceType", "02"))
         ) returns Future.successful(success("2023-24"))
 
@@ -75,7 +75,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     "provided with a claim type parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
-          url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
+          url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           queryParams = List(("claimType", "CSGI"))
         ) returns Future.successful(success("2023-24"))
 
@@ -87,7 +87,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     "provided with all parameters" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
-          url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
+          url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           queryParams = List(("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI"))
         ) returns Future.successful(success("2023-24"))
 

@@ -54,7 +54,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
 
     def send(taxYear: TaxYear): Future[ListLossClaimsOutcome] = get(
       uri =
-        TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/claims-for-relief/${taxYear.asTysDownstream}/${nino.nino}"),
+        TaxYearSpecificIfsUri[ListLossClaimsResponse[ListLossClaimsItem]](s"income-tax/${taxYear.asTysDownstream}/claims-for-relief/${nino.nino}"),
       queryParams = params
     )
 

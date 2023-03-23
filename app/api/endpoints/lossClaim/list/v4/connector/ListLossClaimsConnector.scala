@@ -46,7 +46,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
     }
 
     get(
-      uri = TaxYearSpecificIfsUri(s"income-tax/claims-for-relief/${taxYearClaimedFor.asTysDownstream}/${nino.nino}"),
+      uri = TaxYearSpecificIfsUri(s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}"),
       queryParams = params
     )
   }
