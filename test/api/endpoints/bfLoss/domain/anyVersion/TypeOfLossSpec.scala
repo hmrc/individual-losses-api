@@ -32,7 +32,7 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
   )
 
   "TypeBFLoss" when {
-    "getting downstream LossType" must {
+    "getting LossType" must {
       "work" in {
         `self-employment`.toLossType shouldBe Some(LossType.INCOME)
         `self-employment-class4`.toLossType shouldBe Some(LossType.CLASS4)
@@ -43,13 +43,13 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
       }
     }
 
-    "getting downstream IncomeSourceType" must {
+    "getting IncomeSourceType" must {
       "work" in {
         `uk-property-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`04`)
         `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
         `foreign-property-fhl-eea`.toIncomeSourceType shouldBe Some(IncomeSourceType.`03`)
         `foreign-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`15`)
-        `self-employment`.toIncomeSourceType shouldBe None
+        `self-employment`.toIncomeSourceType shouldBe Some(IncomeSourceType.`01`)
         `self-employment-class4`.toIncomeSourceType shouldBe None
       }
     }

@@ -21,11 +21,11 @@ import api.models.domain.TaxYear
 import api.models.errors._
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{ JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3V4IntegrationBaseSpec
-import support.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
+import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
 
@@ -163,7 +163,7 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying with specific typeOfLoss" in new Test {
+      "querying with specific typeOfLoss = uk-property-fhl" in new Test {
         override val typeOfLoss: Option[String] = Some("uk-property-fhl")
         override val businessId: Option[String] = None
 
@@ -180,6 +180,32 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
 
         override def setupStubs(): Unit = {
           stubDownstream(downstreamResponseJsonWithIncomeSourceType(), params = Map("incomeSourceType" -> "04"))
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "querying with specific typeOfLoss = self-employment" in new Test {
+        override val typeOfLoss: Option[String] = Some("self-employment")
+        override val businessId: Option[String] = None
+
+        val responseJson: JsValue = Json.parse(
+          s"""
+             |{
+             |    "losses": [
+             |        ${mtdLossJsonWithSelfEmployment(nino, "2019-20")}
+             |    ],
+             |    "links": ${baseHateoasLinks(nino)}
+             |}
+             |""".stripMargin
+        )
+
+        override def setupStubs(): Unit = {
+          stubDownstream(downstreamResponseJsonWithLossType(), params = Map("incomeSourceType" -> "01"))
         }
 
         val response: WSResponse = await(request().get())

@@ -163,7 +163,7 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "querying with specific typeOfLoss" in new Test {
+      "querying with specific typeOfLoss = uk-property-fhl" in new Test {
         override val typeOfLoss: Option[String] = Some("uk-property-fhl")
         override val businessId: Option[String] = None
 
@@ -172,6 +172,24 @@ class ListBFLossesControllerISpec extends V3V4IntegrationBaseSpec {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, Map("incomeSourceType" -> "04"), OK, downstreamResponseJson)
+        }
+
+        val response: WSResponse = await(request().get())
+        response.json shouldBe responseJson
+        response.status shouldBe OK
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "querying with specific typeOfLoss = self-employment" in new Test {
+        override val typeOfLoss: Option[String] = Some("self-employment")
+        override val businessId: Option[String] = None
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, Map("incomeSourceType" -> "01"), OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
