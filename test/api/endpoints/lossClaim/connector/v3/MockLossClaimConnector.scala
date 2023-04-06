@@ -23,8 +23,6 @@ import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.create.v3.request.CreateLossClaimRequest
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
-import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import org.scalamock.handlers.CallHandler
@@ -61,12 +59,6 @@ trait MockLossClaimConnector extends MockFactory {
       (connector
         .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(deleteLossClaimRequest, *, *, *)
-    }
-
-    def listLossClaims(request: ListLossClaimsRequest): CallHandler[Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]]] = {
-      (connector
-        .listLossClaims(_: ListLossClaimsRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
     }
 
     def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {

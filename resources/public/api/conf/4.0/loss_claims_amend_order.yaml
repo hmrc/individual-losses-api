@@ -1,0 +1,122 @@
+summary: Amend Loss Claims Order
+description: |
+  This endpoint allows the developer to change the sequence in which certain losses are used.
+  A National Insurance Number must be provided.
+  
+  ### Test data
+  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+  <table>
+    <thead>
+        <tr>
+            <th>Header Value (Gov-Test-Scenario)</th>
+            <th>Scenario</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><p>N/A - DEFAULT</p></td>
+            <td><p>Simulates success response.</p></td>
+        </tr>
+        <tr>
+           <td><p>LOSS_CLAIMS_MISSING</p></td>
+           <td><p>Simulates the scenario where one of more claims were not found.</p></td>
+        </tr> 
+        <tr>
+           <td><p>NOT_FOUND</p></td>
+           <td><p>Simulates the scenario where not all claims of the given type and year were included.</p></td>
+        </tr>           
+    </tbody>
+  </table>
+
+tags:
+  - Loss Claims
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYearClaimedFor'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - write:self-assessment
+
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/amendLossClaimsOrder/amend_request.json'
+      examples:
+        example-1:
+          description: Default Example
+          value:
+            $ref: './examples/amendLossClaimsOrder/amend_request.json'
+
+responses:
+  "200":
+    description: Success
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/amendLossClaimsOrder/amend_response.json'
+        examples:
+          example-1:
+            description: Example Response
+            value:
+              $ref: './examples/amendLossClaimsOrder/amend_response.json'
+
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_TAX_YEAR:
+            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_TAX_YEAR_RANGE_INVALID:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+          FORMAT_CLAIM_ID:
+            $ref: './common/errors.yaml#/components/examples/formatClaimId'
+          FORMAT_TYPE_OF_CLAIM:
+            $ref: './common/errors.yaml#/components/examples/formatTypeOfClaim'
+          FORMAT_VALUE:
+            $ref: './common/errors.yaml#/components/examples/formatValue'
+          RULE_INVALID_SEQUENCE_START:
+            $ref: './common/errors.yaml#/components/examples/ruleInvalidSequenceStart'
+          RULE_SEQUENCE_ORDER_BROKEN:
+            $ref: './common/errors.yaml#/components/examples/ruleSequenceOrderBroken'
+          RULE_LOSS_CLAIMS_MISSING:
+            $ref: './common/errors.yaml#/components/examples/ruleLossClaimsMissing'
+          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFound'

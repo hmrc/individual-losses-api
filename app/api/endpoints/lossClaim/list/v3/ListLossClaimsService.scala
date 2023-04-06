@@ -17,8 +17,9 @@
 package api.endpoints.lossClaim.list.v3
 
 import api.controllers.RequestContext
-import api.endpoints.lossClaim.connector.v3.LossClaimConnector
+import api.endpoints.lossClaim.list.v3.connector.ListLossClaimsConnector
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
+import api.models.domain.TaxYear
 import api.models.errors._
 import api.services.BaseService
 import api.services.v3.Outcomes.ListLossClaimsOutcome
@@ -26,14 +27,14 @@ import api.services.v3.Outcomes.ListLossClaimsOutcome
 import javax.inject.Inject
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ListLossClaimsService @Inject() (connector: LossClaimConnector) extends BaseService {
+class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) extends BaseService {
 
   def listLossClaims(request: ListLossClaimsRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListLossClaimsOutcome] =
     connector
       .listLossClaims(request)
       .map {
         case Left(err) =>
-          Left(mapDownstreamErrors(errorMap)(err))
+          Left(mapDownstreamErrors(errorMap(request.taxYearClaimedFor))(err))
 
         case Right(responseWrapper) if responseWrapper.responseData.claims.isEmpty =>
           Left(ErrorWrapper(ctx.correlationId, NotFoundError))
@@ -42,28 +43,32 @@ class ListLossClaimsService @Inject() (connector: LossClaimConnector) extends Ba
           Right(result)
       }
 
-  private val errorMap: Map[String, MtdError] = {
+  private def errorMap(maybeTaxYear: Option[TaxYear]): Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
       "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
       "NOT_FOUND"                 -> NotFoundError,
-      "INVALID_CORRELATIONID"     -> InternalError,
       "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError
-    )
-
-    val extraTysErrors = Map(
+      "SERVICE_UNAVAILABLE"       -> InternalError,
       "INVALID_CORRELATION_ID"    -> InternalError,
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
-      "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+      "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError
     )
 
-    errors ++ extraTysErrors
+    val taxYearErrors = maybeTaxYear match {
+      case Some(_) =>
+        Map(
+          "INVALID_TAX_YEAR"       -> TaxYearFormatError,
+          "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+        )
+      case _ =>
+        Map(
+          "INVALID_TAX_YEAR"       -> InternalError,
+          "TAX_YEAR_NOT_SUPPORTED" -> InternalError
+        )
+    }
+
+    errors ++ taxYearErrors
   }
 
 }

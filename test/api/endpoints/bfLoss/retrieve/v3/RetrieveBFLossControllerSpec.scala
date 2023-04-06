@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.retrieve.v3
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.endpoints.bfLoss.retrieve.v3.request.{MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest}
 import api.endpoints.bfLoss.retrieve.v3.response.{GetBFLossHateoasData, RetrieveBFLossResponse}
 import api.hateoas.MockHateoasFactory

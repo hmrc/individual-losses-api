@@ -1,0 +1,123 @@
+get:
+  summary: List Loss Claims
+  description: |  
+    This endpoint allows a developer to retrieve the existing loss claims information.
+    A National Insurance Number must be provided.
+    
+    ### Test data
+    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+    <table>
+      <thead>
+          <tr>
+              <th>Header Value (Gov-Test-Scenario)</th>
+              <th>Scenario</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td><p>N/A - DEFAULT</p></td>
+              <td><p>Simulates successful self-employment response where typeOfClaim is "carry-forward".</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>UK_PROPERTY</p></td>
+              <td><p>Simulates successful uk-property-non-fhl response where typeOfClaim is "carry-sideways-fhl".</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>FOREIGN_PROPERTY</p></td>
+              <td><p>Simulates successful foreign property response where typeOfClaim is "carry-sideways".</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NOT_FOUND</p></td>
+              <td><p>Simulates the scenario where no data is found.</p></td>
+          </tr>
+      </tbody>
+    </table>
+
+  tags:
+    - Loss Claims
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/taxYearClaimedFor'
+    - $ref: './common/queryParameters.yaml#/components/parameters/businessId'
+    - $ref: './common/queryParameters.yaml#/components/parameters/typeOfLossLosses'
+    - $ref: './common/queryParameters.yaml#/components/parameters/typeOfClaim'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - read:self-assessment
+
+  responses:
+    "200":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/lossClaims/listLossClaims/list_response.json'
+          examples:
+            example-1:
+              description: Self-Employment Loss Claim
+              value:
+                $ref: './examples/lossClaims/listLossClaims/list_response_self_employment_claims.json'
+            example-2:
+              description: UK Property Loss Claim
+              value:
+                $ref: './examples/lossClaims/listLossClaims/list_response_property_claims.json'
+            example-3:
+              description: Foreign Property Loss Claim
+              value:
+                $ref: './examples/lossClaims/listLossClaims/list_response_foreign_property_claims.json'
+
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+            RULE_TAX_YEAR_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            RULE_TAX_YEAR_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+            FORMAT_TYPE_OF_CLAIM:
+              $ref: './common/errors.yaml#/components/examples/formatTypeOfClaim'
+            FORMAT_TYPE_OF_LOSS:
+              $ref: './common/errors.yaml#/components/examples/formatTypeOfLoss'
+            FORMAT_BUSINESS_ID:
+              $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'

@@ -27,7 +27,9 @@ object Version {
 
     def writes(version: Version): JsValue = version match {
       case Version3 => Json.toJson(Version3.name)
+      case Version4 => Json.toJson(Version4.name)
     }
+
   }
 
   implicit object VersionReads extends Reads[Version] {
@@ -35,8 +37,10 @@ object Version {
     override def reads(version: JsValue): JsResult[Version] =
       version.validate[String].flatMap {
         case Version3.name => JsSuccess(Version3)
+        case Version4.name => JsSuccess(Version4)
         case _             => JsError("Unrecognised version")
       }
+
   }
 
   implicit val versionFormat: Format[Version] = Format(VersionReads, VersionWrites)
@@ -55,10 +59,18 @@ case object Version3 extends Version {
   val configName = "3"
 }
 
+case object Version4 extends Version {
+  val name       = "4.0"
+  val configName = "4"
+
+  override val maybePrevious: Option[Version] = Some(Version3)
+}
+
 object Versions {
 
   private val versionsByName: Map[String, Version] = Map(
-    Version3.name -> Version3
+    Version3.name -> Version3,
+    Version4.name -> Version4
   )
 
   private val versionRegex = """application/vnd.hmrc.(\d.\d)\+json""".r
@@ -74,6 +86,7 @@ object Versions {
 
   private def getFrom(name: String): Either[GetFromRequestError, Version] =
     versionsByName.get(name).toRight(left = VersionNotFound)
+
 }
 
 sealed trait GetFromRequestError

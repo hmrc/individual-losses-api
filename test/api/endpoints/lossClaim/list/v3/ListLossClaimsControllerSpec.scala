@@ -20,6 +20,7 @@ import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.request.{ ListLossClaimsRawData, ListLossClaimsRequest, MockListLossClaimsRequestDataParser }
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse }
+import api.fixtures.v3.ListLossClaimsFixtures.multipleClaimsResponseModel
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
@@ -49,26 +50,6 @@ class ListLossClaimsControllerSpec
 
   private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
-
-  private val response: ListLossClaimsResponse[ListLossClaimsItem] = ListLossClaimsResponse(
-    Seq(
-      ListLossClaimsItem(
-        "businessId",
-        TypeOfClaim.`carry-sideways`,
-        TypeOfLoss.`self-employment`,
-        "2020",
-        "claimId",
-        Some(1),
-        "2020-07-13T12:13:48.763Z"),
-      ListLossClaimsItem(
-        "businessId1",
-        TypeOfClaim.`carry-sideways`,
-        TypeOfLoss.`self-employment`,
-        "2020",
-        "claimId1",
-        Some(2),
-        "2020-07-13T12:13:48.763Z")
-    ))
 
   private val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
     Seq(
@@ -153,10 +134,10 @@ class ListLossClaimsControllerSpec
 
         MockListLossClaimsService
           .list(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, multipleClaimsResponseModel))))
 
         MockHateoasFactory
-          .wrapList(response, ListLossClaimsHateoasData(nino))
+          .wrapList(multipleClaimsResponseModel, ListLossClaimsHateoasData(nino))
           .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))

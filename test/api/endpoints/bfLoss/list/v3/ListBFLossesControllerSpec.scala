@@ -17,7 +17,7 @@
 package api.endpoints.bfLoss.list.v3
 
 import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
+import api.endpoints.bfLoss.domain.anyVersion.{ IncomeSourceType, TypeOfLoss }
 import api.endpoints.bfLoss.list.v3.request.{ ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser }
 import api.endpoints.bfLoss.list.v3.response.{ ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse }
 import api.hateoas.MockHateoasFactory

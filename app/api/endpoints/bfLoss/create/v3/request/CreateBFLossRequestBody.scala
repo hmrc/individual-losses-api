@@ -16,8 +16,8 @@
 
 package api.endpoints.bfLoss.create.v3.request
 
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss._
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss._
 import api.models.domain.TaxYear
 import play.api.libs.json._
 

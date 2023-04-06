@@ -17,12 +17,13 @@
 package api.endpoints.bfLoss.list.v3.connector
 
 import api.connectors.{ ConnectorSpec, DownstreamOutcome }
-import api.endpoints.bfLoss.connector.v3.BFLossConnector
-import api.endpoints.bfLoss.domain.v3.{ IncomeSourceType, TypeOfLoss }
+import api.endpoints.bfLoss.domain.anyVersion.IncomeSourceType
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
 import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.fixtures.v3.ListBFLossesFixtures._
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
+import api.models.errors.{ DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError }
 
 import scala.concurrent.Future
 
@@ -30,159 +31,149 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
   val nino: String = "AA123456A"
 
-  def makeRequest(taxYear: Option[TaxYear] = None,
-                  incomeSourceType: Option[IncomeSourceType] = None,
-                  businessId: Option[String] = None): ListBFLossesRequest =
-    ListBFLossesRequest(
-      nino = Nino(nino),
-      taxYearBroughtForwardFrom = taxYear,
-      incomeSourceType = incomeSourceType,
-      businessId = businessId
-    )
-
-  def makeResponse(taxYear: TaxYear = TaxYear("2019")): ListBFLossesResponse[ListBFLossesItem] =
-    ListBFLossesResponse(
-      Seq(
-        ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified")
-      )
-    )
-
   trait Test {
     _: ConnectorTest =>
 
-    val connector: BFLossConnector = new BFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: ListBFLossesConnector = new ListBFLossesConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+    protected def success(taxYear: String) = Right(ResponseWrapper(correlationId, singleBFLossesResponseModel(taxYear)))
+
+    protected def downstreamError(code: String) = Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(code))))
+
+    val outboundError = Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
 
   }
 
   "listBFLosses" should {
-    "return the expected response for a non-TYS request" when {
-      "downstream returns OK" when {
-        "the connector sends a request with a tax year parameter provided is supplied" in new IfsTest with Test {
-          def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
+    "a valid request is supplied with no tax year parameter" should {
+      "return a successful combined response" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/19-20/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/20-21/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/21-22/$nino") returns Future.successful(success("2021-22"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/22-23/$nino") returns Future.successful(success("2022-23"))
 
-          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear = taxYear)
-          val request: ListBFLossesRequest                     = makeRequest(taxYear = Some(taxYear))
+        listBFLossesResult(connector) shouldBe Right(ResponseWrapper(correlationId, multipleBFLossesResponseModel))
+      }
 
-          val expected = Right(ResponseWrapper(correlationId, response))
+      "return a successful response ignoring 404 NOT_FOUND responses" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/19-20/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/20-21/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/21-22/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/22-23/$nino") returns Future.successful(success("2022-23"))
 
-          val queryParams: Seq[(String, String)] = Seq(
-            ("taxYear", taxYear.asDownstream)
+        listBFLossesResult(connector) shouldBe Right(
+          ResponseWrapper(
+            correlationId,
+            ListBFLossesResponse(
+              List(
+                listBFLossesModel("2019-20"),
+                listBFLossesModel("2020-21"),
+                listBFLossesModel("2022-23")
+              )
+            )
           )
+        )
+      }
 
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams
-          ).returns(Future.successful(expected))
+      "return a 404 NOT_FOUND response if all responses are NOT_FOUND" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/19-20/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/20-21/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/21-22/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/22-23/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
 
-          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
-          result shouldBe expected
-        }
-
-        "the connector sends a request with a income source id parameter provided is supplied" in new IfsTest with Test {
-          val request: ListBFLossesRequest                     = makeRequest(businessId = Some("testId"))
-          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse()
-          val expected                                         = Right(ResponseWrapper(correlationId, response))
-
-          val queryParams: Seq[(String, String)] = Seq(
-            ("incomeSourceId", "testId")
+        listBFLossesResult(connector) shouldBe Left(
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors.single(DownstreamErrorCode("NOT_FOUND"))
           )
+        )
+      }
 
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams
-          ).returns(Future.successful(expected))
+      "return the error response if any request errors" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/19-20/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/20-21/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/21-22/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/22-23/$nino") returns Future.successful(downstreamError("INVALID_TAXABLE_ENTITY_ID"))
 
-          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
-          result shouldBe expected
-        }
-
-        "a valid non-TYS request with a income source type parameter provided is supplied" in new IfsTest with Test {
-          val request: ListBFLossesRequest                     = makeRequest(incomeSourceType = Some(IncomeSourceType.`02`))
-          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse()
-
-          val expected = Right(ResponseWrapper(correlationId, response))
-
-          val queryParams: Seq[(String, String)] = Seq(
-            ("incomeSourceType", "02")
+        listBFLossesResult(connector) shouldBe Left(
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors.single(DownstreamErrorCode("INVALID_TAXABLE_ENTITY_ID"))
           )
+        )
+      }
 
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams
-          ).returns(Future.successful(expected))
+      "return the error response for an OutboundError" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/19-20/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/20-21/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/21-22/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/22-23/$nino") returns Future.successful(outboundError)
 
-          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
-          result shouldBe expected
-        }
+        listBFLossesResult(connector) shouldBe Left(
+          ResponseWrapper(correlationId, OutboundError(InternalError))
+        )
+      }
 
-        "a valid non-TYS request with all parameters provided is supplied" in new IfsTest with Test {
-          def taxYear: TaxYear = TaxYear.fromMtd("2018-19")
+    }
 
-          val request: ListBFLossesRequest =
-            makeRequest(taxYear = Some(taxYear), businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`))
-          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear)
-
-          val expected = Right(ResponseWrapper(correlationId, response))
-
-          val queryParams: Seq[(String, String)] = Seq(
-            ("incomeSourceId", "testId"),
-            ("incomeSourceType", "01"),
-            ("taxYear", taxYear.asDownstream)
-          )
-
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
-            queryParams = queryParams
-          ).returns(Future.successful(expected))
-
-          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
-          result shouldBe expected
-        }
+    "a valid request is supplied with only the tax year parameter" should {
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino") returns Future.successful(success("2023-24"))
+        listBFLossesResult(connector, Some(TaxYear.fromMtd("2023-24"))) shouldBe success("2023-24")
       }
     }
 
-    "return the expected response for a TYS request" when {
-      "downstream returns OK" when {
-        "the connector sends a request with a tax year parameter provided is supplied" in new TysIfsTest with Test {
-          def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+    "provided with a income source id parameter" should {
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+        willGet(url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
+          .successful(success("2023-24"))
 
-          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear = taxYear)
-          val request: ListBFLossesRequest                     = makeRequest(taxYear = Some(taxYear))
-
-          val expected = Right(ResponseWrapper(correlationId, response))
-
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino"
-          ).returns(Future.successful(expected))
-
-          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
-          result shouldBe expected
-        }
-
-        "a valid non-TYS request with all parameters provided is supplied" in new TysIfsTest with Test {
-          def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
-
-          val request: ListBFLossesRequest =
-            makeRequest(taxYear = Some(taxYear), businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`))
-          val response: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear)
-
-          val expected = Right(ResponseWrapper(correlationId, response))
-
-          val queryParams: Seq[(String, String)] = Seq(
-            ("incomeSourceId", "testId"),
-            ("incomeSourceType", "01")
-          )
-
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
-            queryParams = queryParams
-          ).returns(Future.successful(expected))
-
-          val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
-          result shouldBe expected
-        }
+        listBFLossesResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some("testId")) shouldBe success("2023-24")
       }
     }
+
+    "provided with a income source type parameter" should {
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+        willGet(
+          url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino",
+          queryParams = List(("incomeSourceType", "02"))
+        ) returns Future.successful(success("2023-24"))
+
+        listBFLossesResult(
+          connector = connector,
+          taxYear = Some(TaxYear.fromMtd("2023-24")),
+          incomeSourceType = Some(IncomeSourceType.`02`)) shouldBe success("2023-24")
+      }
+    }
+
+    "provided with all parameters" should {
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+        willGet(
+          url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino",
+          queryParams = List(("incomeSourceId", "testId"), ("incomeSourceType", "02"))
+        ) returns Future.successful(success("2023-24"))
+
+        listBFLossesResult(
+          connector = connector,
+          taxYear = Some(TaxYear.fromMtd("2023-24")),
+          businessId = Some("testId"),
+          incomeSourceType = Some(IncomeSourceType.`02`)
+        ) shouldBe success("2023-24")
+      }
+    }
+
+    def listBFLossesResult(connector: ListBFLossesConnector,
+                           taxYear: Option[TaxYear] = None,
+                           incomeSourceType: Option[IncomeSourceType] = None,
+                           businessId: Option[String] = None): DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] =
+      await(
+        connector.listBFLosses(
+          ListBFLossesRequest(
+            nino = Nino(nino),
+            taxYearBroughtForwardFrom = taxYear,
+            incomeSourceType = incomeSourceType,
+            businessId = businessId
+          )))
 
   }
 

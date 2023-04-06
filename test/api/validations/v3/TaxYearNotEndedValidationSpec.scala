@@ -18,6 +18,7 @@ package api.validations.v3
 
 import api.mocks.MockCurrentDate
 import api.models.errors.RuleTaxYearNotEndedError
+import api.validations.anyVersion.TaxYearNotEndedValidation
 import org.scalamock.handlers.CallHandler
 import support.UnitSpec
 import utils.CurrentDate

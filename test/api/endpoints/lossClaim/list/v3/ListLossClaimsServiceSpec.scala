@@ -16,10 +16,10 @@
 
 package api.endpoints.lossClaim.list.v3
 
-import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.list.v3.connector.MockListLossClaimsConnector
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.fixtures.v3.ListLossClaimsFixtures.{ multipleClaimsResponseModel, singleClaimResponseModel }
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
 import api.models.errors._
@@ -33,88 +33,50 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
-  trait Test extends MockLossClaimConnector {
-    lazy val service                        = new ListLossClaimsService(connector)
-    lazy val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), None, None, None, None)
+  trait Test extends MockListLossClaimsConnector {
+    lazy val service = new ListLossClaimsService(connector)
+
+    def request(taxYear: Option[TaxYear] = Some(TaxYear.fromMtd("2020-21"))): ListLossClaimsRequest =
+      ListLossClaimsRequest(Nino(nino), taxYear, None, None, None)
+
   }
 
   "retrieve the list of bf losses" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]] =
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(
-              List(
-                ListLossClaimsItem(
-                  "testId",
-                  TypeOfClaim.`carry-sideways`,
-                  TypeOfLoss.`self-employment`,
-                  "2020",
-                  "claimId",
-                  Some(1),
-                  "2020-07-13T12:13:48.763Z"),
-                ListLossClaimsItem(
-                  "testId2",
-                  TypeOfClaim.`carry-sideways`,
-                  TypeOfLoss.`self-employment`,
-                  "2020",
-                  "claimId2",
-                  Some(1),
-                  "2020-07-13T12:13:48.763Z")
-              ))
-          )
-        MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
+          ResponseWrapper(correlationId, multipleClaimsResponseModel)
+        MockedListLossClaimsConnector.listLossClaims(request()).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request))
+        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request()))
         result shouldBe Right(downstreamResponse)
       }
 
-      "the connector call is successful for a TYS tax year" in new Test {
-        private val tysTaxYear                           = Some(TaxYear.fromMtd("2023-24"))
-        override lazy val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), tysTaxYear, None, None, None)
+      "the connector call is successful with a tax year" in new Test {
+        private val taxYear = Some(TaxYear.fromMtd("2023-24"))
         private val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]] =
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(
-              List(
-                ListLossClaimsItem(
-                  "testId",
-                  TypeOfClaim.`carry-sideways`,
-                  TypeOfLoss.`self-employment`,
-                  "2024",
-                  "claimId",
-                  Some(1),
-                  "2020-07-13T12:13:48.763Z"),
-                ListLossClaimsItem(
-                  "testId2",
-                  TypeOfClaim.`carry-sideways`,
-                  TypeOfLoss.`self-employment`,
-                  "2024",
-                  "claimId2",
-                  Some(1),
-                  "2020-07-13T12:13:48.763Z")
-              ))
+            singleClaimResponseModel("2023-24")
           )
-        MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
+        MockedListLossClaimsConnector.listLossClaims(request(taxYear)).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request))
+        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request(taxYear)))
         result shouldBe Right(downstreamResponse)
       }
     }
 
     "return a Left(NotFoundError)" when {
       "the connector returns an empty list" in new Test {
-        private val tysTaxYear                           = Some(TaxYear.fromMtd("2023-24"))
-        override lazy val request: ListLossClaimsRequest = ListLossClaimsRequest(Nino(nino), tysTaxYear, None, None, None)
+        private val taxYear = Some(TaxYear.fromMtd("2023-24"))
         private val downstreamResponse: ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]] =
           ResponseWrapper(
             correlationId,
             ListLossClaimsResponse(Nil)
           )
-        MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
+        MockedListLossClaimsConnector.listLossClaims(request(taxYear)).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request))
+        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request(taxYear)))
         result shouldBe Left(ErrorWrapper(correlationId, NotFoundError, None))
       }
     }
@@ -123,9 +85,9 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
       "the connector returns an outbound error" in new Test {
         private val someError                                          = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         private val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
-        MockedLossClaimConnector.listLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
+        MockedListLossClaimsConnector.listLossClaims(request()).returns(Future.successful(Left(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request))
+        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request()))
         result shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
@@ -133,27 +95,20 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
         s"a $downstreamErrorCode error is returned from the service" in new Test {
-          MockedLossClaimConnector
-            .listLossClaims(request)
+          MockedListLossClaimsConnector
+            .listLossClaims(request())
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          private val result = await(service.listLossClaims(request))
+          private val result = await(service.listLossClaims(request()))
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val errors = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-        "INVALID_TAXYEAR"           -> TaxYearFormatError,
-        "INVALID_INCOMESOURCEID"    -> BusinessIdFormatError,
-        "INVALID_INCOMESOURCETYPE"  -> TypeOfLossFormatError,
         "INVALID_CLAIM_TYPE"        -> TypeOfClaimFormatError,
         "NOT_FOUND"                 -> NotFoundError,
-        "INVALID_CORRELATIONID"     -> InternalError,
         "SERVER_ERROR"              -> InternalError,
-        "SERVICE_UNAVAILABLE"       -> InternalError
-      )
-
-      val extraTysErrors = List(
+        "SERVICE_UNAVAILABLE"       -> InternalError,
         "INVALID_CORRELATION_ID"    -> InternalError,
         "INVALID_TAX_YEAR"          -> TaxYearFormatError,
         "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
@@ -161,7 +116,23 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
         "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      errors.foreach(args => (serviceError _).tupled(args))
+    }
+
+    "map INVALID_TAX_YEAR to InternalError if no taxYear is provided" in new Test {
+      MockedListLossClaimsConnector
+        .listLossClaims(request(None))
+        .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("INVALID_TAX_YEAR"))))))
+
+      await(service.listLossClaims(request(None))) shouldBe Left(ErrorWrapper(correlationId, InternalError))
+    }
+
+    "map TAX_YEAR_NOT_SUPPORTED to InternalError if no taxYear is provided" in new Test {
+      MockedListLossClaimsConnector
+        .listLossClaims(request(None))
+        .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("TAX_YEAR_NOT_SUPPORTED"))))))
+
+      await(service.listLossClaims(request(None))) shouldBe Left(ErrorWrapper(correlationId, InternalError))
     }
   }
 

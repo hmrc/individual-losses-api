@@ -1,0 +1,148 @@
+post:
+  summary: Create a Loss Claim
+  description: |
+    This endpoint allows a developer to create a Loss Claim against an income source for a specific tax year. Claims cannot be made until after the end of the accounting period.
+    A National Insurance number must be provided.
+    
+    ### Test data
+    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+    <table>
+      <thead>
+          <tr>
+              <th>Header Value (Gov-Test-Scenario)</th>
+              <th>Scenario</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td><p>N/A - DEFAULT</p></td>
+              <td><p>Simulates success response.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NOT_FOUND</p></td>
+              <td><p>Simulates the scenario where no data is found.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>DUPLICATE</p></td>
+              <td><p>Simulates the scenario where a duplicated value is found.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>ACCOUNTING_PERIOD_NOT_ENDED</p></td>
+              <td><p>Simulates the scenario where the Loss claim has been made too soon.</p></td>
+          </tr>
+      </tbody>
+      <tbody>
+          <tr>
+              <td><p>NO_ACCOUNTING_PERIOD</p></td>
+              <td><p>Simulates the scenario where there is no accounting period for the year of the claim.</p></td>
+          </tr>
+      </tbody>
+    </table>
+
+  tags:
+    - Loss Claims
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/lossClaims/createLossClaim/create_request.json'
+        examples:
+          example-1:
+            description: Self-Employment Claim Request
+            value:
+              $ref: './examples/lossClaims/createLossClaim/create_request_self_employment_claims.json'
+          example-2:
+            description: UK Property Claim Request
+            value:
+              $ref: './examples/lossClaims/createLossClaim/create_request_property_claims.json'
+          example-3:
+            description: Foreign Property Claim Request
+            value:
+              $ref: './examples/lossClaims/createLossClaim/create_request_foreign_property_claims.json'
+
+  responses:
+    "201":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/lossClaims/createLossClaim/create_response.json'
+          examples:
+            example-1:
+              description: Example Response
+              value:
+                $ref: './examples/lossClaims/createLossClaim/create_response.json'
+
+
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYearClaimedFor'
+            RULE_TAX_YEAR_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            RULE_TAX_YEAR_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+            FORMAT_TYPE_OF_LOSS:
+              $ref: './common/errors.yaml#/components/examples/formatTypeOfLoss'
+            FORMAT_TYPE_OF_CLAIM:
+              $ref: './common/errors.yaml#/components/examples/formatTypeOfClaim'
+            FORMAT_BUSINESS_ID:
+              $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+            RULE_TYPE_OF_CLAIM_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTypeOfClaimInvalid'
+            RULE_DUPLICATE_SUBMISSION:
+              $ref: './common/errors.yaml#/components/examples/ruleDuplicateClaimSubmission'
+            RULE_ACCOUNTING_PERIOD_NOT_ENDED:
+              $ref: './common/errors.yaml#/components/examples/ruleAccountingPeriodNotEnded'
+            RULE_NO_ACCOUNTING_PERIOD:
+              $ref: './common/errors.yaml#/components/examples/ruleNoAccountingPeriod'
+            RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'

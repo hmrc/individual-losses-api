@@ -17,12 +17,13 @@
 package api.endpoints.lossClaim.list.v3.connector
 
 import api.connectors.{ ConnectorSpec, DownstreamOutcome }
-import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
 import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.fixtures.v3.ListLossClaimsFixtures._
 import api.models.ResponseWrapper
 import api.models.domain.{ Nino, TaxYear }
+import api.models.errors.{ DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError }
 
 import scala.concurrent.Future
 
@@ -33,335 +34,136 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
   trait Test {
     _: ConnectorTest =>
-    val connector: LossClaimConnector = new LossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: ListLossClaimsConnector = new ListLossClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+    protected def success(taxYear: String) = Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))
+
+    protected def downstreamError(code: String) = Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(code))))
+
+    val outboundError = Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
   }
 
   "list LossClaims" when {
-    "a valid request is supplied with no query parameters" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
+    "a valid request is supplied with no tax year parameter" should {
+      "return a successful combined response" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/19-20/claims-for-relief/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/20-21/claims-for-relief/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/21-22/claims-for-relief/$nino") returns Future.successful(success("2021-22"))
+        willGet(s"$baseUrl/income-tax/22-23/claims-for-relief/$nino") returns Future.successful(success("2022-23"))
 
-        val expected = Right(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
-        willGet(s"$baseUrl/income-tax/claims-for-relief/$nino") returns Future.successful(expected)
-
-        listLossClaimsResult(connector) shouldBe expected
+        listLossClaimsResult(connector) shouldBe Right(ResponseWrapper(correlationId, multipleClaimsResponseModel))
       }
 
-      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
+      "return a successful response ignoring 404 NOT_FOUND responses" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/19-20/claims-for-relief/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/20-21/claims-for-relief/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/21-22/claims-for-relief/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/22-23/claims-for-relief/$nino") returns Future.successful(success("2022-23"))
 
-        val expected = Right(
+        listLossClaimsResult(connector) shouldBe Right(
           ResponseWrapper(
             correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
+            ListLossClaimsResponse(
+              List(
+                listLossClaim("2019-20"),
+                listLossClaim("2020-21"),
+                listLossClaim("2022-23")
+              )
+            )
+          )
+        )
+      }
 
-        willGet(s"$baseUrl/income-tax/claims-for-relief/23-24/$nino") returns Future.successful(expected)
+      "return a 404 NOT_FOUND response if all responses are NOT_FOUND" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/19-20/claims-for-relief/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/20-21/claims-for-relief/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/21-22/claims-for-relief/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/22-23/claims-for-relief/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
 
-        listLossClaimsResult(connector, Some(TaxYear.fromMtd("2023-24"))) shouldBe expected
+        listLossClaimsResult(connector) shouldBe Left(
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors.single(DownstreamErrorCode("NOT_FOUND"))
+          )
+        )
+      }
+
+      "return the error response if any request errors" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/19-20/claims-for-relief/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/20-21/claims-for-relief/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/21-22/claims-for-relief/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/22-23/claims-for-relief/$nino") returns Future.successful(downstreamError("INVALID_TAXABLE_ENTITY_ID"))
+
+        listLossClaimsResult(connector) shouldBe Left(
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors.single(DownstreamErrorCode("INVALID_TAXABLE_ENTITY_ID"))
+          )
+        )
+      }
+
+      "return the error response for an OutboundError" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/19-20/claims-for-relief/$nino") returns Future.successful(success("2019-20"))
+        willGet(s"$baseUrl/income-tax/20-21/claims-for-relief/$nino") returns Future.successful(success("2020-21"))
+        willGet(s"$baseUrl/income-tax/21-22/claims-for-relief/$nino") returns Future.successful(downstreamError("NOT_FOUND"))
+        willGet(s"$baseUrl/income-tax/22-23/claims-for-relief/$nino") returns Future.successful(outboundError)
+
+        listLossClaimsResult(connector) shouldBe Left(
+          ResponseWrapper(correlationId, OutboundError(InternalError))
+        )
       }
     }
 
-    "provided with a tax year parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
-
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("taxYear", "2019"))) returns Future.successful(expected)
-
-        listLossClaimsResult(connector = connector, taxYear = Some(TaxYear("2019"))) shouldBe expected
+    "a valid request is supplied with only the tax year parameter" should {
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+        willGet(s"$baseUrl/income-tax/23-24/claims-for-relief/$nino") returns Future.successful(success("2023-24"))
+        listLossClaimsResult(connector, Some(TaxYear.fromMtd("2023-24"))) shouldBe success("2023-24")
       }
     }
 
     "provided with a income source id parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+        willGet(url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
+          .successful(success("2023-24"))
 
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future.successful(
-          expected)
-
-        listLossClaimsResult(connector = connector, businessId = Some("testId")) shouldBe expected
-      }
-
-      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
-
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
-          .successful(expected)
-
-        listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some("testId")) shouldBe expected
+        listLossClaimsResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some("testId")) shouldBe success("2023-24")
       }
     }
 
     "provided with a income source type parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
-
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
-          url = s"$baseUrl/income-tax/claims-for-relief/$nino",
+          url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           queryParams = List(("incomeSourceType", "02"))
-        ) returns Future.successful(expected)
-
-        listLossClaimsResult(connector = connector, typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
-      }
-
-      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
-
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino", queryParams = List(("incomeSourceType", "02"))) returns Future.successful(
-          expected)
+        ) returns Future.successful(success("2023-24"))
 
         listLossClaimsResult(
           connector = connector,
           Some(TaxYear.fromMtd("2023-24")),
-          typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe expected
+          typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe success("2023-24")
       }
     }
 
     "provided with a claim type parameter" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
-
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
-        willGet(url = s"$baseUrl/income-tax/claims-for-relief/$nino", queryParams = List(("claimType", "CSGI"))) returns Future.successful(expected)
-
-        listLossClaimsResult(connector = connector, claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
-      }
-
-      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
-
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
-          url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
+          url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           queryParams = List(("claimType", "CSGI"))
-        ) returns Future.successful(expected)
+        ) returns Future.successful(success("2023-24"))
 
         listLossClaimsResult(
           connector = connector,
           Some(TaxYear.fromMtd("2023-24")),
-          claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe expected
+          claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe success("2023-24")
       }
     }
 
     "provided with all parameters" should {
-      "return a successful response with the correct correlationId for a TYS tax year" in new TysIfsTest with Test {
-
-        val expected = Left(
-          ResponseWrapper(
-            correlationId,
-            ListLossClaimsResponse(List(
-              ListLossClaimsItem(
-                "businessId",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId",
-                Some(1),
-                "2020-07-13T12:13:48.763Z"),
-              ListLossClaimsItem(
-                "businessId1",
-                TypeOfClaim.`carry-sideways`,
-                TypeOfLoss.`self-employment`,
-                "2020",
-                "claimId1",
-                Some(2),
-                "2020-07-13T12:13:48.763Z")
-            ))
-          ))
-
+      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
-          url = s"$baseUrl/income-tax/claims-for-relief/23-24/$nino",
+          url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           queryParams = List(("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI"))
-        ) returns Future.successful(expected)
+        ) returns Future.successful(success("2023-24"))
 
         listLossClaimsResult(
           connector = connector,
@@ -369,11 +171,11 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
           businessId = Some("testId"),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)
-        ) shouldBe expected
+        ) shouldBe success("2023-24")
       }
     }
 
-    def listLossClaimsResult(connector: LossClaimConnector,
+    def listLossClaimsResult(connector: ListLossClaimsConnector,
                              taxYear: Option[TaxYear] = None,
                              typeOfLoss: Option[TypeOfLoss] = None,
                              businessId: Option[String] = None,

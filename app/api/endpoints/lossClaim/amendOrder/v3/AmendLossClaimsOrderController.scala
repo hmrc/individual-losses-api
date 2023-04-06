@@ -53,7 +53,7 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
         RequestHandler
           .withParser(parser)
           .withService(service.amendLossClaimsOrder)
-          .withHateoasResult(hateoasFactory)(AmendLossClaimsOrderHateoasData(nino))
+          .withHateoasResult(hateoasFactory)(AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor))
           .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendLossClaimOrder",

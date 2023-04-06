@@ -41,31 +41,19 @@ class AmendLossClaimsOrderService @Inject() (connector: LossClaimConnector) exte
       }
   }
 
-  private val errorMap: Map[String, MtdError] = {
-    val errors = Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAXYEAR"           -> TaxYearFormatError,
-      "CONFLICT_SEQUENCE_START"   -> RuleInvalidSequenceStart,
-      "CONFLICT_NOT_SEQUENTIAL"   -> RuleSequenceOrderBroken,
-      "CONFLICT_NOT_FULL_LIST"    -> RuleLossClaimsMissing,
-      "UNPROCESSABLE_ENTITY"      -> NotFoundError,
-      "INVALID_PAYLOAD"           -> InternalError,
-      "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError
-    )
-
-    val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"       -> TaxYearFormatError,
-      "INVALID_CORRELATIONID"  -> InternalError,
-      "NOT_FOUND"              -> NotFoundError,
-      "NOT_SEQUENTIAL"         -> RuleSequenceOrderBroken,
-      "SEQUENCE_START"         -> RuleInvalidSequenceStart,
-      "NO_FULL_LIST"           -> RuleLossClaimsMissing,
-      "CLAIM_NOT_FOUND"        -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
-    )
-
-    errors ++ extraTysErrors
-  }
+  private val errorMap: Map[String, MtdError] = Map(
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+    "INVALID_PAYLOAD"           -> InternalError,
+    "INVALID_CORRELATIONID"     -> InternalError,
+    "NOT_FOUND"                 -> NotFoundError,
+    "NOT_SEQUENTIAL"            -> RuleSequenceOrderBroken,
+    "SEQUENCE_START"            -> RuleInvalidSequenceStart,
+    "NO_FULL_LIST"              -> RuleLossClaimsMissing,
+    "CLAIM_NOT_FOUND"           -> NotFoundError,
+    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+    "SERVER_ERROR"              -> InternalError,
+    "SERVICE_UNAVAILABLE"       -> InternalError
+  )
 
 }

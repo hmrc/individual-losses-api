@@ -16,15 +16,13 @@
 
 package api.models.domain
 
-import config.FeatureSwitches
-
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-/**
-  * Represents a tax year for downstream systems
+/** Represents a tax year for downstream systems
   *
-  * @param value the tax year string (where 2018 represents 2017-18)
+  * @param value
+  *   the tax year string (where 2018 represents 2017-18)
   */
 final case class TaxYear private (private val value: String) {
 
@@ -45,17 +43,12 @@ final case class TaxYear private (private val value: String) {
     s"$year1-$year2"
   }
 
-  /** Use this for downstream API endpoints that are known to be TYS.
-    */
-  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean =
-    featureSwitches.isTaxYearSpecificApiEnabled && year >= 2024
-
 }
 
 object TaxYear {
 
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
+  /** @param taxYear
+    *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear =
     TaxYear(taxYear.take(2) + taxYear.drop(5))
@@ -74,4 +67,5 @@ object TaxYear {
       TaxYear(s"${date.getYear}")
     }
   }
+
 }

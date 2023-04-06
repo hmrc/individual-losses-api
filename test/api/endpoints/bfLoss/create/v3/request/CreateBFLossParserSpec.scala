@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.create.v3.request
 
-import api.endpoints.bfLoss.domain.v3.TypeOfLoss
+import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.Json
