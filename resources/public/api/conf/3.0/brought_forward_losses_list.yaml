@@ -45,7 +45,7 @@ description: |
     <tbody>
         <tr>
             <td><p>DYNAMIC</p></td>
-            <td><p>The following response values will change to correspond to the values submitted:
+            <td><p>The following response values will change to correspond to the values submitted in the request:
               <ul>
                   <li>businessID</li>
                   <li>typeOfLoss</li>
@@ -57,8 +57,6 @@ description: |
   </tbody>
   </table>
 
-
-Following response values will change to correspond to the values submitted in the request:
 tags:
   - Brought Forward Losses
 
