@@ -43,6 +43,19 @@ get:
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
       </tbody>
+       <tbody>
+          <tr>
+              <td><p>DYNAMIC</p></td>
+              <td><p>The following response values will change to correspond to the values submitted in the request:
+                <ul>
+                    <li>businessID</li>
+                    <li>typeOfLoss</li>
+                    <li>taxYearBroughtForwardFrom</li>
+                    <li>lastModified</li>
+                </ul>
+              </p></td>
+          </tr>
+    </tbody>
     </table>
 
   tags:
