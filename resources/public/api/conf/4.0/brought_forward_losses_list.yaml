@@ -43,7 +43,7 @@ get:
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
       </tbody>
-       <tbody>
+      <tbody>
           <tr>
               <td><p>DYNAMIC</p></td>
               <td><p>The following response values will change to correspond to the values submitted in the request:
@@ -55,7 +55,7 @@ get:
                 </ul>
               </p></td>
           </tr>
-    </tbody>
+      </tbody>
     </table>
 
   tags:
