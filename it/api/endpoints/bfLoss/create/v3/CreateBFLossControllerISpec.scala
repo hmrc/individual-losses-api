@@ -51,7 +51,8 @@ class CreateBFLossControllerISpec extends V3V4IntegrationBaseSpec with JsonError
       buildRequest(s"/$nino/brought-forward-losses")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.3.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
+          (AUTHORIZATION, "Bearer 123"), // some bearer token
+          ("suspend-temporal-validations", "true")
         )
     }
 

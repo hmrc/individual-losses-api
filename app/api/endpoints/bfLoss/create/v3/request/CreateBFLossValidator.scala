@@ -23,10 +23,10 @@ import api.validations.v3._
 import config.FixedConfig
 import utils.CurrentDate
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
 @Singleton
-class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
+class CreateBFLossValidator @Inject() (implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {
 
   private val validationSet = List(parameterFormatValidation, typeOfLossValidator, bodyFormatValidator, taxYearValidator, otherBodyFieldsValidator)
 
@@ -64,7 +64,7 @@ class CreateBFLossValidator @Inject()(implicit currentDate: CurrentDate) extends
     val req = data.body.json.as[CreateBFLossRequestBody]
     List(
       MinTaxYearValidation.validate(req.taxYearBroughtForwardFrom, minimumTaxYearBFLoss),
-      TaxYearNotEndedValidation.validate(req.taxYearBroughtForwardFrom),
+      if (data.temporalValidationEnabled) TaxYearNotEndedValidation.validate(req.taxYearBroughtForwardFrom) else Nil,
       BusinessIdValidation.validate(req.businessId),
       NumberValidation.validate(req.lossAmount, "/lossAmount")
     )
