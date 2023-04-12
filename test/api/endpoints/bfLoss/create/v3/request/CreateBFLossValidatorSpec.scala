@@ -60,6 +60,7 @@ class CreateBFLossValidatorSpec extends UnitSpec {
     MockCurrentDate.getCurrentDate
       .returns(LocalDate.parse("2022-07-11", dateTimeFormatter))
       .anyNumberOfTimes()
+
   }
 
   "running a validation" should {
@@ -111,8 +112,22 @@ class CreateBFLossValidatorSpec extends UnitSpec {
 
     "return RuleTaxYearNotEndedError error" when {
       "an out of range tax year is supplied" in new Test {
-        validator.validate(CreateBFLossRawData(validNino, AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2022-23")))) shouldBe
+        validator.validate(
+          CreateBFLossRawData(
+            nino = validNino,
+            body = AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2022-23")),
+            temporalValidationEnabled = true)) shouldBe
           List(RuleTaxYearNotEndedError)
+      }
+    }
+
+    "not return RuleTaxYearNotEndedError error" when {
+      "for a tax year which hasn't ended but temporal validation is disabled" in new Test {
+        validator.validate(
+          CreateBFLossRawData(
+            nino = validNino,
+            body = AnyContentAsJson(createRequestBodyJson(taxYearBroughtForwardFrom = "2027-28")),
+            temporalValidationEnabled = false)) shouldBe Nil
       }
     }
 
@@ -162,4 +177,5 @@ class CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }
