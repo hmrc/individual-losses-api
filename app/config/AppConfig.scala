@@ -19,6 +19,7 @@ package config
 import com.typesafe.config.Config
 import play.api.{ ConfigLoader, Configuration }
 import routing.Version
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{ Inject, Singleton }
@@ -102,13 +103,14 @@ trait FixedConfig {
   val minimumTaxYearLossClaim = 2020
 }
 
-case class ConfidenceLevelConfig(definitionEnabled: Boolean, authValidationEnabled: Boolean)
+case class ConfidenceLevelConfig(confidenceLevel: ConfidenceLevel, definitionEnabled: Boolean, authValidationEnabled: Boolean)
 
 object ConfidenceLevelConfig {
 
   implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config = rootConfig.getConfig(path)
     ConfidenceLevelConfig(
+      confidenceLevel = ConfidenceLevel.fromInt(config.getInt("confidence-level")).get,
       definitionEnabled = config.getBoolean("definition.enabled"),
       authValidationEnabled = config.getBoolean("auth-validation.enabled")
     )
