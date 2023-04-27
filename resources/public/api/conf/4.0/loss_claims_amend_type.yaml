@@ -85,6 +85,17 @@ post:
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
       </tbody>
+      <tbody>
+          <tr>
+              <td><p>DYNAMIC</p></td>
+              <td><p>The following response values will change to correspond to the values submitted in the request:
+                <ul>
+                    <li>typeOfClaim</li>
+                    <li>typeOfLoss</li>
+                    <li>last modified</li>
+                </ul>
+              </p></td>
+          </tr>
     </table>
 
   tags:
