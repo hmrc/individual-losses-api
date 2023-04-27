@@ -92,7 +92,7 @@ post:
                 <ul>
                     <li>typeOfClaim</li>
                     <li>typeOfLoss</li>
-                    <li>last modified</li>
+                    <li>lastModified</li>
                 </ul>
               </p></td>
           </tr>
