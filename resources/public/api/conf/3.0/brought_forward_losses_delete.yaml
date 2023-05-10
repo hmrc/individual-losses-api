@@ -65,6 +65,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/formatLossId'
           RULE_DELETE_AFTER_FINAL_DECLARATION:
             $ref: './common/errors.yaml#/components/examples/ruleDeleteAfterFinalDeclaration'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
   "403":
     description: Forbidden
