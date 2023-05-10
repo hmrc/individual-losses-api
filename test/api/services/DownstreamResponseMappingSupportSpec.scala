@@ -68,6 +68,14 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
       }
     }
 
+    "downstream returns UNMATCHED_STUB_ERROR" must {
+      "return a RuleIncorrectGovTestScenario error" in {
+        mapping.mapDownstreamErrors(errorCodeMap)(
+          ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("UNMATCHED_STUB_ERROR")))) shouldBe
+          ErrorWrapper(correlationId, RuleIncorrectGovTestScenarioError)
+      }
+    }
+
     "multiple errors" when {
       "the error codes is in the map provided" must {
         "use the mapping and wrap with main error type of BadRequest" in {
