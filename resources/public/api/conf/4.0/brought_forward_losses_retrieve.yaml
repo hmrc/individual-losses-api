@@ -87,6 +87,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/formatNino'
           FORMAT_LOSS_ID:
             $ref: './common/errors.yaml#/components/examples/formatLossId'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
   "403":
     description: Forbidden

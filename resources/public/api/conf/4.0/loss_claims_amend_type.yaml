@@ -151,6 +151,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleTypeOfClaimInvalid'
             RULE_NO_CHANGE:
               $ref: './common/errors.yaml#/components/examples/ruleNoChangeLossClaim'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
 
     "403":
