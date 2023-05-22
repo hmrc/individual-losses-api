@@ -44,7 +44,11 @@ post:
             <tr>
                 <td><p>NO_CHANGE</p></td>
                 <td><p>Simulates the scenario where the brought forward loss amount has not changed.</p></td>
-            </tr>                               
+            </tr>     
+            <tr>
+                <td><p>STATEFUL</p></td>
+                <td><p>Simulates a stateful success response.</p></td>
+            </tr>
         </tbody>
     </table>
 

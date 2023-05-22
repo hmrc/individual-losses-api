@@ -17,17 +17,17 @@ post:
               <td><p>N/A - DEFAULT</p></td>
               <td><p>Simulates success response.</p></td>
           </tr>
-      </tbody>
-      <tbody>
           <tr>
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
-      </tbody>
-      <tbody>
           <tr>
               <td><p>DUPLICATE_SUBMISSION</p></td>
               <td><p>Simulates the scenario where a duplicated loss is found.</p></td>
+          </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Simulates a stateful success response.</p></td>
           </tr>
       </tbody>
     </table>
