@@ -23,7 +23,7 @@ import api.validations.v3.LossIdValidation
 
 class DeleteBFLossValidator extends Validator[DeleteBFLossRawData] {
 
-  private val validationSet: Seq[DeleteBFLossRawData => Seq[Seq[MtdError]]] = List(parameterFormatValidation)
+  private val validationSet = List(parameterFormatValidation)
 
   private def parameterFormatValidation: DeleteBFLossRawData => Seq[Seq[MtdError]] = { data =>
     List(

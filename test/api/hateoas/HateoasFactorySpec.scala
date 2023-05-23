@@ -17,9 +17,9 @@
 package api.hateoas
 
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasData, HateoasWrapper, Link}
+import api.models.hateoas.{ HateoasData, HateoasWrapper, Link }
 import cats.Functor
-import config.{AppConfig, MockAppConfig}
+import config.{ AppConfig, MockAppConfig }
 import support.UnitSpec
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
@@ -35,7 +35,7 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   val response: Response = Response("X")
 
   class Test {
-    MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes
+    MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
   }
 
   "wrap" should {
@@ -75,4 +75,5 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
         HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
     }
   }
+
 }
