@@ -95,6 +95,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/formatTypeOfLoss'
           FORMAT_BUSINESS_ID:
             $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
   "403":
     description: Forbidden

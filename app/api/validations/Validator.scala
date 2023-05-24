@@ -25,14 +25,15 @@ trait Validator[A <: RawData] {
 
   def validate(data: A): Seq[MtdError]
 
-  def run(validationSet: Seq[A => Seq[Seq[MtdError]]], data: A): Seq[MtdError] = {
+  def run(validationSet: List[A => Seq[Seq[MtdError]]], data: A): Seq[MtdError] = {
     validationSet match {
       case Nil => Nil
       case thisLevel :: remainingLevels =>
         thisLevel(data).flatten match {
-          case x if x.isEmpty  => run(remainingLevels, data)
-          case x if x.nonEmpty => x
+          case x if x.isEmpty => run(remainingLevels, data)
+          case x              => x
         }
     }
   }
+
 }

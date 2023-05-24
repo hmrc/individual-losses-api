@@ -108,6 +108,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleDuplicateSubmission'
           RULE_TAX_YEAR_NOT_ENDED:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotEnded'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
   "403":
     description: Forbidden

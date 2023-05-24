@@ -111,6 +111,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/formatLossId'
             RULE_NO_CHANGE:
               $ref: './common/errors.yaml#/components/examples/ruleNoChangeBroughtForward'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
     "403":
       description: Forbidden

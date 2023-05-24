@@ -64,7 +64,7 @@ class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
     "return the correct hateoas links" when {
 
       "provided with a claim id of 'claimId' and nino of 'AA123456A'" in {
-        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
 
         CreateLossClaimResponse.LinksFactory.links(mockAppConfig, CreateLossClaimHateoasData("AA123456A", "claimId")) shouldBe
           Seq(

@@ -37,7 +37,7 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
   "Links Factory" should {
     "expose the correct links" when {
       "called" in {
-        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes
+        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
         AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(mockAppConfig, AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims/order/$taxYear", PUT, "amend-loss-claim-order"),
