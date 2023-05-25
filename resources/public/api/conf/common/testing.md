@@ -11,4 +11,4 @@ Some APIs may be marked \[test only\]. This means that they are not available fo
 <h3>Dynamic</h3>
 Some endpoints support DYNAMIC gov test scenarios. The response is dynamic based on the request parameters:
 
-- List Brought Forward Losses
+- List Brought Forward Losses V4.0
