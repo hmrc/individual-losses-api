@@ -17,23 +17,21 @@ description: |
             <td><p>N/A - DEFAULT</p></td>
             <td><p>Simulates success response where type of loss is Self-Employment.</p></td>
         </tr>
-    </tbody>
-    <tbody>
         <tr>
             <td><p>UK_PROPERTY</p></td>
             <td><p>Simulates the scenario where type of loss is UK Property FHL.</p></td>
         </tr>
-    </tbody>
-    <tbody>
         <tr>
             <td><p>FOREIGN_PROPERTY</p></td>
             <td><p>Simulates the scenario where type of loss is Foreign Property.</p></td>
         </tr>
-    </tbody>
-    <tbody>
         <tr>
             <td><p>NOT_FOUND</p></td>
             <td><p>Simulates the scenario where no data is found.</p></td>
+        </tr>
+        <tr>
+            <td><p>STATEFUL</p></td>
+            <td><p>Performs a stateful retrieve.</p></td>
         </tr>
     </tbody>
   </table>
