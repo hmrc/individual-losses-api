@@ -8,7 +8,7 @@ If you have a specific testing need that is not supported in the sandbox, contac
 
 Some APIs may be marked \[test only\]. This means that they are not available for use in production and may change.
 
-<h3>Dynamic</h3>
+### Dynamic
 Some endpoints support DYNAMIC gov test scenarios. The response is dynamic based on the request parameters:
 
 - List Brought Forward Losses V4.0
