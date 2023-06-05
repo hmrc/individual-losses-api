@@ -22,9 +22,8 @@ import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
@@ -40,12 +39,10 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
   }
 
   "retrieve LossClaim" should {
-
-    val testDateTime: LocalDateTime = LocalDateTime.now()
-    val validTaxYear: String        = "2019-20"
-    val validBusinessId: String     = "XAIS01234567890"
-    val nino: String                = "AA123456A"
-    val claimId: String             = "AAZZ1234567890a"
+    val validTaxYear: String    = "2019-20"
+    val validBusinessId: String = "XAIS01234567890"
+    val nino: String            = "AA123456A"
+    val claimId: String         = "AAZZ1234567890a"
 
     val retrieveResponse: RetrieveLossClaimResponse = RetrieveLossClaimResponse(
       validTaxYear,
@@ -53,7 +50,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
       TypeOfClaim.`carry-forward`,
       validBusinessId,
       Some(1),
-      testDateTime.toString
+      Timestamp("2018-07-13T12:13:48.763Z")
     )
 
     def retrieveLossClaimResult(connector: LossClaimConnector): DownstreamOutcome[RetrieveLossClaimResponse] = {

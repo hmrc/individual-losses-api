@@ -23,7 +23,7 @@ import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.connector.v3.BFLossConnector
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{Nino, Timestamp}
 
 import scala.concurrent.Future
 
@@ -50,7 +50,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
           typeOfLoss = TypeOfLoss.`self-employment`,
           lossAmount = 500.13,
           taxYearBroughtForwardFrom = "2019-20",
-          lastModified = "2018-07-13T12:13:48.763Z"
+          lastModified = Timestamp("2018-07-13T12:13:48.763Z")
         )
         val expected = Right(ResponseWrapper(correlationId, response))
 

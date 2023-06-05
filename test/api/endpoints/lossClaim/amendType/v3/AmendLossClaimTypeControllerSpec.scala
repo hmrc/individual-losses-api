@@ -28,7 +28,7 @@ import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
@@ -55,7 +55,7 @@ class AmendLossClaimTypeControllerSpec
       TypeOfClaim.`carry-forward`,
       "XKIS00000000988",
       Some(1),
-      "2018-07-13T12:13:48.763Z"
+      Timestamp("2018-07-13T12:13:48.763Z")
     )
 
   private val request = AmendLossClaimTypeRequest(Nino(nino), claimId, amendLossClaimType)
