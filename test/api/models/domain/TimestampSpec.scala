@@ -16,7 +16,7 @@
 
 package api.models.domain
 
-import play.api.libs.json.{ Json, OWrites, Reads }
+import play.api.libs.json.{Json, OWrites, Reads}
 import support.UnitSpec
 
 class TimestampSpec extends UnitSpec {
@@ -55,6 +55,17 @@ class TimestampSpec extends UnitSpec {
         val str    = "2023-01-20T01:20:30.123456789Z"
         val result = Timestamp(str)
         result.value shouldBe "2023-01-20T01:20:30.123Z"
+      }
+
+      "given the following ts formats" in {
+        Timestamp("2021-06-17T10:53:38Z").value shouldBe "2021-06-17T10:53:38.000Z"
+        Timestamp("2021-06-17T10:53:38.1Z").value shouldBe "2021-06-17T10:53:38.100Z"
+        Timestamp("2021-06-17T10:53:38.12Z").value shouldBe "2021-06-17T10:53:38.120Z"
+        Timestamp("2021-06-17T10:53:38.123Z").value shouldBe "2021-06-17T10:53:38.123Z"
+
+        withClue("more than 3 (4,5,6 ) digit precision") {
+          Timestamp("2021-06-17T10:53:38.1234Z").value shouldBe "2021-06-17T10:53:38.123Z"
+        }
       }
     }
   }
