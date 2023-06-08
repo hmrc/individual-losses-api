@@ -21,7 +21,7 @@ import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 import api.models.errors._
 import api.services.ServiceSpec
 
@@ -50,8 +50,9 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
               TypeOfClaim.`carry-forward`,
               "selfEmploymentId",
               Some(1),
-              "time"
-            ))
+              Timestamp("2018-07-13T12:13:48.763Z")
+            )
+          )
         MockedLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Right(downstreamResponse)

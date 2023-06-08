@@ -22,7 +22,7 @@ import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{Nino, Timestamp}
 
 import scala.concurrent.Future
 
@@ -48,7 +48,7 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
           typeOfLoss = TypeOfLoss.`self-employment`,
           lossAmount = 2000.25,
           taxYearBroughtForwardFrom = "2018-19",
-          lastModified = "dateString"
+          lastModified = Timestamp("2018-07-13T12:13:48.763Z")
         )
         val expected = Right(ResponseWrapper(correlationId, response))
 

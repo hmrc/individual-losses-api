@@ -16,16 +16,16 @@
 
 package api.endpoints.bfLoss.retrieve.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
-import api.endpoints.bfLoss.retrieve.v3.request.{MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest}
-import api.endpoints.bfLoss.retrieve.v3.response.{GetBFLossHateoasData, RetrieveBFLossResponse}
+import api.endpoints.bfLoss.retrieve.v3.request.{ MockRetrieveBFLossParser, RetrieveBFLossRawData, RetrieveBFLossRequest }
+import api.endpoints.bfLoss.retrieve.v3.response.{ GetBFLossHateoasData, RetrieveBFLossResponse }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.{ HateoasWrapper, Link }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 
@@ -48,7 +48,7 @@ class RetrieveBFLossControllerSpec
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,
     businessId = "XKIS00000000988",
     lossAmount = 100.00,
-    lastModified = "2018-07-13T12:13:48.763Z"
+    lastModified = Timestamp("2018-07-13T12:13:48.763Z")
   )
 
   private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
@@ -85,7 +85,7 @@ class RetrieveBFLossControllerSpec
 
         MockHateoasFactory
           .wrap(response, GetBFLossHateoasData(nino, lossId))
-            .returns(HateoasWrapper(response, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }

@@ -16,10 +16,10 @@
 
 package api.endpoints.lossClaim.retrieve.v3.response
 
-import api.endpoints.lossClaim.domain.v3.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
-import api.hateoas.{HateoasLinks, HateoasLinksFactory}
-import api.models.domain.TaxYear
-import api.models.hateoas.{HateoasData, Link}
+import api.endpoints.lossClaim.domain.v3.{ IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss }
+import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
+import api.models.domain.{ TaxYear, Timestamp }
+import api.models.hateoas.{ HateoasData, Link }
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -29,25 +29,29 @@ case class RetrieveLossClaimResponse(taxYearClaimedFor: String,
                                      typeOfClaim: TypeOfClaim,
                                      businessId: String,
                                      sequence: Option[Int],
-                                     lastModified: String)
+                                     lastModified: Timestamp)
 
 object RetrieveLossClaimResponse extends HateoasLinks {
   implicit val writes: OWrites[RetrieveLossClaimResponse] = Json.writes[RetrieveLossClaimResponse]
+
   implicit val reads: Reads[RetrieveLossClaimResponse] = (
     (JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
-      (JsPath \ "submissionDate").read[String]
+      (JsPath \ "submissionDate").read[Timestamp]
   )(RetrieveLossClaimResponse.apply _)
 
   implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveLossClaimResponse, GetLossClaimHateoasData] {
+
     override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
       import data._
       Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
+
   }
+
 }
 
 case class GetLossClaimHateoasData(nino: String, claimId: String) extends HateoasData

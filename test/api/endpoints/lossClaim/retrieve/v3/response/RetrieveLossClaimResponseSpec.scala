@@ -16,11 +16,12 @@
 
 package api.endpoints.lossClaim.retrieve.v3.response
 
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.models.domain.Timestamp
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST}
+import api.models.hateoas.Method.{ DELETE, GET, POST }
 import config.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 
 class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
@@ -33,7 +34,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     taxYearClaimedFor = "2019-20",
-    lastModified = "",
+    lastModified = Timestamp("2021-11-05T11:56:28Z"),
     sequence = Some(1)
   )
 
@@ -47,7 +48,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
            |  "reliefClaimed": "CSFHL",
            |  "taxYearClaimedFor": "2020",
            |  "claimId": "notUsed",
-           |  "submissionDate": "20180708",
+           |  "submissionDate": "2021-11-05T11:56:28Z",
            |  "sequence": 1
            |}
         """.stripMargin
@@ -62,7 +63,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
            |  "reliefClaimed": "CF",
            |  "taxYearClaimedFor": "2020",
            |  "claimId": "notUsed",
-           |  "submissionDate": "20180708",
+           |  "submissionDate": "2021-11-05T11:56:28Z",
            |  "sequence": 1
            |}
          """.stripMargin
@@ -76,9 +77,9 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
           typeOfLoss = typeOfLoss,
           typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
           taxYearClaimedFor = "2019-20",
-          lastModified = "20180708",
+          lastModified = Timestamp("2021-11-05T11:56:28Z"),
           sequence = Some(1)
-      )
+        )
 
     "convert property JSON from downstream into a valid model for property type 02" in {
       downstreamPropertyJson("02").as[RetrieveLossClaimResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
@@ -91,10 +92,11 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
         TypeOfClaim.`carry-forward`,
         "000000000000001",
         Some(1),
-        "20180708"
+        Timestamp("2021-11-05T11:56:28Z")
       )
     }
   }
+
   "Json Writes" should {
     val mtdJson = Json.parse(
       """
@@ -103,7 +105,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
         |  "typeOfLoss": "self-employment",
         |  "typeOfClaim": "carry-forward",
         |  "taxYearClaimedFor": "2019-20",
-        |  "lastModified" : "",
+        |  "lastModified" : "2021-11-05T11:56:28.000Z",
         |  "sequence": 1
         |}
       """.stripMargin
@@ -125,4 +127,5 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
         )
     }
   }
+
 }
