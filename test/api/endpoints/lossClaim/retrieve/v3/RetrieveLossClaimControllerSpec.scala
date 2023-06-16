@@ -16,16 +16,16 @@
 
 package api.endpoints.lossClaim.retrieve.v3
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.retrieve.v3.request.{MockRetrieveLossClaimRequestDataParser, RetrieveLossClaimRawData, RetrieveLossClaimRequest}
-import api.endpoints.lossClaim.retrieve.v3.response.{GetLossClaimHateoasData, RetrieveLossClaimResponse}
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.retrieve.v3.request.{ MockRetrieveLossClaimRequestDataParser, RetrieveLossClaimRawData, RetrieveLossClaimRequest }
+import api.endpoints.lossClaim.retrieve.v3.response.{ GetLossClaimHateoasData, RetrieveLossClaimResponse }
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.{ HateoasWrapper, Link }
 import play.api.libs.json.Json
 import play.api.mvc.Result
 
@@ -41,7 +41,7 @@ class RetrieveLossClaimControllerSpec
 
   private val claimId      = "AAZZ1234567890a"
   private val businessId   = "XKIS00000000988"
-  private val lastModified = "2018-07-13T12:13:48.763Z"
+  private val lastModified = Timestamp("2018-07-13T12:13:48.763Z")
   private val taxYear      = "2017-18"
 
   private val rawData = RetrieveLossClaimRawData(nino, claimId)
@@ -52,8 +52,8 @@ class RetrieveLossClaimControllerSpec
     typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
     businessId = businessId,
     typeOfClaim = TypeOfClaim.`carry-forward`,
-    lastModified = lastModified,
-    sequence = Some(1)
+    sequence = Some(1),
+    lastModified = lastModified
   )
 
   private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
@@ -91,7 +91,7 @@ class RetrieveLossClaimControllerSpec
 
         MockHateoasFactory
           .wrap(response, GetLossClaimHateoasData(nino, claimId))
-            .returns(HateoasWrapper(response, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -134,4 +134,5 @@ class RetrieveLossClaimControllerSpec
 
     protected def callController(): Future[Result] = controller.retrieve(nino, claimId)(fakeRequest)
   }
+
 }

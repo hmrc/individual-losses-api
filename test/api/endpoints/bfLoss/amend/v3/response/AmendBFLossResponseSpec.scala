@@ -17,21 +17,22 @@
 package api.endpoints.bfLoss.amend.v3.response
 
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
-import api.endpoints.bfLoss.domain.anyVersion.{IncomeSourceType, LossType, TypeOfLoss}
+import api.endpoints.bfLoss.domain.anyVersion.{ IncomeSourceType, LossType, TypeOfLoss }
 import api.hateoas.HateoasFactory
-import api.models.hateoas.Method.{DELETE, GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.domain.Timestamp
+import api.models.hateoas.Method.{ DELETE, GET, POST }
+import api.models.hateoas.{ HateoasWrapper, Link }
 import config.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import support.UnitSpec
 
 class AmendBFLossResponseSpec extends UnitSpec {
 
-  val businessId        = "000000000000001"
-  val lossAmount        = 123.45
-  val taxYearDownstream = "2020"
-  val taxYear           = "2019-20"
-  val lastModified      = "2018-07-13T12:13:48.763Z"
+  private val businessId        = "000000000000001"
+  private val lossAmount        = 123.45
+  private val taxYearDownstream = "2020"
+  private val taxYear           = "2019-20"
+  private val lastModified      = Timestamp("2018-07-13T12:13:48.763Z")
 
   def responseWith(typeOfLoss: TypeOfLoss): AmendBFLossResponse =
     AmendBFLossResponse(
@@ -128,4 +129,5 @@ class AmendBFLossResponseSpec extends UnitSpec {
         )
     }
   }
+
 }

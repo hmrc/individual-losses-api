@@ -16,12 +16,12 @@
 
 package api.endpoints.lossClaim.amendType.v3
 
-import api.endpoints.lossClaim.amendType.v3.request.{ AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody }
+import api.endpoints.lossClaim.amendType.v3.request.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
 
@@ -41,7 +41,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
       TypeOfClaim.`carry-forward`,
       "XKIS00000000988",
       Some(1),
-      "lastModified"
+      Timestamp("2018-07-13T12:13:48.763Z")
     )
 
   trait Test extends MockLossClaimConnector {

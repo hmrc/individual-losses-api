@@ -25,7 +25,7 @@ import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{ HateoasWrapper, Link }
@@ -51,7 +51,7 @@ class AmendBFLossControllerSpec
     typeOfLoss = TypeOfLoss.`self-employment`,
     lossAmount = lossAmount,
     taxYearBroughtForwardFrom = "2021-22",
-    lastModified = "2022-07-13T12:13:48.763Z"
+    lastModified = Timestamp("2022-07-13T12:13:48.763Z")
   )
 
   private val testHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a", method = GET, rel = "self")
@@ -160,5 +160,7 @@ class AmendBFLossControllerSpec
           auditResponse = auditResponse
         )
       )
+
   }
+
 }

@@ -16,10 +16,10 @@
 
 package api.endpoints.bfLoss.retrieve.v3.response
 
-import api.endpoints.bfLoss.domain.anyVersion.{IncomeSourceType, LossType, TypeOfLoss}
-import api.hateoas.{HateoasLinks, HateoasLinksFactory}
-import api.models.domain.TaxYear
-import api.models.hateoas.{HateoasData, Link}
+import api.endpoints.bfLoss.domain.anyVersion.{ IncomeSourceType, LossType, TypeOfLoss }
+import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
+import api.models.domain.{ TaxYear, Timestamp }
+import api.models.hateoas.{ HateoasData, Link }
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -28,7 +28,7 @@ case class RetrieveBFLossResponse(businessId: String,
                                   typeOfLoss: TypeOfLoss,
                                   lossAmount: BigDecimal,
                                   taxYearBroughtForwardFrom: String,
-                                  lastModified: String)
+                                  lastModified: Timestamp)
 
 object RetrieveBFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[RetrieveBFLossResponse] = Json.writes[RetrieveBFLossResponse]
@@ -39,15 +39,18 @@ object RetrieveBFLossResponse extends HateoasLinks {
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear").read[String].map(TaxYear(_)).map(_.asMtd) and
-      (__ \ "submissionDate").read[String]
+      (__ \ "submissionDate").read[Timestamp]
   )(RetrieveBFLossResponse.apply _)
 
   implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveBFLossResponse, GetBFLossHateoasData] {
+
     override def links(appConfig: AppConfig, data: GetBFLossHateoasData): Seq[Link] = {
       import data._
       Seq(getBFLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId))
     }
+
   }
+
 }
 
 case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData

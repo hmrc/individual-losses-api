@@ -22,7 +22,7 @@ import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 import api.models.errors._
 import api.services.ServiceSpec
 
@@ -40,7 +40,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
     TypeOfLoss.`self-employment`,
     256.78,
     "2019-20",
-    "2018-07-13T12:13:48.763Z"
+    Timestamp("2018-07-13T12:13:48.763Z")
   )
 
   "amend BFLoss" when {

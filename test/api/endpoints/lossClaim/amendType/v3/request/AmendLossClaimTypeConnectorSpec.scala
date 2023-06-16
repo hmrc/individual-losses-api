@@ -21,10 +21,9 @@ import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
 import api.models.ResponseWrapper
-import api.models.domain.Nino
+import api.models.domain.{ Nino, Timestamp }
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
@@ -46,8 +45,8 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
       typeOfLoss = TypeOfLoss.`self-employment`,
       typeOfClaim = TypeOfClaim.`carry-forward`,
       taxYearClaimedFor = "2019-20",
-      lastModified = LocalDateTime.now().toString,
-      sequence = Some(1)
+      sequence = Some(1),
+      lastModified = Timestamp("2018-07-13T12:13:48.763Z")
     )
 
     val amendLossClaimType: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
