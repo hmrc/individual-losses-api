@@ -84,6 +84,10 @@ post:
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Performs a stateful update.</p></td>
+          </tr>
       </tbody>
     </table>
 
