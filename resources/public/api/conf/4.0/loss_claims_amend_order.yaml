@@ -24,7 +24,11 @@ description: |
         <tr>
            <td><p>NOT_FOUND</p></td>
            <td><p>Simulates the scenario where not all claims of the given type and year were included.</p></td>
-        </tr>           
+        </tr>
+        <tr>
+           <td><p>STATEFUL</p></td>
+           <td><p>Performs a stateful update.</p></td>
+        </tr> 
     </tbody>
   </table>
 
