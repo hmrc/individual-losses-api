@@ -46,6 +46,7 @@ get:
                   <li>lastModified</li>
                   <li>typeOfLoss</li>
                   <li>typeOfClaim</li>
+                  <li>businessId</li>
               </ul>
             </p></td>
           </tr>
