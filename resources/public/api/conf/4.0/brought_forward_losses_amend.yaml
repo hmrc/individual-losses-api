@@ -44,7 +44,16 @@ post:
             <tr>
                 <td><p>NO_CHANGE</p></td>
                 <td><p>Simulates the scenario where the brought forward loss amount has not changed.</p></td>
-            </tr>                               
+            </tr>
+            <tr>
+                <td><p>DYNAMIC</p></td>
+                <td><p>The following response values will change to correspond to the values submitted in the request:
+                  <ul>
+                      <li>lossAmount</li>
+                      <li>lastModified</li>
+                  </ul>
+                </p></td>
+            </tr>
         </tbody>
     </table>
 
