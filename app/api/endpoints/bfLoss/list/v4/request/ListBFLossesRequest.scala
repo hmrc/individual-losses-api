@@ -18,7 +18,7 @@ package api.endpoints.bfLoss.list.v4.request
 
 import api.endpoints.bfLoss.domain.anyVersion.IncomeSourceType
 import api.models.RawData
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 
 case class ListBFLossesRawData(
     nino: String,

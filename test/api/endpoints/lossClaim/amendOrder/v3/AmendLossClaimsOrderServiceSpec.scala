@@ -17,12 +17,12 @@
 package api.endpoints.lossClaim.amendOrder.v3
 
 import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.amendOrder.v3.request.{ AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody }
+import api.endpoints.lossClaim.amendOrder.v3.request.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody}
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderResponse
 import api.endpoints.lossClaim.connector.v3.MockLossClaimConnector
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome

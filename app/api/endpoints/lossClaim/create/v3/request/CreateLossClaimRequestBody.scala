@@ -43,4 +43,5 @@ object CreateLossClaimRequestBody {
         )
     }
   }
+
 }

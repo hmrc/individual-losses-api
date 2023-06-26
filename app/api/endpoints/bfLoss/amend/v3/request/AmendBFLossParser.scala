@@ -22,8 +22,9 @@ import api.models.domain.Nino
 
 import javax.inject.Inject
 
-class AmendBFLossParser @Inject()(val validator: AmendBFLossValidator) extends RequestParser[AmendBFLossRawData, AmendBFLossRequest] {
+class AmendBFLossParser @Inject() (val validator: AmendBFLossValidator) extends RequestParser[AmendBFLossRawData, AmendBFLossRequest] {
 
   override protected def requestFor(data: AmendBFLossRawData): AmendBFLossRequest =
     AmendBFLossRequest(Nino(data.nino), data.lossId, data.body.json.as[AmendBFLossRequestBody])
+
 }

@@ -16,19 +16,19 @@
 
 package api.endpoints.bfLoss.create.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser }
-import api.endpoints.bfLoss.create.v3.response.{ CreateBFLossHateoasData, CreateBFLossResponse }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody, MockCreateBFLossParser}
+import api.endpoints.bfLoss.create.v3.response.{CreateBFLossHateoasData, CreateBFLossResponse}
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -16,11 +16,11 @@
 
 package api.endpoints.lossClaim.create.v3.connector
 
-import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
-import api.endpoints.lossClaim.create.v3.request.{ CreateLossClaimRequest, CreateLossClaimRequestBody }
+import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRequest, CreateLossClaimRequestBody}
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier

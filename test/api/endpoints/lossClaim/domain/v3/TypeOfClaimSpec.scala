@@ -39,4 +39,5 @@ class TypeOfClaimSpec extends UnitSpec with EnumJsonSpecSupport {
       }
     }
   }
+
 }

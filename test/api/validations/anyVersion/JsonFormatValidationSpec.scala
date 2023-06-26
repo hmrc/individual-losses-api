@@ -18,7 +18,7 @@ package api.validations.anyVersion
 
 import api.models.errors.RuleIncorrectOrEmptyBodyError
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{ Json, OFormat }
+import play.api.libs.json.{Json, OFormat}
 import shapeless.HNil
 import support.UnitSpec
 import utils.EmptinessChecker

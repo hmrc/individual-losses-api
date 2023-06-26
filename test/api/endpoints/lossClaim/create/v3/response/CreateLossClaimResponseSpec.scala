@@ -75,4 +75,5 @@ class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
       }
     }
   }
+
 }

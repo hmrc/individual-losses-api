@@ -20,7 +20,7 @@ import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IdGenerator @Inject()() {
+class IdGenerator @Inject() () {
 
   def generateCorrelationId: String = UUID.randomUUID().toString
 }

@@ -17,9 +17,9 @@
 package api.endpoints.bfLoss.amend.v3.response
 
 import api.endpoints.bfLoss.amend.anyVersion.response.AmendBFLossHateoasData
-import api.endpoints.bfLoss.domain.anyVersion.{ IncomeSourceType, LossType, TypeOfLoss }
-import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
-import api.models.domain.{ TaxYear, Timestamp }
+import api.endpoints.bfLoss.domain.anyVersion.{IncomeSourceType, LossType, TypeOfLoss}
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.models.domain.{TaxYear, Timestamp}
 import api.models.hateoas.Link
 import config.AppConfig
 import play.api.libs.functional.syntax._

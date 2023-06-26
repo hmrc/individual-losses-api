@@ -16,12 +16,12 @@
 
 package api.endpoints.bfLoss.list.v4.connector
 
-import api.connectors.{ ConnectorSpec, DownstreamOutcome }
-import api.endpoints.bfLoss.domain.anyVersion.{ IncomeSourceType, TypeOfLoss }
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.endpoints.bfLoss.domain.anyVersion.{IncomeSourceType, TypeOfLoss}
 import api.endpoints.bfLoss.list.v4.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v4.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v4.response.{ListBFLossesItem, ListBFLossesResponse}
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 
 import scala.concurrent.Future
 

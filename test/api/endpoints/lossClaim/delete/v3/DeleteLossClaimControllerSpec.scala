@@ -104,5 +104,7 @@ class DeleteLossClaimControllerSpec
           auditResponse = auditResponse
         )
       )
+
   }
+
 }

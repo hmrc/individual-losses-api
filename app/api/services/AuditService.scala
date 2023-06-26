@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AuditService @Inject()(auditConnector: AuditConnector, appNameConfiguration: Configuration) {
+class AuditService @Inject() (auditConnector: AuditConnector, appNameConfiguration: Configuration) {
 
   val logger: Logger = Logger(this.getClass)
 
@@ -49,4 +49,5 @@ class AuditService @Inject()(auditConnector: AuditConnector, appNameConfiguratio
         s" --- detail :: ${dataEvent.detail}")
     auditConnector.sendExtendedEvent(dataEvent)
   }
+
 }

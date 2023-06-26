@@ -18,10 +18,10 @@ package api.endpoints.lossClaim.list.v4
 
 import api.endpoints.lossClaim.list.v4.connector.MockListLossClaimsConnector
 import api.endpoints.lossClaim.list.v4.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v4.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.endpoints.lossClaim.list.v4.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import api.fixtures.v4.ListLossClaimsFixtures.singleClaimResponseModel
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
 import api.services.v4.Outcomes.ListLossClaimsOutcome

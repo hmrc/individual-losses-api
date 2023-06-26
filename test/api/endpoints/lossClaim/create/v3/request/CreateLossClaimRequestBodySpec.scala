@@ -103,29 +103,31 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
         Map[CreateLossClaimRequestBody, JsValue](
           lossClaimSelfEmployment   -> lossClaimSelfEmploymentJson,
           lossClaimUkPropertyNonFhl -> lossClaimUkPropertyNonFhlJson,
-          lossClaimForeignProperty  -> lossClaimForeignPropertyJson,
-        ).foreach {
-          case (model, json) =>
-            s"typeOfLoss = ${model.typeOfLoss}" in {
-              json.as[CreateLossClaimRequestBody] shouldBe model
-            }
+          lossClaimForeignProperty  -> lossClaimForeignPropertyJson
+        ).foreach { case (model, json) =>
+          s"typeOfLoss = ${model.typeOfLoss}" in {
+            json.as[CreateLossClaimRequestBody] shouldBe model
+          }
         }
       }
 
       testMandatoryProperty[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)("/typeOfLoss")
-      testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(path = "/typeOfLoss",
-                                                                                replacement = 12344.toJson,
-                                                                                expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(
+        path = "/typeOfLoss",
+        replacement = 12344.toJson,
+        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
       testMandatoryProperty[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)("/taxYearClaimedFor")
-      testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(path = "/taxYearClaimedFor",
-                                                                                replacement = 12344.toJson,
-                                                                                expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(
+        path = "/taxYearClaimedFor",
+        replacement = 12344.toJson,
+        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
       testMandatoryProperty[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)("/typeOfClaim")
-      testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(path = "/typeOfClaim",
-                                                                                replacement = 12344.toJson,
-                                                                                expectedError = JsonError.STRING_FORMAT_EXCEPTION)
+      testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(
+        path = "/typeOfClaim",
+        replacement = 12344.toJson,
+        expectedError = JsonError.STRING_FORMAT_EXCEPTION)
     }
   }
 
@@ -146,4 +148,5 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
       }
     }
   }
+
 }

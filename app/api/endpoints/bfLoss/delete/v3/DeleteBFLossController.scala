@@ -17,12 +17,12 @@
 package api.endpoints.bfLoss.delete.v3
 
 import api.controllers._
-import api.endpoints.bfLoss.delete.v3.request.{ DeleteBFLossParser, DeleteBFLossRawData }
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import api.endpoints.bfLoss.delete.v3.request.{DeleteBFLossParser, DeleteBFLossRawData}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.{IdGenerator, Logging}
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton

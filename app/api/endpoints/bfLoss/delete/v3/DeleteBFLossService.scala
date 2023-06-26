@@ -25,7 +25,7 @@ import api.services.v3.Outcomes.DeleteBFLossOutcome
 import cats.implicits._
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeleteBFLossService @Inject() (connector: BFLossConnector) extends BaseService {
 

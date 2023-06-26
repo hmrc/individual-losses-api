@@ -17,15 +17,15 @@
 package api.endpoints.lossClaim.create.v3
 
 import api.controllers._
-import api.endpoints.lossClaim.create.v3.request.{ CreateLossClaimParser, CreateLossClaimRawData }
+import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimParser, CreateLossClaimRawData}
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimHateoasData
 import api.hateoas.HateoasFactory
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import utils.{IdGenerator, Logging}
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton

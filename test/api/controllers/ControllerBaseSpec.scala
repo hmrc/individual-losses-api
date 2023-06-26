@@ -18,14 +18,14 @@ package api.controllers
 
 import api.controllers.ControllerTestRunner.validNino
 import api.mocks.MockIdGenerator
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors.MtdError
-import api.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import play.api.http.{ HeaderNames, MimeTypes, Status }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsEmpty, ControllerComponents, Result }
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import play.api.http.{HeaderNames, MimeTypes, Status}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
 import play.api.test.Helpers.stubControllerComponents
-import play.api.test.{ FakeRequest, ResultExtractors }
+import play.api.test.{FakeRequest, ResultExtractors}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 

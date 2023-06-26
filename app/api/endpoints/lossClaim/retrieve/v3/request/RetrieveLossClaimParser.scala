@@ -21,9 +21,10 @@ import api.models.domain.Nino
 
 import javax.inject.Inject
 
-class RetrieveLossClaimParser @Inject()(val validator: RetrieveLossClaimValidator)
+class RetrieveLossClaimParser @Inject() (val validator: RetrieveLossClaimValidator)
     extends RequestParser[RetrieveLossClaimRawData, RetrieveLossClaimRequest] {
 
   override protected def requestFor(data: RetrieveLossClaimRawData): RetrieveLossClaimRequest =
     RetrieveLossClaimRequest(Nino(data.nino), data.claimId)
+
 }

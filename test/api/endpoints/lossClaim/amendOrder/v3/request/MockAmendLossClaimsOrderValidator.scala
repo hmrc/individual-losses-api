@@ -31,5 +31,7 @@ class MockAmendLossClaimsOrderValidator extends MockFactory {
         .validate(_: AmendLossClaimsOrderRawData))
         .expects(data)
     }
+
   }
+
 }

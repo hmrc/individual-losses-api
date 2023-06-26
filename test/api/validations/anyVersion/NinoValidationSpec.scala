@@ -46,4 +46,5 @@ class NinoValidationSpec extends UnitSpec with JsonErrorValidators {
     }
 
   }
+
 }

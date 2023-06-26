@@ -23,8 +23,10 @@ case class Claim(claimId: String, sequence: Int)
 
 object Claim {
   implicit val reads: Reads[Claim] = Json.reads[Claim]
+
   implicit val writes: Writes[Claim] = (
     (JsPath \ "claimId").write[String] and
       (JsPath \ "sequence").write[Int]
   )(unlift(Claim.unapply))
+
 }

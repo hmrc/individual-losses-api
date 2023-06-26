@@ -26,7 +26,7 @@ import api.services.BaseService
 import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimsOrderService @Inject() (connector: LossClaimConnector) extends BaseService {
 

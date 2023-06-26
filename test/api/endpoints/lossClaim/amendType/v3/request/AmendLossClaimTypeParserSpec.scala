@@ -54,8 +54,10 @@ class AmendLossClaimTypeParserSpec extends UnitSpec {
     "return multiple errors" when {
       "the validator returns multiple errors" in new Test {
         MockValidator.validate(data).returns(List(NinoFormatError, RuleIncorrectOrEmptyBodyError))
-        parser.parseRequest(data) shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
+        parser.parseRequest(data) shouldBe Left(
+          ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
       }
     }
   }
+
 }

@@ -33,4 +33,5 @@ class MockRetrieveBFLossValidator extends MockFactory {
     }
 
   }
+
 }

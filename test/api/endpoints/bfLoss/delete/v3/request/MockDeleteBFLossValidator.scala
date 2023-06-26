@@ -31,5 +31,7 @@ class MockDeleteBFLossValidator extends MockFactory {
         .validate(_: DeleteBFLossRawData))
         .expects(data)
     }
+
   }
+
 }

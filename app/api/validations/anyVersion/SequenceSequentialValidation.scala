@@ -16,7 +16,7 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.{ MtdError, RuleInvalidSequenceStart, RuleSequenceOrderBroken }
+import api.models.errors.{MtdError, RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 import api.validations.NoValidationErrors
 
 object SequenceSequentialValidation {
@@ -37,4 +37,5 @@ object SequenceSequentialValidation {
 
     if (noGaps) NoValidationErrors else List(RuleSequenceOrderBroken)
   }
+
 }

@@ -33,4 +33,5 @@ class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
       }
     }
   }
+
 }

@@ -19,8 +19,6 @@ package api.models.utils
 import play.api.libs.json._
 import support.UnitSpec
 
-import scala.collection.Seq
-
 trait JsonErrorValidators {
   _: UnitSpec =>
 

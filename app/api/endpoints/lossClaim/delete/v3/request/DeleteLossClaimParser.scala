@@ -21,8 +21,10 @@ import api.models.domain.Nino
 
 import javax.inject.Inject
 
-class DeleteLossClaimParser @Inject()(val validator: DeleteLossClaimValidator) extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
+class DeleteLossClaimParser @Inject() (val validator: DeleteLossClaimValidator)
+    extends RequestParser[DeleteLossClaimRawData, DeleteLossClaimRequest] {
 
   override protected def requestFor(data: DeleteLossClaimRawData): DeleteLossClaimRequest =
     DeleteLossClaimRequest(Nino(data.nino), data.claimId)
+
 }

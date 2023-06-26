@@ -29,6 +29,7 @@ trait RegexValidation {
 
   def validate(value: String, path: String): Seq[MtdError] =
     RegexValidation.validate(error.copy(paths = Some(Seq(path))), value, regexFormat)
+
 }
 
 object RegexValidation {
@@ -36,4 +37,5 @@ object RegexValidation {
   private def validate(error: => MtdError, value: String, regexFormat: String): Seq[MtdError] = {
     if (value.matches(regexFormat)) NoValidationErrors else List(error)
   }
+
 }

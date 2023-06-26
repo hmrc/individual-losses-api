@@ -35,11 +35,12 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
               typeOfLoss: Option[String] = Some(validLossType),
               businessId: Option[String] = Some(validBusinessId),
               typeOfClaim: Option[String] = Some(validTypeOfClaim)): ListLossClaimsRawData =
-    ListLossClaimsRawData(nino = nino,
-                          taxYearClaimedFor = taxYearClaimedFor,
-                          typeOfLoss = typeOfLoss,
-                          businessId = businessId,
-                          typeOfClaim = typeOfClaim)
+    ListLossClaimsRawData(
+      nino = nino,
+      taxYearClaimedFor = taxYearClaimedFor,
+      typeOfLoss = typeOfLoss,
+      businessId = businessId,
+      typeOfClaim = typeOfClaim)
 
   "running validation" should {
     "return no errors" when {
@@ -110,4 +111,5 @@ class ListLossClaimsValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

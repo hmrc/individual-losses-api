@@ -16,7 +16,7 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.{ BusinessIdFormatError, MtdError }
+import api.models.errors.{BusinessIdFormatError, MtdError}
 import api.validations.NoValidationErrors
 
 object BusinessIdValidation {

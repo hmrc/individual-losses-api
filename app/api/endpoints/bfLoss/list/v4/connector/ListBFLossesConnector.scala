@@ -18,14 +18,14 @@ package api.endpoints.bfLoss.list.v4.connector
 
 import api.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.endpoints.bfLoss.list.v4.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v4.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v4.response.{ListBFLossesItem, ListBFLossesResponse}
 import config.AppConfig
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ListBFLossesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {

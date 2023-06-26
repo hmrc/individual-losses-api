@@ -129,4 +129,5 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
         )
     }
   }
+
 }

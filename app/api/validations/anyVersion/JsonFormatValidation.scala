@@ -16,9 +16,9 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
+import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import play.api.libs.json._
-import utils.{ EmptinessChecker, EmptyPathsResult, Logging }
+import utils.{EmptinessChecker, EmptyPathsResult, Logging}
 
 object JsonFormatValidation extends Logging {
 

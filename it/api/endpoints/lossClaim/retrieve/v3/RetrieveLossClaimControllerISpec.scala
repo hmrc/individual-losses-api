@@ -94,6 +94,7 @@ class RetrieveLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   "Calling the retrieve LossClaim endpoint" should {
@@ -169,4 +170,5 @@ class RetrieveLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
     }
 
   }
+
 }

@@ -17,9 +17,9 @@
 package api.endpoints.bfLoss.list.v4.response
 
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
-import api.hateoas.{ HateoasFactory, HateoasLinks }
-import api.models.hateoas.Method.{ GET, POST }
-import api.models.hateoas.{ HateoasWrapper, Link }
+import api.hateoas.{HateoasFactory, HateoasLinks}
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
 import config.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec

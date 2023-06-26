@@ -22,7 +22,7 @@ import api.models.domain.{Nino, TaxYear}
 
 import javax.inject.Inject
 
-class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) extends RequestParser[ListLossClaimsRawData, ListLossClaimsRequest] {
+class ListLossClaimsParser @Inject() (val validator: ListLossClaimsValidator) extends RequestParser[ListLossClaimsRawData, ListLossClaimsRequest] {
 
   override protected def requestFor(data: ListLossClaimsRawData): ListLossClaimsRequest = {
     val taxYear = data.taxYearClaimedFor
@@ -35,4 +35,5 @@ class ListLossClaimsParser @Inject()(val validator: ListLossClaimsValidator) ext
       data.typeOfClaim.flatMap(TypeOfClaim.parser.lift)
     )
   }
+
 }

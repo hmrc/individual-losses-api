@@ -43,6 +43,7 @@ trait MockEnrolmentsAuthService extends MockFactory {
         .authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext))
         .expects(predicate, *, *)
     }
+
   }
 
 }

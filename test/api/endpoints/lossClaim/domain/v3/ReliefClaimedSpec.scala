@@ -34,4 +34,5 @@ class ReliefClaimedSpec extends UnitSpec with EnumJsonSpecSupport {
       }
     }
   }
+
 }

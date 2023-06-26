@@ -61,12 +61,11 @@ class AmendLossClaimsOrderValidator extends Validator[AmendLossClaimsOrderRawDat
   private def bodyFieldValidator: AmendLossClaimsOrderRawData => Seq[Seq[MtdError]] = { data =>
     val req = data.body.json.as[AmendLossClaimsOrderRequestBody]
 
-    val listOfLossClaimsValidator = req.listOfLossClaims.zipWithIndex.flatMap {
-      case (lossClaim, index) =>
-        List(
-          ClaimIdValidation.validate(lossClaim.claimId, path = s"/listOfLossClaims/$index/claimId"),
-          NumberValidation.validate(lossClaim.sequence, path = s"/listOfLossClaims/$index/sequence", min = 1, max = 99)
-        )
+    val listOfLossClaimsValidator = req.listOfLossClaims.zipWithIndex.flatMap { case (lossClaim, index) =>
+      List(
+        ClaimIdValidation.validate(lossClaim.claimId, path = s"/listOfLossClaims/$index/claimId"),
+        NumberValidation.validate(lossClaim.sequence, path = s"/listOfLossClaims/$index/sequence", min = 1, max = 99)
+      )
     }
 
     val sequenceValidation = List(

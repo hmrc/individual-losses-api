@@ -62,7 +62,8 @@ class ListBFLossesItemSpec extends UnitSpec {
 
       def checkReadsWith(lossType: LossType, expectedTypeOfLoss: TypeOfLoss): Unit =
         s"income source type is $lossType" in {
-          Json.parse(s"""
+          Json
+            .parse(s"""
                        |{
                        |   "incomeSourceId": "$businessId",
                        |   "lossType": "$lossType",
@@ -70,7 +71,8 @@ class ListBFLossesItemSpec extends UnitSpec {
                        |   "taxYear": "$taxYearDownstream",
                        |   "lossId": "$lossId",
                        |   "submissionDate": "$lastModified"
-                       |}""".stripMargin).as[ListBFLossesItem] shouldBe
+                       |}""".stripMargin)
+            .as[ListBFLossesItem] shouldBe
             ListBFLossesItem(
               lossId = lossId,
               businessId = businessId,
@@ -90,7 +92,8 @@ class ListBFLossesItemSpec extends UnitSpec {
 
       def checkReadsWith(incomeSourceType: IncomeSourceType, expectedTypeOfLoss: TypeOfLoss): Unit =
         s"income source type is $incomeSourceType" in {
-          Json.parse(s"""
+          Json
+            .parse(s"""
                         |{
                         |   "incomeSourceId": "$businessId",
                         |   "incomeSourceType": "$incomeSourceType",
@@ -98,7 +101,8 @@ class ListBFLossesItemSpec extends UnitSpec {
                         |   "taxYear": "$taxYearDownstream",
                         |   "lossId": "$lossId",
                         |   "submissionDate": "$lastModified"
-                        |}""".stripMargin).as[ListBFLossesItem] shouldBe
+                        |}""".stripMargin)
+            .as[ListBFLossesItem] shouldBe
             ListBFLossesItem(
               lossId = lossId,
               businessId = businessId,
@@ -110,4 +114,5 @@ class ListBFLossesItemSpec extends UnitSpec {
         }
     }
   }
+
 }

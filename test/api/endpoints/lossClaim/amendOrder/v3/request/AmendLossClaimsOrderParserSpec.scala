@@ -47,9 +47,10 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
 
         parser.parseRequest(data) shouldBe {
           Right(
-            AmendLossClaimsOrderRequest(Nino(nino),
-                                        TaxYear.fromMtd(taxYear),
-                                        AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
+            AmendLossClaimsOrderRequest(
+              Nino(nino),
+              TaxYear.fromMtd(taxYear),
+              AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(Claim("1234568790ABCDE", 1)))))
         }
       }
     }
@@ -66,4 +67,5 @@ class AmendLossClaimsOrderParserSpec extends UnitSpec {
       }
     }
   }
+
 }
