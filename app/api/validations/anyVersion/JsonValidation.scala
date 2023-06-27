@@ -19,8 +19,7 @@ package api.validations.anyVersion
 import api.models.errors.MtdError
 import play.api.libs.json.{JsError, JsLookupResult, JsSuccess, Reads}
 
-/**
-  * Utilities to assist using validations where the value to validate comes from a JSON element
+/** Utilities to assist using validations where the value to validate comes from a JSON element
   */
 object JsonValidation {
 
@@ -30,4 +29,5 @@ object JsonValidation {
       case _: JsError          => Nil
     }
   }
+
 }

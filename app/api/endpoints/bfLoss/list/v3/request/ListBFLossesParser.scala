@@ -22,7 +22,7 @@ import api.models.domain.{Nino, TaxYear}
 
 import javax.inject.Inject
 
-class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
+class ListBFLossesParser @Inject() (val validator: ListBFLossesValidator) extends RequestParser[ListBFLossesRawData, ListBFLossesRequest] {
 
   override protected def requestFor(data: ListBFLossesRawData): ListBFLossesRequest = {
     val taxYear = data.taxYearBroughtForwardFrom
@@ -40,4 +40,5 @@ class ListBFLossesParser @Inject()(val validator: ListBFLossesValidator) extends
       businessId = data.businessId
     )
   }
+
 }

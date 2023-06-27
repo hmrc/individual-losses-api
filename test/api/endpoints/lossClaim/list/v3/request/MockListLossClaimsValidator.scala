@@ -31,6 +31,7 @@ class MockListLossClaimsValidator extends MockFactory {
         .validate(_: ListLossClaimsRawData))
         .expects(data)
     }
+
   }
 
 }

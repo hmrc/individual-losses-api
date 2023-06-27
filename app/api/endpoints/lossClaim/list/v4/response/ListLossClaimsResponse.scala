@@ -25,6 +25,7 @@ import play.api.libs.json._
 case class ListLossClaimsResponse[I](claims: Seq[I])
 
 object ListLossClaimsResponse extends HateoasLinks {
+
   implicit def writes[I: Writes]: OWrites[ListLossClaimsResponse[I]] =
     Json.writes[ListLossClaimsResponse[I]]
 
@@ -32,6 +33,7 @@ object ListLossClaimsResponse extends HateoasLinks {
     implicitly[Reads[Seq[I]]].map(ListLossClaimsResponse(_))
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListLossClaimsResponse, ListLossClaimsItem, ListLossClaimsHateoasData] {
+
     override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] = {
       import data._
       val featureSwitch = FeatureSwitches(appConfig.featureSwitches)
@@ -47,12 +49,16 @@ object ListLossClaimsResponse extends HateoasLinks {
 
     override def itemLinks(appConfig: AppConfig, data: ListLossClaimsHateoasData, item: ListLossClaimsItem): Seq[Link] =
       Seq(getLossClaim(appConfig, data.nino, item.claimId))
+
   }
 
   implicit object ResponseFunctor extends Functor[ListLossClaimsResponse] {
+
     override def map[A, B](fa: ListLossClaimsResponse[A])(f: A => B): ListLossClaimsResponse[B] =
       ListLossClaimsResponse(fa.claims.map(f))
+
   }
+
 }
 
 case class ListLossClaimsHateoasData(nino: String, taxYearClaimedFor: String) extends HateoasData

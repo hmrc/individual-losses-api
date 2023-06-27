@@ -18,8 +18,8 @@ package api.validations.v3
 
 import api.endpoints.lossClaim.domain.v3.TypeOfClaim._
 import api.endpoints.lossClaim.domain.v3.TypeOfLoss._
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.models.errors.{ MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 import api.validations.NoValidationErrors
 
 object TypeOfClaimValidation {

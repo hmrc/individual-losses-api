@@ -24,7 +24,7 @@ import api.services.BaseService
 import api.services.v4.Outcomes.ListLossClaimsOutcome
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) extends BaseService {
 

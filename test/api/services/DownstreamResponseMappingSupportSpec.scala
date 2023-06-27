@@ -20,7 +20,7 @@ import api.controllers.EndpointLogContext
 import api.models.ResponseWrapper
 import api.models.errors._
 import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json.{ Format, Json }
+import play.api.libs.json.{Format, Json}
 import support.UnitSpec
 import utils.Logging
 

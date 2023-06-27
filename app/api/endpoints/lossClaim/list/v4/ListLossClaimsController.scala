@@ -17,14 +17,14 @@
 package api.endpoints.lossClaim.list.v4
 
 import api.controllers._
-import api.endpoints.lossClaim.list.v4.request.{ ListLossClaimsParser, ListLossClaimsRawData }
+import api.endpoints.lossClaim.list.v4.request.{ListLossClaimsParser, ListLossClaimsRawData}
 import api.endpoints.lossClaim.list.v4.response.ListLossClaimsHateoasData
 import api.hateoas.HateoasFactory
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.{IdGenerator, Logging}
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -52,7 +52,8 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
         RequestHandler
           .withParser(parser)
           .withService(service.listLossClaims)
-          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) => ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear)))
+          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
+            ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear)))
 
       requestHandler.handleRequest(rawData)
     }

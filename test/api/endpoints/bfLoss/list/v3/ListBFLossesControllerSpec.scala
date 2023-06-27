@@ -16,17 +16,17 @@
 
 package api.endpoints.bfLoss.list.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.bfLoss.domain.anyVersion.{ IncomeSourceType, TypeOfLoss }
-import api.endpoints.bfLoss.list.v3.request.{ ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser }
-import api.endpoints.bfLoss.list.v3.response.{ ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.bfLoss.domain.anyVersion.{IncomeSourceType, TypeOfLoss}
+import api.endpoints.bfLoss.list.v3.request.{ListBFLossesRawData, ListBFLossesRequest, MockListBFLossesParser}
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.Method.{ GET, POST }
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
+import api.models.hateoas.Method.{GET, POST}
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global

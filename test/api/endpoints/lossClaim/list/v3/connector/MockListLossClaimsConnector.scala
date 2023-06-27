@@ -18,12 +18,12 @@ package api.endpoints.lossClaim.list.v3.connector
 
 import api.connectors.DownstreamOutcome
 import api.endpoints.lossClaim.list.v3.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockListLossClaimsConnector extends MockFactory {
   val connector: ListLossClaimsConnector = mock[ListLossClaimsConnector]

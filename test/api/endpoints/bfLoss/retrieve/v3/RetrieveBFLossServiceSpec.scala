@@ -21,7 +21,7 @@ import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.endpoints.bfLoss.retrieve.v3.request.RetrieveBFLossRequest
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, Timestamp }
+import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
 

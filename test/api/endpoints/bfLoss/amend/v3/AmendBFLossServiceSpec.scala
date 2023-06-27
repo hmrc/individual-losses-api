@@ -22,7 +22,7 @@ import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, Timestamp }
+import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
 

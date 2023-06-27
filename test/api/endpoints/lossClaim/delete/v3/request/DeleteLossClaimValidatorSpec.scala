@@ -54,4 +54,5 @@ class DeleteLossClaimValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

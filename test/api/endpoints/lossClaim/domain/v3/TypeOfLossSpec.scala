@@ -37,4 +37,5 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
       }
     }
   }
+
 }

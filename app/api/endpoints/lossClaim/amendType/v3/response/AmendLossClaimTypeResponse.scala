@@ -33,6 +33,7 @@ case class AmendLossClaimTypeResponse(taxYearClaimedFor: String,
 
 object AmendLossClaimTypeResponse extends HateoasLinks {
   implicit val writes: OWrites[AmendLossClaimTypeResponse] = Json.writes[AmendLossClaimTypeResponse]
+
   implicit val reads: Reads[AmendLossClaimTypeResponse] = (
     (JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
@@ -43,11 +44,14 @@ object AmendLossClaimTypeResponse extends HateoasLinks {
   )(AmendLossClaimTypeResponse.apply _)
 
   implicit object AmendLinksFactory extends HateoasLinksFactory[AmendLossClaimTypeResponse, AmendLossClaimTypeHateoasData] {
+
     override def links(appConfig: AppConfig, data: AmendLossClaimTypeHateoasData): Seq[Link] = {
       import data._
       Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
+
   }
+
 }
 
 case class AmendLossClaimTypeHateoasData(nino: String, claimId: String) extends HateoasData

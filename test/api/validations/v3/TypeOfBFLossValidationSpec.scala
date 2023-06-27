@@ -43,4 +43,5 @@ class TypeOfBFLossValidationSpec extends UnitSpec {
       }
     }
   }
+
 }

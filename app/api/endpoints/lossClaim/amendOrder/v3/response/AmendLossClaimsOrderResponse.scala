@@ -17,8 +17,8 @@
 package api.endpoints.lossClaim.amendOrder.v3.response
 
 import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.models.hateoas.RelType.LIST_LOSS_CLAIMS
 import api.models.hateoas.{HateoasData, Link}
-import api.models.hateoas.RelType.{LIST_LOSS_CLAIMS}
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
 
@@ -28,6 +28,7 @@ object AmendLossClaimsOrderResponse extends HateoasLinks {
   implicit val writes: OWrites[AmendLossClaimsOrderResponse] = OWrites[AmendLossClaimsOrderResponse](_ => Json.obj())
 
   implicit object AmendOrderLinksFactory extends HateoasLinksFactory[AmendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData] {
+
     override def links(appConfig: AppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
       import data._
       Seq(
@@ -35,7 +36,9 @@ object AmendLossClaimsOrderResponse extends HateoasLinks {
         listLossClaim(appConfig, nino, LIST_LOSS_CLAIMS)
       )
     }
+
   }
+
 }
 
 case class AmendLossClaimsOrderHateoasData(nino: String, taxYearClaimedFor: String) extends HateoasData

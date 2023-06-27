@@ -31,10 +31,12 @@ object CreateLossClaimResponse {
     (__ \ "claimId").read[String].map(CreateLossClaimResponse.apply)
 
   implicit object LinksFactory extends HateoasLinksFactory[CreateLossClaimResponse, CreateLossClaimHateoasData] {
+
     override def links(appConfig: AppConfig, data: CreateLossClaimHateoasData): Seq[Link] = {
       import data._
       Seq(getLossClaim(appConfig, nino, lossId), deleteLossClaim(appConfig, nino, lossId), amendLossClaimType(appConfig, nino, lossId))
     }
+
   }
 
 }

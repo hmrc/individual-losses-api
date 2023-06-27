@@ -18,7 +18,7 @@ package api.endpoints.lossClaim.amendOrder.v3.request
 
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{ JsArray, JsValue, Json }
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 
@@ -179,4 +179,5 @@ class AmendLossClaimsOrderValidatorSpec extends UnitSpec with JsonErrorValidator
       }
     }
   }
+
 }

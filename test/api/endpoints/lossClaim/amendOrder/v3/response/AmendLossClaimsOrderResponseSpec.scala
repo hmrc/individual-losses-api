@@ -25,7 +25,7 @@ import support.UnitSpec
 class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
 
   val nino: String = "AA123456A"
-  val taxYear        = "2018-19"
+  val taxYear      = "2018-19"
 
   "json writes" must {
     "output as per spec" in {
@@ -38,7 +38,9 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
     "expose the correct links" when {
       "called" in {
         MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-        AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(mockAppConfig, AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
+        AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(
+          mockAppConfig,
+          AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims/order/$taxYear", PUT, "amend-loss-claim-order"),
             Link(s"/individuals/losses/$nino/loss-claims", GET, "list-loss-claims")
@@ -46,4 +48,5 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
       }
     }
   }
+
 }

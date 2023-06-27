@@ -40,4 +40,5 @@ object ListBFLossesItem {
       (__ \ "taxYear").read[String].map(TaxYear(_).asMtd) and
       (__ \ "submissionDate").read[String]
   )(ListBFLossesItem.apply _)
+
 }

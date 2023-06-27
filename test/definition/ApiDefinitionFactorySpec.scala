@@ -16,10 +16,10 @@
 
 package definition
 
-import config.{ ConfidenceLevelConfig, MockAppConfig }
-import definition.APIStatus.{ ALPHA, BETA }
+import config.{ConfidenceLevelConfig, MockAppConfig}
+import definition.APIStatus.{ALPHA, BETA}
 import play.api.Configuration
-import routing.{ Version3, Version4 }
+import routing.{Version3, Version4}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 

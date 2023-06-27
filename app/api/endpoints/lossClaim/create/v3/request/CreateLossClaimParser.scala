@@ -21,8 +21,10 @@ import api.models.domain.Nino
 
 import javax.inject.Inject
 
-class CreateLossClaimParser @Inject()(val validator: CreateLossClaimValidator) extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
+class CreateLossClaimParser @Inject() (val validator: CreateLossClaimValidator)
+    extends RequestParser[CreateLossClaimRawData, CreateLossClaimRequest] {
 
   override protected def requestFor(data: CreateLossClaimRawData): CreateLossClaimRequest =
     CreateLossClaimRequest(Nino(data.nino), data.body.json.as[CreateLossClaimRequestBody])
+
 }

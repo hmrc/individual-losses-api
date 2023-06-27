@@ -16,19 +16,19 @@
 
 package api.controllers
 
-import api.hateoas.{ HateoasFactory, HateoasLinksFactory }
-import api.models.errors.{ ErrorWrapper, InternalError }
-import api.models.hateoas.{ HateoasData, HateoasWrapper }
-import api.models.{ RawData, ResponseWrapper }
+import api.hateoas.{HateoasFactory, HateoasLinksFactory}
+import api.models.errors.{ErrorWrapper, InternalError}
+import api.models.hateoas.{HateoasData, HateoasWrapper}
+import api.models.{RawData, ResponseWrapper}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.Status
-import play.api.libs.json.{ JsValue, Json, Writes }
+import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
 import utils.Logging
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait RequestHandler[InputRaw <: RawData] {
 

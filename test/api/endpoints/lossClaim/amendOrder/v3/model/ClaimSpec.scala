@@ -47,6 +47,7 @@ class ClaimSpec extends UnitSpec {
       }
     }
   }
+
   "writes" when {
     "passed valid model" should {
       "return valid json" in {
@@ -54,4 +55,5 @@ class ClaimSpec extends UnitSpec {
       }
     }
   }
+
 }

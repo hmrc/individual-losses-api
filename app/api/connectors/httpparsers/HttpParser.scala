@@ -21,7 +21,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.HttpResponse
 import utils.Logging
 
-import scala.util.{ Success, Try }
+import scala.util.{Success, Try}
 
 trait HttpParser extends Logging {
 

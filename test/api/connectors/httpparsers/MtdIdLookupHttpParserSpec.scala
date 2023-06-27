@@ -32,7 +32,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
   val mtdId  = "test-mtd-id"
 
   val mtdIdJson: JsObject   = Json.obj("mtdbsa" -> mtdId)
-  val invalidJson: JsObject = Json.obj("hello"  -> "world")
+  val invalidJson: JsObject = Json.obj("hello" -> "world")
 
   "read" should {
     "return an MtdId" when {
@@ -94,4 +94,5 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
       }
     }
   }
+
 }

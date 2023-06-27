@@ -16,9 +16,9 @@
 
 package api.endpoints.lossClaim.connector.v3
 
-import api.connectors.DownstreamUri.{ DesUri, IfsUri, TaxYearSpecificIfsUri }
+import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.endpoints.lossClaim.amendOrder.v3.request.AmendLossClaimsOrderRequest
 import api.endpoints.lossClaim.amendType.v3.request.AmendLossClaimTypeRequest
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
@@ -28,10 +28,10 @@ import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.request.RetrieveLossClaimRequest
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import config.AppConfig
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class LossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {

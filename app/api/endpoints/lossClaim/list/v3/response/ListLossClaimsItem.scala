@@ -41,4 +41,5 @@ object ListLossClaimsItem {
       (JsPath \ "sequence").readNullable[Int] and
       (JsPath \ "submissionDate").read[String]
   )(ListLossClaimsItem.apply _)
+
 }

@@ -56,6 +56,7 @@ class AuthISpec extends V3V4IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   "Calling the sample endpoint" when {

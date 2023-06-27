@@ -66,5 +66,7 @@ trait MockLossClaimConnector extends MockFactory {
         .amendLossClaimsOrder(_: AmendLossClaimsOrderRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
+
   }
+
 }

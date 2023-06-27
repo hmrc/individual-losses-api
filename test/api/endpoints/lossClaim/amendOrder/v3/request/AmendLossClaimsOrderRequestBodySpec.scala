@@ -22,6 +22,7 @@ import play.api.libs.json.Json
 import support.UnitSpec
 
 class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
+
   val mtdJson = Json.parse("""{
       |  "typeOfClaim": "carry-sideways",
       |  "listOfLossClaims": [
@@ -58,4 +59,5 @@ class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
       Json.toJson(model) shouldBe downstreamJson
     }
   }
+
 }

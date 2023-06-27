@@ -24,9 +24,11 @@ sealed trait LossType {
 }
 
 object LossType {
+
   case object INCOME extends LossType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
   }
+
   case object CLASS4 extends LossType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment-class4`
   }

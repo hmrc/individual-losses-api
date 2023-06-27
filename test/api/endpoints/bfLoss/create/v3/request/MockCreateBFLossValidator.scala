@@ -31,5 +31,7 @@ class MockCreateBFLossValidator extends MockFactory {
         .validate(_: CreateBFLossRawData))
         .expects(data)
     }
+
   }
+
 }

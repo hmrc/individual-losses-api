@@ -75,10 +75,11 @@ class ListBFLossesParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData) shouldBe
           Right(
-            ListBFLossesRequest(nino = Nino(nino),
-                                taxYearBroughtForwardFrom = Some(TaxYear("2018")),
-                                incomeSourceType = Some(IncomeSourceType.`02`),
-                                businessId = Some(businessId))
+            ListBFLossesRequest(
+              nino = Nino(nino),
+              taxYearBroughtForwardFrom = Some(TaxYear("2018")),
+              incomeSourceType = Some(IncomeSourceType.`02`),
+              businessId = Some(businessId))
           )
       }
 
@@ -118,4 +119,5 @@ class ListBFLossesParserSpec extends UnitSpec {
       }
     }
   }
+
 }

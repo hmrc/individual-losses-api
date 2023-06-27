@@ -113,5 +113,7 @@ trait MockHttpClient extends MockFactory {
       actualHeaders should contain allElementsOf requiredHeaders
       actualHeaders should contain noElementsOf excludedHeaders
     }
+
   }
+
 }

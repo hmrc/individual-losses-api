@@ -16,14 +16,14 @@
 
 package api.endpoints.lossClaim.list.v4.connector
 
-import api.connectors.{ ConnectorSpec, DownstreamOutcome }
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.endpoints.lossClaim.list.v4.request.ListLossClaimsRequest
-import api.endpoints.lossClaim.list.v4.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.endpoints.lossClaim.list.v4.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import api.fixtures.v4.ListLossClaimsFixtures._
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
-import api.models.errors.{ DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError }
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
 
 import scala.concurrent.Future
 

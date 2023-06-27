@@ -16,7 +16,7 @@
 
 package api.validations.anyVersion
 
-import api.models.errors.{ MtdError, RuleTaxYearRangeInvalidError }
+import api.models.errors.{MtdError, RuleTaxYearRangeInvalidError}
 import api.validations.NoValidationErrors
 
 object TaxYearValidation {

@@ -18,12 +18,12 @@ package api.endpoints.bfLoss.list.v3.connector
 
 import api.connectors.DownstreamOutcome
 import api.endpoints.bfLoss.list.v3.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockListBFLossesConnector extends MockFactory {
   val connector: ListBFLossesConnector = mock[ListBFLossesConnector]

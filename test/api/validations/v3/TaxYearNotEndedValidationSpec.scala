@@ -35,6 +35,7 @@ class TaxYearNotEndedValidationSpec extends UnitSpec {
     def setupDateProvider(date: String): CallHandler[LocalDate] =
       MockCurrentDate.getCurrentDate
         .returns(LocalDate.parse(date, dateTimeFormatter))
+
   }
 
   "validate" should {
@@ -64,4 +65,5 @@ class TaxYearNotEndedValidationSpec extends UnitSpec {
       }
     }
   }
+
 }

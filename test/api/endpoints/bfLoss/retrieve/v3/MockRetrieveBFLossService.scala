@@ -22,7 +22,7 @@ import api.services.v3.Outcomes.RetrieveBFLossOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockRetrieveBFLossService extends MockFactory {
 
