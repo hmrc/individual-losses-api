@@ -141,4 +141,5 @@ class EnumsSpec extends UnitSpec with Inspectors {
         """.stripMargin)
     }
   }
+
 }

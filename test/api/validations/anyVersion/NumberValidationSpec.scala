@@ -81,4 +81,5 @@ class NumberValidationSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks 
       }
     }
   }
+
 }

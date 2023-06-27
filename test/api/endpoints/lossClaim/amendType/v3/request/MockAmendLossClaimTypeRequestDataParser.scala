@@ -29,6 +29,7 @@ trait MockAmendLossClaimTypeRequestDataParser extends MockFactory {
     def parseRequest(data: AmendLossClaimTypeRawData): CallHandler[Either[ErrorWrapper, AmendLossClaimTypeRequest]] = {
       (mockAmendLossClaimTypeRequestDataParser.parseRequest(_: AmendLossClaimTypeRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

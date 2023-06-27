@@ -25,7 +25,7 @@ import api.services.BaseService
 import api.services.v3.Outcomes.ListBFLossesOutcome
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class ListBFLossesService @Inject() (connector: ListBFLossesConnector) extends BaseService {
 

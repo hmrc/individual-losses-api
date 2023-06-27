@@ -172,4 +172,5 @@ class RetrieveBFLossControllerISpec extends V3V4IntegrationBaseSpec {
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
     }
   }
+
 }

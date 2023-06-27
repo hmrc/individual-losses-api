@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.delete.v3.connector
 
-import api.connectors.{ ConnectorSpec, DownstreamOutcome }
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.endpoints.lossClaim.connector.v3.LossClaimConnector
 import api.endpoints.lossClaim.delete.v3.request.DeleteLossClaimRequest
 import api.models.ResponseWrapper

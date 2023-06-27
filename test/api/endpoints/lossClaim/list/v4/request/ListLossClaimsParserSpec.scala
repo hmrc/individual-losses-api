@@ -16,8 +16,8 @@
 
 package api.endpoints.lossClaim.list.v4.request
 
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
-import api.models.domain.{ Nino, TaxYear }
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 

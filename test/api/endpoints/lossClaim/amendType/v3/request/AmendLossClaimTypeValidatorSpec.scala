@@ -58,7 +58,8 @@ class AmendLossClaimTypeValidatorSpec extends UnitSpec {
       }
 
       "an incorrect body is supplied" in {
-        validator.validate(AmendLossClaimTypeRawData(validNino, validClaimId, AnyContentAsJson(Json.obj("claimType" -> "carry-forward")))) shouldBe List(
+        validator.validate(
+          AmendLossClaimTypeRawData(validNino, validClaimId, AnyContentAsJson(Json.obj("claimType" -> "carry-forward")))) shouldBe List(
           RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/typeOfClaim"))))
       }
     }
@@ -69,4 +70,5 @@ class AmendLossClaimTypeValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

@@ -21,7 +21,7 @@ import api.models.domain.{Nino, TaxYear}
 
 import javax.inject.Inject
 
-class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderValidator)
+class AmendLossClaimsOrderParser @Inject() (val validator: AmendLossClaimsOrderValidator)
     extends RequestParser[AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest] {
 
   override protected def requestFor(data: AmendLossClaimsOrderRawData): AmendLossClaimsOrderRequest = {
@@ -30,4 +30,5 @@ class AmendLossClaimsOrderParser @Inject()(val validator: AmendLossClaimsOrderVa
 
     AmendLossClaimsOrderRequest(Nino(data.nino), taxYear, data.body.json.as[AmendLossClaimsOrderRequestBody])
   }
+
 }

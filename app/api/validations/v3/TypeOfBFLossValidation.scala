@@ -25,4 +25,5 @@ object TypeOfBFLossValidation {
   def validate(typeOfLoss: String): Seq[MtdError] = {
     if (TypeOfLoss.parser.isDefinedAt(typeOfLoss)) NoValidationErrors else List(TypeOfLossFormatError)
   }
+
 }

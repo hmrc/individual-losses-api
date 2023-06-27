@@ -53,4 +53,5 @@ class RetrieveBFLossValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

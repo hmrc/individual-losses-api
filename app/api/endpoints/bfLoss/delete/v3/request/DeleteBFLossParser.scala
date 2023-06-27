@@ -21,8 +21,9 @@ import api.models.domain.Nino
 
 import javax.inject.Inject
 
-class DeleteBFLossParser @Inject()(val validator: DeleteBFLossValidator) extends RequestParser[DeleteBFLossRawData, DeleteBFLossRequest] {
+class DeleteBFLossParser @Inject() (val validator: DeleteBFLossValidator) extends RequestParser[DeleteBFLossRawData, DeleteBFLossRequest] {
 
   override protected def requestFor(data: DeleteBFLossRawData): DeleteBFLossRequest =
     DeleteBFLossRequest(Nino(data.nino), data.lossId)
+
 }

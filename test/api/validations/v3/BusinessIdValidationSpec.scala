@@ -47,4 +47,5 @@ class BusinessIdValidationSpec extends UnitSpec {
       }
     }
   }
+
 }

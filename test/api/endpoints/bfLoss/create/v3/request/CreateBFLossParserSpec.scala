@@ -80,4 +80,5 @@ class CreateBFLossParserSpec extends UnitSpec {
       }
     }
   }
+
 }

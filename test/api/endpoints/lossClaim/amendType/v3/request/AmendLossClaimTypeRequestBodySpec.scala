@@ -53,7 +53,7 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
           Json.toJson(AmendLossClaimTypeRequestBody(test._2)) shouldBe downstreamJson(test._1)
-      })
+        })
     }
   }
 
@@ -71,7 +71,8 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._1}" in {
           mtdJson(test._1).as[AmendLossClaimTypeRequestBody] shouldBe AmendLossClaimTypeRequestBody(test._2)
-      })
+        })
     }
   }
+
 }

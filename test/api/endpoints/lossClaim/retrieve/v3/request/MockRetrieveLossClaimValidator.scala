@@ -33,4 +33,5 @@ class MockRetrieveLossClaimValidator extends MockFactory {
     }
 
   }
+
 }

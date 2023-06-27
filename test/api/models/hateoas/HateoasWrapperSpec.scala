@@ -56,4 +56,5 @@ class HateoasWrapperSpec extends UnitSpec {
     """.stripMargin)
     }
   }
+
 }

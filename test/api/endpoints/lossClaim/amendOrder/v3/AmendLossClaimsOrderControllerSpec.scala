@@ -49,11 +49,12 @@ class AmendLossClaimsOrderControllerSpec
 
   private val amendLossClaimsOrderRequest =
     AmendLossClaimsOrderRequest(Nino(nino), TaxYear.fromMtd(taxYear), claimsList)
+
   private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
   private val testHateoasLink = Seq(
     Link(href = s"/individuals/losses/$nino/loss-claims/order/$taxYear", method = PUT, rel = "amend-loss-claim-order"),
-    Link(href = s"/individuals/losses/$nino/loss-claims", method = GET, rel = "list-loss-claims"),
+    Link(href = s"/individuals/losses/$nino/loss-claims", method = GET, rel = "list-loss-claims")
   )
 
   private val requestBody = Json.parse(
@@ -174,6 +175,7 @@ class AmendLossClaimsOrderControllerSpec
           auditResponse = auditResponse
         )
       )
+
   }
 
 }

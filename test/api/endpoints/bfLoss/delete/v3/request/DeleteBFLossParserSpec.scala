@@ -64,4 +64,5 @@ class DeleteBFLossParserSpec extends UnitSpec {
       }
     }
   }
+
 }

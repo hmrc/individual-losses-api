@@ -54,4 +54,5 @@ class DeleteBFLossValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

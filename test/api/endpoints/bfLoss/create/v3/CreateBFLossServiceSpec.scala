@@ -17,12 +17,12 @@
 package api.endpoints.bfLoss.create.v3
 
 import api.endpoints.bfLoss.connector.v3.MockBFLossConnector
-import api.endpoints.bfLoss.create.v3.request.{ CreateBFLossRequest, CreateBFLossRequestBody }
+import api.endpoints.bfLoss.create.v3.request.{CreateBFLossRequest, CreateBFLossRequestBody}
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.errors.{ RuleDuplicateSubmissionError, _ }
+import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.services.ServiceSpec
 
 import scala.concurrent.Future

@@ -29,5 +29,6 @@ object AmendLossClaimsOrderRequestBody {
     Json.obj(
       "claimType"      -> o.typeOfClaim.toReliefClaimed,
       "claimsSequence" -> o.listOfLossClaims
-  )
+    )
+
 }

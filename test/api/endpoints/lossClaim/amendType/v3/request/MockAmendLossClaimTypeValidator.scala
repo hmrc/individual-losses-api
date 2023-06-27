@@ -31,5 +31,7 @@ class MockAmendLossClaimTypeValidator extends MockFactory {
         .validate(_: AmendLossClaimTypeRawData))
         .expects(data)
     }
+
   }
+
 }

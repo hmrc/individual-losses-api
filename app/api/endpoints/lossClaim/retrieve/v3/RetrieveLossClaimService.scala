@@ -25,7 +25,7 @@ import api.services.v3.Outcomes.RetrieveLossClaimOutcome
 import cats.implicits._
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveLossClaimService @Inject() (connector: LossClaimConnector) extends BaseService {
 

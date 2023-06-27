@@ -20,11 +20,11 @@ import api.mocks.MockHttpClient
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.Configuration
-import play.api.http.{ HeaderNames, MimeTypes, Status }
+import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
@@ -136,7 +136,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           config = dummyHeaderCarrierConfig,
           body = body,
           requiredHeaders = requiredHeaders ++ Seq("Content-Type" -> "application/json"),
-          excludedHeaders = Seq("AnotherHeader"                   -> "HeaderValue")
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )
     }
 
@@ -147,7 +147,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           config = dummyHeaderCarrierConfig,
           body = body,
           requiredHeaders = requiredHeaders ++ Seq("Content-Type" -> "application/json"),
-          excludedHeaders = Seq("AnotherHeader"                   -> "HeaderValue")
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )
     }
 
@@ -198,4 +198,5 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
   }
+
 }

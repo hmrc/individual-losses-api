@@ -17,14 +17,14 @@
 package routing
 
 import akka.actor.ActorSystem
-import api.models.errors.{ InvalidAcceptHeaderError, NotFoundError, UnsupportedVersionError }
-import com.typesafe.config.{ Config, ConfigFactory }
+import api.models.errors.{InvalidAcceptHeaderError, NotFoundError, UnsupportedVersionError}
+import com.typesafe.config.{Config, ConfigFactory}
 import config.MockAppConfig
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.{ HttpConfiguration, HttpErrorHandler, HttpFilters }
+import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc._
 import play.api.routing.Router
 import play.api.test.FakeRequest

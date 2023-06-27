@@ -34,6 +34,7 @@ trait MockMtdIdLookupService extends MockFactory {
         .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
         .expects(nino, *, *)
     }
+
   }
 
 }

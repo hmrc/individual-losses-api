@@ -35,11 +35,11 @@ class ListLossClaimsValidator extends Validator[ListLossClaimsRawData] with Fixe
         data.taxYearClaimedFor.map(TaxYearValidation.validate(_, TaxYearFormatError)).getOrElse(Nil),
         data.typeOfLoss.map(TypeOfClaimLossValidation.validate).getOrElse(Nil),
         data.typeOfClaim.map(validateClaimType).getOrElse(Nil)
-    )
+      )
 
   private def postFormatValidation: ListLossClaimsRawData => Seq[Seq[MtdError]] = { data =>
     List(
-      data.taxYearClaimedFor.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil),
+      data.taxYearClaimedFor.map(MinTaxYearValidation.validate(_, minimumTaxYearLossClaim)).getOrElse(Nil)
     )
   }
 

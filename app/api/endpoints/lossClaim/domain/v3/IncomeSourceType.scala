@@ -28,9 +28,11 @@ object IncomeSourceType {
   case object `01` extends IncomeSourceType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
   }
+
   case object `02` extends IncomeSourceType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property-non-fhl`
   }
+
   case object `15` extends IncomeSourceType {
     override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`foreign-property`
   }

@@ -32,5 +32,7 @@ class MockAmendBFLossValidator extends MockFactory {
         .validate(_: AmendBFLossRawData))
         .expects(data)
     }
+
   }
+
 }

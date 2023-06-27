@@ -16,11 +16,11 @@
 
 package api.models.domain
 
-import play.api.libs.json.{ JsString, Reads, Writes }
+import play.api.libs.json.{JsString, Reads, Writes}
 
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ISO_DATE_TIME
-import java.time.{ ZoneId, ZonedDateTime }
+import java.time.{ZoneId, ZonedDateTime}
 
 case class Timestamp private (value: String) extends AnyVal {
   override def toString: String = value

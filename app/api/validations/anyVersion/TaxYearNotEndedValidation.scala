@@ -17,7 +17,7 @@
 package api.validations.anyVersion
 
 import api.models.domain.TaxYear
-import api.models.errors.{ MtdError, RuleTaxYearNotEndedError }
+import api.models.errors.{MtdError, RuleTaxYearNotEndedError}
 import api.validations.NoValidationErrors
 import utils.CurrentDate
 

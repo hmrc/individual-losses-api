@@ -57,8 +57,9 @@ class CreateLossClaimParserSpec extends UnitSpec {
 
         parser.parseRequest(rawData) shouldBe
           Right(
-            CreateLossClaimRequest(Nino(nino),
-                                   CreateLossClaimRequestBody(taxYear, TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, businessId)))
+            CreateLossClaimRequest(
+              Nino(nino),
+              CreateLossClaimRequestBody(taxYear, TypeOfLoss.`self-employment`, TypeOfClaim.`carry-forward`, businessId)))
       }
     }
 
@@ -83,4 +84,5 @@ class CreateLossClaimParserSpec extends UnitSpec {
       }
     }
   }
+
 }

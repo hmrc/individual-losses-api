@@ -30,6 +30,7 @@ trait MockAmendBFLossParser extends MockFactory {
     def parseRequest(data: AmendBFLossRawData): CallHandler[Either[ErrorWrapper, AmendBFLossRequest]] = {
       (mockAmendBFLossRequestDataParser.parseRequest(_: AmendBFLossRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

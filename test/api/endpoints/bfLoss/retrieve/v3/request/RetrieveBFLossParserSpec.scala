@@ -52,4 +52,5 @@ class RetrieveBFLossParserSpec extends UnitSpec {
       }
     }
   }
+
 }

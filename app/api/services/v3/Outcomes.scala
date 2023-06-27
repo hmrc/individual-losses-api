@@ -18,12 +18,12 @@ package api.services.v3
 
 import api.endpoints.bfLoss.amend.v3.response.AmendBFLossResponse
 import api.endpoints.bfLoss.create.v3.response.CreateBFLossResponse
-import api.endpoints.bfLoss.list.v3.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
 import api.endpoints.bfLoss.retrieve.v3.response.RetrieveBFLossResponse
 import api.endpoints.lossClaim.amendOrder.v3.response.AmendLossClaimsOrderResponse
 import api.endpoints.lossClaim.amendType.v3.response.AmendLossClaimTypeResponse
 import api.endpoints.lossClaim.create.v3.response.CreateLossClaimResponse
-import api.endpoints.lossClaim.list.v3.response.{ ListLossClaimsItem, ListLossClaimsResponse }
+import api.endpoints.lossClaim.list.v3.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import api.endpoints.lossClaim.retrieve.v3.response.RetrieveLossClaimResponse
 import api.services.anyVersion.Outcomes.ServiceOutcome
 

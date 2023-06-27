@@ -66,4 +66,5 @@ class DeleteLossClaimParserSpec extends UnitSpec {
       }
     }
   }
+
 }

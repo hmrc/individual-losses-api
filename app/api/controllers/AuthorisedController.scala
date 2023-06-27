@@ -18,14 +18,14 @@ package api.controllers
 
 import api.models.UserDetails
 import api.models.errors.MtdError
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 case class UserRequest[A](userDetails: UserDetails, request: Request[A]) extends WrappedRequest[A](request)
 
@@ -45,8 +45,8 @@ abstract class AuthorisedController(cc: ControllerComponents)(implicit ec: Execu
         .withIdentifier("MTDITID", mtdId)
         .withDelegatedAuthRule("mtd-it-auth")
 
-    def invokeBlockWithAuthCheck[A](mtdId: String, request: Request[A], block: UserRequest[A] => Future[Result])(
-        implicit headerCarrier: HeaderCarrier): Future[Result] = {
+    def invokeBlockWithAuthCheck[A](mtdId: String, request: Request[A], block: UserRequest[A] => Future[Result])(implicit
+        headerCarrier: HeaderCarrier): Future[Result] = {
       authService.authorised(predicate(mtdId)).flatMap[Result] {
         case Right(userDetails) => block(UserRequest(userDetails.copy(mtdId = mtdId), request))
         case Left(mtdError)     => errorResponse(mtdError)
@@ -65,4 +65,5 @@ abstract class AuthorisedController(cc: ControllerComponents)(implicit ec: Execu
 
     private def errorResponse[A](mtdError: MtdError): Future[Result] = Future.successful(Status(mtdError.httpStatus)(mtdError.asJson))
   }
+
 }

@@ -23,7 +23,7 @@ import api.validations.v3._
 import config.FixedConfig
 import utils.CurrentDate
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class CreateBFLossValidator @Inject() (implicit currentDate: CurrentDate) extends Validator[CreateBFLossRawData] with FixedConfig {

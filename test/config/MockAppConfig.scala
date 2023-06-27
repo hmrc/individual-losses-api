@@ -55,5 +55,7 @@ trait MockAppConfig extends MockFactory {
 
     def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] =
       (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()
+
   }
+
 }

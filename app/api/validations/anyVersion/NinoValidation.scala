@@ -29,4 +29,5 @@ object NinoValidation {
   def validate(nino: String): Seq[MtdError] = {
     if (Nino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(NinoFormatError)
   }
+
 }

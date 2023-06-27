@@ -16,24 +16,19 @@
 
 package api.endpoints.lossClaim.create.v3
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
-import api.endpoints.lossClaim.create.v3.request.{
-  CreateLossClaimRawData,
-  CreateLossClaimRequest,
-  CreateLossClaimRequestBody,
-  MockCreateLossClaimParser
-}
-import api.endpoints.lossClaim.create.v3.response.{ CreateLossClaimHateoasData, CreateLossClaimResponse }
-import api.endpoints.lossClaim.domain.v3.{ TypeOfClaim, TypeOfLoss }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.endpoints.lossClaim.create.v3.request.{CreateLossClaimRawData, CreateLossClaimRequest, CreateLossClaimRequestBody, MockCreateLossClaimParser}
+import api.endpoints.lossClaim.create.v3.response.{CreateLossClaimHateoasData, CreateLossClaimResponse}
+import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.hateoas.Method.GET
-import api.models.hateoas.{ HateoasWrapper, Link }
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import api.models.hateoas.{HateoasWrapper, Link}
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,10 +40,10 @@ class CreateLossClaimControllerSpec
     with MockCreateLossClaimParser
     with MockHateoasFactory {
 
-  private val lossClaimId             = "AAZZ1234567890a"
-  private val lossClaim               = CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
-  private val testHateoasLink         = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  private val lossClaimRequest        = CreateLossClaimRequest(Nino(nino), lossClaim)
+  private val lossClaimId      = "AAZZ1234567890a"
+  private val lossClaim        = CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
+  private val testHateoasLink  = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+  private val lossClaimRequest = CreateLossClaimRequest(Nino(nino), lossClaim)
   private val createLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
 
   private val requestBody = Json.parse(
@@ -153,5 +148,7 @@ class CreateLossClaimControllerSpec
           auditResponse = auditResponse
         )
       )
+
   }
+
 }

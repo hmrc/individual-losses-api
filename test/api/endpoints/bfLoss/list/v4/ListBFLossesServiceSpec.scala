@@ -19,9 +19,9 @@ package api.endpoints.bfLoss.list.v4
 import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
 import api.endpoints.bfLoss.list.v4.connector.MockListBFLossesConnector
 import api.endpoints.bfLoss.list.v4.request.ListBFLossesRequest
-import api.endpoints.bfLoss.list.v4.response.{ ListBFLossesItem, ListBFLossesResponse }
+import api.endpoints.bfLoss.list.v4.response.{ListBFLossesItem, ListBFLossesResponse}
 import api.models.ResponseWrapper
-import api.models.domain.{ Nino, TaxYear }
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
 import api.services.v4.Outcomes.ListBFLossesOutcome

@@ -17,14 +17,14 @@
 package api.endpoints.lossClaim.retrieve.v3
 
 import api.controllers._
-import api.endpoints.lossClaim.retrieve.v3.request.{ RetrieveLossClaimParser, RetrieveLossClaimRawData }
+import api.endpoints.lossClaim.retrieve.v3.request.{RetrieveLossClaimParser, RetrieveLossClaimRawData}
 import api.endpoints.lossClaim.retrieve.v3.response.GetLossClaimHateoasData
 import api.hateoas.HateoasFactory
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.{IdGenerator, Logging}
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton

@@ -80,4 +80,5 @@ class CreateBFLossResponseSpec extends UnitSpec {
         )
     }
   }
+
 }

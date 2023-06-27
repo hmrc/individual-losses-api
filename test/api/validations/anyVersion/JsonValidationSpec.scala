@@ -56,4 +56,5 @@ class JsonValidationSpec extends UnitSpec {
       }
     }
   }
+
 }
