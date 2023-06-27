@@ -18,32 +18,22 @@ get:
               <td><p>N/A - DEFAULT</p></td>
               <td><p>Simulates success response with multiple business types.</p></td>
           </tr>
-      </tbody>
-      <tbody>
           <tr>
               <td><p>SELF_EMPLOYMENT</p></td>
               <td><p>Simulates success response with only self-employment.</p></td>
           </tr>
-      </tbody>
-      <tbody>
           <tr>
               <td><p>UK_PROPERTY</p></td>
               <td><p>Simulates success response with only UK property.</p></td>
           </tr>
-      </tbody>
-      <tbody>
           <tr>
               <td><p>FOREIGN_PROPERTY</p></td>
               <td><p>Simulates success response with only foreign property.</p></td>
           </tr>
-      </tbody>
-      <tbody>
           <tr>
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
-      </tbody>
-      <tbody>
           <tr>
               <td><p>DYNAMIC</p></td>
               <td><p>The following response values will change to correspond to the values submitted in the request:
@@ -54,6 +44,10 @@ get:
                     <li>lastModified</li>
                 </ul>
               </p></td>
+          </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Performs a stateful list.</p></td>
           </tr>
       </tbody>
     </table>
