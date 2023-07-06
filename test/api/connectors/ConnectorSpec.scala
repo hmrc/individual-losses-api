@@ -19,7 +19,6 @@ package api.connectors
 import api.mocks.MockHttpClient
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
-import play.api.Configuration
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,15 +27,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
-  lazy val baseUrl                   = "http://test-BaseUrl"
+  lazy val baseUrl = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val otherHeaders: Seq[(String, String)] = Seq(
     "Gov-Test-Scenario" -> "DEFAULT",
-    "AnotherHeader"     -> "HeaderValue"
+    "AnotherHeader" -> "HeaderValue"
   )
 
-  implicit val hc: HeaderCarrier    = HeaderCarrier(otherHeaders = otherHeaders)
+  implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   val dummyDesHeaderCarrierConfig: HeaderCarrier.Config =
@@ -88,32 +87,32 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   )
 
   val requiredDesHeaders: Seq[(String, String)] = Seq(
-    "Environment"       -> "des-environment",
-    "Authorization"     -> s"Bearer des-token",
-    "CorrelationId"     -> s"$correlationId",
-    "User-Agent"        -> "individual-losses-api",
+    "Environment" -> "des-environment",
+    "Authorization" -> s"Bearer des-token",
+    "CorrelationId" -> s"$correlationId",
+    "User-Agent" -> "individual-losses-api",
     "Gov-Test-Scenario" -> "DEFAULT"
   )
 
   val requiredIfsHeaders: Seq[(String, String)] = Seq(
-    "Environment"       -> "ifs-environment",
-    "Authorization"     -> s"Bearer ifs-token",
-    "CorrelationId"     -> s"$correlationId",
-    "User-Agent"        -> "individual-losses-api",
+    "Environment" -> "ifs-environment",
+    "Authorization" -> s"Bearer ifs-token",
+    "CorrelationId" -> s"$correlationId",
+    "User-Agent" -> "individual-losses-api",
     "Gov-Test-Scenario" -> "DEFAULT"
   )
 
   val requiredTysIfsHeaders: Seq[(String, String)] = Seq(
-    "Environment"       -> "TYS-IFS-environment",
-    "Authorization"     -> s"Bearer TYS-IFS-token",
-    "CorrelationId"     -> s"$correlationId",
-    "User-Agent"        -> "individual-losses-api",
+    "Environment" -> "TYS-IFS-environment",
+    "Authorization" -> s"Bearer TYS-IFS-token",
+    "CorrelationId" -> s"$correlationId",
+    "User-Agent" -> "individual-losses-api",
     "Gov-Test-Scenario" -> "DEFAULT"
   )
 
   protected trait ConnectorTest extends MockHttpClient with MockAppConfig {
 
-    protected val baseUrl: String            = "http://test-BaseUrl"
+    protected val baseUrl: String = "http://test-BaseUrl"
     implicit protected val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
 
     protected val requiredHeaders: Seq[(String, String)]
@@ -171,8 +170,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
-
-    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
   }
 
   protected trait IfsTest extends ConnectorTest {
@@ -183,8 +180,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.ifsToken returns "ifs-token"
     MockAppConfig.ifsEnvironment returns "ifs-environment"
     MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-
-    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
   }
 
   protected trait TysIfsTest extends ConnectorTest {
@@ -195,8 +190,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.tysIfsToken returns "TYS-IFS-token"
     MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
     MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
-
-    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
   }
 
 }

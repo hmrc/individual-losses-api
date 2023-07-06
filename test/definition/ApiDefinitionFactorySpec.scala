@@ -38,8 +38,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         MockAppConfig.featureSwitches.returns(Configuration.empty).anyNumberOfTimes()
         MockAppConfig.apiStatus(Version3).returns("").anyNumberOfTimes()
         MockAppConfig.apiStatus(Version4).returns("").anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(version = Version3.configName).returns(true).anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(version = Version4.configName).returns(true).anyNumberOfTimes()
+        MockAppConfig.endpointsEnabled(version = Version3).returns(true).anyNumberOfTimes()
+        MockAppConfig.endpointsEnabled(version = Version4).returns(true).anyNumberOfTimes()
         MockAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
@@ -103,7 +103,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockAppConfig.apiStatus(version = anyVersion) returns "ALPHO"
+        MockAppConfig.apiStatus(version = anyVersion) returns "ALPHA"
         factory.buildAPIStatus(version = anyVersion) shouldBe ALPHA
       }
     }

@@ -17,7 +17,7 @@
 package routing
 
 import api.models.errors.{InvalidAcceptHeaderError, NotFoundError, UnsupportedVersionError}
-import config.{AppConfig, FeatureSwitches}
+import config.AppConfig
 import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
 import play.api.routing.Router
@@ -40,8 +40,6 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
       configuration = httpConfiguration,
       filters = filters.filters
     ) {
-
-  private val featureSwitches = FeatureSwitches(config.featureSwitches)
 
   private val unsupportedVersionAction = action(Results.NotFound(UnsupportedVersionError.asJson))
 
@@ -69,7 +67,7 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
     */
   private def findRoute(request: RequestHeader, version: Version): Option[Handler] = {
     val found =
-      if (featureSwitches.isVersionEnabled(version)) {
+      if (config.endpointsEnabled(version)) {
         versionRoutingMap
           .versionRouter(version)
           .flatMap(router => routeWith(router, request))

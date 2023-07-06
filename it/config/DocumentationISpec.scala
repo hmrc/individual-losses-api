@@ -53,12 +53,12 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |    "versions":[
       |      {
       |        "version":"3.0",
-      |        "status":"ALPHA",
+      |        "status":"DEPRECATED",
       |        "endpointsEnabled":true
       |      },
       |      {
       |        "version":"4.0",
-      |        "status":"ALPHA",
+      |        "status":"BETA",
       |        "endpointsEnabled":true
       |      }
       |    ]
