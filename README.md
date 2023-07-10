@@ -41,7 +41,7 @@ Run unit tests: `sbt test`
 
 Run integration tests: `sbt it:test`
 
-## To view the OAS 
+## To view the OAS
 
 To view documentation locally, ensure the Individual Losses API is running, and run api-documentation-frontend:
 

@@ -26,7 +26,7 @@ import support.UnitSpec
 class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   val nino: String = "AA123456A"
-  val taxYear = "2018-19"
+  val taxYear      = "2018-19"
 
   "json writes" must {
     "output as per spec" in {

@@ -4,17 +4,17 @@
   "description": "Amend a Brought Forward Loss Amount Request",
   "type": "object",
   "properties": {
-    "lossAmount": {
-      "type": "number",
-      "description": "Brought Forward Loss amount related to the type of loss specified. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
-      "multipleOf": 0.01,
-      "minimum": 0.00,
-      "maximum": 99999999999.99,
-      "example": "5000.99"
-    }
+	"lossAmount": {
+	  "type": "number",
+	  "description": "Brought Forward Loss amount related to the type of loss specified. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+	  "multipleOf": 0.01,
+	  "minimum": 0.00,
+	  "maximum": 99999999999.99,
+	  "example": "5000.99"
+	}
   },
   "required": [
-    "lossAmount"
+	"lossAmount"
   ],
   "additionalProperties": false
 }

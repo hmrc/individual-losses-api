@@ -33,7 +33,7 @@ description: |
   </table>
 
 tags:
-- Brought Forward Losses
+  - Brought Forward Losses
 
 
 parameters:
@@ -53,7 +53,7 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: {}
+    content: { }
 
 
   "400":
