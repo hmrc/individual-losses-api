@@ -25,7 +25,7 @@ description: |
   </table>
 
 tags:
-  - Loss Claims  
+  - Loss Claims
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -44,7 +44,7 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: {}
+    content: { }
 
 
   "400":

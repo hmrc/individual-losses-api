@@ -19,9 +19,7 @@ package api.endpoints.lossClaim.list.v3.response
 import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{GET, POST}
-import com.typesafe.config.ConfigFactory
 import config.MockAppConfig
-import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
 
@@ -150,25 +148,13 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   "Links Factory" should {
 
-    "expose the correct top level links for list" when {
-      "amend-loss-claim-order.enabled = true" in {
-        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = true"))).anyNumberOfTimes()
-        ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
-          Seq(
-            Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
-            Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
-          )
-      }
-      "amend-loss-claim-order.enabled = false" in {
-        MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("amend-loss-claim-order.enabled = false"))).anyNumberOfTimes()
-        ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
-          Seq(
-            Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
-            Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
-          )
-      }
+    "expose the correct top level links for list" in {
+      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino)) shouldBe
+        Seq(
+          Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
+          Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim")
+        )
     }
 
     "expose the correct item level links for list" in {

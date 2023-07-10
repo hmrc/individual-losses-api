@@ -19,7 +19,6 @@ package api.connectors
 import api.mocks.MockHttpClient
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
-import play.api.Configuration
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
@@ -171,8 +170,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
-
-    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
   }
 
   protected trait IfsTest extends ConnectorTest {
@@ -183,8 +180,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.ifsToken returns "ifs-token"
     MockAppConfig.ifsEnvironment returns "ifs-environment"
     MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-
-    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
   }
 
   protected trait TysIfsTest extends ConnectorTest {
@@ -195,8 +190,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.tysIfsToken returns "TYS-IFS-token"
     MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
     MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
-
-    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
   }
 
 }

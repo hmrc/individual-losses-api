@@ -19,21 +19,8 @@ package config
 import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
-import routing.Version
 
 case class FeatureSwitches(featureSwitchConfig: Configuration) {
-
-  def isVersionEnabled(version: Version): Boolean =
-    (for {
-      enabled <- featureSwitchConfig.getOptional[Boolean](s"version-${version.configName}.enabled")
-    } yield enabled).getOrElse(false)
-
-  def isAmendLossClaimsOrderRouteEnabled: Boolean =
-    featureSwitchConfig.getOptional[Boolean]("amend-loss-claim-order.enabled").getOrElse(false)
-
-  val isTaxYearSpecificApiEnabled: Boolean = isEnabled("tys-api.enabled")
-
-  private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 
   def isTemporalValidationEnabled(implicit request: Request[_]): Boolean = {
     if (isEnabled("allowTemporalValidationSuspension.enabled")) {
@@ -42,6 +29,8 @@ case class FeatureSwitches(featureSwitchConfig: Configuration) {
       true
     }
   }
+
+  private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 
 }
 

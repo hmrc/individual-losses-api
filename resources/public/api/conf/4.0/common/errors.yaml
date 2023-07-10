@@ -68,7 +68,7 @@ components:
 
     ruleSequenceOrderBroken:
       description: |
-          The sequence is not continuous.
+        The sequence is not continuous.
       value:
         code: RULE_SEQUENCE_ORDER_BROKEN
         message: The sequence order must be continuous

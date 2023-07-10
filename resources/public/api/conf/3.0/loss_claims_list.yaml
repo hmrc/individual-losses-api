@@ -1,5 +1,5 @@
 summary: List Loss Claims
-description: |  
+description: |
   This endpoint allows a developer to retrieve the existing loss claims information.
   A National Insurance Number must be provided.
   
@@ -40,7 +40,7 @@ description: |
 
 tags:
   - Loss Claims
-  
+
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/queryParameters.yaml#/components/parameters/taxYearClaimedFor'

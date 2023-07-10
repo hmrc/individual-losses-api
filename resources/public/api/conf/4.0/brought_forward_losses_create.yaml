@@ -2,7 +2,7 @@ post:
   summary: Create a Brought Forward Loss
   description: |
     This endpoint allows the developer to create a new brought forward loss which can be submitted against self-employment, self-employment class 4, UK Furnished Holiday Let (FHL) property, UK other (Non-FHL) property, foreign property FHL in the European Economic Area (EEA) and foreign property for the tax year prior to joining MTD. A National Insurance number must be provided.
-  
+    
     ### Test data
     <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
     <table>
@@ -110,7 +110,7 @@ post:
             RULE_TAX_YEAR_NOT_ENDED:
               $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotEnded'
             RULE_INCORRECT_GOV_TEST_SCENARIO:
-             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
     "403":
       description: Forbidden

@@ -19,7 +19,7 @@ package api.endpoints.lossClaim.list.v4.response
 import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
-import config.{AppConfig, FeatureSwitches}
+import config.AppConfig
 import play.api.libs.json._
 
 case class ListLossClaimsResponse[I](claims: Seq[I])
@@ -36,15 +36,12 @@ object ListLossClaimsResponse extends HateoasLinks {
 
     override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] = {
       import data._
-      val featureSwitch = FeatureSwitches(appConfig.featureSwitches)
       val baseLinks = Seq(
         listLossClaim(appConfig, nino),
-        createLossClaim(appConfig, nino)
+        createLossClaim(appConfig, nino),
+        amendLossClaimOrder(appConfig, nino, taxYearClaimedFor)
       )
-
-      val extraLinks = if (featureSwitch.isAmendLossClaimsOrderRouteEnabled) Seq(amendLossClaimOrder(appConfig, nino, taxYearClaimedFor)) else Seq()
-
-      baseLinks ++ extraLinks
+      baseLinks
     }
 
     override def itemLinks(appConfig: AppConfig, data: ListLossClaimsHateoasData, item: ListLossClaimsItem): Seq[Link] =
