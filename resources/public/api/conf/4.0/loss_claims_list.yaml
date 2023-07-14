@@ -30,8 +30,6 @@ get:
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
-              <td><p>STATEFUL</p></td>
-              <td><p>Performs a stateful list.</p></td>
           <tr>
               <td><p>DYNAMIC</p></td>
               <td><p>The following response values will change to correspond to the values submitted in the request:
@@ -43,6 +41,10 @@ get:
                     <li>businessId</li>
                 </ul>
               </p></td>
+          </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Performs a stateful list.</p></td>
           </tr>
       </tbody>
     </table>
