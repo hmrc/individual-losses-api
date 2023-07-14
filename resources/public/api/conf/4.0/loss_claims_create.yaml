@@ -42,6 +42,10 @@ post:
               <td><p>NO_ACCOUNTING_PERIOD</p></td>
               <td><p>Simulates the scenario where there is no accounting period for the year of the claim.</p></td>
           </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Performs a stateful create.</p></td>
+          </tr>
       </tbody>
     </table>
 

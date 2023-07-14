@@ -62,6 +62,9 @@ post:
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Performs a stateful update.</p></td>
+          </tr>
           <tr>
               <td><p>DYNAMIC</p></td>
               <td><p>The following response values will change to correspond to the values submitted in the request:
@@ -72,6 +75,7 @@ post:
                 </ul>
               </p></td>
           </tr>
+      </tbody>
     </table>
 
   tags:
