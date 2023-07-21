@@ -6,9 +6,9 @@ description: |
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario) | Scenario                                |
-  |----------------------------------|-----------------------------------------|
-  | N/A - DEFAULT                    | Simulate success scenario               |
+  | Header Value (Gov-Test-Scenario) | Scenario                                       |
+  |----------------------------------|------------------------------------------------|
+  | N/A - DEFAULT                    | Simulate success scenario                      |
   | NOT_FOUND                        | Simulates the scenario where no data is found. |
 
 tags:

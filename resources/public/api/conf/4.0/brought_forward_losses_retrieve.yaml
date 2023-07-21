@@ -6,13 +6,13 @@ description: |
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario) | Scenario                                                      |
-  |----------------------------------|---------------------------------------------------------------|
+  | Header Value (Gov-Test-Scenario) | Scenario                                                          |
+  |----------------------------------|-------------------------------------------------------------------|
   | N/A - DEFAULT                    | Simulates success response where type of loss is Self-Employment. |
-  | UK_PROPERTY                     | Simulates the scenario where type of loss is UK Property FHL.  |
-  | FOREIGN_PROPERTY                | Simulates the scenario where type of loss is Foreign Property. |
-  | NOT_FOUND                       | Simulates the scenario where no data is found.                 |
-  | STATEFUL                        | Performs a stateful retrieve.                                  |
+  | UK_PROPERTY                      | Simulates the scenario where type of loss is UK Property FHL.     |
+  | FOREIGN_PROPERTY                 | Simulates the scenario where type of loss is Foreign Property.    |
+  | NOT_FOUND                        | Simulates the scenario where no data is found.                    |
+  | STATEFUL                         | Performs a stateful retrieve.                                     |
 
 tags:
   - Brought Forward Losses
