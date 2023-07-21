@@ -4,33 +4,14 @@ post:
     This endpoint allows the developer to create a new brought forward loss which can be submitted against self-employment, self-employment class 4, UK Furnished Holiday Let (FHL) property, UK other (Non-FHL) property, foreign property FHL in the European Economic Area (EEA) and foreign property for the tax year prior to joining MTD. A National Insurance number must be provided.
     
     ### Test data
-    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
-    <table>
-      <thead>
-          <tr>
-              <th>Header Value (Gov-Test-Scenario)</th>
-              <th>Scenario</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td><p>N/A - DEFAULT</p></td>
-              <td><p>Simulates success response.</p></td>
-          </tr>
-          <tr>
-              <td><p>NOT_FOUND</p></td>
-              <td><p>Simulates the scenario where no data is found.</p></td>
-          </tr>
-          <tr>
-              <td><p>DUPLICATE_SUBMISSION</p></td>
-              <td><p>Simulates the scenario where a duplicated loss is found.</p></td>
-          </tr>
-          <tr>
-              <td><p>STATEFUL</p></td>
-              <td><p>Performs a stateful create.</p></td>
-          </tr
-      </tbody>
-    </table>
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.    
+    
+    | Header Value (Gov-Test-Scenario)  | Scenario                                                 |
+    |-----------------------------------|----------------------------------------------------------|
+    | N/A - DEFAULT                     | Simulates success response.                              |
+    | NOT_FOUND                         | Simulates the scenario where no data is found.           |
+    | DUPLICATE_SUBMISSION              | Simulates the scenario where a duplicated loss is found. |
+    | STATEFUL                          | Performs a stateful create.                              |
 
   tags:
     - Brought Forward Losses
