@@ -5,78 +5,24 @@ post:
     A National Insurance Number and Claim ID must be provided.
     
     ### Test data
-    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
-    <table>
-      <thead>
-          <tr>
-              <th>Header Value (Gov-Test-Scenario)</th>
-              <th>Scenario</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td><p>N/A - DEFAULT</p></td>
-              <td><p>Simulates success response.</p></td>
-          </tr>
-          <tr>
-              <td><p>FP_FORWARD</p></td>
-              <td><p>Simulates a Foreign Property carried forward scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>FP_SIDEWAYS</p></td>
-              <td><p>Simulates a Foreign Property carried sideways scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>NONFHL_FORWARD</p></td>
-              <td><p>Simulates a Non-FHL carried forward scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>NONFHL_FORWARD_TO_SIDEWAYS</p></td>
-              <td><p>Simulates a Non-FHL carried forward to sideways scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>NONFHL_SIDEWAYS</p></td>
-              <td><p>Simulates a Non-FHL carried sideways scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>NONFHL_SIDEWAYS_FHL</p></td>
-              <td><p>Simulates a FHL carried sideways scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>SE_FORWARD</p></td>
-              <td><p>Simulates a Self Employment carried forward scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>SE_SIDEWAYS</p></td>
-              <td><p>Simulates a Self Employment carried sideways scenario.</p></td>
-          </tr>
-          <tr>
-              <td><p>NO_CHANGE</p></td>
-              <td><p>Simulates the scenario where the relief type has not changed.</p></td>
-          </tr>
-          <tr>
-              <td><p>TYPE_OF_CLAIM_INVALID</p></td>
-              <td><p>Simulates the scenario where a claim type is invalid for the income source.</p></td>
-          </tr>
-          <tr>
-              <td><p>NOT_FOUND</p></td>
-              <td><p>Simulates the scenario where no data is found.</p></td>
-          </tr>
-              <td><p>STATEFUL</p></td>
-              <td><p>Performs a stateful update.</p></td>
-          </tr>
-          <tr>
-              <td><p>DYNAMIC</p></td>
-              <td><p>The following response values will change to correspond to the values submitted in the request:
-                <ul>
-                    <li>typeOfClaim</li>
-                    <li>typeOfLoss</li>
-                    <li>lastModified</li>
-                </ul>
-              </p></td>
-          </tr>
-      </tbody>
-    </table>
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                                               |
+    | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | N/A - DEFAULT                    | Simulates success response.                                                                                                                            |
+    | FP_FORWARD                       | Simulates a Foreign Property carried forward scenario.                                                                                                 |
+    | FP_SIDEWAYS                      | Simulates a Foreign Property carried sideways scenario.                                                                                                |
+    | NONFHL_FORWARD                   | Simulates a Non-FHL carried forward scenario.                                                                                                          |
+    | NONFHL_FORWARD_TO_SIDEWAYS       | Simulates a Non-FHL carried forward to sideways scenario.                                                                                              |
+    | NONFHL_SIDEWAYS                  | Simulates a Non-FHL carried sideways scenario.                                                                                                         |
+    | NONFHL_SIDEWAYS_FHL              | Simulates a FHL carried sideways scenario.                                                                                                             |
+    | SE_FORWARD                       | Simulates a Self Employment carried forward scenario.                                                                                                  |
+    | SE_SIDEWAYS                      | Simulates a Self Employment carried sideways scenario.                                                                                                 |
+    | NO_CHANGE                        | Simulates the scenario where the relief type has not changed.                                                                                          |
+    | TYPE_OF_CLAIM_INVALID            | Simulates the scenario where a claim type is invalid for the income source.                                                                            |
+    | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                         |
+    | STATEFUL                         | Performs a stateful update.                                                                                                                            |
+    | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request:<br> • typeOfClaim<br> •  typeOfLoss<br> • lastModified |
 
   tags:
     - Loss Claims
