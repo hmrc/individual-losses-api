@@ -6,14 +6,15 @@ post:
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
-    
-    | Header Value (Gov-Test-Scenario) | Scenario                                                       |
-    |----------------------------------|----------------------------------------------------------------|
-    | N/A - DEFAULT                    | Simulates success response.                                    |
-    | NOT_FOUND                        | Simulates the scenario where no data is found.                 |
-    | DUPLICATE                        | Simulates the scenario where a duplicated value is found.      |
-    | ACCOUNTING_PERIOD_NOT_ENDED      | Simulates the scenario where the Loss claim has been made too soon. |
+  
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                              |
+    | -------------------------------- | ------------------------------------------------------------------------------------- |
+    | N/A - DEFAULT                    | Simulates success response.                                                           |
+    | NOT_FOUND                        | Simulates the scenario where no data is found.                                        |
+    | DUPLICATE                        | Simulates the scenario where a duplicated value is found.                             |
+    | ACCOUNTING_PERIOD_NOT_ENDED      | Simulates the scenario where the Loss claim has been made too soon.                   |
     | NO_ACCOUNTING_PERIOD             | Simulates the scenario where there is no accounting period for the year of the claim. |
+    | STATEFUL                         | Performs a stateful create.                                                           |
 
   tags:
     - Loss Claims

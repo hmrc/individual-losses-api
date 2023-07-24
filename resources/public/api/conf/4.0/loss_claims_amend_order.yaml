@@ -6,11 +6,13 @@ description: |
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario) | Scenario                                                        |
-  |----------------------------------|-----------------------------------------------------------------|
-  | N/A - DEFAULT                    | Simulates success response.                                     |
+  | Header Value (Gov-Test-Scenario) | Scenario                                                                              |
+  | -------------------------------- | ------------------------------------------------------------------------------------- |
+  | N/A - DEFAULT                    | Simulates success response.                                                           |
   | LOSS_CLAIMS_MISSING              | Simulates the scenario where not all claims of the given type and year were included. |
-  | NOT_FOUND                        | Simulates the scenario where one or more claims were not found. |
+  | NOT_FOUND                        | Simulates the scenario where one or more claims were not found.                       |
+  | STATEFUL                         | Performs a stateful update.                                                           |
+
 
 tags:
   - Loss Claims

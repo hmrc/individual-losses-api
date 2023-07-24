@@ -6,14 +6,15 @@ get:
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
-
-    | Header Value (Gov-Test-Scenario) | Scenario                                                                                     |
-    |----------------------------------|----------------------------------------------------------------------------------------------|
-    | N/A - DEFAULT                    | Simulates successful self-employment response where typeOfClaim is "carry-forward".          |
-    | UK_PROPERTY                      | Simulates successful uk-property-non-fhl response where typeOfClaim is "carry-sideways-fhl". |
-    | FOREIGN_PROPERTY                 | Simulates successful foreign property response where typeOfClaim is "carry-sideways".        |
-    | NOT_FOUND                        | Simulates the scenario where no data is found.                                               |
+  
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                                                                                       |
+    | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | N/A - DEFAULT                    | Simulates successful self-employment response where typeOfClaim is "carry-forward".                                                                                                            |
+    | UK_PROPERTY                      | Simulates successful uk-property-non-fhl response where typeOfClaim is "carry-sideways-fhl".                                                                                                   |
+    | FOREIGN_PROPERTY                 | Simulates successful foreign property response where typeOfClaim is "carry-sideways".                                                                                                          |
+    | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                                                                 |
     | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request:<br> • taxYearClaimedFor<br> • lastModified<br> • typeOfLoss<br> • typeOfClaim<br> • businessId |
+    | STATEFUL                         | Performs a stateful list.                                                                                                                                                                      |
 
 
   tags:
