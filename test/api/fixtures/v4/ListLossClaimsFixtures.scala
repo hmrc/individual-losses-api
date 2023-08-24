@@ -16,10 +16,10 @@
 
 package api.fixtures.v4
 
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
-import api.endpoints.lossClaim.list.v4.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import api.models.domain.TaxYear
+import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import play.api.libs.json.{JsValue, Json}
+import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 object ListLossClaimsFixtures {
 

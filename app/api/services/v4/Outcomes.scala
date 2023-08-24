@@ -16,9 +16,9 @@
 
 package api.services.v4
 
-import api.endpoints.bfLoss.list.v4.response.{ListBFLossesItem, ListBFLossesResponse}
-import api.endpoints.lossClaim.list.v4.response.{ListLossClaimsItem, ListLossClaimsResponse}
 import api.services.anyVersion.Outcomes.ServiceOutcome
+import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
+import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 object Outcomes {
 

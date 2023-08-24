@@ -16,9 +16,9 @@
 
 package api.validations.v3
 
-import api.endpoints.lossClaim.domain.v3.TypeOfClaim._
-import api.endpoints.lossClaim.domain.v3.TypeOfLoss._
-import api.endpoints.lossClaim.domain.v3.{TypeOfClaim, TypeOfLoss}
+import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import api.models.domain.lossClaim.TypeOfClaim._
+import api.models.domain.lossClaim.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
 import api.models.errors.{MtdError, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 import api.validations.NoValidationErrors
 

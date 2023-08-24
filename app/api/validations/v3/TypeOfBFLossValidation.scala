@@ -16,7 +16,7 @@
 
 package api.validations.v3
 
-import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
+import api.models.domain.bfLoss.TypeOfLoss
 import api.models.errors.{MtdError, TypeOfLossFormatError}
 import api.validations.NoValidationErrors
 

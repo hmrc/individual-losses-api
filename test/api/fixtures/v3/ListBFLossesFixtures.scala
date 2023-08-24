@@ -16,10 +16,10 @@
 
 package api.fixtures.v3
 
-import api.endpoints.bfLoss.domain.anyVersion.TypeOfLoss
-import api.endpoints.bfLoss.list.v3.response.{ListBFLossesItem, ListBFLossesResponse}
 import api.models.domain.TaxYear
+import api.models.domain.bfLoss.TypeOfLoss
 import play.api.libs.json.{JsValue, Json}
+import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 object ListBFLossesFixtures {
 
