@@ -18,13 +18,8 @@ package v3.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
 import api.models.errors.MtdError
-import api.controllers.requestParsers.validators.validations.{
-  ClaimIdValidation,
-  JsonFormatValidation,
-  JsonValidation,
-  NinoValidation,
-  TypeOfClaimValidation
-}
+import api.controllers.requestParsers.validators.validations.{ClaimIdValidation, JsonFormatValidation, JsonValidation, NinoValidation}
+import v3.controllers.requestParsers.validators.validations.TypeOfClaimValidation
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequestBody}
 
 class AmendLossClaimTypeValidator extends Validator[AmendLossClaimTypeRawData] {

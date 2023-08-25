@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package v3.controllers.requestParsers.validators.validations
 
 import api.models.errors.{RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 import support.UnitSpec

@@ -17,15 +17,10 @@
 package v3.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
-import api.controllers.requestParsers.validators.validations.{
-  BusinessIdValidation,
-  MinTaxYearValidation,
-  NinoValidation,
-  TaxYearValidation,
-  TypeOfClaimLossValidation
-}
+import api.controllers.requestParsers.validators.validations.{BusinessIdValidation, MinTaxYearValidation, NinoValidation, TaxYearValidation}
 import api.models.errors._
 import config.FixedConfig
+import v3.controllers.requestParsers.validators.validations.TypeOfClaimLossValidation
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.listLossClaims.ListLossClaimsRawData
 

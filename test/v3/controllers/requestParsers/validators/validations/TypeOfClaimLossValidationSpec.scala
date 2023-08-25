@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package v3.controllers.requestParsers.validators.validations
 
 import api.models.errors.TypeOfLossFormatError
 import support.UnitSpec
 
-class TypeOfBFLossValidationSpec extends UnitSpec {
+class TypeOfClaimLossValidationSpec extends UnitSpec {
 
   "validate" should {
 
     "return no errors" when {
       checkValid("self-employment")
-      checkValid("self-employment-class4")
-      checkValid("uk-property-fhl")
       checkValid("uk-property-non-fhl")
       checkValid("foreign-property")
-      checkValid("foreign-property-fhl-eea")
 
       def checkValid(typeOfLoss: String): Unit =
         s"provided with a string of '$typeOfLoss'" in {
-          TypeOfBFLossValidation.validate(typeOfLoss) shouldBe Nil
+          TypeOfClaimLossValidation.validate(typeOfLoss) shouldBe Nil
         }
     }
 
     "return a TypeOfLossFormatError" when {
       "provided with an unknown type of loss" in {
-        TypeOfBFLossValidation.validate("invalid") shouldBe List(TypeOfLossFormatError)
+        TypeOfClaimLossValidation.validate("invalid") shouldBe List(TypeOfLossFormatError)
       }
     }
   }

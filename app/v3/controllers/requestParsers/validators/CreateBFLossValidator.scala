@@ -26,11 +26,11 @@ import api.controllers.requestParsers.validators.validations.{
   NinoValidation,
   NumberValidation,
   TaxYearNotEndedValidation,
-  TaxYearValidation,
-  TypeOfBFLossValidation
+  TaxYearValidation
 }
 import config.FixedConfig
 import utils.CurrentDate
+import v3.controllers.requestParsers.validators.validations.TypeOfBFLossValidation
 import v3.models.request.createBFLosses.{CreateBFLossRawData, CreateBFLossRequestBody}
 
 import javax.inject.{Inject, Singleton}

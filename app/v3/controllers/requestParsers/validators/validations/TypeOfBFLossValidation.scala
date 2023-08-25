@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package v3.controllers.requestParsers.validators.validations
 
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
 import api.models.errors.{MtdError, TypeOfLossFormatError}
 import v3.models.domain.bfLoss.TypeOfLoss
 

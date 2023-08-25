@@ -24,11 +24,10 @@ import api.controllers.requestParsers.validators.validations.{
   JsonValidation,
   MinTaxYearValidation,
   NinoValidation,
-  TaxYearValidation,
-  TypeOfClaimLossValidation,
-  TypeOfClaimValidation
+  TaxYearValidation
 }
 import config.FixedConfig
+import v3.controllers.requestParsers.validators.validations.{TypeOfClaimLossValidation, TypeOfClaimValidation}
 import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequestBody}
 
 class CreateLossClaimValidator extends Validator[CreateLossClaimRawData] with FixedConfig {
