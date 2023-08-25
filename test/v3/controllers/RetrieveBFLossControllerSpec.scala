@@ -19,7 +19,6 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.models.hateoas.Method.GET
@@ -27,6 +26,7 @@ import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import v3.controllers.requestParsers.MockRetrieveBFLossRequestParser
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.retrieveBFLoss.{RetrieveBFLossRawData, RetrieveBFLossRequest}
 import v3.models.response.retrieveBFLoss.{GetBFLossHateoasData, RetrieveBFLossResponse}
 import v3.services.MockRetrieveBFLossService

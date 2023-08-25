@@ -18,18 +18,18 @@ package v3.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.AmendBFLossOutcome
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.AmendBFLossConnector
 import v3.models.request.amendBFLosses.AmendBFLossRequest
+import v3.models.response.amendBFLosses.AmendBFLossResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendBFLossService @Inject() (connector: AmendBFLossConnector) extends BaseService {
 
-  def amendBFLoss(request: AmendBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendBFLossOutcome] =
+  def amendBFLoss(request: AmendBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[AmendBFLossResponse]] =
     connector
       .amendBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

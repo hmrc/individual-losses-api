@@ -17,9 +17,9 @@
 package v3.models.response.listBFLosses
 
 import api.models.domain.TaxYear
-import api.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
+import v3.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 
 case class ListBFLossesItem(lossId: String,
                             businessId: String,

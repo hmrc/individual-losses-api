@@ -17,9 +17,9 @@
 package v3.models.request.createBFLosses
 
 import api.models.domain.TaxYear
-import api.models.domain.bfLoss.TypeOfLoss
-import api.models.domain.bfLoss.TypeOfLoss._
 import play.api.libs.json._
+import v3.models.domain.bfLoss.TypeOfLoss
+import v3.models.domain.bfLoss.TypeOfLoss._
 
 case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal)
 

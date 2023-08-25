@@ -17,8 +17,8 @@
 package v3.models.request.listLossClaims
 
 import api.models.RawData
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{Nino, TaxYear}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
 case class ListLossClaimsRawData(nino: String,
                                  taxYearClaimedFor: Option[String],

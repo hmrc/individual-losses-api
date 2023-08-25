@@ -18,8 +18,8 @@ package v4.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import api.models.domain.{Nino, TaxYear}
+import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequest
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 

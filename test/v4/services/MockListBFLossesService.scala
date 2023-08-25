@@ -17,10 +17,11 @@
 package v4.services
 
 import api.controllers.RequestContext
-import api.services.v4.Outcomes.ListBFLossesOutcome
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v4.models.request.listLossClaims.ListBFLossesRequest
+import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ trait MockListBFLossesService extends MockFactory {
 
   object MockListBFLossesService {
 
-    def list(listBFLossRequest: ListBFLossesRequest): CallHandler[Future[ListBFLossesOutcome]] = {
+    def list(listBFLossRequest: ListBFLossesRequest): CallHandler[Future[ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]]] = {
       (mockListBFLossesService
         .listBFLosses(_: ListBFLossesRequest)(_: RequestContext, _: ExecutionContext))
         .expects(listBFLossRequest, *, *)

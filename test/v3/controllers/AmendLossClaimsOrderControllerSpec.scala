@@ -20,7 +20,6 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.lossClaim.TypeOfClaim
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, PUT}
@@ -28,6 +27,7 @@ import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import v3.controllers.requestParsers.MockAmendLossClaimsOrderRequestParser
+import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 import v3.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 import v3.services.MockAmendLossClaimsOrderService

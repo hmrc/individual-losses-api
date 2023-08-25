@@ -17,10 +17,11 @@
 package v3.services
 
 import api.controllers.RequestContext
-import api.services.v3.Outcomes.AmendBFLossOutcome
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.models.request.amendBFLosses.AmendBFLossRequest
+import v3.models.response.amendBFLosses.AmendBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ trait MockAmendBFLossService extends MockFactory {
 
   object MockAmendBFLossService {
 
-    def amend(requestData: AmendBFLossRequest): CallHandler[Future[AmendBFLossOutcome]] = {
+    def amend(requestData: AmendBFLossRequest): CallHandler[Future[ServiceOutcome[AmendBFLossResponse]]] = {
       (mockAmendBFLossService
         .amendBFLoss(_: AmendBFLossRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

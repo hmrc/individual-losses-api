@@ -16,13 +16,13 @@
 
 package v3.controllers.requestParsers
 
-import api.models.domain.lossClaim.TypeOfClaim
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v3.controllers.requestParsers.validators.MockAmendLossClaimsOrderValidator
+import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 class AmendLossClaimsOrderRequestParserSpec extends UnitSpec {

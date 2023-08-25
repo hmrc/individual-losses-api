@@ -18,8 +18,8 @@ package v3.connectors
 
 import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.domain.{Nino, Timestamp}
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 

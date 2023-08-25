@@ -19,17 +19,19 @@ package v3.services
 import api.controllers.RequestContext
 import api.models.domain.TaxYear
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.ListLossClaimsOutcome
+import api.services.{BaseService, ServiceOutcome}
 import v3.connectors.ListLossClaimsConnector
 import v3.models.request.listLossClaims.ListLossClaimsRequest
+import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) extends BaseService {
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListLossClaimsOutcome] =
+  def listLossClaims(request: ListLossClaimsRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] =
     connector
       .listLossClaims(request)
       .map {

@@ -18,18 +18,19 @@ package v3.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.RetrieveBFLossOutcome
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.RetrieveBFLossConnector
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
+import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveBFLossService @Inject() (connector: RetrieveBFLossConnector) extends BaseService {
 
-  def retrieveBFLoss(request: RetrieveBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[RetrieveBFLossOutcome] =
+  def retrieveBFLoss(
+      request: RetrieveBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveBFLossResponse]] =
     connector
       .retrieveBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

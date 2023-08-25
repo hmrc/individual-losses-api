@@ -17,12 +17,11 @@
 package v4.services
 
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
-import api.services.v4.Outcomes.ListBFLossesOutcome
 import v4.connectors.MockListBFLossesConnector
+import v4.models.domain.bfLoss.TypeOfLoss
 import v4.models.request.listLossClaims.ListBFLossesRequest
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
@@ -44,7 +43,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         private val responseWrapper = downstreamResponse(response)
         MockedListBFLossesConnector.listBFLosses(request()).returns(Future.successful(Right(responseWrapper)))
 
-        private val result: ListBFLossesOutcome = await(service.listBFLosses(request()))
+        private val result = await(service.listBFLosses(request()))
         result shouldBe Right(responseWrapper)
       }
 
@@ -53,7 +52,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
           private val responseWrapper = downstreamResponse(emptyListResponse)
           MockedListBFLossesConnector.listBFLosses(request()).returns(Future.successful(Right(responseWrapper)))
 
-          private val result: ListBFLossesOutcome = await(service.listBFLosses(request()))
+          private val result = await(service.listBFLosses(request()))
           result shouldBe Left(ErrorWrapper(correlationId, NotFoundError, None))
         }
       }
@@ -65,7 +64,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         private val downstreamResponse = ResponseWrapper(correlationId, OutboundError(someError))
         MockedListBFLossesConnector.listBFLosses(request()).returns(Future.successful(Left(downstreamResponse)))
 
-        private val result: ListBFLossesOutcome = await(service.listBFLosses(request()))
+        private val result = await(service.listBFLosses(request()))
         result shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }

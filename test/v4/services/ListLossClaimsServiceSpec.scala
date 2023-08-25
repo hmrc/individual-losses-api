@@ -16,12 +16,11 @@
 
 package v4.services
 
-import api.fixtures.v4.ListLossClaimsFixtures.singleClaimResponseModel
+import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
-import api.services.v4.Outcomes.ListLossClaimsOutcome
 import v4.connectors.MockListLossClaimsConnector
 import v4.models.request.listLossClaims.ListLossClaimsRequest
 import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
@@ -53,7 +52,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
           )
         MockedListLossClaimsConnector.listLossClaims(request(taxYear)).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request(taxYear)))
+        private val result = await(service.listLossClaims(request(taxYear)))
         result shouldBe Right(downstreamResponse)
       }
     }
@@ -67,7 +66,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
           )
         MockedListLossClaimsConnector.listLossClaims(request(taxYear)).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request(taxYear)))
+        private val result = await(service.listLossClaims(request(taxYear)))
         result shouldBe Left(ErrorWrapper(correlationId, NotFoundError, None))
       }
     }
@@ -78,7 +77,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
         private val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedListLossClaimsConnector.listLossClaims(request()).returns(Future.successful(Left(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request()))
+        private val result = await(service.listLossClaims(request()))
         result shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }

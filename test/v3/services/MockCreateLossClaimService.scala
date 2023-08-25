@@ -17,10 +17,11 @@
 package v3.services
 
 import api.controllers.RequestContext
-import api.services.v3.Outcomes.CreateLossClaimOutcome
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.models.request.createLossClaim.CreateLossClaimRequest
+import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ trait MockCreateLossClaimService extends MockFactory {
 
   object MockCreateLossClaimService {
 
-    def create(requestData: CreateLossClaimRequest): CallHandler[Future[CreateLossClaimOutcome]] = {
+    def create(requestData: CreateLossClaimRequest): CallHandler[Future[ServiceOutcome[CreateLossClaimResponse]]] = {
       (mockCreateLossClaimService
         .createLossClaim(_: CreateLossClaimRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

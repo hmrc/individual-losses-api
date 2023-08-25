@@ -19,7 +19,6 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.models.hateoas.Method.GET
@@ -27,6 +26,7 @@ import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import v3.controllers.requestParsers.MockRetrieveLossClaimRequestParser
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.request.retrieveLossClaim.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
 import v3.models.response.retrieveLossClaim.{GetLossClaimHateoasData, RetrieveLossClaimResponse}
 import v3.services.MockRetrieveLossClaimService

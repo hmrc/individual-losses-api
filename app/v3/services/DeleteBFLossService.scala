@@ -18,8 +18,7 @@ package v3.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.DeleteBFLossOutcome
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.DeleteBFLossConnector
 import v3.models.request.deleteBFLosses.DeleteBFLossRequest
@@ -29,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeleteBFLossService @Inject() (connector: DeleteBFLossConnector) extends BaseService {
 
-  def deleteBFLoss(request: DeleteBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[DeleteBFLossOutcome] =
+  def deleteBFLoss(request: DeleteBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] =
     connector
       .deleteBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

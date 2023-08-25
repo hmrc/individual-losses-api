@@ -16,12 +16,12 @@
 
 package v3.models.response.listLossClaims
 
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
 class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 

@@ -18,18 +18,19 @@ package v3.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.RetrieveLossClaimOutcome
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.RetrieveLossClaimConnector
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
+import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveLossClaimService @Inject() (connector: RetrieveLossClaimConnector) extends BaseService {
 
-  def retrieveLossClaim(request: RetrieveLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[RetrieveLossClaimOutcome] =
+  def retrieveLossClaim(
+      request: RetrieveLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveLossClaimResponse]] =
     connector
       .retrieveLossClaim(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

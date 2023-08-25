@@ -19,17 +19,19 @@ package v3.services
 import api.controllers.RequestContext
 import api.models.domain.TaxYear
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.ListBFLossesOutcome
+import api.services.{BaseService, ServiceOutcome}
 import v3.connectors.ListBFLossesConnector
 import v3.models.request.listBFLosses.ListBFLossesRequest
+import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ListBFLossesService @Inject() (connector: ListBFLossesConnector) extends BaseService {
 
-  def listBFLosses(request: ListBFLossesRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListBFLossesOutcome] =
+  def listBFLosses(request: ListBFLossesRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]] =
     connector
       .listBFLosses(request)
       .map {

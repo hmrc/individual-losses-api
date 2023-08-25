@@ -19,8 +19,8 @@ package v3.connectors
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import uk.gov.hmrc.http.HeaderCarrier
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 

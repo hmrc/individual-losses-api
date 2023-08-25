@@ -18,9 +18,8 @@ package v3.connectors
 
 import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.domain.{Nino, Timestamp}
-import v3.models.request.amendBFLosses
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.amendBFLosses.{AmendBFLossRequest, AmendBFLossRequestBody}
 import v3.models.response.amendBFLosses.AmendBFLossResponse
 
@@ -32,7 +31,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
   val lossId: String = "AAZZ1234567890a"
 
   val requestBody: AmendBFLossRequestBody = AmendBFLossRequestBody(500.13)
-  val request: AmendBFLossRequest         = amendBFLosses.AmendBFLossRequest(nino = Nino(nino), lossId = lossId, requestBody)
+  val request: AmendBFLossRequest         = AmendBFLossRequest(nino = Nino(nino), lossId = lossId, requestBody)
 
   trait Test {
     _: ConnectorTest =>

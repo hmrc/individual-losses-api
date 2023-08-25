@@ -18,8 +18,8 @@ package v3.connectors
 
 import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
-import api.models.domain.lossClaim.TypeOfClaim
 import api.models.domain.{Nino, TaxYear}
+import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 
 import scala.concurrent.Future

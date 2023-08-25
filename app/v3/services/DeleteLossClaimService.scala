@@ -18,8 +18,7 @@ package v3.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.DeleteLossClaimOutcome
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.DeleteLossClaimConnector
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
@@ -29,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeleteLossClaimService @Inject() (connector: DeleteLossClaimConnector) extends BaseService {
 
-  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[DeleteLossClaimOutcome] =
+  def deleteLossClaim(request: DeleteLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] =
     connector
       .deleteLossClaim(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

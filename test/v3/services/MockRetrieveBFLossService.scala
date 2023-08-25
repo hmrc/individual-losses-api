@@ -17,10 +17,11 @@
 package v3.services
 
 import api.controllers.RequestContext
-import api.services.v3.Outcomes.RetrieveBFLossOutcome
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
+import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ trait MockRetrieveBFLossService extends MockFactory {
 
   object MockRetrieveBFLossService {
 
-    def retrieve(retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[RetrieveBFLossOutcome]] = {
+    def retrieve(retrieveBFLossRequest: RetrieveBFLossRequest): CallHandler[Future[ServiceOutcome[RetrieveBFLossResponse]]] = {
       (mockRetrieveBFLossService
         .retrieveBFLoss(_: RetrieveBFLossRequest)(_: RequestContext, _: ExecutionContext))
         .expects(retrieveBFLossRequest, *, *)

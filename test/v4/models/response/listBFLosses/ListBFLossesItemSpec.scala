@@ -16,9 +16,9 @@
 
 package v4.models.response.listBFLosses
 
-import api.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 import play.api.libs.json.Json
 import support.UnitSpec
+import v4.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 
 class ListBFLossesItemSpec extends UnitSpec {
 

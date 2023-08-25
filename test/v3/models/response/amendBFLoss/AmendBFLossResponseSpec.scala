@@ -18,12 +18,12 @@ package v3.models.response.amendBFLoss
 
 import api.hateoas.HateoasFactory
 import api.models.domain.Timestamp
-import api.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 import api.models.hateoas.Method.{DELETE, GET, POST}
 import api.models.hateoas.{HateoasWrapper, Link}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v3.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 import v3.models.response.amendBFLosses.{AmendBFLossHateoasData, AmendBFLossResponse}
 
 class AmendBFLossResponseSpec extends UnitSpec {

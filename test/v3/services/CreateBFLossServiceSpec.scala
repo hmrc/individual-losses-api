@@ -18,10 +18,10 @@ package v3.services
 
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.services.ServiceSpec
 import v3.connectors.MockCreateBFLossConnector
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.createBFLosses.{CreateBFLossRequest, CreateBFLossRequestBody}
 import v3.models.response.createBFLosses.CreateBFLossResponse
 

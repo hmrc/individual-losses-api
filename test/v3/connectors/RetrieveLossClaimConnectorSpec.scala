@@ -18,8 +18,8 @@ package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.ResponseWrapper
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{Nino, Timestamp}
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 

@@ -17,10 +17,9 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.fixtures.v4.ListLossClaimsFixtures.singleClaimResponseModel
+import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
@@ -28,6 +27,7 @@ import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import v4.controllers.requestParsers.MockListLossClaimsRequestParser
+import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
 import v4.models.response.listLossClaims.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 import v4.services.MockListLossClaimsService

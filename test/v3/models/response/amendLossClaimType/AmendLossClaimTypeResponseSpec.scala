@@ -17,12 +17,12 @@
 package v3.models.response.amendLossClaimType
 
 import api.models.domain.Timestamp
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
 class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
 

@@ -19,7 +19,7 @@ package v3.connectors
 import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.domain.bfLoss.TypeOfLoss
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.createBFLosses.{CreateBFLossRequest, CreateBFLossRequestBody}
 import v3.models.response.createBFLosses.CreateBFLossResponse
 

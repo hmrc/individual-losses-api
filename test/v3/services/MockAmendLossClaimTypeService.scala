@@ -17,10 +17,11 @@
 package v3.services
 
 import api.controllers.RequestContext
-import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
+import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ trait MockAmendLossClaimTypeService extends MockFactory {
 
   object MockAmendLossClaimTypeService {
 
-    def amend(requestData: AmendLossClaimTypeRequest): CallHandler[Future[AmendLossClaimTypeOutcome]] = {
+    def amend(requestData: AmendLossClaimTypeRequest): CallHandler[Future[ServiceOutcome[AmendLossClaimTypeResponse]]] = {
       (mockAmendLossClaimTypeService
         .amendLossClaimType(_: AmendLossClaimTypeRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

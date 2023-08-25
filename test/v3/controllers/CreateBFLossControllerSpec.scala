@@ -21,13 +21,13 @@ import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.errors._
 import api.models.hateoas.Method.GET
 import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import v3.controllers.requestParsers.MockCreateBFLossRequestParser
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.createBFLosses.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
 import v3.models.response.createBFLosses.{CreateBFLossHateoasData, CreateBFLossResponse}
 import v3.services.MockCreateBFLossService

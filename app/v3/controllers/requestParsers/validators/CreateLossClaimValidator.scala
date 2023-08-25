@@ -16,10 +16,18 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.Validator
 import api.models.errors.{MtdError, TaxYearClaimedForFormatError}
-import api.validations.Validator
-import api.validations.anyVersion._
-import api.validations.v3._
+import api.controllers.requestParsers.validators.validations.{
+  BusinessIdValidation,
+  JsonFormatValidation,
+  JsonValidation,
+  MinTaxYearValidation,
+  NinoValidation,
+  TaxYearValidation,
+  TypeOfClaimLossValidation,
+  TypeOfClaimValidation
+}
 import config.FixedConfig
 import v3.models.request.createLossClaim.{CreateLossClaimRawData, CreateLossClaimRequestBody}
 

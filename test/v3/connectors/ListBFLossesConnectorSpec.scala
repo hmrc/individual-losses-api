@@ -17,11 +17,11 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.fixtures.v3.ListBFLossesFixtures._
+import v3.fixtures.ListBFLossesFixtures._
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.IncomeSourceType
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
+import v3.models.domain.bfLoss.IncomeSourceType
 import v3.models.request.listBFLosses.ListBFLossesRequest
 import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 

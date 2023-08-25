@@ -16,10 +16,10 @@
 
 package v4.controllers.requestParsers
 
-import api.controllers.RequestParser
-import api.models.domain.bfLoss.TypeOfLoss
+import api.controllers.requestParsers.RequestParser
 import api.models.domain.{Nino, TaxYear}
 import v4.controllers.requestParsers.validators.ListBFLossesValidator
+import v4.models.domain.bfLoss.TypeOfLoss
 import v4.models.request.listLossClaims.{ListBFLossesRawData, ListBFLossesRequest}
 
 import javax.inject.Inject

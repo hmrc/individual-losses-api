@@ -16,12 +16,11 @@
 
 package v3.services
 
-import api.fixtures.v3.ListLossClaimsFixtures.{multipleClaimsResponseModel, singleClaimResponseModel}
+import v3.fixtures.ListLossClaimsFixtures.{multipleClaimsResponseModel, singleClaimResponseModel}
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
-import api.services.v3.Outcomes.ListLossClaimsOutcome
 import v3.connectors.MockListLossClaimsConnector
 import v3.models.request.listLossClaims.ListLossClaimsRequest
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
@@ -48,7 +47,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
           ResponseWrapper(correlationId, multipleClaimsResponseModel)
         MockedListLossClaimsConnector.listLossClaims(request()).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request()))
+        private val result = await(service.listLossClaims(request()))
         result shouldBe Right(downstreamResponse)
       }
 
@@ -61,7 +60,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
           )
         MockedListLossClaimsConnector.listLossClaims(request(taxYear)).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request(taxYear)))
+        private val result = await(service.listLossClaims(request(taxYear)))
         result shouldBe Right(downstreamResponse)
       }
     }
@@ -76,7 +75,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
           )
         MockedListLossClaimsConnector.listLossClaims(request(taxYear)).returns(Future.successful(Right(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request(taxYear)))
+        private val result = await(service.listLossClaims(request(taxYear)))
         result shouldBe Left(ErrorWrapper(correlationId, NotFoundError, None))
       }
     }
@@ -87,7 +86,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
         private val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
         MockedListLossClaimsConnector.listLossClaims(request()).returns(Future.successful(Left(downstreamResponse)))
 
-        private val result: ListLossClaimsOutcome = await(service.listLossClaims(request()))
+        private val result = await(service.listLossClaims(request()))
         result shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }

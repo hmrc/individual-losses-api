@@ -17,8 +17,8 @@
 package v4.models.request.listLossClaims
 
 import api.models.RawData
-import api.models.domain.bfLoss.IncomeSourceType
 import api.models.domain.{Nino, TaxYear}
+import v4.models.domain.bfLoss.IncomeSourceType
 
 case class ListBFLossesRawData(
     nino: String,

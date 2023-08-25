@@ -17,12 +17,11 @@
 package v3.services
 
 import api.models.ResponseWrapper
-import api.models.domain.lossClaim.TypeOfClaim
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
-import api.services.v3.Outcomes.AmendLossClaimsOrderOutcome
 import v3.connectors.MockAmendLossClaimsConnector
+import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
@@ -76,7 +75,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
             .amendLossClaimsOrder(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          val result: AmendLossClaimsOrderOutcome = await(service.amendLossClaimsOrder(request))
+          private val result = await(service.amendLossClaimsOrder(request))
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
       }

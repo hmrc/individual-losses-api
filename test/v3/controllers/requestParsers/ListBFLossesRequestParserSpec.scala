@@ -16,11 +16,11 @@
 
 package v3.controllers.requestParsers
 
-import api.models.domain.bfLoss.IncomeSourceType
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 import v3.controllers.requestParsers.validators.MockListBFLossesValidator
+import v3.models.domain.bfLoss.IncomeSourceType
 import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
 
 class ListBFLossesRequestParserSpec extends UnitSpec {

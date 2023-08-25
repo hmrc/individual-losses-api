@@ -18,18 +18,19 @@ package v3.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.BaseService
-import api.services.v3.Outcomes.AmendLossClaimTypeOutcome
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.AmendLossClaimTypeConnector
 import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
+import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnector) extends BaseService {
 
-  def amendLossClaimType(request: AmendLossClaimTypeRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendLossClaimTypeOutcome] =
+  def amendLossClaimType(
+      request: AmendLossClaimTypeRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimTypeResponse]] =
     connector
       .amendLossClaimType(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

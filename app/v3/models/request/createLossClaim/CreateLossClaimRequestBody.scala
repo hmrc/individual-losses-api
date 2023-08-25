@@ -17,9 +17,9 @@
 package v3.models.request.createLossClaim
 
 import api.models.domain.TaxYear
-import api.models.domain.lossClaim.TypeOfLoss._
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import play.api.libs.json._
+import v3.models.domain.lossClaim.TypeOfLoss._
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
 case class CreateLossClaimRequestBody(taxYearClaimedFor: String, typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, businessId: String)
 

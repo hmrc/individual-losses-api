@@ -16,10 +16,10 @@
 
 package v4.controllers.requestParsers
 
-import api.controllers.RequestParser
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import api.controllers.requestParsers.RequestParser
 import api.models.domain.{Nino, TaxYear}
 import v4.controllers.requestParsers.validators.ListLossClaimsValidator
+import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
 
 import javax.inject.Inject

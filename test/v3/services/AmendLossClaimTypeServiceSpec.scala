@@ -17,10 +17,10 @@
 package v3.services
 
 import api.models.ResponseWrapper
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v3.connectors.MockAmendLossClaimTypeConnector

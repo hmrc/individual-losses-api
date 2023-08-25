@@ -16,10 +16,15 @@
 
 package v3.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.Validator
 import api.models.errors.MtdError
-import api.validations.Validator
-import api.validations.anyVersion.{JsonFormatValidation, JsonValidation, NinoValidation}
-import api.validations.v3.{ClaimIdValidation, TypeOfClaimValidation}
+import api.controllers.requestParsers.validators.validations.{
+  ClaimIdValidation,
+  JsonFormatValidation,
+  JsonValidation,
+  NinoValidation,
+  TypeOfClaimValidation
+}
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRawData, AmendLossClaimTypeRequestBody}
 
 class AmendLossClaimTypeValidator extends Validator[AmendLossClaimTypeRawData] {

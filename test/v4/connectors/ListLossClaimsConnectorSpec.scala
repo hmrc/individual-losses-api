@@ -17,11 +17,11 @@
 package v4.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.fixtures.v4.ListLossClaimsFixtures._
+import v4.fixtures.ListLossClaimsFixtures._
 import api.models.ResponseWrapper
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
+import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.listLossClaims.ListLossClaimsRequest
 import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 

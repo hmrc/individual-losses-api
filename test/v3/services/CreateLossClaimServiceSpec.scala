@@ -18,11 +18,10 @@ package v3.services
 
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.errors._
 import api.services.ServiceSpec
-import api.services.v3.Outcomes.CreateLossClaimOutcome
 import v3.connectors.MockCreateLossClaimConnector
+import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
@@ -71,7 +70,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
             DownstreamErrors(Seq(DownstreamErrorCode(NinoFormatError.code), DownstreamErrorCode(ServiceUnavailableError.code))))
 
         MockCreateLossClaimConnector.createLossClaim(request).returns(Future.successful(Left(expected)))
-        val result: CreateLossClaimOutcome = await(service.createLossClaim(request))
+        val result = await(service.createLossClaim(request))
         result shouldBe Left(ErrorWrapper(correlationId, InternalError, None))
       }
     }

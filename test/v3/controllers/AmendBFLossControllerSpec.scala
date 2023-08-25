@@ -20,7 +20,6 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.models.hateoas.Method.GET
@@ -29,6 +28,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import v3.controllers.requestParsers.MockAmendBFLossRequestParser
 import v3.models.request
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.amendBFLosses.{AmendBFLossRawData, AmendBFLossRequestBody}
 import v3.models.response.amendBFLosses.{AmendBFLossHateoasData, AmendBFLossResponse}
 import v3.services.MockAmendBFLossService

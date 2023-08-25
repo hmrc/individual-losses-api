@@ -16,11 +16,11 @@
 
 package v4.controllers.requestParsers
 
-import api.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 import v4.controllers.requestParsers.validators.MockListLossClaimsValidator
+import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
 
 class ListLossClaimsRequestParserSpec extends UnitSpec {

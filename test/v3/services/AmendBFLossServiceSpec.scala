@@ -17,11 +17,11 @@
 package v3.services
 
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.TypeOfLoss
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockAmendBFLossConnector
+import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.amendBFLosses.{AmendBFLossRequest, AmendBFLossRequestBody}
 import v3.models.response.amendBFLosses.AmendBFLossResponse
 

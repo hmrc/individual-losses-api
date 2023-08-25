@@ -19,7 +19,6 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.MockHateoasFactory
 import api.models.ResponseWrapper
-import api.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.Method.{GET, POST}
@@ -27,6 +26,7 @@ import api.models.hateoas.{HateoasWrapper, Link}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.controllers.requestParsers.MockListBFLossesRequestParser
+import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
 import v3.models.response.listBFLosses.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import v3.services.MockListBFLossesService

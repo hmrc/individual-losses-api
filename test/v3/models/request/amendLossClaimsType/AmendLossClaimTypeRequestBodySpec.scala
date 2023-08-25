@@ -16,10 +16,10 @@
 
 package v3.models.request.amendLossClaimsType
 
-import api.models.domain.lossClaim.TypeOfClaim
-import api.models.domain.lossClaim.TypeOfClaim._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v3.models.domain.lossClaim.TypeOfClaim
+import v3.models.domain.lossClaim.TypeOfClaim._
 import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequestBody
 
 class AmendLossClaimTypeRequestBodySpec extends UnitSpec {

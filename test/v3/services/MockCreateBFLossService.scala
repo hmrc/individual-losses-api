@@ -17,10 +17,11 @@
 package v3.services
 
 import api.controllers.RequestContext
-import api.services.v3.Outcomes.CreateBFLossOutcome
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.models.request.createBFLosses.CreateBFLossRequest
+import v3.models.response.createBFLosses.CreateBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,7 @@ trait MockCreateBFLossService extends MockFactory {
 
   object MockCreateBFLossService {
 
-    def create(requestData: CreateBFLossRequest): CallHandler[Future[CreateBFLossOutcome]] = {
+    def create(requestData: CreateBFLossRequest): CallHandler[Future[ServiceOutcome[CreateBFLossResponse]]] = {
       (mockCreateBFLossService
         .createBFLoss(_: CreateBFLossRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
