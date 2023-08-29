@@ -16,7 +16,7 @@
 
 package api.endpoints.bfLoss.list.v3
 
-import api.fixtures.v3.ListBFLossesFixtures._
+import v3.fixtures.ListBFLossesFixtures._
 import api.models.domain.TaxYear
 import api.models.errors._
 import play.api.http.HeaderNames.ACCEPT

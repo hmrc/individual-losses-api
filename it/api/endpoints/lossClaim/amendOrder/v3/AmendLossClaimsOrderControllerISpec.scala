@@ -16,8 +16,6 @@
 
 package api.endpoints.lossClaim.amendOrder.v3
 
-import api.endpoints.lossClaim.amendOrder.v3.model.Claim
-import api.endpoints.lossClaim.domain.v3.TypeOfClaim
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -28,6 +26,8 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import v3.models.domain.lossClaim.TypeOfClaim
+import v3.models.request.amendLossClaimsOrder.Claim
 
 class AmendLossClaimsOrderControllerISpec extends V3V4IntegrationBaseSpec {
 

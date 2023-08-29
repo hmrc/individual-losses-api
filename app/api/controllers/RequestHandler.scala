@@ -16,6 +16,7 @@
 
 package api.controllers
 
+import api.controllers.requestParsers.RequestParser
 import api.hateoas.{HateoasFactory, HateoasLinksFactory}
 import api.models.errors.{ErrorWrapper, InternalError}
 import api.models.hateoas.{HateoasData, HateoasWrapper}

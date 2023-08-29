@@ -16,7 +16,7 @@
 
 package api.endpoints.lossClaim.list.v4
 
-import api.fixtures.v4.ListLossClaimsFixtures._
+import v4.fixtures.ListLossClaimsFixtures._
 import api.models.domain.TaxYear
 import api.models.errors._
 import play.api.http.HeaderNames.ACCEPT
