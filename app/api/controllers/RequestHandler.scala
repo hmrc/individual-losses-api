@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait RequestHandler[InputRaw <: RawData] {
 
   def handleRequest(rawData: InputRaw)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result]
-
 }
 
 object RequestHandler {
