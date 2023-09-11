@@ -19,7 +19,7 @@ package api.controllers
 import api.controllers.requestParsers.RequestParser
 import api.hateoas.{HateoasFactory, HateoasLinksFactory}
 import api.models.errors.{ErrorWrapper, InternalError}
-import api.models.hateoas.{HateoasData, HateoasWrapper}
+import api.hateoas.{HateoasData, HateoasWrapper}
 import api.models.{RawData, ResponseWrapper}
 import cats.data.EitherT
 import cats.implicits._
@@ -56,7 +56,7 @@ object RequestHandler {
       service: Input => Future[Either[ErrorWrapper, ResponseWrapper[Output]]],
       errorHandling: ErrorHandling = ErrorHandling.Default,
       resultCreator: ResultCreator[InputRaw, Input, Output] = ResultCreator.noContent[InputRaw, Input, Output](),
-      auditHandler: Option[AuditHandler] = None
+      auditHandler: Option[AuditHandlerOld] = None
   ) extends RequestHandler[InputRaw] {
 
     def handleRequest(rawData: InputRaw)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] =
@@ -68,7 +68,7 @@ object RequestHandler {
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[InputRaw, Input, Output] =
       copy(errorHandling = errorHandling)
 
-    def withAuditing(auditHandler: AuditHandler): RequestHandlerBuilder[InputRaw, Input, Output] =
+    def withAuditing(auditHandler: AuditHandlerOld): RequestHandlerBuilder[InputRaw, Input, Output] =
       copy(auditHandler = Some(auditHandler))
 
     /** Shorthand for

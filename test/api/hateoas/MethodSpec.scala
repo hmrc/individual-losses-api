@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package api.hateoas
 
-import api.models.hateoas.Method._
+import api.hateoas.Method.{DELETE, GET, POST, PUT}
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 

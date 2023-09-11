@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package api.models.domain
 
-object RelType {
-  val DELETE_BF_LOSS = "delete-brought-forward-loss"
-  val AMEND_BF_LOSS  = "amend-brought-forward-loss"
-  val CREATE_BF_LOSS = "create-brought-forward-loss"
+import support.UnitSpec
 
-  val AMEND_LOSS_CLAIM       = "amend-loss-claim"
-  val DELETE_LOSS_CLAIM      = "delete-loss-claim"
-  val CREATE_LOSS_CLAIM      = "create-loss-claim"
-  val LIST_LOSS_CLAIMS       = "list-loss-claims"
-  val AMEND_LOSS_CLAIM_ORDER = "amend-loss-claim-order"
+class CalculationIdSpec extends UnitSpec {
 
-  val SELF = "self"
+  "toString" should {
+    "return the CalculationId value" in {
+      val calculationId = CalculationId("some id")
+      calculationId.toString shouldBe "some id"
+    }
+  }
+
 }

@@ -17,13 +17,12 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.MockHateoasFactory
+import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetailOld}
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
-import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.hateoas.Method.GET
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import v3.controllers.requestParsers.MockAmendLossClaimTypeRequestDataParser
@@ -149,11 +148,11 @@ class AmendLossClaimTypeControllerSpec
 
     protected def callController(): Future[Result] = controller.amend(nino, claimId)(fakePostRequest(requestBody))
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld] =
       AuditEvent(
         auditType = "AmendLossClaim",
         transactionName = "amend-loss-claim",
-        detail = GenericAuditDetail(
+        detail = GenericAuditDetailOld(
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",

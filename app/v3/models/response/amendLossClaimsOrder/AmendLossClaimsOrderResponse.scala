@@ -16,9 +16,8 @@
 
 package v3.models.response.amendLossClaimsOrder
 
-import api.hateoas.{HateoasLinks, HateoasLinksFactory}
-import api.models.hateoas.RelType.LIST_LOSS_CLAIMS
-import api.models.hateoas.{HateoasData, Link}
+import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
+import api.hateoas.RelType.LIST_LOSS_CLAIMS
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
 

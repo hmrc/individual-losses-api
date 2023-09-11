@@ -17,12 +17,11 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.MockHateoasFactory
+import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
-import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.hateoas.Method.GET
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import v3.controllers.requestParsers.MockRetrieveBFLossRequestParser

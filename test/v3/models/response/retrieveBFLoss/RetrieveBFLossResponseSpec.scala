@@ -16,10 +16,9 @@
 
 package v3.models.response.retrieveBFLoss
 
-import api.hateoas.HateoasFactory
+import api.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import api.models.domain.Timestamp
-import api.models.hateoas.Method.{DELETE, GET, POST}
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.hateoas.Method.{DELETE, GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec

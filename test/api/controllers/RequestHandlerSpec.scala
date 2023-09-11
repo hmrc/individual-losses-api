@@ -17,12 +17,12 @@
 package api.controllers
 
 import api.controllers.requestParsers.RequestParser
-import api.hateoas.{HateoasLinksFactory, MockHateoasFactory}
+import api.hateoas._
 import api.mocks.MockIdGenerator
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetailOld}
+import api.models.auth.UserDetails
 import api.models.errors.{ErrorWrapper, NinoFormatError}
-import api.models.hateoas.{HateoasData, HateoasWrapper, Link}
-import api.models.{RawData, ResponseWrapper, UserDetails}
+import api.models.{RawData, ResponseWrapper}
 import api.services.{MockAuditService, ServiceOutcome}
 import config.AppConfig
 import org.scalamock.handlers.CallHandler
@@ -182,7 +182,7 @@ class RequestHandlerSpec
 
       val requestBody = Some(JsString("REQUEST BODY"))
 
-      def auditHandler(includeResponse: Boolean = false): AuditHandler = AuditHandler(
+      def auditHandler(includeResponse: Boolean = false): AuditHandlerOld = AuditHandlerOld(
         mockAuditService,
         auditType = auditType,
         transactionName = txName,
@@ -201,7 +201,7 @@ class RequestHandlerSpec
           AuditEvent(
             auditType = auditType,
             transactionName = txName,
-            GenericAuditDetail(userDetails, params = params, requestBody = requestBody, `X-CorrelationId` = correlationId, auditResponse)
+            GenericAuditDetailOld(userDetails, params = params, requestBody = requestBody, `X-CorrelationId` = correlationId, auditResponse)
           ))
 
       "a request is successful" when {

@@ -16,6 +16,6 @@
 
 package v3.models.response.amendBFLosses
 
-import api.models.hateoas.HateoasData
+import api.hateoas.HateoasData
 
 case class AmendBFLossHateoasData(nino: String, lossId: String) extends HateoasData

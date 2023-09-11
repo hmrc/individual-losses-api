@@ -51,14 +51,14 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
       val rawData = CreateLossClaimRawData(nino, AnyContentAsJson(request.body))
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.createLossClaim)
           .withHateoasResultFrom(hateoasFactory)(
             (_, responseData) => CreateLossClaimHateoasData(nino, responseData.claimId),
             successStatus = CREATED
           )
-          .withAuditing(AuditHandler(
+          .withAuditing(AuditHandlerOld(
             auditService,
             auditType = "CreateLossClaim",
             transactionName = "create-loss-claim",

@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
-package api.models
+package api.models.domain
 
-case class UserDetails(mtdId: String, userType: String, agentReferenceNumber: Option[String])
+import play.api.libs.json.Format
+import utils.enums.Enums
+
+sealed trait Status {}
+
+//noinspection ScalaStyle
+object Status {
+
+  case object `valid` extends Status
+
+  case object `invalid` extends Status
+
+  case object `superseded` extends Status
+
+  implicit val format: Format[Status] = Enums.format[Status]
+}
