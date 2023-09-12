@@ -55,14 +55,14 @@ object RequestHandlerOld {
       parser: RequestParser[InputRaw, Input],
       service: Input => Future[Either[ErrorWrapper, ResponseWrapper[Output]]],
       errorHandling: ErrorHandling = ErrorHandling.Default,
-      resultCreator: ResultCreator[InputRaw, Input, Output] = ResultCreator.noContent[InputRaw, Input, Output](),
+      resultCreator: ResultCreatorOld[InputRaw, Input, Output] = ResultCreatorOld.noContent[InputRaw, Input, Output](),
       auditHandler: Option[AuditHandlerOld] = None
   ) extends RequestHandlerOld[InputRaw] {
 
     def handleRequest(rawData: InputRaw)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] =
       Delegate.handleRequest(rawData)
 
-    def withResultCreator(resultCreator: ResultCreator[InputRaw, Input, Output]): RequestHandlerOldBuilder[InputRaw, Input, Output] =
+    def withResultCreator(resultCreator: ResultCreatorOld[InputRaw, Input, Output]): RequestHandlerOldBuilder[InputRaw, Input, Output] =
       copy(resultCreator = resultCreator)
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerOldBuilder[InputRaw, Input, Output] =
@@ -73,40 +73,40 @@ object RequestHandlerOld {
 
     /** Shorthand for
       * {{{
-      * withResultCreator(ResultCreator.plainJson(successStatus))
+      * withResultCreator(ResultCreatorOld.plainJson(successStatus))
       * }}}
       */
     def withPlainJsonResult(successStatus: Int = Status.OK)(implicit ws: Writes[Output]): RequestHandlerOldBuilder[InputRaw, Input, Output] =
-      withResultCreator(ResultCreator.plainJson(successStatus))
+      withResultCreator(ResultCreatorOld.plainJson(successStatus))
 
     /** Shorthand for
       * {{{
-      * withResultCreator(ResultCreator.noContent)
+      * withResultCreator(ResultCreatorOld.noContent)
       * }}}
       */
     def withNoContentResult(successStatus: Int = Status.NO_CONTENT): RequestHandlerOldBuilder[InputRaw, Input, Output] =
-      withResultCreator(ResultCreator.noContent(successStatus))
+      withResultCreator(ResultCreatorOld.noContent(successStatus))
 
     /** Shorthand for
       * {{{
-      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
+      * withResultCreator(ResultCreatorOld.hateoasWrapping(hateoasFactory, successStatus)(data))
       * }}}
       */
     def withHateoasResultFrom[HData <: HateoasData](
         hateoasFactory: HateoasFactory)(data: (Input, Output) => HData, successStatus: Int = Status.OK)(implicit
         linksFactory: HateoasLinksFactory[Output, HData],
         writes: Writes[HateoasWrapper[Output]]): RequestHandlerOldBuilder[InputRaw, Input, Output] =
-      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
+      withResultCreator(ResultCreatorOld.hateoasWrapping(hateoasFactory, successStatus)(data))
 
     /** Shorthand for
       * {{{
-      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_,_) => data))
+      * withResultCreator(ResultCreatorOld.hateoasWrapping(hateoasFactory, successStatus)((_,_) => data))
       * }}}
       */
     def withHateoasResult[HData <: HateoasData](hateoasFactory: HateoasFactory)(data: HData, successStatus: Int = Status.OK)(implicit
         linksFactory: HateoasLinksFactory[Output, HData],
         writes: Writes[HateoasWrapper[Output]]): RequestHandlerOldBuilder[InputRaw, Input, Output] =
-      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_, _) => data))
+      withResultCreator(ResultCreatorOld.hateoasWrapping(hateoasFactory, successStatus)((_, _) => data))
 
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandlerOld[InputRaw] with Logging with RequestContextImplicits {

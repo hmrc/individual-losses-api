@@ -53,7 +53,7 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
         RequestHandlerOld
           .withParser(parser)
           .withService(service.listLossClaims)
-          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
+          .withResultCreator(ResultCreatorOld.hateoasListWrapping(hateoasFactory)((_, _) =>
             ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear)))
 
       requestHandler.handleRequest(rawData)

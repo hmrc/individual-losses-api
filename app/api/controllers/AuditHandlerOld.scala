@@ -46,7 +46,7 @@ object AuditHandlerOld {
             params: Map[String, String],
             requestBody: Option[JsValue] = None,
             includeResponse: Boolean = false): AuditHandlerOld =
-    new AuditHandlerImpl[GenericAuditDetailOld](
+    new AuditHandlerOldImpl[GenericAuditDetailOld](
       auditService = auditService,
       auditType = auditType,
       transactionName = transactionName,
@@ -61,7 +61,7 @@ object AuditHandlerOld {
                         auditDetailCreator: AuditDetailCreator[A],
                         requestBody: Option[JsValue] = None,
                         responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandlerOld =
-    new AuditHandlerImpl[A](
+    new AuditHandlerOldImpl[A](
       auditService = auditService,
       auditType = auditType,
       transactionName = transactionName,
@@ -70,12 +70,12 @@ object AuditHandlerOld {
       responseBodyMap = responseBodyMap
     )
 
-  private class AuditHandlerImpl[A: Writes](auditService: AuditService,
-                                            auditType: String,
-                                            transactionName: String,
-                                            auditDetailCreator: AuditDetailCreator[A],
-                                            requestBody: Option[JsValue],
-                                            responseBodyMap: Option[JsValue] => Option[JsValue])
+  private class AuditHandlerOldImpl[A: Writes](auditService: AuditService,
+                                               auditType: String,
+                                               transactionName: String,
+                                               auditDetailCreator: AuditDetailCreator[A],
+                                               requestBody: Option[JsValue],
+                                               responseBodyMap: Option[JsValue] => Option[JsValue])
       extends AuditHandlerOld {
 
     def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit

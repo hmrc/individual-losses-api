@@ -33,11 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait RequestHandler {
 
-  def handleRequest()(implicit
-      ctx: RequestContext,
-      request: UserRequest[_],
-      ec: ExecutionContext
-  ): Future[Result]
+  def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result]
 
 }
 
@@ -128,11 +124,7 @@ object RequestHandler {
 
       }
 
-      def handleRequest()(implicit
-          ctx: RequestContext,
-          request: UserRequest[_],
-          ec: ExecutionContext
-      ): Future[Result] = {
+      def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] = {
 
         logger.info(
           message = s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] " +
@@ -158,8 +150,7 @@ object RequestHandler {
       private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(implicit
           ctx: RequestContext,
           request: UserRequest[_],
-          ec: ExecutionContext
-      ): Result = {
+          ec: ExecutionContext): Result = {
         logger.info(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${ctx.correlationId}")
@@ -172,11 +163,7 @@ object RequestHandler {
         result
       }
 
-      private def handleFailure(errorWrapper: ErrorWrapper)(implicit
-          ctx: RequestContext,
-          request: UserRequest[_],
-          ec: ExecutionContext
-      ): Result = {
+      private def handleFailure(errorWrapper: ErrorWrapper)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Result = {
         logger.warn(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: ${ctx.correlationId}")

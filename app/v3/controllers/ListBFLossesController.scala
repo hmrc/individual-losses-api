@@ -52,7 +52,7 @@ class ListBFLossesController @Inject() (val authService: EnrolmentsAuthService,
         RequestHandlerOld
           .withParser(parser)
           .withService(service.listBFLosses)
-          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) => ListBFLossHateoasData(nino)))
+          .withResultCreator(ResultCreatorOld.hateoasListWrapping(hateoasFactory)((_, _) => ListBFLossHateoasData(nino)))
 
       requestHandler.handleRequest(rawData)
     }
