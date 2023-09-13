@@ -1,9 +1,17 @@
 # Brought-forward losses
 
-GET /:nino/brought-forward-losses/tax-year/:taxYearBroughtForwardFrom  v4.controllers.ListBFLossesController.list(nino: String, taxYearBroughtForwardFrom: String, businessId: Option[String], typeOfLoss: Option[String])
-GET /:nino/brought-forward-losses                                      api.controllers.DeprecatedController.version4NotFound(nino: String)
+POST       /:nino/brought-forward-losses                                        v3.controllers.CreateBFLossController.create(nino: String)
+DELETE     /:nino/brought-forward-losses/:lossId                                v3.controllers.DeleteBFLossController.delete(nino: String, lossId: String)
+POST       /:nino/brought-forward-losses/:lossId/change-loss-amount             v3.controllers.AmendBFLossController.amend(nino: String, lossId: String)
+GET        /:nino/brought-forward-losses/:lossId                                v3.controllers.RetrieveBFLossController.retrieve(nino: String, lossId: String)
+GET        /:nino/brought-forward-losses/tax-year/:taxYearBroughtForwardFrom    v4.controllers.ListBFLossesController.list(nino: String, taxYearBroughtForwardFrom: String, businessId: Option[String], typeOfLoss: Option[String])
 
 # Loss Claims
 
-GET /:nino/loss-claims/tax-year/:taxYearClaimedFor    v4.controllers.ListLossClaimsController.list(nino: String, taxYearClaimedFor: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String])
-GET /:nino/loss-claims                                api.controllers.DeprecatedController.version4NotFound(nino: String)
+POST       /:nino/loss-claims                                    v3.controllers.CreateLossClaimController.create(nino: String)
+DELETE     /:nino/loss-claims/:claimId                           v3.controllers.DeleteLossClaimController.delete(nino: String, claimId: String)
+GET        /:nino/loss-claims/:claimId                           v3.controllers.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
+POST       /:nino/loss-claims/:claimId/change-type-of-claim      v3.controllers.AmendLossClaimTypeController.amend(nino: String, claimId: String)
+PUT        /:nino/loss-claims/order/:taxYearClaimedFor           v3.controllers.AmendLossClaimsOrderController.amendClaimsOrder(nino: String, taxYearClaimedFor: String)
+GET        /:nino/loss-claims/tax-year/:taxYearClaimedFor        v4.controllers.ListLossClaimsController.list(nino: String, taxYearClaimedFor: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String])
+
