@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package api.models.domain
 
-import play.api.libs.json.{Json, Writes}
-
-case class Link(
-    href: String,
-    method: Method,
-    rel: String
-)
-
-object Link {
-  implicit val writes: Writes[Link] = Json.writes[Link]
+case class CalculationId(calculationId: String) {
+  override def toString: String = calculationId
 }

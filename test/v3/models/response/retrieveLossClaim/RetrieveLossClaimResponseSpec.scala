@@ -16,9 +16,9 @@
 
 package v3.models.response.retrieveLossClaim
 
+import api.hateoas.Link
 import api.models.domain.Timestamp
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST}
+import api.hateoas.Method.{DELETE, GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec

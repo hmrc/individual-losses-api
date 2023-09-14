@@ -47,11 +47,11 @@ class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
       val rawData = DeleteBFLossRawData(nino, lossId)
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.deleteBFLoss)
           .withAuditing(
-            AuditHandler(
+            AuditHandlerOld(
               auditService,
               auditType = "DeleteBroughtForwardLoss",
               transactionName = "delete-brought-forward-loss",

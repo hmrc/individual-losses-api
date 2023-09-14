@@ -49,7 +49,7 @@ class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService
       val rawData = RetrieveBFLossRawData(nino, lossId)
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.retrieveBFLoss)
           .withHateoasResult(hateoasFactory)(GetBFLossHateoasData(nino, lossId))

@@ -17,17 +17,8 @@
 package v3.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
 import api.models.errors._
-import api.controllers.requestParsers.validators.validations.{
-  ClaimIdValidation,
-  JsonFormatValidation,
-  JsonValidation,
-  MinTaxYearValidation,
-  NinoValidation,
-  NumberValidation,
-  SequenceSequentialValidation,
-  TaxYearValidation
-}
 import config.FixedConfig
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequestBody}

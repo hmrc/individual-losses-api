@@ -16,9 +16,8 @@
 
 package api.hateoas
 
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
-import api.models.hateoas.RelType._
+import api.hateoas.Method.{DELETE, GET, POST, PUT}
+import RelType._
 import config.AppConfig
 
 trait HateoasLinks {

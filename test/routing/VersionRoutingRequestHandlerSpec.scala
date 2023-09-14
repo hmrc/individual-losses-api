@@ -17,7 +17,7 @@
 package routing
 
 import akka.actor.ActorSystem
-import api.models.errors.{InvalidAcceptHeaderError, NotFoundError, UnsupportedVersionError}
+import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import config.MockAppConfig
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -141,21 +141,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
         val result = a.apply(request)
         status(result) shouldBe NOT_ACCEPTABLE
         contentAsJson(result) shouldBe InvalidAcceptHeaderError.asJson
-      }
-    }
-  }
-
-  "Routing requests with an incorrect URL" should {
-    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.3.0+json")
-
-    "return 404 with a NotFoundError" in new Test {
-      val request: RequestHeader = buildRequest("/missing_resource")
-      MockAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
-
-      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
-        val result = a.apply(request)
-        status(result) shouldBe NOT_FOUND
-        contentAsJson(result) shouldBe NotFoundError.asJson
       }
     }
   }

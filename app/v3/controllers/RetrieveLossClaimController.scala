@@ -49,7 +49,7 @@ class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthServ
       val rawData = RetrieveLossClaimRawData(nino, claimId)
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.retrieveLossClaim)
           .withHateoasResult(hateoasFactory)(GetLossClaimHateoasData(nino, claimId))

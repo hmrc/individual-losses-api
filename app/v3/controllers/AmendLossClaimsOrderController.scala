@@ -51,11 +51,11 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
       val rawData = AmendLossClaimsOrderRawData(nino, taxYearClaimedFor, AnyContentAsJson(request.body))
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.amendLossClaimsOrder)
           .withHateoasResult(hateoasFactory)(AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor))
-          .withAuditing(AuditHandler(
+          .withAuditing(AuditHandlerOld(
             auditService,
             auditType = "AmendLossClaimOrder",
             transactionName = "amend-loss-claim-order",

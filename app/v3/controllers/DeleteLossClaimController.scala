@@ -47,11 +47,11 @@ class DeleteLossClaimController @Inject() (val authService: EnrolmentsAuthServic
       val rawData = DeleteLossClaimRawData(nino, claimId)
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.deleteLossClaim)
           .withAuditing(
-            AuditHandler(
+            AuditHandlerOld(
               auditService,
               auditType = "DeleteLossClaim",
               transactionName = "delete-loss-claim",

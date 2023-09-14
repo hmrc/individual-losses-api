@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package api.hateoas
 
-import play.api.libs.json.Format
-import utils.enums.Enums
+import api.hateoas.Method.{DELETE, GET, POST, PUT}
+import support.UnitSpec
+import utils.enums.EnumJsonSpecSupport
 
-sealed trait Method
-
-object Method {
-  case object GET    extends Method
-  case object POST   extends Method
-  case object DELETE extends Method
-  case object PUT    extends Method
-
-  implicit val formats: Format[Method] = Enums.format[Method]
+class MethodSpec extends UnitSpec with EnumJsonSpecSupport {
+  testRoundTrip[Method](("GET", GET), ("POST", POST), ("DELETE", DELETE), ("PUT", PUT))
 }

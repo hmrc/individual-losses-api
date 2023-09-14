@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package api.controllers.validators.resolvers
 
-object RelType {
-  val DELETE_BF_LOSS = "delete-brought-forward-loss"
-  val AMEND_BF_LOSS  = "amend-brought-forward-loss"
-  val CREATE_BF_LOSS = "create-brought-forward-loss"
+import api.models.errors.MtdError
+import cats.data.Validated
+import play.api.libs.json._
 
-  val AMEND_LOSS_CLAIM       = "amend-loss-claim"
-  val DELETE_LOSS_CLAIM      = "delete-loss-claim"
-  val CREATE_LOSS_CLAIM      = "create-loss-claim"
-  val LIST_LOSS_CLAIMS       = "list-loss-claims"
-  val AMEND_LOSS_CLAIM_ORDER = "amend-loss-claim-order"
+class ResolveJsonObject[T](implicit val reads: Reads[T]) extends Resolver[JsValue, T] with JsonObjectResolving[T] {
 
-  val SELF = "self"
+  def apply(data: JsValue, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], T] =
+    validate(data).leftMap(errs => withErrors(error, errs, path))
+
 }
