@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package api.controllers
+package api.models.domain
 
-import api.models.errors.NotFoundError
-import play.api.mvc._
-import utils.Logging
+import play.api.libs.json.Format
+import utils.enums.Enums
 
-import javax.inject._
+sealed trait Status {}
 
-@Singleton
-class DeprecatedController @Inject() (cc: ControllerComponents) extends AbstractController(cc) with Logging {
+//noinspection ScalaStyle
+object Status {
 
-  /** For endpoints that were deprecated in the previous version and gone from the current version.
-    */
-  def version4NotFound(unused: Any*): Action[AnyContent] = Action { implicit request =>
-    logger.info(s"Request for deprecated endpoint received: V4 ${request.method} ${request.path}")
-    NotFound(NotFoundError.asJson)
-  }
+  case object `valid` extends Status
 
+  case object `invalid` extends Status
+
+  case object `superseded` extends Status
+
+  implicit val format: Format[Status] = Enums.format[Status]
 }

@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
-package api.models
+package api.models.domain
 
-case class UserDetails(mtdId: String, userType: String, agentReferenceNumber: Option[String])
+import support.UnitSpec
+
+class CalculationIdSpec extends UnitSpec {
+
+  "toString" should {
+    "return the CalculationId value" in {
+      val calculationId = CalculationId("some id")
+      calculationId.toString shouldBe "some id"
+    }
+  }
+
+}

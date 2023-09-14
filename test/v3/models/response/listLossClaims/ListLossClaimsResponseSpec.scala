@@ -16,8 +16,8 @@
 
 package v3.models.response.listLossClaims
 
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{GET, POST}
+import api.hateoas.Link
+import api.hateoas.Method.{GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec

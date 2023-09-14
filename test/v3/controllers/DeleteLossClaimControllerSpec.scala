@@ -18,7 +18,7 @@ package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetailOld}
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.JsValue
@@ -92,11 +92,11 @@ class DeleteLossClaimControllerSpec
 
     protected def callController(): Future[Result] = controller.delete(nino, claimId)(fakeRequest)
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld] =
       AuditEvent(
         auditType = "DeleteLossClaim",
         transactionName = "delete-loss-claim",
-        detail = GenericAuditDetail(
+        detail = GenericAuditDetailOld(
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",

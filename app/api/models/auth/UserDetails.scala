@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package api.models.auth
 
-import api.models.hateoas.Method._
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
-
-class MethodSpec extends UnitSpec with EnumJsonSpecSupport {
-  testRoundTrip[Method](("GET", GET), ("POST", POST), ("DELETE", DELETE), ("PUT", PUT))
-}
+case class UserDetails(mtdId: String, userType: String, agentReferenceNumber: Option[String])

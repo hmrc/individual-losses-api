@@ -21,7 +21,7 @@ import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
-class GenericAuditDetailSpec extends UnitSpec {
+class GenericAuditDetailOldSpec extends UnitSpec {
   val nino: String                         = "XX751130C"
   val taxYear: String                      = "2020-21"
   val userType: String                     = "Agent"
@@ -57,7 +57,7 @@ class GenericAuditDetailSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val auditDetailModelSuccess: GenericAuditDetail = GenericAuditDetail(
+  val auditDetailModelSuccess: GenericAuditDetailOld = GenericAuditDetailOld(
     userType = userType,
     versionNumber = "3.0",
     agentReferenceNumber = agentReferenceNumber,
@@ -111,7 +111,7 @@ class GenericAuditDetailSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val invalidTaxYearAuditDetailModel: GenericAuditDetail = GenericAuditDetail(
+  val invalidTaxYearAuditDetailModel: GenericAuditDetailOld = GenericAuditDetailOld(
     userType = userType,
     agentReferenceNumber = agentReferenceNumber,
     versionNumber = "3.0",
@@ -128,7 +128,7 @@ class GenericAuditDetailSpec extends UnitSpec {
     auditResponse = AuditResponse(BAD_REQUEST, Left(Seq(AuditError(TaxYearFormatError.code))))
   )
 
-  "GenericAuditDetail" when {
+  "GenericAuditDetailOld" when {
     "written to JSON (success)" should {
       "produce the expected JsObject" in {
         Json.toJson(auditDetailModelSuccess) shouldBe auditDetailJsonSuccess

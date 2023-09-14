@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package definition
+package routing
 
 import play.api.http.HeaderNames.ACCEPT
 import play.api.test.FakeRequest
-import routing._
 import support.UnitSpec
 
 class VersionSpec extends UnitSpec {

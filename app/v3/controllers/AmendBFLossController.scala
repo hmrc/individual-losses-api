@@ -51,11 +51,11 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
       val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.amendBFLoss)
           .withHateoasResult(hateoasFactory)(AmendBFLossHateoasData(nino, lossId))
-          .withAuditing(AuditHandler(
+          .withAuditing(AuditHandlerOld(
             auditService,
             auditType = "AmendBroughtForwardLoss",
             transactionName = "amend-brought-forward-loss",

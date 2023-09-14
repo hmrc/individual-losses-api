@@ -51,14 +51,14 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
       val rawData = CreateBFLossRawData(nino, AnyContentAsJson(request.body))
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.createBFLoss)
           .withHateoasResultFrom(hateoasFactory)(
             (_, responseData) => CreateBFLossHateoasData(nino, responseData.lossId),
             successStatus = CREATED
           )
-          .withAuditing(AuditHandler(
+          .withAuditing(AuditHandlerOld(
             auditService,
             auditType = "CreateBroughtForwardLoss",
             transactionName = "create-brought-forward-loss",

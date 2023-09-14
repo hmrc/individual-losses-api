@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package api.controllers
+package api.models.domain
 
-import api.models.errors.NotFoundError
+import play.api.libs.json.Json
+import support.UnitSpec
 
-class DeprecatedControllerSpec extends ControllerBaseSpec {
+class EmptyJsonBodySpec extends UnitSpec {
 
-  trait Test {
-    lazy val controller = new DeprecatedController(cc)
-  }
-
-  "version4" should {
-    "return a 404" in new Test {
-      private val result = controller.version4NotFound()(fakeGetRequest)
-
-      status(result) shouldBe NOT_FOUND
-      contentAsJson(result) shouldBe NotFoundError.asJson
+  "EmptyJsonBody.writes" should {
+    "return an empty JSON body" when {
+      "called" in {
+        val json = EmptyJsonBody
+        Json.toJson(json)(EmptyJsonBody.writes) shouldBe Json.obj()
+      }
     }
   }
 

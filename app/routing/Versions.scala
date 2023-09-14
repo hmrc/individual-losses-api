@@ -23,6 +23,9 @@ import play.api.mvc.RequestHeader
 
 object Version {
 
+  def from(request: RequestHeader, orElse: Version): Version =
+    Versions.getFromRequest(request).getOrElse(orElse)
+
   implicit object VersionWrites extends Writes[Version] {
 
     def writes(version: Version): JsValue = version match {
@@ -48,22 +51,15 @@ object Version {
 
 sealed trait Version {
   val name: String
-  val configName: String
-  val maybePrevious: Option[Version] = None
-
   override def toString: String = name
 }
 
 case object Version3 extends Version {
-  val name       = "3.0"
-  val configName = "3"
+  val name = "3.0"
 }
 
 case object Version4 extends Version {
-  val name       = "4.0"
-  val configName = "4"
-
-  override val maybePrevious: Option[Version] = Some(Version3)
+  val name = "4.0"
 }
 
 object Versions {

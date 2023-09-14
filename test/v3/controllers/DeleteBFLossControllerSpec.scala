@@ -18,7 +18,7 @@ package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetailOld}
 import api.models.domain.Nino
 import api.models.errors._
 import api.services.MockAuditService
@@ -94,11 +94,11 @@ class DeleteBFLossControllerSpec
 
     protected def callController(): Future[Result] = controller.delete(nino, lossId)(fakeRequest)
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld] =
       AuditEvent(
         auditType = "DeleteBroughtForwardLoss",
         transactionName = "delete-brought-forward-loss",
-        detail = GenericAuditDetail(
+        detail = GenericAuditDetailOld(
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",
