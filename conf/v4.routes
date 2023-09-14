@@ -8,10 +8,9 @@ GET        /:nino/brought-forward-losses/tax-year/:taxYearBroughtForwardFrom    
 
 # Loss Claims
 
-POST       /:nino/loss-claims                                    v3.controllers.CreateLossClaimController.create(nino: String)
-DELETE     /:nino/loss-claims/:claimId                           v3.controllers.DeleteLossClaimController.delete(nino: String, claimId: String)
-GET        /:nino/loss-claims/:claimId                           v3.controllers.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
-POST       /:nino/loss-claims/:claimId/change-type-of-claim      v3.controllers.AmendLossClaimTypeController.amend(nino: String, claimId: String)
-PUT        /:nino/loss-claims/order/:taxYearClaimedFor           v3.controllers.AmendLossClaimsOrderController.amendClaimsOrder(nino: String, taxYearClaimedFor: String)
-GET        /:nino/loss-claims/tax-year/:taxYearClaimedFor        v4.controllers.ListLossClaimsController.list(nino: String, taxYearClaimedFor: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String])
-
+POST       /:nino/loss-claims                                                   v3.controllers.CreateLossClaimController.create(nino: String)
+DELETE     /:nino/loss-claims/:claimId                                          v3.controllers.DeleteLossClaimController.delete(nino: String, claimId: String)
+GET        /:nino/loss-claims/:claimId                                          v3.controllers.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
+POST       /:nino/loss-claims/:claimId/change-type-of-claim                     v3.controllers.AmendLossClaimTypeController.amend(nino: String, claimId: String)
+GET        /:nino/loss-claims/tax-year/:taxYearClaimedFor                       v4.controllers.ListLossClaimsController.list(nino: String, taxYearClaimedFor: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String])
+PUT        /:nino/loss-claims/order/:taxYearClaimedFor                          v3.controllers.AmendLossClaimsOrderController.amendClaimsOrder(nino: String, taxYearClaimedFor: String)
