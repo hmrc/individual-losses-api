@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.AmendBFLossConnector
-import v3.models.request.amendBFLosses.AmendBFLossRequest
+import v3.models.request.amendBFLosses.AmendBFLossRequestData
 import v3.models.response.amendBFLosses.AmendBFLossResponse
 
 import javax.inject.Inject
@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AmendBFLossService @Inject() (connector: AmendBFLossConnector) extends BaseService {
 
-  def amendBFLoss(request: AmendBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[AmendBFLossResponse]] =
+  def amendBFLoss(request: AmendBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[AmendBFLossResponse]] =
     connector
       .amendBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

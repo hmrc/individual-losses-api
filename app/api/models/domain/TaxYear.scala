@@ -19,6 +19,7 @@ package api.models.domain
 import play.api.libs.json.Writes
 
 import java.time.{LocalDate, ZoneOffset}
+import javax.inject.Singleton
 
 /** Opaque representation of a tax year.
   *
@@ -114,10 +115,8 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-  type TodaySupplier = () => LocalDate
-
-  def currentTaxYear()(implicit todaySupplier: TodaySupplier = today _): TaxYear = {
-    val today            = todaySupplier()
+  def currentTaxYear()(implicit todaySupplier: TodaySupplier = new TodaySupplier): TaxYear = {
+    val today            = todaySupplier.today()
     val year             = today.getYear
     val taxYearStartDate = LocalDate.parse(s"$year-04-06")
 
@@ -131,4 +130,9 @@ object TaxYear {
   def today(): LocalDate = LocalDate.now(ZoneOffset.UTC)
 
   implicit val writes: Writes[TaxYear] = implicitly[Writes[String]].contramap(_.asMtd)
+}
+
+@Singleton
+class TodaySupplier {
+  def today(): LocalDate = LocalDate.now(ZoneOffset.UTC)
 }

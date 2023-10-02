@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers
 
-import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.ValidatorOLD
 import api.models.RawData
 import api.models.domain.Nino
 import api.models.errors._
@@ -32,10 +32,10 @@ class RequestParserSpec extends UnitSpec {
   trait Test {
     test =>
 
-    val validator: Validator[Raw]
+    val validator: ValidatorOLD[Raw]
 
     val parser: RequestParser[Raw, Request] = new RequestParser[Raw, Request] {
-      val validator: Validator[Raw] = test.validator
+      val validator: ValidatorOLD[Raw] = test.validator
 
       protected def requestFor(data: Raw): Request = Request(Nino(data.nino))
     }
@@ -45,7 +45,7 @@ class RequestParserSpec extends UnitSpec {
   "parse" should {
     "return a Request" when {
       "the validator returns no errors" in new Test {
-        lazy val validator: Validator[Raw] = (_: Raw) => Nil
+        lazy val validator: ValidatorOLD[Raw] = (_: Raw) => Nil
 
         parser.parseRequest(Raw(nino)) shouldBe Right(Request(Nino(nino)))
       }
@@ -53,7 +53,7 @@ class RequestParserSpec extends UnitSpec {
 
     "return a single error" when {
       "the validator returns a single error" in new Test {
-        lazy val validator: Validator[Raw] = (_: Raw) => List(NinoFormatError)
+        lazy val validator: ValidatorOLD[Raw] = (_: Raw) => List(NinoFormatError)
 
         parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
@@ -61,7 +61,7 @@ class RequestParserSpec extends UnitSpec {
 
     "return multiple errors" when {
       "the validator returns multiple errors" in new Test {
-        lazy val validator: Validator[Raw] = (_: Raw) => List(NinoFormatError, RuleIncorrectOrEmptyBodyError)
+        lazy val validator: ValidatorOLD[Raw] = (_: Raw) => List(NinoFormatError, RuleIncorrectOrEmptyBodyError)
 
         parser.parseRequest(Raw(nino)) shouldBe Left(
           ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError))))

@@ -22,7 +22,7 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockListLossClaimsConnector
-import v3.models.request.listLossClaims.ListLossClaimsRequest
+import v3.models.request.listLossClaims.ListLossClaimsRequestData
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import scala.concurrent.Future
@@ -35,8 +35,8 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
   trait Test extends MockListLossClaimsConnector {
     lazy val service = new ListLossClaimsService(connector)
 
-    def request(taxYear: Option[TaxYear] = Some(TaxYear.fromMtd("2020-21"))): ListLossClaimsRequest =
-      ListLossClaimsRequest(Nino(nino), taxYear, None, None, None)
+    def request(taxYear: Option[TaxYear] = Some(TaxYear.fromMtd("2020-21"))): ListLossClaimsRequestData =
+      ListLossClaimsRequestData(Nino(nino), taxYear, None, None, None)
 
   }
 

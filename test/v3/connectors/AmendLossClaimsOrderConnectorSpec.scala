@@ -20,7 +20,7 @@ import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, TaxYear}
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestData, AmendLossClaimsOrderRequestBody, Claim}
 
 import scala.concurrent.Future
 
@@ -41,7 +41,7 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
 
     def taxYear: TaxYear
 
-    val request: AmendLossClaimsOrderRequest = AmendLossClaimsOrderRequest(
+    val request: AmendLossClaimsOrderRequestData = AmendLossClaimsOrderRequestData(
       nino = Nino(nino),
       taxYearClaimedFor = taxYear,
       body = amendLossClaimsOrder

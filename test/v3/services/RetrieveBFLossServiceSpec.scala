@@ -21,8 +21,8 @@ import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockRetrieveBFLossConnector
-import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
+import v3.models.domain.bfLoss.{LossId, TypeOfLoss}
+import v3.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
     lazy val service = new RetrieveBFLossService(connector)
   }
 
-  lazy val request: RetrieveBFLossRequest = RetrieveBFLossRequest(Nino(nino), lossId)
+  lazy val request: RetrieveBFLossRequestData = RetrieveBFLossRequestData(Nino(nino), LossId(lossId))
 
   "retrieve bf loss" should {
     "return a Right" when {

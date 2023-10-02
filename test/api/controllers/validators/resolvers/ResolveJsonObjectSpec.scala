@@ -34,7 +34,7 @@ class ResolveJsonObjectSpec extends UnitSpec with JsonErrorValidators {
   private val resolve = new ResolveJsonObject[TestDataObject]
 
   "ResolveJsonObject" should {
-    "return no errors" when {
+    "return the parsed object" when {
       "given a valid JSON object" in {
         val json = Json.parse("""{ "fieldOne" : "field one", "fieldTwo" : "field two" }""")
 

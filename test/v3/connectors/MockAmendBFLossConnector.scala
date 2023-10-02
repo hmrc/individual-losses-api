@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.request.amendBFLosses.AmendBFLossRequest
+import v3.models.request.amendBFLosses.AmendBFLossRequestData
 import v3.models.response.amendBFLosses.AmendBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,9 +31,9 @@ trait MockAmendBFLossConnector extends MockFactory {
 
   object MockAmendBFLossConnector {
 
-    def amendBFLoss(amendBFLossRequest: AmendBFLossRequest): CallHandler[Future[DownstreamOutcome[AmendBFLossResponse]]] = {
+    def amendBFLoss(amendBFLossRequest: AmendBFLossRequestData): CallHandler[Future[DownstreamOutcome[AmendBFLossResponse]]] = {
       (connector
-        .amendBFLoss(_: AmendBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .amendBFLoss(_: AmendBFLossRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(amendBFLossRequest, *, *, *)
     }
 

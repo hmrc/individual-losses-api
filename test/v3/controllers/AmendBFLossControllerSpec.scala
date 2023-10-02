@@ -17,18 +17,18 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetailOld}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
-import api.hateoas.Method.GET
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v3.controllers.requestParsers.MockAmendBFLossRequestParser
+import play.api.mvc.Result
+import v3.controllers.validators.MockAmendBFLossValidatorFactory
+import v3.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v3.models.request
-import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.amendBFLosses.{AmendBFLossRawData, AmendBFLossRequestBody}
+import v3.models.request.amendBFLosses.{AmendBFLossRequestBody, AmendBFLossRequestData}
 import v3.models.response.amendBFLosses.{AmendBFLossHateoasData, AmendBFLossResponse}
 import v3.services.MockAmendBFLossService
 
@@ -38,13 +38,15 @@ import scala.concurrent.Future
 class AmendBFLossControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAmendBFLossValidatorFactory
     with MockAmendBFLossService
-    with MockAmendBFLossRequestParser
     with MockHateoasFactory {
 
-  private val lossId      = "AAZZ1234567890a"
-  private val lossAmount  = BigDecimal(2345.67)
-  private val amendBFLoss = AmendBFLossRequestBody(lossAmount)
+  private val parsedNino   = Nino(nino)
+  private val lossId       = "AAZZ1234567890a"
+  private val parsedLossId = LossId(lossId)
+  private val lossAmount   = BigDecimal(2345.67)
+  private val amendBFLoss  = AmendBFLossRequestBody(lossAmount)
 
   private val amendBFLossResponse = AmendBFLossResponse(
     businessId = "XBIS12345678910",
@@ -55,7 +57,15 @@ class AmendBFLossControllerSpec
   )
 
   private val testHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a", method = GET, rel = "self")
-  private val bfLossRequest   = request.amendBFLosses.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss)
+  private val requestData     = AmendBFLossRequestData(parsedNino, parsedLossId, amendBroughtForwardLoss = amendBFLoss)
+
+  private val requestBody: JsValue = Json.parse(
+    s"""
+       |{
+       |  "lossAmount": $lossAmount
+       |}
+    """.stripMargin
+  )
 
   private val mtdResponseJson = Json.parse(
     s"""
@@ -76,23 +86,13 @@ class AmendBFLossControllerSpec
     """.stripMargin
   )
 
-  private val requestBody: JsValue = Json.parse(
-    s"""
-      |{
-      |  "lossAmount": $lossAmount
-      |}
-    """.stripMargin
-  )
-
   "amend" should {
     "return OK" when {
       "the request is valid" in new Test {
-        MockAmendBFLossRequestDataParser
-          .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-          .returns(Right(bfLossRequest))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendBFLossService
-          .amend(request.amendBFLosses.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+          .amend(request.amendBFLosses.AmendBFLossRequestData(Nino(nino), LossId(lossId), amendBFLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
 
         MockHateoasFactory
@@ -110,20 +110,15 @@ class AmendBFLossControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockAmendBFLossRequestDataParser
-          .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTestWithAudit(NinoFormatError, maybeAuditRequestBody = Some(requestBody))
       }
 
       "the service returns an error" in new Test {
-        MockAmendBFLossRequestDataParser
-          .parseRequest(AmendBFLossRawData(nino, lossId, AnyContentAsJson(requestBody)))
-          .returns(Right(bfLossRequest))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendBFLossService
-          .amend(request.amendBFLosses.AmendBFLossRequest(Nino(nino), lossId, amendBFLoss))
+          .amend(request.amendBFLosses.AmendBFLossRequestData(Nino(nino), LossId(lossId), amendBFLoss))
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleLossAmountNotChanged))))
 
         runErrorTestWithAudit(RuleLossAmountNotChanged, maybeAuditRequestBody = Some(requestBody))
@@ -137,7 +132,7 @@ class AmendBFLossControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockAmendBFLossService,
-      parser = mockAmendBFLossRequestDataParser,
+      validatorFactory = mockAmendBFLossValidatorFactory,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
@@ -146,11 +141,11 @@ class AmendBFLossControllerSpec
 
     protected def callController(): Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "AmendBroughtForwardLoss",
         transactionName = "amend-brought-forward-loss",
-        detail = GenericAuditDetailOld(
+        detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",

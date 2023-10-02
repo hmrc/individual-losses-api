@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.models.request.listLossClaims.ListBFLossesRequest
+import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import javax.inject.{Inject, Singleton}
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ListBFLossesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def listBFLosses(request: ListBFLossesRequest)(implicit
+  def listBFLosses(request: ListBFLossesRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
@@ -38,7 +38,7 @@ class ListBFLossesConnector @Inject() (val http: HttpClient, val appConfig: AppC
     import request._
 
     val queryParams = List(
-      businessId.map("incomeSourceId"         -> _),
+      businessId.map("incomeSourceId"         -> _.businessId),
       incomeSourceType.map("incomeSourceType" -> _.toString)
     ).flatten
 

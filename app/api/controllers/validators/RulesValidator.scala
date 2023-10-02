@@ -38,8 +38,9 @@ trait RulesValidator[PARSED] {
   protected def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] =
     results.traverse_(identity)
 
-  implicit class ResultOps(result: Validated[Seq[MtdError], Unit]) {
+  implicit class ResultOps(result: Validated[Seq[MtdError], _]) {
     def onSuccess(parsed: PARSED): Validated[Seq[MtdError], PARSED] = result.map(_ => parsed)
+    def toUnit: Validated[Seq[MtdError], Unit] = result.andThen(_ => valid)
   }
 
 }

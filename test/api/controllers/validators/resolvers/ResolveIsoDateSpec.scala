@@ -25,8 +25,8 @@ import java.time.LocalDate
 class ResolveIsoDateSpec extends UnitSpec {
 
   "ResolveBusinessId" should {
-    "return no errors" when {
-      "passed a valid business ID" in {
+    "return the parsed business ID" when {
+      "given a valid business ID string" in {
         val validDate = "2024-06-21"
         val result    = ResolveIsoDate(validDate, Some(StartDateFormatError), None)
         result shouldBe Valid(LocalDate.parse("2024-06-21"))

@@ -22,7 +22,7 @@ import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.services.ServiceSpec
 import v3.connectors.MockCreateBFLossConnector
 import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.createBFLosses.{CreateBFLossRequest, CreateBFLossRequestBody}
+import v3.models.request.createBFLosses.{CreateBFLossRequestData, CreateBFLossRequestBody}
 import v3.models.response.createBFLosses.CreateBFLossResponse
 
 import scala.concurrent.Future
@@ -39,7 +39,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   }
 
   "create BFLoss" when {
-    lazy val request = CreateBFLossRequest(Nino(nino), bfLoss)
+    lazy val request = CreateBFLossRequestData(Nino(nino), bfLoss)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

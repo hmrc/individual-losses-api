@@ -18,13 +18,14 @@ package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetailOld}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v3.controllers.requestParsers.MockDeleteLossClaimRequestParser
-import v3.models.request.deleteLossClaim.{DeleteLossClaimRawData, DeleteLossClaimRequest}
+import v3.controllers.validators.MockDeleteLossClaimValidatorFactory
+import v3.models.domain.lossClaim.ClaimId
+import v3.models.request.deleteLossClaim.DeleteLossClaimRequestData
 import v3.services.MockDeleteLossClaimService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,21 +35,18 @@ class DeleteLossClaimControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockDeleteLossClaimService
-    with MockDeleteLossClaimRequestParser {
+    with MockDeleteLossClaimValidatorFactory {
 
-  private val claimId = "AAZZ1234567890a"
-  private val rawData = DeleteLossClaimRawData(nino, claimId)
-  private val request = DeleteLossClaimRequest(Nino(nino), claimId)
+  private val claimId     = "AAZZ1234567890a"
+  private val requestData = DeleteLossClaimRequestData(Nino(nino), ClaimId(claimId))
 
   "delete" should {
     "return NO_CONTENT" when {
       "the request is valid" in new Test {
-        MockDeleteLossClaimRequestParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockDeleteLossClaimService
-          .delete(request)
+          .delete(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(expectedStatus = NO_CONTENT, maybeExpectedResponseBody = None)
@@ -57,20 +55,15 @@ class DeleteLossClaimControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockDeleteLossClaimRequestParser
-          .parseRequest(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTestWithAudit(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockDeleteLossClaimRequestParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockDeleteLossClaimService
-          .delete(request)
+          .delete(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, ClaimIdFormatError, None))))
 
         runErrorTestWithAudit(ClaimIdFormatError)
@@ -84,7 +77,7 @@ class DeleteLossClaimControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockDeleteLossClaimService,
-      parser = mockDeleteLossClaimRequestParser,
+      validatorFactory = mockDeleteLossClaimValidatorFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -92,11 +85,11 @@ class DeleteLossClaimControllerSpec
 
     protected def callController(): Future[Result] = controller.delete(nino, claimId)(fakeRequest)
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "DeleteLossClaim",
         transactionName = "delete-loss-claim",
-        detail = GenericAuditDetailOld(
+        detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",

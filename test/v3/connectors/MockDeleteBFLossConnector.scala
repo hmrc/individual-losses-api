@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.request.deleteBFLosses.DeleteBFLossRequest
+import v3.models.request.deleteBFLosses.DeleteBFLossRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,9 +30,9 @@ trait MockDeleteBFLossConnector extends MockFactory {
 
   object MockDeleteBFLossConnector {
 
-    def deleteBFLoss(deleteBFLossRequest: DeleteBFLossRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def deleteBFLoss(deleteBFLossRequest: DeleteBFLossRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .deleteBFLoss(_: DeleteBFLossRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(deleteBFLossRequest, *, *, *)
     }
 

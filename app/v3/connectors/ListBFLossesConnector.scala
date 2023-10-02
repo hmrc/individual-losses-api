@@ -24,7 +24,7 @@ import api.models.domain.TaxYear
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.request.listBFLosses.ListBFLossesRequest
+import v3.models.request.listBFLosses.ListBFLossesRequestData
 import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import javax.inject.{Inject, Singleton}
@@ -40,11 +40,11 @@ class ListBFLossesConnector @Inject() (val http: HttpClient, val appConfig: AppC
   private val NOT_FOUND_CODE = "NOT_FOUND"
 
   def listBFLosses(
-      request: ListBFLossesRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[ListBFLossesOutcome] = {
+      request: ListBFLossesRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[ListBFLossesOutcome] = {
     import request._
 
     val queryParams = List(
-      businessId.map("incomeSourceId"         -> _),
+      businessId.map("incomeSourceId"         -> _.toString),
       incomeSourceType.map("incomeSourceType" -> _.toString)
     ).flatten
 

@@ -181,7 +181,13 @@ class AmendLossClaimTypeControllerISpec extends V3V4IntegrationBaseSpec {
       validationErrorTest("BADNINO", "AAZZ1234567890a", requestJson, BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BADClaimId", requestJson, BAD_REQUEST, ClaimIdFormatError)
       validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj(), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj("typeOfClaim" -> "xxx"), BAD_REQUEST, TypeOfClaimFormatError)
+
+      validationErrorTest(
+        "AA123456A",
+        "AAZZ1234567890a",
+        Json.obj("typeOfClaim" -> "xxx"),
+        BAD_REQUEST,
+        TypeOfClaimFormatError.withPath("/typeOfClaim"))
     }
   }
 

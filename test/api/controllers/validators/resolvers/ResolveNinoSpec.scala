@@ -24,8 +24,8 @@ import support.UnitSpec
 class ResolveNinoSpec extends UnitSpec {
 
   "ResolveNino" should {
-    "return no errors" when {
-      "passed a valid NINO" in {
+    "return the parsed Nino" when {
+      "given a valid nino string" in {
         val validNino = "AA123456A"
         val result    = ResolveNino(validNino, NinoFormatError)
         result shouldBe Valid(Nino(validNino))

@@ -22,7 +22,7 @@ import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockAmendLossClaimsConnector
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestData, AmendLossClaimsOrderRequestBody, Claim}
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
 import scala.concurrent.Future
@@ -42,7 +42,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
   }
 
   "amend LossClaimsOrder" when {
-    lazy val request = AmendLossClaimsOrderRequest(Nino(nino), taxYear, lossClaimsOrder)
+    lazy val request = AmendLossClaimsOrderRequestData(Nino(nino), taxYear, lossClaimsOrder)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

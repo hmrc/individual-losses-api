@@ -21,8 +21,7 @@ import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v3.controllers.requestParsers.ListLossClaimsRequestParser
-import v3.models.request.listLossClaims.ListLossClaimsRawData
+import v3.controllers.validators.ListLossClaimsValidatorFactory
 import v3.models.response.listLossClaims.ListLossClaimsHateoasData
 import v3.services.ListLossClaimsService
 
@@ -33,7 +32,7 @@ import scala.concurrent.ExecutionContext
 class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService,
                                           val lookupService: MtdIdLookupService,
                                           service: ListLossClaimsService,
-                                          parser: ListLossClaimsRequestParser,
+                                          validatorFactory: ListLossClaimsValidatorFactory,
                                           hateoasFactory: HateoasFactory,
                                           cc: ControllerComponents,
                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -50,16 +49,15 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData =
-        ListLossClaimsRawData(nino, taxYearClaimedFor = taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)
+      val validator = validatorFactory.validator(nino, taxYear, typeOfLoss, businessId, typeOfClaim)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.listLossClaims)
-          .withResultCreator(ResultCreatorOld.hateoasListWrapping(hateoasFactory)((_, _) => ListLossClaimsHateoasData(nino)))
+          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) => ListLossClaimsHateoasData(nino)))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

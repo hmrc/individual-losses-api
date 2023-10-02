@@ -21,7 +21,8 @@ import api.models.domain.Nino
 import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockDeleteLossClaimConnector
-import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
+import v3.models.domain.lossClaim.ClaimId
+import v3.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
 import scala.concurrent.Future
 
@@ -34,7 +35,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
     lazy val service = new DeleteLossClaimService(connector)
   }
 
-  lazy val request: DeleteLossClaimRequest = DeleteLossClaimRequest(Nino(nino), claimId)
+  lazy val request: DeleteLossClaimRequestData = DeleteLossClaimRequestData(Nino(nino), ClaimId(claimId))
 
   "Delete Loss Claim" should {
     "return a right" when {

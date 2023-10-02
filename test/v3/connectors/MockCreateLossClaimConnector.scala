@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.request.createLossClaim.CreateLossClaimRequest
+import v3.models.request.createLossClaim.CreateLossClaimRequestData
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,9 +30,9 @@ trait MockCreateLossClaimConnector extends MockFactory {
 
   object MockCreateLossClaimConnector {
 
-    def createLossClaim(request: CreateLossClaimRequest): CallHandler[Future[DownstreamOutcome[CreateLossClaimResponse]]] = {
+    def createLossClaim(request: CreateLossClaimRequestData): CallHandler[Future[DownstreamOutcome[CreateLossClaimResponse]]] = {
       (connector
-        .createLossClaim(_: CreateLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .createLossClaim(_: CreateLossClaimRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

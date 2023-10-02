@@ -17,17 +17,17 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetailOld}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.hateoas.Method.{GET, PUT}
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v3.controllers.requestParsers.MockAmendLossClaimsOrderRequestParser
+import play.api.mvc.Result
+import v3.controllers.validators.MockAmendLossClaimsOrderValidatorFactory
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRawData, AmendLossClaimsOrderRequest, AmendLossClaimsOrderRequestBody, Claim}
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData, Claim}
 import v3.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 import v3.services.MockAmendLossClaimsOrderService
 
@@ -37,8 +37,8 @@ import scala.concurrent.Future
 class AmendLossClaimsOrderControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAmendLossClaimsOrderValidatorFactory
     with MockAmendLossClaimsOrderService
-    with MockAmendLossClaimsOrderRequestParser
     with MockHateoasFactory {
 
   private val id         = "1234568790ABCDE"
@@ -47,8 +47,8 @@ class AmendLossClaimsOrderControllerSpec
   private val claim      = Claim(id, sequence)
   private val claimsList = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(claim))
 
-  private val amendLossClaimsOrderRequest =
-    AmendLossClaimsOrderRequest(Nino(nino), TaxYear.fromMtd(taxYear), claimsList)
+  private val requestData =
+    AmendLossClaimsOrderRequestData(Nino(nino), TaxYear.fromMtd(taxYear), claimsList)
 
   private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
@@ -102,12 +102,10 @@ class AmendLossClaimsOrderControllerSpec
   "amendLossClaimsOrder" should {
     "return OK" when {
       "the request is valid" in new Test {
-        MockAmendLossClaimsOrderRequestParser
-          .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
-          .returns(Right(amendLossClaimsOrderRequest))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendLossClaimsOrderService
-          .amend(amendLossClaimsOrderRequest)
+          .amend(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimsOrderResponse))))
 
         MockHateoasFactory
@@ -125,20 +123,15 @@ class AmendLossClaimsOrderControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockAmendLossClaimsOrderRequestParser
-          .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTestWithAudit(NinoFormatError, maybeAuditRequestBody = Some(requestBody))
       }
 
       "the service returns an error" in new Test {
-        MockAmendLossClaimsOrderRequestParser
-          .parseRequest(AmendLossClaimsOrderRawData(nino, taxYear, AnyContentAsJson(requestBody)))
-          .returns(Right(amendLossClaimsOrderRequest))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendLossClaimsOrderService
-          .amend(amendLossClaimsOrderRequest)
+          .amend(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleSequenceOrderBroken, None))))
 
         runErrorTestWithAudit(RuleSequenceOrderBroken, maybeAuditRequestBody = Some(requestBody))
@@ -152,7 +145,7 @@ class AmendLossClaimsOrderControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockAmendLossClaimsOrderService,
-      parser = mockAmendLossClaimsRequestParser,
+      validatorFactory = mockAmendLossClaimsOrderValidatorFactory,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
@@ -161,11 +154,11 @@ class AmendLossClaimsOrderControllerSpec
 
     protected def callController(): Future[Result] = controller.amendClaimsOrder(nino, taxYear)(fakePostRequest(requestBody))
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "AmendLossClaimOrder",
         transactionName = "amend-loss-claim-order",
-        detail = GenericAuditDetailOld(
+        detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",

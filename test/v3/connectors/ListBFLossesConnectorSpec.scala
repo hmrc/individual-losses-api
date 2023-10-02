@@ -17,12 +17,12 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import v3.fixtures.ListBFLossesFixtures._
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
+import v3.fixtures.ListBFLossesFixtures._
 import v3.models.domain.bfLoss.IncomeSourceType
-import v3.models.request.listBFLosses.ListBFLossesRequest
+import v3.models.request.listBFLosses.ListBFLossesRequestData
 import v3.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import scala.concurrent.Future
@@ -128,7 +128,8 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         willGet(url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
           .successful(success("2023-24"))
 
-        listBFLossesResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some("testId")) shouldBe success("2023-24")
+        listBFLossesResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some(BusinessId("testId"))) shouldBe success(
+          "2023-24")
       }
     }
 
@@ -156,7 +157,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         listBFLossesResult(
           connector = connector,
           taxYear = Some(TaxYear.fromMtd("2023-24")),
-          businessId = Some("testId"),
+          businessId = Some(BusinessId("testId")),
           incomeSourceType = Some(IncomeSourceType.`02`)
         ) shouldBe success("2023-24")
       }
@@ -165,15 +166,10 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
     def listBFLossesResult(connector: ListBFLossesConnector,
                            taxYear: Option[TaxYear] = None,
                            incomeSourceType: Option[IncomeSourceType] = None,
-                           businessId: Option[String] = None): DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] =
-      await(
-        connector.listBFLosses(
-          ListBFLossesRequest(
-            nino = Nino(nino),
-            taxYearBroughtForwardFrom = taxYear,
-            incomeSourceType = incomeSourceType,
-            businessId = businessId
-          )))
+                           businessId: Option[BusinessId] = None): DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] =
+      await(connector.listBFLosses(
+        ListBFLossesRequestData(nino = Nino(nino), taxYearBroughtForwardFrom = taxYear, incomeSourceType = incomeSourceType, businessId = businessId)
+      ))
 
   }
 

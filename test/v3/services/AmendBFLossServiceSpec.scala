@@ -21,8 +21,8 @@ import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockAmendBFLossConnector
-import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.amendBFLosses.{AmendBFLossRequest, AmendBFLossRequestBody}
+import v3.models.domain.bfLoss.{LossId, TypeOfLoss}
+import v3.models.request.amendBFLosses.{AmendBFLossRequestBody, AmendBFLossRequestData}
 import v3.models.response.amendBFLosses.AmendBFLossResponse
 
 import scala.concurrent.Future
@@ -30,9 +30,9 @@ import scala.concurrent.Future
 class AmendBFLossServiceSpec extends ServiceSpec {
 
   private val nino   = Nino("AA123456A")
-  private val lossId = "AAZZ1234567890a"
+  private val lossId = LossId("AAZZ1234567890a")
 
-  val requestData: AmendBFLossRequest = AmendBFLossRequest(nino, lossId, AmendBFLossRequestBody(256.78))
+  val requestData: AmendBFLossRequestData = AmendBFLossRequestData(nino, lossId, AmendBFLossRequestBody(256.78))
 
   val bfLossResponse: AmendBFLossResponse = AmendBFLossResponse(
     "XKIS00000000988",

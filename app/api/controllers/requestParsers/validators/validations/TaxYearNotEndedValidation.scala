@@ -26,14 +26,14 @@ import java.time.format.DateTimeFormatter
 object TaxYearNotEndedValidation {
 
   // @param taxYear In format YYYY-YY
-  def validate(taxYear: String)(implicit dateProvider: CurrentDate): Seq[MtdError] = {
+  def validate(taxYear: String)(implicit dateProvider: CurrentDate = new CurrentDate): Seq[MtdError] = {
     val downstreamTaxYear      = Integer.parseInt(TaxYear.fromMtd(taxYear).asDownstream)
     val currentDate: LocalDate = dateProvider.getCurrentDate
 
-    if (downstreamTaxYear >= getCurrentTaxYear(currentDate)) List(RuleTaxYearNotEndedError) else NoValidationErrors
+    if (downstreamTaxYear >= currentTaxYear(currentDate)) List(RuleTaxYearNotEndedError) else NoValidationErrors
   }
 
-  private def getCurrentTaxYear(date: LocalDate): Int = {
+  private def currentTaxYear(date: LocalDate): Int = {
     lazy val taxYearStartDate: LocalDate = LocalDate.parse(
       date.getYear.toString + "-04-06",
       DateTimeFormatter.ofPattern("yyyy-MM-dd")

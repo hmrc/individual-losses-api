@@ -20,7 +20,7 @@ import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
 import api.models.domain.Nino
 import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.createBFLosses.{CreateBFLossRequest, CreateBFLossRequestBody}
+import v3.models.request.createBFLosses.{CreateBFLossRequestData, CreateBFLossRequestBody}
 import v3.models.response.createBFLosses.CreateBFLossResponse
 
 import scala.concurrent.Future
@@ -31,7 +31,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
   val lossId: String = "AAZZ1234567890a"
 
   val requestBody: CreateBFLossRequestBody = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
-  val request: CreateBFLossRequest         = CreateBFLossRequest(nino = Nino(nino), requestBody)
+  val request: CreateBFLossRequestData         = CreateBFLossRequestData(nino = Nino(nino), requestBody)
 
   trait Test {
     _: ConnectorTest =>

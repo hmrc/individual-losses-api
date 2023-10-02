@@ -20,10 +20,10 @@ import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
-import v3.controllers.requestParsers.AmendBFLossRequestParser
-import v3.models.request.amendBFLosses.AmendBFLossRawData
+import v3.controllers.validators.AmendBFLossValidatorFactory
 import v3.models.response.amendBFLosses.AmendBFLossHateoasData
 import v3.services.AmendBFLossService
 
@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext
 class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        service: AmendBFLossService,
-                                       parser: AmendBFLossRequestParser,
+                                       validatorFactory: AmendBFLossValidatorFactory,
                                        hateoasFactory: HateoasFactory,
                                        auditService: AuditService,
                                        cc: ControllerComponents,
@@ -48,23 +48,24 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = AmendBFLossRawData(nino, lossId, AnyContentAsJson(request.body))
+      val validator = validatorFactory.validator(nino, lossId, request.body)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.amendBFLoss)
           .withHateoasResult(hateoasFactory)(AmendBFLossHateoasData(nino, lossId))
-          .withAuditing(AuditHandlerOld(
+          .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendBroughtForwardLoss",
             transactionName = "amend-brought-forward-loss",
+            apiVersion = Version.from(request, orElse = Version3),
             params = Map("nino" -> nino, "lossId" -> lossId),
             requestBody = Some(request.body),
             includeResponse = true
           ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

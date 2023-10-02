@@ -25,11 +25,11 @@ object ResolveBusinessId extends Resolver[String, BusinessId] {
 
   private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
 
-  def apply(value: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], BusinessId] = {
+  def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], BusinessId] = {
     if (businessIdRegex.matches(value))
       Valid(BusinessId(value))
     else
-      Invalid(List(BusinessIdFormatError.maybeWithExtraPath(path)))
+      Invalid(List(maybeError.getOrElse(BusinessIdFormatError).maybeWithExtraPath(errorPath)))
   }
 
 }

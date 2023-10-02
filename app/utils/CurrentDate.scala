@@ -17,9 +17,7 @@
 package utils
 
 import java.time.{LocalDate, ZoneOffset}
-import javax.inject.Singleton
 
-@Singleton
 class CurrentDate {
   def getCurrentDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
 }

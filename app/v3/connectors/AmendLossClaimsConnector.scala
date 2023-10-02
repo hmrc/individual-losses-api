@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,10 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData)(implicit
+                                                                     hc: HeaderCarrier,
+                                                                     ec: ExecutionContext,
+                                                                     correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 

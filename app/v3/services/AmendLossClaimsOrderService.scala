@@ -21,7 +21,7 @@ import api.models.ResponseWrapper
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import v3.connectors.AmendLossClaimsConnector
-import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequestData
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
 import javax.inject.Inject
@@ -29,9 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsConnector) extends BaseService {
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
+  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData)(implicit
+                                                                     ctx: RequestContext,
+                                                                     ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
 
     connector
       .amendLossClaimsOrder(request)

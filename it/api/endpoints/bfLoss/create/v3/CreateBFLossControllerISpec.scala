@@ -32,12 +32,12 @@ class CreateBFLossControllerISpec extends V3V4IntegrationBaseSpec with JsonError
   val lossId = "AAZZ1234567890a"
 
   val requestBody: JsValue = Json.parse("""
-                                          |{
-                                          |    "businessId": "XKIS00000000988",
-                                          |    "typeOfLoss": "self-employment",
-                                          |    "taxYearBroughtForwardFrom": "2018-19",
-                                          |    "lossAmount": 256.78
-                                          |}
+    |{
+    |    "businessId": "XKIS00000000988",
+    |    "typeOfLoss": "self-employment",
+    |    "taxYearBroughtForwardFrom": "2018-19",
+    |    "lossAmount": 256.78
+    |}
       """.stripMargin)
 
   private trait Test {
@@ -57,32 +57,32 @@ class CreateBFLossControllerISpec extends V3V4IntegrationBaseSpec with JsonError
     }
 
     lazy val responseBody: JsValue = Json.parse(s"""
-                                                   |{
-                                                   |  "lossId": "AAZZ1234567890a",
-                                                   |  "links": [
-                                                   |    {
-                                                   |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-                                                   |      "method": "GET",
-                                                   |      "rel": "self"
-                                                   |    },
-                                                   |    {
-                                                   |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-                                                   |      "method": "DELETE",
-                                                   |      "rel": "delete-brought-forward-loss"
-                                                   |    },
-                                                   |    {
-                                                   |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-                                                   |      "method": "POST",
-                                                   |      "rel": "amend-brought-forward-loss"
-                                                   |    }
-                                                   |  ]
-                                                   |}
+      |{
+      |  "lossId": "AAZZ1234567890a",
+      |  "links": [
+      |    {
+      |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+      |      "method": "GET",
+      |      "rel": "self"
+      |    },
+      |    {
+      |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+      |      "method": "DELETE",
+      |      "rel": "delete-brought-forward-loss"
+      |    },
+      |    {
+      |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+      |      "method": "POST",
+      |      "rel": "amend-brought-forward-loss"
+      |    }
+      |  ]
+      |}
       """.stripMargin)
 
     val downstreamResponse: JsValue = Json.parse(s"""
-                                                        |{
-                                                        |    "lossId": "$lossId"
-                                                        |}
+      |{
+      |    "lossId": "$lossId"
+      |}
       """.stripMargin)
 
     def errorBody(code: String): String =
@@ -135,26 +135,29 @@ class CreateBFLossControllerISpec extends V3V4IntegrationBaseSpec with JsonError
         validationErrorTest(
           "AA123456A",
           requestBody.update("/taxYearBroughtForwardFrom", JsString("XXX")),
-          TaxYearFormatError.copy(paths = Some(List("/taxYearBroughtForwardFrom")))
+          TaxYearFormatError.withPath("/taxYearBroughtForwardFrom")
         )
         validationErrorTest(
           "AA123456A",
           requestBody.update("/taxYearBroughtForwardFrom", JsString("2021-23")),
-          RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearBroughtForwardFrom")))
+          RuleTaxYearRangeInvalidError.withPath("/taxYearBroughtForwardFrom")
         )
         validationErrorTest(
           "AA123456A",
           requestBody.update("/taxYearBroughtForwardFrom", JsString("2017-18")),
-          RuleTaxYearNotSupportedError
+          RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom")
         )
-        validationErrorTest("AA123456A", requestBody.update("/lossAmount", JsNumber(12.345)), ValueFormatError.copy(paths = Some(Seq("/lossAmount"))))
-        validationErrorTest("AA123456A", requestBody.update("/businessId", JsString("badBusinessId")), BusinessIdFormatError)
+        validationErrorTest("AA123456A", requestBody.update("/lossAmount", JsNumber(12.345)), ValueFormatError.withPath("/lossAmount"))
+        validationErrorTest("AA123456A", requestBody.update("/businessId", JsString("not-a-business-id")), BusinessIdFormatError)
+        validationErrorTest("AA123456A", requestBody.removeProperty("/lossAmount"), RuleIncorrectOrEmptyBodyError.withPath("/lossAmount"))
         validationErrorTest(
           "AA123456A",
-          requestBody.removeProperty("/lossAmount"),
-          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/lossAmount"))))
-        validationErrorTest("AA123456A", requestBody.update("/typeOfLoss", JsString("bad-loss-type")), TypeOfLossFormatError)
-        validationErrorTest("AA123456A", requestBody.update("/taxYearBroughtForwardFrom", JsString("2090-91")), RuleTaxYearNotEndedError)
+          requestBody.update("/typeOfLoss", JsString("not-a-loss-type")),
+          TypeOfLossFormatError.withPath("/typeOfLoss"))
+        validationErrorTest(
+          "AA123456A",
+          requestBody.update("/taxYearBroughtForwardFrom", JsString("2090-91")),
+          RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
       "ifs service error" when {

@@ -17,14 +17,14 @@
 package api.controllers.validators.resolvers
 
 import api.models.domain.TaxYear
-import api.models.errors.{ RuleTaxYearRangeInvalid, TaxYearFormatError }
-import cats.data.Validated.{ Invalid, Valid }
+import api.models.errors.{RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 
 class ResolveTaxYearSpec extends UnitSpec {
 
   "ResolveTaxYear" should {
-    "return no errors" when {
+    "return the parsed TaxYear" when {
       "passed a valid tax year" in {
         val validTaxYear = "2018-19"
         val result       = ResolveTaxYear(validTaxYear)
@@ -40,17 +40,17 @@ class ResolveTaxYearSpec extends UnitSpec {
 
       "passed a tax year string in which the range is greater than 1 year" in {
         val result = ResolveTaxYear("2017-19")
-        result shouldBe Invalid(List(RuleTaxYearRangeInvalid))
+        result shouldBe Invalid(List(RuleTaxYearRangeInvalidError))
       }
 
       "the end year is before the start year" in {
         val result = ResolveTaxYear("2018-17")
-        result shouldBe Invalid(List(RuleTaxYearRangeInvalid))
+        result shouldBe Invalid(List(RuleTaxYearRangeInvalidError))
       }
 
       "the start and end years are the same" in {
         val result = ResolveTaxYear("2017-17")
-        result shouldBe Invalid(List(RuleTaxYearRangeInvalid))
+        result shouldBe Invalid(List(RuleTaxYearRangeInvalidError))
       }
 
       "the tax year is bad" in {

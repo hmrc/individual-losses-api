@@ -20,8 +20,8 @@ import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
+import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequestBody, AmendLossClaimTypeRequestData}
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
 import scala.concurrent.Future
@@ -76,9 +76,9 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
     def amendLossClaimTypeResult(connector: AmendLossClaimTypeConnector): DownstreamOutcome[AmendLossClaimTypeResponse] =
       await(
         connector.amendLossClaimType(
-          AmendLossClaimTypeRequest(
+          AmendLossClaimTypeRequestData(
             nino = Nino(nino),
-            claimId = claimId,
+            claimId = ClaimId(claimId),
             amendLossClaimType
           )))
   }

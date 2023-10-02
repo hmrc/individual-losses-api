@@ -17,16 +17,16 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
-import api.hateoas.Method.GET
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v3.controllers.requestParsers.MockRetrieveLossClaimRequestParser
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.retrieveLossClaim.{RetrieveLossClaimRawData, RetrieveLossClaimRequest}
+import v3.controllers.validators.MockRetrieveLossClaimValidatorFactory
+import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
+import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
 import v3.models.response.retrieveLossClaim.{GetLossClaimHateoasData, RetrieveLossClaimResponse}
 import v3.services.MockRetrieveLossClaimService
 
@@ -36,8 +36,8 @@ import scala.concurrent.Future
 class RetrieveLossClaimControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockRetrieveLossClaimValidatorFactory
     with MockRetrieveLossClaimService
-    with MockRetrieveLossClaimRequestParser
     with MockHateoasFactory {
 
   private val claimId      = "AAZZ1234567890a"
@@ -45,8 +45,7 @@ class RetrieveLossClaimControllerSpec
   private val lastModified = Timestamp("2018-07-13T12:13:48.763Z")
   private val taxYear      = "2017-18"
 
-  private val rawData = RetrieveLossClaimRawData(nino, claimId)
-  private val request = RetrieveLossClaimRequest(Nino(nino), claimId)
+  private val requestData = RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
 
   private val response = RetrieveLossClaimResponse(
     taxYearClaimedFor = taxYear,
@@ -82,12 +81,10 @@ class RetrieveLossClaimControllerSpec
   "retrieve" should {
     "return UK" when {
       "the request is valid" in new Test {
-        MockRetrieveLossClaimRequestParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveLossClaimService
-          .retrieve(request)
+          .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
@@ -100,20 +97,15 @@ class RetrieveLossClaimControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockRetrieveLossClaimRequestParser
-          .parseRequest(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockRetrieveLossClaimRequestParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveLossClaimService
-          .retrieve(request)
+          .retrieve(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, ClaimIdFormatError, None))))
 
         runErrorTest(ClaimIdFormatError)
@@ -127,7 +119,7 @@ class RetrieveLossClaimControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveLossClaimService,
-      parser = mockRetrieveLossClaimRequestParser,
+      validatorFactory = mockRetrieveLossClaimValidatorFactory,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

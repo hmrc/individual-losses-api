@@ -18,9 +18,9 @@ package v4.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
-import v4.models.request.listLossClaims.ListBFLossesRequest
+import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import scala.concurrent.Future
@@ -30,8 +30,10 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
   private val nino    = "AA123456A"
   private val taxYear = TaxYear.fromMtd("2023-24")
 
-  def makeRequest(taxYear: TaxYear, incomeSourceType: Option[IncomeSourceType] = None, businessId: Option[String] = None): ListBFLossesRequest =
-    ListBFLossesRequest(
+  def makeRequest(taxYear: TaxYear,
+                  incomeSourceType: Option[IncomeSourceType] = None,
+                  businessId: Option[BusinessId] = None): ListBFLossesRequestData =
+    ListBFLossesRequestData(
       nino = Nino(nino),
       taxYearBroughtForwardFrom = taxYear,
       incomeSourceType = incomeSourceType,
@@ -56,7 +58,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "downstream returns OK" when {
         "the connector sends a request with just the tax year parameter" in new TysIfsTest with Test {
           val responseData: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear = taxYear)
-          val request: ListBFLossesRequest                         = makeRequest(taxYear = taxYear)
+          val request: ListBFLossesRequestData                     = makeRequest(taxYear = taxYear)
 
           val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
 
@@ -70,8 +72,8 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
         "a valid request with all parameters" in new TysIfsTest with Test {
           val responseData: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear)
-          val request: ListBFLossesRequest =
-            makeRequest(taxYear = taxYear, businessId = Some("testId"), incomeSourceType = Some(IncomeSourceType.`01`))
+          val request: ListBFLossesRequestData =
+            makeRequest(taxYear = taxYear, businessId = Some(BusinessId("testId")), incomeSourceType = Some(IncomeSourceType.`01`))
 
           val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
 

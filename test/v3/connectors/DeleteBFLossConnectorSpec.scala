@@ -19,7 +19,8 @@ package v3.connectors
 import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import v3.models.request.deleteBFLosses.DeleteBFLossRequest
+import v3.models.domain.bfLoss.LossId
+import v3.models.request.deleteBFLosses.DeleteBFLossRequestData
 
 import scala.concurrent.Future
 
@@ -28,7 +29,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
   val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val request: DeleteBFLossRequest = DeleteBFLossRequest(nino = Nino(nino), lossId = lossId)
+  val request: DeleteBFLossRequestData = DeleteBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
   trait Test {
     _: ConnectorTest =>
