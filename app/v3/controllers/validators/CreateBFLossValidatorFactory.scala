@@ -27,9 +27,10 @@ import play.api.libs.json.JsValue
 import v3.controllers.validators.resolvers.ResolveBFTypeOfLossFromJson
 import v3.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
-class CreateBFLossValidatorFactory @Inject() ()(implicit todaySupplier: TodaySupplier = new TodaySupplier) extends FixedConfig {
+@Singleton
+class CreateBFLossValidatorFactory @Inject() (implicit todaySupplier: TodaySupplier = new TodaySupplier) extends FixedConfig {
 
   private val resolveJson         = new ResolveJsonObject[CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
