@@ -60,7 +60,7 @@ class CreateBFLossValidatorFactorySpec extends UnitSpec {
     implicit val appConfig: AppConfig = mockAppConfig
 
     implicit val todaySupplier: TodaySupplier = new TodaySupplier {
-      override def today(): LocalDate = LocalDate.parse("2022-07-11") // , dateTimeFormatter)
+      override def today(): LocalDate = LocalDate.parse("2022-07-11")
     }
 
     private val validatorFactory = new CreateBFLossValidatorFactory

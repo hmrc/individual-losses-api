@@ -16,6 +16,7 @@
 
 package v3.controllers
 
+import api.controllers.ResultCreator.hateoasListWrapping
 import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -55,7 +56,7 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
         RequestHandler
           .withValidator(validator)
           .withService(service.listLossClaims)
-          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) => ListLossClaimsHateoasData(nino)))
+          .withResultCreator(hateoasListWrapping(hateoasFactory)((_, _) => ListLossClaimsHateoasData(nino)))
 
       requestHandler.handleRequest()
     }

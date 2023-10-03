@@ -24,8 +24,7 @@ import v3.models.domain.bfLoss.IncomeSourceType
 object ResolveBFIncomeSourceType extends Resolver[String, Option[IncomeSourceType]] {
 
   override def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[IncomeSourceType]] =
-    ResolveBFTypeOfLoss(value, maybeError, errorPath).map { typeOfLoss =>
-      typeOfLoss.toIncomeSourceType
-    }
+    ResolveBFTypeOfLoss(value, maybeError, errorPath)
+      .map(_.toIncomeSourceType)
 
 }

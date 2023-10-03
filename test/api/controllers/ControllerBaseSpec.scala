@@ -18,7 +18,7 @@ package api.controllers
 
 import api.controllers.ControllerTestRunner.validNino
 import api.mocks.MockIdGenerator
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail, GenericAuditDetailOld}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors.MtdError
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.http.{HeaderNames, MimeTypes, Status}
@@ -90,36 +90,6 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
     _: ControllerTest =>
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail]
-
-    protected def runOkTestWithAudit(expectedStatus: Int,
-                                     maybeExpectedResponseBody: Option[JsValue] = None,
-                                     maybeAuditRequestBody: Option[JsValue] = None,
-                                     maybeAuditResponseBody: Option[JsValue] = None): Unit = {
-      runOkTest(expectedStatus, maybeExpectedResponseBody)
-      checkAuditOkEvent(expectedStatus, maybeAuditRequestBody, maybeAuditResponseBody)
-    }
-
-    protected def runErrorTestWithAudit(expectedError: MtdError, maybeAuditRequestBody: Option[JsValue] = None): Unit = {
-      runErrorTest(expectedError)
-      checkAuditErrorEvent(expectedError, maybeAuditRequestBody)
-    }
-
-    protected def checkAuditOkEvent(expectedStatus: Int, maybeRequestBody: Option[JsValue], maybeAuditResponseBody: Option[JsValue]): Unit = {
-      val auditResponse: AuditResponse = AuditResponse(expectedStatus, None, maybeAuditResponseBody)
-      MockedAuditService.verifyAuditEvent(event(auditResponse, maybeRequestBody)).once()
-    }
-
-    protected def checkAuditErrorEvent(expectedError: MtdError, maybeRequestBody: Option[JsValue]): Unit = {
-      val auditResponse: AuditResponse = AuditResponse(expectedError.httpStatus, Some(Seq(AuditError(expectedError.code))), None)
-      MockedAuditService.verifyAuditEvent(event(auditResponse, maybeRequestBody)).once()
-    }
-
-  }
-
-  trait AuditEventCheckingOld {
-    _: ControllerTest =>
-
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld]
 
     protected def runOkTestWithAudit(expectedStatus: Int,
                                      maybeExpectedResponseBody: Option[JsValue] = None,

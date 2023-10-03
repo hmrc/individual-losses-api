@@ -31,7 +31,7 @@ import javax.inject.Singleton
 @Singleton
 class AmendLossClaimTypeValidatorFactory {
 
-  private val resolveClaimId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, ClaimIdFormatError) // TODO regex
+  private val resolveClaimId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, ClaimIdFormatError)
   private val resolveJson    = new ResolveJsonObject[AmendLossClaimTypeRequestBody]()
 
   def validator(nino: String, claimId: String, body: JsValue): Validator[AmendLossClaimTypeRequestData] =

@@ -52,17 +52,15 @@ class ListBFLossesValidatorFactory extends FixedConfig {
           ResolveBusinessId(businessId)
         ).mapN(ListBFLossesRequestData)
 
-      private def resolveIncomeSourceType: Validated[Seq[MtdError], Option[IncomeSourceType]] = {
+      private def resolveIncomeSourceType: Validated[Seq[MtdError], Option[IncomeSourceType]] =
         typeOfLoss
-          .map(lossType =>
-            if (availableLossTypeNames.contains(lossType)) {
+          .map {
+            case lossType if availableLossTypeNames.contains(lossType) =>
               Valid(TypeOfLoss.parser.lift(lossType).flatMap(_.toIncomeSourceType))
-            } else {
+            case _ =>
               Invalid(List(TypeOfLossFormatError))
-            })
+          }
           .getOrElse(Valid(None))
-
-      }
 
     }
 
