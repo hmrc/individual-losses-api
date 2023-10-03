@@ -19,9 +19,9 @@ package v3.controllers
 import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
-import v3.controllers.requestParsers.DeleteBFLossRequestParser
-import v3.models.request.deleteBFLosses.DeleteBFLossRawData
+import v3.controllers.validators.DeleteBFLossValidatorFactory
 import v3.services.DeleteBFLossService
 
 import javax.inject.{Inject, Singleton}
@@ -31,7 +31,7 @@ import scala.concurrent.ExecutionContext
 class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
                                         service: DeleteBFLossService,
-                                        parser: DeleteBFLossRequestParser,
+                                        validatorFactory: DeleteBFLossValidatorFactory,
                                         auditService: AuditService,
                                         cc: ControllerComponents,
                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -44,21 +44,21 @@ class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = DeleteBFLossRawData(nino, lossId)
+      val validator = validatorFactory.validator(nino, lossId)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.deleteBFLoss)
-          .withAuditing(
-            AuditHandlerOld(
-              auditService,
-              auditType = "DeleteBroughtForwardLoss",
-              transactionName = "delete-brought-forward-loss",
-              params = Map("nino" -> nino, "lossId" -> lossId)
-            ))
+          .withAuditing(AuditHandler(
+            auditService,
+            auditType = "DeleteBroughtForwardLoss",
+            transactionName = "delete-brought-forward-loss",
+            apiVersion = Version.from(request, orElse = Version3),
+            params = Map("nino" -> nino, "lossId" -> lossId)
+          ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

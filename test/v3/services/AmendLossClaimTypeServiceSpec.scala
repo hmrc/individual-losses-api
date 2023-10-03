@@ -20,10 +20,10 @@ import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequest, AmendLossClaimTypeRequestBody}
-import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v3.connectors.MockAmendLossClaimTypeConnector
+import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
+import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequestBody, AmendLossClaimTypeRequestData}
+import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
 import scala.concurrent.Future
 
@@ -49,7 +49,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
   }
 
   "amend LossClaim" when {
-    lazy val request = AmendLossClaimTypeRequest(Nino(nino), claimId, requestBody)
+    lazy val request = AmendLossClaimTypeRequestData(Nino(nino), ClaimId(claimId), requestBody)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

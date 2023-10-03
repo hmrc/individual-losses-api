@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.request.amendBFLosses.AmendBFLossRequest
+import v3.models.request.amendBFLosses.AmendBFLossRequestData
 import v3.models.response.amendBFLosses.AmendBFLossResponse
 
 import javax.inject.{Inject, Singleton}
@@ -30,10 +30,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendBFLoss(request: AmendBFLossRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[AmendBFLossResponse]] = {
+  def amendBFLoss(request: AmendBFLossRequestData)(implicit
+                                                   hc: HeaderCarrier,
+                                                   ec: ExecutionContext,
+                                                   correlationId: String): Future[DownstreamOutcome[AmendBFLossResponse]] = {
 
     import request._
 

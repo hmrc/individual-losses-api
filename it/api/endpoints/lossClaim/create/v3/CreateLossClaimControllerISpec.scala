@@ -94,7 +94,7 @@ class CreateLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.3.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
+          (AUTHORIZATION, "Bearer 123")
         )
     }
 
@@ -148,7 +148,7 @@ class CreateLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
         "AA123456A",
         Json.obj("typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim),
         BAD_REQUEST,
-        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/businessId")))
+        RuleIncorrectOrEmptyBodyError.withPath("/businessId")
       )
     }
 
@@ -162,25 +162,26 @@ class CreateLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
         BAD_REQUEST,
-        TaxYearClaimedForFormatError.copy(paths = Some(List("/taxYearClaimedFor")))
+        TaxYearClaimedForFormatError.withPath("/taxYearClaimedFor")
       )
       createLossClaimValidationErrorTest("AA123456A", Json.obj(), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       createLossClaimValidationErrorTest(
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
         BAD_REQUEST,
-        RuleTaxYearNotSupportedError)
+        RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor")
+      )
       createLossClaimValidationErrorTest(
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
         BAD_REQUEST,
-        RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxYearClaimedFor")))
+        RuleTaxYearRangeInvalidError.withPath("/taxYearClaimedFor")
       )
       createLossClaimValidationErrorTest(
         "AA123456A",
         generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),
         BAD_REQUEST,
-        TypeOfLossFormatError)
+        TypeOfLossFormatError.withPath("/typeOfLoss"))
       createLossClaimValidationErrorTest(
         "AA123456A",
         generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"),
@@ -195,7 +196,7 @@ class CreateLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
         "AA123456A",
         generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward-type"),
         BAD_REQUEST,
-        TypeOfClaimFormatError)
+        TypeOfClaimFormatError.withPath("/typeOfClaim"))
     }
 
     def createErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
@@ -211,7 +212,7 @@ class CreateLossClaimControllerISpec extends V3V4IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe expectedStatus
         response.json shouldBe Json.toJson(expectedBody)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("X-CorrelationId") should not be (empty)
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }

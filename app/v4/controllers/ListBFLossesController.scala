@@ -21,8 +21,7 @@ import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v4.controllers.requestParsers.ListBFLossesRequestParser
-import v4.models.request.listLossClaims.ListBFLossesRawData
+import v4.controllers.validators.ListBFLossesValidatorFactory
 import v4.models.response.listBFLosses.ListBFLossHateoasData
 import v4.services.ListBFLossesService
 
@@ -33,7 +32,7 @@ import scala.concurrent.ExecutionContext
 class ListBFLossesController @Inject() (val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
                                         service: ListBFLossesService,
-                                        parser: ListBFLossesRequestParser,
+                                        validatorFactory: ListBFLossesValidatorFactory,
                                         hateoasFactory: HateoasFactory,
                                         cc: ControllerComponents,
                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -46,15 +45,15 @@ class ListBFLossesController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = ListBFLossesRawData(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
+      val validator = validatorFactory.validator(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.listBFLosses)
-          .withResultCreator(ResultCreatorOld.hateoasListWrapping(hateoasFactory)((_, _) => ListBFLossHateoasData(nino)))
+          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) => ListBFLossHateoasData(nino)))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.RetrieveBFLossConnector
-import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
+import v3.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import javax.inject.Inject
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveBFLossService @Inject() (connector: RetrieveBFLossConnector) extends BaseService {
 
   def retrieveBFLoss(
-      request: RetrieveBFLossRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveBFLossResponse]] =
+      request: RetrieveBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveBFLossResponse]] =
     connector
       .retrieveBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

@@ -20,10 +20,10 @@ import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
-import v3.controllers.requestParsers.CreateBFLossRequestParser
-import v3.models.request.createBFLosses.CreateBFLossRawData
+import v3.controllers.validators.CreateBFLossValidatorFactory
 import v3.models.response.createBFLosses.CreateBFLossHateoasData
 import v3.services.CreateBFLossService
 
@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext
 class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
                                         service: CreateBFLossService,
-                                        parser: CreateBFLossRequestParser,
+                                        validatorFactory: CreateBFLossValidatorFactory,
                                         hateoasFactory: HateoasFactory,
                                         auditService: AuditService,
                                         cc: ControllerComponents,
@@ -48,26 +48,27 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = CreateBFLossRawData(nino, AnyContentAsJson(request.body))
+      val validator = validatorFactory.validator(nino, request.body)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.createBFLoss)
           .withHateoasResultFrom(hateoasFactory)(
             (_, responseData) => CreateBFLossHateoasData(nino, responseData.lossId),
             successStatus = CREATED
           )
-          .withAuditing(AuditHandlerOld(
+          .withAuditing(AuditHandler(
             auditService,
             auditType = "CreateBroughtForwardLoss",
             transactionName = "create-brought-forward-loss",
+            apiVersion = Version.from(request, orElse = Version3),
             params = Map("nino" -> nino),
             requestBody = Some(request.body),
             includeResponse = true
           ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

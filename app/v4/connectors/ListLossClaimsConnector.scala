@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.models.request.listLossClaims.ListLossClaimsRequest
+import v4.models.request.listLossClaims.ListLossClaimsRequestData
 import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import javax.inject.{Inject, Singleton}
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def listLossClaims(request: ListLossClaimsRequest)(implicit
+  def listLossClaims(request: ListLossClaimsRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
@@ -38,7 +38,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
     import request._
 
     val params = List(
-      "incomeSourceId"   -> businessId,
+      "incomeSourceId"   -> businessId.map(_.businessId),
       "incomeSourceType" -> typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> typeOfClaim.map(_.toReliefClaimed.toString)
     ).collect { case (key, Some(value)) =>

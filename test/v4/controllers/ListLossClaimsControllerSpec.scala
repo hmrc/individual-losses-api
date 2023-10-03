@@ -17,17 +17,17 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
+import api.hateoas.Method.{GET, POST}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.hateoas.Method.{GET, POST}
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v4.controllers.requestParsers.MockListLossClaimsRequestParser
+import v4.controllers.validators.MockListLossClaimsValidatorFactory
+import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v4.models.request.listLossClaims.{ListLossClaimsRawData, ListLossClaimsRequest}
+import v4.models.request.listLossClaims.ListLossClaimsRequestData
 import v4.models.response.listLossClaims.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 import v4.services.MockListLossClaimsService
 
@@ -37,8 +37,8 @@ import scala.concurrent.Future
 class ListLossClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockListLossClaimsValidatorFactory
     with MockListLossClaimsService
-    with MockListLossClaimsRequestParser
     with MockHateoasFactory {
 
   private val taxYear        = "2018-19"
@@ -46,8 +46,8 @@ class ListLossClaimsControllerSpec
   private val businessId     = "businessId"
   private val claimType      = "carry-sideways"
 
-  private val rawData = ListLossClaimsRawData(nino, taxYear, Some(selfEmployment), Some(businessId), Some(claimType))
-  private val request = ListLossClaimsRequest(Nino(nino), TaxYear("2019"), None, Some(businessId), Some(TypeOfClaim.`carry-sideways`))
+  private val requestData =
+    ListLossClaimsRequestData(Nino(nino), TaxYear("2019"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
 
   private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
@@ -127,14 +127,12 @@ class ListLossClaimsControllerSpec
   )
 
   "list" should {
-    "return UK" when {
+    "return OK" when {
       "the request is valid" in new Test {
-        MockListLossClaimsRequestParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockListLossClaimsService
-          .list(request)
+          .list(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))))
 
         MockHateoasFactory
@@ -147,20 +145,15 @@ class ListLossClaimsControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockListLossClaimsRequestParser
-          .parseRequest(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockListLossClaimsRequestParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockListLossClaimsService
-          .list(request)
+          .list(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfClaimFormatError, None))))
 
         runErrorTest(TypeOfClaimFormatError)
@@ -174,7 +167,7 @@ class ListLossClaimsControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListLossClaimsService,
-      parser = mockListLossClaimsRequestParser,
+      validatorFactory = mockListLossClaimsValidatorFactory,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

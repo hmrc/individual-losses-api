@@ -19,8 +19,8 @@ package v3.connectors
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
+import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
+import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import scala.concurrent.Future
@@ -54,7 +54,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
     def retrieveLossClaimResult(connector: RetrieveLossClaimConnector): DownstreamOutcome[RetrieveLossClaimResponse] = {
       await(
-        connector.retrieveLossClaim(RetrieveLossClaimRequest(nino = Nino(nino), claimId = claimId))
+        connector.retrieveLossClaim(RetrieveLossClaimRequestData(nino = Nino(nino), claimId = ClaimId(claimId)))
       )
     }
 

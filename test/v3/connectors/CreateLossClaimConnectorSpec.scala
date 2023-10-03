@@ -21,7 +21,7 @@ import api.models.ResponseWrapper
 import api.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
+import v3.models.request.createLossClaim.{CreateLossClaimRequestData, CreateLossClaimRequestBody}
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.Future
@@ -73,7 +73,7 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
     def createLossClaimsResult(connector: CreateLossClaimConnector): DownstreamOutcome[CreateLossClaimResponse] =
       await(
         connector.createLossClaim(
-          CreateLossClaimRequest(
+          CreateLossClaimRequestData(
             nino = Nino(nino),
             lossClaim
           )))

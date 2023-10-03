@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v3.models.request.deleteBFLosses.DeleteBFLossRequest
+import v3.models.request.deleteBFLosses.DeleteBFLossRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,9 +30,9 @@ trait MockDeleteBFLossService extends MockFactory {
 
   object MockDeleteBFLossService {
 
-    def delete(requestData: DeleteBFLossRequest): CallHandler[Future[ServiceOutcome[Unit]]] = {
+    def delete(requestData: DeleteBFLossRequestData): CallHandler[Future[ServiceOutcome[Unit]]] = {
       (mockDeleteBFLossService
-        .deleteBFLoss(_: DeleteBFLossRequest)(_: RequestContext, _: ExecutionContext))
+        .deleteBFLoss(_: DeleteBFLossRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

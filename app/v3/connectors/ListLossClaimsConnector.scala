@@ -24,7 +24,7 @@ import api.models.domain.TaxYear
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.request.listLossClaims.ListLossClaimsRequest
+import v3.models.request.listLossClaims.ListLossClaimsRequestData
 import v3.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import javax.inject.{Inject, Singleton}
@@ -40,12 +40,12 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
   private val NOT_FOUND_CODE = "NOT_FOUND"
 
   def listLossClaims(
-      request: ListLossClaimsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[ListLossClaimsOutcome] = {
+      request: ListLossClaimsRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[ListLossClaimsOutcome] = {
 
     import request._
 
     val params = List(
-      "incomeSourceId"   -> businessId,
+      "incomeSourceId"   -> businessId.map(_.businessId),
       "incomeSourceType" -> typeOfLoss.flatMap(_.toIncomeSourceType).map(_.toString),
       "claimType"        -> typeOfClaim.map(_.toReliefClaimed.toString)
     ).collect { case (key, Some(value)) =>

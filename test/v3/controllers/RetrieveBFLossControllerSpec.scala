@@ -17,16 +17,16 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
-import api.hateoas.Method.GET
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v3.controllers.requestParsers.MockRetrieveBFLossRequestParser
-import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.retrieveBFLoss.{RetrieveBFLossRawData, RetrieveBFLossRequest}
+import v3.controllers.validators.MockRetrieveBFLossValidatorFactory
+import v3.models.domain.bfLoss.{LossId, TypeOfLoss}
+import v3.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v3.models.response.retrieveBFLoss.{GetBFLossHateoasData, RetrieveBFLossResponse}
 import v3.services.MockRetrieveBFLossService
 
@@ -36,13 +36,12 @@ import scala.concurrent.Future
 class RetrieveBFLossControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockRetrieveBFLossValidatorFactory
     with MockRetrieveBFLossService
-    with MockRetrieveBFLossRequestParser
     with MockHateoasFactory {
 
-  private val lossId  = "AAZZ1234567890a"
-  private val rawData = RetrieveBFLossRawData(nino, lossId)
-  private val request = RetrieveBFLossRequest(Nino(nino), lossId)
+  private val lossId      = "AAZZ1234567890a"
+  private val requestData = RetrieveBFLossRequestData(Nino(nino), LossId(lossId))
 
   private val response = RetrieveBFLossResponse(
     taxYearBroughtForwardFrom = "2017-18",
@@ -76,12 +75,10 @@ class RetrieveBFLossControllerSpec
   "retrieve" should {
     "return OK" when {
       "the request is valid" in new Test {
-        MockRetrieveBFLossRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveBFLossService
-          .retrieve(request)
+          .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
@@ -94,20 +91,15 @@ class RetrieveBFLossControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockRetrieveBFLossRequestDataParser
-          .parseRequest(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockRetrieveBFLossRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveBFLossService
-          .retrieve(request)
+          .retrieve(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, LossIdFormatError, None))))
 
         runErrorTest(LossIdFormatError)
@@ -121,7 +113,7 @@ class RetrieveBFLossControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveBFLossService,
-      parser = mockRetrieveBFLossParser,
+      validatorFactory = mockRetrieveBFLossValidatorFactory,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

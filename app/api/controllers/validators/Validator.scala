@@ -20,6 +20,7 @@ import api.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import utils.Logging
+import cats.implicits._
 
 trait Validator[PARSED] extends Logging {
 
@@ -43,6 +44,10 @@ trait Validator[PARSED] extends Logging {
         }
     }
   }
+
+  protected def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] =
+    results.traverse_(identity)
+
 
   private def combineErrors(errors: Seq[MtdError]): Seq[MtdError] = {
     errors

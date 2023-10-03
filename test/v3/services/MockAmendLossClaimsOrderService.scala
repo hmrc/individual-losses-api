@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequest
+import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequestData
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,9 +31,9 @@ trait MockAmendLossClaimsOrderService extends MockFactory {
 
   object MockAmendLossClaimsOrderService {
 
-    def amend(requestData: AmendLossClaimsOrderRequest): CallHandler[Future[ServiceOutcome[AmendLossClaimsOrderResponse]]] = {
+    def amend(requestData: AmendLossClaimsOrderRequestData): CallHandler[Future[ServiceOutcome[AmendLossClaimsOrderResponse]]] = {
       (mockAmendLossClaimsOrderService
-        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequest)(_: RequestContext, _: ExecutionContext))
+        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

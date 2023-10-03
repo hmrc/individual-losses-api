@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.V3V4IntegrationBaseSpec
@@ -108,7 +108,7 @@ class AmendBFLossControllerISpec extends V3V4IntegrationBaseSpec {
       buildRequest(url)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.3.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
+          (AUTHORIZATION, "Bearer 123")
         )
     }
 
@@ -158,19 +158,11 @@ class AmendBFLossControllerISpec extends V3V4IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val input = List(
           ("AA1123A", "XAIS12345678910", requestJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "XAIS1234dfxgchjbn5678910", requestJson, BAD_REQUEST, LossIdFormatError),
-          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST, ValueFormatError.copy(paths = Some(Seq("/lossAmount")))),
-          (
-            "AA123456A",
-            "XAIS12345678910",
-            Json.parse(s"""
-                                                         |{
-                                                         |
-                                                         |}""".stripMargin),
-            BAD_REQUEST,
-            RuleIncorrectOrEmptyBodyError)
+          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST, ValueFormatError.withPath("/lossAmount")),
+          ("AA123456A", "XAIS12345678910", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -193,7 +185,7 @@ class AmendBFLossControllerISpec extends V3V4IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val input = List(
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
           (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),

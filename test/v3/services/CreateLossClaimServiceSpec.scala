@@ -22,7 +22,7 @@ import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockCreateLossClaimConnector
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.createLossClaim.{CreateLossClaimRequest, CreateLossClaimRequestBody}
+import v3.models.request.createLossClaim.{CreateLossClaimRequestData, CreateLossClaimRequestBody}
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.Future
@@ -40,7 +40,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
   }
 
   "create LossClaim" when {
-    lazy val request = CreateLossClaimRequest(Nino(nino), lossClaim)
+    lazy val request = CreateLossClaimRequestData(Nino(nino), lossClaim)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

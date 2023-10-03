@@ -20,10 +20,10 @@ import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
-import v3.controllers.requestParsers.AmendLossClaimsOrderRequestParser
-import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRawData
+import v3.controllers.validators.AmendLossClaimsOrderValidatorFactory
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderHateoasData
 import v3.services.AmendLossClaimsOrderService
 
@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext
 class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthService,
                                                 val lookupService: MtdIdLookupService,
                                                 service: AmendLossClaimsOrderService,
-                                                parser: AmendLossClaimsOrderRequestParser,
+                                                validatorFactory: AmendLossClaimsOrderValidatorFactory,
                                                 hateoasFactory: HateoasFactory,
                                                 auditService: AuditService,
                                                 cc: ControllerComponents,
@@ -48,23 +48,24 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = AmendLossClaimsOrderRawData(nino, taxYearClaimedFor, AnyContentAsJson(request.body))
+      val validator = validatorFactory.validator(nino, taxYearClaimedFor, request.body)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.amendLossClaimsOrder)
           .withHateoasResult(hateoasFactory)(AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor))
-          .withAuditing(AuditHandlerOld(
+          .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendLossClaimOrder",
             transactionName = "amend-loss-claim-order",
+            apiVersion = Version.from(request, orElse = Version3),
             params = Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor),
             requestBody = Some(request.body),
             includeResponse = true
           ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

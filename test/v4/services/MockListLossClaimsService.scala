@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v4.models.request.listLossClaims.ListLossClaimsRequest
+import v4.models.request.listLossClaims.ListLossClaimsRequestData
 import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,9 +31,9 @@ trait MockListLossClaimsService extends MockFactory {
 
   object MockListLossClaimsService {
 
-    def list(listBFLossRequest: ListLossClaimsRequest): CallHandler[Future[ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]]] = {
+    def list(listBFLossRequest: ListLossClaimsRequestData): CallHandler[Future[ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]]] = {
       (mockListLossClaimsService
-        .listLossClaims(_: ListLossClaimsRequest)(_: RequestContext, _: ExecutionContext))
+        .listLossClaims(_: ListLossClaimsRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(listBFLossRequest, *, *)
     }
 

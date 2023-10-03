@@ -98,7 +98,7 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
     """.stripMargin)
 
   "reads" when {
-    "passed a valid LossClaim Json" should {
+    "given a valid LossClaim Json" should {
       "return a valid model" when {
         Map[CreateLossClaimRequestBody, JsValue](
           lossClaimSelfEmployment   -> lossClaimSelfEmploymentJson,
@@ -132,17 +132,17 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
   }
 
   "writes" when {
-    "passed a valid Loss Claim Employment model" should {
+    "given a valid Loss Claim Employment model" should {
       "return a valid Loss Claim Employment JSON" in {
         Json.toJson(lossClaimSelfEmployment) shouldBe lossClaimSelfEmploymentDownstreamJson
       }
     }
-    "passed a valid Loss Claim Property model" should {
+    "given a valid Loss Claim Property model" should {
       "return a valid Loss Claim Property JSON" in {
         Json.toJson(lossClaimUkPropertyNonFhl) shouldBe lossClaimUkPropertyNonFhlDownstreamJson
       }
     }
-    "passed a valid Loss Claim Foreign Property model" should {
+    "given a valid Loss Claim Foreign Property model" should {
       "return a valid Loss Claim Foreign Property JSON" in {
         Json.toJson(lossClaimForeignProperty) shouldBe lossClaimForeignPropertyDowwnstreamJson
       }

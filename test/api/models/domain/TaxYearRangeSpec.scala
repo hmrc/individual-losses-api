@@ -25,7 +25,7 @@ class TaxYearRangeSpec extends UnitSpec {
   "fromMtd()" should {
 
     "return a TaxYearRange" when {
-      "passed an MTD-format taxYear" in {
+      "given an MTD-format taxYear" in {
         val taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         TaxYearRange.fromMtd("2019-20") shouldBe TaxYearRange(taxYear)
       }
@@ -44,11 +44,12 @@ class TaxYearRangeSpec extends UnitSpec {
 
   "todayMinus(years)" should {
     "return a TaxYearRange from the 'subtracted' tax year to the current tax year" in {
-      val today          = LocalDate.parse("2023-04-01")
       val currentTaxYear = "2022-23"
       val expectedFrom   = TaxYear.fromMtd("2018-19")
 
-      implicit val todaySupplier: () => LocalDate = () => today
+      implicit val todaySupplier: TodaySupplier = new TodaySupplier {
+        override def today(): LocalDate = LocalDate.parse("2023-04-01")
+      }
 
       val result: TaxYearRange = TaxYearRange.todayMinus(years = 4)
       result shouldBe TaxYearRange(expectedFrom, TaxYear.fromMtd(currentTaxYear))

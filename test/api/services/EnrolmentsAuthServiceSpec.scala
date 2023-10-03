@@ -45,12 +45,12 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
   "calling .buildPredicate" when {
     "confidence level checks are on" should {
       "return a Predicate containing confidence level 200 on top of the provided Predicate" when {
-        "passed a simple Individual Predicate" in new Test {
+        "given a simple Individual Predicate" in new Test {
           mockConfidenceLevelCheckConfig()
 
           target.buildPredicate(AffinityGroup.Individual) shouldBe extraPredicatesAnd(AffinityGroup.Individual)
         }
-        "passed a complex Individual Predicate" in new Test {
+        "given a complex Individual Predicate" in new Test {
           mockConfidenceLevelCheckConfig()
 
           target.buildPredicate(CompositePredicate(AffinityGroup.Individual, EmptyPredicate)) shouldBe {
@@ -59,24 +59,24 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
         }
       }
       "return a Predicate containing only the provided Predicate" when {
-        "passed a simple Organisation Predicate" in new Test {
+        "given a simple Organisation Predicate" in new Test {
           mockConfidenceLevelCheckConfig()
 
           target.buildPredicate(AffinityGroup.Organisation) shouldBe extraPredicatesAnd(AffinityGroup.Organisation)
         }
-        "passed a complex Organisation Predicate" in new Test {
+        "given a complex Organisation Predicate" in new Test {
           mockConfidenceLevelCheckConfig()
 
           target.buildPredicate(CompositePredicate(AffinityGroup.Organisation, EmptyPredicate)) shouldBe {
             extraPredicatesAnd(CompositePredicate(AffinityGroup.Organisation, EmptyPredicate))
           }
         }
-        "passed a simple Agent Predicate" in new Test {
+        "given a simple Agent Predicate" in new Test {
           mockConfidenceLevelCheckConfig()
 
           target.buildPredicate(AffinityGroup.Agent) shouldBe extraPredicatesAnd(AffinityGroup.Agent)
         }
-        "passed a complex Agent Predicate" in new Test {
+        "given a complex Agent Predicate" in new Test {
           mockConfidenceLevelCheckConfig()
 
           target.buildPredicate(CompositePredicate(AffinityGroup.Agent, EmptyPredicate)) shouldBe {
@@ -87,12 +87,12 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
     }
     "confidence level checks are off" should {
       "return a Predicate containing only the provided Predicate" when {
-        "passed a simple Predicate" in new Test {
+        "given a simple Predicate" in new Test {
           mockConfidenceLevelCheckConfig(authValidationEnabled = false)
 
           target.buildPredicate(AffinityGroup.Individual) shouldBe AffinityGroup.Individual
         }
-        "passed a complex Predicate" in new Test {
+        "given a complex Predicate" in new Test {
           mockConfidenceLevelCheckConfig(authValidationEnabled = false)
 
           target.buildPredicate(CompositePredicate(AffinityGroup.Agent, Enrolment("HMRC-AS-AGENT"))) shouldBe

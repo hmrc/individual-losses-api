@@ -21,8 +21,8 @@ import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockRetrieveLossClaimConnector
-import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequest
+import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
+import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
     lazy val service = new RetrieveLossClaimService(connector)
   }
 
-  lazy val request: RetrieveLossClaimRequest = RetrieveLossClaimRequest(Nino(nino), claimId)
+  lazy val request: RetrieveLossClaimRequestData = RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
 
   "retrieve loss claim" should {
     "return a Right" when {

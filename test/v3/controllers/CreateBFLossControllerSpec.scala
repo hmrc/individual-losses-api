@@ -17,17 +17,17 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetailOld}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
-import api.hateoas.Method.GET
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v3.controllers.requestParsers.MockCreateBFLossRequestParser
+import play.api.mvc.Result
+import v3.controllers.validators.MockCreateBFLossValidatorFactory
 import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.createBFLosses.{CreateBFLossRawData, CreateBFLossRequest, CreateBFLossRequestBody}
+import v3.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 import v3.models.response.createBFLosses.{CreateBFLossHateoasData, CreateBFLossResponse}
 import v3.services.MockCreateBFLossService
 
@@ -37,16 +37,16 @@ import scala.concurrent.Future
 class CreateBFLossControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockCreateBFLossValidatorFactory
     with MockCreateBFLossService
-    with MockCreateBFLossRequestParser
     with MockHateoasFactory {
 
   private val lossId = "AAZZ1234567890a"
 
   private val bfLoss               = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+  private val requestData          = CreateBFLossRequestData(Nino(nino), bfLoss)
   private val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
   private val testHateoasLink      = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  private val bfLossRequest        = CreateBFLossRequest(Nino(nino), bfLoss)
 
   private val requestBody: JsValue = Json.parse(
     """
@@ -77,12 +77,10 @@ class CreateBFLossControllerSpec
   "create" should {
     "return Created" when {
       "the request is valid" in new Test {
-        MockCreateBFLossRequestDataParser
-          .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-          .returns(Right(bfLossRequest))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreateBFLossService
-          .create(CreateBFLossRequest(Nino(nino), bfLoss))
+          .create(CreateBFLossRequestData(Nino(nino), bfLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, createBFLossResponse))))
 
         MockHateoasFactory
@@ -101,20 +99,15 @@ class CreateBFLossControllerSpec
 
   "return the error as per spec" when {
     "the parser validation fails" in new Test {
-      MockCreateBFLossRequestDataParser
-        .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-        .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+      willUseValidator(returning(NinoFormatError))
       runErrorTestWithAudit(NinoFormatError, maybeAuditRequestBody = Some(requestBody))
     }
 
     "the service returns an error" in new Test {
-      MockCreateBFLossRequestDataParser
-        .parseRequest(CreateBFLossRawData(nino, AnyContentAsJson(requestBody)))
-        .returns(Right(bfLossRequest))
+      willUseValidator(returningSuccess(requestData))
 
       MockCreateBFLossService
-        .create(CreateBFLossRequest(Nino(nino), bfLoss))
+        .create(CreateBFLossRequestData(Nino(nino), bfLoss))
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDuplicateSubmissionError, None))))
 
       runErrorTestWithAudit(RuleDuplicateSubmissionError, maybeAuditRequestBody = Some(requestBody))
@@ -127,7 +120,7 @@ class CreateBFLossControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockCreateBFLossService,
-      parser = mockCreateBFLossParser,
+      validatorFactory = mockCreateBFLossValidatorFactory,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
@@ -136,11 +129,11 @@ class CreateBFLossControllerSpec
 
     protected def callController(): Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetailOld] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "CreateBroughtForwardLoss",
         transactionName = "create-brought-forward-loss",
-        detail = GenericAuditDetailOld(
+        detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",

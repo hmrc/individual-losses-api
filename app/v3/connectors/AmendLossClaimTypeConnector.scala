@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequest
+import v3.models.request.amendLossClaimType.AmendLossClaimTypeRequestData
 import v3.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 
 import javax.inject.{Inject, Singleton}
@@ -30,10 +30,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendLossClaimTypeConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendLossClaimType(request: AmendLossClaimTypeRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
+  def amendLossClaimType(request: AmendLossClaimTypeRequestData)(implicit
+                                                                 hc: HeaderCarrier,
+                                                                 ec: ExecutionContext,
+                                                                 correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
 
     import request._
 

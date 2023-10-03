@@ -16,16 +16,19 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.domain.TaxYear
+import api.models.domain.{TaxYear, TodaySupplier}
 import api.models.errors._
 import cats.data.Validated
-import cats.data.Validated.{ Invalid, Valid }
+import cats.data.Validated.{Invalid, Valid}
+import cats.implicits._
 
-trait ResolvingTaxYear extends Resolver[String, TaxYear] {
+trait TaxYearResolving extends Resolver[String, TaxYear] {
 
   private val taxYearFormat = "20[1-9][0-9]-[1-9][0-9]".r
 
-  protected def resolve(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] = {
+  protected val rangeInvalidError: MtdError = RuleTaxYearRangeInvalidError
+
+  protected def resolve(value: String, maybeFormatError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
     if (taxYearFormat.matches(value)) {
       val startTaxYearStart: Int = 2
       val startTaxYearEnd: Int   = 4
@@ -36,45 +39,75 @@ trait ResolvingTaxYear extends Resolver[String, TaxYear] {
       val start = value.substring(startTaxYearStart, startTaxYearEnd).toInt
       val end   = value.substring(endTaxYearStart, endTaxYearEnd).toInt
 
-      if (end - start == 1) {
+      if (end - start == 1)
         Valid(TaxYear.fromMtd(value))
-      } else {
-        Invalid(List(withError(error, RuleTaxYearRangeInvalid, path)))
-      }
+      else
+        Invalid(List(withError(None, rangeInvalidError, path)))
 
     } else {
-      Invalid(List(withError(error, TaxYearFormatError, path)))
+      Invalid(List(withError(maybeFormatError, TaxYearFormatError, path)))
     }
+
+}
+
+object ResolveTaxYear extends TaxYearResolving {
+
+  def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], TaxYear] =
+    resolve(value, maybeError, errorPath)
+
+}
+
+object ResolveTysTaxYear extends TaxYearResolving {
+
+  def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], TaxYear] =
+    resolve(value, maybeError, errorPath)
+      .andThen { taxYear =>
+        if (taxYear.year < TaxYear.tysTaxYear)
+          Invalid(List(InvalidTaxYearParameterError) ++ maybeError)
+        else
+          Valid(taxYear)
+      }
+
+}
+
+case class DetailedResolveTaxYear(
+    allowIncompleteTaxYear: Boolean = true,
+    incompleteTaxYearError: MtdError = RuleTaxYearNotEndedError,
+    maybeMinimumTaxYear: Option[Int] = None,
+    minimumTaxYearError: MtdError = RuleTaxYearNotSupportedError
+)(implicit todaySupplier: TodaySupplier = new TodaySupplier)
+    extends TaxYearResolving {
+
+  def apply(value: String, maybeFormatError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], TaxYear] = {
+
+    def validateMinimumTaxYear(parsed: TaxYear): Validated[Seq[MtdError], Unit] =
+      maybeMinimumTaxYear
+        .traverse_ { minimumTaxYear =>
+          if (parsed.year < minimumTaxYear)
+            Invalid(List(minimumTaxYearError.maybeWithExtraPath(errorPath)))
+          else
+            Valid(())
+        }
+
+    def validateIncompleteTaxYear(parsed: TaxYear): Validated[Seq[MtdError], Unit] =
+      if (allowIncompleteTaxYear)
+        Valid(())
+      else {
+        val currentTaxYear = TaxYear.currentTaxYear()
+        if (parsed.year >= currentTaxYear.year)
+          Invalid(List(incompleteTaxYearError.maybeWithExtraPath(errorPath)))
+        else
+          Valid(())
+      }
+
+    resolve(value, maybeFormatError, errorPath)
+      .andThen { parsed =>
+        combine(
+          validateMinimumTaxYear(parsed),
+          validateIncompleteTaxYear(parsed)
+        ).map(_ => parsed)
+
+      }
   }
 
-}
-
-object ResolveTaxYear extends ResolvingTaxYear {
-
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-
-  def apply(minimumTaxYear: Int, value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-      .andThen { taxYear =>
-        if (taxYear.year < minimumTaxYear) {
-          Invalid(List(RuleTaxYearNotSupportedError))
-        } else {
-          Valid(taxYear)
-        }
-      }
-
-}
-
-object ResolveTysTaxYear extends ResolvingTaxYear {
-
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-      .andThen { taxYear =>
-        if (taxYear.year < TaxYear.tysTaxYear) {
-          Invalid(List(InvalidTaxYearParameterError) ++ error)
-        } else {
-          Valid(taxYear)
-        }
-      }
 }

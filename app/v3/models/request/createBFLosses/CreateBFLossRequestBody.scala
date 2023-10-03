@@ -21,7 +21,9 @@ import play.api.libs.json._
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.domain.bfLoss.TypeOfLoss._
 
-case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal)
+case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal) {
+  @transient lazy val taxYear: TaxYear = TaxYear.fromMtd(taxYearBroughtForwardFrom)
+}
 
 object CreateBFLossRequestBody {
   implicit val reads: Reads[CreateBFLossRequestBody] = Json.reads[CreateBFLossRequestBody]
@@ -32,14 +34,14 @@ object CreateBFLossRequestBody {
         Json.obj(
           "incomeSourceId"            -> loss.businessId,
           "incomeSourceType"          -> loss.typeOfLoss.toIncomeSourceType,
-          "taxYearBroughtForwardFrom" -> TaxYear.fromMtd(loss.taxYearBroughtForwardFrom).year,
+          "taxYearBroughtForwardFrom" -> loss.taxYear.year,
           "broughtForwardLossAmount"  -> loss.lossAmount
         )
       case `self-employment` | `self-employment-class4` =>
         Json.obj(
           "incomeSourceId"            -> loss.businessId,
           "lossType"                  -> loss.typeOfLoss.toLossType,
-          "taxYearBroughtForwardFrom" -> TaxYear.fromMtd(loss.taxYearBroughtForwardFrom).year,
+          "taxYearBroughtForwardFrom" -> loss.taxYear.year,
           "broughtForwardLossAmount"  -> loss.lossAmount
         )
     }

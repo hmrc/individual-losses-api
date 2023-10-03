@@ -21,8 +21,7 @@ import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v3.controllers.requestParsers.RetrieveBFLossRequestParser
-import v3.models.request.retrieveBFLoss.RetrieveBFLossRawData
+import v3.controllers.validators.RetrieveBFLossValidatorFactory
 import v3.models.response.retrieveBFLoss.GetBFLossHateoasData
 import v3.services.RetrieveBFLossService
 
@@ -33,7 +32,7 @@ import scala.concurrent.ExecutionContext
 class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                           val lookupService: MtdIdLookupService,
                                           service: RetrieveBFLossService,
-                                          parser: RetrieveBFLossRequestParser,
+                                          validatorFactory: RetrieveBFLossValidatorFactory,
                                           hateoasFactory: HateoasFactory,
                                           cc: ControllerComponents,
                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -46,15 +45,15 @@ class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = RetrieveBFLossRawData(nino, lossId)
+      val validator = validatorFactory.validator(nino, lossId)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.retrieveBFLoss)
           .withHateoasResult(hateoasFactory)(GetBFLossHateoasData(nino, lossId))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

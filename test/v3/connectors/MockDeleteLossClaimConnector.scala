@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
+import v3.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,9 +29,9 @@ trait MockDeleteLossClaimConnector extends MockFactory {
 
   object MockDeleteLossClaimConnector {
 
-    def deleteLossClaim(deleteLossClaimRequest: DeleteLossClaimRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def deleteLossClaim(deleteLossClaimRequest: DeleteLossClaimRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
-        .deleteLossClaim(_: DeleteLossClaimRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .deleteLossClaim(_: DeleteLossClaimRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(deleteLossClaimRequest, *, *, *)
     }
 

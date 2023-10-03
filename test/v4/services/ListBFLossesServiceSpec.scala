@@ -22,7 +22,7 @@ import api.models.errors._
 import api.services.ServiceSpec
 import v4.connectors.MockListBFLossesConnector
 import v4.models.domain.bfLoss.TypeOfLoss
-import v4.models.request.listLossClaims.ListBFLossesRequest
+import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import scala.concurrent.Future
@@ -100,8 +100,8 @@ class ListBFLossesServiceSpec extends ServiceSpec {
     lazy val service = new ListBFLossesService(connector)
   }
 
-  private def request(taxYear: TaxYear = TaxYear.fromMtd("2020-21")): ListBFLossesRequest =
-    ListBFLossesRequest(Nino(nino), taxYear, None, None)
+  private def request(taxYear: TaxYear = TaxYear.fromMtd("2020-21")): ListBFLossesRequestData =
+    ListBFLossesRequestData(Nino(nino), taxYear, None, None)
 
   private def downstreamResponse(data: ListBFLossesResponse[ListBFLossesItem]): ResponseWrapper[ListBFLossesResponse[ListBFLossesItem]] =
     ResponseWrapper(correlationId, data)

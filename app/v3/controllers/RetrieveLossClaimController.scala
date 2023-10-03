@@ -21,8 +21,7 @@ import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v3.controllers.requestParsers.RetrieveLossClaimRequestParser
-import v3.models.request.retrieveLossClaim.RetrieveLossClaimRawData
+import v3.controllers.validators.RetrieveLossClaimValidatorFactory
 import v3.models.response.retrieveLossClaim.GetLossClaimHateoasData
 import v3.services.RetrieveLossClaimService
 
@@ -33,7 +32,7 @@ import scala.concurrent.ExecutionContext
 class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthService,
                                              val lookupService: MtdIdLookupService,
                                              service: RetrieveLossClaimService,
-                                             parser: RetrieveLossClaimRequestParser,
+                                             validatorFactory: RetrieveLossClaimValidatorFactory,
                                              hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -46,15 +45,15 @@ class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthServ
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = RetrieveLossClaimRawData(nino, claimId)
+      val validator = validatorFactory.validator(nino, claimId)
 
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.retrieveLossClaim)
           .withHateoasResult(hateoasFactory)(GetLossClaimHateoasData(nino, claimId))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

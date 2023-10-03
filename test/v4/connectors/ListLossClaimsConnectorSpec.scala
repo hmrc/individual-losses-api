@@ -17,12 +17,12 @@
 package v4.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import v4.fixtures.ListLossClaimsFixtures._
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
+import v4.fixtures.ListLossClaimsFixtures._
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v4.models.request.listLossClaims.ListLossClaimsRequest
+import v4.models.request.listLossClaims.ListLossClaimsRequestData
 import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
 
 import scala.concurrent.Future
@@ -47,7 +47,11 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     "a valid request is supplied with only the tax year parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(s"$baseUrl/income-tax/23-24/claims-for-relief/$nino") returns Future.successful(success("2023-24"))
-        listLossClaimsResult(connector, TaxYear.fromMtd("2023-24")) shouldBe success("2023-24")
+
+        val result: DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]] =
+          listLossClaimsResult(connector, TaxYear.fromMtd("2023-24"))
+
+        result shouldBe success("2023-24")
       }
     }
 
@@ -56,7 +60,10 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         willGet(url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
           .successful(success("2023-24"))
 
-        listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), businessId = Some("testId")) shouldBe success("2023-24")
+        val result: DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]] =
+          listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), businessId = Some(BusinessId("testId")))
+
+        result shouldBe success("2023-24")
       }
     }
 
@@ -67,8 +74,10 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
           queryParams = List(("incomeSourceType", "02"))
         ) returns Future.successful(success("2023-24"))
 
-        listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`)) shouldBe success(
-          "2023-24")
+        val result: DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]] =
+          listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`))
+
+        result shouldBe success("2023-24")
       }
     }
 
@@ -79,8 +88,10 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
           queryParams = List(("claimType", "CSGI"))
         ) returns Future.successful(success("2023-24"))
 
-        listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), claimType = Some(TypeOfClaim.`carry-sideways`)) shouldBe success(
-          "2023-24")
+        val result: DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]] =
+          listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), claimType = Some(TypeOfClaim.`carry-sideways`))
+
+        result shouldBe success("2023-24")
       }
     }
 
@@ -94,7 +105,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         listLossClaimsResult(
           connector = connector,
           taxYear = TaxYear("2024"),
-          businessId = Some("testId"),
+          businessId = Some(BusinessId("testId")),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)
         ) shouldBe success("2023-24")
@@ -104,11 +115,11 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     def listLossClaimsResult(connector: ListLossClaimsConnector,
                              taxYear: TaxYear,
                              typeOfLoss: Option[TypeOfLoss] = None,
-                             businessId: Option[String] = None,
+                             businessId: Option[BusinessId] = None,
                              claimType: Option[TypeOfClaim] = None): DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]] =
       await(
         connector.listLossClaims(
-          ListLossClaimsRequest(
+          ListLossClaimsRequestData(
             nino = Nino(nino),
             taxYearClaimedFor = taxYear,
             typeOfLoss = typeOfLoss,

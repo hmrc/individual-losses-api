@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.CreateLossClaimConnector
-import v3.models.request.createLossClaim.CreateLossClaimRequest
+import v3.models.request.createLossClaim.CreateLossClaimRequestData
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import javax.inject.Inject
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) extends BaseService {
 
   def createLossClaim(
-      request: CreateLossClaimRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateLossClaimResponse]] =
+      request: CreateLossClaimRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateLossClaimResponse]] =
     connector
       .createLossClaim(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

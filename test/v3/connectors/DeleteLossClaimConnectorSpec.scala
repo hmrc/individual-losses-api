@@ -19,7 +19,8 @@ package v3.connectors
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.ResponseWrapper
 import api.models.domain.Nino
-import v3.models.request.deleteLossClaim.DeleteLossClaimRequest
+import v3.models.domain.lossClaim.ClaimId
+import v3.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
 import scala.concurrent.Future
 
@@ -56,7 +57,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
 
     def deleteLossClaimResult(connector: DeleteLossClaimConnector): DownstreamOutcome[Unit] =
       await(
-        connector.deleteLossClaim(DeleteLossClaimRequest(nino = Nino(nino), claimId = claimId))
+        connector.deleteLossClaim(DeleteLossClaimRequestData(nino = Nino(nino), claimId = ClaimId(claimId)))
       )
   }
 

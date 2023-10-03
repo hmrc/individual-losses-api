@@ -21,7 +21,8 @@ import api.models.domain.Nino
 import api.models.errors._
 import api.services.ServiceSpec
 import v3.connectors.MockDeleteBFLossConnector
-import v3.models.request.deleteBFLosses.DeleteBFLossRequest
+import v3.models.domain.bfLoss.LossId
+import v3.models.request.deleteBFLosses.DeleteBFLossRequestData
 
 import scala.concurrent.Future
 
@@ -34,7 +35,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
     lazy val service = new DeleteBFLossService(connector)
   }
 
-  lazy val request: DeleteBFLossRequest = DeleteBFLossRequest(Nino(nino), lossId)
+  lazy val request: DeleteBFLossRequestData = DeleteBFLossRequestData(Nino(nino), LossId(lossId))
 
   "Delete BF Loss" should {
     "return a Right" when {

@@ -24,16 +24,16 @@ For Loss Claims, a developer can:
 
 ## Requirements
 
-- Scala 2.12.x
-- Java 8
-- sbt 1.6.x
+- Scala 2.13.x
+- Java 11
+- sbt 1.7.x
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ## Development Setup
 
 Run the microservice from the console using: `sbt run` (starts on port 9779 by default)
 
-Start the service manager profile: `sm --start MTDFB_LOSSES`
+Start the service manager profile: `sm2 --start MTDFB_LOSSES`
 
 ## Run Tests
 
@@ -66,7 +66,7 @@ You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-chan
 ## API Reference / Documentation
 
 Available on
-the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api/3.0)
+the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-losses-api)
 
 ## License
 

@@ -17,16 +17,16 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.Method.{GET, POST}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.ResponseWrapper
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.hateoas.Method.{GET, POST}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v3.controllers.requestParsers.MockListBFLossesRequestParser
+import v3.controllers.validators.MockListBFLossesValidatorFactory
 import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
-import v3.models.request.listBFLosses.{ListBFLossesRawData, ListBFLossesRequest}
+import v3.models.request.listBFLosses.ListBFLossesRequestData
 import v3.models.response.listBFLosses.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
 import v3.services.MockListBFLossesService
 
@@ -36,17 +36,16 @@ import scala.concurrent.Future
 class ListBFLossesControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockListBFLossesValidatorFactory
     with MockListBFLossesService
-    with MockListBFLossesRequestParser
     with MockHateoasFactory {
 
   private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
   private val businessId     = "XKIS00000000988"
-  private val rawData        = ListBFLossesRawData(nino, Some(taxYear), Some(selfEmployment), Some(businessId))
 
-  private val request =
-    ListBFLossesRequest(Nino(nino), Some(TaxYear("2019")), Some(IncomeSourceType.`02`), Some(businessId))
+  private val requestData =
+    ListBFLossesRequestData(Nino(nino), Some(TaxYear("2019")), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
 
   private val listHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
 
@@ -102,12 +101,10 @@ class ListBFLossesControllerSpec
   "list" should {
     "return OK" when {
       "the request is valid" in new Test {
-        MockListBFLossesRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockListBFLossesService
-          .list(request)
+          .list(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
@@ -120,20 +117,15 @@ class ListBFLossesControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockListBFLossesRequestDataParser
-          .parseRequest(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockListBFLossesRequestDataParser
-          .parseRequest(rawData)
-          .returns(Right(request))
+        willUseValidator(returningSuccess(requestData))
 
         MockListBFLossesService
-          .list(request)
+          .list(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, TypeOfLossFormatError, None))))
 
         runErrorTest(TypeOfLossFormatError)
@@ -147,7 +139,7 @@ class ListBFLossesControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,
-      parser = mockListBFLossesParser,
+      validatorFactory = mockListBFLossesValidatorFactory,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

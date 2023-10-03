@@ -19,8 +19,8 @@ package v3.connectors
 import api.connectors.ConnectorSpec
 import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
-import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.retrieveBFLoss.RetrieveBFLossRequest
+import v3.models.domain.bfLoss.{LossId, TypeOfLoss}
+import v3.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v3.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
 import scala.concurrent.Future
@@ -30,7 +30,7 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
   val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val request: RetrieveBFLossRequest = RetrieveBFLossRequest(nino = Nino(nino), lossId = lossId)
+  val request: RetrieveBFLossRequestData = RetrieveBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
   trait Test {
     _: ConnectorTest =>
