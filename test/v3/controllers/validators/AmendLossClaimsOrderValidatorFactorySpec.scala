@@ -227,7 +227,7 @@ class AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonErrorVa
               RuleSequenceOrderBroken,
               ValueFormatError.forPathAndRange("/listOfLossClaims/1/sequence", "1", "99"),
               RuleInvalidSequenceStart,
-              ClaimIdFormatError.copy(paths = Some(List("/listOfLossClaims/0/claimId")))
+              ClaimIdFormatError.withPath("/listOfLossClaims/0/claimId")
             ))
           )
         )

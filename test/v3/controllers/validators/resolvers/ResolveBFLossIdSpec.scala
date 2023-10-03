@@ -28,14 +28,14 @@ class ResolveBFLossIdSpec extends UnitSpec {
 
   "ResolveLossId" should {
     "return the resolved LossId" when {
-      "passed a valid LossId" in {
+      "given a valid LossId" in {
         val result = ResolveBFLossId(validLossId)
         result shouldBe Valid(LossId(validLossId))
       }
     }
 
     "return a LossIdFormatError" when {
-      "passed an invalid LossId" in {
+      "given an invalid LossId" in {
         val result = ResolveBFLossId(invalidLossId)
         result shouldBe Invalid(List(LossIdFormatError))
       }

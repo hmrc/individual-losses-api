@@ -104,7 +104,7 @@ class AmendLossClaimsOrderControllerISpec extends V3V4IntegrationBaseSpec {
         "2019-20",
         requestJson(listOfLossClaims = Seq(claim1.copy(claimId = "BadId"))),
         BAD_REQUEST,
-        ClaimIdFormatError.copy(paths = Some(Seq("/listOfLossClaims/0/claimId")))
+        ClaimIdFormatError.withPath("/listOfLossClaims/0/claimId")
       )
       validationErrorTest(
         "AA123456A",

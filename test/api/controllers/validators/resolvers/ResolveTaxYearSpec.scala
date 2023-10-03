@@ -25,7 +25,7 @@ class ResolveTaxYearSpec extends UnitSpec {
 
   "ResolveTaxYear" should {
     "return the parsed TaxYear" when {
-      "passed a valid tax year" in {
+      "given a valid tax year" in {
         val validTaxYear = "2018-19"
         val result       = ResolveTaxYear(validTaxYear)
         result shouldBe Valid(TaxYear.fromMtd(validTaxYear))
@@ -33,12 +33,12 @@ class ResolveTaxYearSpec extends UnitSpec {
     }
 
     "return an error" when {
-      "passed an invalid tax year format" in {
+      "given an invalid tax year format" in {
         val result = ResolveTaxYear("2019")
         result shouldBe Invalid(List(TaxYearFormatError))
       }
 
-      "passed a tax year string in which the range is greater than 1 year" in {
+      "given a tax year string in which the range is greater than 1 year" in {
         val result = ResolveTaxYear("2017-19")
         result shouldBe Invalid(List(RuleTaxYearRangeInvalidError))
       }

@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v3.models.request.amendBFLosses.AmendBFLossRequestBody
 
-class AmendBFLossRequestDataBodySpec extends UnitSpec {
+class AmendBFLossRequestBodySpec extends UnitSpec {
 
   val mtdJson: JsValue = Json.parse("""
       |{

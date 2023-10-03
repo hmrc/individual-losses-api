@@ -53,7 +53,7 @@ class CreateBFLossResponseSpec extends UnitSpec {
   }
 
   "writes" when {
-    "passed a valid LossIdResponse model" should {
+    "given a valid LossIdResponse model" should {
       "return a valid LossIdResponse JSON" in {
         Json.toJson(lossIdResponse) shouldBe lossIdJson
       }

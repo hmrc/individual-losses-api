@@ -161,7 +161,7 @@ class AmendBFLossControllerISpec extends V3V4IntegrationBaseSpec {
         val input = List(
           ("AA1123A", "XAIS12345678910", requestJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "XAIS1234dfxgchjbn5678910", requestJson, BAD_REQUEST, LossIdFormatError),
-          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST, ValueFormatError.copy(paths = Some(List("/lossAmount")))),
+          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST, ValueFormatError.withPath("/lossAmount")),
           ("AA123456A", "XAIS12345678910", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
         )
 

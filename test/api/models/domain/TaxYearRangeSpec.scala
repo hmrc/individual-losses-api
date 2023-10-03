@@ -25,7 +25,7 @@ class TaxYearRangeSpec extends UnitSpec {
   "fromMtd()" should {
 
     "return a TaxYearRange" when {
-      "passed an MTD-format taxYear" in {
+      "given an MTD-format taxYear" in {
         val taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         TaxYearRange.fromMtd("2019-20") shouldBe TaxYearRange(taxYear)
       }

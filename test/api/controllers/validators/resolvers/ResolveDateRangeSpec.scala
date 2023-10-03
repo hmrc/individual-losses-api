@@ -29,24 +29,24 @@ class ResolveDateRangeSpec extends UnitSpec {
 
   "ResolveDateRange" should {
     "return no errors" when {
-      "passed a valid start and end date" in {
+      "given a valid start and end date" in {
         val result = ResolveDateRange(validStart -> validEnd)
         result shouldBe Valid(DateRange(LocalDate.parse(validStart), LocalDate.parse(validEnd)))
       }
     }
 
     "return an error" when {
-      "passed an invalid start date" in {
+      "given an invalid start date" in {
         val result = ResolveDateRange("not-a-date" -> validEnd)
         result shouldBe Invalid(List(StartDateFormatError))
       }
 
-      "passed an invalid end date" in {
+      "given an invalid end date" in {
         val result = ResolveDateRange(validStart -> "not-a-date")
         result shouldBe Invalid(List(EndDateFormatError))
       }
 
-      "passed an end date before start date" in {
+      "given an end date before start date" in {
         val result = ResolveDateRange(validEnd -> validStart)
         result shouldBe Invalid(List(RuleEndBeforeStartDateError))
       }

@@ -28,14 +28,14 @@ class ResolveLossClaimIdSpec extends UnitSpec {
 
   "ResolveClaimId" should {
     "return the resolved ClaimId" when {
-      "passed a valid claimId" in {
+      "given a valid claimId" in {
         val result = ResolveLossClaimId(validClaimId)
         result shouldBe Valid(ClaimId(validClaimId))
       }
     }
 
     "return a ClaimIdFormatError" when {
-      "passed an invalid claimId" in {
+      "given an invalid claimId" in {
         val result = ResolveLossClaimId(invalidClaimId)
         result shouldBe Invalid(List(ClaimIdFormatError))
       }

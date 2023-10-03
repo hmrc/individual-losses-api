@@ -52,7 +52,7 @@ class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
   }
 
   "writes" when {
-    "passed a valid LossIdResponse model" should {
+    "given a valid LossIdResponse model" should {
       "return a valid LossIdResponse JSON" in {
         Json.toJson(createClaimsResponse) shouldBe createClaimsResponseJson
       }

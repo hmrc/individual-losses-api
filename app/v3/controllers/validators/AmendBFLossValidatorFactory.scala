@@ -39,14 +39,15 @@ class AmendBFLossValidatorFactory {
     new Validator[AmendBFLossRequestData] {
 
       def validate: Validated[Seq[MtdError], AmendBFLossRequestData] =
-        validateNonEmpty(body).andThen(_ =>
-          validateJsonFields.andThen(_ =>
+        validateNonEmpty(body)
+          .andThen(_ => validateJsonFields)
+          .andThen(_ =>
             (
               ResolveNino(nino),
               resolveLossId(lossId).map(LossId),
               resolveJson(body)
             )
-              .mapN(AmendBFLossRequestData)))
+              .mapN(AmendBFLossRequestData))
 
       private def validateJsonFields: Validated[Seq[MtdError], Unit] = {
         val jsPath = (body \ "lossAmount")

@@ -34,7 +34,7 @@ class ResolveIsoDateSpec extends UnitSpec {
     }
 
     "return an error" when {
-      "passed an invalid business ID" in {
+      "given an invalid business ID" in {
         val invalidDate = "not-a-date"
         val result      = ResolveIsoDate(invalidDate, Some(StartDateFormatError), None)
         result shouldBe Invalid(List(StartDateFormatError))
