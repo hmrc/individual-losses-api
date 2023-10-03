@@ -159,12 +159,13 @@ class ListBFLossesValidatorFactorySpec extends UnitSpec {
         )
       }
 
-      // Because IFS does not distinguish self-employment types for its query...
       "the loss type is self-employment-class4" in {
-        val result = validator(validNino, validTaxYear, Some("self-employment-class4"), Some(validBusinessId)).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, TypeOfLossFormatError)
-        )
+        withClue("Because IFS does not distinguish self-employment types for its query...") {
+          val result = validator(validNino, validTaxYear, Some("self-employment-class4"), Some(validBusinessId)).validateAndWrapResult()
+          result shouldBe Left(
+            ErrorWrapper(correlationId, TypeOfLossFormatError)
+          )
+        }
       }
     }
 

@@ -50,7 +50,6 @@ class TaxYearRangeSpec extends UnitSpec {
       implicit val todaySupplier: TodaySupplier = new TodaySupplier {
         override def today(): LocalDate = LocalDate.parse("2023-04-01")
       }
-      // () => LocalDate = () => today
 
       val result: TaxYearRange = TaxYearRange.todayMinus(years = 4)
       result shouldBe TaxYearRange(expectedFrom, TaxYear.fromMtd(currentTaxYear))
