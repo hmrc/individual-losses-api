@@ -72,7 +72,7 @@ class RetrieveLossClaimValidatorFactorySpec extends UnitSpec {
       "given a request with multiple errors" in {
         val result = validator(invalidNino, invalidClaimId).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, ClaimIdFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(ClaimIdFormatError, NinoFormatError)))
         )
       }
     }

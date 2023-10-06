@@ -19,11 +19,13 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
-import api.models.domain.{Nino, Timestamp}
+import api.models.domain.Timestamp
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.Json
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockRetrieveLossClaimValidatorFactory
 import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
@@ -36,6 +38,7 @@ import scala.concurrent.Future
 class RetrieveLossClaimControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockRetrieveLossClaimValidatorFactory
     with MockRetrieveLossClaimService
     with MockHateoasFactory {
@@ -45,7 +48,7 @@ class RetrieveLossClaimControllerSpec
   private val lastModified = Timestamp("2018-07-13T12:13:48.763Z")
   private val taxYear      = "2017-18"
 
-  private val requestData = RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
+  private val requestData = RetrieveLossClaimRequestData(parsedNino, ClaimId(claimId))
 
   private val response = RetrieveLossClaimResponse(
     taxYearClaimedFor = taxYear,
@@ -88,7 +91,7 @@ class RetrieveLossClaimControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrap(response, GetLossClaimHateoasData(nino, claimId))
+          .wrap(response, GetLossClaimHateoasData(validNino, claimId))
           .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
@@ -125,7 +128,9 @@ class RetrieveLossClaimControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, claimId)(fakeRequest)
+    protected def callController(): Future[Result] = controller.retrieve(validNino, claimId)(fakeRequest)
+
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

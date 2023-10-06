@@ -16,22 +16,27 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{ EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError }
+import api.models.errors.{EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError}
 import cats.data.Validated
-import cats.data.Validated.{ Invalid, Valid }
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 
 import java.time.LocalDate
-case class DateRange(startDate: LocalDate, endDate: LocalDate)
 
-object ResolveDateRange extends Resolver[(String, String), DateRange] {
+private[resolvers] class ResolveDateRange private (yearLimits: Option[YearLimits]) extends Resolver[(String, String), DateRange] {
 
   def apply(value: (String, String), notUsedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], DateRange] = {
     val (startDate, endDate) = value
-    (
+
+    val resolvedDates = (
       ResolveIsoDate(startDate, StartDateFormatError),
       ResolveIsoDate(endDate, EndDateFormatError)
     ).mapN(resolveDateRange).andThen(identity)
+
+    yearLimits match {
+      case Some(YearLimits(minYear, maxYear)) => resolvedDates.andThen(validateFromAndToDate(_, minYear, maxYear))
+      case None                               => resolvedDates
+    }
   }
 
   private def resolveDateRange(parsedStartDate: LocalDate, parsedEndDate: LocalDate): Validated[Seq[MtdError], DateRange] = {
@@ -45,4 +50,27 @@ object ResolveDateRange extends Resolver[(String, String), DateRange] {
     }
   }
 
+  private def validateFromAndToDate(value: DateRange, minYear: Int, maxYear: Int): Validated[Seq[MtdError], DateRange] = {
+    val validatedFromDate = if (value.startDate.getYear < minYear) Invalid(List(StartDateFormatError)) else Valid(())
+    val validatedToDate   = if (value.endDate.getYear >= maxYear) Invalid(List(EndDateFormatError)) else Valid(())
+
+    List(
+      validatedFromDate,
+      validatedToDate
+    ).traverse_(identity).map(_ => value)
+
+  }
+
 }
+
+object ResolveDateRange {
+  def unlimited: ResolveDateRange = new ResolveDateRange(None)
+
+  def withLimits(minYear: Int, maxYear: Int): ResolveDateRange =
+    new ResolveDateRange(Some(YearLimits(minYear, maxYear)))
+
+}
+
+case class DateRange(startDate: LocalDate, endDate: LocalDate)
+
+private case class YearLimits(minYear: Int, maxYear: Int)

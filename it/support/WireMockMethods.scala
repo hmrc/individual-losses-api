@@ -47,6 +47,11 @@ trait WireMockMethods {
       }
     }
 
+    def withRequestBody[T](body: T)(implicit writes: Writes[T]): Mapping = {
+      val stringBody = writes.writes(body).toString()
+      new Mapping(method, uri, queryParams, headers, Some(stringBody))
+    }
+
     def thenReturn[T](status: Int, body: T)(implicit writes: Writes[T]): StubMapping = {
       val stringBody = writes.writes(body).toString()
       thenReturnInternal(status, Map.empty, Some(stringBody))

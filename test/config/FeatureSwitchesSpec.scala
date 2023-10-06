@@ -23,6 +23,33 @@ import support.UnitSpec
 
 class FeatureSwitchesSpec extends UnitSpec {
 
+  "FeatureSwitches" should {
+    "be true" when {
+      "absent from the config" in {
+        val configuration   = Configuration.empty
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isEnabled("some-feature") shouldBe true
+      }
+
+      "enabled" in {
+        val configuration   = Configuration("some-feature.enabled" -> true)
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isEnabled("some-feature") shouldBe true
+      }
+    }
+
+    "be false" when {
+      "disabled" in {
+        val configuration   = Configuration("some-feature.enabled" -> false)
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isEnabled("some-feature") shouldBe false
+      }
+    }
+  }
+
   "isTemporalValidationEnabled" when {
 
     def configuration(enable: Boolean): Configuration =

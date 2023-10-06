@@ -20,7 +20,9 @@ import api.controllers.ResultCreator.hateoasListWrapping
 import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
 import v3.controllers.validators.ListLossClaimsValidatorFactory
 import v3.models.response.listLossClaims.ListLossClaimsHateoasData
@@ -36,7 +38,7 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
                                           validatorFactory: ListLossClaimsValidatorFactory,
                                           hateoasFactory: HateoasFactory,
                                           cc: ControllerComponents,
-                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -48,6 +50,7 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
            businessId: Option[String],
            typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+      implicit val apiVersion: Version = Version.from(request, orElse = Version3)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, taxYear, typeOfLoss, businessId, typeOfClaim)

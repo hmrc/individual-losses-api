@@ -19,9 +19,9 @@ package v3.connectors
 import api.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import api.models.ResponseWrapper
 import api.models.domain.TaxYear
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
+import api.models.outcomes.ResponseWrapper
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.models.request.listLossClaims.ListLossClaimsRequestData

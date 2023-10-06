@@ -19,7 +19,9 @@ package v3.controllers
 import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
 import v3.controllers.validators.RetrieveLossClaimValidatorFactory
 import v3.models.response.retrieveLossClaim.GetLossClaimHateoasData
@@ -35,7 +37,7 @@ class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthServ
                                              validatorFactory: RetrieveLossClaimValidatorFactory,
                                              hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
-                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -43,6 +45,7 @@ class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthServ
 
   def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+      implicit val apiVersion: Version = Version.from(request, orElse = Version3)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, claimId)

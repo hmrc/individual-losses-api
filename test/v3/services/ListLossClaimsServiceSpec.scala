@@ -17,9 +17,9 @@
 package v3.services
 
 import v3.fixtures.ListLossClaimsFixtures.{multipleClaimsResponseModel, singleClaimResponseModel}
-import api.models.ResponseWrapper
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.connectors.MockListLossClaimsConnector
 import v3.models.request.listLossClaims.ListLossClaimsRequestData

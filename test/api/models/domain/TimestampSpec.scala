@@ -23,19 +23,20 @@ class TimestampSpec extends UnitSpec {
 
   private val response = AnyDownstreamResponse(3, "payments", Timestamp("2023-01-20T01:20:30.000Z"))
 
-  private val responseJs = Json.parse(""" {
-                                        |   "amount": 3,
-                                        |   "category": "payments",
-                                        |   "lastUpdated": "2023-01-20T01:20:30.000Z"
-                                        | }
-                                        | """.stripMargin)
+  private val responseJs = Json.parse("""
+      | {
+      |   "amount": 3,
+      |   "category": "payments",
+      |   "lastUpdated": "2023-01-20T01:20:30.000Z"
+      | }
+      | """.stripMargin)
 
   private val responseJsNoMillis = Json.parse(""" {
-                                                |   "amount": 3,
-                                                |   "category": "payments",
-                                                |   "lastUpdated": "2023-01-20T01:20:30Z"
-                                                | }
-                                                | """.stripMargin)
+      |   "amount": 3,
+      |   "category": "payments",
+      |   "lastUpdated": "2023-01-20T01:20:30Z"
+      | }
+      | """.stripMargin)
 
   "Timestamp.apply()" should {
     "parse correctly and return a ts with milliseconds" when {

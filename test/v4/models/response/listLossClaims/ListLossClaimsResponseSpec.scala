@@ -149,7 +149,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
   "Links Factory" should {
 
     "expose the correct top level links for list" in {
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
       ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
@@ -159,7 +159,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
     }
 
     "expose the correct item level links for list" in {
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
       ListLossClaimsResponse.LinksFactory.itemLinks(
         mockAppConfig,
         ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear),

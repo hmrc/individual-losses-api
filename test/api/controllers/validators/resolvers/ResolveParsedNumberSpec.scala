@@ -17,7 +17,7 @@
 package api.controllers.validators.resolvers
 
 import api.models.errors.ValueFormatError
-import cats.data.Validated.{ Invalid, Valid }
+import cats.data.Validated.{Invalid, Valid}
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import support.UnitSpec
@@ -30,8 +30,8 @@ class ResolveParsedNumberSpec extends UnitSpec with ScalaCheckDrivenPropertyChec
     "min and max are specified" must {
       val min: BigDecimal = -100
       val max: BigDecimal = 100.99
-      val error = ValueFormatError.copy(paths = Some(List(path)), message = "The value must be between -100 and 100.99")
 
+      val error   = ValueFormatError.copy(paths = Some(List(path)), message = "The value must be between -100 and 100.99")
       val resolve = ResolveParsedNumber(min, max)
 
       "return the error with the correct message if and only if the value is outside the inclusive range" when {

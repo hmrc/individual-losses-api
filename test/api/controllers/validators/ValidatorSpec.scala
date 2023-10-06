@@ -103,7 +103,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
       "given two invalid request params" in {
         val validator = new TestValidator(nino = "not-a-nino", taxYear = "not-a-tax-year")
         val result    = validator.validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(TaxYearFormatError, NinoFormatError))))
+        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError))))
       }
 
     }

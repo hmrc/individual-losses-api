@@ -19,11 +19,13 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
-import api.models.domain.{Nino, Timestamp}
+import api.models.domain.Timestamp
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.Json
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockRetrieveBFLossValidatorFactory
 import v3.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v3.models.request.retrieveBFLoss.RetrieveBFLossRequestData
@@ -36,12 +38,13 @@ import scala.concurrent.Future
 class RetrieveBFLossControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockRetrieveBFLossValidatorFactory
     with MockRetrieveBFLossService
     with MockHateoasFactory {
 
   private val lossId      = "AAZZ1234567890a"
-  private val requestData = RetrieveBFLossRequestData(Nino(nino), LossId(lossId))
+  private val requestData = RetrieveBFLossRequestData(parsedNino, LossId(lossId))
 
   private val response = RetrieveBFLossResponse(
     taxYearBroughtForwardFrom = "2017-18",
@@ -82,7 +85,7 @@ class RetrieveBFLossControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrap(response, GetBFLossHateoasData(nino, lossId))
+          .wrap(response, GetBFLossHateoasData(validNino, lossId))
           .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
@@ -119,7 +122,9 @@ class RetrieveBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, lossId)(fakeRequest)
+    protected def callController(): Future[Result] = controller.retrieve(validNino, lossId)(fakeRequest)
+
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

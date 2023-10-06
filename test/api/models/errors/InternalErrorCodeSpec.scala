@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package api.connectors.httpparsers
+package api.models.errors
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-trait HttpParserSpec {
-  // WLOG if Reads tested elsewhere
-  case class SomeModel(data: String)
+class InternalErrorCodeSpec extends UnitSpec {
 
-  object SomeModel {
-    implicit val reads: Reads[SomeModel] = Json.reads
+  "reads" should {
+    val json = Json.parse(
+      """
+        |{
+        |   "code": "CODE",
+        |   "reason": "ignored"
+        |}
+      """.stripMargin
+    )
+
+    "generate the correct error code" in {
+      json.as[DownstreamErrorCode] shouldBe DownstreamErrorCode("CODE")
+    }
   }
-
 }

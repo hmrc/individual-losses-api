@@ -23,18 +23,21 @@ import support.UnitSpec
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
-  val hateoasFactory = new HateoasFactory(mockAppConfig)
+  private val hateoasFactory = new HateoasFactory(mockAppConfig)
+  private val response       = Response("X")
 
-  case class Response(foo: String)
-  case class ListResponse[A](items: Seq[A])
+  private case class Response(foo: String)
 
-  case class Data1(id: String) extends HateoasData
-  case class Data2(id: String) extends HateoasData
+  private case class ListResponse[A](items: Seq[A])
 
-  val response: Response = Response("X")
+  private case class NestedListResponse[A](field: String, items: Seq[A])
 
-  class Test {
-    MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
+  private case class Data1(id: String) extends HateoasData
+
+  private case class Data2(id: String) extends HateoasData
+
+  private class Test {
+    MockedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
   }
 
   "wrap" should {

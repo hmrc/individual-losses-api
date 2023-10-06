@@ -19,12 +19,14 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, Timestamp}
+import api.models.domain.Timestamp
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockAmendLossClaimTypeValidatorFactory
 import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequestBody, AmendLossClaimTypeRequestData}
@@ -37,6 +39,7 @@ import scala.concurrent.Future
 class AmendLossClaimTypeControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockAmendLossClaimTypeValidatorFactory
     with MockAmendLossClaimTypeService
     with MockHateoasFactory {
@@ -44,7 +47,7 @@ class AmendLossClaimTypeControllerSpec
   private val claimId            = ClaimId("AAZZ1234567890a")
   private val amendLossClaimType = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
-  private val requestData = AmendLossClaimTypeRequestData(Nino(nino), claimId, amendLossClaimType)
+  private val requestData = AmendLossClaimTypeRequestData(parsedNino, claimId, amendLossClaimType)
 
   private val amendLossClaimTypeResponse =
     AmendLossClaimTypeResponse(
@@ -92,11 +95,11 @@ class AmendLossClaimTypeControllerSpec
         willUseValidator(returningSuccess(requestData))
 
         MockAmendLossClaimTypeService
-          .amend(AmendLossClaimTypeRequestData(Nino(nino), claimId, amendLossClaimType))
+          .amend(AmendLossClaimTypeRequestData(parsedNino, claimId, amendLossClaimType))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimTypeResponse))))
 
         MockHateoasFactory
-          .wrap(amendLossClaimTypeResponse, AmendLossClaimTypeHateoasData(nino, claimId.claimId))
+          .wrap(amendLossClaimTypeResponse, AmendLossClaimTypeHateoasData(validNino, claimId.claimId))
           .returns(HateoasWrapper(amendLossClaimTypeResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
@@ -118,7 +121,7 @@ class AmendLossClaimTypeControllerSpec
         willUseValidator(returningSuccess(requestData))
 
         MockAmendLossClaimTypeService
-          .amend(AmendLossClaimTypeRequestData(Nino(nino), claimId, amendLossClaimType))
+          .amend(AmendLossClaimTypeRequestData(parsedNino, claimId, amendLossClaimType))
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalid, None))))
 
         runErrorTestWithAudit(RuleTypeOfClaimInvalid, maybeAuditRequestBody = Some(requestBody))
@@ -139,7 +142,7 @@ class AmendLossClaimTypeControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.amend(nino, claimId.claimId)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.amend(validNino, claimId.claimId)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -149,13 +152,14 @@ class AmendLossClaimTypeControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",
-          params = Map("nino" -> nino, "claimId" -> claimId.claimId),
+          params = Map("nino" -> validNino, "claimId" -> claimId.claimId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
 
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

@@ -17,8 +17,8 @@
 package v4.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.ResponseWrapper
 import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
@@ -84,7 +84,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
-            queryParams = queryParams
+            parameters = queryParams
           ).returns(Future.successful(downstreamResponse))
 
           val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))

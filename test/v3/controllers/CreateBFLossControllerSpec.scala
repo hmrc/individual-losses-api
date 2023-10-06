@@ -19,12 +19,13 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.Nino
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockCreateBFLossValidatorFactory
 import v3.models.domain.bfLoss.TypeOfLoss
 import v3.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
@@ -37,6 +38,7 @@ import scala.concurrent.Future
 class CreateBFLossControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockCreateBFLossValidatorFactory
     with MockCreateBFLossService
     with MockHateoasFactory {
@@ -44,7 +46,7 @@ class CreateBFLossControllerSpec
   private val lossId = "AAZZ1234567890a"
 
   private val bfLoss               = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
-  private val requestData          = CreateBFLossRequestData(Nino(nino), bfLoss)
+  private val requestData          = CreateBFLossRequestData(parsedNino, bfLoss)
   private val createBFLossResponse = CreateBFLossResponse("AAZZ1234567890a")
   private val testHateoasLink      = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
@@ -80,11 +82,11 @@ class CreateBFLossControllerSpec
         willUseValidator(returningSuccess(requestData))
 
         MockCreateBFLossService
-          .create(CreateBFLossRequestData(Nino(nino), bfLoss))
+          .create(CreateBFLossRequestData(parsedNino, bfLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, createBFLossResponse))))
 
         MockHateoasFactory
-          .wrap(createBFLossResponse, CreateBFLossHateoasData(nino, lossId))
+          .wrap(createBFLossResponse, CreateBFLossHateoasData(validNino, lossId))
           .returns(HateoasWrapper(createBFLossResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
@@ -107,7 +109,7 @@ class CreateBFLossControllerSpec
       willUseValidator(returningSuccess(requestData))
 
       MockCreateBFLossService
-        .create(CreateBFLossRequestData(Nino(nino), bfLoss))
+        .create(CreateBFLossRequestData(parsedNino, bfLoss))
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDuplicateSubmissionError, None))))
 
       runErrorTestWithAudit(RuleDuplicateSubmissionError, maybeAuditRequestBody = Some(requestBody))
@@ -127,7 +129,7 @@ class CreateBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.create(validNino)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -137,13 +139,14 @@ class CreateBFLossControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",
-          params = Map("nino" -> nino),
+          params = Map("nino" -> validNino),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
 
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

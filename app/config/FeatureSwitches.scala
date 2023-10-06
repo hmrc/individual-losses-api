@@ -23,15 +23,18 @@ import play.api.mvc.Request
 case class FeatureSwitches(featureSwitchConfig: Configuration) {
 
   def isTemporalValidationEnabled(implicit request: Request[_]): Boolean = {
-    if (isEnabled("allowTemporalValidationSuspension.enabled")) {
+    if (isEnabled("allowTemporalValidationSuspension")) {
       request.headers.get("suspend-temporal-validations").forall(!BooleanUtils.toBoolean(_))
     } else {
       true
     }
   }
 
-  private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
+  def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
 
+  def isEnabled(key: String): Boolean = isConfigTrue(key + ".enabled")
+
+  private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 }
 
 object FeatureSwitches {

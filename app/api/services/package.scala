@@ -16,9 +16,11 @@
 
 package api
 
-import api.models.ResponseWrapper
 import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 
 package object services {
-  type ServiceOutcome[I] = Either[ErrorWrapper, ResponseWrapper[I]]
+
+  type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
+
 }

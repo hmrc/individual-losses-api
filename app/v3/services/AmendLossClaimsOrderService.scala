@@ -17,8 +17,8 @@
 package v3.services
 
 import api.controllers.RequestContext
-import api.models.ResponseWrapper
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
 import v3.connectors.AmendLossClaimsConnector
 import v3.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequestData
