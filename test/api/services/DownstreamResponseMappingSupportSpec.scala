@@ -71,7 +71,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
     }
 
     "downstream returns UNMATCHED_STUB_ERROR" must {
-      "return an RuleIncorrectGovTestScenario error" in {
+      "return RuleIncorrectGovTestScenarioError" in {
         mapping.mapDownstreamErrors(errorCodeMap)(
           ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("UNMATCHED_STUB_ERROR")))) shouldBe
           ErrorWrapper(correlationId, RuleIncorrectGovTestScenarioError)

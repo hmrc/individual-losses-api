@@ -16,6 +16,7 @@
 
 package api.controllers.validators.resolvers
 
+import api.models.domain.DateRange
 import api.models.errors.{EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
@@ -70,7 +71,5 @@ object ResolveDateRange {
     new ResolveDateRange(Some(YearLimits(minYear, maxYear)))
 
 }
-
-case class DateRange(startDate: LocalDate, endDate: LocalDate)
 
 private case class YearLimits(minYear: Int, maxYear: Int)

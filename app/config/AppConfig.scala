@@ -80,6 +80,8 @@ trait AppConfig {
 
   def confidenceLevelConfig: ConfidenceLevelConfig
 
+  def apiDocumentationUrl: String
+
   /** Currently only for OAS documentation.
     */
   def apiVersionReleasedInProduction(version: String): Boolean
@@ -115,6 +117,9 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   // API Config
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
+
+  val apiDocumentationUrl: String =
+    config.getConfString("api.documentation-url", defString = "https://developer.service.hmrc.gov.uk/api-documentation/docs/api")
 
   def apiStatus(version: Version): String = config.getString(s"api.$version.status")
 
