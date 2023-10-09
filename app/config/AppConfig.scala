@@ -25,6 +25,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.{Inject, Singleton}
 
 trait AppConfig {
+
   // MTD ID Lookup Config
   def mtdIdBaseUrl: String
 
@@ -67,13 +68,27 @@ trait AppConfig {
   // API Config
   def apiGatewayContext: String
 
-  def confidenceLevelConfig: ConfidenceLevelConfig
-
   def apiStatus(version: Version): String
+
+  def isApiDeprecated(version: Version): Boolean = apiStatus(version) == "DEPRECATED"
 
   def featureSwitches: Configuration
 
+  def endpointsEnabled(version: String): Boolean
+
   def endpointsEnabled(version: Version): Boolean
+
+  def confidenceLevelConfig: ConfidenceLevelConfig
+
+  def apiDocumentationUrl: String
+
+  /** Currently only for OAS documentation.
+    */
+  def apiVersionReleasedInProduction(version: String): Boolean
+
+  /** Currently only for OAS documentation.
+    */
+  def endpointReleasedInProduction(version: String, name: String): Boolean
 }
 
 @Singleton
@@ -103,11 +118,26 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
 
-  def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
+  val apiDocumentationUrl: String =
+    config.getConfString("api.documentation-url", defString = "https://developer.service.hmrc.gov.uk/api-documentation/docs/api")
+
+  def apiStatus(version: Version): String = config.getString(s"api.$version.status")
 
   def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
+  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
+
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
+
+  def apiVersionReleasedInProduction(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.api-released-in-production")
+
+  def endpointReleasedInProduction(version: String, name: String): Boolean = {
+    val versionReleasedInProd = apiVersionReleasedInProduction(version)
+    val path                  = s"api.$version.endpoints.released-in-production.$name"
+
+    val conf = configuration.underlying
+    if (versionReleasedInProd && conf.hasPath(path)) config.getBoolean(path) else versionReleasedInProd
+  }
 
 }
 

@@ -17,11 +17,11 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.ResponseWrapper
 import api.models.domain.Nino
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v3.models.request.createLossClaim.{CreateLossClaimRequestData, CreateLossClaimRequestBody}
+import v3.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLossClaimRequestData}
 import v3.models.response.createLossClaim.CreateLossClaimResponse
 
 import scala.concurrent.Future
@@ -56,10 +56,10 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, CreateLossClaimResponse(claimId)))
 
-        MockHttpClient
+        MockedHttpClient
           .post(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            config = dummyIfsHeaderCarrierConfig,
+            config = dummyHeaderCarrierConfig,
             body = lossClaim,
             requiredHeaders = requiredIfsHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

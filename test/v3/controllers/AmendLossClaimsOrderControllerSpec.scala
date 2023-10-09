@@ -19,12 +19,14 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.TaxYear
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockAmendLossClaimsOrderValidatorFactory
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData, Claim}
@@ -37,6 +39,7 @@ import scala.concurrent.Future
 class AmendLossClaimsOrderControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockAmendLossClaimsOrderValidatorFactory
     with MockAmendLossClaimsOrderService
     with MockHateoasFactory {
@@ -48,13 +51,13 @@ class AmendLossClaimsOrderControllerSpec
   private val claimsList = AmendLossClaimsOrderRequestBody(TypeOfClaim.`carry-sideways`, Seq(claim))
 
   private val requestData =
-    AmendLossClaimsOrderRequestData(Nino(nino), TaxYear.fromMtd(taxYear), claimsList)
+    AmendLossClaimsOrderRequestData(parsedNino, TaxYear.fromMtd(taxYear), claimsList)
 
   private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
   private val testHateoasLink = Seq(
-    Link(href = s"/individuals/losses/$nino/loss-claims/order/$taxYear", method = PUT, rel = "amend-loss-claim-order"),
-    Link(href = s"/individuals/losses/$nino/loss-claims", method = GET, rel = "list-loss-claims")
+    Link(href = s"/individuals/losses/$validNino/loss-claims/order/$taxYear", method = PUT, rel = "amend-loss-claim-order"),
+    Link(href = s"/individuals/losses/$validNino/loss-claims", method = GET, rel = "list-loss-claims")
   )
 
   private val requestBody = Json.parse(
@@ -109,7 +112,7 @@ class AmendLossClaimsOrderControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimsOrderResponse))))
 
         MockHateoasFactory
-          .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear))
+          .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(validNino, taxYearClaimedFor = taxYear))
           .returns(HateoasWrapper(amendLossClaimsOrderResponse, testHateoasLink))
 
         runOkTestWithAudit(
@@ -152,7 +155,7 @@ class AmendLossClaimsOrderControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.amendClaimsOrder(nino, taxYear)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.amendClaimsOrder(validNino, taxYear)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -162,13 +165,14 @@ class AmendLossClaimsOrderControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",
-          params = Map("nino" -> nino, "taxYearClaimedFor" -> taxYear),
+          params = Map("nino" -> validNino, "taxYearClaimedFor" -> taxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
 
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

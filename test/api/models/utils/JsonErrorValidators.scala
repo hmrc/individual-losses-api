@@ -19,23 +19,11 @@ package api.models.utils
 import play.api.libs.json._
 import support.UnitSpec
 
-import scala.collection.Seq
-
 trait JsonErrorValidators {
   _: UnitSpec =>
 
   type JsError  = (JsPath, Seq[JsonValidationError])
   type JsErrors = Seq[JsError]
-
-  object JsonError {
-    val NUMBER_OR_STRING_FORMAT_EXCEPTION = "error.expected.jsnumberorjsstring"
-    val NUMBER_FORMAT_EXCEPTION           = "error.expected.numberformatexception"
-    val BOOLEAN_FORMAT_EXCEPTION          = "error.expected.jsboolean"
-    val STRING_FORMAT_EXCEPTION           = "error.expected.jsstring"
-    val JSNUMBER_FORMAT_EXCEPTION         = "error.expected.jsnumber"
-    val JSARRAY_FORMAT_EXCEPTION          = "error.expected.jsarray"
-    val PATH_MISSING_EXCEPTION            = "error.path.missing"
-  }
 
   implicit class JsErrorOps(err: JsError) {
     def path: JsPath = err._1
@@ -48,7 +36,7 @@ trait JsonErrorValidators {
   implicit class JsResultOps[T](res: JsResult[T]) {
 
     def errors: JsErrors = res match {
-      case JsError(jsErrors) => jsErrors
+      case JsError(jsErrors) => jsErrors.map(item => (item._1, item._2.toList)).toList
       case JsSuccess(_, _)   => fail("A JSON error was expected")
     }
 
@@ -138,13 +126,22 @@ trait JsonErrorValidators {
     }
   }
 
-  private def filterErrorByPath(jsPath: JsPath, jsError: JsError): JsonValidationError = {
+  private def filterErrorByPath(jsPath: JsPath, jsError: JsError): JsonValidationError =
     jsError match {
       case (path, err :: Nil) if jsError.path == path => err
       case (path, _ :: Nil)                           => fail(s"single error returned but path $path does not match $jsPath")
       case (path, errs @ _ :: _)                      => fail(s"multiple errors returned for $path but only 1 required : $errs")
       case (_, _)                                     => fail(s"no errors returned")
     }
+
+  object JsonError {
+    val NUMBER_OR_STRING_FORMAT_EXCEPTION = "error.expected.jsnumberorjsstring"
+    val NUMBER_FORMAT_EXCEPTION           = "error.expected.numberformatexception"
+    val BOOLEAN_FORMAT_EXCEPTION          = "error.expected.jsboolean"
+    val STRING_FORMAT_EXCEPTION           = "error.expected.jsstring"
+    val JSNUMBER_FORMAT_EXCEPTION         = "error.expected.jsnumber"
+    val JSARRAY_FORMAT_EXCEPTION          = "error.expected.jsarray"
+    val PATH_MISSING_EXCEPTION            = "error.path.missing"
   }
 
 }

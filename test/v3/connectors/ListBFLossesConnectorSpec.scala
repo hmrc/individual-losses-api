@@ -17,9 +17,9 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.ResponseWrapper
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
+import api.models.outcomes.ResponseWrapper
 import v3.fixtures.ListBFLossesFixtures._
 import v3.models.domain.bfLoss.IncomeSourceType
 import v3.models.request.listBFLosses.ListBFLossesRequestData
@@ -125,7 +125,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
     "provided with a income source id parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
-        willGet(url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino", queryParams = List(("incomeSourceId", "testId"))) returns Future
+        willGet(url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino", parameters = List(("incomeSourceId", "testId"))) returns Future
           .successful(success("2023-24"))
 
         listBFLossesResult(connector = connector, Some(TaxYear.fromMtd("2023-24")), businessId = Some(BusinessId("testId"))) shouldBe success(
@@ -137,7 +137,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino",
-          queryParams = List(("incomeSourceType", "02"))
+          parameters = List(("incomeSourceType", "02"))
         ) returns Future.successful(success("2023-24"))
 
         listBFLossesResult(
@@ -151,7 +151,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
         willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/23-24/$nino",
-          queryParams = List(("incomeSourceId", "testId"), ("incomeSourceType", "02"))
+          parameters = List(("incomeSourceId", "testId"), ("incomeSourceType", "02"))
         ) returns Future.successful(success("2023-24"))
 
         listBFLossesResult(

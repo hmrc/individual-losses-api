@@ -16,19 +16,19 @@
 
 package api.services
 
-import api.connectors.MockMtdIdLookupConnector
+import api.connectors.{MockMtdIdLookupConnector, MtdIdLookupOutcome}
 import api.models.errors._
 
 import scala.concurrent.Future
 
 class MtdIdLookupServiceSpec extends ServiceSpec {
 
+  val nino        = "AA123456A"
+  val invalidNino = "INVALID_NINO"
+
   trait Test extends MockMtdIdLookupConnector {
     lazy val target = new MtdIdLookupService(mockMtdIdLookupConnector)
   }
-
-  val nino        = "AA123456A"
-  val invalidNino = "INVALID_NINO"
 
   "calling .getMtdId" when {
 
@@ -42,8 +42,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
           .lookup(invalidNino)
           .never()
 
-        private val result = await(target.lookup(invalidNino))
-
+        val result: MtdIdLookupOutcome = await(target.lookup(invalidNino))
         result shouldBe expected
       }
     }
@@ -56,8 +55,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
           .lookup(nino)
           .returns(Future.successful(connectorResponse))
 
-        private val result = await(target.lookup(nino))
-
+        val result: MtdIdLookupOutcome = await(target.lookup(nino))
         result shouldBe connectorResponse
       }
     }
@@ -70,8 +68,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
           .lookup(nino)
           .returns(Future.successful(connectorResponse))
 
-        private val result = await(target.lookup(nino))
-
+        val result: MtdIdLookupOutcome = await(target.lookup(nino))
         result shouldBe connectorResponse
       }
     }

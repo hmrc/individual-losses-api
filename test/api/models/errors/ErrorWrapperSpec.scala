@@ -37,7 +37,8 @@ class ErrorWrapperSpec extends UnitSpec {
     val error = ErrorWrapper(correlationId, NinoFormatError, Some(Seq.empty))
 
     "generate the correct JSON" in {
-      Json.toJson(error) shouldBe ninoFormatJson
+      val result = Json.toJson(error)
+      result shouldBe ninoFormatJson
     }
   }
 
@@ -54,7 +55,7 @@ class ErrorWrapperSpec extends UnitSpec {
       correlationId,
       BadRequestError,
       Some(
-        Seq(
+        List(
           NinoFormatError,
           TaxYearFormatError
         )
@@ -80,21 +81,23 @@ class ErrorWrapperSpec extends UnitSpec {
     )
 
     "generate the correct JSON" in {
-      Json.toJson(error) shouldBe json
+      val result = Json.toJson(error)
+      result shouldBe json
     }
   }
 
-  "rendering an audit error" should {
-    "render correctly" when {
-      "there is one error" in {
-        val errorWrapper = ErrorWrapper(correlationId, BadRequestError)
-
-        errorWrapper.auditErrors shouldBe Seq(AuditError(BadRequestError.code))
+  "auditErrors" should {
+    "return the correct AuditError list" when {
+      "given a single error" in {
+        val errorWrapper = ErrorWrapper(correlationId, BadRequestError, None)
+        val result       = errorWrapper.auditErrors
+        result shouldBe List(AuditError(BadRequestError.code))
       }
-      "there are multiple errors" in {
-        val errorWrapper = ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError)))
 
-        errorWrapper.auditErrors shouldBe Seq(AuditError(NinoFormatError.code), AuditError(TaxYearFormatError.code))
+      "given multiple errors" in {
+        val errorWrapper = ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError)))
+        val result       = errorWrapper.auditErrors
+        result shouldBe List(AuditError(NinoFormatError.code), AuditError(TaxYearFormatError.code))
       }
     }
   }

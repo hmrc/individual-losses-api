@@ -112,7 +112,7 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       // WLOG
       val bfLossResponse: RetrieveBFLossResponse = responseWith(typeOfLoss = TypeOfLoss.`self-employment`)
 
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
     }
 
     "expose the correct links" in new Test {

@@ -118,7 +118,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
   "Links Factory" should {
 
     "expose the correct links" in {
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
       RetrieveLossClaimResponse.GetLinksFactory.links(mockAppConfig, GetLossClaimHateoasData(nino, claimId)) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self"),

@@ -182,7 +182,7 @@ class ListBFLossesValidatorFactorySpec extends UnitSpec {
       "given a request with multiple errors" in {
         val result = validator(invalidNino, invalidTaxYear, Some(validLossType), Some(validBusinessId)).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(TaxYearFormatError, NinoFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError)))
         )
       }
     }

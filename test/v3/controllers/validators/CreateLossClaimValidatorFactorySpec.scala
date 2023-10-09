@@ -230,8 +230,8 @@ class CreateLossClaimValidatorFactorySpec extends UnitSpec with JsonErrorValidat
             BadRequestError,
             Some(
               List(
-                RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor"),
-                BusinessIdFormatError
+                BusinessIdFormatError,
+                RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor")
               )))
         )
       }

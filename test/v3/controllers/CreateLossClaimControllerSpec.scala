@@ -19,12 +19,13 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.Nino
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockCreateLossClaimValidatorFactory
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v3.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLossClaimRequestData}
@@ -37,13 +38,14 @@ import scala.concurrent.Future
 class CreateLossClaimControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockCreateLossClaimService
     with MockCreateLossClaimValidatorFactory
     with MockHateoasFactory {
 
   private val lossClaimId = "AAZZ1234567890a"
   private val lossClaim   = CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
-  private val requestData = CreateLossClaimRequestData(Nino(nino), lossClaim)
+  private val requestData = CreateLossClaimRequestData(parsedNino, lossClaim)
   private val createLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
   private val testHateoasLink         = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
@@ -79,11 +81,11 @@ class CreateLossClaimControllerSpec
         willUseValidator(returningSuccess(requestData))
 
         MockCreateLossClaimService
-          .create(CreateLossClaimRequestData(Nino(nino), lossClaim))
+          .create(CreateLossClaimRequestData(parsedNino, lossClaim))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
 
         MockHateoasFactory
-          .wrap(createLossClaimResponse, CreateLossClaimHateoasData(nino, lossClaimId))
+          .wrap(createLossClaimResponse, CreateLossClaimHateoasData(validNino, lossClaimId))
           .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
@@ -106,7 +108,7 @@ class CreateLossClaimControllerSpec
       willUseValidator(returningSuccess(requestData))
 
       MockCreateLossClaimService
-        .create(CreateLossClaimRequestData(Nino(nino), lossClaim))
+        .create(CreateLossClaimRequestData(parsedNino, lossClaim))
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTypeOfClaimInvalid, None))))
 
       runErrorTestWithAudit(RuleTypeOfClaimInvalid, maybeAuditRequestBody = Some(requestBody))
@@ -126,7 +128,7 @@ class CreateLossClaimControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.create(nino)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.create(validNino)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -136,13 +138,14 @@ class CreateLossClaimControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",
-          params = Map("nino" -> nino),
+          params = Map("nino" -> validNino),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
 
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

@@ -16,13 +16,13 @@
 
 package v3.services
 
-import api.models.ResponseWrapper
 import api.models.domain.Nino
 import api.models.errors.{RuleDuplicateSubmissionError, _}
+import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.connectors.MockCreateBFLossConnector
 import v3.models.domain.bfLoss.TypeOfLoss
-import v3.models.request.createBFLosses.{CreateBFLossRequestData, CreateBFLossRequestBody}
+import v3.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 import v3.models.response.createBFLosses.CreateBFLossResponse
 
 import scala.concurrent.Future

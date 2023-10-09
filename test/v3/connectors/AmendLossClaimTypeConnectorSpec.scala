@@ -17,8 +17,8 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v3.models.request.amendLossClaimType.{AmendLossClaimTypeRequestBody, AmendLossClaimTypeRequestData}
@@ -59,10 +59,10 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
       "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected = Right(ResponseWrapper(correlationId, response))
 
-        MockHttpClient
+        MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
+            config = dummyHeaderCarrierConfig,
             body = amendLossClaimType,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

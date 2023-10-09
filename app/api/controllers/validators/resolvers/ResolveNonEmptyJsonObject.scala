@@ -48,9 +48,8 @@ class ResolveNonEmptyJsonObject[T: OFormat: EmptinessChecker]()(implicit val rea
 
 object ResolveNonEmptyJsonObject {
 
-  /**
-    * Use this first if you have additional pre-parse validators/resolvers that
-    * would incorrectly return an error with a field path if the Json object is empty.
+  /** Use this first if you have additional pre-parse validators/resolvers that would incorrectly return an error with a field path if the Json object
+    * is empty.
     */
   def validateNonEmpty(json: JsValue): Validated[Seq[MtdError], Unit] =
     json match {

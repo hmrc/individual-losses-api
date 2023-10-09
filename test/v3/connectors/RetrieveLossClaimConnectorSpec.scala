@@ -17,8 +17,8 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.ResponseWrapper
 import api.models.domain.{Nino, Timestamp}
+import api.models.outcomes.ResponseWrapper
 import v3.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v3.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
 import v3.models.response.retrieveLossClaim.RetrieveLossClaimResponse
@@ -63,10 +63,10 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
         val expected: Left[ResponseWrapper[RetrieveLossClaimResponse], Nothing] = Left(ResponseWrapper(correlationId, retrieveResponse))
 
-        MockHttpClient
+        MockedHttpClient
           .get(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyIfsHeaderCarrierConfig,
+            config = dummyHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )

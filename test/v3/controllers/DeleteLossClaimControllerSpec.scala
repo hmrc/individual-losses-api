@@ -17,12 +17,13 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.ResponseWrapper
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.Nino
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockDeleteLossClaimValidatorFactory
 import v3.models.domain.lossClaim.ClaimId
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequestData
@@ -34,11 +35,12 @@ import scala.concurrent.Future
 class DeleteLossClaimControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockDeleteLossClaimService
     with MockDeleteLossClaimValidatorFactory {
 
   private val claimId     = "AAZZ1234567890a"
-  private val requestData = DeleteLossClaimRequestData(Nino(nino), ClaimId(claimId))
+  private val requestData = DeleteLossClaimRequestData(parsedNino, ClaimId(claimId))
 
   "delete" should {
     "return NO_CONTENT" when {
@@ -83,7 +85,7 @@ class DeleteLossClaimControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.delete(nino, claimId)(fakeRequest)
+    protected def callController(): Future[Result] = controller.delete(validNino, claimId)(fakeRequest)
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -93,13 +95,14 @@ class DeleteLossClaimControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "3.0",
-          params = Map("nino" -> nino, "claimId" -> claimId),
+          params = Map("nino" -> validNino, "claimId" -> claimId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
 
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

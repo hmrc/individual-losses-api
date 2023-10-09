@@ -19,11 +19,13 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, POST}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.Json
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockListLossClaimsValidatorFactory
 import v3.fixtures.ListLossClaimsFixtures.multipleClaimsResponseModel
 import v3.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
@@ -37,6 +39,7 @@ import scala.concurrent.Future
 class ListLossClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockListLossClaimsValidatorFactory
     with MockListLossClaimsService
     with MockHateoasFactory {
@@ -47,7 +50,7 @@ class ListLossClaimsControllerSpec
   private val claimType      = "carry-sideways"
 
   private val requestData =
-    ListLossClaimsRequestData(Nino(nino), Some(TaxYear("2019")), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
+    ListLossClaimsRequestData(parsedNino, Some(TaxYear("2019")), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
 
   private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
@@ -136,7 +139,7 @@ class ListLossClaimsControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, multipleClaimsResponseModel))))
 
         MockHateoasFactory
-          .wrapList(multipleClaimsResponseModel, ListLossClaimsHateoasData(nino))
+          .wrapList(multipleClaimsResponseModel, ListLossClaimsHateoasData(validNino))
           .returns(HateoasWrapper(hateoasResponse, Seq(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
@@ -174,8 +177,9 @@ class ListLossClaimsControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
+      controller.list(validNino, Some(taxYear), Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
 
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

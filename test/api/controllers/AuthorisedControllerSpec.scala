@@ -19,7 +19,7 @@ package api.controllers
 import api.models.errors._
 import api.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,7 +29,15 @@ import scala.concurrent.Future
 
 class AuthorisedControllerSpec extends ControllerBaseSpec {
 
+  private val nino  = "AA123456A"
+  private val mtdId = "X123567890"
+
+  private val predicate: Predicate = Enrolment("HMRC-MTD-IT")
+    .withIdentifier("MTDITID", mtdId)
+    .withDelegatedAuthRule("mtd-it-auth")
+
   trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
+    lazy val target       = new TestController()
     val hc: HeaderCarrier = HeaderCarrier()
 
     class TestController extends AuthorisedController(cc) {
@@ -42,15 +50,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
     }
 
-    lazy val target = new TestController()
   }
-
-  val nino  = "AA123456A"
-  val mtdId = "X123567890"
-
-  val predicate: Predicate = Enrolment("HMRC-MTD-IT")
-    .withIdentifier("MTDITID", mtdId)
-    .withDelegatedAuthRule("mtd-it-auth")
 
   "calling an action" when {
 
@@ -63,7 +63,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
         MockedEnrolmentsAuthService.authoriseUser()
 
-        private val result = target.action(nino)(fakeGetRequest)
+        val result: Future[Result] = target.action(nino)(fakeGetRequest)
         status(result) shouldBe OK
       }
     }
@@ -79,7 +79,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
           .authorised(predicate)
           .returns(Future.successful(Left(InternalError)))
 
-        private val result = target.action(nino)(fakeGetRequest)
+        val result: Future[Result] = target.action(nino)(fakeGetRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
     }
@@ -91,7 +91,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
           .lookup(nino)
           .returns(Future.successful(Left(NinoFormatError)))
 
-        private val result = target.action(nino)(fakeGetRequest)
+        val result: Future[Result] = target.action(nino)(fakeGetRequest)
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -103,7 +103,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
           .lookup(nino)
           .returns(Future.successful(Left(InvalidBearerTokenError)))
 
-        private val result = target.action(nino)(fakeGetRequest)
+        val result: Future[Result] = target.action(nino)(fakeGetRequest)
         status(result) shouldBe UNAUTHORIZED
       }
     }
@@ -117,7 +117,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .lookup(nino)
         .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
   }
@@ -129,7 +129,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .lookup(nino)
         .returns(Future.successful(Left(InternalError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
@@ -145,7 +145,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .authorised(predicate)
         .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
   }
@@ -161,7 +161,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .authorised(predicate)
         .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
   }

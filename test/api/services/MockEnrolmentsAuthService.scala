@@ -39,8 +39,10 @@ trait MockEnrolmentsAuthService extends MockFactory {
     }
 
     def authorised(predicate: Predicate): CallHandler[Future[AuthOutcome]] = {
-      (mockEnrolmentsAuthService
-        .authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext))
+      (
+        mockEnrolmentsAuthService
+          .authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext)
+        )
         .expects(predicate, *, *)
     }
 

@@ -109,7 +109,7 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
     class Test extends MockAppConfig {
       val hateoasFactory = new HateoasFactory(mockAppConfig)
       val nino           = "someNino"
-      MockAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
     }
 
     "expose the correct links for list" in new Test {

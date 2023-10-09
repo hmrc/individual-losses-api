@@ -194,8 +194,8 @@ class CreateBFLossValidatorFactorySpec extends UnitSpec {
             BadRequestError,
             Some(
               List(
-                RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom"),
-                BusinessIdFormatError
+                BusinessIdFormatError,
+                RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom")
               )))
         )
       }

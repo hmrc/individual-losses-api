@@ -17,8 +17,8 @@
 package v3.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.ResponseWrapper
 import api.models.domain.Nino
+import api.models.outcomes.ResponseWrapper
 import v3.models.domain.lossClaim.ClaimId
 import v3.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
@@ -42,10 +42,10 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
       "return a successful response with the correct correlationId" in new DesTest with Test {
         val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        MockHttpClient
+        MockedHttpClient
           .delete(
             url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyDesHeaderCarrierConfig,
+            config = dummyHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )

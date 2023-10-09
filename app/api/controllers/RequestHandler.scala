@@ -18,22 +18,29 @@ package api.controllers
 
 import api.controllers.validators.Validator
 import api.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
-import api.models.ResponseWrapper
 import api.models.errors.{ErrorWrapper, InternalError}
+import api.models.outcomes.ResponseWrapper
 import api.services.ServiceOutcome
 import cats.data.EitherT
 import cats.implicits._
+import config.AppConfig
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
+import routing.Version
 import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait RequestHandler {
 
-  def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result]
+  def handleRequest()(implicit
+      ctx: RequestContext,
+      request: UserRequest[_],
+      ec: ExecutionContext,
+      appConfig: AppConfig,
+      apiVersion: Version): Future[Result]
 
 }
 
@@ -57,7 +64,12 @@ object RequestHandler {
       auditHandler: Option[AuditHandler] = None
   ) extends RequestHandler {
 
-    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] =
+    def handleRequest()(implicit
+        ctx: RequestContext,
+        request: UserRequest[_],
+        ec: ExecutionContext,
+        appConfig: AppConfig,
+        apiVersion: Version): Future[Result] =
       Delegate.handleRequest()
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
@@ -111,20 +123,35 @@ object RequestHandler {
 
       implicit class Response(result: Result) {
 
-        def withApiHeaders(correlationId: String, responseHeaders: (String, String)*): Result = {
+        def withApiHeaders(correlationId: String, responseHeaders: (String, String)*)(implicit appConfig: AppConfig, apiVersion: Version): Result = {
+          val maybeDeprecatedHeader =
+            if (appConfig.isApiDeprecated(apiVersion))
+              List(
+                "Deprecation" -> s"This endpoint is deprecated. See the API documentation: ${appConfig.apiDocumentationUrl}"
+              )
+            else
+              Nil
+
           val headers =
             responseHeaders ++
               List(
                 "X-CorrelationId"        -> correlationId,
                 "X-Content-Type-Options" -> "nosniff"
-              )
+              ) ++
+              maybeDeprecatedHeader
 
           result.copy(header = result.header.copy(headers = result.header.headers ++ headers))
         }
 
       }
 
-      def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] = {
+      def handleRequest()(implicit
+          ctx: RequestContext,
+          request: UserRequest[_],
+          ec: ExecutionContext,
+          appConfig: AppConfig,
+          apiVersion: Version
+      ): Future[Result] = {
 
         logger.info(
           message = s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] " +
@@ -150,7 +177,9 @@ object RequestHandler {
       private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(implicit
           ctx: RequestContext,
           request: UserRequest[_],
-          ec: ExecutionContext): Result = {
+          ec: ExecutionContext,
+          appConfig: AppConfig,
+          apiVersion: Version): Result = {
         logger.info(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${ctx.correlationId}")
@@ -163,7 +192,12 @@ object RequestHandler {
         result
       }
 
-      private def handleFailure(errorWrapper: ErrorWrapper)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Result = {
+      private def handleFailure(errorWrapper: ErrorWrapper)(implicit
+          ctx: RequestContext,
+          request: UserRequest[_],
+          ec: ExecutionContext,
+          appConfig: AppConfig,
+          apiVersion: Version): Result = {
         logger.warn(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: ${ctx.correlationId}")

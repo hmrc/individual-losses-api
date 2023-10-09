@@ -16,8 +16,8 @@
 
 package api
 
-import api.models.ResponseWrapper
 import api.models.errors.{DownstreamError, MtdError}
+import api.models.outcomes.ResponseWrapper
 
 package object connectors {
 

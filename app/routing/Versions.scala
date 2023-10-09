@@ -26,7 +26,7 @@ object Version {
   def from(request: RequestHeader, orElse: Version): Version =
     Versions.getFromRequest(request).getOrElse(orElse)
 
-  implicit object VersionWrites extends Writes[Version] {
+  object VersionWrites extends Writes[Version] {
 
     def writes(version: Version): JsValue = version match {
       case Version3 => Json.toJson(Version3.name)
@@ -35,7 +35,7 @@ object Version {
 
   }
 
-  implicit object VersionReads extends Reads[Version] {
+  object VersionReads extends Reads[Version] {
 
     override def reads(version: JsValue): JsResult[Version] =
       version.validate[String].flatMap {

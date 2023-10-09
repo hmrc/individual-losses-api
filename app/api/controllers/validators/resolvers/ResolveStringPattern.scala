@@ -27,17 +27,17 @@ trait StringPatternResolving extends Resolver[String, String] {
   protected val regexFormat: Regex
   protected val error: MtdError
 
-  protected def resolve(value: String, path: Option[String]): Validated[Seq[MtdError], String] =
+  protected def resolve(value: String, maybeError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], String] =
     if (regexFormat.matches(value))
       Valid(value)
     else
-      Invalid(List(error.maybeWithExtraPath(path)))
+      Invalid(List(maybeError.getOrElse(error).maybeWithExtraPath(path)))
 
 }
 
 class ResolveStringPattern(protected val regexFormat: Regex, protected val error: MtdError) extends StringPatternResolving {
 
-  def apply(value: String, error_NotUsed: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], String] =
-    resolve(value, path)
+  def apply(value: String, maybeError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], String] =
+    resolve(value, maybeError, path)
 
 }

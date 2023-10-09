@@ -16,9 +16,9 @@
 
 package v3.services
 
-import api.models.ResponseWrapper
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.connectors.MockListBFLossesConnector
 import v3.models.domain.bfLoss.TypeOfLoss

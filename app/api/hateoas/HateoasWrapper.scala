@@ -20,6 +20,14 @@ import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 
 object HateoasWrapper {
 
+  implicit def writesEmpty: Writes[HateoasWrapper[Unit]] = Writes { w =>
+    if (w.links.nonEmpty) {
+      Json.obj("links" -> Json.toJson(w.links))
+    } else {
+      Json.obj()
+    }
+  }
+
   implicit def writes[A: OWrites]: Writes[HateoasWrapper[A]] = Writes { w =>
     // Explicitly use writes method rather than Json.toJson so that we don't have to
     // throw out meaningless JsArray, JsString, etc cases...

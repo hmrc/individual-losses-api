@@ -34,13 +34,13 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
   "definition" when {
     "there is no appConfig.apiStatus" should {
       "default apiStatus to ALPHA" in new Test {
-        MockAppConfig.apiGatewayContext.returns("my/context")
-        MockAppConfig.featureSwitches.returns(Configuration.empty).anyNumberOfTimes()
-        MockAppConfig.apiStatus(Version3).returns("").anyNumberOfTimes()
-        MockAppConfig.apiStatus(Version4).returns("").anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(version = Version3).returns(true).anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(version = Version4).returns(true).anyNumberOfTimes()
-        MockAppConfig.confidenceLevelCheckEnabled
+        MockedAppConfig.apiGatewayContext.returns("my/context")
+        MockedAppConfig.featureSwitches.returns(Configuration.empty).anyNumberOfTimes()
+        MockedAppConfig.apiStatus(Version3).returns("").anyNumberOfTimes()
+        MockedAppConfig.apiStatus(Version4).returns("").anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled(version = Version3).returns(true).anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled(version = Version4).returns(true).anyNumberOfTimes()
+        MockedAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
 
@@ -82,7 +82,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     ).foreach { case (definitionEnabled, configCL, expectedDefinitionCL) =>
       s"confidence-level-check.definition.enabled is $definitionEnabled and confidence-level = $configCL" should {
         s"return confidence level $expectedDefinitionCL" in new Test {
-          MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(
+          MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(
             confidenceLevel = configCL,
             definitionEnabled = definitionEnabled,
             authValidationEnabled = true)
@@ -96,14 +96,14 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     val anyVersion = Version3
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
-        MockAppConfig.apiStatus(version = anyVersion) returns "BETA"
+        MockedAppConfig.apiStatus(version = anyVersion) returns "BETA"
         factory.buildAPIStatus(version = anyVersion) shouldBe BETA
       }
     }
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockAppConfig.apiStatus(version = anyVersion) returns "ALPHO"
+        MockedAppConfig.apiStatus(version = anyVersion) returns "ALPHO"
         factory.buildAPIStatus(version = anyVersion) shouldBe ALPHA
       }
     }

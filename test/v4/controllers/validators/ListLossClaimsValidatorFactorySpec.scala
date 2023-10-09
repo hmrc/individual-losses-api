@@ -164,7 +164,7 @@ class ListLossClaimsValidatorFactorySpec extends UnitSpec {
         val result =
           validator(invalidNino, invalidTaxYear, Some(validLossType), Some(validBusinessId), Some(validTypeOfClaim)).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(TaxYearFormatError, NinoFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError)))
         )
       }
     }

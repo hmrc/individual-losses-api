@@ -19,11 +19,13 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, POST}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.ResponseWrapper
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import routing.Version3
 import v3.controllers.validators.MockListBFLossesValidatorFactory
 import v3.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v3.models.request.listBFLosses.ListBFLossesRequestData
@@ -36,6 +38,7 @@ import scala.concurrent.Future
 class ListBFLossesControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
+    with MockAppConfig
     with MockListBFLossesValidatorFactory
     with MockListBFLossesService
     with MockHateoasFactory {
@@ -45,7 +48,7 @@ class ListBFLossesControllerSpec
   private val businessId     = "XKIS00000000988"
 
   private val requestData =
-    ListBFLossesRequestData(Nino(nino), Some(TaxYear("2019")), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
+    ListBFLossesRequestData(parsedNino, Some(TaxYear("2019")), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
 
   private val listHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
 
@@ -108,7 +111,7 @@ class ListBFLossesControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, ListBFLossHateoasData(nino))
+          .wrapList(response, ListBFLossHateoasData(validNino))
           .returns(HateoasWrapper(hateoasResponse, Seq(createHateoasLink, listHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
@@ -145,7 +148,10 @@ class ListBFLossesControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.list(nino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
+    protected def callController(): Future[Result] =
+      controller.list(validNino, Some(taxYear), Some(selfEmployment), Some(businessId))(fakeRequest)
+
+    MockedAppConfig.isApiDeprecated(Version3) returns false
   }
 
 }

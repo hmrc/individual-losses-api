@@ -211,7 +211,7 @@ class AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonErrorVa
       "invalid nino and tax year are provided" in {
         val result = validator(invalidNino, "13900", mtdRequest).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(TaxYearFormatError, NinoFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError)))
         )
       }
 
@@ -224,10 +224,10 @@ class AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonErrorVa
             correlationId,
             BadRequestError,
             Some(List(
-              RuleSequenceOrderBroken,
+              ClaimIdFormatError.withPath("/listOfLossClaims/0/claimId"),
               ValueFormatError.forPathAndRange("/listOfLossClaims/1/sequence", "1", "99"),
               RuleInvalidSequenceStart,
-              ClaimIdFormatError.withPath("/listOfLossClaims/0/claimId")
+              RuleSequenceOrderBroken
             ))
           )
         )

@@ -16,13 +16,13 @@
 
 package v3.services
 
-import api.models.ResponseWrapper
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.connectors.MockAmendLossClaimsConnector
 import v3.models.domain.lossClaim.TypeOfClaim
-import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestData, AmendLossClaimsOrderRequestBody, Claim}
+import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData, Claim}
 import v3.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 
 import scala.concurrent.Future
