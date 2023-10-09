@@ -16,7 +16,7 @@
 
 package api.models.outcomes
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class ResponseWrapperSpec extends UnitSpec {
@@ -35,7 +35,8 @@ class ResponseWrapperSpec extends UnitSpec {
     val wrapper       = ResponseWrapper(correlationId, responseData)
 
     "read in a singleError" in {
-      wrapper.map(a => a) shouldBe ResponseWrapper(correlationId, responseData)
+      val result: ResponseWrapper[JsValue] = wrapper.map(a => a)
+      result shouldBe ResponseWrapper(correlationId, responseData)
     }
   }
 
