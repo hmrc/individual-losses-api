@@ -22,15 +22,14 @@ import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import config.FixedConfig
-import v3.controllers.validators.resolvers.{ResolveLossTypeOfClaim, ResolveLossClaimTypeOfLoss}
+import v3.controllers.validators.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
 import v3.models.domain.lossClaim.TypeOfClaim
 import v3.models.request.listLossClaims.ListLossClaimsRequestData
 
 import javax.inject.Singleton
 
 @Singleton
-class ListLossClaimsValidatorFactory extends FixedConfig {
+class ListLossClaimsValidatorFactory {
 
   private val resolveTaxYear = DetailedResolveTaxYear(maybeMinimumTaxYear = Some(minimumTaxYearLossClaim))
 

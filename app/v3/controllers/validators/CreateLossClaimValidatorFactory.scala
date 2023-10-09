@@ -22,9 +22,8 @@ import api.models.errors.{MtdError, RuleTypeOfClaimInvalid, TaxYearClaimedForFor
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import config.FixedConfig
 import play.api.libs.json.JsValue
-import v3.controllers.validators.resolvers.{ResolveLossTypeOfClaimFromJson, ResolveLossClaimTypeOfLossFromJson}
+import v3.controllers.validators.resolvers.{ResolveLossClaimTypeOfLossFromJson, ResolveLossTypeOfClaimFromJson}
 import v3.models.domain.lossClaim.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
 import v3.models.domain.lossClaim.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
 import v3.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLossClaimRequestData}
@@ -32,7 +31,7 @@ import v3.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLoss
 import javax.inject.Singleton
 
 @Singleton
-class CreateLossClaimValidatorFactory extends FixedConfig {
+class CreateLossClaimValidatorFactory {
 
   private val resolveJson = new ResolveJsonObject[CreateLossClaimRequestBody]()
 

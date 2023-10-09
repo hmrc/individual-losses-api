@@ -22,7 +22,6 @@ import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import config.FixedConfig
 import play.api.libs.json.JsValue
 import v3.controllers.validators.resolvers.{ResolveLossClaimId, ResolveLossTypeOfClaimFromJson}
 import v3.models.domain.lossClaim.TypeOfClaim
@@ -31,7 +30,7 @@ import v3.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, 
 import javax.inject.Singleton
 
 @Singleton
-class AmendLossClaimsOrderValidatorFactory extends FixedConfig {
+class AmendLossClaimsOrderValidatorFactory {
 
   private val resolveJson = new ResolveJsonObject[AmendLossClaimsOrderRequestBody]()
 
