@@ -22,7 +22,6 @@ import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import config.FixedConfig
 import v4.models.domain.bfLoss.TypeOfLoss._
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
@@ -30,7 +29,7 @@ import v4.models.request.listLossClaims.ListBFLossesRequestData
 import javax.inject.Singleton
 
 @Singleton
-class ListBFLossesValidatorFactory extends FixedConfig {
+class ListBFLossesValidatorFactory {
 
   private val resolveTaxYear = DetailedResolveTaxYear(maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
 

@@ -22,7 +22,6 @@ import api.models.domain.TodaySupplier
 import api.models.errors._
 import cats.data.Validated
 import cats.implicits._
-import config.FixedConfig
 import play.api.libs.json.JsValue
 import v3.controllers.validators.resolvers.ResolveBFTypeOfLossFromJson
 import v3.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
@@ -30,11 +29,11 @@ import v3.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRe
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateBFLossValidatorFactory @Inject() (implicit todaySupplier: TodaySupplier = new TodaySupplier) extends FixedConfig {
+class CreateBFLossValidatorFactory @Inject()(implicit todaySupplier: TodaySupplier = new TodaySupplier) {
 
-  private val resolveJson         = new ResolveJsonObject[CreateBFLossRequestBody]()
+  private val resolveJson = new ResolveJsonObject[CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
-  private val resolveTaxYear      = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
+  private val resolveTaxYear = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
 
   def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] =
     new Validator[CreateBFLossRequestData] {
