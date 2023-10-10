@@ -37,13 +37,12 @@ class RulesValidatorSpec extends UnitSpec {
     def validateBusinessRules(parsed: TestParsedRequest): Validated[Seq[MtdError], TestParsedRequest] = {
       val resolved1 = if (parsed.valid1) valid else Invalid(List(Valid1Error))
       val resolved2 = if (parsed.valid2) valid else Invalid(List(Valid2Error))
-      combine(resolved1, resolved2).onSuccess(parsed)
+      combine(resolved1, resolved2).toUnit.onSuccess(parsed)
     }
 
   }
 
   "RulesValidator" should {
-
     "combine valid results and return the parsed object" in {
       val parsed = TestParsedRequest(validNino, validTaxYear, valid1 = true, valid2 = true)
       val result = testRulesValidator.validateBusinessRules(parsed)

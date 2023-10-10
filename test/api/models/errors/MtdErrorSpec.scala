@@ -22,11 +22,11 @@ import support.UnitSpec
 
 class MtdErrorSpec extends UnitSpec {
 
-  val exampleError: MtdError = MtdError("SOME_CODE", "some message", BAD_REQUEST)
+  val error: MtdError = MtdError("SOME_CODE", "some message", BAD_REQUEST)
 
   "writes" should {
     "generate the correct JSON" in {
-      val result = Json.toJson(exampleError)
+      val result = Json.toJson(error)
       result shouldBe Json.parse(
         """
           |{
@@ -38,17 +38,24 @@ class MtdErrorSpec extends UnitSpec {
     }
   }
 
+  "maybeWithExtraPath" should {
+    "add an extra path to the error" in {
+        val result = error.maybeWithExtraPath(Some("extra path")).paths
+        result shouldBe Some(List("extra path"))
+    }
+  }
+
   "withExtraPath" when {
     "paths are undefined" should {
       "create a new error with paths" in {
-        val result = exampleError.withExtraPath("aPath")
-        result shouldBe exampleError.withPath("aPath")
+        val result = error.withExtraPath("aPath")
+        result shouldBe error.withPath("aPath")
       }
     }
 
     "paths are defined" should {
       "add the new path to the existing list of paths" in {
-        val dummyErrorWithPaths: MtdError = exampleError.withPath("aPath")
+        val dummyErrorWithPaths: MtdError = error.withPath("aPath")
 
         val result = dummyErrorWithPaths.withExtraPath("aPath2")
         result shouldBe dummyErrorWithPaths.withPaths(List("aPath", "aPath2"))

@@ -38,12 +38,15 @@ class VersionSpec extends UnitSpec {
       "return Version for valid header" in {
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))) shouldBe Right(Version3)
       }
+
       "return InvalidHeader when the version header is missing" in {
         Versions.getFromRequest(FakeRequest().withHeaders()) shouldBe Left(InvalidHeader)
       }
+
       "return VersionNotFound for unrecognised version" in {
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.5.0+json"))) shouldBe Left(VersionNotFound)
       }
+
       "return InvalidHeader for a header format that doesn't match regex" in {
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "invalidHeaderFormat"))) shouldBe Left(InvalidHeader)
       }
@@ -70,6 +73,13 @@ class VersionSpec extends UnitSpec {
       val result: JsResult[Version] = VersionReads.reads(versionJson)
 
       result shouldBe a[JsError]
+    }
+  }
+
+  "toString" should {
+    "return the version name" in {
+      val result = Version3.toString
+      result shouldBe Version3.name
     }
   }
 
