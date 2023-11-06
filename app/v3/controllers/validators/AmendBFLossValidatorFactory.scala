@@ -17,7 +17,6 @@
 package v3.controllers.validators
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.ResolveNonEmptyJsonObject.validateNonEmpty
 import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
 import api.models.errors.{LossIdFormatError, MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
 import cats.data.Validated
@@ -39,8 +38,7 @@ class AmendBFLossValidatorFactory {
     new Validator[AmendBFLossRequestData] {
 
       def validate: Validated[Seq[MtdError], AmendBFLossRequestData] =
-        validateNonEmpty(body)
-          .andThen(_ => validateJsonFields)
+        validateJsonFields
           .andThen(_ =>
             (
               ResolveNino(nino),
@@ -58,7 +56,7 @@ class AmendBFLossValidatorFactory {
             case JsError(_)          => Invalid(List(ValueFormatError.withPath("/lossAmount")))
           }
         } else {
-          Invalid(List(RuleIncorrectOrEmptyBodyError.withPath("/lossAmount")))
+          Invalid(List(RuleIncorrectOrEmptyBodyError))
         }
       }
 
