@@ -22,10 +22,10 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.V3V4IntegrationBaseSpec
+import support.V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class AuthISpec extends V3V4IntegrationBaseSpec {
+class AuthISpec extends V4IntegrationBaseSpec {
 
   private trait Test {
     val nino = "AA123456A"
@@ -52,7 +52,7 @@ class AuthISpec extends V3V4IntegrationBaseSpec {
       setupStubs()
       buildRequest(s"/$nino/brought-forward-losses")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }

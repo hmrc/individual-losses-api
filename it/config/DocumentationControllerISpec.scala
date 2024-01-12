@@ -21,7 +21,7 @@ import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import routing.{Version3, Version4}
+import routing.Version4
 import support.IntegrationBaseSpec
 
 import scala.util.Try
@@ -55,11 +55,6 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     |    "context":"individuals/losses",
     |    "versions":[
     |      {
-    |        "version":"3.0",
-    |        "status":"DEPRECATED",
-    |        "endpointsEnabled":true
-    |      },
-    |      {
     |        "version":"4.0",
     |        "status":"BETA",
     |        "endpointsEnabled":true
@@ -78,7 +73,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-    List(Version3, Version4).foreach { version =>
+    List(Version4).foreach { version =>
       s"return the documentation for $version" in {
         val response = get(s"/api/conf/$version/application.yaml")
         response.status shouldBe Status.OK

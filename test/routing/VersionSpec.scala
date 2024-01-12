@@ -26,8 +26,8 @@ class VersionSpec extends UnitSpec {
 
   "serialized to Json" must {
     "return the expected Json output" in {
-      val version: Version = Version3
-      val expected         = Json.parse(""" "3.0" """)
+      val version: Version = Version4
+      val expected         = Json.parse(""" "4.0" """)
       val result           = Json.toJson(version)
       result shouldBe expected
     }
@@ -36,7 +36,7 @@ class VersionSpec extends UnitSpec {
   "Versions" when {
     "retrieved from a request header" should {
       "return Version for valid header" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))) shouldBe Right(Version3)
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.4.0+json"))) shouldBe Right(Version4)
       }
 
       "return InvalidHeader when the version header is missing" in {
@@ -54,13 +54,6 @@ class VersionSpec extends UnitSpec {
   }
 
   "VersionReads" should {
-    "successfully read Version3" in {
-      val versionJson: JsValue      = JsString(Version3.name)
-      val result: JsResult[Version] = VersionReads.reads(versionJson)
-
-      result shouldEqual JsSuccess(Version3)
-    }
-
     "successfully read Version4" in {
       val versionJson: JsValue      = JsString(Version4.name)
       val result: JsResult[Version] = VersionReads.reads(versionJson)
@@ -78,8 +71,8 @@ class VersionSpec extends UnitSpec {
 
   "toString" should {
     "return the version name" in {
-      val result = Version3.toString
-      result shouldBe Version3.name
+      val result = Version4.toString
+      result shouldBe Version4.name
     }
   }
 

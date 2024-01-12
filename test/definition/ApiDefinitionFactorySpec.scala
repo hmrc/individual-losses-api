@@ -19,7 +19,7 @@ package definition
 import config.{ConfidenceLevelConfig, MockAppConfig}
 import definition.APIStatus.{ALPHA, BETA}
 import play.api.Configuration
-import routing.{Version3, Version4}
+import routing.Version4
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -36,9 +36,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       "default apiStatus to ALPHA" in new Test {
         MockedAppConfig.apiGatewayContext.returns("my/context")
         MockedAppConfig.featureSwitches.returns(Configuration.empty).anyNumberOfTimes()
-        MockedAppConfig.apiStatus(Version3).returns("").anyNumberOfTimes()
         MockedAppConfig.apiStatus(Version4).returns("").anyNumberOfTimes()
-        MockedAppConfig.endpointsEnabled(version = Version3).returns(true).anyNumberOfTimes()
         MockedAppConfig.endpointsEnabled(version = Version4).returns(true).anyNumberOfTimes()
         MockedAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
@@ -63,8 +61,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             name = "Individual Losses (MTD)",
             description = "An API for providing individual losses data",
             context = "my/context",
-            versions = Seq(
-              APIVersion(Version3, status = ALPHA, endpointsEnabled = true),
+            versions = List(
               APIVersion(Version4, status = ALPHA, endpointsEnabled = true)
             ),
             requiresTrust = None
@@ -93,7 +90,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
   }
 
   "buildAPIStatus" when {
-    val anyVersion = Version3
+    val anyVersion = Version4
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
         MockedAppConfig.apiStatus(version = anyVersion) returns "BETA"
