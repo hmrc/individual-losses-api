@@ -32,7 +32,7 @@ import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.AnyContent
 import play.api.test.{FakeRequest, ResultExtractors}
-import routing.{Version, Version3, Version4}
+import routing.{Version, Version4}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -193,7 +193,7 @@ class RequestHandlerSpec
         mockAuditService,
         auditType = auditType,
         transactionName = txName,
-        apiVersion = Version3,
+        apiVersion = Version4,
         params = params,
         requestBody = requestBody,
         includeResponse = includeResponse
@@ -217,7 +217,7 @@ class RequestHandlerSpec
             GenericAuditDetail(
               userDetails,
               params = params,
-              apiVersion = Version3.name,
+              apiVersion = Version4.name,
               requestBody = requestBody,
               `X-CorrelationId` = correlationId,
               auditResponse = auditResponse)

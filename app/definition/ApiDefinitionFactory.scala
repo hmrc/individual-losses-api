@@ -17,7 +17,7 @@
 package definition
 
 import config.AppConfig
-import routing.{Version, Version3, Version4}
+import routing.{Version, Version4}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 
@@ -56,11 +56,6 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
         description = "An API for providing individual losses data",
         context = appConfig.apiGatewayContext,
         versions = Seq(
-          APIVersion(
-            version = Version3,
-            status = buildAPIStatus(Version3),
-            endpointsEnabled = appConfig.endpointsEnabled(version = Version3)
-          ),
           APIVersion(
             version = Version4,
             status = buildAPIStatus(Version4),

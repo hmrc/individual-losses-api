@@ -24,10 +24,10 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.V3V4IntegrationBaseSpec
+import support.V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class ListLossClaimsControllerISpec extends V3V4IntegrationBaseSpec {
+class ListLossClaimsControllerISpec extends V4IntegrationBaseSpec {
 
   private trait Test {
 
