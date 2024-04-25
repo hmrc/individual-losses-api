@@ -24,8 +24,6 @@ import shapeless.HNil
 import support.UnitSpec
 import utils.EmptinessChecker
 
-import scala.annotation.nowarn
-
 class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
   case class TestDataObject(field1: String, field2: String, oneOf1: Option[String] = None, oneOf2: Option[String] = None)
@@ -36,21 +34,19 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
   implicit val testDataWrapperFormat: OFormat[TestDataWrapper] = Json.format[TestDataWrapper]
 
   // at least one of oneOf1 and oneOf2 must be included:
-  @nowarn("cat=lint-byname-implicit")
   implicit val emptinessChecker: EmptinessChecker[TestDataObject] = EmptinessChecker.use { o =>
     "oneOf1" -> o.oneOf1 :: "oneOf2" -> o.oneOf2 :: HNil
   }
 
   private val resolveTestDataObject = new ResolveNonEmptyJsonObject[TestDataObject]()
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveTestDataWrapper = new ResolveNonEmptyJsonObject[TestDataWrapper]()
 
   "ResolveNonEmptyJsonObject" should {
     "return the object" when {
       "given a valid JSON object" in {
         withClue("Uses the implicit emptinessChecker from above, which requires oneOf1 and oneOf2") {
-          val json = Json.parse("""{ "field1" : "Something", "field2" : "SomethingElse", "oneOf1": "another1", "oneOf2": "another2" }""")
+          val json   = Json.parse("""{ "field1" : "Something", "field2" : "SomethingElse", "oneOf1": "another1", "oneOf2": "another2" }""")
           val result = resolveTestDataObject(json)
           result shouldBe Valid(TestDataObject("Something", "SomethingElse", Some("another1"), Some("another2")))
         }
@@ -60,7 +56,7 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
     "return an empty Valid" when {
       "given a valid JSON object during pre-parse validation" in {
         withClue("Uses the implicit emptinessChecker from above, which requires oneOf1 and oneOf2") {
-          val json = Json.parse("""{ "field1" : "Something", "field2" : "SomethingElse", "oneOf1": "another1", "oneOf2": "another2" }""")
+          val json   = Json.parse("""{ "field1" : "Something", "field2" : "SomethingElse", "oneOf1": "another1", "oneOf2": "another2" }""")
           val result = ResolveNonEmptyJsonObject.validateNonEmpty(json)
           result shouldBe Valid(())
         }
@@ -89,8 +85,7 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
       }
 
       "given a JSON object with a missing required field in multiple array objects" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             |  "arrayField" : [
             |    { "field1" : "Something" },
