@@ -1,0 +1,20 @@
+{
+  "lossId": "AAZZ1234567890a",
+  "links": [
+	{
+	  "href": "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a",
+	  "rel": "self",
+	  "method": "GET"
+	},
+	{
+	  "href": "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a/change-loss-amount",
+	  "rel": "amend-brought-forward-loss",
+	  "method": "POST"
+	},
+	{
+	  "href": "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a",
+	  "rel": "delete-brought-forward-loss",
+	  "method": "DELETE"
+	}
+  ]
+}

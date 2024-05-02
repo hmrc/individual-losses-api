@@ -1,0 +1,74 @@
+openapi: "3.0.3"
+
+info:
+  version: "5.0"
+  title: Individual Losses (MTD)
+  description: |
+    # Send fraud prevention data
+    HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
+    
+    <div class="govuk-warning-text warning-icon-fix">
+      <span class="govuk-warning-text__icon warning-icon-ui-fix" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        You are required by law to submit header data for this API. This includes all associated APIs and endpoints.
+      </strong>
+    </div>
+    
+    [Check the data you need to send](/guides/fraud-prevention/). You can also use the [Test API](/api-documentation/docs/api/service/txm-fph-validator-api/1.0) during initial development and as part of your quality assurance checks.
+    
+    # Mapping APIs to Self Assessment tax return forms
+    Some parameters in this API map to box numbers in one or more Self Assessment tax return forms. To learn more and to download this mapping information as a CSV file, go to [income-tax-mtd-changelog/mapping](https://github.com/hmrc/income-tax-mtd-changelog?tab=readme-ov-file#mapping-apis-to-self-assessment-tax-return-forms) on GitHub.
+
+    # Changelog
+    You can find the changelog in the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/#readme) on GitHub.
+    
+    # Support
+    
+    * Raise non-technical or platform-related issues with the [Software Development Support Team (SDST)](https://developer.service.hmrc.gov.uk/developer/support).
+    * Raise technical issues on the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/issues) GitHub page.
+servers:
+  - url: https://test-api.service.hmrc.gov.uk
+    description: Sandbox
+  - url: https://api.service.hmrc.gov.uk
+    description: Production
+
+components:
+  securitySchemes:
+    User-Restricted:
+      type: oauth2
+      description: HMRC supports OAuth 2.0 for authenticating [User-restricted](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/user-restricted-endpoints) API requests
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.service.hmrc.gov.uk/oauth/authorize
+          tokenUrl: https://api.service.hmrc.gov.uk/oauth/token
+          refreshUrl: https://api.service.hmrc.gov.uk/oauth/refresh
+          scopes:
+            write:self-assessment: Grant write access
+            read:self-assessment: Grant read access
+
+tags:
+  - name: Brought Forward Losses
+    description: Resources related to a customer’s financial data for their brought forward losses.
+  - name: Loss Claims
+    description: Resources related to a customer’s financial data for their loss claims.
+
+paths:
+  /individuals/losses/{nino}/brought-forward-losses:
+    $ref: "./brought_forward_losses_create.yaml"
+  /individuals/losses/{nino}/brought-forward-losses/{lossId}/change-loss-amount:
+    $ref: "./brought_forward_losses_amend.yaml"
+  /individuals/losses/{nino}/brought-forward-losses/tax-year/{taxYearBroughtForwardFrom}:
+    $ref: "./brought_forward_losses_list.yaml"
+  /individuals/losses/{nino}/brought-forward-losses/{lossId}:
+    $ref: "./brought_forward_losses_lossId_endpoints.yaml"
+  /individuals/losses/{nino}/loss-claims:
+    $ref: "./loss_claims_create.yaml"
+  /individuals/losses/{nino}/loss-claims/tax-year/{taxYearClaimedFor}:
+    $ref: "./loss_claims_list.yaml"
+  /individuals/losses/{nino}/loss-claims/{claimId}:
+    $ref: "./loss_claims_claimId_endpoints.yaml"
+  /individuals/losses/{nino}/loss-claims/{claimId}/change-type-of-claim:
+    $ref: "./loss_claims_amend_type.yaml"
+  /individuals/losses/{nino}/loss-claims/order/{taxYearClaimedFor}:
+    $ref: "./loss_claims_amend_order_endpoints.yaml"

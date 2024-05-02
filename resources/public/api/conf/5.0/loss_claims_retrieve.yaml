@@ -1,0 +1,88 @@
+summary: Retrieve a Loss Claim
+description: |
+  This endpoint allows a developer to retrieve the detail of an existing loss claim.
+  A National Insurance Number and Claim ID must be provided.
+  
+  ### Test data
+  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+  
+  | Header Value (Gov-Test-Scenario) | Scenario                                                                                     |
+  | -------------------------------- | -------------------------------------------------------------------------------------------- |
+  | N/A - DEFAULT                    | Simulates successful self-employment response where typeOfClaim is "carry-forward".          |
+  | UK_PROPERTY                      | Simulates successful uk-property-non-fhl response where typeOfClaim is "carry-sideways-fhl". |
+  | FOREIGN_PROPERTY                 | Simulates successful foreign-property response where typeOfClaim is "carry-sideways".        |
+  | NOT_FOUND                        | Simulates the scenario where no data is found.                                               |
+  | STATEFUL                         | Performs a stateful retrieve.                                                                |
+
+
+tags:
+  - Loss Claims
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - read:self-assessment
+
+responses:
+  "200":
+    description: Success
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/lossClaims/retrieveLossClaim/retrieve_response.json'
+        examples:
+          example-1:
+            description: Self-Employment Loss Claim
+            value:
+              $ref: './examples/lossClaims/retrieveLossClaim/retrieve_request_self_employment_claims.json'
+          example-2:
+            description: UK Property Loss Claim
+            value:
+              $ref: './examples/lossClaims/retrieveLossClaim/retrieve_request_property_claims.json'
+          example-3:
+            description: Foreign Property Loss Claim
+            value:
+              $ref: './examples/lossClaims/retrieveLossClaim/retrieve_request_foreign_property_claims.json'
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_CLAIM_ID:
+            $ref: './common/errors.yaml#/components/examples/formatClaimId'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error_response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFound'

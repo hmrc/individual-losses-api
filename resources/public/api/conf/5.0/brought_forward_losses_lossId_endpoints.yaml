@@ -1,0 +1,14 @@
+get:
+  $ref: "./brought_forward_losses_retrieve.yaml"
+  summary: Retrieve a Brought Forward Loss
+  tags:
+    - Brought Forward Losses
+  security:
+    - User-Restricted:
+        - read:self-assessment
+delete:
+  $ref: "./brought_forward_losses_delete.yaml"
+  summary: Delete a Brought Forward Loss
+  security:
+    - User-Restricted:
+        - write:self-assessment

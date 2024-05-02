@@ -15,10 +15,10 @@ Some APIs may be marked \[test only\]. This means that they are not available fo
 
 Some endpoints support DYNAMIC gov test scenarios. The response is dynamic based on the request parameters:
 
-- List Brought Forward Losses V4.0
-- Amend a Brought Forward Loss Amount V4.0
-- Amend a Loss Claim Type V4.0
-- List Loss Claims V4.0
+- List Brought Forward Losses V4.0 and later
+- Amend a Brought Forward Loss Amount V4.0 and later
+- Amend a Loss Claim Type V4.0 and later
+- List Loss Claims V4.0 and later
 
 ### Stateful
 
@@ -31,3 +31,5 @@ The following groups are stateful in the sandbox:
 
 - Brought Foward Losses V4.0
 - Loss Claims V4.0
+
+blah blah blah blah blah blah

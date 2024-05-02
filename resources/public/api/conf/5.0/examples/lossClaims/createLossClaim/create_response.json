@@ -1,0 +1,20 @@
+{
+  "claimId": "AAZZ1234567890A",
+  "links": [
+	{
+	  "href": "/individuals/losses/TC663795B/loss-claims/AAZZ1234567890A",
+	  "rel": "self",
+	  "method": "GET"
+	},
+	{
+	  "href": "/individuals/losses/TC663795B/loss-claims/AAZZ1234567890A/change-type-of-claim",
+	  "rel": "amend-loss-claim",
+	  "method": "POST"
+	},
+	{
+	  "href": "/individuals/losses/TC663795B/loss-claims/AAZZ1234567890A",
+	  "rel": "delete-loss-claim",
+	  "method": "DELETE"
+	}
+  ]
+} 

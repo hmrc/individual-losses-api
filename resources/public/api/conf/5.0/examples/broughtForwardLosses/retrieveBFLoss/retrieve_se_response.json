@@ -1,0 +1,24 @@
+{
+  "businessId": "XBIS12345678911",
+  "typeOfLoss": "self-employment",
+  "lossAmount": 300.11,
+  "taxYearBroughtForwardFrom": "2021-22",
+  "lastModified": "2022-11-05T11:56:27Z",
+  "links": [
+	{
+	  "href": "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a",
+	  "rel": "self",
+	  "method": "GET"
+	},
+	{
+	  "href": "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a/change-loss-amount",
+	  "rel": "amend-brought-forward-loss",
+	  "method": "POST"
+	},
+	{
+	  "href": "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a",
+	  "rel": "delete-brought-forward-loss",
+	  "method": "DELETE"
+	}
+  ]
+}

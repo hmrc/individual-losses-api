@@ -19,7 +19,7 @@ package definition
 import config.{ConfidenceLevelConfig, MockAppConfig}
 import definition.APIStatus.{ALPHA, BETA}
 import play.api.Configuration
-import routing.Version4
+import routing.{Version4, Version5}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -37,7 +37,9 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
         MockedAppConfig.apiGatewayContext.returns("my/context")
         MockedAppConfig.featureSwitches.returns(Configuration.empty).anyNumberOfTimes()
         MockedAppConfig.apiStatus(Version4).returns("").anyNumberOfTimes()
+        MockedAppConfig.apiStatus(Version5).returns("").anyNumberOfTimes()
         MockedAppConfig.endpointsEnabled(version = Version4).returns(true).anyNumberOfTimes()
+        MockedAppConfig.endpointsEnabled(version = Version5).returns(true).anyNumberOfTimes()
         MockedAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
@@ -62,7 +64,8 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             description = "An API for providing individual losses data",
             context = "my/context",
             versions = List(
-              APIVersion(Version4, status = ALPHA, endpointsEnabled = true)
+              APIVersion(Version4, status = ALPHA, endpointsEnabled = true),
+              APIVersion(Version5, status = ALPHA, endpointsEnabled = true)
             ),
             requiresTrust = None
           )
