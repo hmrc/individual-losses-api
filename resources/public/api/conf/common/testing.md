@@ -29,5 +29,5 @@ what you submitted.
 
 The following groups are stateful in the sandbox:
 
-- Brought Foward Losses V4.0 and later
-- Loss Claims V4.0 and later
+- Brought Foward Losses
+- Loss Claims
