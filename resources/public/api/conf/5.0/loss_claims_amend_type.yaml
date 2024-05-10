@@ -1,0 +1,113 @@
+post:
+  summary: Amend a Loss Claim Type
+  description: |
+    This endpoint allows a developer to change the type of claim for an existing loss claim type.
+    A National Insurance Number and Claim ID must be provided.
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                                               |
+    | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | N/A - DEFAULT                    | Simulates success response.                                                                                                                            |
+    | FP_FORWARD                       | Simulates a Foreign Property carried forward scenario.                                                                                                 |
+    | FP_SIDEWAYS                      | Simulates a Foreign Property carried sideways scenario.                                                                                                |
+    | NONFHL_FORWARD                   | Simulates a Non-FHL carried forward scenario.                                                                                                          |
+    | NONFHL_FORWARD_TO_SIDEWAYS       | Simulates a Non-FHL carried forward to sideways scenario.                                                                                              |
+    | NONFHL_SIDEWAYS                  | Simulates a Non-FHL carried sideways scenario.                                                                                                         |
+    | NONFHL_SIDEWAYS_FHL              | Simulates a FHL carried sideways scenario.                                                                                                             |
+    | SE_FORWARD                       | Simulates a Self Employment carried forward scenario.                                                                                                  |
+    | SE_SIDEWAYS                      | Simulates a Self Employment carried sideways scenario.                                                                                                 |
+    | NO_CHANGE                        | Simulates the scenario where the relief type has not changed.                                                                                          |
+    | TYPE_OF_CLAIM_INVALID            | Simulates the scenario where a claim type is invalid for the income source.                                                                            |
+    | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                         |
+    | STATEFUL                         | Performs a stateful update.                                                                                                                            |
+    | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request:<br> • typeOfClaim<br> •  typeOfLoss<br> • lastModified |
+
+  tags:
+    - Loss Claims
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/lossClaims/amendLossClaimType/amend_request.json'
+        examples:
+          example-1:
+            description: Default Example
+            value:
+              $ref: './examples/lossClaims/amendLossClaimType/amend_request.json'
+
+  responses:
+    "200":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/lossClaims/amendLossClaimType/amend_response.json'
+          examples:
+            example-1:
+              description: Example Response
+              value:
+                $ref: './examples/lossClaims/amendLossClaimType/amend_response.json'
+
+
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_CLAIM_ID:
+              $ref: './common/errors.yaml#/components/examples/formatClaimId'
+            FORMAT_VALUE:
+              $ref: './common/errors.yaml#/components/examples/formatValue'
+            RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+            FORMAT_TYPE_OF_CLAIM:
+              $ref: './common/errors.yaml#/components/examples/formatTypeOfClaim'
+            RULE_TYPE_OF_CLAIM_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTypeOfClaimInvalid'
+            RULE_NO_CHANGE:
+              $ref: './common/errors.yaml#/components/examples/ruleNoChangeLossClaim'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'

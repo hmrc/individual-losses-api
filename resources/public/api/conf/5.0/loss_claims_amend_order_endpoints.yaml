@@ -1,0 +1,8 @@
+put:
+  $ref: "./loss_claims_amend_order.yaml"
+  summary: Amend Loss Claims Order
+  tags:
+    - Loss Claims
+  security:
+    - User-Restricted:
+        - write:self-assessment

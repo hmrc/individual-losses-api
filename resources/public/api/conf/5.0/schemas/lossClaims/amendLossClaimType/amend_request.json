@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Amend a Loss Claim Type Request",
+  "description": "Amend a Loss Claim Type Request",
+  "type": "object",
+  "properties": {
+	"typeOfClaim": {
+	  "type": "string",
+	  "description": "The type of claim to be applied. Permitted values for \"self-employment\": carry-forward, carry-sideways. Permitted values for \"uk-property-non-fhl\" and \"foreign-property\": carry-sideways, carry-sideways-fhl, carry-forward-to-carry-sideways.",
+	  "example": "carry-forward"
+	}
+  },
+  "required": [
+	"typeOfClaim"
+  ],
+  "additionalProperties": false
+}

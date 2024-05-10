@@ -1,0 +1,42 @@
+components:
+  parameters:
+    businessId:
+      in: query
+      name: businessId
+      description: |
+        An identifier for the business, unique to the customer.
+      schema:
+        type: string
+        pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
+        example: XAIS12345678910
+      required: false
+    typeOfLossBroughtForward:
+      in: query
+      name: typeOfLoss
+      description: |
+        The type of business the loss applies to.
+      schema:
+        type: string
+        enum: [ self-employment, uk-property-fhl, uk-property-non-fhl, uk-property-non-fhl, foreign-property-fhl-eea, foreign-property ]
+        example: self-employment
+      required: false
+    typeOfLossLosses:
+      in: query
+      name: typeOfLoss
+      description: |
+        The type of business the loss applies to.
+      schema:
+        type: string
+        enum: [ self-employment, uk-property-non-fhl, foreign-property ]
+        example: self-employment
+      required: false
+    typeOfClaim:
+      in: query
+      name: typeOfClaim
+      description: |
+        The type of claim to be applied. If no parameter value is supplied, all claim types (carry-forward and carry-sideways) will be returned.
+      schema:
+        type: string
+        enum: [ carry-sideways ]
+        example: carry-sideways
+      required: false

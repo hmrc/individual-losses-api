@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Amend a Loss Claim Type Response",
+  "description": "Amend a Loss Claim Type Response",
+  "type": "object",
+  "properties": {
+	"taxYearClaimedFor": {
+	  "type": "string",
+	  "description": "The tax year to which the claim applies. The start year and end year must not span two tax years. The minimum tax year is 2019-20. No gaps are allowed, for example, 2022-24 is not valid.",
+	  "example": "2022-23"
+	},
+	"typeOfLoss": {
+	  "type": "string",
+	  "enum": [
+		"self-employment",
+		"uk-property-non-fhl",
+		"foreign-property"
+	  ],
+	  "description": "The type of business the loss applies to.\n\nLimited to the following possible values: \n\n    self-employment \n\n    uk-property-non-fhl\n    foreign-property"
+	},
+	"typeOfClaim": {
+	  "type": "string",
+	  "enum": [
+		"carry-forward",
+		"carry-sideways",
+		"carry-sideways-fhl",
+		"carry-forward-to-carry-sideways"
+	  ],
+	  "description": "\t\n\nThe type of claim to be applied.\n\nPermitted values for \"self-employment\": \n\n    carry-forward \n\n    carry-sideways\n\nPermitted values for \"uk-property-non-fhl\" and \"foreign-property\": \n\n    carry-sideways\n\n    carry-sideways-fhl\n\n    carry-forward-to-carry-sideways"
+	},
+	"businessId": {
+	  "type": "string",
+	  "description": "An identifier for the business, unique to the customer.",
+	  "example": "XAIS12345678910",
+	  "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+	},
+	"sequence": {
+	  "type": "number",
+	  "description": "The order number in which this loss claim is to be used it must be an integer in the range 1 to 99. The sequence must start with 1 and have no gaps."
+	},
+	"lastModified": {
+	  "type": "string",
+	  "description": "The timestamp when the entry was created or last modified.",
+	  "example": "2020-07-13T12:13:48.763Z"
+	},
+	"links": {
+	  "type": "array",
+	  "items": {
+		"type": "object",
+		"description": "A list of endpoint links that indicate possible actions related to the current resource.",
+		"properties": {
+		  "href": {
+			"description": "The relative url of the endpoint.",
+			"type": "string",
+			"example": "/individuals/losses/TC663795B/loss-claims/AAZZ0123456789a"
+		  },
+		  "rel": {
+			"description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
+			"type": "string",
+			"enum": [
+			  "self"
+			]
+		  },
+		  "method": {
+			"description": "The HTTP method type for the endpoint.",
+			"type": "string",
+			"enum": [
+			  "GET"
+			]
+		  }
+		},
+		"required": [
+		  "href",
+		  "rel",
+		  "method"
+		],
+		"additionalProperties": false
+	  }
+	}
+  },
+  "required": [
+	"taxYearClaimedFor",
+	"typeOfLoss",
+	"typeOfClaim",
+	"businessId",
+	"lastModified"
+  ],
+  "additionalProperties": false
+}
