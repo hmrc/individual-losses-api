@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.create.v4
+package api.endpoints.lossClaim.create.def1
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -26,7 +26,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import support.V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class CreateLossClaimControllerISpec extends V4IntegrationBaseSpec {
+class Def1_CreateLossClaimISpec extends V4IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)

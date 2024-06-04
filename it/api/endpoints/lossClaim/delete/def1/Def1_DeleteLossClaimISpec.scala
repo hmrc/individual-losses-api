@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.delete.v4
+package api.endpoints.lossClaim.delete.def1
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -26,7 +26,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import support.V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class DeleteLossClaimControllerISpec extends V4IntegrationBaseSpec {
+class Def1_DeleteLossClaimISpec extends V4IntegrationBaseSpec {
 
   private trait Test {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.retrieve.v4
+package api.endpoints.lossClaim.retrieve.def1
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -26,7 +26,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import support.V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class RetrieveLossClaimControllerISpec extends V4IntegrationBaseSpec {
+class Def1_RetrieveLossClaimISpec extends V4IntegrationBaseSpec {
 
   val businessId   = "XKIS00000000988"
   val lastModified = "2018-07-13T12:13:48.763Z"

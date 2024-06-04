@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.list.v4
+package api.endpoints.lossClaim.list.def1
 
 import v4.fixtures.ListLossClaimsFixtures._
 import api.models.domain.TaxYear
@@ -27,7 +27,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import support.V4IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class ListLossClaimsControllerISpec extends V4IntegrationBaseSpec {
+class Def1_ListLossClaimsISpec extends V4IntegrationBaseSpec {
 
   private trait Test {
 

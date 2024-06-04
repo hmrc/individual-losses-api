@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.endpoints.lossClaim.amendOrder.v4
+package api.endpoints.lossClaim.amendOrder.def1
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -29,7 +29,7 @@ import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.amendLossClaimsOrder.Claim
 
-class AmendLossClaimsOrderControllerISpec extends V4IntegrationBaseSpec {
+class Def1_AmendLossClaimsOrderISpec extends V4IntegrationBaseSpec {
 
   val claim1: Claim        = Claim("1234567890ABEF1", 1)
   val claim2: Claim        = Claim("1234567890ABCDE", 2)
