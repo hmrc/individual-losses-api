@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend
+package v5.lossClaims.amendOrder
 
 import api.controllers.RequestContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
-import v4.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequestData
-import v4.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
+import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
+import v5.lossClaims.amendOrder.model.response.AmendLossClaimsOrderResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsConnector) extends BaseService {
+class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsOrderConnector) extends BaseService {
 
   def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData)(implicit
-                                                                     ctx: RequestContext,
-                                                                     ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
 
     connector
       .amendLossClaimsOrder(request)

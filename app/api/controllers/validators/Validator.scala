@@ -45,6 +45,8 @@ trait Validator[PARSED] extends Logging {
     }
   }
 
+  protected def invalid(error: MtdError): Invalid[Seq[MtdError]] = Invalid(List(error))
+
   protected def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] =
     results.traverse_(identity)
 

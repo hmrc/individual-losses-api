@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend
+package v5.lossClaims.amendOrder
 
 import api.controllers._
 import api.hateoas.HateoasFactory
@@ -24,8 +24,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
-import v4.controllers.validators.AmendLossClaimsOrderValidatorFactory
-import v4.models.response.amendLossClaimsOrder.AmendLossClaimsOrderHateoasData
+import v5.lossClaims.amendOrder.model.response.AmendLossClaimsOrderHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
