@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.delete
+package v5.lossClaims.retrieve
 
 import api.controllers.validators.Validator
-import v5.lossClaims.delete.def1.Def1_DeleteLossClaimValidator
-import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
+import v5.lossClaims.retrieve.RetrieveLossClaimSchema.Def1
+import v5.lossClaims.retrieve.def1.Def1_RetrieveLossClaimValidator
+import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 
-class DeleteLossClaimValidatorFactory {
-  def validator(nino: String, claimId: String): Validator[DeleteLossClaimRequestData] =
-    new Def1_DeleteLossClaimValidator(nino, claimId)
+import javax.inject.Singleton
+
+@Singleton
+class RetrieveLossClaimValidatorFactory {
+
+  def validator(nino: String, claimId: String): Validator[RetrieveLossClaimRequestData] = {
+
+    val schema = RetrieveLossClaimSchema.schema
+
+    schema match {
+      case Def1 => new Def1_RetrieveLossClaimValidator(nino, claimId)
+
+    }
+  }
 
 }

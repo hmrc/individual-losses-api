@@ -17,30 +17,26 @@
 package v5.lossClaims.retrieve
 
 import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
-import cats.implicits._
+import api.services.ServiceOutcome
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RetrieveLossClaimService @Inject() (connector: RetrieveLossClaimConnector) extends BaseService {
+trait MockRetrieveLossClaimService extends MockFactory {
 
-  def retrieveLossClaim(
-      request: RetrieveLossClaimRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveLossClaimResponse]] =
-    connector
-      .retrieveLossClaim(request)
-      .map(_.leftMap(mapDownstreamErrors(errorMap)))
+  val mockRetrieveLossClaimService: RetrieveLossClaimService = mock[RetrieveLossClaimService]
 
-  private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "INVALID_CORRELATIONID"     -> InternalError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
-  )
+  object MockRetrieveLossClaimService {
+
+    def retrieve(retrieveLossClaimRequest: RetrieveLossClaimRequestData): CallHandler[Future[ServiceOutcome[RetrieveLossClaimResponse]]] = {
+      (mockRetrieveLossClaimService
+        .retrieveLossClaim(_: RetrieveLossClaimRequestData)(_: RequestContext, _: ExecutionContext))
+        .expects(retrieveLossClaimRequest, *, *)
+    }
+
+  }
 
 }

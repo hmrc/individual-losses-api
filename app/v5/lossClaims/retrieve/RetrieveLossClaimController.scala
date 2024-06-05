@@ -23,8 +23,7 @@ import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
-import v4.controllers.validators.RetrieveLossClaimValidatorFactory
-import v4.models.response.retrieveLossClaim.GetLossClaimHateoasData
+import v5.lossClaims.retrieve.model.response.GetLossClaimHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

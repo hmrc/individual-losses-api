@@ -28,8 +28,8 @@ class DeleteLossClaimValidatorFactorySpec extends UnitSpec {
 
   private val validatorFactory = new DeleteLossClaimValidatorFactory
 
-  "running a validation" should {
-    "return the parsed request data" when {
+  "validator" should {
+    "return the Def1 validator" when {
       "given a valid request" in {
         val result: Validator[DeleteLossClaimRequestData] = validatorFactory.validator(validNino, validClaimId)
         result shouldBe a[Def1_DeleteLossClaimValidator]

@@ -17,12 +17,13 @@
 package v5.lossClaims.retrieve
 
 import api.connectors.DownstreamUri.IfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
-import v4.models.response.retrieveLossClaim.RetrieveLossClaimResponse
+import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
+import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,13 +32,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrieveLossClaim(request: RetrieveLossClaimRequestData)(implicit
-                                                               hc: HeaderCarrier,
-                                                               ec: ExecutionContext,
-                                                               correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
 
     import request._
 
-    get(IfsUri[RetrieveLossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId"))
+    val downstreamUri = IfsUri[Def1_RetrieveLossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId")
+    val result        = get(downstreamUri)
+    result
+
   }
 
 }

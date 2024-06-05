@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.delete
+package v5.lossClaims.retrieve.model.request
 
-import api.controllers.validators.Validator
-import v5.lossClaims.delete.def1.Def1_DeleteLossClaimValidator
-import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
+import api.models.domain.Nino
+import v4.models.domain.lossClaim.ClaimId
+import v5.lossClaims.retrieve.RetrieveLossClaimSchema
 
-class DeleteLossClaimValidatorFactory {
-  def validator(nino: String, claimId: String): Validator[DeleteLossClaimRequestData] =
-    new Def1_DeleteLossClaimValidator(nino, claimId)
-
+trait RetrieveLossClaimRequestData {
+  def nino: Nino
+  def claimId: ClaimId
+  val schema: RetrieveLossClaimSchema
 }

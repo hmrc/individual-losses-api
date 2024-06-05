@@ -14,14 +14,27 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.delete
+package utils
 
-import api.controllers.validators.Validator
-import v5.lossClaims.delete.def1.Def1_DeleteLossClaimValidator
-import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
+import play.api.libs.json._
 
-class DeleteLossClaimValidatorFactory {
-  def validator(nino: String, claimId: String): Validator[DeleteLossClaimRequestData] =
-    new Def1_DeleteLossClaimValidator(nino, claimId)
+trait JsonWritesUtil {
+
+  def filterNull(json: JsValue): JsObject = json match {
+    case JsObject(fields) =>
+      JsObject(fields.flatMap {
+        case (_, JsNull) => None
+        case other       => Some(other)
+      })
+    case other => other.as[JsObject]
+  }
+
+  def writesFrom[A](pf: PartialFunction[A, JsObject]): OWrites[A] = {
+    val f: A => JsObject = pf.orElse(a => throw new IllegalArgumentException(s"No writes defined for type ${a.getClass.getName}"))
+
+    OWrites.apply(f)
+  }
 
 }
+
+object JsonWritesUtil extends JsonWritesUtil
