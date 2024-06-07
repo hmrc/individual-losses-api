@@ -20,8 +20,8 @@ import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import v4.models.request.amendLossClaimType.AmendLossClaimTypeRequestData
-import v4.models.response.amendLossClaimType.AmendLossClaimTypeResponse
+import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
+import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

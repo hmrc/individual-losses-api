@@ -17,14 +17,12 @@
 package v5.lossClaims.amendOrder
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
-import v5.lossClaims.amendOrder.model.response.AmendLossClaimsOrderHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -34,7 +32,6 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
                                                 val lookupService: MtdIdLookupService,
                                                 service: AmendLossClaimsOrderService,
                                                 validatorFactory: AmendLossClaimsOrderValidatorFactory,
-                                                hateoasFactory: HateoasFactory,
                                                 auditService: AuditService,
                                                 cc: ControllerComponents,
                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -54,15 +51,14 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
         RequestHandler
           .withValidator(validator)
           .withService(service.amendLossClaimsOrder)
-          .withHateoasResult(hateoasFactory)(AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor))
+          .withNoContentResult(OK)
           .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendLossClaimOrder",
             transactionName = "amend-loss-claim-order",
             apiVersion = Version.from(request, orElse = Version4),
             params = Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor),
-            requestBody = Some(request.body),
-            includeResponse = true
+            requestBody = Some(request.body)
           ))
 
       requestHandler.handleRequest()

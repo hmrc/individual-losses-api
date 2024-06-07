@@ -17,15 +17,12 @@
 package v5.lossClaims.amendType
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4}
+import routing.{Version, Version5}
 import utils.IdGenerator
-import v4.controllers.validators.AmendLossClaimTypeValidatorFactory
-import v4.models.response.amendLossClaimType.AmendLossClaimTypeHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -35,7 +32,6 @@ class AmendLossClaimTypeController @Inject() (val authService: EnrolmentsAuthSer
                                               val lookupService: MtdIdLookupService,
                                               service: AmendLossClaimTypeService,
                                               validatorFactory: AmendLossClaimTypeValidatorFactory,
-                                              hateoasFactory: HateoasFactory,
                                               auditService: AuditService,
                                               cc: ControllerComponents,
                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -46,7 +42,7 @@ class AmendLossClaimTypeController @Inject() (val authService: EnrolmentsAuthSer
 
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
+      implicit val apiVersion: Version = Version.from(request, orElse = Version5)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, claimId, request.body)
@@ -55,12 +51,12 @@ class AmendLossClaimTypeController @Inject() (val authService: EnrolmentsAuthSer
         RequestHandler
           .withValidator(validator)
           .withService(service.amendLossClaimType)
-          .withHateoasResult(hateoasFactory)(AmendLossClaimTypeHateoasData(nino, claimId))
+          .withPlainJsonResult(OK)
           .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendLossClaim",
             transactionName = "amend-loss-claim",
-            apiVersion = Version.from(request, orElse = Version4),
+            apiVersion = Version.from(request, orElse = Version5),
             params = Map("nino" -> nino, "claimId" -> claimId),
             requestBody = Some(request.body),
             includeResponse = true

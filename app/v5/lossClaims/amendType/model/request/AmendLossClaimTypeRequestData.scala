@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amendOrder
+package v5.lossClaims.amendType.model.request
 
-sealed trait AmendLossClaimsOrderSchema
+import api.models.domain.Nino
+import v4.models.domain.lossClaim.ClaimId
+import v5.lossClaims.amendType.AmendLossClaimTypeSchema
 
-object AmendLossClaimsOrderSchema {
-
-  case object Def1 extends AmendLossClaimsOrderSchema
-
-  val schema: AmendLossClaimsOrderSchema = Def1
-
+trait AmendLossClaimTypeRequestData {
+  def nino: Nino
+  def claimId: ClaimId
+  def body: AmendLossClaimTypeRequestBody
+  val schema: AmendLossClaimTypeSchema
 }

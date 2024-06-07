@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend
+package v5.lossClaims.amendType
 
 import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v5.lossClaims.amendOrder.AmendLossClaimsOrderConnector
-import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
+import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
+import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendLossClaimsConnector extends MockFactory {
+trait MockAmendLossClaimTypeConnector extends MockFactory {
 
-  val mockAmendLossClaimsConnector: AmendLossClaimsOrderConnector = mock[AmendLossClaimsOrderConnector]
+  val mockAmendLossClaimTypeConnector: AmendLossClaimTypeConnector = mock[AmendLossClaimTypeConnector]
 
-  object MockAmendLossClaimsConnector {
+  object MockAmendLossClaimTypeConnector {
 
-    def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
-      (mockAmendLossClaimsConnector
-        .amendLossClaimsOrder(_: AmendLossClaimsOrderRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+    def amendLossClaimType(request: AmendLossClaimTypeRequestData): CallHandler[Future[DownstreamOutcome[AmendLossClaimTypeResponse]]] = {
+      (mockAmendLossClaimTypeConnector
+        .amendLossClaimType(_: AmendLossClaimTypeRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

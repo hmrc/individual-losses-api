@@ -51,6 +51,7 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
         RequestHandler
           .withValidator(validator)
           .withService(service.createLossClaim)
+          .withPlainJsonResult(CREATED)
           .withAuditing(AuditHandler(
             auditService,
             auditType = "CreateLossClaim",

@@ -17,7 +17,6 @@
 package v5.lossClaims.create.model.request
 
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec

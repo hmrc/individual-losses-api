@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend
+package v5.lossClaims.amendOrder
 
 import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, TaxYear}

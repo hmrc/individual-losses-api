@@ -24,7 +24,7 @@ case class Def1_CreateLossClaimResponse(claimId: String) extends CreateLossClaim
 object Def1_CreateLossClaimResponse {
 
   implicit val reads: Reads[Def1_CreateLossClaimResponse] =
-    (JsPath \ "claimId").read[String].map(Def1_CreateLossClaimResponse.apply)
+    (__ \ "claimId").read[String].map(Def1_CreateLossClaimResponse.apply)
 
   implicit val writes: OWrites[Def1_CreateLossClaimResponse] = Json.writes
 }

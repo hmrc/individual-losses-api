@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend.model.request
+package v5.lossClaims.amendOrder.model.request
 
 import play.api.libs.json.Json
 import support.UnitSpec

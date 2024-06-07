@@ -17,13 +17,11 @@
 package v5.lossClaims.retrieve
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
-import v5.lossClaims.retrieve.model.response.GetLossClaimHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -33,7 +31,6 @@ class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthServ
                                              val lookupService: MtdIdLookupService,
                                              service: RetrieveLossClaimService,
                                              validatorFactory: RetrieveLossClaimValidatorFactory,
-                                             hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
@@ -52,8 +49,7 @@ class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthServ
         RequestHandler
           .withValidator(validator)
           .withService(service.retrieveLossClaim)
-          .withHateoasResult(hateoasFactory)(GetLossClaimHateoasData(nino, claimId))
-
+          .withPlainJsonResult(OK)
       requestHandler.handleRequest()
     }
 

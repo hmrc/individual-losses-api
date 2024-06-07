@@ -25,9 +25,6 @@ trait CreateLossClaimResponse {
 }
 
 object CreateLossClaimResponse extends JsonWritesUtil {
-  // implicit val reads:  Reads[CreateLossClaimResponse] = Json.reads
-
-  // implicit val reads: Reads[CreateLossClaimResponse] = implicitly[Reads[Def1_CreateLossClaimResponse]].reads(_)
 
   implicit val writes: OWrites[CreateLossClaimResponse] = writesFrom { case a: Def1_CreateLossClaimResponse =>
     implicitly[OWrites[Def1_CreateLossClaimResponse]].writes(a)

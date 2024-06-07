@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend
+package v5.lossClaims.amendOrder
 
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsArray, JsValue, Json}

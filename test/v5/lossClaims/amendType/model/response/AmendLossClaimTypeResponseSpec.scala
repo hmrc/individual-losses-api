@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.retrieve.model.response
+package v5.lossClaims.amendType.model.response
 
 import api.models.domain.Timestamp
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
-import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+import v5.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 
-class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
+class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
 
   val nino: String    = "AA123456A"
   val claimId: String = "claimId"
 
-  private val lossClaimResponse = Def1_RetrieveLossClaimResponse(
+  val lossClaimResponse: AmendLossClaimTypeResponse = Def1_AmendLossClaimTypeResponse(
     businessId = "000000000000001",
     typeOfLoss = TypeOfLoss.`self-employment`,
     typeOfClaim = TypeOfClaim.`carry-forward`,
@@ -69,9 +69,9 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
       )
     }
 
-    def downstreamToModel: TypeOfLoss => Def1_RetrieveLossClaimResponse =
+    def downstreamToModel: TypeOfLoss => AmendLossClaimTypeResponse =
       typeOfLoss =>
-        Def1_RetrieveLossClaimResponse(
+        Def1_AmendLossClaimTypeResponse(
           businessId = "000000000000001",
           typeOfLoss = typeOfLoss,
           typeOfClaim = TypeOfClaim.`carry-sideways-fhl`,
@@ -80,13 +80,12 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
           sequence = Some(1)
         )
 
-    "convert property JSON from downstream into a valid model for property type 02" in {
-      val result = downstreamPropertyJson("02").as[Def1_RetrieveLossClaimResponse]
-      result shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
+    "convert property JSON from downstream into a valid response for property type 02" in {
+      downstreamPropertyJson("02").as[Def1_AmendLossClaimTypeResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
     }
 
     "convert se json from downstream into a valid model" in {
-      downstreamEmploymentJson.as[Def1_RetrieveLossClaimResponse] shouldBe Def1_RetrieveLossClaimResponse(
+      downstreamEmploymentJson.as[Def1_AmendLossClaimTypeResponse] shouldBe Def1_AmendLossClaimTypeResponse(
         "2019-20",
         TypeOfLoss.`self-employment`,
         TypeOfClaim.`carry-forward`,
@@ -110,10 +109,9 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
         |}
       """.stripMargin
     )
-    "convert a valid model into MTD JSON" in {
+    "convert a valid response object into MTD JSON" in {
       Json.toJson(lossClaimResponse) shouldBe mtdJson
     }
   }
-
 
 }

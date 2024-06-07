@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend
+package v5.lossClaims.amendOrder
 
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
@@ -23,7 +23,6 @@ import api.services.ServiceSpec
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendOrder.AmendLossClaimsOrderService
 import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
-import v5.lossClaims.amendOrder.model.response.AmendLossClaimsOrderResponse
 
 import scala.concurrent.Future
 
@@ -45,7 +44,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
       "return a successful response with the correct correlationId" in new Test {
 
         val downstreamResponse: ResponseWrapper[Unit]               = ResponseWrapper(correlationId, ())
-        val expected: ResponseWrapper[AmendLossClaimsOrderResponse] = ResponseWrapper(correlationId, AmendLossClaimsOrderResponse())
+        val expected: ResponseWrapper[Unit] = ResponseWrapper(correlationId, ())
 
         MockAmendLossClaimsConnector
       .amendLossClaimsOrder(request)

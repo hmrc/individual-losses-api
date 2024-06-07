@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend
+package v5.lossClaims.amendOrder
 
 import api.controllers.RequestContext
 import api.services.ServiceOutcome
@@ -22,7 +22,6 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v5.lossClaims.amendOrder.AmendLossClaimsOrderService
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
-import v5.lossClaims.amendOrder.model.response.AmendLossClaimsOrderResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,7 +31,7 @@ trait MockAmendLossClaimsOrderService extends MockFactory {
 
   object MockAmendLossClaimsOrderService {
 
-    def amend(requestData: AmendLossClaimsOrderRequestData): CallHandler[Future[ServiceOutcome[AmendLossClaimsOrderResponse]]] = {
+    def amend(requestData: AmendLossClaimsOrderRequestData): CallHandler[Future[ServiceOutcome[Unit]]] = {
       (mockAmendLossClaimsOrderService
         .amendLossClaimsOrder(_: AmendLossClaimsOrderRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

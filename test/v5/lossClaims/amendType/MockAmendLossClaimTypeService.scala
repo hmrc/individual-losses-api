@@ -16,30 +16,27 @@
 
 package v5.lossClaims.amendType
 
-import api.connectors.DownstreamUri.IfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class AmendLossClaimTypeConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+trait MockAmendLossClaimTypeService extends MockFactory {
 
-  def amendLossClaimType(request: AmendLossClaimTypeRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
+  val mockAmendLossClaimTypeService: AmendLossClaimTypeService = mock[AmendLossClaimTypeService]
 
-    import request._
-    import schema._
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/claims-for-relief/$nino/$claimId")
+  object MockAmendLossClaimTypeService {
 
-    put(body, downstreamUri)
+    def amend(requestData: AmendLossClaimTypeRequestData): CallHandler[Future[ServiceOutcome[AmendLossClaimTypeResponse]]] = {
+      (mockAmendLossClaimTypeService
+        .amendLossClaimType(_: AmendLossClaimTypeRequestData)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
+    }
+
   }
 
 }

@@ -18,26 +18,22 @@ package v5.lossClaims.amendOrder
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
+import cats.implicits._
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
-import v5.lossClaims.amendOrder.model.response.AmendLossClaimsOrderResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsOrderConnector) extends BaseService {
 
-  def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
+  def amendLossClaimsOrder(
+      request: AmendLossClaimsOrderRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector
       .amendLossClaimsOrder(request)
-      .map {
-        case Left(err)       => Left(mapDownstreamErrors(errorMap)(err))
-        case Right(response) => Right(ResponseWrapper(response.correlationId, AmendLossClaimsOrderResponse()))
-      }
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
+
   }
 
   private val errorMap: Map[String, MtdError] = Map(

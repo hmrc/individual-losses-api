@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amendOrder
+package v5.lossClaims.amendType.model.request
 
-sealed trait AmendLossClaimsOrderSchema
+import play.api.libs.json.OWrites
+import utils.JsonWritesUtil
+import v4.models.domain.lossClaim.TypeOfClaim
+import v5.lossClaims.amendType.def1.model.request.Def1_AmendLossClaimTypeRequestBody
 
-object AmendLossClaimsOrderSchema {
+trait AmendLossClaimTypeRequestBody { def typeOfClaim: TypeOfClaim }
 
-  case object Def1 extends AmendLossClaimsOrderSchema
+object AmendLossClaimTypeRequestBody extends JsonWritesUtil {
 
-  val schema: AmendLossClaimsOrderSchema = Def1
+  implicit val writes: OWrites[AmendLossClaimTypeRequestBody] = writesFrom { case a: Def1_AmendLossClaimTypeRequestBody =>
+    implicitly[OWrites[Def1_AmendLossClaimTypeRequestBody]].writes(a)
+  }
 
 }

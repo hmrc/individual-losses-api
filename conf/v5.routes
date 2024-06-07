@@ -11,6 +11,6 @@ GET        /:nino/brought-forward-losses/tax-year/:taxYearBroughtForwardFrom    
 POST       /:nino/loss-claims                                                   v5.lossClaims.create.CreateLossClaimController.create(nino: String)
 DELETE     /:nino/loss-claims/:claimId                                          v5.lossClaims.delete.DeleteLossClaimController.delete(nino: String, claimId: String)
 GET        /:nino/loss-claims/:claimId                                          v5.lossClaims.retrieve.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
-POST       /:nino/loss-claims/:claimId/change-type-of-claim                     v4.controllers.AmendLossClaimTypeController.amend(nino: String, claimId: String)
+POST       /:nino/loss-claims/:claimId/change-type-of-claim                     v5.lossClaims.amendType.AmendLossClaimTypeController.amend(nino: String, claimId: String)
 PUT        /:nino/loss-claims/order/:taxYearClaimedFor                          v5.lossClaims.amendOrder.AmendLossClaimsOrderController.amendClaimsOrder(nino: String, taxYearClaimedFor: String)
 GET        /:nino/loss-claims/tax-year/:taxYearClaimedFor                       v4.controllers.ListLossClaimsController.list(nino: String, taxYearClaimedFor: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String])

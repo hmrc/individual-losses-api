@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amend.def1
+package v5.lossClaims.amendOrder.def1
 
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._

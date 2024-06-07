@@ -16,11 +16,8 @@
 
 package v5.lossClaims.retrieve.model.response
 
-import api.hateoas.{HateoasData, HateoasLinksFactory, Link}
-import config.AppConfig
 import play.api.libs.json._
 import utils.JsonWritesUtil.writesFrom
-import v4.models.response.amendBFLosses.AmendBFLossResponse.{amendLossClaimType, deleteLossClaim, getLossClaim}
 import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 
 trait RetrieveLossClaimResponse
@@ -31,15 +28,4 @@ object RetrieveLossClaimResponse {
     implicitly[OWrites[Def1_RetrieveLossClaimResponse]].writes(def1)
   }
 
-  implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveLossClaimResponse, GetLossClaimHateoasData] {
-
-    override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
-      import data._
-      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
-    }
-
-  }
-
 }
-
-case class GetLossClaimHateoasData(nino: String, claimId: String) extends HateoasData
