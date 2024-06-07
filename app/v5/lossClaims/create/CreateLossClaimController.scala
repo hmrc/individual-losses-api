@@ -17,15 +17,12 @@
 package v5.lossClaims.create
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4}
+import routing.{Version, Version5}
 import utils.IdGenerator
-import v4.controllers.validators.CreateLossClaimValidatorFactory
-import v4.models.response.createLossClaim.CreateLossClaimHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -35,7 +32,6 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
                                            val lookupService: MtdIdLookupService,
                                            service: CreateLossClaimService,
                                            validatorFactory: CreateLossClaimValidatorFactory,
-                                           hateoasFactory: HateoasFactory,
                                            auditService: AuditService,
                                            cc: ControllerComponents,
                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -46,7 +42,7 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
 
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
+      implicit val apiVersion: Version = Version.from(request, orElse = Version5)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, request.body)
@@ -55,15 +51,11 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
         RequestHandler
           .withValidator(validator)
           .withService(service.createLossClaim)
-          .withHateoasResultFrom(hateoasFactory)(
-            (_, responseData) => CreateLossClaimHateoasData(nino, responseData.claimId),
-            successStatus = CREATED
-          )
           .withAuditing(AuditHandler(
             auditService,
             auditType = "CreateLossClaim",
             transactionName = "create-loss-claim",
-            apiVersion = Version.from(request, orElse = Version4),
+            apiVersion = Version.from(request, orElse = Version5),
             params = Map("nino" -> nino),
             requestBody = Some(request.body),
             includeResponse = true

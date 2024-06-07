@@ -20,8 +20,8 @@ import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import v4.models.request.createLossClaim.CreateLossClaimRequestData
-import v4.models.response.createLossClaim.CreateLossClaimResponse
+import v5.lossClaims.create.model.request.CreateLossClaimRequestData
+import v5.lossClaims.create.model.response.CreateLossClaimResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,14 +35,17 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
   private val errorMap: PartialFunction[String, MtdError] = {
-    case "INVALID_TAXABLE_ENTITY_ID"                                                          => NinoFormatError
-    case "DUPLICATE"                                                                          => RuleDuplicateClaimSubmissionError
-    case "INCOME_SOURCE_NOT_FOUND"                                                            => NotFoundError
-    case "ACCOUNTING_PERIOD_NOT_ENDED"                                                        => RulePeriodNotEnded
-    case "INVALID_CLAIM_TYPE"                                                                 => RuleTypeOfClaimInvalid
-    case "TAX_YEAR_NOT_SUPPORTED"                                                             => RuleTaxYearNotSupportedError
-    case "NO_ACCOUNTING_PERIOD"                                                               => RuleNoAccountingPeriod
-    case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" => InternalError
+    case "INVALID_TAXABLE_ENTITY_ID"   => NinoFormatError
+    case "DUPLICATE"                   => RuleDuplicateClaimSubmissionError
+    case "INCOME_SOURCE_NOT_FOUND"     => NotFoundError
+    case "ACCOUNTING_PERIOD_NOT_ENDED" => RulePeriodNotEnded
+    case "INVALID_CLAIM_TYPE"          => RuleTypeOfClaimInvalid
+    case "TAX_YEAR_NOT_SUPPORTED"      => RuleTaxYearNotSupportedError
+    case "NO_ACCOUNTING_PERIOD"        => RuleNoAccountingPeriod
+    case "INVALID_PAYLOAD"             => InternalError
+    case "SERVER_ERROR"                => InternalError
+    case "SERVICE_UNAVAILABLE"         => InternalError
+    case "INVALID_CORRELATIONID"       => InternalError
   }
 
 }

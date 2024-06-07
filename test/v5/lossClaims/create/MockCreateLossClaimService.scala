@@ -16,32 +16,26 @@
 
 package v5.lossClaims.create
 
-import api.connectors.DownstreamUri.IfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
 import v5.lossClaims.create.model.request.CreateLossClaimRequestData
 import v5.lossClaims.create.model.response.CreateLossClaimResponse
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class CreateLossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+trait MockCreateLossClaimService extends MockFactory {
 
-  def createLossClaim(request: CreateLossClaimRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
+  val mockCreateLossClaimService: CreateLossClaimService = mock[CreateLossClaimService]
 
-    import request._
-    import schema._
+  object MockCreateLossClaimService {
 
-    val downstreamUri: DownstreamUri[DownstreamResp] =
-      IfsUri(s"income-tax/claims-for-relief/$nino")
-
-    post(lossClaim, downstreamUri)
+    def create(requestData: CreateLossClaimRequestData): CallHandler[Future[ServiceOutcome[CreateLossClaimResponse]]] = {
+      (mockCreateLossClaimService
+        .createLossClaim(_: CreateLossClaimRequestData)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
+    }
 
   }
 
