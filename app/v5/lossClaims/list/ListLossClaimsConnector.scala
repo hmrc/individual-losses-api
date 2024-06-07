@@ -18,11 +18,11 @@ package v5.lossClaims.list
 
 import api.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.models.request.listLossClaims.ListLossClaimsRequestData
-import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
+import v5.lossClaims.list.model.request.ListLossClaimsRequestData
+import v5.lossClaims.list.model.response.ListLossClaimsResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,9 +33,13 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
   def listLossClaims(request: ListLossClaimsRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
+      correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse]] = {
 
     import request._
+    import schema._
+
+    val downstreamUri: DownstreamUri[DownstreamResp] = TaxYearSpecificIfsUri(
+      s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}")
 
     val params = List(
       "incomeSourceId"   -> businessId.map(_.businessId),
@@ -44,9 +48,8 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
     ).collect { case (key, Some(value)) =>
       key -> value
     }
-
     get(
-      uri = TaxYearSpecificIfsUri(s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}"),
+      downstreamUri,
       queryParams = params
     )
   }

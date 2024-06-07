@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.retrieve.model.response
+package v5.lossClaims.list.model.request
 
-import play.api.libs.json._
-import utils.JsonWritesUtil
-import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.list.ListLossClaimsSchema
 
-trait RetrieveLossClaimResponse
-
-object RetrieveLossClaimResponse extends JsonWritesUtil{
-
-  implicit val writes: OWrites[RetrieveLossClaimResponse] = writesFrom { case def1: Def1_RetrieveLossClaimResponse =>
-    implicitly[OWrites[Def1_RetrieveLossClaimResponse]].writes(def1)
-  }
-
+trait ListLossClaimsRequestData {
+  def nino: Nino
+  def taxYearClaimedFor: TaxYear
+  def typeOfLoss: Option[TypeOfLoss]
+  def businessId: Option[BusinessId]
+  def typeOfClaim: Option[TypeOfClaim]
+  val schema: ListLossClaimsSchema
 }

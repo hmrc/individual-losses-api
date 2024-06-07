@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.retrieve.model.response
+package v5.lossClaims.list
 
-import play.api.libs.json._
-import utils.JsonWritesUtil
-import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+import play.api.libs.json.Reads
+import schema.DownstreamReadable
+import v5.lossClaims.list.def1.response.Def1_ListLossClaimsResponse
+import v5.lossClaims.list.model.response.ListLossClaimsResponse
 
-trait RetrieveLossClaimResponse
+sealed trait ListLossClaimsSchema extends DownstreamReadable[ListLossClaimsResponse]
 
-object RetrieveLossClaimResponse extends JsonWritesUtil{
+object ListLossClaimsSchema {
 
-  implicit val writes: OWrites[RetrieveLossClaimResponse] = writesFrom { case def1: Def1_RetrieveLossClaimResponse =>
-    implicitly[OWrites[Def1_RetrieveLossClaimResponse]].writes(def1)
+  case object Def1 extends ListLossClaimsSchema {
+    type DownstreamResp = Def1_ListLossClaimsResponse
+    val connectorReads: Reads[DownstreamResp] = Def1_ListLossClaimsResponse.reads
   }
+
+  val schema: ListLossClaimsSchema = Def1
 
 }

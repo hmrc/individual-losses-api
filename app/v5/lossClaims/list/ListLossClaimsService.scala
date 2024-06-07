@@ -19,24 +19,24 @@ package v5.lossClaims.list
 import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
-import v4.models.request.listLossClaims.ListLossClaimsRequestData
-import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
+import v5.lossClaims.list.def1.response.Def1_ListLossClaimsResponse
+import v5.lossClaims.list.model.request.ListLossClaimsRequestData
+import v5.lossClaims.list.model.response.ListLossClaimsResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) extends BaseService {
 
-  def listLossClaims(request: ListLossClaimsRequestData)(implicit
-                                                         ctx: RequestContext,
-                                                         ec: ExecutionContext): Future[ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] =
+  def listLossClaims(
+      request: ListLossClaimsRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[ListLossClaimsResponse]] =
     connector
       .listLossClaims(request)
       .map {
         case Left(err) =>
           Left(mapDownstreamErrors(errorMap)(err))
 
-        case Right(responseWrapper) if responseWrapper.responseData.claims.isEmpty =>
+        case Right(responseWrapper) if responseWrapper.responseData == Def1_ListLossClaimsResponse(List()) =>
           Left(ErrorWrapper(ctx.correlationId, NotFoundError))
 
         case Right(result) =>

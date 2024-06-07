@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.retrieve.model.response
+package v5.lossClaims.list.def1.response
 
 import play.api.libs.json._
-import utils.JsonWritesUtil
-import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+import v5.lossClaims.list.model.response.ListLossClaimsResponse
 
-trait RetrieveLossClaimResponse
+case class Def1_ListLossClaimsResponse(claims: Seq[ListLossClaimsItem]) extends ListLossClaimsResponse
 
-object RetrieveLossClaimResponse extends JsonWritesUtil{
+object Def1_ListLossClaimsResponse {
 
-  implicit val writes: OWrites[RetrieveLossClaimResponse] = writesFrom { case def1: Def1_RetrieveLossClaimResponse =>
-    implicitly[OWrites[Def1_RetrieveLossClaimResponse]].writes(def1)
-  }
+  implicit val writes: OWrites[Def1_ListLossClaimsResponse] =
+    Json.writes[Def1_ListLossClaimsResponse]
+
+  implicit val reads: Reads[Def1_ListLossClaimsResponse] =
+    implicitly[Reads[Seq[ListLossClaimsItem]]].map(Def1_ListLossClaimsResponse(_))
 
 }
