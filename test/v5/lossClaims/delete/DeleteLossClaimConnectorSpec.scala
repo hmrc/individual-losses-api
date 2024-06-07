@@ -20,7 +20,7 @@ import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.ClaimId
-import v5.lossClaims.delete.model.request.Def1_DeleteLossClaimRequestData
+import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 
 import scala.concurrent.Future
 

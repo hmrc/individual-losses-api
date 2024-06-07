@@ -26,5 +26,5 @@ case class Def1_AmendLossClaimsOrderRequestData(
     body: Def1_AmendLossClaimsOrderRequestBody
 ) extends AmendLossClaimsOrderRequestData {
 
-  override val schema: AmendLossClaimsOrderSchema = AmendLossClaimsOrderSchema.Def1
+  val schema: AmendLossClaimsOrderSchema = AmendLossClaimsOrderSchema.Def1
 }

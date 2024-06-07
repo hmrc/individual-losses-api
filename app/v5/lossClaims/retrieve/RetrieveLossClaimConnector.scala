@@ -39,9 +39,8 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig:
     import request._
 
     val downstreamUri = IfsUri[Def1_RetrieveLossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId")
-    val result        = get(downstreamUri)
-    result
 
+    get(downstreamUri)
   }
 
 }

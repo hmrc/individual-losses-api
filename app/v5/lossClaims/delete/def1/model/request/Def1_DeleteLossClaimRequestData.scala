@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.delete.model.request
+package v5.lossClaims.delete.def1.model.request
 
 import api.models.domain.Nino
 import v4.models.domain.lossClaim.ClaimId
 import v5.lossClaims.delete.DeleteLossClaimSchema
+import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
-trait DeleteLossClaimRequestData {
-  val nino: Nino
-  val claimId: ClaimId
-  val schema: DeleteLossClaimSchema
+case class Def1_DeleteLossClaimRequestData(nino: Nino, claimId: ClaimId) extends DeleteLossClaimRequestData {
+  val schema: DeleteLossClaimSchema = DeleteLossClaimSchema.Def1
 }

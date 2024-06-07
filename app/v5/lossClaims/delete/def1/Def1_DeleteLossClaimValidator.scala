@@ -22,7 +22,8 @@ import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import v4.controllers.validators.resolvers.ResolveLossClaimId
-import v5.lossClaims.delete.model.request.{Def1_DeleteLossClaimRequestData, DeleteLossClaimRequestData}
+import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
+import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 class Def1_DeleteLossClaimValidator(nino: String, claimId: String) extends Validator[DeleteLossClaimRequestData] {
 

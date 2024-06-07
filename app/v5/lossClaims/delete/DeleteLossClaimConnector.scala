@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v5.lossClaims.delete.model.request.{Def1_DeleteLossClaimRequestData, DeleteLossClaimRequestData}
+import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,12 +34,11 @@ class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: A
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    request match {
-      case def1: Def1_DeleteLossClaimRequestData =>
-        import def1._
-        val downstreamUri = DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId")
-        delete(downstreamUri)
-    }
+    import request._
+
+    val downstreamUri = DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId")
+
+    delete(downstreamUri)
   }
 
 }

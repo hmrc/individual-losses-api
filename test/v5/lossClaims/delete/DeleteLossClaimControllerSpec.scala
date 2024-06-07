@@ -25,7 +25,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import routing.Version4
 import v4.models.domain.lossClaim.ClaimId
-import v5.lossClaims.delete.model.request.Def1_DeleteLossClaimRequestData
+import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

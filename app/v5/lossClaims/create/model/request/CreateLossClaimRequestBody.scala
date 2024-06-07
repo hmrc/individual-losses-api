@@ -23,7 +23,6 @@ import v5.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 trait CreateLossClaimRequestBody
 
 object CreateLossClaimRequestBody extends JsonWritesUtil {
-  //implicit val reads: Reads[CreateLossClaimRequestBody] = Json.reads
 
   implicit val writes: OWrites[CreateLossClaimRequestBody] = writesFrom { case a: Def1_CreateLossClaimRequestBody =>
     implicitly[OWrites[Def1_CreateLossClaimRequestBody]].writes(a)

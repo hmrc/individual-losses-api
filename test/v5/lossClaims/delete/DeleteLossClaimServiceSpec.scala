@@ -21,7 +21,8 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v4.models.domain.lossClaim.ClaimId
-import v5.lossClaims.delete.model.request.{Def1_DeleteLossClaimRequestData, DeleteLossClaimRequestData}
+import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
+import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 import scala.concurrent.Future
 

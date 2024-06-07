@@ -20,8 +20,9 @@ import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v5.lossClaims.delete.model.request.{Def1_DeleteLossClaimRequestData, DeleteLossClaimRequestData}
 import v4.models.domain.lossClaim.ClaimId
+import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
+import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
 
