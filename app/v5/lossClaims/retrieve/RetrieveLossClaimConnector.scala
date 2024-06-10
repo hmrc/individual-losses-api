@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
@@ -37,8 +37,9 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig:
       correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
 
     import request._
+    import schema._
 
-    val downstreamUri = IfsUri[Def1_RetrieveLossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId")
+    val downstreamUri = IfsUri[DownstreamResp](s"income-tax/claims-for-relief/$nino/$claimId")
 
     get(downstreamUri)
   }
