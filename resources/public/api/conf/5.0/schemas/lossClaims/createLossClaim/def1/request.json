@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Create a Loss Claim Request",
+  "title": "For all given tax year",
   "description": "Create a Loss Claim Request",
   "type": "object",
   "properties": {

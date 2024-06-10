@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Amend a Loss Claim Type Response",
+  "title": "For all given tax year",
   "description": "Amend a Loss Claim Type Response",
   "type": "object",
   "properties": {
@@ -42,40 +42,6 @@
 	  "type": "string",
 	  "description": "The timestamp when the entry was created or last modified.",
 	  "example": "2020-07-13T12:13:48.763Z"
-	},
-	"links": {
-	  "type": "array",
-	  "items": {
-		"type": "object",
-		"description": "A list of endpoint links that indicate possible actions related to the current resource.",
-		"properties": {
-		  "href": {
-			"description": "The relative url of the endpoint.",
-			"type": "string",
-			"example": "/individuals/losses/TC663795B/loss-claims/AAZZ0123456789a"
-		  },
-		  "rel": {
-			"description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
-			"type": "string",
-			"enum": [
-			  "self"
-			]
-		  },
-		  "method": {
-			"description": "The HTTP method type for the endpoint.",
-			"type": "string",
-			"enum": [
-			  "GET"
-			]
-		  }
-		},
-		"required": [
-		  "href",
-		  "rel",
-		  "method"
-		],
-		"additionalProperties": false
-	  }
 	}
   },
   "required": [

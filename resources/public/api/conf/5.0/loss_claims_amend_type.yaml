@@ -43,12 +43,12 @@ post:
     content:
       application/json:
         schema:
-          $ref: './schemas/lossClaims/amendLossClaimType/amend_request.json'
+          $ref: './schemas/lossClaims/amendLossClaimType/def1/request.json'
         examples:
           example-1:
-            description: Default Example
+            description: Given any tax year
             value:
-              $ref: './examples/lossClaims/amendLossClaimType/amend_request.json'
+              $ref: './examples/lossClaims/amendLossClaimType/def1/request.json'
 
   responses:
     "200":
@@ -59,12 +59,12 @@ post:
       content:
         application/json:
           schema:
-            $ref: './schemas/lossClaims/amendLossClaimType/amend_response.json'
+            $ref: './schemas/lossClaims/amendLossClaimType/def1/response.json'
           examples:
             example-1:
-              description: Example Response
+              description: Given any tax year
               value:
-                $ref: './examples/lossClaims/amendLossClaimType/amend_response.json'
+                $ref: './examples/lossClaims/amendLossClaimType/def1/response.json'
 
 
     "400":
