@@ -33,12 +33,12 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/amendLossClaimsOrder/amend_request.json'
+        $ref: './schemas/lossClaims/amendLossClaimsOrder/def1/request.json'
       examples:
         example-1:
-          description: Default Example
+          description: Given any tax year
           value:
-            $ref: './examples/amendLossClaimsOrder/amend_request.json'
+            $ref: './examples/lossClaims/amendLossClaimsOrder/def1/request.json'
 
 responses:
   "200":
@@ -46,15 +46,6 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/amendLossClaimsOrder/amend_response.json'
-        examples:
-          example-1:
-            description: Example Response
-            value:
-              $ref: './examples/amendLossClaimsOrder/amend_response.json'
 
 
   "400":

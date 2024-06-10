@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "For all given tax year",
+  "description": "Amend Loss Claims Order",
+  "type": "object",
+  "properties": {
+	"typeOfClaim": {
+	  "type": "string",
+	  "description": "The type of loss claims whose order is to be amended.",
+	  "enum": [
+		"carry-sideways"
+	  ]
+	},
+	"listOfLossClaims": {
+	  "type": "array",
+	  "description": "A list of the claims to be amended - all of the claims for a given type and tax year must be included in the submission.",
+	  "items": {
+		"type": "object",
+		"properties": {
+		  "claimId": {
+			"description": "The unique identifier for the loss claim.",
+			"pattern": "^[A-Za-z0-9]{15}",
+			"type": "string",
+			"example": "1234568790ABCDE"
+		  },
+		  "sequence": {
+			"description": "The order number in which this loss claim is to be used. It must be an integer in the range 1 to 99. The sequence must start with 1 and have no gaps.",
+			"type": "integer",
+			"example": "1"
+		  }
+		},
+		"required": [
+		  "claimId",
+		  "sequence"
+		],
+		"additionalProperties": false
+	  }
+	}
+  },
+  "required": [
+	"typeOfClaim",
+	"listOfLossClaims"
+  ],
+  "additionalProperties": false
+}

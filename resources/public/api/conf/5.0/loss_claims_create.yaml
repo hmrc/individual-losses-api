@@ -34,20 +34,20 @@ post:
     content:
       application/json:
         schema:
-          $ref: './schemas/lossClaims/createLossClaim/create_request.json'
+          $ref: './schemas/lossClaims/createLossClaim/def1/request.json'
         examples:
           example-1:
             description: Self-Employment Claim Request
             value:
-              $ref: './examples/lossClaims/createLossClaim/create_request_self_employment_claims.json'
+              $ref: './examples/lossClaims/createLossClaim/def1/request/self_employment_claims.json'
           example-2:
             description: UK Property Claim Request
             value:
-              $ref: './examples/lossClaims/createLossClaim/create_request_property_claims.json'
+              $ref: './examples/lossClaims/createLossClaim/def1/request/uk_property_claims.json'
           example-3:
             description: Foreign Property Claim Request
             value:
-              $ref: './examples/lossClaims/createLossClaim/create_request_foreign_property_claims.json'
+              $ref: './examples/lossClaims/createLossClaim/def1/request/foreign_property_claims.json'
 
   responses:
     "201":
@@ -58,12 +58,12 @@ post:
       content:
         application/json:
           schema:
-            $ref: './schemas/lossClaims/createLossClaim/create_response.json'
+            $ref: './schemas/lossClaims/createLossClaim/def1/response.json'
           examples:
             example-1:
-              description: Example Response
+              description: Given any tax year
               value:
-                $ref: './examples/lossClaims/createLossClaim/create_response.json'
+                $ref: './examples/lossClaims/createLossClaim/def1/response.json'
 
 
     "400":
