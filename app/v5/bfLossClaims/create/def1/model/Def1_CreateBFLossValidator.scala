@@ -37,14 +37,15 @@ class Def1_CreateBFLossValidator @Inject()
   private val resolveJson = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
   private val resolveTaxYear = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
-    def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
-      ResolveBFTypeOfLossFromJson(body, None, errorPath = Some("/typeOfLoss"))
-        .andThen(_ =>
-          (
-            ResolveNino(nino),
-            resolveJson(body)
-          ).mapN(Def1_CreateBFLossRequestData)
-            .andThen(validateParsedData))
+
+  def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
+    ResolveBFTypeOfLossFromJson(body, None, errorPath = Some("/typeOfLoss"))
+      .andThen(_ =>
+        (
+          ResolveNino(nino),
+          resolveJson(body)
+        ).mapN(Def1_CreateBFLossRequestData)
+          .andThen(validateParsedData))
 
   private def validateParsedData(parsed: Def1_CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] =
     combine(
