@@ -17,7 +17,6 @@
 package v4.controllers
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
@@ -25,7 +24,6 @@ import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
 import v4.controllers.validators.AmendLossClaimTypeValidatorFactory
-import v4.models.response.amendLossClaimType.AmendLossClaimTypeHateoasData
 import v4.services.AmendLossClaimTypeService
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +34,6 @@ class AmendLossClaimTypeController @Inject() (val authService: EnrolmentsAuthSer
                                               val lookupService: MtdIdLookupService,
                                               service: AmendLossClaimTypeService,
                                               validatorFactory: AmendLossClaimTypeValidatorFactory,
-                                              hateoasFactory: HateoasFactory,
                                               auditService: AuditService,
                                               cc: ControllerComponents,
                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -56,7 +53,7 @@ class AmendLossClaimTypeController @Inject() (val authService: EnrolmentsAuthSer
         RequestHandler
           .withValidator(validator)
           .withService(service.amendLossClaimType)
-          .withHateoasResult(hateoasFactory)(AmendLossClaimTypeHateoasData(nino, claimId))
+          .withPlainJsonResult()
           .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendLossClaim",

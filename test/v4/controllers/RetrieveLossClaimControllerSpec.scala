@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.GET
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.Timestamp
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -29,7 +27,7 @@ import routing.Version4
 import v4.controllers.validators.MockRetrieveLossClaimValidatorFactory
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v4.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
-import v4.models.response.retrieveLossClaim.{GetLossClaimHateoasData, RetrieveLossClaimResponse}
+import v4.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 import v4.services.MockRetrieveLossClaimService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,8 +38,7 @@ class RetrieveLossClaimControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockRetrieveLossClaimValidatorFactory
-    with MockRetrieveLossClaimService
-    with MockHateoasFactory {
+    with MockRetrieveLossClaimService {
 
   private val claimId      = "AAZZ1234567890a"
   private val businessId   = "XKIS00000000988"
@@ -59,8 +56,6 @@ class RetrieveLossClaimControllerSpec
     lastModified = lastModified
   )
 
-  private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-
   private val mtdResponseJson = Json.parse(
     s"""
       |{
@@ -69,14 +64,7 @@ class RetrieveLossClaimControllerSpec
       |    "typeOfClaim": "carry-forward",
       |    "lastModified": "$lastModified",
       |    "businessId": "$businessId",
-      |    "sequence": 1,
-      |    "links": [
-      |      {
-      |       "href": "/foo/bar",
-      |       "method": "GET",
-      |       "rel": "test-relationship"
-      |      }
-      |    ]
+      |    "sequence": 1
       |}
     """.stripMargin
   )
@@ -89,10 +77,6 @@ class RetrieveLossClaimControllerSpec
         MockRetrieveLossClaimService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrap(response, GetLossClaimHateoasData(validNino, claimId))
-          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -123,7 +107,6 @@ class RetrieveLossClaimControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveLossClaimService,
       validatorFactory = mockRetrieveLossClaimValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

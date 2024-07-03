@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, POST}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -29,7 +27,7 @@ import routing.Version4
 import v4.controllers.validators.MockListBFLossesValidatorFactory
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
-import v4.models.response.listBFLosses.{ListBFLossHateoasData, ListBFLossesItem, ListBFLossesResponse}
+import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 import v4.services.MockListBFLossesService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,8 +38,7 @@ class ListBFLossesControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockListBFLossesValidatorFactory
-    with MockListBFLossesService
-    with MockHateoasFactory {
+    with MockListBFLossesService {
 
   private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
@@ -50,19 +47,10 @@ class ListBFLossesControllerSpec
   private val requestData =
     ListBFLossesRequestData(parsedNino, TaxYear("2019"), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
 
-  private val listHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
-
-  private val createHateoasLink =
-    Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = POST, rel = "create-brought-forward-loss")
-
-  private val getHateoasLink: String => Link = lossId =>
-    Link(href = s"/individuals/losses/TC663795B/brought-forward-losses/$lossId", method = GET, rel = "self")
 
   private val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
   private val response: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Seq(responseItem))
 
-  private val hateoasResponse: ListBFLossesResponse[HateoasWrapper[ListBFLossesItem]] = ListBFLossesResponse(
-    Seq(HateoasWrapper(responseItem, Seq(getHateoasLink("lossId")))))
 
   private val mtdResponseJson: JsValue = Json.parse(
     """
@@ -74,26 +62,7 @@ class ListBFLossesControllerSpec
       |      "typeOfLoss": "uk-property-fhl",
       |      "lossAmount": 2.75,
       |      "taxYearBroughtForwardFrom": "2019-20",
-      |      "lastModified": "lastModified",
-      |      "links": [
-      |        {
-      |          "href": "/individuals/losses/TC663795B/brought-forward-losses/lossId",
-      |          "rel": "self",
-      |          "method": "GET"
-      |        }
-      |      ]
-      |    }
-      |  ],
-      |  "links": [
-      |    {
-      |      "href": "/individuals/losses/TC663795B/brought-forward-losses",
-      |      "rel": "create-brought-forward-loss",
-      |      "method": "POST"
-      |    },
-      |    {
-      |      "href": "/individuals/losses/TC663795B/brought-forward-losses",
-      |      "rel": "self",
-      |      "method": "GET"
+      |      "lastModified": "lastModified"
       |    }
       |  ]
       |}
@@ -108,10 +77,6 @@ class ListBFLossesControllerSpec
         MockListBFLossesService
           .list(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrapList(response, ListBFLossHateoasData(validNino))
-          .returns(HateoasWrapper(hateoasResponse, Seq(createHateoasLink, listHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -142,7 +107,6 @@ class ListBFLossesControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,
       validatorFactory = mockListBFLossesValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

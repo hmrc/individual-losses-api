@@ -17,7 +17,6 @@
 package v4.controllers
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
@@ -25,7 +24,6 @@ import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
 import v4.controllers.validators.AmendBFLossValidatorFactory
-import v4.models.response.amendBFLosses.AmendBFLossHateoasData
 import v4.services.AmendBFLossService
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +34,6 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        service: AmendBFLossService,
                                        validatorFactory: AmendBFLossValidatorFactory,
-                                       hateoasFactory: HateoasFactory,
                                        auditService: AuditService,
                                        cc: ControllerComponents,
                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -56,7 +53,7 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
         RequestHandler
           .withValidator(validator)
           .withService(service.amendBFLoss)
-          .withHateoasResult(hateoasFactory)(AmendBFLossHateoasData(nino, lossId))
+          .withPlainJsonResult()
           .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendBroughtForwardLoss",

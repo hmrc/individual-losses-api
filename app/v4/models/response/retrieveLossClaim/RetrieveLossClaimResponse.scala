@@ -16,9 +16,7 @@
 
 package v4.models.response.retrieveLossClaim
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
 import api.models.domain.{TaxYear, Timestamp}
-import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
@@ -30,7 +28,7 @@ case class RetrieveLossClaimResponse(taxYearClaimedFor: String,
                                      sequence: Option[Int],
                                      lastModified: Timestamp)
 
-object RetrieveLossClaimResponse extends HateoasLinks {
+object RetrieveLossClaimResponse {
   implicit val writes: OWrites[RetrieveLossClaimResponse] = Json.writes[RetrieveLossClaimResponse]
 
   implicit val reads: Reads[RetrieveLossClaimResponse] = (
@@ -42,15 +40,5 @@ object RetrieveLossClaimResponse extends HateoasLinks {
       (JsPath \ "submissionDate").read[Timestamp]
   )(RetrieveLossClaimResponse.apply _)
 
-  implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveLossClaimResponse, GetLossClaimHateoasData] {
-
-    override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
-      import data._
-      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
-    }
-
-  }
-
 }
 
-case class GetLossClaimHateoasData(nino: String, claimId: String) extends HateoasData

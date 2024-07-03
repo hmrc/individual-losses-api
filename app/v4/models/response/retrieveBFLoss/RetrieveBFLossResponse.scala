@@ -16,9 +16,7 @@
 
 package v4.models.response.retrieveBFLoss
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
 import api.models.domain.{TaxYear, Timestamp}
-import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v4.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
@@ -29,7 +27,7 @@ case class RetrieveBFLossResponse(businessId: String,
                                   taxYearBroughtForwardFrom: String,
                                   lastModified: Timestamp)
 
-object RetrieveBFLossResponse extends HateoasLinks {
+object RetrieveBFLossResponse {
   implicit val writes: OWrites[RetrieveBFLossResponse] = Json.writes[RetrieveBFLossResponse]
 
   implicit val reads: Reads[RetrieveBFLossResponse] = (
@@ -41,15 +39,5 @@ object RetrieveBFLossResponse extends HateoasLinks {
       (__ \ "submissionDate").read[Timestamp]
   )(RetrieveBFLossResponse.apply _)
 
-  implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveBFLossResponse, GetBFLossHateoasData] {
-
-    override def links(appConfig: AppConfig, data: GetBFLossHateoasData): Seq[Link] = {
-      import data._
-      Seq(getBFLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId))
-    }
-
-  }
-
 }
 
-case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData

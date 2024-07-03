@@ -17,7 +17,6 @@
 package v4.controllers
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
@@ -25,7 +24,6 @@ import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
 import v4.controllers.validators.AmendLossClaimsOrderValidatorFactory
-import v4.models.response.amendLossClaimsOrder.AmendLossClaimsOrderHateoasData
 import v4.services.AmendLossClaimsOrderService
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +34,6 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
                                                 val lookupService: MtdIdLookupService,
                                                 service: AmendLossClaimsOrderService,
                                                 validatorFactory: AmendLossClaimsOrderValidatorFactory,
-                                                hateoasFactory: HateoasFactory,
                                                 auditService: AuditService,
                                                 cc: ControllerComponents,
                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -56,7 +53,7 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
         RequestHandler
           .withValidator(validator)
           .withService(service.amendLossClaimsOrder)
-          .withHateoasResult(hateoasFactory)(AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor))
+          .withNoContentResult(successStatus = OK)
           .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendLossClaimOrder",

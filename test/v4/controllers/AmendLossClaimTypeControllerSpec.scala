@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.GET
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Timestamp
 import api.models.errors._
@@ -30,7 +28,7 @@ import routing.Version4
 import v4.controllers.validators.MockAmendLossClaimTypeValidatorFactory
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v4.models.request.amendLossClaimType.{AmendLossClaimTypeRequestBody, AmendLossClaimTypeRequestData}
-import v4.models.response.amendLossClaimType.{AmendLossClaimTypeHateoasData, AmendLossClaimTypeResponse}
+import v4.models.response.amendLossClaimType.AmendLossClaimTypeResponse
 import v4.services.MockAmendLossClaimTypeService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,8 +39,7 @@ class AmendLossClaimTypeControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockAmendLossClaimTypeValidatorFactory
-    with MockAmendLossClaimTypeService
-    with MockHateoasFactory {
+    with MockAmendLossClaimTypeService {
 
   private val claimId            = ClaimId("AAZZ1234567890a")
   private val amendLossClaimType = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
@@ -59,8 +56,6 @@ class AmendLossClaimTypeControllerSpec
       Timestamp("2018-07-13T12:13:48.763Z")
     )
 
-  private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-
   private val mtdResponseJson = Json.parse(
     """
       |{
@@ -69,14 +64,7 @@ class AmendLossClaimTypeControllerSpec
       |    "taxYearClaimedFor": "2019-20",
       |    "typeOfClaim": "carry-forward",
       |    "sequence": 1,
-      |    "lastModified": "2018-07-13T12:13:48.763Z",
-      |    "links" : [
-      |      {
-      |        "href": "/foo/bar",
-      |        "method": "GET",
-      |        "rel": "test-relationship"
-      |      }
-      |    ]
+      |    "lastModified": "2018-07-13T12:13:48.763Z"
       |}
    """.stripMargin
   )
@@ -97,10 +85,6 @@ class AmendLossClaimTypeControllerSpec
         MockAmendLossClaimTypeService
           .amend(AmendLossClaimTypeRequestData(parsedNino, claimId, amendLossClaimType))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimTypeResponse))))
-
-        MockHateoasFactory
-          .wrap(amendLossClaimTypeResponse, AmendLossClaimTypeHateoasData(validNino, claimId.claimId))
-          .returns(HateoasWrapper(amendLossClaimTypeResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
           expectedStatus = OK,
@@ -136,7 +120,6 @@ class AmendLossClaimTypeControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockAmendLossClaimTypeService,
       validatorFactory = mockAmendLossClaimTypeValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

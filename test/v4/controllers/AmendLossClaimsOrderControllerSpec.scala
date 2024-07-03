@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.TaxYear
 import api.models.errors._
@@ -30,7 +28,7 @@ import routing.Version4
 import v4.controllers.validators.MockAmendLossClaimsOrderValidatorFactory
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData, Claim}
-import v4.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
+import v4.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
 import v4.services.MockAmendLossClaimsOrderService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,8 +39,7 @@ class AmendLossClaimsOrderControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockAmendLossClaimsOrderValidatorFactory
-    with MockAmendLossClaimsOrderService
-    with MockHateoasFactory {
+    with MockAmendLossClaimsOrderService {
 
   private val id         = "1234568790ABCDE"
   private val sequence   = 1
@@ -54,11 +51,6 @@ class AmendLossClaimsOrderControllerSpec
     AmendLossClaimsOrderRequestData(parsedNino, TaxYear.fromMtd(taxYear), claimsList)
 
   private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
-
-  private val testHateoasLink = Seq(
-    Link(href = s"/individuals/losses/$validNino/loss-claims/order/$taxYear", method = PUT, rel = "amend-loss-claim-order"),
-    Link(href = s"/individuals/losses/$validNino/loss-claims", method = GET, rel = "list-loss-claims")
-  )
 
   private val requestBody = Json.parse(
     """
@@ -82,26 +74,6 @@ class AmendLossClaimsOrderControllerSpec
     """.stripMargin
   )
 
-  private val mtdResponseJson = Json.parse(
-    """
-      |{
-      |   "links":[
-      |      {
-      |        "href":"/individuals/losses/AA123456A/loss-claims/order/2019-20",
-      |        "method":"PUT",
-      |        "rel":"amend-loss-claim-order"
-      |
-      |      },
-      |      {
-      |        "href":"/individuals/losses/AA123456A/loss-claims",
-      |        "method":"GET",
-      |        "rel":"list-loss-claims"
-      |      }
-      |   ]
-      |}
-    """.stripMargin
-  )
-
   "amendLossClaimsOrder" should {
     "return OK" when {
       "the request is valid" in new Test {
@@ -111,15 +83,11 @@ class AmendLossClaimsOrderControllerSpec
           .amend(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimsOrderResponse))))
 
-        MockHateoasFactory
-          .wrap(amendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData(validNino, taxYearClaimedFor = taxYear))
-          .returns(HateoasWrapper(amendLossClaimsOrderResponse, testHateoasLink))
-
         runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(mtdResponseJson),
+          maybeExpectedResponseBody = None,
           maybeAuditRequestBody = Some(requestBody),
-          maybeAuditResponseBody = Some(mtdResponseJson)
+          maybeAuditResponseBody = None
         )
       }
     }
@@ -149,7 +117,6 @@ class AmendLossClaimsOrderControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockAmendLossClaimsOrderService,
       validatorFactory = mockAmendLossClaimsOrderValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

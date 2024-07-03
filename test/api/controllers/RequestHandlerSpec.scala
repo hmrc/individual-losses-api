@@ -17,7 +17,6 @@
 package api.controllers
 
 import api.controllers.validators.Validator
-import api.hateoas._
 import api.mocks.MockIdGenerator
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.auth.UserDetails
@@ -26,7 +25,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.{MockAuditService, ServiceOutcome}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import config.{AppConfig, MockAppConfig}
+import config.{MockAppConfig}
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
@@ -43,12 +42,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class RequestHandlerSpec
     extends UnitSpec
     with MockAuditService
-    with MockHateoasFactory
     with MockIdGenerator
     with Status
     with HeaderNames
     with ResultExtractors
-    with ControllerSpecHateoasSupport
     with MockAppConfig {
 
   private implicit val version: Version = Version4
@@ -66,11 +63,6 @@ class RequestHandlerSpec
 
   case object Input
   case object Output { implicit val writes: OWrites[Output.type] = _ => successResponseJson }
-  case object HData extends HateoasData
-
-  implicit object HLinksFactory extends HateoasLinksFactory[Output.type, HData.type] {
-    override def links(appConfig: AppConfig, data: HData.type): Seq[Link] = hateoaslinks
-  }
 
   MockIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
 
@@ -124,24 +116,6 @@ class RequestHandlerSpec
         contentAsString(result) shouldBe ""
         header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
         status(result) shouldBe NO_CONTENT
-      }
-
-      "wrap the response with hateoas links if required§" in {
-        val requestHandler = RequestHandler
-          .withValidator(successValidatorForRequest)
-          .withService(mockService.service)
-          .withHateoasResult(mockHateoasFactory)(HData, successCode)
-
-        MockedAppConfig.isApiDeprecated(version) returns false
-        service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
-
-        MockHateoasFactory.wrap(Output, HData) returns HateoasWrapper(Output, hateoaslinks)
-
-        val result = requestHandler.handleRequest()
-
-        contentAsJson(result) shouldBe successResponseJson ++ hateoaslinksJson
-        header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
-        status(result) shouldBe successCode
       }
     }
 

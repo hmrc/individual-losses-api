@@ -16,9 +16,7 @@
 
 package v4.models.response.amendLossClaimType
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
 import api.models.domain.{TaxYear, Timestamp}
-import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
@@ -30,7 +28,7 @@ case class AmendLossClaimTypeResponse(taxYearClaimedFor: String,
                                       sequence: Option[Int],
                                       lastModified: Timestamp)
 
-object AmendLossClaimTypeResponse extends HateoasLinks {
+object AmendLossClaimTypeResponse {
   implicit val writes: OWrites[AmendLossClaimTypeResponse] = Json.writes[AmendLossClaimTypeResponse]
 
   implicit val reads: Reads[AmendLossClaimTypeResponse] = (
@@ -42,15 +40,4 @@ object AmendLossClaimTypeResponse extends HateoasLinks {
       (JsPath \ "submissionDate").read[Timestamp]
   )(AmendLossClaimTypeResponse.apply _)
 
-  implicit object AmendLinksFactory extends HateoasLinksFactory[AmendLossClaimTypeResponse, AmendLossClaimTypeHateoasData] {
-
-    override def links(appConfig: AppConfig, data: AmendLossClaimTypeHateoasData): Seq[Link] = {
-      import data._
-      Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
-    }
-
-  }
-
 }
-
-case class AmendLossClaimTypeHateoasData(nino: String, claimId: String) extends HateoasData

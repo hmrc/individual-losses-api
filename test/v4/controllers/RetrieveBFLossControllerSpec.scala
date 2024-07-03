@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.GET
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.Timestamp
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -29,7 +27,7 @@ import routing.Version4
 import v4.controllers.validators.MockRetrieveBFLossValidatorFactory
 import v4.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v4.models.request.retrieveBFLoss.RetrieveBFLossRequestData
-import v4.models.response.retrieveBFLoss.{GetBFLossHateoasData, RetrieveBFLossResponse}
+import v4.models.response.retrieveBFLoss.RetrieveBFLossResponse
 import v4.services.MockRetrieveBFLossService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,8 +38,7 @@ class RetrieveBFLossControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockRetrieveBFLossValidatorFactory
-    with MockRetrieveBFLossService
-    with MockHateoasFactory {
+    with MockRetrieveBFLossService {
 
   private val lossId      = "AAZZ1234567890a"
   private val requestData = RetrieveBFLossRequestData(parsedNino, LossId(lossId))
@@ -54,8 +51,6 @@ class RetrieveBFLossControllerSpec
     lastModified = Timestamp("2018-07-13T12:13:48.763Z")
   )
 
-  private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-
   private val mtdResponseJson = Json.parse(
     """
       |{
@@ -63,14 +58,7 @@ class RetrieveBFLossControllerSpec
       |    "taxYearBroughtForwardFrom": "2017-18",
       |    "typeOfLoss": "uk-property-fhl",
       |    "lossAmount": 100.00,
-      |    "lastModified": "2018-07-13T12:13:48.763Z",
-      |    "links": [
-      |      {
-      |       "href": "/foo/bar",
-      |       "method": "GET",
-      |       "rel": "test-relationship"
-      |      }
-      |    ]
+      |    "lastModified": "2018-07-13T12:13:48.763Z"
       |}
     """.stripMargin
   )
@@ -83,10 +71,6 @@ class RetrieveBFLossControllerSpec
         MockRetrieveBFLossService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrap(response, GetBFLossHateoasData(validNino, lossId))
-          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -117,7 +101,6 @@ class RetrieveBFLossControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveBFLossService,
       validatorFactory = mockRetrieveBFLossValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
