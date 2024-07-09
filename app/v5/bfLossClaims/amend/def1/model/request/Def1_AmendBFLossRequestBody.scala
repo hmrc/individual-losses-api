@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete
+package v5.bfLossClaims.amend.def1.model.request
 
-import api.controllers.validators.Validator
-import v5.bfLossClaims.delete.DeleteBFLossSchema.Def1
-import v5.bfLossClaims.delete.def1.Def1_DeleteBFLossValidator
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import play.api.libs.json._
+import v5.bfLossClaims.amend.model.request.AmendBFLossRequestBody
 
-import javax.inject.Singleton
+case class Def1_AmendBFLossRequestBody(lossAmount: BigDecimal) extends AmendBFLossRequestBody
 
-@Singleton
-class DeleteBFLossValidatorFactory {
+object Def1_AmendBFLossRequestBody {
+  implicit val reads: Reads[Def1_AmendBFLossRequestBody] = Json.reads[Def1_AmendBFLossRequestBody]
 
-  def validator(nino: String, body: String): Validator[DeleteBFLossRequestData] = {
-    val schema = DeleteBFLossSchema.schema
-    schema match {
-      case Def1 => new Def1_DeleteBFLossValidator(nino, body)
-    }
-  }
+  implicit val writes: OWrites[Def1_AmendBFLossRequestBody] = (amendBroughtForwardLoss: Def1_AmendBFLossRequestBody) =>
+    Json.obj(
+      "updatedBroughtForwardLossAmount" -> amendBroughtForwardLoss.lossAmount
+    )
+
 }

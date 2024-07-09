@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete
+package v5.bfLossClaims.amend
 
-import api.controllers.validators.Validator
-import v5.bfLossClaims.delete.DeleteBFLossSchema.Def1
-import v5.bfLossClaims.delete.def1.Def1_DeleteBFLossValidator
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import play.api.libs.json.Reads
+import schema.DownstreamReadable
+import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse
+import v5.bfLossClaims.amend.model.response.AmendBFLossResponse
 
-import javax.inject.Singleton
+sealed trait AmendBFLossSchema extends DownstreamReadable[AmendBFLossResponse]
 
-@Singleton
-class DeleteBFLossValidatorFactory {
+object AmendBFLossSchema {
 
-  def validator(nino: String, body: String): Validator[DeleteBFLossRequestData] = {
-    val schema = DeleteBFLossSchema.schema
-    schema match {
-      case Def1 => new Def1_DeleteBFLossValidator(nino, body)
-    }
+  case object Def1 extends AmendBFLossSchema {
+    type DownstreamResp = Def1_AmendBFLossResponse
+    val connectorReads: Reads[DownstreamResp] = Def1_AmendBFLossResponse.reads
   }
+
+  val schema: AmendBFLossSchema = Def1
+
 }

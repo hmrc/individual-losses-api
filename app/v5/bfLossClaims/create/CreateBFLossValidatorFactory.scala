@@ -20,7 +20,7 @@ import api.controllers.validators.Validator
 import api.models.domain.TodaySupplier
 import play.api.libs.json.JsValue
 import v5.bfLossClaims.create.CreateBFLossSchema.Def1
-import v5.bfLossClaims.create.def1.model.Def1_CreateBFLossValidator
+import v5.bfLossClaims.create.def1.Def1_CreateBFLossValidator
 import v5.bfLossClaims.create.model.request.CreateBFLossRequestData
 
 import javax.inject.{Inject, Singleton}

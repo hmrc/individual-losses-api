@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.create.def1.model
+package v5.bfLossClaims.create.def1
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers._
@@ -24,8 +24,8 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import v5.bfLossClaims.create.model.TypeOfLoss
 import v5.bfLossClaims.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
+import v5.bfLossClaims.create.model.TypeOfLoss
 import v5.bfLossClaims.create.model.request.CreateBFLossRequestData
 
 import javax.inject.Inject

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete.def1.model
+package v5.bfLossClaims.retrieve.def1
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveNino, Resolver}
@@ -22,23 +22,25 @@ import api.models.errors.{LossIdFormatError, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
-import v5.bfLossClaims.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLossClaims.delete.model.LossId
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import v5.bfLossClaims.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
+import v5.bfLossClaims.retrieve.model.LossId
+import v5.bfLossClaims.retrieve.model.request.RetrieveBFLossRequestData
 
 import javax.inject.Singleton
 import scala.util.matching.Regex
 
 @Singleton
-class Def1_DeleteBFLossValidator (nino: String, body: String) extends Validator[DeleteBFLossRequestData]{
+class Def1_RetrieveBFLossValidator(nino: String, lossId: String) extends Validator[RetrieveBFLossRequestData] {
 
-  def validate: Validated[Seq[MtdError], DeleteBFLossRequestData] =
-    (
-      ResolveNino(nino),
-      ResolveBFLossId(body)
-    ).mapN(Def1_DeleteBFLossRequestData)
+    def validate: Validated[Seq[MtdError], RetrieveBFLossRequestData] = {
+      (
+        ResolveNino(nino),
+        ResolveBFLossId(lossId)
+      ).mapN(Def1_RetrieveBFLossRequestData)
+    }
 
   object ResolveBFLossId extends Resolver[String, LossId] {
+
     protected val regexFormat: Regex = "^[A-Za-z0-9]{15}$".r
     protected val error: MtdError = LossIdFormatError
 
@@ -50,4 +52,5 @@ class Def1_DeleteBFLossValidator (nino: String, body: String) extends Validator[
         Invalid(List(error.maybeWithExtraPath(path)))
       }
   }
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete.def1.model
+package v5.bfLossClaims.delete.def1
 
 import api.controllers.validators.resolvers.Resolver
 import api.models.errors.{LossIdFormatError, MtdError}
