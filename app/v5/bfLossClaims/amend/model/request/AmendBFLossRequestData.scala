@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete
+package v5.bfLossClaims.amend.model.request
 
-import api.controllers.validators.Validator
-import v5.bfLossClaims.delete.DeleteBFLossSchema.Def1
-import v5.bfLossClaims.delete.def1.Def1_DeleteBFLossValidator
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import api.models.domain.Nino
+import v5.bfLossClaims.amend.model.LossId
 
-import javax.inject.Singleton
-
-@Singleton
-class DeleteBFLossValidatorFactory {
-
-  def validator(nino: String, body: String): Validator[DeleteBFLossRequestData] = {
-    val schema = DeleteBFLossSchema.schema
-    schema match {
-      case Def1 => new Def1_DeleteBFLossValidator(nino, body)
-    }
-  }
+trait AmendBFLossRequestData {
+  def nino: Nino
+  def lossId: LossId
+  val amendBroughtForwardLoss: AmendBFLossRequestBody
 }

@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete
+package v5.bfLossClaims.list.model
 
-import api.controllers.validators.Validator
-import v5.bfLossClaims.delete.DeleteBFLossSchema.Def1
-import v5.bfLossClaims.delete.def1.Def1_DeleteBFLossValidator
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import play.api.libs.json._
+import utils.enums.Enums
 
-import javax.inject.Singleton
+sealed trait LossType {
+  def toTypeOfLoss: TypeOfLoss
+}
 
-@Singleton
-class DeleteBFLossValidatorFactory {
+object LossType {
 
-  def validator(nino: String, body: String): Validator[DeleteBFLossRequestData] = {
-    val schema = DeleteBFLossSchema.schema
-    schema match {
-      case Def1 => new Def1_DeleteBFLossValidator(nino, body)
-    }
+  case object INCOME extends LossType {
+    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
   }
+
+  case object CLASS4 extends LossType {
+    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment-class4`
+  }
+
+  implicit val format: Format[LossType] = Enums.format[LossType]
 }

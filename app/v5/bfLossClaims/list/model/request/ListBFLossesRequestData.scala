@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete
+package v5.bfLossClaims.list.model.request
 
-import api.controllers.validators.Validator
-import v5.bfLossClaims.delete.DeleteBFLossSchema.Def1
-import v5.bfLossClaims.delete.def1.Def1_DeleteBFLossValidator
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v5.bfLossClaims.list.ListBFLossesSchema
+import v5.bfLossClaims.list.model.IncomeSourceType
 
-import javax.inject.Singleton
+trait ListBFLossesRequestData {
+  def nino: Nino
 
-@Singleton
-class DeleteBFLossValidatorFactory {
+  def taxYearBroughtForwardFrom: TaxYear
 
-  def validator(nino: String, body: String): Validator[DeleteBFLossRequestData] = {
-    val schema = DeleteBFLossSchema.schema
-    schema match {
-      case Def1 => new Def1_DeleteBFLossValidator(nino, body)
-    }
-  }
+  def incomeSourceType: Option[IncomeSourceType]
+
+  def businessId: Option[BusinessId]
+
+  val schema: ListBFLossesSchema
 }

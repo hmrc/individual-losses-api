@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package v5.bfLossClaims.delete
+package v5.bfLossClaims.amend
 
 import api.controllers.validators.Validator
-import v5.bfLossClaims.delete.DeleteBFLossSchema.Def1
-import v5.bfLossClaims.delete.def1.Def1_DeleteBFLossValidator
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import play.api.libs.json.JsValue
+import v5.bfLossClaims.amend.AmendBFLossSchema.Def1
+import v5.bfLossClaims.amend.def1.Def1_AmendBFLossValidator
+import v5.bfLossClaims.amend.model.request.AmendBFLossRequestData
 
 import javax.inject.Singleton
 
 @Singleton
-class DeleteBFLossValidatorFactory {
+class AmendBFLossValidatorFactory {
 
-  def validator(nino: String, body: String): Validator[DeleteBFLossRequestData] = {
-    val schema = DeleteBFLossSchema.schema
+  def validator(nino: String, lossId: String, body: JsValue): Validator[AmendBFLossRequestData] = {
+    val schema = AmendBFLossSchema.schema
     schema match {
-      case Def1 => new Def1_DeleteBFLossValidator(nino, body)
+      case Def1 => new Def1_AmendBFLossValidator(nino, lossId, body)
     }
   }
+
 }
