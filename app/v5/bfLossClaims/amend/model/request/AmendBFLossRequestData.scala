@@ -17,10 +17,12 @@
 package v5.bfLossClaims.amend.model.request
 
 import api.models.domain.Nino
+import v5.bfLossClaims.amend.AmendBFLossSchema
 import v5.bfLossClaims.amend.model.LossId
 
 trait AmendBFLossRequestData {
   def nino: Nino
   def lossId: LossId
   val amendBroughtForwardLoss: AmendBFLossRequestBody
+  val schema: AmendBFLossSchema
 }

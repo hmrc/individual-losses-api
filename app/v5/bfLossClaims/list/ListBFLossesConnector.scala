@@ -17,11 +17,10 @@
 package v5.bfLossClaims.list
 
 import api.connectors.DownstreamUri.TaxYearSpecificIfsUri
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-//import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesResponse.reads
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
 import v5.bfLossClaims.list.model.response.{ListBFLossesItem, ListBFLossesResponse}
 
@@ -37,16 +36,21 @@ class ListBFLossesConnector @Inject()(val http: HttpClient, val appConfig: AppCo
       correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
 
     import request._
+    import schema._
 
     val queryParams = List(
       businessId.map("incomeSourceId"         -> _.businessId),
       incomeSourceType.map("incomeSourceType" -> _.toString)
     ).flatten
 
-    get(
-      TaxYearSpecificIfsUri[ListBFLossesResponse[ListBFLossesItem]](
+
+    val downstreamUri: DownstreamUri[DownstreamResp] =
+      TaxYearSpecificIfsUri(
         s"income-tax/brought-forward-losses/${taxYearBroughtForwardFrom.asTysDownstream}/$nino"
-      ),
+      )
+
+    get(
+      downstreamUri,
       queryParams
     )
 

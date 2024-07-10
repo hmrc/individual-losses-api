@@ -42,15 +42,6 @@ object Def1_RetrieveBFLossResponse extends HateoasLinks {
       (__ \ "submissionDate").read[Timestamp]
   )(Def1_RetrieveBFLossResponse.apply _)
 
-  implicit val downstreamToMtdReads: Reads[RetrieveBFLossResponse] =
-    ((__ \ "incomeSourceId").read[String] and
-        ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
-          orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
-        (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-        (__ \ "taxYear").read[String].map(TaxYear(_)).map(_.asMtd) and
-        (__ \ "submissionDate").read[Timestamp]
-      )(Def1_RetrieveBFLossResponse.apply _)
-
   implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveBFLossResponse, GetBFLossHateoasData] {
 
     override def links(appConfig: AppConfig, data: GetBFLossHateoasData): Seq[Link] = {

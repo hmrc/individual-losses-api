@@ -23,11 +23,6 @@ import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
-import v4.models.response.listBFLosses.ListBFLossesItem
-import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesResponse.LinksFactory
-import v5.bfLossClaims.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossHateoasData}
-import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
-import v5.bfLossClaims.list.model.response.ListBFLossesResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -56,7 +51,7 @@ class ListBFLossesController @Inject()(val authService: EnrolmentsAuthService,
         RequestHandler
           .withValidator(validator)
           .withService(service.listBFLosses)
-          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) => ListBFLossHateoasData(nino)))
+          .withPlainJsonResult()
 
       requestHandler.handleRequest()
     }

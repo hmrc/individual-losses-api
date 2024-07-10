@@ -16,14 +16,13 @@
 
 package v5.bfLossClaims.create
 
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import api.connectors.DownstreamUri.IfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v5.bfLossClaims.create.def1.model.response.Def1_CreateBFLossResponse.downstreamToMtdReads
 import v5.bfLossClaims.create.model.request.CreateBFLossRequestData
 import v5.bfLossClaims.create.model.response.CreateBFLossResponse
+import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,8 +35,10 @@ class CreateBFLossConnector @Inject()(val http: HttpClient, val appConfig: AppCo
                                                      ec: ExecutionContext,
                                                      correlationId: String): Future[DownstreamOutcome[CreateBFLossResponse]] = {
     import request._
+    import schema._
+    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino")
 
-    post(broughtForwardLoss, IfsUri[CreateBFLossResponse](s"income-tax/brought-forward-losses/$nino"))
+    post(broughtForwardLoss, downstreamUri)
   }
 
 }

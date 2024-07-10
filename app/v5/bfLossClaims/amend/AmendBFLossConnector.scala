@@ -17,12 +17,12 @@
 package v5.bfLossClaims.amend
 
 import api.connectors.DownstreamUri.IfsUri
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLossClaims.amend.model.request.AmendBFLossRequestData
 import v5.bfLossClaims.amend.model.response.AmendBFLossResponse
-import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesResponse.reads
+import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +36,9 @@ class AmendBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppCo
                                                    correlationId: String): Future[DownstreamOutcome[AmendBFLossResponse]] = {
 
     import request._
-    put(amendBroughtForwardLoss, IfsUri[AmendBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))
+    import schema._
+    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
+    put(amendBroughtForwardLoss, downstreamUri)
 
   }
 }

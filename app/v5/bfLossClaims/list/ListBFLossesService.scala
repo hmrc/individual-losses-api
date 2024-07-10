@@ -19,7 +19,7 @@ package v5.bfLossClaims.list
 import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
-import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesResponse
+import v5.bfLossClaims.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
 import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
 import v5.bfLossClaims.list.model.response.{ListBFLossesItem, ListBFLossesResponse}
 
@@ -35,13 +35,18 @@ class ListBFLossesService @Inject()(connector: ListBFLossesConnector) extends Ba
       .map {
         case Left(err) =>
           Left(mapDownstreamErrors(errorMap)(err))
-        case Right(responseWrapper) =>
-          responseWrapper.responseData match {
-            case response: Def1_ListBFLossesResponse[ListBFLossesItem] if response.losses.isEmpty =>
-              Left(ErrorWrapper(ctx.correlationId, NotFoundError))
-          }
-        case Right(result) =>
-          Right(result)
+
+        case Right(responseWrapper) if responseWrapper.responseData.losses.isEmpty =>
+          Left(ErrorWrapper(ctx.correlationId, NotFoundError))
+
+        case Right(responseWrapper) => responseWrapper.responseData match {
+          case result: Def1_ListBFLossesResponse[Def1_ListBFLossesItem] if result.losses.isEmpty => Left(ErrorWrapper(ctx.correlationId, NotFoundError))
+          case _ => Right(responseWrapper)
+        }
+        case Right(responseWrapper) => responseWrapper.responseData.asInstanceOf[Def1_ListBFLossesResponse[Def1_ListBFLossesItem]]
+
+//        case Right(result) =>
+//          Right(result)
       }
 
   private val errorMap: Map[String, MtdError] =

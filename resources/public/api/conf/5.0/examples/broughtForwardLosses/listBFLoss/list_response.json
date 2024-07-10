@@ -6,14 +6,7 @@
 	  "typeOfLoss": "self-employment",
 	  "lossAmount": 9420.01,
 	  "taxYearBroughtForwardFrom": "2021-22",
-	  "lastModified": "2022-12-02T11:55:55.763Z",
-	  "links": [
-		{
-		  "href": "/individuals/losses/TC663795B/brought-forward-losses/A2Za0911235813a",
-		  "rel": "self",
-		  "method": "GET"
-		}
-	  ]
+	  "lastModified": "2022-12-02T11:55:55.763Z"
 	},
 	{
 	  "lossId": "A2Za0911235813b",

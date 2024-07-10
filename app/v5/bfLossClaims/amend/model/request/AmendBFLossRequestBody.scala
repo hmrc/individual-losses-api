@@ -24,6 +24,8 @@ trait AmendBFLossRequestBody
 
 object AmendBFLossRequestBody extends JsonWritesUtil {
 
+  implicit val reads: Reads[Def1_AmendBFLossRequestBody] = Json.reads
+
   implicit val writes: OWrites[AmendBFLossRequestBody] = writesFrom { case a: Def1_AmendBFLossRequestBody =>
     implicitly[OWrites[Def1_AmendBFLossRequestBody]].writes(a)
   }
