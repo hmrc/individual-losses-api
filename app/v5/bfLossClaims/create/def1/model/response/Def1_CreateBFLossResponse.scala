@@ -29,9 +29,6 @@ object Def1_CreateBFLossResponse extends HateoasLinks {
 
   implicit val writes: OWrites[Def1_CreateBFLossResponse] = Json.writes[Def1_CreateBFLossResponse]
 
-  implicit val downstreamToMtdReads: Reads[CreateBFLossResponse] =
-    (__ \ "lossId").read[String].map(Def1_CreateBFLossResponse.apply)
-
   implicit object LinksFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
     override def links(appConfig: AppConfig, data: CreateBFLossHateoasData): Seq[Link] = {
       import data._

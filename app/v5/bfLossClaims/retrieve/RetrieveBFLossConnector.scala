@@ -18,10 +18,9 @@ package v5.bfLossClaims.retrieve
 
 import api.connectors.DownstreamUri.IfsUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v5.bfLossClaims.retrieve.def1.model.response.Def1_RetrieveBFLossResponse.downstreamToMtdReads
 import v5.bfLossClaims.retrieve.model.request.RetrieveBFLossRequestData
 import v5.bfLossClaims.retrieve.model.response.RetrieveBFLossResponse
 
@@ -36,8 +35,9 @@ class RetrieveBFLossConnector @Inject() (val http: HttpClient, val appConfig: Ap
                                                          ec: ExecutionContext,
                                                          correlationId: String): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
     import request._
-
-    get(IfsUri[RetrieveBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))
+    import schema._
+    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
+    get(downstreamUri)
   }
 
 }

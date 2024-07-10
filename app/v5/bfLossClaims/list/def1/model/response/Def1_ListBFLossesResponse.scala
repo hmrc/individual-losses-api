@@ -22,7 +22,7 @@ import config.AppConfig
 import play.api.libs.json._
 import v5.bfLossClaims.list.model.response.{ListBFLossesItem, ListBFLossesResponse}
 
-case class Def1_ListBFLossesResponse[I](losses: Seq[I]) extends ListBFLossesResponse[ListBFLossesItem]
+case class Def1_ListBFLossesResponse[I <: Def1_ListBFLossesItem](losses: Seq[I]) extends ListBFLossesResponse[ListBFLossesItem]
 
 object Def1_ListBFLossesResponse extends HateoasLinks {
 
@@ -30,9 +30,6 @@ object Def1_ListBFLossesResponse extends HateoasLinks {
     Json.writes[Def1_ListBFLossesResponse[I]]
 
   implicit def reads[I: Reads]: Reads[Def1_ListBFLossesResponse[I]] =
-    implicitly[Reads[Seq[I]]].map(Def1_ListBFLossesResponse(_))
-
-  implicit def reads[I: Reads, J <: ListBFLossesItem]: Reads[ListBFLossesResponse[J]] =
     implicitly[Reads[Seq[I]]].map(Def1_ListBFLossesResponse(_))
 
   implicit object LinksFactory extends HateoasListLinksFactory[Def1_ListBFLossesResponse, ListBFLossesItem, ListBFLossHateoasData] {
