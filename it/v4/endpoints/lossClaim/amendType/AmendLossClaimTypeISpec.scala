@@ -50,33 +50,34 @@ class AmendLossClaimTypeISpec extends V4IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(s"""
-                                              |{
-                                              |  "businessId": "XKIS00000000988",
-                                              |  "typeOfLoss": "self-employment",
-                                              |  "typeOfClaim": "carry-forward",
-                                              |  "taxYearClaimedFor": "2019-20",
-                                              |  "lastModified":"2018-07-13T12:13:48.763Z",
-                                              |  "sequence": 1,
-                                              |  "links": [
-                                              |    {
-                                              |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
-                                              |      "method": "GET",
-                                              |      "rel": "self"
-                                              |    },
-                                              |    {
-                                              |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
-                                              |      "method": "DELETE",
-                                              |      "rel": "delete-loss-claim"
-                                              |    },
-                                              |
-                                              |    {
-                                              |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
-                                              |      "method": "POST",
-                                              |      "rel": "amend-loss-claim"
-                                              |    }
-                                              |  ]
-                                              |}
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |  "businessId": "XKIS00000000988",
+         |  "typeOfLoss": "self-employment",
+         |  "typeOfClaim": "carry-forward",
+         |  "taxYearClaimedFor": "2019-20",
+         |  "lastModified":"2018-07-13T12:13:48.763Z",
+         |  "sequence": 1,
+         |  "links": [
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "DELETE",
+         |      "rel": "delete-loss-claim"
+         |    },
+         |
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
+         |      "method": "POST",
+         |      "rel": "amend-loss-claim"
+         |    }
+         |  ]
+         |}
       """.stripMargin)
 
     def uri: String    = s"/$nino/loss-claims/$claimId/change-type-of-claim"

@@ -81,10 +81,10 @@ class ListLossClaimsISpec extends V4IntegrationBaseSpec {
     "return a 200 status code" when {
       "query for everything with a tax year" in new Test {
         val responseJson: JsValue = Json.parse(s"""
-                                                  |{
-                                                  |    "claims": [${nonFhlClaimMtdJson(taxYear, nino)}],
-                                                  |    "links": ${baseHateoasLinks(taxYear, nino)}
-                                                  |}""".stripMargin)
+             |{
+             |    "claims": [${nonFhlClaimMtdJson(taxYear, nino)}],
+             |    "links": ${baseHateoasLinks(taxYear, nino)}
+             |}""".stripMargin)
 
         override def setupStubs(): Unit = {
           stubDownstream(nonFhlDownstreamResponseJson("2019-20"))
@@ -98,11 +98,12 @@ class ListLossClaimsISpec extends V4IntegrationBaseSpec {
         override val typeOfLoss: Option[String] = Some("uk-property-non-fhl")
         val downstreamResponse: JsValue         = nonFhlDownstreamResponseJson("2019-20")
 
-        val responseJson: JsValue = Json.parse(s"""
-                                                  |{
-                                                  |    "claims": [${nonFhlClaimMtdJson(taxYear, nino)}],
-                                                  |    "links": ${baseHateoasLinks(taxYear, nino)}
-                                                  |}""".stripMargin)
+        val responseJson: JsValue = Json.parse(
+          s"""
+             |{
+             |    "claims": [${nonFhlClaimMtdJson(taxYear, nino)}],
+             |    "links": ${baseHateoasLinks(taxYear, nino)}
+             |}""".stripMargin)
 
         override def setupStubs(): Unit = {
           stubDownstream(downstreamResponse, params = Map("incomeSourceType" -> "02"))
@@ -137,11 +138,12 @@ class ListLossClaimsISpec extends V4IntegrationBaseSpec {
         override val typeOfClaim: Option[String] = Some("carry-sideways")
         val downstreamResponse: JsValue          = selfEmploymentDownstreamResponseJson("2019-20")
 
-        val responseJson: JsValue = Json.parse(s"""
-                                                  |{
-                                                  |    "claims": [${selfEmploymentClaimMtdJson(taxYear, nino)}],
-                                                  |    "links": ${baseHateoasLinks(taxYear, nino)}
-                                                  |}
+        val responseJson: JsValue = Json.parse(
+          s"""
+             |{
+             |    "claims": [${selfEmploymentClaimMtdJson(taxYear, nino)}],
+             |    "links": ${baseHateoasLinks(taxYear, nino)}
+             |}
        """.stripMargin)
 
         override def setupStubs(): Unit = {

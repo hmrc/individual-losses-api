@@ -37,15 +37,16 @@ class RetrieveBFLossControllerISpec extends V4IntegrationBaseSpec {
 
   object Hateoas extends HateoasLinks
 
-  val downstreamResponseJson: JsValue = Json.parse(s"""
-                                                      |{
-                                                      |"incomeSourceId": "$businessId",
-                                                      |"lossType": "INCOME",
-                                                      |"broughtForwardLossAmount": $lossAmount,
-                                                      |"taxYear": "$downstreamTaxYear",
-                                                      |"lossId": "AAZZ1234567890a",
-                                                      |"submissionDate": "$lastModified"
-                                                      |}
+  val downstreamResponseJson: JsValue = Json.parse(
+    s"""
+       |{
+       |    "incomeSourceId": "$businessId",
+       |    "lossType": "INCOME",
+       |    "broughtForwardLossAmount": $lossAmount,
+       |    "taxYear": "$downstreamTaxYear",
+       |    "lossId": "AAZZ1234567890a",
+       |    "submissionDate": "$lastModified"
+       |}
       """.stripMargin)
 
   private trait Test {
@@ -53,30 +54,31 @@ class RetrieveBFLossControllerISpec extends V4IntegrationBaseSpec {
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(s"""
-                                              |{
-                                              |    "businessId": "$businessId",
-                                              |    "typeOfLoss": "self-employment",
-                                              |    "taxYearBroughtForwardFrom": "$taxYear",
-                                              |    "lossAmount": $lossAmount,
-                                              |    "lastModified":"$lastModified",
-                                              |    "links": [{
-                                              |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-                                              |      "method": "GET",
-                                              |      "rel": "self"
-                                              |    },
-                                              |    {
-                                              |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-                                              |      "method": "POST",
-                                              |      "rel": "amend-brought-forward-loss"
-                                              |    },
-                                              |    {
-                                              |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-                                              |      "method": "DELETE",
-                                              |      "rel": "delete-brought-forward-loss"
-                                              |    }
-                                              |    ]
-                                              |}
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |    "businessId": "$businessId",
+         |    "typeOfLoss": "self-employment",
+         |    "taxYearBroughtForwardFrom": "$taxYear",
+         |    "lossAmount": $lossAmount,
+         |    "lastModified":"$lastModified",
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+         |      "method": "POST",
+         |      "rel": "amend-brought-forward-loss"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "DELETE",
+         |      "rel": "delete-brought-forward-loss"
+         |    }
+         |    ]
+         |}
       """.stripMargin)
 
     def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"

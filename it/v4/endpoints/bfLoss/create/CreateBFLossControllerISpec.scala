@@ -31,13 +31,14 @@ class CreateBFLossControllerISpec extends V4IntegrationBaseSpec with JsonErrorVa
 
   val lossId = "AAZZ1234567890a"
 
-  val requestBody: JsValue = Json.parse("""
-                                          |{
-                                          |    "businessId": "XKIS00000000988",
-                                          |    "typeOfLoss": "self-employment",
-                                          |    "taxYearBroughtForwardFrom": "2018-19",
-                                          |    "lossAmount": 256.78
-                                          |}
+  val requestBody: JsValue = Json.parse(
+    """
+      |{
+      |    "businessId": "XKIS00000000988",
+      |    "typeOfLoss": "self-employment",
+      |    "taxYearBroughtForwardFrom": "2018-19",
+      |    "lossAmount": 256.78
+      |}
       """.stripMargin)
 
   private trait Test {
@@ -56,33 +57,35 @@ class CreateBFLossControllerISpec extends V4IntegrationBaseSpec with JsonErrorVa
         )
     }
 
-    lazy val responseBody: JsValue = Json.parse(s"""
-                                                   |{
-                                                   |  "lossId": "AAZZ1234567890a",
-                                                   |  "links": [
-                                                   |    {
-                                                   |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-                                                   |      "method": "GET",
-                                                   |      "rel": "self"
-                                                   |    },
-                                                   |    {
-                                                   |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-                                                   |      "method": "DELETE",
-                                                   |      "rel": "delete-brought-forward-loss"
-                                                   |    },
-                                                   |    {
-                                                   |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-                                                   |      "method": "POST",
-                                                   |      "rel": "amend-brought-forward-loss"
-                                                   |    }
-                                                   |  ]
-                                                   |}
+    lazy val responseBody: JsValue = Json.parse(
+      s"""
+         |{
+         |  "lossId": "AAZZ1234567890a",
+         |  "links": [
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+         |      "method": "DELETE",
+         |      "rel": "delete-brought-forward-loss"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+         |      "method": "POST",
+         |      "rel": "amend-brought-forward-loss"
+         |    }
+         |  ]
+         |}
       """.stripMargin)
 
-    val downstreamResponse: JsValue = Json.parse(s"""
-                                                    |{
-                                                    |    "lossId": "$lossId"
-                                                    |}
+    val downstreamResponse: JsValue = Json.parse(
+      s"""
+         |{
+         |    "lossId": "$lossId"
+         |}
       """.stripMargin)
 
     def errorBody(code: String): String =

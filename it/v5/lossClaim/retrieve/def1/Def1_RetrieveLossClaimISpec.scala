@@ -31,15 +31,16 @@ class Def1_RetrieveLossClaimISpec extends V4IntegrationBaseSpec {
   val businessId   = "XKIS00000000988"
   val lastModified = "2018-07-13T12:13:48.763Z"
 
-  val downstreamResponseJson: JsValue = Json.parse(s"""
-                                                      |{
-                                                      |  "incomeSourceId": "$businessId",
-                                                      |  "reliefClaimed": "CF",
-                                                      |  "taxYearClaimedFor": "2020",
-                                                      |  "claimId": "notUsed",
-                                                      |  "sequence": 1,
-                                                      |  "submissionDate": "$lastModified"
-                                                      |}
+  val downstreamResponseJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "incomeSourceId": "$businessId",
+       |  "reliefClaimed": "CF",
+       |  "taxYearClaimedFor": "2020",
+       |  "claimId": "notUsed",
+       |  "sequence": 1,
+       |  "submissionDate": "$lastModified"
+       |}
       """.stripMargin)
 
   private trait Test {
@@ -47,15 +48,16 @@ class Def1_RetrieveLossClaimISpec extends V4IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(s"""
-                                              |{
-                                              |    "businessId": "$businessId",
-                                              |    "typeOfLoss": "self-employment",
-                                              |    "typeOfClaim": "carry-forward",
-                                              |    "taxYearClaimedFor": "2019-20",
-                                              |    "lastModified":"$lastModified",
-                                              |    "sequence": 1
-                                              |}
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |    "businessId": "$businessId",
+         |    "typeOfLoss": "self-employment",
+         |    "typeOfClaim": "carry-forward",
+         |    "taxYearClaimedFor": "2019-20",
+         |    "lastModified":"$lastModified",
+         |    "sequence": 1
+         |}
       """.stripMargin)
 
     def uri: String    = s"/$nino/loss-claims/$claimId"

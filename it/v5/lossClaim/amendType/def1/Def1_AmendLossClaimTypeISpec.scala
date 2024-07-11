@@ -50,15 +50,16 @@ class Def1_AmendLossClaimTypeISpec extends V4IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(s"""
-                                              |{
-                                              |  "businessId": "XKIS00000000988",
-                                              |  "typeOfLoss": "self-employment",
-                                              |  "typeOfClaim": "carry-forward",
-                                              |  "taxYearClaimedFor": "2019-20",
-                                              |  "lastModified":"2018-07-13T12:13:48.763Z",
-                                              |  "sequence": 1
-                                              |}
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |  "businessId": "XKIS00000000988",
+         |  "typeOfLoss": "self-employment",
+         |  "typeOfClaim": "carry-forward",
+         |  "taxYearClaimedFor": "2019-20",
+         |  "lastModified":"2018-07-13T12:13:48.763Z",
+         |  "sequence": 1
+         |}
       """.stripMargin)
 
     def uri: String    = s"/$nino/loss-claims/$claimId/change-type-of-claim"
