@@ -17,7 +17,10 @@
 package v5.bfLossClaims.retrieve.def1.model.request
 
 import api.models.domain.Nino
+import v5.bfLossClaims.retrieve.RetrieveBFLossSchema
 import v5.bfLossClaims.retrieve.model.LossId
 import v5.bfLossClaims.retrieve.model.request.RetrieveBFLossRequestData
 
-case class Def1_RetrieveBFLossRequestData(nino: Nino, lossId: LossId) extends RetrieveBFLossRequestData
+case class Def1_RetrieveBFLossRequestData(nino: Nino, lossId: LossId) extends RetrieveBFLossRequestData {
+  override val schema: RetrieveBFLossSchema = RetrieveBFLossSchema.Def1
+}
