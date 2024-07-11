@@ -17,6 +17,7 @@
 package v5.bfLossClaims.amend.def1.model.request
 
 import api.models.domain.Nino
+import v5.bfLossClaims.amend.AmendBFLossSchema
 import v5.bfLossClaims.amend.model.LossId
 import v5.bfLossClaims.amend.model.request.AmendBFLossRequestData
 
@@ -24,4 +25,6 @@ case class Def1_AmendBFLossRequestData(
                                         nino: Nino,
                                         lossId: LossId,
                                         amendBroughtForwardLoss: Def1_AmendBFLossRequestBody)
-  extends AmendBFLossRequestData
+  extends AmendBFLossRequestData {
+  override val schema: AmendBFLossSchema = AmendBFLossSchema.Def1
+}

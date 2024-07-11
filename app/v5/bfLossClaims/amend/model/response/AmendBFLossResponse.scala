@@ -20,9 +20,7 @@ import play.api.libs.json._
 import utils.JsonWritesUtil
 import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse
 
-trait AmendBFLossResponse {
-  def lossId: String
-}
+trait AmendBFLossResponse
 
 object AmendBFLossResponse extends JsonWritesUtil {
   implicit val writes: OWrites[AmendBFLossResponse] = writesFrom { case a: Def1_AmendBFLossResponse =>

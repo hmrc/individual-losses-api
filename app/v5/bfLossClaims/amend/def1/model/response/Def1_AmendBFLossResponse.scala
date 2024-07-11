@@ -28,7 +28,7 @@ case class Def1_AmendBFLossResponse(businessId: String,
                                typeOfLoss: TypeOfLoss,
                                lossAmount: BigDecimal,
                                taxYearBroughtForwardFrom: String,
-                               lastModified: Timestamp)
+                               lastModified: Timestamp) extends AmendBFLossResponse
 
 object Def1_AmendBFLossResponse extends HateoasLinks {
   implicit val writes: OWrites[Def1_AmendBFLossResponse] = Json.writes[Def1_AmendBFLossResponse]
