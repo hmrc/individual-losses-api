@@ -22,7 +22,7 @@ import config.AppConfig
 import play.api.libs.json._
 import v5.bfLossClaims.list.model.response.{ListBFLossesItem, ListBFLossesResponse}
 
-case class Def1_ListBFLossesResponse[I <: Def1_ListBFLossesItem](losses: Seq[I]) extends ListBFLossesResponse[ListBFLossesItem]
+case class Def1_ListBFLossesResponse[I](losses: Seq[I]) extends ListBFLossesResponse[I]
 
 object Def1_ListBFLossesResponse extends HateoasLinks {
 
@@ -44,7 +44,7 @@ object Def1_ListBFLossesResponse extends HateoasLinks {
 
   implicit object ResponseFunctor extends Functor[Def1_ListBFLossesResponse] {
 
-    override def map[A <: Def1_ListBFLossesItem, B](fa: Def1_ListBFLossesResponse[A])(f: A => B): Def1_ListBFLossesResponse[B] =
+    override def map[A, B](fa: Def1_ListBFLossesResponse[A])(f: A => B): Def1_ListBFLossesResponse[B] =
       Def1_ListBFLossesResponse(fa.losses.map(f))
 
   }
