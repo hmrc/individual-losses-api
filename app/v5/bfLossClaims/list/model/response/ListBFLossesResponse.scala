@@ -20,7 +20,7 @@ import play.api.libs.json.OWrites
 import utils.JsonWritesUtil
 import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesItem
 
-trait ListBFLossesResponse[I <: ListBFLossesItem] {
+trait ListBFLossesResponse[+I] {
   val losses: Seq[I]
 }
 
