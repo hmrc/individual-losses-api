@@ -16,7 +16,6 @@
 
 package v4.endpoints.lossClaim.list
 
-import v4.fixtures.ListLossClaimsFixtures._
 import api.models.domain.TaxYear
 import api.models.errors._
 import play.api.http.HeaderNames.ACCEPT
@@ -24,10 +23,11 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.V4IntegrationBaseSpec
+import support.IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import v4.fixtures.ListLossClaimsFixtures._
 
-class ListLossClaimsISpec extends V4IntegrationBaseSpec {
+class ListLossClaimsISpec extends IntegrationBaseSpec {
 
   private trait Test {
 

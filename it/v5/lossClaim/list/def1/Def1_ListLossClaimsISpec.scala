@@ -23,11 +23,11 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.V4IntegrationBaseSpec
+import support.IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v5.lossClaims.fixtures.ListLossClaimsFixtures._
 
-class Def1_ListLossClaimsISpec extends V4IntegrationBaseSpec {
+class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
 
   "Calling the ListLossClaims endpoint" should {
 
