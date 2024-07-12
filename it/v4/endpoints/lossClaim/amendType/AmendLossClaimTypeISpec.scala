@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.amendType.def1
+package v4.endpoints.lossClaim.amendType
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -26,7 +26,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
+class AmendLossClaimTypeISpec extends IntegrationBaseSpec {
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
        |{
@@ -58,7 +58,25 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
          |  "typeOfClaim": "carry-forward",
          |  "taxYearClaimedFor": "2019-20",
          |  "lastModified":"2018-07-13T12:13:48.763Z",
-         |  "sequence": 1
+         |  "sequence": 1,
+         |  "links": [
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "DELETE",
+         |      "rel": "delete-loss-claim"
+         |    },
+         |
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
+         |      "method": "POST",
+         |      "rel": "amend-loss-claim"
+         |    }
+         |  ]
          |}
       """.stripMargin)
 
@@ -79,7 +97,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }

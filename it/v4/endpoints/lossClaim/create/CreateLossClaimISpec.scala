@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.create.def1
+package v4.endpoints.lossClaim.create
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -26,7 +26,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
+class CreateLossClaimISpec extends IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
@@ -50,11 +50,27 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val responseJson: JsValue = Json.parse(s"""
-        |{
-        |    "claimId": "AAZZ1234567890a"
-        |}
-      """.stripMargin)
+    val responseJson: JsValue = Json.parse(
+      s"""
+         |{
+         |    "claimId": "AAZZ1234567890a",
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "DELETE",
+         |      "rel": "delete-loss-claim"
+         |    },{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
+         |      "method": "POST",
+         |      "rel": "amend-loss-claim"
+         |    }
+         |    ]
+         |}
+  """.stripMargin)
 
     val downstreamResponseJson: JsValue = Json.parse("""
         |{
@@ -78,7 +94,7 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
