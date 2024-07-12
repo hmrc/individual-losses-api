@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.amendOrder.def1
+package v4.endpoints.lossClaim.amendOrder
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -27,10 +27,10 @@ import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v4.models.domain.lossClaim.TypeOfClaim
-import v5.lossClaims.amendOrder.def1.model.request.Claim
+import v4.models.request.amendLossClaimsOrder.Claim
 
 
-class Def1_AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
+class AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
 
   val claim1: Claim        = Claim("1234567890ABEF1", 1)
   val claim2: Claim        = Claim("1234567890ABCDE", 2)
@@ -179,7 +179,7 @@ class Def1_AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }

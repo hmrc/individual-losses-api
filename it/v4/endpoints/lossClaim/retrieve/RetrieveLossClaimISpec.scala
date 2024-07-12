@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.amendType.def1
+package v4.endpoints.lossClaim.retrieve
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
+import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
+class RetrieveLossClaimISpec extends IntegrationBaseSpec {
 
-  val downstreamResponseJson: JsValue = Json.parse(s"""
+  val businessId   = "XKIS00000000988"
+  val lastModified = "2018-07-13T12:13:48.763Z"
+
+  val downstreamResponseJson: JsValue = Json.parse(
+    s"""
        |{
-       |  "incomeSourceId": "XKIS00000000988",
+       |  "incomeSourceId": "$businessId",
        |  "reliefClaimed": "CF",
        |  "taxYearClaimedFor": "2020",
        |  "claimId": "notUsed",
        |  "sequence": 1,
-       |  "submissionDate": "2018-07-13T12:13:48.763Z"
-       |}
-      """.stripMargin)
-
-  val requestJson: JsValue = Json.parse(s"""
-       |{
-       |    "typeOfClaim": "carry-forward"
+       |  "submissionDate": "$lastModified"
        |}
       """.stripMargin)
 
@@ -53,16 +51,31 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
     val responseJson: JsValue = Json.parse(
       s"""
          |{
-         |  "businessId": "XKIS00000000988",
-         |  "typeOfLoss": "self-employment",
-         |  "typeOfClaim": "carry-forward",
-         |  "taxYearClaimedFor": "2019-20",
-         |  "lastModified":"2018-07-13T12:13:48.763Z",
-         |  "sequence": 1
+         |    "businessId": "$businessId",
+         |    "typeOfLoss": "self-employment",
+         |    "typeOfClaim": "carry-forward",
+         |    "taxYearClaimedFor": "2019-20",
+         |    "lastModified":"$lastModified",
+         |    "sequence": 1,
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "DELETE",
+         |      "rel": "delete-loss-claim"
+         |    },{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
+         |      "method": "POST",
+         |      "rel": "amend-loss-claim"
+         |    }
+         |    ]
          |}
-      """.stripMargin)
+  """.stripMargin)
 
-    def uri: String    = s"/$nino/loss-claims/$claimId/change-type-of-claim"
+    def uri: String    = s"/$nino/loss-claims/$claimId"
     def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
@@ -79,14 +92,14 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
 
   }
 
-  "Calling the amend LossClaim endpoint" should {
+  "Calling the retrieve LossClaim endpoint" should {
 
     "return a 200 status code" when {
 
@@ -96,12 +109,12 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Status.OK, downstreamResponseJson)
         }
 
-        val response: WSResponse = await(request().post(requestJson))
+        val response: WSResponse = await(request().get())
+        response.status shouldBe Status.OK
         response.json shouldBe responseJson
-        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
@@ -115,34 +128,27 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
           }
 
-          val response: WSResponse = await(request().post(requestJson))
-          response.json shouldBe Json.toJson(expectedBody)
+          val response: WSResponse = await(request().get())
           response.status shouldBe expectedStatus
+          response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
-      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_CLAIM_ID", BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleClaimTypeNotChanged)
-      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
-      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
+      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String,
-                              requestClaimId: String,
-                              requestBody: JsValue,
-                              expectedStatus: Int,
-                              expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String, requestClaimId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String    = requestNino
@@ -154,24 +160,17 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
             MtdIdLookupStub.ninoFound(requestNino)
           }
 
-          val response: WSResponse = await(request().post(requestBody))
-          response.json shouldBe Json.toJson(expectedBody)
+          val response: WSResponse = await(request().get())
           response.status shouldBe expectedStatus
+          response.json shouldBe Json.toJson(expectedBody)
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
-      validationErrorTest("BADNINO", "AAZZ1234567890a", requestJson, BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADClaimId", requestJson, BAD_REQUEST, ClaimIdFormatError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj(), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-
-      validationErrorTest(
-        "AA123456A",
-        "AAZZ1234567890a",
-        Json.obj("typeOfClaim" -> "xxx"),
-        BAD_REQUEST,
-        TypeOfClaimFormatError.withPath("/typeOfClaim"))
+      validationErrorTest("BADNINO", "AAZZ1234567890a", Status.BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BADClaimId", Status.BAD_REQUEST, ClaimIdFormatError)
     }
+
   }
 
 }

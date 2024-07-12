@@ -14,54 +14,27 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.retrieve.def1
+package v4.endpoints.lossClaim.delete
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
-
-  val businessId   = "XKIS00000000988"
-  val lastModified = "2018-07-13T12:13:48.763Z"
-
-  val downstreamResponseJson: JsValue = Json.parse(
-    s"""
-       |{
-       |  "incomeSourceId": "$businessId",
-       |  "reliefClaimed": "CF",
-       |  "taxYearClaimedFor": "2020",
-       |  "claimId": "notUsed",
-       |  "sequence": 1,
-       |  "submissionDate": "$lastModified"
-       |}
-      """.stripMargin)
+class DeleteLossClaimISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
-         |{
-         |    "businessId": "$businessId",
-         |    "typeOfLoss": "self-employment",
-         |    "typeOfClaim": "carry-forward",
-         |    "taxYearClaimedFor": "2019-20",
-         |    "lastModified":"$lastModified",
-         |    "sequence": 1
-         |}
-      """.stripMargin)
-
     def uri: String    = s"/$nino/loss-claims/$claimId"
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def desUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
@@ -77,16 +50,16 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
 
   }
 
-  "Calling the retrieve LossClaim endpoint" should {
+  "Calling the delete Loss Claim endpoint" should {
 
-    "return a 200 status code" when {
+    "return a 204 status code" when {
 
       "any valid request is made" in new Test {
 
@@ -94,29 +67,27 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, desUrl, Status.NO_CONTENT, JsObject.empty)
         }
 
-        val response: WSResponse = await(request().get())
-        response.status shouldBe Status.OK
-        response.json shouldBe responseJson
+        val response: WSResponse = await(request().delete())
+        response.status shouldBe Status.NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
     "handle errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
+      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $desCode error" in new Test {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, desUrl, desStatus, errorBody(desCode))
           }
 
-          val response: WSResponse = await(request().get())
+          val response: WSResponse = await(request().delete())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -126,7 +97,7 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
@@ -138,14 +109,13 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
 
           override val nino: String    = requestNino
           override val claimId: String = requestClaimId
-
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(requestNino)
           }
 
-          val response: WSResponse = await(request().get())
+          val response: WSResponse = await(request().delete())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("Content-Type") shouldBe Some("application/json")
@@ -153,7 +123,7 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
       }
 
       validationErrorTest("BADNINO", "AAZZ1234567890a", Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADClaimId", Status.BAD_REQUEST, ClaimIdFormatError)
+      validationErrorTest("AA123456A", "BADCLAIMID", Status.BAD_REQUEST, ClaimIdFormatError)
     }
 
   }

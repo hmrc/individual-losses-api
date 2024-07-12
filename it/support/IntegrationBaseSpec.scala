@@ -40,7 +40,10 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
     "microservice.services.mtd-id-lookup.port" -> mockPort,
     "microservice.services.auth.host"          -> mockHost,
     "microservice.services.auth.port"          -> mockPort,
-    "auditing.consumer.baseUri.port"           -> mockPort
+    "auditing.consumer.baseUri.port"           -> mockPort,
+    "feature-switch.version-3.enabled" -> "false",
+    "feature-switch.version-4.enabled" -> "true",
+    "feature-switch.version-5.enabled" -> "true",
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
