@@ -16,22 +16,36 @@
 
 package api.services
 
-import api.connectors.{MtdIdLookupConnector, MtdIdLookupOutcome}
-import api.models.domain.Nino
-import api.models.errors.NinoFormatError
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.http.Status._
+import api.connectors.MtdIdLookupConnector
+import api.controllers.validators.resolvers.ResolveNino
 
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.http.HeaderCarrier
+import api.models.errors.{InvalidBearerTokenError, NinoFormatError, _}
+
 import scala.concurrent.{ExecutionContext, Future}
+
+object MtdIdLookupService {
+  type Outcome = Either[MtdError, String]
+}
 
 @Singleton
 class MtdIdLookupService @Inject() (val connector: MtdIdLookupConnector) {
 
-  def lookup(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupOutcome] = {
-    if (Nino.isValid(nino)) {
-      connector.getMtdId(nino)
-    } else {
+  def lookup(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupService.Outcome] = {
+    if (!ResolveNino.isValid(nino)) {
       Future.successful(Left(NinoFormatError))
+    } else {
+      connector.getMtdId(nino) map {
+        case Right(mtdId) => Right(mtdId)
+        case Left(MtdIdLookupConnector.Error(statusCode)) =>
+          statusCode match {
+            case FORBIDDEN    => Left(ClientOrAgentNotAuthorisedError)
+            case UNAUTHORIZED => Left(InvalidBearerTokenError)
+            case _            => Left(InternalError)
+          }
+      }
     }
   }
 

@@ -34,4 +34,12 @@ object ResolveNino extends Resolver[String, Nino] {
       Invalid(List(withError(error, NinoFormatError, path)))
   }
 
+  def isValid(nino: String): Boolean = nino != null && hasValidPrefix(nino) && ninoRegex.matches(nino)
+
+  private def hasValidPrefix(nino: String) = !invalidPrefixes.exists(nino.startsWith)
+
+  private val invalidPrefixes =
+    List("BG", "GB", "NK", "KN", "TN", "NT", "ZZ")
+
+
 }
