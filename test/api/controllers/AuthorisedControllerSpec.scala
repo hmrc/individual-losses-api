@@ -115,7 +115,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedMtdIdLookupService
         .lookup(nino)
-        .returns(Future.successful(Left(ClientNotAuthorisedError)))
+        .returns(Future.successful(Left(ClientOrAgentNotAuthorisedError)))
 
       val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
@@ -143,7 +143,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedEnrolmentsAuthService
         .authorised(predicate)
-        .returns(Future.successful(Left(ClientNotAuthorisedError)))
+        .returns(Future.successful(Left(ClientOrAgentNotAuthorisedError)))
 
       val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
@@ -159,7 +159,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedEnrolmentsAuthService
         .authorised(predicate)
-        .returns(Future.successful(Left(ClientNotAuthorisedError)))
+        .returns(Future.successful(Left(ClientOrAgentNotAuthorisedError)))
 
       val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
