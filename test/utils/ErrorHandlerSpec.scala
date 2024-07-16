@@ -103,7 +103,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
     "return 401 with error body" when {
       "unauthorised and header is supplied" in new Test() {
         val result: Future[Result] = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
-        status(result) shouldBe ClientOrAgentNotAuthorisedError.httpStatus
+        status(result) shouldBe UNAUTHORIZED
 
         contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.asJson
       }

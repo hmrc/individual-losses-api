@@ -60,7 +60,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
 
       case _ =>
         val errorCode = statusCode match {
-          case UNAUTHORIZED           => ClientOrAgentNotAuthorisedError
+          case UNAUTHORIZED           => ClientOrAgentNotAuthorisedError.withStatus401
           case METHOD_NOT_ALLOWED     => InvalidHttpMethodError
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
           case _                      => MtdError("INVALID_REQUEST", message, BAD_REQUEST)
