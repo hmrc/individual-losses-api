@@ -18,15 +18,15 @@ package v5.bfLossClaims.list.model.response
 
 import play.api.libs.json.OWrites
 import utils.JsonWritesUtil
-import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesItem
+import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesResponse
 
-trait ListBFLossesResponse[+I] {
-  val losses: Seq[I]
+trait ListBFLossesResponse {
+  val losses: Seq[ListBFLossesItem]
 }
 
 object ListBFLossesResponse extends JsonWritesUtil {
-  implicit val writes: OWrites[ListBFLossesResponse[ListBFLossesItem]] = writesFrom { case a: Def1_ListBFLossesItem =>
-    implicitly[OWrites[Def1_ListBFLossesItem]].writes(a)
+  implicit val writes: OWrites[ListBFLossesResponse] = writesFrom { case a: Def1_ListBFLossesResponse =>
+    implicitly[OWrites[Def1_ListBFLossesResponse]].writes(a)
   }
 }
 

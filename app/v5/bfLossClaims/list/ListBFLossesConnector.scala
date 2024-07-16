@@ -22,7 +22,7 @@ import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
-import v5.bfLossClaims.list.model.response.{ListBFLossesItem, ListBFLossesResponse}
+import v5.bfLossClaims.list.model.response.ListBFLossesResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +33,7 @@ class ListBFLossesConnector @Inject()(val http: HttpClient, val appConfig: AppCo
   def listBFLosses(request: ListBFLossesRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
+      correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse]] = {
 
     import request._
     import schema._
