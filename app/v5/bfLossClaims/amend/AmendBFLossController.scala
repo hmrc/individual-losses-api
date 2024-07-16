@@ -22,7 +22,7 @@ import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4}
+import routing.{Version, Version4, Version5}
 import utils.IdGenerator
 import v5.bfLossClaims.amend
 import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse.LinksFactory
@@ -47,7 +47,7 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
+      implicit val apiVersion: Version = Version.from(request, orElse = Version5)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, lossId, request.body)

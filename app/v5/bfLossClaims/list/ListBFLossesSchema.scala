@@ -18,15 +18,15 @@ package v5.bfLossClaims.list
 
 import play.api.libs.json.Reads
 import schema.DownstreamReadable
-import v5.bfLossClaims.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
-import v5.bfLossClaims.list.model.response.{ListBFLossesItem, ListBFLossesResponse}
+import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesResponse
+import v5.bfLossClaims.list.model.response.ListBFLossesResponse
 
-sealed trait ListBFLossesSchema extends DownstreamReadable[ListBFLossesResponse[ListBFLossesItem]]
+sealed trait ListBFLossesSchema extends DownstreamReadable[ListBFLossesResponse]
 
 object ListBFLossesSchema {
 
   case object Def1 extends ListBFLossesSchema {
-    type DownstreamResp = Def1_ListBFLossesResponse[Def1_ListBFLossesItem]
+    type DownstreamResp = Def1_ListBFLossesResponse
     val connectorReads: Reads[DownstreamResp] = Def1_ListBFLossesResponse.reads
   }
 
