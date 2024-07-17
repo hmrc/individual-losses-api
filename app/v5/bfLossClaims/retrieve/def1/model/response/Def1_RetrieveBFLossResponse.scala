@@ -42,9 +42,9 @@ object Def1_RetrieveBFLossResponse extends HateoasLinks {
       (__ \ "submissionDate").read[Timestamp]
   )(Def1_RetrieveBFLossResponse.apply _)
 
-  implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveBFLossResponse, GetBFLossHateoasData] {
+  implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveBFLossResponse, Def1_GetBFLossHateoasData] {
 
-    override def links(appConfig: AppConfig, data: GetBFLossHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: Def1_GetBFLossHateoasData): Seq[Link] = {
       import data._
       Seq(getBFLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId))
     }
@@ -53,4 +53,4 @@ object Def1_RetrieveBFLossResponse extends HateoasLinks {
 
 }
 
-case class GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData
+case class Def1_GetBFLossHateoasData(nino: String, lossId: String) extends HateoasData

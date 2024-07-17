@@ -29,13 +29,13 @@ object Def1_CreateBFLossResponse extends HateoasLinks {
 
   implicit val writes: OWrites[Def1_CreateBFLossResponse] = Json.writes[Def1_CreateBFLossResponse]
 
-  implicit object LinksFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
-    override def links(appConfig: AppConfig, data: CreateBFLossHateoasData): Seq[Link] = {
+  implicit object LinksFactory extends HateoasLinksFactory[CreateBFLossResponse, Def1_CreateBFLossHateoasData] {
+    override def links(appConfig: AppConfig, data: Def1_CreateBFLossHateoasData): Seq[Link] = {
       import data._
       Seq(getBFLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId))
     }
   }
 }
 
-case class CreateBFLossHateoasData(nino: String, lossId: String) extends HateoasData
+case class Def1_CreateBFLossHateoasData(nino: String, lossId: String) extends HateoasData
 
