@@ -24,7 +24,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4, Version5}
 import utils.IdGenerator
-import v5.bfLossClaims.create.def1.model.response.CreateBFLossHateoasData
+import v5.bfLossClaims.create.def1.model.response.Def1_CreateBFLossHateoasData
 import v5.bfLossClaims.create.def1.model.response.Def1_CreateBFLossResponse.LinksFactory
 
 import javax.inject.{Inject, Singleton}
@@ -56,7 +56,7 @@ class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
           .withValidator(validator)
           .withService(service.createBFLoss)
           .withHateoasResultFrom(hateoasFactory)(
-            (_, responseData) => CreateBFLossHateoasData(nino, responseData.lossId),
+            (_, responseData) => Def1_CreateBFLossHateoasData(nino, responseData.lossId),
             successStatus = CREATED
           )
           .withAuditing(AuditHandler(
