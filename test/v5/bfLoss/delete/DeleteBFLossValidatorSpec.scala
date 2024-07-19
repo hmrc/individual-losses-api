@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.retrieve
+package v5.bfLoss.delete
 
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v5.bfLossClaims.retrieve.RetrieveBFLossValidatorFactory
-import v5.bfLossClaims.retrieve.def1.Def1_RetrieveBFLossValidator
+import v5.bfLossClaims.delete.DeleteBFLossValidatorFactory
+import v5.bfLossClaims.delete.def1.Def1_DeleteBFLossValidator
 
-class RetrieveBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
+class DeleteBFLossValidatorSpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino        = "AA123456A"
-  private val validLossId      = "AAZZ1234567890a"
+  private val validNino = "AA123456A"
+  private val validLossId   = "AAZZ1234567890a"
 
-  private val validatorFactory = new RetrieveBFLossValidatorFactory
+  private val validatorFactory = new DeleteBFLossValidatorFactory
 
   "running a validation" should {
     "return the parsed domain object" when {
       "given a valid request" in {
         val result = validatorFactory.validator(validNino, validLossId)
-        result shouldBe a[Def1_RetrieveBFLossValidator]
+        result shouldBe a[Def1_DeleteBFLossValidator]
+
       }
     }
 

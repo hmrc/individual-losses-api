@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.list
+package v5.bfLoss.list.def1.model.response
 
 import api.hateoas.HateoasLinks
 import play.api.libs.json.Json
@@ -22,7 +22,7 @@ import support.UnitSpec
 import v5.bfLossClaims.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
 import v5.bfLossClaims.list.model._
 
-class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
+class Def1_ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 
   val item1: Def1_ListBFLossesItem = Def1_ListBFLossesItem(
     lossId = "lossId1",

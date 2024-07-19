@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.amend.model.request
+package v5.bfLoss.amend.def1.request
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v5.bfLossClaims.amend.def1.model.request.Def1_AmendBFLossRequestBody
 import v5.bfLossClaims.amend.model.request.AmendBFLossRequestBody
 
-class AmendBFLossRequestBodySpec extends UnitSpec {
+class Def1_AmendBFLossRequestBodySpec extends UnitSpec {
 
   val mtdJson: JsValue = Json.parse("""
       |{

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.amend.model.response
+package v5.bfLoss.amend.def1.response
 
 import api.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import api.models.domain.Timestamp
@@ -27,7 +27,7 @@ import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse.LinksF
 import v5.bfLossClaims.amend.model._
 import v5.bfLossClaims.amend.model.response.{AmendBFLossResponse, ResponseData}
 
-class AmendBFLossResponseSpec extends UnitSpec {
+class Def1_AmendBFLossResponseSpec extends UnitSpec {
 
   private val businessId        = "000000000000001"
   private val lossAmount        = 123.45
