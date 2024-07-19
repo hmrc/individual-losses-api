@@ -14,44 +14,45 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.delete
+package v5.bfLoss.retrieve.def1
 
 import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v5.bfLossClaims.delete.DeleteBFLossValidatorFactory
-import v5.bfLossClaims.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLossClaims.delete.model._
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import v5.bfLossClaims.retrieve.RetrieveBFLossValidatorFactory
+import v5.bfLossClaims.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
+import v5.bfLossClaims.retrieve.model._
+import v5.bfLossClaims.retrieve.model.request.RetrieveBFLossRequestData
 
-class DeleteBFLossValidatorFactorySpec extends UnitSpec {
+class Def1_RetrieveBFLossValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
   private val validNino     = "AA123456A"
   private val invalidNino   = "AA123456"
   private val validLossId   = "AAZZ1234567890a"
-  private val invalidLossId = "not-a-loss-id"
+  private val invalidLossId = "AAZZ1234567890"
 
   private val parsedNino   = Nino(validNino)
   private val parsedLossId = LossId(validLossId)
 
-  private val validatorFactory = new DeleteBFLossValidatorFactory
+  private val validatorFactory = new RetrieveBFLossValidatorFactory
 
-  private def validator(nino: String, lossId: String): Validator[DeleteBFLossRequestData] = validatorFactory.validator(nino, lossId)
+  private def validator(nino: String, lossId: String): Validator[RetrieveBFLossRequestData] =
+    validatorFactory.validator(nino, lossId)
 
-  "running a validation" should {
+  "RetrieveBFLossValidator" should {
     "return the parsed request data" when {
       "given a valid request" in {
         val result = validator(validNino, validLossId).validateAndWrapResult()
         result shouldBe Right(
-          Def1_DeleteBFLossRequestData(parsedNino, parsedLossId)
+          Def1_RetrieveBFLossRequestData(parsedNino, parsedLossId)
         )
       }
     }
 
-    "return NinoFormatError error" when {
+    "return NinoFormatError" when {
       "given an invalid nino" in {
         val result = validator(invalidNino, validLossId).validateAndWrapResult()
         result shouldBe Left(
@@ -60,7 +61,7 @@ class DeleteBFLossValidatorFactorySpec extends UnitSpec {
       }
     }
 
-    "return LossIdFormatError error" when {
+    "return LossIdFormatError" when {
       "given an invalid loss ID" in {
         val result = validator(validNino, invalidLossId).validateAndWrapResult()
         result shouldBe Left(

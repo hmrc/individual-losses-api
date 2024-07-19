@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.retrieve
+package v5.bfLoss.retrieve.def1.model.response
 
 import api.hateoas.Method.{DELETE, GET, POST}
 import api.hateoas.{HateoasFactory, HateoasWrapper, Link}
@@ -27,7 +27,7 @@ import v5.bfLossClaims.retrieve.def1.model.response.{Def1_GetBFLossHateoasData, 
 import v5.bfLossClaims.retrieve.model._
 import v5.bfLossClaims.retrieve.model.response.RetrieveBFLossResponse
 
-class RetrieveBFLossResponseSpec extends UnitSpec {
+class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
 
   private val businessId        = "000000000000001"
   private val lossAmount        = 123.45

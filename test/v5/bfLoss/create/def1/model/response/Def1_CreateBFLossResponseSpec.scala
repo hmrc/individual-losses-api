@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.create
+package v5.bfLoss.create.def1.model.response
 
 import api.hateoas.Method.{DELETE, GET, POST}
 import api.hateoas.{HateoasFactory, HateoasWrapper, Link}
@@ -25,7 +25,7 @@ import v5.bfLossClaims.create.def1.model.response.Def1_CreateBFLossResponse.Link
 import v5.bfLossClaims.create.def1.model.response.{Def1_CreateBFLossHateoasData, Def1_CreateBFLossResponse}
 import v5.bfLossClaims.create.model.response.CreateBFLossResponse
 
-class CreateBFLossResponseSpec extends UnitSpec {
+class Def1_CreateBFLossResponseSpec extends UnitSpec {
 
   val lossIdResponse: CreateBFLossResponse = Def1_CreateBFLossResponse(lossId = "AAZZ1234567890a")
 

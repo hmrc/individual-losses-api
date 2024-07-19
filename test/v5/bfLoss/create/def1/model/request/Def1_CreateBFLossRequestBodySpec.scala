@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLoss.create
+package v5.bfLoss.create.def1.model.request
 
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json._
@@ -22,7 +22,7 @@ import support.UnitSpec
 import v5.bfLossClaims.create.def1.model.request.Def1_CreateBFLossRequestBody
 import v5.bfLossClaims.create.model._
 
-class CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators {
+class Def1_CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators {
 
   val broughtForwardLossEmployment: Def1_CreateBFLossRequestBody =
     Def1_CreateBFLossRequestBody(
