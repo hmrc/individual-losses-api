@@ -62,14 +62,14 @@ class AuthISpec extends IntegrationBaseSpec {
 
   "Calling the sample endpoint" when {
 
-    "the NINO cannot be converted to a MTD ID" should {
+    "MTD ID lookup fails with a 500" should {
 
       "return 500" in new Test {
         override val nino: String = "AA123456A"
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
-          MtdIdLookupStub.internalServerError(nino)
+          MtdIdLookupStub.error(nino, Status.INTERNAL_SERVER_ERROR)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))
@@ -77,7 +77,23 @@ class AuthISpec extends IntegrationBaseSpec {
       }
     }
 
-    "an MTD ID is successfully retrieve from the NINO and the user is authorised" should {
+    "MTD ID lookup fails with a 403" should {
+
+      "return 403" in new Test {
+        override val nino: String = "AA123456A"
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          MtdIdLookupStub.error(nino, Status.FORBIDDEN)
+        }
+
+        val response: WSResponse = await(request().post(Json.parse(requestJson)))
+        response.status shouldBe Status.FORBIDDEN
+      }
+    }
+  }
+
+    "MTD ID lookup succeeds and the user is authorised" should {
 
       "return 201" in new Test {
         val downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino"
@@ -94,7 +110,7 @@ class AuthISpec extends IntegrationBaseSpec {
       }
     }
 
-    "an MTD ID is successfully retrieve from the NINO and the user is NOT logged in" should {
+    "MTD ID lookup succeeds but the user is NOT logged in" should {
 
       "return 403" in new Test {
         override val nino: String = "AA123456A"
@@ -110,7 +126,7 @@ class AuthISpec extends IntegrationBaseSpec {
       }
     }
 
-    "an MTD ID is successfully retrieve from the NINO and the user is NOT authorised" should {
+    "MTD ID lookup succeeds but the user is NOT authorised" should {
 
       "return 403" in new Test {
         override val nino: String = "AA123456A"
@@ -125,7 +141,5 @@ class AuthISpec extends IntegrationBaseSpec {
         response.status shouldBe Status.FORBIDDEN
       }
     }
-
-  }
 
 }

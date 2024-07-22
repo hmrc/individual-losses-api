@@ -30,7 +30,7 @@ class Def1_ListLossClaimsValidatorSpec extends UnitSpec {
   private implicit val correlationId: String = "1234"
 
   private val validNino          = "AA123456A"
-  private val invalidNino        = "AA123456"
+  private val invalidNino        = "badNino"
   private val validTaxYear       = "2021-22"
   private val invalidTaxYear     = "not-a-tax-year"
   private val validLossType      = "self-employment"

@@ -22,7 +22,7 @@ import v5.lossClaims.retrieve.def1.Def1_RetrieveLossClaimValidator
 class RetrieveLossClaimValidatorFactorySpec extends UnitSpec {
 
   private val validNino      = "AA123456A"
-  private val invalidNino    = "AA123456"
+  private val invalidNino    = "badNino"
   private val validClaimId   = "AAZZ1234567890a"
   private val invalidClaimId = "AAZZ1234567890"
 

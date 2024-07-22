@@ -29,7 +29,7 @@ class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
   private implicit val correlationId: String = "1234"
 
   private val validNino      = "AA123456A"
-  private val invalidNino    = "AA123456"
+  private val invalidNino    = "badNino"
   private val validClaimId   = "AAZZ1234567890a"
   private val invalidClaimId = "not-a-claim-id"
 
