@@ -21,7 +21,7 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v5.bfLosses.list.ListBFLossesConnector
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
-import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
+import v5.bfLosses.list.def1.model.response.{ListBFLossesItem, Def1_ListBFLossesResponse}
 import v5.bfLosses.list.model._
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
 import v5.bfLosses.list.model.response.ListBFLossesResponse
@@ -45,7 +45,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
 
   def makeResponse(taxYear: TaxYear = TaxYear("2019")): Def1_ListBFLossesResponse =
     Def1_ListBFLossesResponse(
-      List(Def1_ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified"))
+      List(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified"))
     )
 
   trait Test {

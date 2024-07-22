@@ -28,7 +28,7 @@ import routing.Version5
 import v5.bfLoss.list
 import v5.bfLosses.list.ListBFLossesController
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
-import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
+import v5.bfLosses.list.def1.model.response.{ListBFLossesItem, Def1_ListBFLossesResponse}
 import v5.bfLosses.list.model._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -49,7 +49,7 @@ class ListBFLossesControllerSpec
   private val requestData =
     Def1_ListBFLossesRequestData(parsedNino, TaxYear("2019"), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
 
-  private val responseItem: Def1_ListBFLossesItem = Def1_ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
+  private val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
   private val response: Def1_ListBFLossesResponse = Def1_ListBFLossesResponse(Seq(responseItem))
 
   private val mtdResponseJson: JsValue = Json.parse(

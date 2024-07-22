@@ -19,7 +19,7 @@ package v5.bfLosses.list.def1.model.response
 import play.api.libs.json._
 import v5.bfLosses.list.model.response.ListBFLossesResponse
 
-case class Def1_ListBFLossesResponse(losses: Seq[Def1_ListBFLossesItem]) extends ListBFLossesResponse
+case class Def1_ListBFLossesResponse(losses: Seq[ListBFLossesItem]) extends ListBFLossesResponse
 
 object Def1_ListBFLossesResponse {
 
@@ -27,5 +27,5 @@ object Def1_ListBFLossesResponse {
     Json.writes[Def1_ListBFLossesResponse]
 
   implicit val reads: Reads[Def1_ListBFLossesResponse] =
-    implicitly[Reads[Seq[Def1_ListBFLossesItem]]].map(Def1_ListBFLossesResponse(_))
+    implicitly[Reads[Seq[ListBFLossesItem]]].map(Def1_ListBFLossesResponse(_))
 }

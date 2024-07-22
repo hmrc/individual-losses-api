@@ -18,10 +18,10 @@ package v5.bfLoss.list.def1.model.response
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v5.bfLosses.list.def1.model.response.Def1_ListBFLossesItem
+import v5.bfLosses.list.def1.model.response.ListBFLossesItem
 import v5.bfLosses.list.model._
 
-class Def1_ListBFLossesItemSpec extends UnitSpec {
+class ListBFLossesItemSpec extends UnitSpec {
 
   val lossId            = "000000123456789"
   val businessId        = "businessId"
@@ -33,7 +33,7 @@ class Def1_ListBFLossesItemSpec extends UnitSpec {
   "json writes" must {
     "output as per spec" in {
       Json.toJson(
-        Def1_ListBFLossesItem(
+        ListBFLossesItem(
           lossId = lossId,
           businessId = businessId,
           typeOfLoss = TypeOfLoss.`self-employment`,
@@ -73,8 +73,8 @@ class Def1_ListBFLossesItemSpec extends UnitSpec {
                        |   "lossId": "$lossId",
                        |   "submissionDate": "$lastModified"
                        |}""".stripMargin)
-            .as[Def1_ListBFLossesItem] shouldBe
-            Def1_ListBFLossesItem(
+            .as[ListBFLossesItem] shouldBe
+            ListBFLossesItem(
               lossId = lossId,
               businessId = businessId,
               typeOfLoss = expectedTypeOfLoss,
@@ -103,8 +103,8 @@ class Def1_ListBFLossesItemSpec extends UnitSpec {
                         |   "lossId": "$lossId",
                         |   "submissionDate": "$lastModified"
                         |}""".stripMargin)
-            .as[Def1_ListBFLossesItem] shouldBe
-            Def1_ListBFLossesItem(
+            .as[ListBFLossesItem] shouldBe
+            ListBFLossesItem(
               lossId = lossId,
               businessId = businessId,
               typeOfLoss = expectedTypeOfLoss,

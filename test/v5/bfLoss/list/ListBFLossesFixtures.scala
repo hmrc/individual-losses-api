@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package v5.bfLoss
+package v5.bfLoss.list
 
 import api.models.domain.TaxYear
 import play.api.libs.json.{JsValue, Json}
-import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
+import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}
 import v5.bfLosses.list.model._
 
 object ListBFLossesFixtures {
 
-  def listBFLossesModel(taxYear: String): Def1_ListBFLossesItem = Def1_ListBFLossesItem(
+  def listBFLossesModel(taxYear: String): ListBFLossesItem = ListBFLossesItem(
     lossId = "lossId",
     businessId = "businessId",
     typeOfLoss = TypeOfLoss.`uk-property-fhl`,

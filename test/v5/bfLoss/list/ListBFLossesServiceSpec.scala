@@ -23,7 +23,7 @@ import api.services.ServiceSpec
 import v5.bfLoss.list
 import v5.bfLosses.list.ListBFLossesService
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
-import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
+import v5.bfLosses.list.def1.model.response.{ListBFLossesItem, Def1_ListBFLossesResponse}
 import v5.bfLosses.list.model.TypeOfLoss
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
 import v5.bfLosses.list.model.response.ListBFLossesResponse
@@ -36,7 +36,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
   private val lossId = "AAZZ1234567890a"
 
   private val response: ListBFLossesResponse =
-    Def1_ListBFLossesResponse(List(Def1_ListBFLossesItem(lossId, "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
+    Def1_ListBFLossesResponse(List(ListBFLossesItem(lossId, "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")))
 
   private val emptyListResponse: Def1_ListBFLossesResponse = Def1_ListBFLossesResponse(Nil)
 
