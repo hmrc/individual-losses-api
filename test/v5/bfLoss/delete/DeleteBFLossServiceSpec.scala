@@ -21,9 +21,9 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v5.bfLoss.delete
-import v5.bfLossClaims.delete.DeleteBFLossService
-import v5.bfLossClaims.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLossClaims.delete.model._
+import v5.bfLosses.delete.DeleteBFLossService
+import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
+import v5.bfLosses.delete.model._
 
 import scala.concurrent.Future
 

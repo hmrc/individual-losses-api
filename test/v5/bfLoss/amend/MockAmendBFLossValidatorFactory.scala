@@ -23,8 +23,8 @@ import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.JsValue
-import v5.bfLossClaims.amend.AmendBFLossValidatorFactory
-import v5.bfLossClaims.amend.model.request.AmendBFLossRequestData
+import v5.bfLosses.amend.AmendBFLossValidatorFactory
+import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 
 trait MockAmendBFLossValidatorFactory extends MockFactory {
 

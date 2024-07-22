@@ -18,8 +18,8 @@ package v5.bfLoss.retrieve.model
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v5.bfLossClaims.retrieve.model.TypeOfLoss._
-import v5.bfLossClaims.retrieve.model.{IncomeSourceType, LossType, TypeOfLoss}
+import v5.bfLosses.retrieve.model.TypeOfLoss._
+import v5.bfLosses.retrieve.model.{IncomeSourceType, LossType, TypeOfLoss}
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 

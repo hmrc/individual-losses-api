@@ -27,11 +27,11 @@ import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version5
-import v5.bfLossClaims.amend.AmendBFLossController
-import v5.bfLossClaims.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
-import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse
-import v5.bfLossClaims.amend.model._
-import v5.bfLossClaims.amend.model.response.ResponseData
+import v5.bfLosses.amend.AmendBFLossController
+import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
+import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
+import v5.bfLosses.amend.model._
+import v5.bfLosses.amend.model.response.ResponseData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

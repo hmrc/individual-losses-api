@@ -20,9 +20,9 @@ import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v5.bfLossClaims.amend.AmendBFLossValidatorFactory
-import v5.bfLossClaims.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
-import v5.bfLossClaims.amend.model.LossId
+import v5.bfLosses.amend.AmendBFLossValidatorFactory
+import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
+import v5.bfLosses.amend.model.LossId
 
 class Def1_AmendBFLossValidatorSpec extends UnitSpec {
 

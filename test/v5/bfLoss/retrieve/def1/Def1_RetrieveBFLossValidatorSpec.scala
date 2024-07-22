@@ -20,10 +20,10 @@ import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v5.bfLossClaims.retrieve.RetrieveBFLossValidatorFactory
-import v5.bfLossClaims.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
-import v5.bfLossClaims.retrieve.model._
-import v5.bfLossClaims.retrieve.model.request.RetrieveBFLossRequestData
+import v5.bfLosses.retrieve.RetrieveBFLossValidatorFactory
+import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
+import v5.bfLosses.retrieve.model._
+import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 
 class Def1_RetrieveBFLossValidatorSpec extends UnitSpec {
 

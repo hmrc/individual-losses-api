@@ -18,8 +18,8 @@ package v5.bfLoss.retrieve
 
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v5.bfLossClaims.retrieve.RetrieveBFLossValidatorFactory
-import v5.bfLossClaims.retrieve.def1.Def1_RetrieveBFLossValidator
+import v5.bfLosses.retrieve.RetrieveBFLossValidatorFactory
+import v5.bfLosses.retrieve.def1.Def1_RetrieveBFLossValidator
 
 class RetrieveBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 

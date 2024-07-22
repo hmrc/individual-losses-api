@@ -18,8 +18,8 @@ package v5.bfLoss.create.model
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v5.bfLossClaims.create.model.{IncomeSourceType, LossType, TypeOfLoss}
-import v5.bfLossClaims.create.model.TypeOfLoss._
+import v5.bfLosses.create.model.{IncomeSourceType, LossType, TypeOfLoss}
+import v5.bfLosses.create.model.TypeOfLoss._
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 

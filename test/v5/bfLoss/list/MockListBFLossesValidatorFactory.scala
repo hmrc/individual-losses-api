@@ -22,8 +22,8 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v5.bfLossClaims.list.ListBFLossesValidatorFactory
-import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
+import v5.bfLosses.list.ListBFLossesValidatorFactory
+import v5.bfLosses.list.model.request.ListBFLossesRequestData
 
 trait MockListBFLossesValidatorFactory extends MockFactory {
 

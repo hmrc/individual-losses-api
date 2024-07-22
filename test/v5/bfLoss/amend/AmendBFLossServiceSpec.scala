@@ -21,10 +21,10 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v5.bfLoss.amend
-import v5.bfLossClaims.amend.AmendBFLossService
-import v5.bfLossClaims.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
-import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse
-import v5.bfLossClaims.amend.model._
+import v5.bfLosses.amend.AmendBFLossService
+import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
+import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
+import v5.bfLosses.amend.model._
 
 import scala.concurrent.Future
 

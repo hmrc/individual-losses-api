@@ -19,10 +19,10 @@ package v5.bfLoss.delete
 import api.connectors.ConnectorSpec
 import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
-import v5.bfLossClaims.delete.DeleteBFLossConnector
-import v5.bfLossClaims.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLossClaims.delete.model._
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import v5.bfLosses.delete.DeleteBFLossConnector
+import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
+import v5.bfLosses.delete.model._
+import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import scala.concurrent.Future
 

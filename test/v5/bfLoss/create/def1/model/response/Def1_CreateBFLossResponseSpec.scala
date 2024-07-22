@@ -21,9 +21,9 @@ import api.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v5.bfLossClaims.create.def1.model.response.Def1_CreateBFLossResponse.LinksFactory
-import v5.bfLossClaims.create.def1.model.response.{Def1_CreateBFLossHateoasData, Def1_CreateBFLossResponse}
-import v5.bfLossClaims.create.model.response.CreateBFLossResponse
+import v5.bfLosses.create.def1.model.response.Def1_CreateBFLossResponse.LinksFactory
+import v5.bfLosses.create.def1.model.response.{Def1_CreateBFLossHateoasData, Def1_CreateBFLossResponse}
+import v5.bfLosses.create.model.response.CreateBFLossResponse
 
 class Def1_CreateBFLossResponseSpec extends UnitSpec {
 

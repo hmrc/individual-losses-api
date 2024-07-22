@@ -27,10 +27,10 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version5
 import v5.bfLoss.create
-import v5.bfLossClaims.create.CreateBFLossController
-import v5.bfLossClaims.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
-import v5.bfLossClaims.create.def1.model.response.{Def1_CreateBFLossHateoasData, Def1_CreateBFLossResponse}
-import v5.bfLossClaims.create.model.TypeOfLoss
+import v5.bfLosses.create.CreateBFLossController
+import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
+import v5.bfLosses.create.def1.model.response.{Def1_CreateBFLossHateoasData, Def1_CreateBFLossResponse}
+import v5.bfLosses.create.model.TypeOfLoss
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

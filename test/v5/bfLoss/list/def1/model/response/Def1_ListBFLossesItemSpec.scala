@@ -18,8 +18,8 @@ package v5.bfLoss.list.def1.model.response
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v5.bfLossClaims.list.def1.model.response.Def1_ListBFLossesItem
-import v5.bfLossClaims.list.model._
+import v5.bfLosses.list.def1.model.response.Def1_ListBFLossesItem
+import v5.bfLosses.list.model._
 
 class Def1_ListBFLossesItemSpec extends UnitSpec {
 

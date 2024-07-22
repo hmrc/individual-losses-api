@@ -20,8 +20,8 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v5.bfLossClaims.delete.DeleteBFLossService
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import v5.bfLosses.delete.DeleteBFLossService
+import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 

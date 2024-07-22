@@ -19,12 +19,12 @@ package v5.bfLoss.retrieve
 import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, Timestamp}
 import api.models.outcomes.ResponseWrapper
-import v5.bfLossClaims.retrieve.RetrieveBFLossConnector
-import v5.bfLossClaims.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
-import v5.bfLossClaims.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
-import v5.bfLossClaims.retrieve.model._
-import v5.bfLossClaims.retrieve.model.request.RetrieveBFLossRequestData
-import v5.bfLossClaims.retrieve.model.response.RetrieveBFLossResponse
+import v5.bfLosses.retrieve.RetrieveBFLossConnector
+import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
+import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
+import v5.bfLosses.retrieve.model._
+import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
+import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
 import scala.concurrent.Future
 
