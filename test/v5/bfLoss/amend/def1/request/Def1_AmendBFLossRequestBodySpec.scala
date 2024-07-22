@@ -18,8 +18,8 @@ package v5.bfLoss.amend.def1.request
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v5.bfLossClaims.amend.def1.model.request.Def1_AmendBFLossRequestBody
-import v5.bfLossClaims.amend.model.request.AmendBFLossRequestBody
+import v5.bfLosses.amend.def1.model.request.Def1_AmendBFLossRequestBody
+import v5.bfLosses.amend.model.request.AmendBFLossRequestBody
 
 class Def1_AmendBFLossRequestBodySpec extends UnitSpec {
 

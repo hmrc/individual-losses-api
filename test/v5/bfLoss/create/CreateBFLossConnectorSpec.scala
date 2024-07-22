@@ -19,12 +19,12 @@ package v5.bfLoss.create
 import api.connectors.ConnectorSpec
 import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
-import v5.bfLossClaims.create.CreateBFLossConnector
-import v5.bfLossClaims.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
-import v5.bfLossClaims.create.def1.model.response.Def1_CreateBFLossResponse
-import v5.bfLossClaims.create.model._
-import v5.bfLossClaims.create.model.request.CreateBFLossRequestData
-import v5.bfLossClaims.create.model.response.CreateBFLossResponse
+import v5.bfLosses.create.CreateBFLossConnector
+import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
+import v5.bfLosses.create.def1.model.response.Def1_CreateBFLossResponse
+import v5.bfLosses.create.model._
+import v5.bfLosses.create.model.request.CreateBFLossRequestData
+import v5.bfLosses.create.model.response.CreateBFLossResponse
 
 import scala.concurrent.Future
 

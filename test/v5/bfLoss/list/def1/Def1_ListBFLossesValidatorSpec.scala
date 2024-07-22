@@ -20,10 +20,10 @@ import api.controllers.validators.Validator
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
-import v5.bfLossClaims.list.ListBFLossesValidatorFactory
-import v5.bfLossClaims.list.def1.model.request.Def1_ListBFLossesRequestData
-import v5.bfLossClaims.list.model._
-import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
+import v5.bfLosses.list.ListBFLossesValidatorFactory
+import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
+import v5.bfLosses.list.model._
+import v5.bfLosses.list.model.request.ListBFLossesRequestData
 
 class Def1_ListBFLossesValidatorSpec extends UnitSpec {
 

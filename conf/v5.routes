@@ -1,10 +1,10 @@
 # Brought-forward losses
 
-POST       /:nino/brought-forward-losses                                        v5.bfLossClaims.create.CreateBFLossController.create(nino: String)
-DELETE     /:nino/brought-forward-losses/:lossId                                v5.bfLossClaims.delete.DeleteBFLossController.delete(nino: String, lossId: String)
-POST       /:nino/brought-forward-losses/:lossId/change-loss-amount             v5.bfLossClaims.amend.AmendBFLossController.amend(nino: String, lossId: String)
-GET        /:nino/brought-forward-losses/:lossId                                v5.bfLossClaims.retrieve.RetrieveBFLossController.retrieve(nino: String, lossId: String)
-GET        /:nino/brought-forward-losses/tax-year/:taxYearBroughtForwardFrom    v5.bfLossClaims.list.ListBFLossesController.list(nino: String, taxYearBroughtForwardFrom: String, businessId: Option[String], typeOfLoss: Option[String])
+POST       /:nino/brought-forward-losses                                        v5.bfLosses.create.CreateBFLossController.create(nino: String)
+DELETE     /:nino/brought-forward-losses/:lossId                                v5.bfLosses.delete.DeleteBFLossController.delete(nino: String, lossId: String)
+POST       /:nino/brought-forward-losses/:lossId/change-loss-amount             v5.bfLosses.amend.AmendBFLossController.amend(nino: String, lossId: String)
+GET        /:nino/brought-forward-losses/:lossId                                v5.bfLosses.retrieve.RetrieveBFLossController.retrieve(nino: String, lossId: String)
+GET        /:nino/brought-forward-losses/tax-year/:taxYearBroughtForwardFrom    v5.bfLosses.list.ListBFLossesController.list(nino: String, taxYearBroughtForwardFrom: String, businessId: Option[String], typeOfLoss: Option[String])
 
 # Loss Claims
 

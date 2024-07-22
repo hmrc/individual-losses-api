@@ -19,11 +19,11 @@ package v5.bfLoss.amend
 import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, Timestamp}
 import api.models.outcomes.ResponseWrapper
-import v5.bfLossClaims.amend.AmendBFLossConnector
-import v5.bfLossClaims.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
-import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse
-import v5.bfLossClaims.amend.model._
-import v5.bfLossClaims.amend.model.response.AmendBFLossResponse
+import v5.bfLosses.amend.AmendBFLossConnector
+import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
+import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
+import v5.bfLosses.amend.model._
+import v5.bfLosses.amend.model.response.AmendBFLossResponse
 
 import scala.concurrent.Future
 

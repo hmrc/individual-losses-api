@@ -20,10 +20,10 @@ import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v5.bfLossClaims.delete.DeleteBFLossValidatorFactory
-import v5.bfLossClaims.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLossClaims.delete.model._
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import v5.bfLosses.delete.DeleteBFLossValidatorFactory
+import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
+import v5.bfLosses.delete.model._
+import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 class Def1_DeleteBFLossValidatorFactorySpec extends UnitSpec {
 

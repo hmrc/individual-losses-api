@@ -20,8 +20,8 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v5.bfLossClaims.delete.DeleteBFLossConnector
-import v5.bfLossClaims.delete.model.request.DeleteBFLossRequestData
+import v5.bfLosses.delete.DeleteBFLossConnector
+import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 

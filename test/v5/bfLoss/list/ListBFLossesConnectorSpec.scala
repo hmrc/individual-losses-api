@@ -19,12 +19,12 @@ package v5.bfLoss.list
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v5.bfLossClaims.list.ListBFLossesConnector
-import v5.bfLossClaims.list.def1.model.request.Def1_ListBFLossesRequestData
-import v5.bfLossClaims.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
-import v5.bfLossClaims.list.model._
-import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
-import v5.bfLossClaims.list.model.response.ListBFLossesResponse
+import v5.bfLosses.list.ListBFLossesConnector
+import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
+import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
+import v5.bfLosses.list.model._
+import v5.bfLosses.list.model.request.ListBFLossesRequestData
+import v5.bfLosses.list.model.response.ListBFLossesResponse
 
 import scala.concurrent.Future
 

@@ -26,9 +26,9 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import routing.Version5
 import v5.bfLoss.delete
-import v5.bfLossClaims.delete.DeleteBFLossController
-import v5.bfLossClaims.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLossClaims.delete.model._
+import v5.bfLosses.delete.DeleteBFLossController
+import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
+import v5.bfLosses.delete.model._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

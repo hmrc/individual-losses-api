@@ -20,9 +20,9 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v5.bfLossClaims.list.ListBFLossesService
-import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
-import v5.bfLossClaims.list.model.response.ListBFLossesResponse
+import v5.bfLosses.list.ListBFLossesService
+import v5.bfLosses.list.model.request.ListBFLossesRequestData
+import v5.bfLosses.list.model.response.ListBFLossesResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -21,10 +21,10 @@ import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v5.bfLoss.create
-import v5.bfLossClaims.create.CreateBFLossService
-import v5.bfLossClaims.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
-import v5.bfLossClaims.create.def1.model.response.Def1_CreateBFLossResponse
-import v5.bfLossClaims.create.model._
+import v5.bfLosses.create.CreateBFLossService
+import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
+import v5.bfLosses.create.def1.model.response.Def1_CreateBFLossResponse
+import v5.bfLosses.create.model._
 
 import scala.concurrent.Future
 

@@ -22,10 +22,10 @@ import api.models.errors._
 import config.{AppConfig, MockAppConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import support.UnitSpec
-import v5.bfLossClaims.create.CreateBFLossValidatorFactory
-import v5.bfLossClaims.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
-import v5.bfLossClaims.create.model._
-import v5.bfLossClaims.create.model.request.CreateBFLossRequestData
+import v5.bfLosses.create.CreateBFLossValidatorFactory
+import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
+import v5.bfLosses.create.model._
+import v5.bfLosses.create.model.request.CreateBFLossRequestData
 
 import java.time.LocalDate
 

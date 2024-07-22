@@ -20,9 +20,9 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v5.bfLossClaims.amend.AmendBFLossConnector
-import v5.bfLossClaims.amend.model.request.AmendBFLossRequestData
-import v5.bfLossClaims.amend.model.response.AmendBFLossResponse
+import v5.bfLosses.amend.AmendBFLossConnector
+import v5.bfLosses.amend.model.request.AmendBFLossRequestData
+import v5.bfLosses.amend.model.response.AmendBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 

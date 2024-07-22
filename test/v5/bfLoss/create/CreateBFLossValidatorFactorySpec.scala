@@ -19,8 +19,8 @@ package v5.bfLoss.create
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v5.bfLossClaims.create.CreateBFLossValidatorFactory
-import v5.bfLossClaims.create.def1.Def1_CreateBFLossValidator
+import v5.bfLosses.create.CreateBFLossValidatorFactory
+import v5.bfLosses.create.def1.Def1_CreateBFLossValidator
 
 class CreateBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 

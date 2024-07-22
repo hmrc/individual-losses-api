@@ -21,12 +21,12 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v5.bfLoss.list
-import v5.bfLossClaims.list.ListBFLossesService
-import v5.bfLossClaims.list.def1.model.request.Def1_ListBFLossesRequestData
-import v5.bfLossClaims.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
-import v5.bfLossClaims.list.model.TypeOfLoss
-import v5.bfLossClaims.list.model.request.ListBFLossesRequestData
-import v5.bfLossClaims.list.model.response.ListBFLossesResponse
+import v5.bfLosses.list.ListBFLossesService
+import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
+import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
+import v5.bfLosses.list.model.TypeOfLoss
+import v5.bfLosses.list.model.request.ListBFLossesRequestData
+import v5.bfLosses.list.model.response.ListBFLossesResponse
 
 import scala.concurrent.Future
 

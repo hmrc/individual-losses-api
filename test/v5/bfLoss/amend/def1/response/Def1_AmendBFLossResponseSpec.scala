@@ -22,10 +22,10 @@ import api.hateoas.Method.{DELETE, GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse
-import v5.bfLossClaims.amend.def1.model.response.Def1_AmendBFLossResponse.LinksFactory
-import v5.bfLossClaims.amend.model._
-import v5.bfLossClaims.amend.model.response.{AmendBFLossResponse, ResponseData}
+import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
+import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse.LinksFactory
+import v5.bfLosses.amend.model._
+import v5.bfLosses.amend.model.response.{AmendBFLossResponse, ResponseData}
 
 class Def1_AmendBFLossResponseSpec extends UnitSpec {
 

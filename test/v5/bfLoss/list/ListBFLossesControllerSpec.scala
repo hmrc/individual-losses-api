@@ -26,10 +26,10 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version5
 import v5.bfLoss.list
-import v5.bfLossClaims.list.ListBFLossesController
-import v5.bfLossClaims.list.def1.model.request.Def1_ListBFLossesRequestData
-import v5.bfLossClaims.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
-import v5.bfLossClaims.list.model._
+import v5.bfLosses.list.ListBFLossesController
+import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
+import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
+import v5.bfLosses.list.model._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
