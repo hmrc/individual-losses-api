@@ -25,20 +25,85 @@ class ResolveNinoSpec extends UnitSpec {
 
   "ResolveNino" should {
     "return the parsed Nino" when {
-      "given a valid nino string" in {
-        val validNino = "AA123456A"
-        val result    = ResolveNino(validNino, NinoFormatError)
-        result shouldBe Valid(Nino(validNino))
-      }
+      "given a valid nino string" in
+        expectSuccess("AA123456A")
     }
 
     "return an error" when {
-      "given an invalid NINO" in {
-        val invalidNino = "AA123456ABCBBCBCBC"
-        val result      = ResolveNino(invalidNino, NinoFormatError)
-        result shouldBe Invalid(List(NinoFormatError))
+      "given an invalid Nino" in
+        expectError("AA123456ABCBBCBCBC")
+
+      "given a valid number with spaces" in
+        expectError("AB 12 34 56 C")
+
+      "given a valid number with a leading space" in
+        expectError(" AB123456C")
+
+      "given a valid number with a trailing space" in
+        expectError("AB123456C ")
+
+      "given an empty string" in
+        expectError("")
+
+      "given only spaces" in
+        expectError("    ")
+
+      "given only digits" in
+        expectError("123456")
+
+      "given non-alphanum characters" in
+        expectError("@£%!)(*&^")
+
+      "given only one starting letter" in
+        expectError("A123456C")
+
+      "given only one starting letter and a slightly longer number" in
+        expectError("A1234567C")
+
+      "given three starting letter" in
+        expectError("ABC12345C")
+
+      "given three starting letter and a slightly longer number" in
+        expectError("ABC123456C")
+
+      "given lowercase letters" in
+        expectError("ab123456c")
+
+      "given less than 6 middle digits" in
+        expectError("AB12345C")
+
+      "given more than 6 middle digits" in
+        expectError("AB1234567C")
+
+      "given O as the second letter" in
+        expectError("AO123456C")
+
+      "given E as the suffix" in
+        expectError("AB123456E")
+
+      "given invalid prefixes" in {
+        val invalidStartLetterCombinations = List('D', 'F', 'I', 'Q', 'U', 'V').combinations(2).map(_.mkString("")).toList
+        val invalidPrefixes                = List("BG", "GB", "NK", "KN", "TN", "NT", "ZZ")
+        for (v <- invalidStartLetterCombinations ::: invalidPrefixes) {
+          val invalidNino = v + "123456C"
+          withClue(s"Invalid nino: $invalidNino") {
+            expectError(invalidNino)
+          }
+        }
       }
+
     }
+
+  }
+
+  private def expectSuccess(validNino: String): Unit = {
+    val result = ResolveNino(validNino)
+    result shouldBe Valid(Nino(validNino))
+  }
+
+  private def expectError(invalidNino: String): Unit = {
+    val result = ResolveNino(invalidNino)
+    result shouldBe Invalid(List(NinoFormatError))
   }
 
 }

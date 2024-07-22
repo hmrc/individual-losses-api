@@ -29,7 +29,7 @@ class AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonErrorVa
   private implicit val correlationId: String = "1234"
 
   private val validNino    = "AA123456A"
-  private val invalidNino  = "AA123456"
+  private val invalidNino  = "badNino"
   private val validTaxYear = "2019-20"
 
   private val parsedNino    = Nino(validNino)

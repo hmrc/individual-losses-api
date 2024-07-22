@@ -30,7 +30,7 @@ class Def1_CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidator
   private implicit val correlationId: String = "1234"
 
   private val validNino        = "AA123456A"
-  private val invalidNino      = "AA123456"
+  private val invalidNino      = "badNino"
   private val validTaxYear     = "2019-20"
   private val validTypeOfLoss  = "self-employment"
   private val validTypeOfClaim = "carry-forward"

@@ -28,7 +28,7 @@ class AmendBFLossValidatorFactorySpec extends UnitSpec {
   private implicit val correlationId: String = "1234"
 
   private val validNino     = "AA123456A"
-  private val invalidNino   = "AA123456"
+  private val invalidNino   = "BadNINO"
   private val validLossId   = "AAZZ1234567890a"
   private val invalidLossId = "AAZZ1234567890"
 
