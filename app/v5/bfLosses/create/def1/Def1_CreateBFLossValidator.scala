@@ -19,12 +19,11 @@ package v5.bfLosses.create.def1
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers._
 import api.models.domain.TodaySupplier
-import api.models.errors.{MtdError, TypeOfLossFormatError}
+import api.models.errors.MtdError
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
-import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import v5.bfLosses.common.domain.TypeOfLoss
+import play.api.libs.json.JsValue
+import v5.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 
@@ -54,26 +53,5 @@ class Def1_CreateBFLossValidator @Inject()
       resolveParsedNumber(parsed.broughtForwardLoss.lossAmount, path = "/lossAmount")
     ).map(_ => parsed)
 
-  object ResolveBFTypeOfLossFromJson extends Resolver[JsValue, Option[TypeOfLoss]] {
-    override def apply(body: JsValue, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[TypeOfLoss]] = {
-      def useError = maybeError.getOrElse(TypeOfLossFormatError).maybeWithExtraPath(errorPath)
-
-      val jsPath = body \ "typeOfLoss"
-
-      if (jsPath.isEmpty) {
-        Valid(None)
-      }
-      else {
-        jsPath.validate[String] match {
-          case JsError(_) => Invalid(List(useError))
-          case JsSuccess(value, _) =>
-            TypeOfLoss.parser
-              .lift(value)
-              .map(parsed => Valid(Some(parsed)))
-              .getOrElse(Invalid(List(useError)))
-        }
-      }
-    }
-  }
 }
 

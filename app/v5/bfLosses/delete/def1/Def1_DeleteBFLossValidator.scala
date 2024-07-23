@@ -17,17 +17,15 @@
 package v5.bfLosses.delete.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, Resolver}
-import api.models.errors.{LossIdFormatError, MtdError}
+import api.controllers.validators.resolvers.ResolveNino
+import api.models.errors.MtdError
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
-import v5.bfLosses.common.domain.LossId
+import v5.bfLosses.common.resolvers.ResolveBFLossId
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import javax.inject.Singleton
-import scala.util.matching.Regex
 
 @Singleton
 class Def1_DeleteBFLossValidator (nino: String, body: String) extends Validator[DeleteBFLossRequestData]{
@@ -37,17 +35,4 @@ class Def1_DeleteBFLossValidator (nino: String, body: String) extends Validator[
       ResolveNino(nino),
       ResolveBFLossId(body)
     ).mapN(Def1_DeleteBFLossRequestData)
-
-  object ResolveBFLossId extends Resolver[String, LossId] {
-    protected val regexFormat: Regex = "^[A-Za-z0-9]{15}$".r
-    protected val error: MtdError = LossIdFormatError
-
-    override def apply(value: String, error_NotUsed: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], LossId] =
-      if (regexFormat.matches(value)) {
-        Valid(LossId(value))
-      }
-      else {
-        Invalid(List(error.maybeWithExtraPath(path)))
-      }
-  }
 }
