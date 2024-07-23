@@ -24,7 +24,7 @@ import v5.bfLosses.amend
 import v5.bfLosses.amend.AmendBFLossService
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
-import v5.bfLosses.domain._
+import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
 
 import scala.concurrent.Future
 

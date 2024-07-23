@@ -20,11 +20,11 @@ import api.models.domain.Nino
 import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.create
 import v5.bfLosses.create.CreateBFLossService
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.def1.model.response.Def1_CreateBFLossResponse
-import v5.bfLosses.domain._
 
 import scala.concurrent.Future
 

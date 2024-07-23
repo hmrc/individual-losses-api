@@ -21,7 +21,7 @@ import api.models.errors._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
-import v5.bfLosses.domain._
+import v5.bfLosses.common.domain.LossId
 
 class Def1_AmendBFLossValidatorSpec extends UnitSpec {
 

@@ -20,7 +20,7 @@ import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v5.bfLosses.domain._
+import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 

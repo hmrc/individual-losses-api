@@ -25,8 +25,8 @@ import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version5
+import v5.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v5.bfLosses.list
-import v5.bfLosses.domain._
 import v5.bfLosses.list.ListBFLossesController
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}

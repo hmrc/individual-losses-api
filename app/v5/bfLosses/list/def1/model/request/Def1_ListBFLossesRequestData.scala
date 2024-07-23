@@ -17,8 +17,8 @@
 package v5.bfLosses.list.def1.model.request
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
+import v5.bfLosses.common.domain.IncomeSourceType
 import v5.bfLosses.list.ListBFLossesSchema
-import v5.bfLosses.domain._
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
 
 case class Def1_ListBFLossesRequestData(

@@ -24,8 +24,8 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse.LinksFactory
-import v5.bfLosses.domain._
 import v5.bfLosses.amend.model.response.{AmendBFLossResponse, ResponseData}
+import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 
 class Def1_AmendBFLossResponseSpec extends UnitSpec {
 

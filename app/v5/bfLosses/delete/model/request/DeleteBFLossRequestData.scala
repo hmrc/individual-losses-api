@@ -17,8 +17,8 @@
 package v5.bfLosses.delete.model.request
 
 import api.models.domain.Nino
+import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete.DeleteBFLossSchema
-import v5.bfLosses.domain._
 
 trait DeleteBFLossRequestData {
   def nino: Nino

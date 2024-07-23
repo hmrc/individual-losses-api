@@ -26,8 +26,8 @@ import config.MockAppConfig
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import routing.Version5
+import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v5.bfLosses.retrieve
-import v5.bfLosses.domain._
 import v5.bfLosses.retrieve.RetrieveBFLossController
 import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.def1.model.response.{Def1_GetBFLossHateoasData, Def1_RetrieveBFLossResponse}

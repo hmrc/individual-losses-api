@@ -14,8 +14,24 @@
  * limitations under the License.
  */
 
-package v5.bfLosses.domain
+package v5.bfLosses.common.domain
 
-case class LossId(lossId: String) {
-  override def toString: String = lossId
+import play.api.libs.json._
+import utils.enums.Enums
+
+sealed trait LossType {
+  def toTypeOfLoss: TypeOfLoss
+}
+
+object LossType {
+
+  case object INCOME extends LossType {
+    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
+  }
+
+  case object CLASS4 extends LossType {
+    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment-class4`
+  }
+
+  implicit val format: Format[LossType] = Enums.format[LossType]
 }

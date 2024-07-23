@@ -22,8 +22,7 @@ import api.models.domain.Timestamp
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v5.bfLosses.domain.TypeOfLoss
-import v5.bfLosses.domain._
+import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse.GetLinksFactory
 import v5.bfLosses.retrieve.def1.model.response.{Def1_GetBFLossHateoasData, Def1_RetrieveBFLossResponse}
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse

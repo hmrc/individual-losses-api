@@ -19,8 +19,8 @@ package v5.bfLosses.list.def1.model.response
 import api.hateoas.HateoasLinks
 import play.api.libs.json.Json
 import support.UnitSpec
-import v5.bfLosses.list.def1.model.response.{ListBFLossesItem, Def1_ListBFLossesResponse}
-import v5.bfLosses.domain._
+import v5.bfLosses.common.domain.TypeOfLoss
+import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}
 
 class Def1_ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 

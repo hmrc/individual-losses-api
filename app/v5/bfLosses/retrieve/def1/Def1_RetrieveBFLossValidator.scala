@@ -22,9 +22,9 @@ import api.models.errors.{LossIdFormatError, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
+import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
-import v5.bfLosses.domain._
 
 import javax.inject.Singleton
 import scala.util.matching.Regex

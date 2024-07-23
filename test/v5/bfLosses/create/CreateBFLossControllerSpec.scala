@@ -26,11 +26,11 @@ import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version5
+import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.create
 import v5.bfLosses.create.CreateBFLossController
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.def1.model.response.{Def1_CreateBFLossHateoasData, Def1_CreateBFLossResponse}
-import v5.bfLosses.domain._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

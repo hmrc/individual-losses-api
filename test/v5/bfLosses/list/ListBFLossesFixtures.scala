@@ -18,7 +18,7 @@ package v5.bfLosses.list
 
 import api.models.domain.TaxYear
 import play.api.libs.json.{JsValue, Json}
-import v5.bfLosses.domain.TypeOfLoss
+import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}
 
 object ListBFLossesFixtures {

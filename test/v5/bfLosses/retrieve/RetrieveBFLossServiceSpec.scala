@@ -20,11 +20,12 @@ import api.models.domain.{Nino, Timestamp}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v5.bfLosses.retrieve
 import v5.bfLosses.retrieve.RetrieveBFLossService
 import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
-import v5.bfLosses.domain._
+
 import scala.concurrent.Future
 
 class RetrieveBFLossServiceSpec extends ServiceSpec {

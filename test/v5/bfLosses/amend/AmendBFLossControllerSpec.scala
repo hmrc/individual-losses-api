@@ -31,7 +31,7 @@ import v5.bfLosses.amend.AmendBFLossController
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 import v5.bfLosses.amend.model.response.ResponseData
-import v5.bfLosses.domain._
+import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

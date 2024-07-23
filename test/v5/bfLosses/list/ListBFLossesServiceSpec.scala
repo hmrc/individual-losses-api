@@ -20,8 +20,8 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.list
-import v5.bfLosses.domain.TypeOfLoss
 import v5.bfLosses.list.ListBFLossesService
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}

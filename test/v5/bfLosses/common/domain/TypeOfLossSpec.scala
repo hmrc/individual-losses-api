@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package v5.bfLosses.domain
+package v5.bfLosses.common.domain
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v5.bfLosses.domain.TypeOfLoss._
+import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLosses.domain
+package v5.bfLosses.common.domain
 
 import play.api.libs.json._
 import utils.enums.Enums

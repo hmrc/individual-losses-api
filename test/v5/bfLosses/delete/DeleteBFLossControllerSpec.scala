@@ -25,10 +25,10 @@ import config.MockAppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import routing.Version5
+import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete
 import v5.bfLosses.delete.DeleteBFLossController
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLosses.domain._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

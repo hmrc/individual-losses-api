@@ -17,9 +17,9 @@
 package v5.bfLosses.delete.def1.model.request
 
 import api.models.domain.Nino
+import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete.DeleteBFLossSchema
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
-import v5.bfLosses.domain._
 
 case class Def1_DeleteBFLossRequestData(nino: Nino, lossId: LossId) extends DeleteBFLossRequestData {
   override val schema: DeleteBFLossSchema = DeleteBFLossSchema.Def1
