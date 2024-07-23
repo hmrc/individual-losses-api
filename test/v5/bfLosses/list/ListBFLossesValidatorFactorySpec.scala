@@ -18,7 +18,6 @@ package v5.bfLosses.list
 
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v5.bfLosses.list.ListBFLossesValidatorFactory
 import v5.bfLosses.list.def1.Def1_ListBFLossesValidator
 
 class ListBFLossesValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
@@ -32,25 +31,10 @@ class ListBFLossesValidatorFactorySpec extends UnitSpec with JsonErrorValidators
 
   "running a validation" should {
     "return the parsed domain object" when {
-      "given a valid request with both optional fields" in {
+      "given a valid request" in {
         val result = validatorFactory.validator(validNino, validTaxYear, Some(validLossType), Some(validBusinessId))
         result shouldBe a[Def1_ListBFLossesValidator]
       }
-      "given a valid request with one optional field of businessId" in {
-        val result = validatorFactory.validator(validNino, validTaxYear, None, Some(validBusinessId))
-        result shouldBe a[Def1_ListBFLossesValidator]
-      }
-      "given a valid request with one optional field of loss type" in {
-        val result = validatorFactory.validator(validNino, validTaxYear, Some(validLossType), None)
-        result shouldBe a[Def1_ListBFLossesValidator]
-      }
-      "given a valid request with no optional fields" in {
-        val result = validatorFactory.validator(validNino, validTaxYear, None, None)
-        result shouldBe a[Def1_ListBFLossesValidator]
-      }
-
     }
-
   }
-
 }
