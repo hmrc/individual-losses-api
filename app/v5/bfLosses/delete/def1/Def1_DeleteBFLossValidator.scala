@@ -23,8 +23,8 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
-import v5.bfLosses.delete.model.LossId
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
+import v5.bfLosses.domain._
 
 import javax.inject.Singleton
 import scala.util.matching.Regex

@@ -21,8 +21,8 @@ import api.models.domain.{TaxYear, Timestamp}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import v5.bfLosses.domain._
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
-import v5.bfLosses.retrieve.model.{IncomeSourceType, LossType, TypeOfLoss}
 
 case class Def1_RetrieveBFLossResponse(businessId: String,
                                   typeOfLoss: TypeOfLoss,

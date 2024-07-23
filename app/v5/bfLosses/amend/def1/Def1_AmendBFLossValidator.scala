@@ -22,9 +22,9 @@ import api.models.errors.{LossIdFormatError, MtdError, RuleIncorrectOrEmptyBodyE
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.catsSyntaxTuple3Semigroupal
+import v5.bfLosses.domain._
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
-import v5.bfLosses.amend.model.LossId
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 
 import javax.inject.Singleton

@@ -18,7 +18,7 @@ package v5.bfLosses.amend.model.request
 
 import api.models.domain.Nino
 import v5.bfLosses.amend.AmendBFLossSchema
-import v5.bfLosses.amend.model.LossId
+import v5.bfLosses.domain._
 
 trait AmendBFLossRequestData {
   def nino: Nino

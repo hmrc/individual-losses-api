@@ -19,7 +19,7 @@ package v5.bfLosses.list.def1.model.response
 import api.models.domain.TaxYear
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
-import v5.bfLosses.list.model.{IncomeSourceType, LossType, TypeOfLoss}
+import v5.bfLosses.domain._
 
 case class ListBFLossesItem(lossId: String,
                             businessId: String,

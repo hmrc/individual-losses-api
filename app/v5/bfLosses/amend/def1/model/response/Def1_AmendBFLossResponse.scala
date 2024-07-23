@@ -21,8 +21,8 @@ import api.models.domain.{TaxYear, Timestamp}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v5.bfLosses.amend.model._
 import v5.bfLosses.amend.model.response.{AmendBFLossResponse, ResponseData}
+import v5.bfLosses.domain._
 
 case class Def1_AmendBFLossResponse(businessId: String,
                                typeOfLoss: TypeOfLoss,

@@ -25,7 +25,7 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
-import v5.bfLosses.create.model.TypeOfLoss
+import v5.bfLosses.domain._
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 
 import javax.inject.Inject

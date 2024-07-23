@@ -18,8 +18,8 @@ package v5.bfLosses.amend.def1.model.request
 
 import api.models.domain.Nino
 import v5.bfLosses.amend.AmendBFLossSchema
-import v5.bfLosses.amend.model.LossId
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
+import v5.bfLosses.domain._
 
 case class Def1_AmendBFLossRequestData(
                                         nino: Nino,

@@ -18,7 +18,7 @@ package v5.bfLosses.retrieve.model.request
 
 import api.models.domain.Nino
 import v5.bfLosses.retrieve.RetrieveBFLossSchema
-import v5.bfLosses.retrieve.model.LossId
+import v5.bfLosses.domain._
 
 trait RetrieveBFLossRequestData {
   def nino: Nino
