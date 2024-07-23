@@ -24,7 +24,7 @@ import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 import v5.bfLosses.domain._
 
-class Def1_DeleteBFLossValidatorFactorySpec extends UnitSpec {
+class Def1_DeleteBFLossValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
