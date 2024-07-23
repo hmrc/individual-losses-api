@@ -29,7 +29,7 @@ class Def1_ListBFLossesValidatorSpec extends UnitSpec {
   private implicit val correlationId: String = "1234"
 
   private val validNino         = "AA123456A"
-  private val invalidNino       = "AA123456"
+  private val invalidNino       = "BAD_NINO"
   private val validTaxYear      = "2021-22"
   private val invalidTaxYear    = "not-a-tax-year"
   private val validLossType     = "self-employment"
