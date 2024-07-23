@@ -17,7 +17,6 @@
 package v5.bfLoss.list
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -39,8 +38,7 @@ class ListBFLossesControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with list.MockListBFLossesValidatorFactory
-    with list.MockListBFLossesService
-    with MockHateoasFactory {
+    with list.MockListBFLossesService {
 
   private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
@@ -107,7 +105,6 @@ class ListBFLossesControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,
       validatorFactory = mockListBFLossesValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

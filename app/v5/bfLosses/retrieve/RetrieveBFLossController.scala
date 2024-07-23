@@ -17,14 +17,11 @@
 package v5.bfLosses.retrieve
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import routing.{Version, Version5}
 import utils.IdGenerator
-import v5.bfLosses.retrieve.def1.model.response.Def1_GetBFLossHateoasData
-import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse.GetLinksFactory
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -34,7 +31,6 @@ class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService
                                           val lookupService: MtdIdLookupService,
                                           service: RetrieveBFLossService,
                                           validatorFactory: RetrieveBFLossValidatorFactory,
-                                          hateoasFactory: HateoasFactory,
                                           cc: ControllerComponents,
                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
@@ -53,8 +49,7 @@ class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService
         RequestHandler
           .withValidator(validator)
           .withService(service.retrieveBFLoss)
-          .withHateoasResult(hateoasFactory)(Def1_GetBFLossHateoasData(nino, lossId))
-
+          .withPlainJsonResult()
       requestHandler.handleRequest()
     }
 

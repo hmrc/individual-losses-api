@@ -60,24 +60,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
     lazy val responseBody: JsValue = Json.parse(
       s"""
          |{
-         |  "lossId": "AAZZ1234567890a",
-         |  "links": [
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "DELETE",
-         |      "rel": "delete-brought-forward-loss"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-         |      "method": "POST",
-         |      "rel": "amend-brought-forward-loss"
-         |    }
-         |  ]
+         |  "lossId": "AAZZ1234567890a"
          |}
       """.stripMargin)
 

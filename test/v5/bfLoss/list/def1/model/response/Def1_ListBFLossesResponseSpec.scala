@@ -16,13 +16,12 @@
 
 package v5.bfLoss.list.def1.model.response
 
-import api.hateoas.HateoasLinks
 import play.api.libs.json.Json
 import support.UnitSpec
 import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesItem, Def1_ListBFLossesResponse}
 import v5.bfLosses.list.model._
 
-class Def1_ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
+class Def1_ListBFLossesResponseSpec extends UnitSpec {
 
   val item1: Def1_ListBFLossesItem = Def1_ListBFLossesItem(
     lossId = "lossId1",
