@@ -16,9 +16,7 @@
 
 package v4.models.response.retrieveLossClaim
 
-import api.hateoas.Link
 import api.models.domain.Timestamp
-import api.hateoas.Method.{DELETE, GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
@@ -112,19 +110,6 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
     )
     "convert a valid model into MTD JSON" in {
       Json.toJson(lossClaimResponse) shouldBe mtdJson
-    }
-  }
-
-  "Links Factory" should {
-
-    "expose the correct links" in {
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-      RetrieveLossClaimResponse.GetLinksFactory.links(mockAppConfig, GetLossClaimHateoasData(nino, claimId)) shouldBe
-        Seq(
-          Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self"),
-          Link(s"/individuals/losses/$nino/loss-claims/claimId", DELETE, "delete-loss-claim"),
-          Link(s"/individuals/losses/$nino/loss-claims/claimId/change-type-of-claim", POST, "amend-loss-claim")
-        )
     }
   }
 

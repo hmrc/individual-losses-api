@@ -16,12 +16,9 @@
 
 package v4.models.response.createLossClaim
 
-import api.hateoas.Link
-import api.hateoas.Method.{DELETE, GET, POST}
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v4.models.response.createLossClaim.{CreateLossClaimHateoasData, CreateLossClaimResponse}
 
 class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
@@ -56,23 +53,6 @@ class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
     "given a valid LossIdResponse model" should {
       "return a valid LossIdResponse JSON" in {
         Json.toJson(createClaimsResponse) shouldBe createClaimsResponseJson
-      }
-    }
-  }
-
-  "The Links Factory" should {
-
-    "return the correct hateoas links" when {
-
-      "provided with a claim id of 'claimId' and nino of 'AA123456A'" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-
-        CreateLossClaimResponse.LinksFactory.links(mockAppConfig, CreateLossClaimHateoasData("AA123456A", "claimId")) shouldBe
-          Seq(
-            Link("/individuals/losses/AA123456A/loss-claims/claimId", GET, "self"),
-            Link("/individuals/losses/AA123456A/loss-claims/claimId", DELETE, "delete-loss-claim"),
-            Link("/individuals/losses/AA123456A/loss-claims/claimId/change-type-of-claim", POST, "amend-loss-claim")
-          )
       }
     }
   }

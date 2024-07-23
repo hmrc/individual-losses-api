@@ -16,12 +16,9 @@
 
 package v4.models.response.amendLossClaimsOrder
 
-import api.hateoas.Link
-import api.hateoas.Method.{GET, PUT}
 import config.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v4.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 
 class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
 
@@ -32,21 +29,6 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
     "output as per spec" in {
       Json.toJson(AmendLossClaimsOrderResponse()) shouldBe
         Json.parse("""{}""".stripMargin)
-    }
-  }
-
-  "Links Factory" should {
-    "expose the correct links" when {
-      "called" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-        AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(
-          mockAppConfig,
-          AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
-          Seq(
-            Link(s"/individuals/losses/$nino/loss-claims/order/$taxYear", PUT, "amend-loss-claim-order"),
-            Link(s"/individuals/losses/$nino/loss-claims", GET, "list-loss-claims")
-          )
-      }
     }
   }
 

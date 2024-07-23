@@ -16,12 +16,9 @@
 
 package v4.models.response.createBFLoss
 
-import api.hateoas.{HateoasFactory, HateoasWrapper, Link}
-import api.hateoas.Method.{DELETE, GET, POST}
-import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v4.models.response.createBFLosses.{CreateBFLossHateoasData, CreateBFLossResponse}
+import v4.models.response.createBFLosses.CreateBFLossResponse
 
 class CreateBFLossResponseSpec extends UnitSpec {
 
@@ -59,26 +56,4 @@ class CreateBFLossResponseSpec extends UnitSpec {
       }
     }
   }
-
-  "HateoasFactory" must {
-    class Test extends MockAppConfig {
-      val hateoasFactory = new HateoasFactory(mockAppConfig)
-      val nino           = "someNino"
-      val lossId         = "lossId"
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-    }
-
-    "expose the correct links for create" in new Test {
-      hateoasFactory.wrap(lossIdResponse, CreateBFLossHateoasData(nino, lossId)) shouldBe
-        HateoasWrapper(
-          lossIdResponse,
-          Seq(
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", GET, "self"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId", DELETE, "delete-brought-forward-loss"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses/lossId/change-loss-amount", POST, "amend-brought-forward-loss")
-          )
-        )
-    }
-  }
-
 }

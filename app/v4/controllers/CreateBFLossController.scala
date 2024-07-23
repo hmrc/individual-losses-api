@@ -17,7 +17,6 @@
 package v4.controllers
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
@@ -25,7 +24,6 @@ import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4}
 import utils.IdGenerator
 import v4.controllers.validators.CreateBFLossValidatorFactory
-import v4.models.response.createBFLosses.CreateBFLossHateoasData
 import v4.services.CreateBFLossService
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +34,6 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
                                         service: CreateBFLossService,
                                         validatorFactory: CreateBFLossValidatorFactory,
-                                        hateoasFactory: HateoasFactory,
                                         auditService: AuditService,
                                         cc: ControllerComponents,
                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -56,10 +53,7 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
         RequestHandler
           .withValidator(validator)
           .withService(service.createBFLoss)
-          .withHateoasResultFrom(hateoasFactory)(
-            (_, responseData) => CreateBFLossHateoasData(nino, responseData.lossId),
-            successStatus = CREATED
-          )
+          .withPlainJsonResult(CREATED)
           .withAuditing(AuditHandler(
             auditService,
             auditType = "CreateBroughtForwardLoss",

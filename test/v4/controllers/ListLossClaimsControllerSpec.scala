@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, POST}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -28,9 +26,8 @@ import play.api.mvc.Result
 import routing.Version4
 import v4.controllers.validators.MockListLossClaimsValidatorFactory
 import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.listLossClaims.ListLossClaimsRequestData
-import v4.models.response.listLossClaims.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 import v4.services.MockListLossClaimsService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,8 +38,7 @@ class ListLossClaimsControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockListLossClaimsValidatorFactory
-    with MockListLossClaimsService
-    with MockHateoasFactory {
+    with MockListLossClaimsService {
 
   private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
@@ -52,78 +48,20 @@ class ListLossClaimsControllerSpec
   private val requestData =
     ListLossClaimsRequestData(parsedNino, TaxYear("2019"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
 
-  private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
-
-  private val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
-    List(
-      HateoasWrapper(
-        ListLossClaimsItem(
-          "XAIS12345678910",
-          TypeOfClaim.`carry-sideways`,
-          TypeOfLoss.`self-employment`,
-          "2020-21",
-          "AAZZ1234567890A",
-          Some(1),
-          "2020-07-13T12:13:48.763Z"),
-        List(testHateoasLink)
-      ),
-      HateoasWrapper(
-        ListLossClaimsItem(
-          "XAIS12345678911",
-          TypeOfClaim.`carry-sideways`,
-          TypeOfLoss.`uk-property-non-fhl`,
-          "2020-21",
-          "AAZZ1234567890B",
-          Some(2),
-          "2020-07-13T12:13:48.763Z"),
-        List(testHateoasLink)
-      )
-    ))
 
   private val mtdResponseJson = Json.parse(
     """
       |{
       |    "claims": [
       |        {
-      |            "businessId": "XAIS12345678910",
+      |            "businessId": "testId",
       |            "typeOfClaim": "carry-sideways",
       |            "typeOfLoss": "self-employment",
-      |            "taxYearClaimedFor": "2020-21",
-      |            "claimId": "AAZZ1234567890A",
+      |            "taxYearClaimedFor": "2018-19",
+      |            "claimId": "claimId",
       |            "sequence": 1,
-      |            "lastModified": "2020-07-13T12:13:48.763Z",
-      |            "links" : [
-      |               {
-      |                 "href": "/foo/bar",
-      |                 "method": "GET",
-      |                 "rel": "test-relationship"
-      |               }
-      |            ]
-      |        },
-      |        {
-      |            "businessId": "XAIS12345678911",
-      |            "typeOfClaim": "carry-sideways",
-      |            "typeOfLoss": "uk-property-non-fhl",
-      |            "taxYearClaimedFor": "2020-21",
-      |            "claimId": "AAZZ1234567890B",
-      |            "sequence": 2,
-      |            "lastModified": "2020-07-13T12:13:48.763Z",
-      |            "links" : [
-      |               {
-      |                 "href": "/foo/bar",
-      |                 "method": "GET",
-      |                 "rel": "test-relationship"
-      |               }
-      |            ]
+      |            "lastModified": "2020-07-13T12:13:48.763Z"
       |        }
-      |    ],
-      |    "links" : [
-      |       {
-      |         "href": "/foo/bar",
-      |         "method": "POST",
-      |         "rel": "test-create-relationship"
-      |       }
       |    ]
       |}
     """.stripMargin
@@ -137,10 +75,6 @@ class ListLossClaimsControllerSpec
         MockListLossClaimsService
           .list(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))))
-
-        MockHateoasFactory
-          .wrapList(singleClaimResponseModel(taxYear), ListLossClaimsHateoasData(validNino, taxYearClaimedFor = taxYear))
-          .returns(HateoasWrapper(hateoasResponse, List(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -171,7 +105,6 @@ class ListLossClaimsControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockListLossClaimsService,
       validatorFactory = mockListLossClaimsValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.GET
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Timestamp
 import api.models.errors._
@@ -31,7 +29,7 @@ import v4.controllers.validators.MockAmendBFLossValidatorFactory
 import v4.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v4.models.request
 import v4.models.request.amendBFLosses.{AmendBFLossRequestBody, AmendBFLossRequestData}
-import v4.models.response.amendBFLosses.{AmendBFLossHateoasData, AmendBFLossResponse}
+import v4.models.response.amendBFLosses.AmendBFLossResponse
 import v4.services.MockAmendBFLossService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,8 +40,7 @@ class AmendBFLossControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockAmendBFLossValidatorFactory
-    with MockAmendBFLossService
-    with MockHateoasFactory {
+    with MockAmendBFLossService {
 
   private val lossId       = "AAZZ1234567890a"
   private val parsedLossId = LossId(lossId)
@@ -58,7 +55,6 @@ class AmendBFLossControllerSpec
     lastModified = Timestamp("2022-07-13T12:13:48.763Z")
   )
 
-  private val testHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a", method = GET, rel = "self")
   private val requestData     = AmendBFLossRequestData(parsedNino, parsedLossId, amendBroughtForwardLoss = amendBFLoss)
 
   private val requestBody: JsValue = Json.parse(
@@ -76,14 +72,7 @@ class AmendBFLossControllerSpec
        |    "typeOfLoss": "self-employment",
        |    "lossAmount": $lossAmount,
        |    "taxYearBroughtForwardFrom": "2021-22",
-       |    "lastModified": "2022-07-13T12:13:48.763Z",
-       |    "links" : [
-       |     {
-       |       "href": "/individuals/losses/TC663795B/brought-forward-losses/AAZZ1234567890a",
-       |        "rel": "self",
-       |        "method": "GET"
-       |     }
-       |  ]
+       |    "lastModified": "2022-07-13T12:13:48.763Z"
        |}
     """.stripMargin
   )
@@ -96,10 +85,6 @@ class AmendBFLossControllerSpec
         MockAmendBFLossService
           .amend(request.amendBFLosses.AmendBFLossRequestData(parsedNino, LossId(lossId), amendBFLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
-
-        MockHateoasFactory
-          .wrap(amendBFLossResponse, AmendBFLossHateoasData(validNino, lossId))
-          .returns(HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
           expectedStatus = OK,
@@ -135,7 +120,6 @@ class AmendBFLossControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockAmendBFLossService,
       validatorFactory = mockAmendBFLossValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

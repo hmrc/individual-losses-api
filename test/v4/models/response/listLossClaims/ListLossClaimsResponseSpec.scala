@@ -16,8 +16,6 @@
 
 package v4.models.response.listLossClaims
 
-import api.hateoas.Link
-import api.hateoas.Method.{GET, POST, PUT}
 import config.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
@@ -143,38 +141,6 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
               Some(3),
               "2020-07-13T12:13:48.763Z")
           ))
-    }
-  }
-
-  "Links Factory" should {
-
-    "expose the correct top level links for list" in {
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-      ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
-        Seq(
-          Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
-          Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim"),
-          Link(s"/individuals/losses/$nino/loss-claims/order/$taxYear", PUT, "amend-loss-claim-order")
-        )
-    }
-
-    "expose the correct item level links for list" in {
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-      ListLossClaimsResponse.LinksFactory.itemLinks(
-        mockAppConfig,
-        ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear),
-        ListLossClaimsItem(
-          "businessId",
-          TypeOfClaim.`carry-sideways`,
-          TypeOfLoss.`self-employment`,
-          "2020",
-          "claimId",
-          Some(1),
-          "2020-07-13T12:13:48.763Z")
-      ) shouldBe
-        Seq(
-          Link(s"/individuals/losses/$nino/loss-claims/claimId", GET, "self")
-        )
     }
   }
 

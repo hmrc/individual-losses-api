@@ -7,13 +7,6 @@
 	  "lossAmount": 9420.01,
 	  "taxYearBroughtForwardFrom": "2021-22",
 	  "lastModified": "2022-12-02T11:55:55.763Z",
-	  "links": [
-		{
-		  "href": "/individuals/losses/TC663795B/brought-forward-losses/A2Za0911235813a",
-		  "rel": "self",
-		  "method": "GET"
-		}
-	  ]
 	},
 	{
 	  "lossId": "A2Za0911235813b",
@@ -22,13 +15,6 @@
 	  "lossAmount": 3298.50,
 	  "taxYearBroughtForwardFrom": "2021-22",
 	  "lastModified": "2022-12-03T11:55:55.763Z",
-	  "links": [
-		{
-		  "href": "/individuals/losses/TC663795B/brought-forward-losses/A2Za0911235813b",
-		  "rel": "self",
-		  "method": "GET"
-		}
-	  ]
 	},
 	{
 	  "lossId": "A2Za0911235813c",
@@ -37,13 +23,6 @@
 	  "lossAmount": 1882.99,
 	  "taxYearBroughtForwardFrom": "2021-22",
 	  "lastModified": "2022-12-04T11:55:55.763Z",
-	  "links": [
-		{
-		  "href": "/individuals/losses/TC663795B/brought-forward-losses/A2Za0911235813c",
-		  "rel": "self",
-		  "method": "GET"
-		}
-	  ]
 	},
 	{
 	  "lossId": "A2Za0911235813d",
@@ -52,13 +31,6 @@
 	  "lossAmount": 4882.99,
 	  "taxYearBroughtForwardFrom": "2021-22",
 	  "lastModified": "2022-12-05T11:55:55.763Z",
-	  "links": [
-		{
-		  "href": "/individuals/losses/TC663795B/brought-forward-losses/A2Za0911235813d",
-		  "rel": "self",
-		  "method": "GET"
-		}
-	  ]
 	},
 	{
 	  "lossId": "A2Za0911235813e",
@@ -67,13 +39,6 @@
 	  "lossAmount": 2985.99,
 	  "taxYearBroughtForwardFrom": "2021-22",
 	  "lastModified": "2022-12-06T11:55:55.763Z",
-	  "links": [
-		{
-		  "href": "/individuals/losses/TC663795B/brought-forward-losses/A2Za0911235813e",
-		  "rel": "self",
-		  "method": "GET"
-		}
-	  ]
 	},
 	{
 	  "lossId": "A2Za0911235813f",
@@ -82,25 +47,6 @@
 	  "lossAmount": 3553.99,
 	  "taxYearBroughtForwardFrom": "2021-22",
 	  "lastModified": "2022-12-07T11:55:55.763Z",
-	  "links": [
-		{
-		  "href": "/individuals/losses/TC663795B/brought-forward-losses/A2Za0911235813f",
-		  "rel": "self",
-		  "method": "GET"
-		}
-	  ]
-	}
-  ],
-  "links": [
-	{
-	  "href": "/individuals/losses/TC663795B/brought-forward-losses",
-	  "rel": "create-brought-forward-loss",
-	  "method": "POST"
-	},
-	{
-	  "href": "/individuals/losses/TC663795B/brought-forward-losses",
-	  "rel": "self",
-	  "method": "GET"
 	}
   ]
 }

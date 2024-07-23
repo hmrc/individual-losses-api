@@ -16,14 +16,11 @@
 
 package v4.models.response.listBFLosses
 
-import api.hateoas.{HateoasFactory, HateoasLinks, HateoasWrapper, Link}
-import api.hateoas.Method.{GET, POST}
-import config.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
 import v4.models.domain.bfLoss.TypeOfLoss
 
-class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
+class ListBFLossesResponseSpec extends UnitSpec {
 
   val item1: ListBFLossesItem = ListBFLossesItem(
     lossId = "lossId1",
@@ -102,30 +99,6 @@ class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
 
       downstreamResponseJson.as[ListBFLossesResponse[ListBFLossesItem]] shouldBe
         ListBFLossesResponse(Seq(item1, item2))
-    }
-  }
-
-  "HateoasFactory" must {
-    class Test extends MockAppConfig {
-      val hateoasFactory = new HateoasFactory(mockAppConfig)
-      val nino           = "someNino"
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-    }
-
-    "expose the correct links for list" in new Test {
-      hateoasFactory.wrapList(ListBFLossesResponse(Seq(item1, item2)), ListBFLossHateoasData(nino)) shouldBe
-        HateoasWrapper(
-          ListBFLossesResponse(
-            Seq(
-              HateoasWrapper(item1, Seq(Link(s"/individuals/losses/$nino/brought-forward-losses/lossId1", GET, "self"))),
-              HateoasWrapper(item2, Seq(Link(s"/individuals/losses/$nino/brought-forward-losses/lossId2", GET, "self")))
-            )
-          ),
-          Seq(
-            Link(s"/individuals/losses/$nino/brought-forward-losses", GET, "self"),
-            Link(s"/individuals/losses/$nino/brought-forward-losses", POST, "create-brought-forward-loss")
-          )
-        )
     }
   }
 

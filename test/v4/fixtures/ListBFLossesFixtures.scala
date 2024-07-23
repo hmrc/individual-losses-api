@@ -115,21 +115,4 @@ object ListBFLossesFixtures {
    """.stripMargin
   )
 
-  def baseHateoasLinks(nino: String): JsValue = Json.parse(
-    s"""
-      |[
-      |  {
-      |    "href": "/individuals/losses/$nino/brought-forward-losses",
-      |    "rel": "self",
-      |    "method": "GET"
-      |  },
-      |  {
-      |    "href": "/individuals/losses/$nino/brought-forward-losses",
-      |    "rel": "create-brought-forward-loss",
-      |    "method": "POST"
-      |  }
-      |]
-   """.stripMargin
-  )
-
 }

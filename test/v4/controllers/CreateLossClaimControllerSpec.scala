@@ -17,8 +17,6 @@
 package v4.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.GET
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -29,7 +27,7 @@ import routing.Version4
 import v4.controllers.validators.MockCreateLossClaimValidatorFactory
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLossClaimRequestData}
-import v4.models.response.createLossClaim.{CreateLossClaimHateoasData, CreateLossClaimResponse}
+import v4.models.response.createLossClaim.CreateLossClaimResponse
 import v4.services.MockCreateLossClaimService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,14 +38,11 @@ class CreateLossClaimControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockCreateLossClaimService
-    with MockCreateLossClaimValidatorFactory
-    with MockHateoasFactory {
+    with MockCreateLossClaimValidatorFactory {
 
-  private val lossClaimId = "AAZZ1234567890a"
   private val lossClaim   = CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
   private val requestData = CreateLossClaimRequestData(parsedNino, lossClaim)
   private val createLossClaimResponse = CreateLossClaimResponse("AAZZ1234567890a")
-  private val testHateoasLink         = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
   private val requestBody = Json.parse(
     """
@@ -63,14 +58,7 @@ class CreateLossClaimControllerSpec
   private val mtdResponseJson = Json.parse(
     """
       |{
-      |  "claimId": "AAZZ1234567890a",
-      |  "links" : [
-      |     {
-      |       "href": "/foo/bar",
-      |       "method": "GET",
-      |       "rel": "test-relationship"
-      |     }
-      |  ]
+      |  "claimId": "AAZZ1234567890a"
       |}
     """.stripMargin
   )
@@ -83,10 +71,6 @@ class CreateLossClaimControllerSpec
         MockCreateLossClaimService
           .create(CreateLossClaimRequestData(parsedNino, lossClaim))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, createLossClaimResponse))))
-
-        MockHateoasFactory
-          .wrap(createLossClaimResponse, CreateLossClaimHateoasData(validNino, lossClaimId))
-          .returns(HateoasWrapper(createLossClaimResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
           expectedStatus = CREATED,
@@ -122,7 +106,6 @@ class CreateLossClaimControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockCreateLossClaimService,
       validatorFactory = mockCreateLossClaimValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

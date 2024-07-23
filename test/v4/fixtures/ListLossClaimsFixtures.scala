@@ -33,18 +33,6 @@ object ListLossClaimsFixtures {
     lastModified = "2020-07-13T12:13:48.763Z"
   )
 
-  def claimHateoasLink(nino: String, claimId: String): JsValue = Json.parse(
-    s"""
-       |[
-       |  {
-       |    "href" : "/individuals/losses/$nino/loss-claims/$claimId",
-       |    "rel": "self",
-       |    "method": "GET"
-       |  }
-       |]
-       |""".stripMargin
-  )
-
   def nonFhlClaimMtdJson(taxYear: String, nino: String): JsValue = Json.parse(
     s"""
        |{
@@ -54,8 +42,7 @@ object ListLossClaimsFixtures {
        |  "taxYearClaimedFor": "${TaxYear.fromMtd(taxYear).asMtd}",
        |  "claimId": "AAZZ1234567890A",
        |  "sequence": 1,
-       |  "lastModified": "2020-07-13T12:13:763Z",
-       |  "links": ${claimHateoasLink(nino, "AAZZ1234567890A")}
+       |  "lastModified": "2020-07-13T12:13:763Z"
        |}
      """.stripMargin
   )
@@ -69,8 +56,7 @@ object ListLossClaimsFixtures {
        |  "taxYearClaimedFor": "${TaxYear.fromMtd(taxYear).asMtd}",
        |  "claimId": "AAZZ1234567890B",
        |  "sequence": 1,
-       |  "lastModified": "2020-07-13T12:13:763Z",
-       |  "links" : ${claimHateoasLink(nino, "AAZZ1234567890B")}
+       |  "lastModified": "2020-07-13T12:13:763Z"
        |}
        |""".stripMargin
   )
@@ -118,27 +104,4 @@ object ListLossClaimsFixtures {
        |]
    """.stripMargin
   )
-
-  def baseHateoasLinks(taxYear: String, nino: String): JsValue = Json.parse(
-    s"""
-      |[
-      |  {
-      |    "href": "/individuals/losses/$nino/loss-claims",
-      |    "method": "GET",
-      |    "rel": "self"
-      |  },
-      |  {
-      |    "href": "/individuals/losses/$nino/loss-claims",
-      |    "method": "POST",
-      |    "rel": "create-loss-claim"
-      |  },
-      |  {
-      |    "href": "/individuals/losses/$nino/loss-claims/order/$taxYear",
-      |    "method": "PUT",
-      |    "rel": "amend-loss-claim-order"
-      |  }
-      |]
-      |""".stripMargin
-  )
-
 }

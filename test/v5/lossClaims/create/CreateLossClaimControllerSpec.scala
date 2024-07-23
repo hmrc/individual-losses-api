@@ -17,7 +17,6 @@
 package v5.lossClaims.create
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.MockHateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -37,8 +36,7 @@ class CreateLossClaimControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockCreateLossClaimService
-    with MockCreateLossClaimValidatorFactory
-    with MockHateoasFactory {
+    with MockCreateLossClaimValidatorFactory {
 
   private val lossClaim   = Def1_CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
   private val requestData = Def1_CreateLossClaimRequestData(parsedNino, lossClaim)
