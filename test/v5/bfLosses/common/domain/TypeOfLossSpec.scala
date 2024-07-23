@@ -18,7 +18,7 @@ package v5.bfLosses.common.domain
 
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
+import v5.bfLosses.common.domain.TypeOfLoss._
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 
