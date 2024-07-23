@@ -18,10 +18,10 @@ package v5.bfLosses.list.model.response
 
 import play.api.libs.json.OWrites
 import utils.JsonWritesUtil
-import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}
+import v5.bfLosses.list.def1.model.response.Def1_ListBFLossesResponse
 
 trait ListBFLossesResponse {
-  val losses: Seq[ListBFLossesItem]
+  def isEmpty: Boolean
 }
 
 object ListBFLossesResponse extends JsonWritesUtil {

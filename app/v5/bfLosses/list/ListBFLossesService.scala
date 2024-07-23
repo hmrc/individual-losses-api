@@ -35,7 +35,7 @@ class ListBFLossesService @Inject()(connector: ListBFLossesConnector) extends Ba
         case Left(err) =>
           Left(mapDownstreamErrors(errorMap)(err))
 
-        case Right(responseWrapper) if responseWrapper.responseData.losses.isEmpty =>
+        case Right(responseWrapper) if responseWrapper.responseData.isEmpty =>
           Left(ErrorWrapper(ctx.correlationId, NotFoundError))
 
         case Right(result) =>
