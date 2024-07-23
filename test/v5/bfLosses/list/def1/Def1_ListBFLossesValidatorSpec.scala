@@ -21,7 +21,6 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 import v5.bfLosses.domain._
-import v5.bfLosses.list.ListBFLossesValidatorFactory
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
 
@@ -43,13 +42,11 @@ class Def1_ListBFLossesValidatorSpec extends UnitSpec {
   private val parsedIncomeSourceType = IncomeSourceType.`01`
   private val parsedBusinessId       = BusinessId(validBusinessId)
 
-  private val validatorFactory = new ListBFLossesValidatorFactory
-
   private def validator(nino: String,
                         taxYearBroughtForwardFrom: String,
                         typeOfLoss: Option[String],
                         businessId: Option[String]): Validator[ListBFLossesRequestData] =
-    validatorFactory.validator(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
+    new Def1_ListBFLossesValidator(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
 
   "running validation" should {
     "return the parsed request data" when {

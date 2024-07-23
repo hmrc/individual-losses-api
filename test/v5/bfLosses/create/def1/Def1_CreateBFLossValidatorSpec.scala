@@ -22,7 +22,6 @@ import api.models.errors._
 import config.{AppConfig, MockAppConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import support.UnitSpec
-import v5.bfLosses.create.CreateBFLossValidatorFactory
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 import v5.bfLosses.domain.TypeOfLoss
@@ -65,9 +64,7 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
       override def today(): LocalDate = LocalDate.parse("2022-07-11")
     }
 
-    private val validatorFactory = new CreateBFLossValidatorFactory
-
-    protected def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] = validatorFactory.validator(nino, body)
+    protected def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] = new Def1_CreateBFLossValidator(nino, body)
   }
 
   "running a validation" should {

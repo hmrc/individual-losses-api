@@ -20,10 +20,9 @@ import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v5.bfLosses.retrieve.RetrieveBFLossValidatorFactory
+import v5.bfLosses.domain._
 import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
-import v5.bfLosses.domain._
 
 class Def1_RetrieveBFLossValidatorSpec extends UnitSpec {
 
@@ -37,10 +36,8 @@ class Def1_RetrieveBFLossValidatorSpec extends UnitSpec {
   private val parsedNino   = Nino(validNino)
   private val parsedLossId = LossId(validLossId)
 
-  private val validatorFactory = new RetrieveBFLossValidatorFactory
-
   private def validator(nino: String, lossId: String): Validator[RetrieveBFLossRequestData] =
-    validatorFactory.validator(nino, lossId)
+    new Def1_RetrieveBFLossValidator(nino, lossId)
 
   "RetrieveBFLossValidator" should {
     "return the parsed request data" when {

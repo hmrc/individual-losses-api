@@ -20,7 +20,6 @@ import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v5.bfLosses.delete.DeleteBFLossValidatorFactory
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 import v5.bfLosses.domain._
@@ -37,9 +36,7 @@ class Def1_DeleteBFLossValidatorFactorySpec extends UnitSpec {
   private val parsedNino   = Nino(validNino)
   private val parsedLossId = LossId(validLossId)
 
-  private val validatorFactory = new DeleteBFLossValidatorFactory
-
-  private def validator(nino: String, lossId: String): Validator[DeleteBFLossRequestData] = validatorFactory.validator(nino, lossId)
+  private def validator(nino: String, lossId: String): Validator[DeleteBFLossRequestData] = new Def1_DeleteBFLossValidator(nino, lossId)
 
   "running a validation" should {
     "return the parsed request data" when {

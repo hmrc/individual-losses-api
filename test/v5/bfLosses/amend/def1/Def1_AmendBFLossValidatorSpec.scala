@@ -20,7 +20,6 @@ import api.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v5.bfLosses.amend.AmendBFLossValidatorFactory
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v5.bfLosses.domain._
 
@@ -36,9 +35,7 @@ class Def1_AmendBFLossValidatorSpec extends UnitSpec {
   private val parsedNino   = Nino(validNino)
   private val parsedLossId = LossId(validLossId)
 
-  private val validatorFactory = new AmendBFLossValidatorFactory
-
-  private def validator(nino: String, lossId: String, body: JsValue) = validatorFactory.validator(nino, lossId, body)
+  private def validator(nino: String, lossId: String, body: JsValue) = new Def1_AmendBFLossValidator(nino, lossId, body)
 
   "running a validation" should {
     "return the parsed domain object" when {
