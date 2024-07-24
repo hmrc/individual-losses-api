@@ -16,7 +16,6 @@
 
 package v5.bfLosses.retrieve.def1
 
-import api.hateoas.HateoasLinks
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -34,8 +33,6 @@ class Def1_RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
   val lastModified      = "2018-07-13T12:13:48.763Z"
   val taxYear           = "2019-20"
   val downstreamTaxYear = "2020"
-
-  object Hateoas extends HateoasLinks
 
   val downstreamResponseJson: JsValue = Json.parse(
     s"""
@@ -61,23 +58,7 @@ class Def1_RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
          |    "typeOfLoss": "self-employment",
          |    "taxYearBroughtForwardFrom": "$taxYear",
          |    "lossAmount": $lossAmount,
-         |    "lastModified":"$lastModified",
-         |    "links": [{
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-         |      "method": "POST",
-         |      "rel": "amend-brought-forward-loss"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "DELETE",
-         |      "rel": "delete-brought-forward-loss"
-         |    }
-         |    ]
+         |    "lastModified":"$lastModified"
          |}
       """.stripMargin)
 

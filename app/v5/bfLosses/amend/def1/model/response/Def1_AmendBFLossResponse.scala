@@ -16,12 +16,10 @@
 
 package v5.bfLosses.amend.def1.model.response
 
-import api.hateoas.{HateoasLinks, HateoasLinksFactory, Link}
 import api.models.domain.{TaxYear, Timestamp}
-import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v5.bfLosses.amend.model.response.{AmendBFLossResponse, ResponseData}
+import v5.bfLosses.amend.model.response.AmendBFLossResponse
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 
 case class Def1_AmendBFLossResponse(businessId: String,
@@ -30,7 +28,7 @@ case class Def1_AmendBFLossResponse(businessId: String,
                                taxYearBroughtForwardFrom: String,
                                lastModified: Timestamp) extends AmendBFLossResponse
 
-object Def1_AmendBFLossResponse extends HateoasLinks {
+object Def1_AmendBFLossResponse {
   implicit val writes: OWrites[Def1_AmendBFLossResponse] = Json.writes[Def1_AmendBFLossResponse]
 
   implicit val reads: Reads[Def1_AmendBFLossResponse] = (
@@ -41,13 +39,5 @@ object Def1_AmendBFLossResponse extends HateoasLinks {
       (__ \ "taxYear").read[String].map(TaxYear(_)).map(_.asMtd) and
       (__ \ "submissionDate").read[Timestamp]
   )(Def1_AmendBFLossResponse.apply _)
-
-  implicit object LinksFactory extends HateoasLinksFactory[AmendBFLossResponse, ResponseData] {
-
-    override def links(appConfig: AppConfig, data: ResponseData): Seq[Link] = {
-      import data._
-      Seq(getBFLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId))
-    }
-  }
 
 }

@@ -16,7 +16,6 @@
 
 package v5.bfLosses.amend.def1
 
-import api.hateoas.HateoasLinks
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -63,7 +62,6 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |      }
       """.stripMargin
 
-  object Hateoas extends HateoasLinks
 
   private trait Test {
 
@@ -76,24 +74,7 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
          |    "typeOfLoss": "self-employment",
          |    "lossAmount": 2345.67,
          |    "taxYearBroughtForwardFrom": "2021-22",
-         |    "lastModified": "2022-07-13T12:13:48.763Z",
-         |    "links": [
-         |      {
-         |        "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890a",
-         |        "rel": "self",
-         |        "method": "GET"
-         |      },
-         |      {
-         |        "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890a/change-loss-amount",
-         |        "rel": "amend-brought-forward-loss",
-         |        "method": "POST"
-         |      },
-         |      {
-         |        "href": "/individuals/losses/AA123456A/brought-forward-losses/AAZZ1234567890a",
-         |        "rel": "delete-brought-forward-loss",
-         |        "method": "DELETE"
-         |      }
-         |     ]
+         |    "lastModified": "2022-07-13T12:13:48.763Z"
          |}
       """.stripMargin)
 

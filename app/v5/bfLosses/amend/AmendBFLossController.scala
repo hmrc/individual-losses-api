@@ -17,7 +17,6 @@
 package v5.bfLosses.amend
 
 import api.controllers._
-import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
@@ -25,8 +24,6 @@ import play.api.mvc.{Action, ControllerComponents}
 import routing.{Version, Version4, Version5}
 import utils.IdGenerator
 import v5.bfLosses.amend
-import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse.LinksFactory
-import v5.bfLosses.amend.model.response.ResponseData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -36,7 +33,6 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                        val lookupService: MtdIdLookupService,
                                        service: amend.AmendBFLossService,
                                        validatorFactory: AmendBFLossValidatorFactory,
-                                       hateoasFactory: HateoasFactory,
                                        auditService: AuditService,
                                        cc: ControllerComponents,
                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -56,7 +52,7 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
         RequestHandler
           .withValidator(validator)
           .withService(service.amendBFLoss)
-          .withHateoasResult(hateoasFactory)(ResponseData(nino, lossId))
+          .withPlainJsonResult()
           .withAuditing(AuditHandler(
             auditService,
             auditType = "AmendBroughtForwardLoss",
