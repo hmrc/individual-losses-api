@@ -16,24 +16,24 @@
 
 package v5.bfLosses.common.resolvers
 
-import shared.controllers.validators.resolvers.Resolver
 import api.models.errors.TypeOfLossFormatError
-import shared.models.errors.MtdError
 import cats.data.Validated.{Invalid, Valid}
 import cats.data._
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 import v5.bfLosses.common.domain.TypeOfLoss
 
-object ResolveBFTypeOfLossFromJson extends Resolver[JsValue, Option[TypeOfLoss]] {
-  override def apply(body: JsValue, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[TypeOfLoss]] = {
+object ResolveBFTypeOfLossFromJson extends ResolverSupport {
+
+  def apply(body: JsValue, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[TypeOfLoss]] = {
     def useError = maybeError.getOrElse(TypeOfLossFormatError).maybeWithExtraPath(errorPath)
 
     val jsPath = body \ "typeOfLoss"
 
     if (jsPath.isEmpty) {
       Valid(None)
-    }
-    else {
+    } else {
       jsPath.validate[String] match {
         case JsError(_) => Invalid(List(useError))
         case JsSuccess(value, _) =>
@@ -44,4 +44,5 @@ object ResolveBFTypeOfLossFromJson extends Resolver[JsValue, Option[TypeOfLoss]]
       }
     }
   }
+
 }

@@ -16,21 +16,21 @@
 
 package v4.controllers.validators.resolvers
 
-import api.controllers.validators.resolvers.Resolver
 import api.models.errors.LossIdFormatError
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 import v4.models.domain.bfLoss.LossId
 
 import scala.util.matching.Regex
 
-object ResolveBFLossId extends Resolver[String, LossId] {
+object ResolveBFLossId extends ResolverSupport {
 
   protected val regexFormat: Regex = "^[A-Za-z0-9]{15}$".r
   protected val error: MtdError    = LossIdFormatError
 
-  override def apply(value: String, error_NotUsed: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], LossId] =
+  def apply(value: String, error_NotUsed: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], LossId] =
     if (regexFormat.matches(value))
       Valid(LossId(value))
     else

@@ -16,19 +16,19 @@
 
 package v4.controllers.validators.resolvers
 
-import api.controllers.validators.resolvers.Resolver
 import api.models.errors.TypeOfClaimFormatError
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 import v4.models.domain.lossClaim.TypeOfClaim
 
 /** Given the whole request body, checks for the typeOfClaim field and validates it if present.
   */
-object ResolveLossTypeOfClaimFromJson extends Resolver[JsValue, Option[TypeOfClaim]] {
+object ResolveLossTypeOfClaimFromJson extends ResolverSupport {
 
-  override def apply(body: JsValue, error: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[TypeOfClaim]] = {
+  def apply(body: JsValue, error: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[TypeOfClaim]] = {
     def useError = error.getOrElse(TypeOfClaimFormatError).maybeWithExtraPath(errorPath)
 
     val jspath = body \ "typeOfClaim"
