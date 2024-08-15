@@ -16,8 +16,9 @@
 
 package v5.bfLosses.common.resolvers
 
-import api.controllers.validators.resolvers.Resolver
-import api.models.errors.{MtdError, TypeOfLossFormatError}
+import shared.controllers.validators.resolvers.Resolver
+import api.models.errors.TypeOfLossFormatError
+import shared.models.errors.MtdError
 import cats.data.Validated.{Invalid, Valid}
 import cats.data._
 import play.api.libs.json.{JsError, JsSuccess, JsValue}

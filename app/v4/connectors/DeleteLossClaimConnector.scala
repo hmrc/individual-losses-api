@@ -16,10 +16,10 @@
 
 package v4.connectors
 
-import api.connectors.DownstreamUri.DesUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import shared.connectors.DownstreamUri.DesUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
@@ -29,8 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def deleteLossClaim(
-      request: DeleteLossClaimRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def deleteLossClaim(request: DeleteLossClaimRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 

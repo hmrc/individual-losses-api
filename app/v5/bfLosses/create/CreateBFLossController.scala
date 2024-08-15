@@ -16,25 +16,25 @@
 
 package v5.bfLosses.create
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4, Version5}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.{Version, Version4, Version5}
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
-                                       val lookupService: MtdIdLookupService,
-                                       service: CreateBFLossService,
-                                       validatorFactory: CreateBFLossValidatorFactory,
-                                       auditService: AuditService,
-                                       cc: ControllerComponents,
-                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
+                                        val lookupService: MtdIdLookupService,
+                                        service: CreateBFLossService,
+                                        validatorFactory: CreateBFLossValidatorFactory,
+                                        auditService: AuditService,
+                                        cc: ControllerComponents,
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

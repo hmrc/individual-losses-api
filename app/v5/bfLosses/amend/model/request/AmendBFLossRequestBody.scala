@@ -17,7 +17,7 @@
 package v5.bfLosses.amend.model.request
 
 import play.api.libs.json._
-import utils.JsonWritesUtil
+import shared.utils.JsonWritesUtil
 import v5.bfLosses.amend.def1.model.request.Def1_AmendBFLossRequestBody
 
 trait AmendBFLossRequestBody

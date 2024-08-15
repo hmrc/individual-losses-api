@@ -16,7 +16,7 @@
 
 package v5.lossClaims.amendType.model.request
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import v4.models.domain.lossClaim.ClaimId
 import v5.lossClaims.amendType.AmendLossClaimTypeSchema
 

@@ -16,9 +16,9 @@
 
 package v5.bfLosses.delete.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.ResolveNino
-import api.models.errors.MtdError
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.ResolveNino
+import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import v5.bfLosses.common.resolvers.ResolveBFLossId
@@ -28,11 +28,12 @@ import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 import javax.inject.Singleton
 
 @Singleton
-class Def1_DeleteBFLossValidator (nino: String, body: String) extends Validator[DeleteBFLossRequestData]{
+class Def1_DeleteBFLossValidator(nino: String, body: String) extends Validator[DeleteBFLossRequestData] {
 
   def validate: Validated[Seq[MtdError], DeleteBFLossRequestData] =
     (
       ResolveNino(nino),
       ResolveBFLossId(body)
     ).mapN(Def1_DeleteBFLossRequestData)
+
 }

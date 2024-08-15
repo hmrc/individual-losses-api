@@ -16,9 +16,10 @@
 
 package v4.services
 
-import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.ListLossClaimsConnector
 import v4.models.request.listLossClaims.ListLossClaimsRequestData
 import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
@@ -29,8 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) extends BaseService {
 
   def listLossClaims(request: ListLossClaimsRequestData)(implicit
-                                                         ctx: RequestContext,
-                                                         ec: ExecutionContext): Future[ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] =
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] =
     connector
       .listLossClaims(request)
       .map {

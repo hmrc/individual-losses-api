@@ -16,12 +16,13 @@
 
 package v5.lossClaims.amendOrder.def1
 
-import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.ResolveParsedNumber
 import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.ResolveParsedNumber
+import shared.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 import v4.controllers.validators.resolvers.ResolveLossClaimId
 import v5.lossClaims.amendOrder.def1.model.request.Def1_AmendLossClaimsOrderRequestData
 

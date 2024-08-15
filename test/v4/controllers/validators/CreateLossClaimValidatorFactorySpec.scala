@@ -17,7 +17,7 @@
 package v4.controllers.validators
 
 import api.controllers.validators.Validator
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsObject, JsValue, Json}

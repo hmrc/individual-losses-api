@@ -16,9 +16,10 @@
 
 package v4.services
 
-import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.ListBFLossesConnector
 import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
@@ -29,8 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ListBFLossesService @Inject() (connector: ListBFLossesConnector) extends BaseService {
 
   def listBFLosses(request: ListBFLossesRequestData)(implicit
-                                                     ctx: RequestContext,
-                                                     ec: ExecutionContext): Future[ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]] =
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]] =
     connector
       .listBFLosses(request)
       .map {

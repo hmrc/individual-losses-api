@@ -16,13 +16,14 @@
 
 package v5.bfLosses.amend.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
-import api.models.errors.{LossIdFormatError, MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
+import api.models.errors.LossIdFormatError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
+import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 import v5.bfLosses.common.domain.LossId
@@ -30,7 +31,7 @@ import v5.bfLosses.common.domain.LossId
 import javax.inject.Singleton
 
 @Singleton
-class Def1_AmendBFLossValidator(nino: String, lossId:String, body: JsValue) extends Validator[AmendBFLossRequestData] {
+class Def1_AmendBFLossValidator(nino: String, lossId: String, body: JsValue) extends Validator[AmendBFLossRequestData] {
 
   private val resolveLossId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, LossIdFormatError)
   private val resolveJson   = new ResolveNonEmptyJsonObject[Def1_AmendBFLossRequestBody]()
@@ -56,6 +57,5 @@ class Def1_AmendBFLossValidator(nino: String, lossId:String, body: JsValue) exte
       Invalid(List(RuleIncorrectOrEmptyBodyError))
     }
   }
-
 
 }

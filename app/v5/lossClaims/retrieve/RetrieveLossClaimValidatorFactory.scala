@@ -16,7 +16,7 @@
 
 package v5.lossClaims.retrieve
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import v5.lossClaims.retrieve.RetrieveLossClaimSchema.Def1
 import v5.lossClaims.retrieve.def1.Def1_RetrieveLossClaimValidator
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData

@@ -16,11 +16,12 @@
 
 package v4.models.response.retrieveLossClaim
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
-import api.models.domain.{TaxYear, Timestamp}
-import config.AppConfig
+import api.hateoas.HateoasLinks
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
+import shared.models.domain.{TaxYear, Timestamp}
 import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 
 case class RetrieveLossClaimResponse(taxYearClaimedFor: String,

@@ -17,7 +17,8 @@
 package v4.controllers.validators.resolvers
 
 import api.controllers.validators.resolvers.Resolver
-import api.models.errors.{LossIdFormatError, MtdError}
+import api.models.errors.LossIdFormatError
+import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import v4.models.domain.bfLoss.LossId

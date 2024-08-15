@@ -20,6 +20,7 @@ import api.controllers.validators.resolvers.Resolver
 import api.models.errors.{ClaimIdFormatError, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import shared.models.errors.MtdError
 import v4.models.domain.lossClaim.ClaimId
 
 import scala.util.matching.Regex

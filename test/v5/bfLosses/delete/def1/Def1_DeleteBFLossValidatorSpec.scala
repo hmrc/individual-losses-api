@@ -17,7 +17,7 @@
 package v5.bfLosses.delete.def1
 
 import api.controllers.validators.Validator
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v5.bfLosses.common.domain.LossId

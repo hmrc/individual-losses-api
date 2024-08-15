@@ -16,7 +16,7 @@
 
 package v5.lossClaims.create
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{ServiceOutcome, ServiceSpec}

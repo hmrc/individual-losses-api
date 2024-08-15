@@ -16,17 +16,18 @@
 
 package v5.bfLosses.retrieve.def1.model.response
 
-import api.models.domain.{TaxYear, Timestamp}
+import shared.models.domain.{TaxYear, Timestamp}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
 case class Def1_RetrieveBFLossResponse(businessId: String,
-                                  typeOfLoss: TypeOfLoss,
-                                  lossAmount: BigDecimal,
-                                  taxYearBroughtForwardFrom: String,
-                                  lastModified: Timestamp) extends RetrieveBFLossResponse
+                                       typeOfLoss: TypeOfLoss,
+                                       lossAmount: BigDecimal,
+                                       taxYearBroughtForwardFrom: String,
+                                       lastModified: Timestamp)
+    extends RetrieveBFLossResponse
 
 object Def1_RetrieveBFLossResponse {
   implicit val writes: OWrites[Def1_RetrieveBFLossResponse] = Json.writes[Def1_RetrieveBFLossResponse]

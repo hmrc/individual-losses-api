@@ -16,14 +16,14 @@
 
 package v4.controllers
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.routing.{Version, Version4}
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v4.controllers.validators.AmendBFLossValidatorFactory
 import v4.models.response.amendBFLosses.AmendBFLossHateoasData
 import v4.services.AmendBFLossService

@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError}
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.CreateLossClaimConnector
 import v4.models.request.createLossClaim.CreateLossClaimRequestData
 import v4.models.response.createLossClaim.CreateLossClaimResponse

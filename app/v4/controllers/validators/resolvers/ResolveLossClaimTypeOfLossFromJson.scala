@@ -17,7 +17,8 @@
 package v4.controllers.validators.resolvers
 
 import api.controllers.validators.resolvers.Resolver
-import api.models.errors.{MtdError, TypeOfLossFormatError}
+import api.models.errors.TypeOfLossFormatError
+import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.{JsError, JsSuccess, JsValue}

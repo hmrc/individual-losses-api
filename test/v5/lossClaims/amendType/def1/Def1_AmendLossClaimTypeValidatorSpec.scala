@@ -16,7 +16,7 @@
 
 package v5.lossClaims.amendType.def1
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.errors._
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec

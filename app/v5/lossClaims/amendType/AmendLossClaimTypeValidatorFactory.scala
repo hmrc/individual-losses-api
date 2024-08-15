@@ -16,7 +16,7 @@
 
 package v5.lossClaims.amendType
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import play.api.libs.json.JsValue
 import v5.lossClaims.amendType.AmendLossClaimTypeSchema.Def1
 import v5.lossClaims.amendType.def1.Def1_AmendLossClaimTypeValidator
@@ -30,7 +30,7 @@ class AmendLossClaimTypeValidatorFactory {
   def validator(nino: String, claimId: String, body: JsValue): Validator[AmendLossClaimTypeRequestData] = {
     val schema = AmendLossClaimTypeSchema.schema
     schema match {
-      case Def1 => new Def1_AmendLossClaimTypeValidator(nino, claimId,body)
+      case Def1 => new Def1_AmendLossClaimTypeValidator(nino, claimId, body)
     }
   }
 

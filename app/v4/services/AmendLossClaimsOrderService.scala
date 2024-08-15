@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.{BaseService, ServiceOutcome}
+import api.models.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.AmendLossClaimsConnector
 import v4.models.request.amendLossClaimsOrder.AmendLossClaimsOrderRequestData
 import v4.models.response.amendLossClaimsOrder.AmendLossClaimsOrderResponse
@@ -30,8 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsConnector) extends BaseService {
 
   def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData)(implicit
-                                                                     ctx: RequestContext,
-                                                                     ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
 
     connector
       .amendLossClaimsOrder(request)

@@ -16,9 +16,10 @@
 
 package v5.lossClaims.list
 
-import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v5.lossClaims.list.def1.response.Def1_ListLossClaimsResponse
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
 import v5.lossClaims.list.model.response.ListLossClaimsResponse

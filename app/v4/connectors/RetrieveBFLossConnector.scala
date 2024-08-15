@@ -16,10 +16,10 @@
 
 package v4.connectors
 
-import api.connectors.DownstreamUri.IfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v4.models.response.retrieveBFLoss.RetrieveBFLossResponse
@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrieveBFLoss(request: RetrieveBFLossRequestData)(implicit
-                                                         hc: HeaderCarrier,
-                                                         ec: ExecutionContext,
-                                                         correlationId: String): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
     import request._
 
     get(IfsUri[RetrieveBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId"))

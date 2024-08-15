@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors.{MtdError, NinoFormatError, NotFoundError}
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.RetrieveBFLossConnector
 import v4.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v4.models.response.retrieveBFLoss.RetrieveBFLossResponse

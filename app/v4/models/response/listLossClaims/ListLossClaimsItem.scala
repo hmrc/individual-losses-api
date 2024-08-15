@@ -16,7 +16,7 @@
 
 package v4.models.response.listLossClaims
 
-import api.models.domain.TaxYear
+import shared.models.domain.TaxYear
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}

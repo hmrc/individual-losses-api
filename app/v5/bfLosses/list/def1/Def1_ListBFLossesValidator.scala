@@ -16,12 +16,12 @@
 
 package v5.bfLosses.list.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
 import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
+import shared.models.errors.MtdError
 import v5.bfLosses.common.domain.TypeOfLoss._
 import v5.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
@@ -30,12 +30,10 @@ import v5.bfLosses.list.model.request.ListBFLossesRequestData
 import javax.inject.Singleton
 
 @Singleton
-class Def1_ListBFLossesValidator(nino: String,
-                                 taxYearBroughtForwardFrom: String,
-                                 typeOfLoss: Option[String],
-                                 businessId: Option[String]) extends Validator[ListBFLossesRequestData] {
+class Def1_ListBFLossesValidator(nino: String, taxYearBroughtForwardFrom: String, typeOfLoss: Option[String], businessId: Option[String])
+    extends Validator[ListBFLossesRequestData] {
 
-  val minimumTaxYearBFLoss = 2019
+  val minimumTaxYearBFLoss    = 2019
   val minimumTaxYearLossClaim = 2020
 
   private val resolveTaxYear = DetailedResolveTaxYear(maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))

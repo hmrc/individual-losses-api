@@ -17,7 +17,7 @@
 package v5.lossClaims.delete
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
