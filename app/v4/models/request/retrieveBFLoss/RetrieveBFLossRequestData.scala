@@ -16,7 +16,7 @@
 
 package v4.models.request.retrieveBFLoss
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import v4.models.domain.bfLoss.LossId
 
 case class RetrieveBFLossRequestData(nino: Nino, lossId: LossId)

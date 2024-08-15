@@ -17,7 +17,7 @@
 package v5.lossClaims.retrieve.def1
 
 import api.controllers.validators.Validator
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v4.models.domain.lossClaim.ClaimId

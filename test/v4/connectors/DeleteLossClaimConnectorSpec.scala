@@ -17,7 +17,7 @@
 package v4.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.ClaimId
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData

@@ -16,14 +16,14 @@
 
 package v4.controllers.validators.resolvers
 
-import api.controllers.validators.resolvers.Resolver
-import api.models.errors.MtdError
 import cats.data.Validated
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 import v4.models.domain.bfLoss.IncomeSourceType
 
-object ResolveBFIncomeSourceType extends Resolver[String, Option[IncomeSourceType]] {
+object ResolveBFIncomeSourceType extends ResolverSupport {
 
-  override def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[IncomeSourceType]] =
+  def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[IncomeSourceType]] =
     ResolveBFTypeOfLoss(value, maybeError, errorPath)
       .map(_.toIncomeSourceType)
 

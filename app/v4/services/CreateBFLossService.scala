@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.controllers.RequestContext
-import api.models.errors.{RuleDuplicateSubmissionError, _}
-import api.services.{BaseService, ServiceOutcome}
+import api.models.errors.RuleDuplicateSubmissionError
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.CreateBFLossConnector
 import v4.models.request.createBFLosses.CreateBFLossRequestData
 import v4.models.response.createBFLosses.CreateBFLossResponse
@@ -29,7 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends BaseService {
 
-  def createBFLoss(request: CreateBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateBFLossResponse]] =
+  def createBFLoss(
+      request: CreateBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateBFLossResponse]] =
     connector
       .createBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

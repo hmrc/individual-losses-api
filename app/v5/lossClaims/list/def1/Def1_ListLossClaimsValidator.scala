@@ -16,12 +16,13 @@
 
 package v5.lossClaims.list.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
 import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import shared.models.errors.MtdError
 import v4.controllers.validators.minimumTaxYearLossClaim
 import v4.controllers.validators.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
 import v4.models.domain.lossClaim.TypeOfClaim

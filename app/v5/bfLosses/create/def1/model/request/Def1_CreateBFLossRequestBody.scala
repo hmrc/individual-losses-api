@@ -16,7 +16,7 @@
 
 package v5.bfLosses.create.def1.model.request
 
-import api.models.domain.TaxYear
+import shared.models.domain.TaxYear
 import play.api.libs.json._
 import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.common.domain.TypeOfLoss._
@@ -34,17 +34,17 @@ object Def1_CreateBFLossRequestBody {
     loss.typeOfLoss match {
       case `uk-property-fhl` | `uk-property-non-fhl` | `foreign-property-fhl-eea` | `foreign-property` =>
         Json.obj(
-          "incomeSourceId" -> loss.businessId,
-          "incomeSourceType" -> loss.typeOfLoss.toIncomeSourceType,
+          "incomeSourceId"            -> loss.businessId,
+          "incomeSourceType"          -> loss.typeOfLoss.toIncomeSourceType,
           "taxYearBroughtForwardFrom" -> loss.taxYear.year,
-          "broughtForwardLossAmount" -> loss.lossAmount
+          "broughtForwardLossAmount"  -> loss.lossAmount
         )
       case `self-employment` | `self-employment-class4` =>
         Json.obj(
-          "incomeSourceId" -> loss.businessId,
-          "lossType" -> loss.typeOfLoss.toLossType,
+          "incomeSourceId"            -> loss.businessId,
+          "lossType"                  -> loss.typeOfLoss.toLossType,
           "taxYearBroughtForwardFrom" -> loss.taxYear.year,
-          "broughtForwardLossAmount" -> loss.lossAmount
+          "broughtForwardLossAmount"  -> loss.lossAmount
         )
     }
   }

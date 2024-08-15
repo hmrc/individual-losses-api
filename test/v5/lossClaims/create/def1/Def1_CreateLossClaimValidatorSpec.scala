@@ -16,7 +16,7 @@
 
 package v5.lossClaims.create.def1
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsObject, JsValue, Json}

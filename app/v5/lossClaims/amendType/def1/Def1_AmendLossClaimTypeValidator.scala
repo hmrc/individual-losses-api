@@ -16,9 +16,10 @@
 
 package v5.lossClaims.amendType.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern}
-import api.models.errors.{ClaimIdFormatError, MtdError}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern}
+import api.models.errors.ClaimIdFormatError
+import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
 import play.api.libs.json.JsValue

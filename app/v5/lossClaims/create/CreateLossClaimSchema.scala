@@ -17,7 +17,7 @@
 package v5.lossClaims.create
 
 import play.api.libs.json.Reads
-import schema.DownstreamReadable
+import shared.schema.DownstreamReadable
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
 import v5.lossClaims.create.model.response.CreateLossClaimResponse
 

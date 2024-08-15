@@ -17,7 +17,7 @@
 package v5.bfLosses.create
 
 import play.api.libs.json.Reads
-import schema.DownstreamReadable
+import shared.schema.DownstreamReadable
 import v5.bfLosses.create.model.response.CreateBFLossResponse
 import v5.bfLosses.create.def1.model.response.Def1_CreateBFLossResponse
 

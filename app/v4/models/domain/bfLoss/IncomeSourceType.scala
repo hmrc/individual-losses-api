@@ -17,7 +17,7 @@
 package v4.models.domain.bfLoss
 
 import play.api.libs.json._
-import utils.enums.Enums
+import shared.utils.enums.Enums
 
 sealed trait IncomeSourceType {
   def toTypeOfLoss: TypeOfLoss

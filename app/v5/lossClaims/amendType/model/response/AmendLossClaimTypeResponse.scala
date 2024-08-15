@@ -17,7 +17,7 @@
 package v5.lossClaims.amendType.model.response
 
 import play.api.libs.json._
-import utils.JsonWritesUtil
+import shared.utils.JsonWritesUtil
 import v5.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 
 trait AmendLossClaimTypeResponse

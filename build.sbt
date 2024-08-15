@@ -16,9 +16,6 @@
 
 import sbt.*
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-
-val appName = "individual-losses-api"
 
 lazy val ItTest = config("it") extend Test
 
@@ -53,9 +50,11 @@ lazy val microservice = Project(appName, file("."))
     Runtime / unmanagedClasspath += baseDirectory.value / "resources",
     ItTest / javaOptions += "-Dlogger.resource=logback-test.xml",
     ItTest / parallelExecution := false,
-    addTestReportOption(ItTest, directory = "int-test-reports")
+    addTestReportOption(ItTest, "int-test-reports")
   )
   .settings(
     resolvers += Resolver.jcenterRepo
   )
   .settings(PlayKeys.playDefaultPort := 9779)
+
+val appName = "individual-losses-api"

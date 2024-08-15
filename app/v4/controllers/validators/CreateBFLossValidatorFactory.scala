@@ -16,10 +16,10 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers._
 import api.models.domain.TodaySupplier
-import api.models.errors._
+import shared.models.errors._
 import cats.data.Validated
 import cats.implicits._
 import play.api.libs.json.JsValue

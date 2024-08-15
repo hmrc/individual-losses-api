@@ -17,7 +17,7 @@
 package v5.bfLosses.common.domain
 
 import play.api.libs.json._
-import utils.enums.Enums
+import shared.utils.enums.Enums
 
 sealed trait LossType {
   def toTypeOfLoss: TypeOfLoss

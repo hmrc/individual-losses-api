@@ -16,6 +16,6 @@
 
 package v4.models.request.createBFLosses
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 
 case class CreateBFLossRequestData(nino: Nino, broughtForwardLoss: CreateBFLossRequestBody)

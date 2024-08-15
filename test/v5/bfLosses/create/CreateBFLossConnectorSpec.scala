@@ -17,7 +17,7 @@
 package v5.bfLosses.create
 
 import api.connectors.ConnectorSpec
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.create.CreateBFLossConnector

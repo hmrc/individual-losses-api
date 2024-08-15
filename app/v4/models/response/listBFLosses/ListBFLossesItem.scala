@@ -16,7 +16,7 @@
 
 package v4.models.response.listBFLosses
 
-import api.models.domain.TaxYear
+import shared.models.domain.TaxYear
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
 import v4.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}

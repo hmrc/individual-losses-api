@@ -16,10 +16,11 @@
 
 package v5.lossClaims.amendType
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import api.models.errors.{ClaimIdFormatError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 
@@ -28,8 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnector) extends BaseService {
 
-  def amendLossClaimType(
-      request: AmendLossClaimTypeRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimTypeResponse]] =
+  def amendLossClaimType(request: AmendLossClaimTypeRequestData)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimTypeResponse]] =
     connector
       .amendLossClaimType(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

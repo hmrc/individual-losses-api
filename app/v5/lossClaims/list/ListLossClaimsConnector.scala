@@ -16,13 +16,14 @@
 
 package v5.lossClaims.list
 
-import api.connectors.DownstreamUri.TaxYearSpecificIfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import config.AppConfig
+import shared.config.AppConfig
+import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
 import v5.lossClaims.list.model.response.ListLossClaimsResponse
+import v5.lossClaims.retrieve.RetrieveLossClaimSchema.Def1.DownstreamResp
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +37,6 @@ class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: Ap
       correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse]] = {
 
     import request._
-    import schema._
 
     val downstreamUri: DownstreamUri[DownstreamResp] = TaxYearSpecificIfsUri(
       s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}")

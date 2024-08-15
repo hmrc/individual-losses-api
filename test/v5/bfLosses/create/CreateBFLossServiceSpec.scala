@@ -16,7 +16,7 @@
 
 package v5.bfLosses.create
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.errors.{RuleDuplicateSubmissionError, _}
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec

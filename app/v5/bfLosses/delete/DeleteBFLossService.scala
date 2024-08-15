@@ -16,16 +16,17 @@
 
 package v5.bfLosses.delete
 
-import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors.{MtdError, NinoFormatError, NotFoundError}
+import shared.services.{BaseService, ServiceOutcome}
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeleteBFLossService @Inject()(connector: DeleteBFLossConnector) extends BaseService {
+class DeleteBFLossService @Inject() (connector: DeleteBFLossConnector) extends BaseService {
 
   def deleteBFLoss(request: DeleteBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] =
     connector

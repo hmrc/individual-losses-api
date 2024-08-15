@@ -16,7 +16,7 @@
 
 package v5.lossClaims.amendOrder.def1.model.request
 
-import api.models.domain.{Nino, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 import v5.lossClaims.amendOrder.AmendLossClaimsOrderSchema
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 

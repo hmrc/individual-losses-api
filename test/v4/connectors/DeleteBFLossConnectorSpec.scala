@@ -17,7 +17,7 @@
 package v4.connectors
 
 import api.connectors.ConnectorSpec
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.LossId
 import v4.models.request.deleteBFLosses.DeleteBFLossRequestData

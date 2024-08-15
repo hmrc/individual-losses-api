@@ -16,7 +16,7 @@
 
 package v4.models.request.amendLossClaimType
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import v4.models.domain.lossClaim.ClaimId
 
 case class AmendLossClaimTypeRequestData(nino: Nino, claimId: ClaimId, amendLossClaimTypeRequestBody: AmendLossClaimTypeRequestBody)

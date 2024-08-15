@@ -17,7 +17,7 @@
 package v5.lossClaims.amendType.model.request
 
 import play.api.libs.json.OWrites
-import utils.JsonWritesUtil
+import shared.utils.JsonWritesUtil
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendType.def1.model.request.Def1_AmendLossClaimTypeRequestBody
 
