@@ -25,7 +25,7 @@ import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeleteBFLossService @Inject()(connector: DeleteBFLossConnector) extends BaseService {
+class DeleteBFLossService @Inject() (connector: DeleteBFLossConnector) extends BaseService {
 
   def deleteBFLoss(request: DeleteBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] =
     connector

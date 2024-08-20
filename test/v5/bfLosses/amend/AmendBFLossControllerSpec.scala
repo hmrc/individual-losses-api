@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockAmendBFLossValidatorFactory
@@ -52,7 +52,7 @@ class AmendBFLossControllerSpec
     lastModified = Timestamp("2022-07-13T12:13:48.763Z")
   )
 
-  private val requestData     = Def1_AmendBFLossRequestData(parsedNino, parsedLossId, amendBroughtForwardLoss = amendBFLoss)
+  private val requestData = Def1_AmendBFLossRequestData(parsedNino, parsedLossId, amendBroughtForwardLoss = amendBFLoss)
 
   private val requestBody: JsValue = Json.parse(
     s"""

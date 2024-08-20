@@ -48,7 +48,6 @@ class AmendLossClaimsOrderControllerSpec
   private val requestData =
     Def1_AmendLossClaimsOrderRequestData(parsedNino, TaxYear.fromMtd(taxYear), claimsList)
 
-
   private val requestBody = Json.parse(
     """
       |{
@@ -70,7 +69,6 @@ class AmendLossClaimsOrderControllerSpec
       |}
     """.stripMargin
   )
-
 
   "amendLossClaimsOrder" should {
     "return OK" when {

@@ -61,7 +61,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       "downstream returns OK" when {
         "the connector sends a request with just the tax year parameter" in new TysIfsTest with Test {
           val responseData: ListBFLossesResponse = makeResponse(taxYear = taxYear)
-          val request: ListBFLossesRequestData                     = makeRequest(taxYear = taxYear)
+          val request: ListBFLossesRequestData   = makeRequest(taxYear = taxYear)
 
           val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
 

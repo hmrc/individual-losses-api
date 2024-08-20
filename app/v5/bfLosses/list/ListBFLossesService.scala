@@ -25,10 +25,10 @@ import v5.bfLosses.list.model.response.ListBFLossesResponse
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ListBFLossesService @Inject()(connector: ListBFLossesConnector) extends BaseService {
+class ListBFLossesService @Inject() (connector: ListBFLossesConnector) extends BaseService {
 
-  def listBFLosses(request: ListBFLossesRequestData)(
-    implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[ListBFLossesResponse]] =
+  def listBFLosses(
+      request: ListBFLossesRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[ListBFLossesResponse]] =
     connector
       .listBFLosses(request)
       .map {

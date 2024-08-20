@@ -28,11 +28,12 @@ import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 import javax.inject.Singleton
 
 @Singleton
-class Def1_DeleteBFLossValidator (nino: String, body: String) extends Validator[DeleteBFLossRequestData]{
+class Def1_DeleteBFLossValidator(nino: String, body: String) extends Validator[DeleteBFLossRequestData] {
 
   def validate: Validated[Seq[MtdError], DeleteBFLossRequestData] =
     (
       ResolveNino(nino),
       ResolveBFLossId(body)
     ).mapN(Def1_DeleteBFLossRequestData)
+
 }

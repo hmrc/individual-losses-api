@@ -57,6 +57,7 @@ sealed trait Version {
 case object Version4 extends Version {
   val name = "4.0"
 }
+
 case object Version5 extends Version {
   val name = "5.0"
 }

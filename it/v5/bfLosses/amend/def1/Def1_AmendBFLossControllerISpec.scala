@@ -62,11 +62,10 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |      }
       """.stripMargin
 
-
   private trait Test {
 
-    val nino       = "AA123456A"
-    val lossId     = "AAZZ1234567890a"
+    val nino   = "AA123456A"
+    val lossId = "AAZZ1234567890a"
 
     val responseJson: JsValue = Json.parse(s"""
          |{

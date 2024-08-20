@@ -28,13 +28,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CreateBFLossController @Inject()(val authService: EnrolmentsAuthService,
-                                       val lookupService: MtdIdLookupService,
-                                       service: CreateBFLossService,
-                                       validatorFactory: CreateBFLossValidatorFactory,
-                                       auditService: AuditService,
-                                       cc: ControllerComponents,
-                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
+                                        val lookupService: MtdIdLookupService,
+                                        service: CreateBFLossService,
+                                        validatorFactory: CreateBFLossValidatorFactory,
+                                        auditService: AuditService,
+                                        cc: ControllerComponents,
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

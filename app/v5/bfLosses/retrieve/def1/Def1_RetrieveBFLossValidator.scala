@@ -29,11 +29,11 @@ import javax.inject.Singleton
 @Singleton
 class Def1_RetrieveBFLossValidator(nino: String, lossId: String) extends Validator[RetrieveBFLossRequestData] {
 
-    def validate: Validated[Seq[MtdError], RetrieveBFLossRequestData] = {
-      (
-        ResolveNino(nino),
-        ResolveBFLossId(lossId)
-      ).mapN(Def1_RetrieveBFLossRequestData)
-    }
+  def validate: Validated[Seq[MtdError], RetrieveBFLossRequestData] = {
+    (
+      ResolveNino(nino),
+      ResolveBFLossId(lossId)
+    ).mapN(Def1_RetrieveBFLossRequestData)
+  }
 
 }

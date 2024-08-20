@@ -29,8 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ListBFLossesService @Inject() (connector: ListBFLossesConnector) extends BaseService {
 
   def listBFLosses(request: ListBFLossesRequestData)(implicit
-                                                     ctx: RequestContext,
-                                                     ec: ExecutionContext): Future[ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]] =
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListBFLossesResponse[ListBFLossesItem]]] =
     connector
       .listBFLosses(request)
       .map {

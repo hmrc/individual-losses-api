@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrieveBFLoss(request: RetrieveBFLossRequestData)(implicit
-                                                         hc: HeaderCarrier,
-                                                         ec: ExecutionContext,
-                                                         correlationId: String): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
     import request._
     import schema._
     val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")

@@ -22,8 +22,8 @@ import v5.bfLosses.delete.def1.Def1_DeleteBFLossValidator
 
 class DeleteBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino = "AA123456A"
-  private val validLossId   = "AAZZ1234567890a"
+  private val validNino   = "AA123456A"
+  private val validLossId = "AAZZ1234567890a"
 
   private val validatorFactory = new DeleteBFLossValidatorFactory
 

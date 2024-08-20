@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendLossClaimTypeConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendLossClaimType(request: AmendLossClaimTypeRequestData)(implicit
-                                                                 hc: HeaderCarrier,
-                                                                 ec: ExecutionContext,
-                                                                 correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
 
     import request._
 

@@ -30,12 +30,10 @@ import v5.bfLosses.list.model.request.ListBFLossesRequestData
 import javax.inject.Singleton
 
 @Singleton
-class Def1_ListBFLossesValidator(nino: String,
-                                 taxYearBroughtForwardFrom: String,
-                                 typeOfLoss: Option[String],
-                                 businessId: Option[String]) extends Validator[ListBFLossesRequestData] {
+class Def1_ListBFLossesValidator(nino: String, taxYearBroughtForwardFrom: String, typeOfLoss: Option[String], businessId: Option[String])
+    extends Validator[ListBFLossesRequestData] {
 
-  val minimumTaxYearBFLoss = 2019
+  val minimumTaxYearBFLoss    = 2019
   val minimumTaxYearLossClaim = 2020
 
   private val resolveTaxYear = DetailedResolveTaxYear(maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))

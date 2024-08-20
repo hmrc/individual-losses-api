@@ -29,7 +29,6 @@ import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendOrder.def1.model.request.Claim
 
-
 class Def1_AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
 
   val claim1: Claim        = Claim("1234567890ABEF1", 1)

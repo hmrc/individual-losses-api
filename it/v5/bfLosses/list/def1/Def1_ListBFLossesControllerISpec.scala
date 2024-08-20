@@ -70,8 +70,7 @@ class Def1_ListBFLossesControllerISpec extends IntegrationBaseSpec {
     }
 
     val downstreamResponseJson: JsValue =
-      Json.parse(
-        s"""
+      Json.parse(s"""
            |[
            |  {
            |    "incomeSourceId": "XAIS12345678911",
@@ -93,8 +92,7 @@ class Def1_ListBFLossesControllerISpec extends IntegrationBaseSpec {
      """.stripMargin)
 
     val responseJson: JsValue =
-      Json.parse(
-        s"""
+      Json.parse(s"""
            |{
            |  "losses": [
            |    {

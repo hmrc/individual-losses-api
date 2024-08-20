@@ -26,9 +26,10 @@ import v5.bfLosses.create.model.response.CreateBFLossResponse
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CreateBFLossService @Inject()(connector: CreateBFLossConnector) extends BaseService {
+class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends BaseService {
 
-  def createBFLoss(request: CreateBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateBFLossResponse]] =
+  def createBFLoss(
+      request: CreateBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateBFLossResponse]] =
     connector
       .createBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

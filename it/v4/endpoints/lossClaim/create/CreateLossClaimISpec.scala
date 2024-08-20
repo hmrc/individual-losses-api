@@ -50,8 +50,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "claimId": "AAZZ1234567890a",
          |    "links": [{

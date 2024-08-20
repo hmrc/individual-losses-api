@@ -90,4 +90,5 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
       }
     }
   }
+
 }

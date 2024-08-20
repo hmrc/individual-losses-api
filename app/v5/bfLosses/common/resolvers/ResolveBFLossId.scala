@@ -26,13 +26,13 @@ import scala.util.matching.Regex
 
 object ResolveBFLossId extends Resolver[String, LossId] {
   protected val regexFormat: Regex = "^[A-Za-z0-9]{15}$".r
-  protected val error: MtdError = LossIdFormatError
+  protected val error: MtdError    = LossIdFormatError
 
   override def apply(value: String, error_NotUsed: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], LossId] =
     if (regexFormat.matches(value)) {
       Valid(LossId(value))
-    }
-    else {
+    } else {
       Invalid(List(error.maybeWithExtraPath(path)))
     }
+
 }

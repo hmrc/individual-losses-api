@@ -21,6 +21,7 @@ import v5.lossClaims.delete.def1.Def1_DeleteLossClaimValidator
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 class DeleteLossClaimValidatorFactory {
+
   def validator(nino: String, claimId: String): Validator[DeleteLossClaimRequestData] =
     new Def1_DeleteLossClaimValidator(nino, claimId)
 

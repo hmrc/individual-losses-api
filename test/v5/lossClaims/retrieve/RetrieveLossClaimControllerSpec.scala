@@ -54,7 +54,6 @@ class RetrieveLossClaimControllerSpec
     lastModified = lastModified
   )
 
-
   private val mtdResponseJson = Json.parse(
     s"""
       |{

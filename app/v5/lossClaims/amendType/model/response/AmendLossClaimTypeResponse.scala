@@ -22,12 +22,10 @@ import v5.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeRespon
 
 trait AmendLossClaimTypeResponse
 
-object AmendLossClaimTypeResponse extends JsonWritesUtil{
+object AmendLossClaimTypeResponse extends JsonWritesUtil {
 
   implicit val writes: OWrites[AmendLossClaimTypeResponse] = writesFrom { case def1: Def1_AmendLossClaimTypeResponse =>
     implicitly[OWrites[Def1_AmendLossClaimTypeResponse]].writes(def1)
   }
 
-
 }
-

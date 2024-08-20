@@ -50,8 +50,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |  "businessId": "XKIS00000000988",
          |  "typeOfLoss": "self-employment",

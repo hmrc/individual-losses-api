@@ -24,7 +24,6 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
 
-
 trait MockListLossClaimsValidatorFactory extends MockFactory {
 
   val mockListLossClaimsValidatorFactory: ListLossClaimsValidatorFactory = mock[ListLossClaimsValidatorFactory]

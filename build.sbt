@@ -17,6 +17,7 @@
 import sbt.*
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+import org.scalafmt.sbt.ScalafmtPlugin
 
 val appName = "individual-losses-api"
 
@@ -30,6 +31,7 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged                 := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
     scalaVersion                    := "2.13.12",
+    scalafmtOnCompile               := true,
     scalacOptions ++= List(
       "-language:higherKinds",
       "-Xlint:-byname-implicit",
@@ -45,7 +47,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(CodeCoverageSettings.settings: _*)
   .settings(defaultSettings(): _*)
   .configs(ItTest)
-  .settings(inConfig(ItTest)(Defaults.itSettings): _*)
+  .settings(inConfig(ItTest)(Defaults.itSettings ++ ScalafmtPlugin.scalafmtConfigSettings): _*)
   .settings(
     ItTest / fork                       := true,
     ItTest / unmanagedSourceDirectories := Seq((ItTest / baseDirectory).value / "it"),

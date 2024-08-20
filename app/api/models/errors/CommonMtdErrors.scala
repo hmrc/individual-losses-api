@@ -73,7 +73,7 @@ object InvalidTaxYearParameterError
 //Authentication/Authorisation errors
 /** Authentication OK but not allowed access to the requested resource
   */
-object ClientOrAgentNotAuthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", FORBIDDEN){
+object ClientOrAgentNotAuthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", FORBIDDEN) {
   def withStatus401: MtdError = copy(httpStatus = UNAUTHORIZED)
 }
 

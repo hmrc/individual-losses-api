@@ -31,8 +31,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
 
   val lossId = "AAZZ1234567890a"
 
-  val requestBody: JsValue = Json.parse(
-    """
+  val requestBody: JsValue = Json.parse("""
       |{
       |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
@@ -57,15 +56,13 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         )
     }
 
-    lazy val responseBody: JsValue = Json.parse(
-      s"""
+    lazy val responseBody: JsValue = Json.parse(s"""
          |{
          |  "lossId": "AAZZ1234567890a"
          |}
       """.stripMargin)
 
-    val downstreamResponse: JsValue = Json.parse(
-      s"""
+    val downstreamResponse: JsValue = Json.parse(s"""
          |{
          |    "lossId": "$lossId"
          |}

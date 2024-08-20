@@ -29,13 +29,13 @@ import v5.bfLosses.create.model.request.CreateBFLossRequestData
 
 import javax.inject.Inject
 
-class Def1_CreateBFLossValidator @Inject()
-(nino: String, body: JsValue)(implicit todaySupplier: TodaySupplier = new TodaySupplier) extends Validator[CreateBFLossRequestData] {
-  val minimumTaxYearBFLoss = 2019
-  val minimumTaxYearLossClaim = 2020
-  private val resolveJson = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
+class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implicit todaySupplier: TodaySupplier = new TodaySupplier)
+    extends Validator[CreateBFLossRequestData] {
+  val minimumTaxYearBFLoss        = 2019
+  val minimumTaxYearLossClaim     = 2020
+  private val resolveJson         = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
-  private val resolveTaxYear = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
+  private val resolveTaxYear      = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
 
   def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
     ResolveBFTypeOfLossFromJson(body, None, errorPath = Some("/typeOfLoss"))
@@ -54,4 +54,3 @@ class Def1_CreateBFLossValidator @Inject()
     ).map(_ => parsed)
 
 }
-

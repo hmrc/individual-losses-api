@@ -22,7 +22,7 @@ import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 
 trait RetrieveLossClaimResponse
 
-object RetrieveLossClaimResponse extends JsonWritesUtil{
+object RetrieveLossClaimResponse extends JsonWritesUtil {
 
   implicit val writes: OWrites[RetrieveLossClaimResponse] = writesFrom { case def1: Def1_RetrieveLossClaimResponse =>
     implicitly[OWrites[Def1_RetrieveLossClaimResponse]].writes(def1)

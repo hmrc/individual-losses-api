@@ -32,4 +32,5 @@ class DeleteBFLossValidatorFactory {
       case Def1 => new Def1_DeleteBFLossValidator(nino, body)
     }
   }
+
 }

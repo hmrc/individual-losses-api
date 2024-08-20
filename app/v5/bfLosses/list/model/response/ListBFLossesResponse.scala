@@ -25,8 +25,9 @@ trait ListBFLossesResponse {
 }
 
 object ListBFLossesResponse extends JsonWritesUtil {
+
   implicit val writes: OWrites[ListBFLossesResponse] = writesFrom { case a: Def1_ListBFLossesResponse =>
     implicitly[OWrites[Def1_ListBFLossesResponse]].writes(a)
   }
-}
 
+}

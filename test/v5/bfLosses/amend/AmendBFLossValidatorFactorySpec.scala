@@ -24,9 +24,9 @@ import v5.bfLosses.amend.def1.Def1_AmendBFLossValidator
 
 class AmendBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino        = "AA123456A"
-  private val validLossId      = "AAZZ1234567890a"
-  private val validLossAmount  = 1000
+  private val validNino       = "AA123456A"
+  private val validLossId     = "AAZZ1234567890a"
+  private val validLossAmount = 1000
 
   def requestBodyJson(lossAmount: BigDecimal = validLossAmount): JsValue = Json.parse(
     s"""

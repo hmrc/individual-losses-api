@@ -22,9 +22,9 @@ import v5.bfLosses.list.def1.Def1_ListBFLossesValidator
 
 class ListBFLossesValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino        = "AA123456A"
-  private val validLossType     = "self-employment"
-  private val validTaxYear = "2021-22"
+  private val validNino       = "AA123456A"
+  private val validLossType   = "self-employment"
+  private val validTaxYear    = "2021-22"
   private val validBusinessId = "XAIS01234567890"
 
   private val validatorFactory = new ListBFLossesValidatorFactory
@@ -37,4 +37,5 @@ class ListBFLossesValidatorFactorySpec extends UnitSpec with JsonErrorValidators
       }
     }
   }
+
 }

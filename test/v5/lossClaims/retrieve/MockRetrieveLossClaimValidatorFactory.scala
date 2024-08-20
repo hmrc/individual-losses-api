@@ -24,7 +24,6 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 
-
 trait MockRetrieveLossClaimValidatorFactory extends MockFactory {
 
   val mockRetrieveLossClaimValidatorFactory: RetrieveLossClaimValidatorFactory = mock[RetrieveLossClaimValidatorFactory]

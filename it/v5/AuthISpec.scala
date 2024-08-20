@@ -40,8 +40,7 @@ class AuthISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin
 
-    val downstreamResponseJson: JsValue = Json.parse(
-      """
+    val downstreamResponseJson: JsValue = Json.parse("""
         |{
         |    "lossId": "AAZZ1234567890a"
         |}
@@ -93,53 +92,53 @@ class AuthISpec extends IntegrationBaseSpec {
     }
   }
 
-    "MTD ID lookup succeeds and the user is authorised" should {
+  "MTD ID lookup succeeds and the user is authorised" should {
 
-      "return 201" in new Test {
-        val downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino"
+    "return 201" in new Test {
+      val downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino"
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, Status.OK, downstreamResponseJson)
-        }
-
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
-        response.status shouldBe Status.CREATED
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        AuthStub.authorised()
+        MtdIdLookupStub.ninoFound(nino)
+        DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, Status.OK, downstreamResponseJson)
       }
+
+      val response: WSResponse = await(request().post(Json.parse(requestJson)))
+      response.status shouldBe Status.CREATED
     }
+  }
 
-    "MTD ID lookup succeeds but the user is NOT logged in" should {
+  "MTD ID lookup succeeds but the user is NOT logged in" should {
 
-      "return 403" in new Test {
-        override val nino: String = "AA123456A"
+    "return 403" in new Test {
+      override val nino: String = "AA123456A"
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          MtdIdLookupStub.ninoFound(nino)
-          AuthStub.unauthorisedNotLoggedIn()
-        }
-
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
-        response.status shouldBe Status.FORBIDDEN
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        MtdIdLookupStub.ninoFound(nino)
+        AuthStub.unauthorisedNotLoggedIn()
       }
+
+      val response: WSResponse = await(request().post(Json.parse(requestJson)))
+      response.status shouldBe Status.FORBIDDEN
     }
+  }
 
-    "MTD ID lookup succeeds but the user is NOT authorised" should {
+  "MTD ID lookup succeeds but the user is NOT authorised" should {
 
-      "return 403" in new Test {
-        override val nino: String = "AA123456A"
+    "return 403" in new Test {
+      override val nino: String = "AA123456A"
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          MtdIdLookupStub.ninoFound(nino)
-          AuthStub.unauthorisedOther()
-        }
-
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
-        response.status shouldBe Status.FORBIDDEN
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        MtdIdLookupStub.ninoFound(nino)
+        AuthStub.unauthorisedOther()
       }
+
+      val response: WSResponse = await(request().post(Json.parse(requestJson)))
+      response.status shouldBe Status.FORBIDDEN
     }
+  }
 
 }

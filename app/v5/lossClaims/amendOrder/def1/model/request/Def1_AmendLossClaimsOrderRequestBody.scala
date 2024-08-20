@@ -23,7 +23,7 @@ import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestBody
 
 case class Def1_AmendLossClaimsOrderRequestBody(typeOfClaim: TypeOfClaim, listOfLossClaims: Seq[Claim]) extends AmendLossClaimsOrderRequestBody
 
-object Def1_AmendLossClaimsOrderRequestBody extends JsonWritesUtil{
+object Def1_AmendLossClaimsOrderRequestBody extends JsonWritesUtil {
   implicit val reads: Reads[Def1_AmendLossClaimsOrderRequestBody] = Json.reads
 
   implicit val writes: OWrites[Def1_AmendLossClaimsOrderRequestBody] = (o: Def1_AmendLossClaimsOrderRequestBody) =>

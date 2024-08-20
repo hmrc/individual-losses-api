@@ -28,8 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnector) extends BaseService {
 
-  def amendLossClaimType(
-      request: AmendLossClaimTypeRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimTypeResponse]] =
+  def amendLossClaimType(request: AmendLossClaimTypeRequestData)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimTypeResponse]] =
     connector
       .amendLossClaimType(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))

@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreateLossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createLossClaim(request: CreateLossClaimRequestData)(implicit
-                                                           hc: HeaderCarrier,
-                                                           ec: ExecutionContext,
-                                                           correlationId: String): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
     import request._
 
     post(lossClaim, IfsUri[CreateLossClaimResponse](s"income-tax/claims-for-relief/$nino"))
