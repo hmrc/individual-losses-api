@@ -29,6 +29,8 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
   private val readScope  = "read:self-assessment"
   private val writeScope = "write:self-assessment"
 
+  protected val mtdCategory = "INCOME_TAX_MTD"
+
   lazy val confidenceLevel: ConfidenceLevel = {
     val clConfig = appConfig.confidenceLevelConfig
 
@@ -55,6 +57,7 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
         name = "Individual Losses (MTD)",
         description = "An API for providing individual losses data",
         context = appConfig.apiGatewayContext,
+        categories = List("INCOME_TAX_MTD"),
         versions = Seq(
           APIVersion(
             version = Version4,

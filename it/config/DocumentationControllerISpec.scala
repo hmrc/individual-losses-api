@@ -53,6 +53,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     |    "name":"$apiTitle",
     |    "description":"An API for providing individual losses data",
     |    "context":"individuals/losses",
+    |    "categories":["INCOME_TAX_MTD"],
     |    "versions":[
     |      {
     |        "version":"4.0",

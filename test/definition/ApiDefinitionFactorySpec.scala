@@ -63,6 +63,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
             name = "Individual Losses (MTD)",
             description = "An API for providing individual losses data",
             context = "my/context",
+            categories = List("INCOME_TAX_MTD"),
             versions = List(
               APIVersion(Version4, status = ALPHA, endpointsEnabled = true),
               APIVersion(Version5, status = ALPHA, endpointsEnabled = true)
