@@ -45,6 +45,8 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendBFLossController", endpointName = "Amend a Brought Forward Loss Amount")
 
+  override val endpointName: String = "amend-bf-loss"
+
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version4)

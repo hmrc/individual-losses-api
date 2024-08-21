@@ -21,6 +21,7 @@ import api.models.domain.Timestamp
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import routing.Version4
@@ -100,7 +101,7 @@ class RetrieveLossClaimControllerSpec
 
   private trait Test extends ControllerTest {
 
-    private val controller = new RetrieveLossClaimController(
+    val controller = new RetrieveLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveLossClaimService,
@@ -112,6 +113,13 @@ class RetrieveLossClaimControllerSpec
     protected def callController(): Future[Result] = controller.retrieve(validNino, claimId)(fakeRequest)
 
     MockedAppConfig.isApiDeprecated(Version4) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
   }
 
 }

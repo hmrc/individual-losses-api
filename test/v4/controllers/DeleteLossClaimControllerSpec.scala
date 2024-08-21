@@ -21,6 +21,7 @@ import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import routing.Version4
@@ -73,9 +74,9 @@ class DeleteLossClaimControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    private val controller = new DeleteLossClaimController(
+    val controller = new DeleteLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockDeleteLossClaimService,
@@ -103,6 +104,12 @@ class DeleteLossClaimControllerSpec
       )
 
     MockedAppConfig.isApiDeprecated(Version4) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
   }
 
 }

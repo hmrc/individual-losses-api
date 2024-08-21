@@ -45,6 +45,8 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimsOrderController", endpointName = "Amend a Loss Claim Order")
 
+  override val endpointName: String = "amend-loss-claims-order"
+
   def amendClaimsOrder(nino: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version4)

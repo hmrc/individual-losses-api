@@ -16,13 +16,15 @@
 
 package support
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Writes
 
 trait WireMockMethods {
+
+  def resetAll(): Unit = WireMock.reset()
 
   def when(method: HTTPMethod, uri: String, queryParams: Map[String, String] = Map.empty, headers: Map[String, String] = Map.empty): Mapping = {
     new Mapping(method, uri, queryParams, headers, None)

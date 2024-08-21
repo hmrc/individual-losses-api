@@ -45,6 +45,8 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateLossClaimController", endpointName = "Create a Loss Claim")
 
+  override val endpointName: String = "create-loss-claim"
+
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version4)

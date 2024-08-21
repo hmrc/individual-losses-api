@@ -22,6 +22,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import routing.Version4
@@ -75,9 +76,9 @@ class DeleteBFLossControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    private val controller = new DeleteBFLossController(
+    val controller = new DeleteBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockDeleteBFLossService,
@@ -105,6 +106,12 @@ class DeleteBFLossControllerSpec
       )
 
     MockedAppConfig.isApiDeprecated(Version4) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
   }
 
 }

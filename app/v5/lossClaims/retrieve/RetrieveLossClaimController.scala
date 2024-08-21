@@ -38,6 +38,8 @@ class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthServ
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveLossClaimController", endpointName = "Retrieve a Loss Claim")
 
+  override val endpointName: String = "retrieve-loss-claim"
+
   def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version4)

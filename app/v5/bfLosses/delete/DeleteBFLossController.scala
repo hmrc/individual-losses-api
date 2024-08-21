@@ -39,6 +39,8 @@ class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteBFLossController", endpointName = "Delete a Brought Forward Loss")
 
+  override val endpointName: String = "delete-bf-loss"
+
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version5)

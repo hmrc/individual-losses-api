@@ -25,7 +25,7 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendOrder.def1.model.request.Claim
 

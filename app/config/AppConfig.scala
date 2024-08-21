@@ -96,6 +96,8 @@ trait AppConfig {
 
   def endpointsEnabled(version: Version): Boolean
 
+  def safeEndpointsEnabled(version: String): Boolean
+
   def confidenceLevelConfig: ConfidenceLevelConfig
 
   def apiDocumentationUrl: String
@@ -107,10 +109,15 @@ trait AppConfig {
   /** Currently only for OAS documentation.
     */
   def endpointReleasedInProduction(version: String, name: String): Boolean
+
+  /** Defaults to false
+    */
+  def endpointAllowsSupportingAgents(endpointName: String): Boolean
 }
 
 @Singleton
-class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configuration) extends AppConfig {
+class AppConfigImpl @Inject() (config: ServicesConfig, protected[config] val configuration: Configuration) extends AppConfig {
+
   // MTD ID Lookup Config
   val mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 
@@ -153,6 +160,11 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
 
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
 
+  def safeEndpointsEnabled(version: String): Boolean =
+    configuration
+      .getOptional[Boolean](s"api.$version.endpoints.enabled")
+      .getOrElse(false)
+
   def apiVersionReleasedInProduction(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.api-released-in-production")
 
   def endpointReleasedInProduction(version: String, name: String): Boolean = {
@@ -162,6 +174,14 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
     val conf = configuration.underlying
     if (versionReleasedInProd && conf.hasPath(path)) config.getBoolean(path) else versionReleasedInProd
   }
+
+  def endpointAllowsSupportingAgents(endpointName: String): Boolean =
+    supportingAgentEndpoints.getOrElse(endpointName, false)
+
+  private val supportingAgentEndpoints: Map[String, Boolean] =
+    configuration
+      .getOptional[Map[String, Boolean]]("api.supporting-agent-endpoints")
+      .getOrElse(Map.empty)
 
 }
 

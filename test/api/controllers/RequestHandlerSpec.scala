@@ -18,7 +18,6 @@ package api.controllers
 
 import api.controllers.validators.Validator
 import api.hateoas._
-import api.mocks.MockIdGenerator
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.auth.UserDetails
 import api.models.errors.{ErrorWrapper, MtdError, NinoFormatError}
@@ -36,6 +35,7 @@ import routing.{Version, Version4}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utils.MockIdGenerator
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
