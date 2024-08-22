@@ -16,14 +16,28 @@
 
 package v5.bfLosses.retrieve.model.response
 
-import play.api.libs.json.OWrites
+import play.api.libs.json.{JsValue, OWrites, Reads}
+import shared.models.domain.TaxYear
 import utils.JsonWritesUtil
+import v5.bfLosses.retrieve.RetrieveBFLossResponseSchema
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
+import v5.bfLosses.retrieve.def2.model.response.Def2_RetrieveBFLossResponse
 
 trait RetrieveBFLossResponse
 
 object RetrieveBFLossResponse extends JsonWritesUtil {
-  implicit val writes: OWrites[RetrieveBFLossResponse] = writesFrom { case a: Def1_RetrieveBFLossResponse =>
-    implicitly[OWrites[Def1_RetrieveBFLossResponse]].writes(a)
+
+  implicit val writes: OWrites[RetrieveBFLossResponse] = writesFrom {
+    case a: Def1_RetrieveBFLossResponse => implicitly[OWrites[Def1_RetrieveBFLossResponse]].writes(a)
+    case a: Def2_RetrieveBFLossResponse => implicitly[OWrites[Def2_RetrieveBFLossResponse]].writes(a)
   }
+
+  implicit val reads: Reads[RetrieveBFLossResponse] = Reads { json: JsValue =>
+    val taxYear = TaxYear.fromDownstream((json \ "taxYear").as[String])
+
+    val schema = RetrieveBFLossResponseSchema.schemaFor(taxYear)
+
+    schema.connectorReads.reads(json)
+  }
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.bfLosses.retrieve.def1
+package v5.bfLosses.retrieve
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.ResolveNino
@@ -22,18 +22,18 @@ import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import v5.bfLosses.common.resolvers.ResolveBFLossId
-import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
+
 import javax.inject.Singleton
 
 @Singleton
-class Def1_RetrieveBFLossValidator(nino: String, lossId: String) extends Validator[RetrieveBFLossRequestData] {
+class RetrieveBFLossValidator(nino: String, lossId: String) extends Validator[RetrieveBFLossRequestData] {
 
     def validate: Validated[Seq[MtdError], RetrieveBFLossRequestData] = {
       (
         ResolveNino(nino),
         ResolveBFLossId(lossId)
-      ).mapN(Def1_RetrieveBFLossRequestData)
+      ).mapN(RetrieveBFLossRequestData)
     }
 
 }

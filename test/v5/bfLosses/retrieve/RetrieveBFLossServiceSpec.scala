@@ -23,8 +23,8 @@ import api.services.ServiceSpec
 import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v5.bfLosses.retrieve
 import v5.bfLosses.retrieve.RetrieveBFLossService
-import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
+import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 
 import scala.concurrent.Future
 
@@ -37,7 +37,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
     lazy val service = new RetrieveBFLossService(connector)
   }
 
-  lazy val request: Def1_RetrieveBFLossRequestData = Def1_RetrieveBFLossRequestData(Nino(nino), LossId(lossId))
+  lazy val request: RetrieveBFLossRequestData = RetrieveBFLossRequestData(Nino(nino), LossId(lossId))
 
   "retrieve bf loss" should {
     "return a Right" when {

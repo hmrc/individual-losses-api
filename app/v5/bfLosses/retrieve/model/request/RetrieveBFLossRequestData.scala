@@ -18,10 +18,5 @@ package v5.bfLosses.retrieve.model.request
 
 import api.models.domain.Nino
 import v5.bfLosses.common.domain.LossId
-import v5.bfLosses.retrieve.RetrieveBFLossSchema
 
-trait RetrieveBFLossRequestData {
-  def nino: Nino
-  def lossId: LossId
-  val schema: RetrieveBFLossSchema
-}
+case class RetrieveBFLossRequestData(nino: Nino, lossId: LossId)
