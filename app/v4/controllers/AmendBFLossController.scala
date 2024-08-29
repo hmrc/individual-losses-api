@@ -22,7 +22,9 @@ import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4}
+import shared.config.AppConfig
+import shared.routing.{Version, Version4}
+import shared.controllers.AuditHandler
 import utils.IdGenerator
 import v4.controllers.validators.AmendBFLossValidatorFactory
 import v4.models.response.amendBFLosses.AmendBFLossHateoasData
@@ -47,7 +49,6 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
 
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, lossId, request.body)
@@ -61,7 +62,7 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
             auditService,
             auditType = "AmendBroughtForwardLoss",
             transactionName = "amend-brought-forward-loss",
-            apiVersion = Version.from(request, orElse = Version4),
+            apiVersion = Version(request),
             params = Map("nino" -> nino, "lossId" -> lossId),
             requestBody = Some(request.body),
             includeResponse = true

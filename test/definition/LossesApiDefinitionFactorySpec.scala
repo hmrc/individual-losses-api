@@ -23,10 +23,10 @@ import routing.{Version4, Version5}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
-class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
+class LossesApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
   class Test {
-    val factory = new ApiDefinitionFactory(mockAppConfig)
+    val factory = new LossesApiDefinitionFactory(mockAppConfig)
   }
 
   private val confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200

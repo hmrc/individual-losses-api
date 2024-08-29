@@ -18,7 +18,7 @@ package config
 
 import config.rewriters.DocumentationRewriters
 import controllers.RewriteableAssets
-import definition.ApiDefinitionFactory
+import definition.LossesApiDefinitionFactory
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -27,10 +27,10 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class DocumentationController @Inject() (
-    selfAssessmentApiDefinition: ApiDefinitionFactory,
-    docRewriters: DocumentationRewriters,
-    assets: RewriteableAssets,
-    cc: ControllerComponents
+                                          selfAssessmentApiDefinition: LossesApiDefinitionFactory,
+                                          docRewriters: DocumentationRewriters,
+                                          assets: RewriteableAssets,
+                                          cc: ControllerComponents
 ) extends BackendController(cc) {
 
   def definition(): Action[AnyContent] = Action {

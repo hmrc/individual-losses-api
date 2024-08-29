@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import config.AppConfig
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.{Inject, Singleton}
