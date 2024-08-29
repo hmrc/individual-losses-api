@@ -16,7 +16,7 @@
 
 package v5.bfLosses.delete
 
-import api.connectors.DownstreamUri.DesUri
+import api.connectors.DownstreamUri.DesToHipMigrationUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
@@ -27,14 +27,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteBFLossConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class DeleteBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def deleteBFLoss(
       request: DeleteBFLossRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
+    val downstreamUri =
+      DesToHipMigrationUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId", switchName = "des_hip_migration_1504")
 
-    delete(DesUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId"))
+    delete(downstreamUri)
   }
 
 }

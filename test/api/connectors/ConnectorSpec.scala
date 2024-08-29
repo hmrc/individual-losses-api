@@ -195,7 +195,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     private val environment = "hip-environment"
 
-    protected final lazy val requiredHeaders: Seq[(String, String)] = List(
+    protected lazy val requiredHeaders: Seq[(String, String)] = List(
       "Authorization"        -> s"Basic $token",
       "Environment"          -> environment,
       "User-Agent"           -> "this-api",
@@ -204,9 +204,9 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     ) ++ intent.map("intent" -> _)
 
     MockedAppConfig.hipBaseUrl returns this.baseUrl
-    MockedAppConfig.hipClientId returns this.clientId
-    MockedAppConfig.hipClientSecret returns this.clientSecret
-    MockedAppConfig.hipEnvironment returns this.environment
+    MockedAppConfig.hipClientId returns clientId
+    MockedAppConfig.hipClientSecret returns clientSecret
+    MockedAppConfig.hipEnvironment returns environment
     MockedAppConfig.hipEnvironmentHeaders returns Some(allowedHeaders)
 
   }
