@@ -20,7 +20,9 @@ import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
 
-case class FeatureSwitches(featureSwitchConfig: Configuration) {
+trait FeatureSwitches{
+
+  protected val featureSwitchConfig: Configuration
 
   def isTemporalValidationEnabled(implicit request: Request[_]): Boolean = {
     if (isEnabled("allowTemporalValidationSuspension")) {
@@ -37,6 +39,12 @@ case class FeatureSwitches(featureSwitchConfig: Configuration) {
   private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 }
 
-object FeatureSwitches {
-  def apply()(implicit appConfig: AppConfig): FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+//object FeatureSwitches {
+//  def apply()(implicit appConfig: AppConfig): FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+//}
+
+case class ConfigFeatureSwitches private (protected val featureSwitchConfig: Configuration) extends FeatureSwitches
+
+object ConfigFeatureSwitches {
+  def apply()(implicit appConfig: AppConfig): ConfigFeatureSwitches = ConfigFeatureSwitches(appConfig.featureSwitches)
 }

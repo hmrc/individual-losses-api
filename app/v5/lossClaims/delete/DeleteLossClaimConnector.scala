@@ -16,7 +16,7 @@
 
 package v5.lossClaims.delete
 
-import api.connectors.DownstreamUri.DesUri
+import api.connectors.DownstreamUri.DesToHipMigrationUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
@@ -36,7 +36,7 @@ class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: A
 
     import request._
 
-    val downstreamUri = DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId")
+    val downstreamUri = DesToHipMigrationUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId", switchName = "des_hip_migration_1509")
 
     delete(downstreamUri)
   }

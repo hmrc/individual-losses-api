@@ -47,6 +47,14 @@ trait MockAppConfig extends MockFactory {
     def tysIfsEnvironment: CallHandler[String]                     = (() => mockAppConfig.tysIfsEnv: String).expects()
     def tysIfsEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.tysIfsEnvironmentHeaders: Option[Seq[String]]).expects()
 
+    // HIP Config
+    def hipBaseUrl: CallHandler[String] = (() => mockAppConfig.hipBaseUrl: String).expects()
+
+    def hipClientId: CallHandler[String]     = (() => mockAppConfig.hipClientId: String).expects()
+    def hipClientSecret: CallHandler[String] = (() => mockAppConfig.hipClientSecret: String).expects()
+    def hipEnvironment: CallHandler[String] = (() => mockAppConfig.hipEnv: String).expects()
+    def hipEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.hipEnvironmentHeaders: Option[Seq[String]]).expects()
+
     // API Config
     def featureSwitches: CallHandler[Configuration]              = (() => mockAppConfig.featureSwitches: Configuration).expects()
     def apiGatewayContext: CallHandler[String]                   = (() => mockAppConfig.apiGatewayContext: String).expects()

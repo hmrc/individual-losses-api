@@ -65,6 +65,24 @@ trait AppConfig {
   lazy val taxYearSpecificIfsDownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = tysIfsBaseUrl, env = tysIfsEnv, token = tysIfsToken, environmentHeaders = tysIfsEnvironmentHeaders)
 
+  // HIP Config
+  def hipBaseUrl: String
+
+  def hipEnv: String
+
+  def hipClientId: String
+  def hipClientSecret: String
+
+  def hipEnvironmentHeaders: Option[Seq[String]]
+
+  lazy val hipDownstreamConfig: BasicAuthDownstreamConfig =
+    BasicAuthDownstreamConfig(
+      baseUrl = hipBaseUrl,
+      env = hipEnv,
+      clientId = hipClientId,
+      clientSecret = hipClientSecret,
+      environmentHeaders = hipEnvironmentHeaders)
+
   // API Config
   def apiGatewayContext: String
 
@@ -114,6 +132,13 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val tysIfsToken: String                           = config.getString("microservice.services.tys-ifs.token")
   val tysIfsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.tys-ifs.environmentHeaders")
 
+  // HIP Config
+  val hipBaseUrl: String                         = config.baseUrl("hip")
+  val hipEnv: String                             = config.getString("microservice.services.hip.env")
+  val hipClientId: String                        = config.getString("microservice.services.hip.clientId")
+  val hipClientSecret: String                    = config.getString("microservice.services.hip.clientSecret")
+  val hipEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]](s"microservice.services.hip.environmentHeaders")
+
   // API Config
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
@@ -123,8 +148,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
 
   def apiStatus(version: Version): String = config.getString(s"api.$version.status")
 
-  def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
-
+  def featureSwitches: Configuration             = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
   def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
 
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")

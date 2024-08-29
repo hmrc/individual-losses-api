@@ -19,8 +19,8 @@ package v5.bfLosses.delete
 import api.connectors.ConnectorSpec
 import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import v5.bfLosses.common.domain.LossId
-import v5.bfLosses.delete.DeleteBFLossConnector
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
@@ -40,18 +40,32 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
   }
 
-  "deleteBFLosses" should {
-    "return the expected response for a non-TYS request" when {
-      "downstream returns OK" in new DesTest with Test {
-        val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+  "deleteBFLosses" when {
+    "given a non-TYS request" when {
+      "DES is not migrated to HIP" must {
+        "return a success response" in new DesTest with Test {
+          MockedAppConfig.featureSwitches returns Configuration("des_hip_migration_1504.enabled" -> false)
+          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        willDelete(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-        ).returns(Future.successful(expected))
+          willDelete(
+            url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
+          ).returns(Future.successful(expected))
 
-        await(connector.deleteBFLoss(request)) shouldBe expected
+          await(connector.deleteBFLoss(request)) shouldBe expected
+        }
+      }
+      "DES is migrated to HIP" must {
+        "return a success response" in new HipTest with Test {
+          MockedAppConfig.featureSwitches returns Configuration("des_hip_migration_1504.enabled" -> true)
+          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+
+          willDelete(
+            url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
+          ).returns(Future.successful(expected))
+
+          await(connector.deleteBFLoss(request)) shouldBe expected
+        }
       }
     }
   }
-
 }

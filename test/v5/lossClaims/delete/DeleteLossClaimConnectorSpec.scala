@@ -19,6 +19,7 @@ package v5.lossClaims.delete
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import v4.models.domain.lossClaim.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 
@@ -30,22 +31,42 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
   private val claimId = ClaimId("AAZZ1234567890ag")
 
   "delete LossClaim" when {
+    "a valid request is supplied" when {
+      "Des is not migrated to HIP" must {
+        "return a successful response " in new DesTest with Test {
+          MockedAppConfig.featureSwitches returns Configuration("des_hip_migration_1509.enabled" -> false)
+          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-    "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new DesTest with Test {
-        val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+          MockedHttpClient
+            .delete(
+              url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+              config = dummyHeaderCarrierConfig,
+              requiredHeaders = requiredDesHeaders,
+              excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+            )
+            .returns(Future.successful(expected))
+          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
 
-        MockedHttpClient
-          .delete(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyHeaderCarrierConfig,
-            requiredHeaders = requiredDesHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
-        val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
+          result shouldBe expected
+        }
+      }
+      "Des is migrated to HIP" must {
+        "return a successful response " in new HipTest with Test {
+          MockedAppConfig.featureSwitches returns Configuration("des_hip_migration_1509.enabled" -> true)
+          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        result shouldBe expected
+          MockedHttpClient
+            .delete(
+              url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
+              config = dummyHeaderCarrierConfig,
+              requiredHeaders = requiredHeaders,
+              excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+            )
+            .returns(Future.successful(expected))
+          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
+
+          result shouldBe expected
+        }
       }
     }
 
