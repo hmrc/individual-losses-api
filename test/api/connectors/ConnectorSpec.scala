@@ -17,18 +17,24 @@
 package api.connectors
 
 import api.mocks.MockHttpClient
+import com.google.common.base.Charsets
 import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.Base64
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
   lazy val baseUrl                   = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+
+  protected val allowedHeaders: Seq[String] = List("Gov-Test-Scenario")
+
+  protected def intent: Option[String] = None
 
   val otherHeaders: Seq[(String, String)] = List(
     "Gov-Test-Scenario" -> "DEFAULT",
@@ -178,6 +184,31 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockedAppConfig.tysIfsToken returns "TYS-IFS-token"
     MockedAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
     MockedAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
+  }
+
+  protected trait HipTest extends ConnectorTest {
+    private val clientId     = "clientId"
+    private val clientSecret = "clientSecret"
+
+    private val token =
+      Base64.getEncoder.encodeToString(s"$clientId:$clientSecret".getBytes(Charsets.UTF_8))
+
+    private val environment = "hip-environment"
+
+    protected final lazy val requiredHeaders: Seq[(String, String)] = List(
+      "Authorization"        -> s"Basic $token",
+      "Environment"          -> environment,
+      "User-Agent"           -> "this-api",
+      "CorrelationId"        -> correlationId,
+      "Gov-Test-Scenario"    -> "DEFAULT"
+    ) ++ intent.map("intent" -> _)
+
+    MockedAppConfig.hipBaseUrl returns this.baseUrl
+    MockedAppConfig.hipClientId returns this.clientId
+    MockedAppConfig.hipClientSecret returns this.clientSecret
+    MockedAppConfig.hipEnvironment returns this.environment
+    MockedAppConfig.hipEnvironmentHeaders returns Some(allowedHeaders)
+
   }
 
 }
