@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package v5.bfLosses.retrieve.def1
+package v5.bfLosses.retrieve
 
 import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
 import v5.bfLosses.common.domain.LossId
-import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 
-class Def1_RetrieveBFLossValidatorSpec extends UnitSpec {
+class _RetrieveBFLossValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
@@ -37,14 +36,14 @@ class Def1_RetrieveBFLossValidatorSpec extends UnitSpec {
   private val parsedLossId = LossId(validLossId)
 
   private def validator(nino: String, lossId: String): Validator[RetrieveBFLossRequestData] =
-    new Def1_RetrieveBFLossValidator(nino, lossId)
+    new RetrieveBFLossValidator(nino, lossId)
 
   "RetrieveBFLossValidator" should {
     "return the parsed request data" when {
       "given a valid request" in {
         val result = validator(validNino, validLossId).validateAndWrapResult()
         result shouldBe Right(
-          Def1_RetrieveBFLossRequestData(parsedNino, parsedLossId)
+          RetrieveBFLossRequestData(parsedNino, parsedLossId)
         )
       }
     }

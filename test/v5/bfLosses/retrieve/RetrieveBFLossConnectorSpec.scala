@@ -21,7 +21,6 @@ import api.models.domain.{Nino, Timestamp}
 import api.models.outcomes.ResponseWrapper
 import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v5.bfLosses.retrieve.RetrieveBFLossConnector
-import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
@@ -33,7 +32,7 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
   val nino: String   = "AA123456A"
   val lossId: String = "AAZZ1234567890a"
 
-  val request: RetrieveBFLossRequestData = Def1_RetrieveBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
+  val request: RetrieveBFLossRequestData = RetrieveBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
   trait Test {
     _: ConnectorTest =>

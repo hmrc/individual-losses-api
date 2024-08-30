@@ -19,20 +19,18 @@ package v5.bfLosses.retrieve
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
 import v5.bfLosses.retrieve.RetrieveBFLossValidatorFactory
-import v5.bfLosses.retrieve.def1.Def1_RetrieveBFLossValidator
 
 class RetrieveBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino        = "AA123456A"
-  private val validLossId      = "AAZZ1234567890a"
+  private val nino        = "AA123456A"
+  private val lossId      = "AAZZ1234567890a"
 
   private val validatorFactory = new RetrieveBFLossValidatorFactory
 
   "running a validation" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        val result = validatorFactory.validator(validNino, validLossId)
-        result shouldBe a[Def1_RetrieveBFLossValidator]
+        validatorFactory.validator(nino, lossId) shouldBe a[RetrieveBFLossValidator]
       }
     }
 

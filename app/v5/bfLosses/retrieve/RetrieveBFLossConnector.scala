@@ -35,8 +35,8 @@ class RetrieveBFLossConnector @Inject() (val http: HttpClient, val appConfig: Ap
                                                          ec: ExecutionContext,
                                                          correlationId: String): Future[DownstreamOutcome[RetrieveBFLossResponse]] = {
     import request._
-    import schema._
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
+
+    val downstreamUri: DownstreamUri[RetrieveBFLossResponse] = IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
     get(downstreamUri)
   }
 

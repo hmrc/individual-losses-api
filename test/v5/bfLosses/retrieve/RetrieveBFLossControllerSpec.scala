@@ -26,8 +26,8 @@ import play.api.mvc.Result
 import routing.Version5
 import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v5.bfLosses.retrieve
-import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
+import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -40,7 +40,7 @@ class RetrieveBFLossControllerSpec
     with retrieve.MockRetrieveBFLossService {
 
   private val lossId      = "AAZZ1234567890a"
-  private val requestData = Def1_RetrieveBFLossRequestData(parsedNino, LossId(lossId))
+  private val requestData = RetrieveBFLossRequestData(parsedNino, LossId(lossId))
 
   private val response = Def1_RetrieveBFLossResponse(
     taxYearBroughtForwardFrom = "2017-18",

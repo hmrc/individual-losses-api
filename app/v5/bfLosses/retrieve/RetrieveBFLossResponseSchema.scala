@@ -18,18 +18,28 @@ package v5.bfLosses.retrieve
 
 import play.api.libs.json.Reads
 import schema.DownstreamReadable
+import shared.models.domain.TaxYear
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
+import v5.bfLosses.retrieve.def2.model.response.Def2_RetrieveBFLossResponse
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
-sealed trait RetrieveBFLossSchema extends DownstreamReadable[RetrieveBFLossResponse]
+import scala.math.Ordering.Implicits.infixOrderingOps
 
-object RetrieveBFLossSchema {
+sealed trait RetrieveBFLossResponseSchema extends DownstreamReadable[RetrieveBFLossResponse]
 
-  case object Def1 extends RetrieveBFLossSchema {
+object RetrieveBFLossResponseSchema {
+
+  case object Def1 extends RetrieveBFLossResponseSchema {
     type DownstreamResp = Def1_RetrieveBFLossResponse
     val connectorReads: Reads[DownstreamResp] = Def1_RetrieveBFLossResponse.reads
   }
 
-  val schema: RetrieveBFLossSchema = Def1
+  case object Def2 extends RetrieveBFLossResponseSchema {
+    type DownstreamResp = Def2_RetrieveBFLossResponse
+    val connectorReads: Reads[DownstreamResp] = Def2_RetrieveBFLossResponse.reads
+  }
+
+  def schemaFor(responseTaxYear: TaxYear): RetrieveBFLossResponseSchema =
+    if (responseTaxYear < TaxYear.fromMtd("2025-26")) Def1 else Def2
 
 }
