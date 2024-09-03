@@ -29,11 +29,11 @@ import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRe
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateBFLossValidatorFactory @Inject()(implicit todaySupplier: TodaySupplier = new TodaySupplier) {
+class CreateBFLossValidatorFactory @Inject() (implicit todaySupplier: TodaySupplier = new TodaySupplier) {
 
-  private val resolveJson = new ResolveJsonObject[CreateBFLossRequestBody]()
+  private val resolveJson         = new ResolveJsonObject[CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
-  private val resolveTaxYear = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
+  private val resolveTaxYear      = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
 
   def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] =
     new Validator[CreateBFLossRequestData] {

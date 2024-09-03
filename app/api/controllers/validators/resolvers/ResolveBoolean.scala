@@ -18,9 +18,9 @@ package api.controllers.validators.resolvers
 
 import api.models.errors.MtdError
 import cats.data.Validated
-import cats.data.Validated.{ Invalid, Valid }
+import cats.data.Validated.{Invalid, Valid}
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 object ResolveBoolean extends Resolver[String, Boolean] {
 

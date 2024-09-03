@@ -22,6 +22,7 @@ import api.models.domain.TaxYear
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version4
@@ -48,7 +49,6 @@ class AmendLossClaimsOrderControllerSpec
   private val requestData =
     Def1_AmendLossClaimsOrderRequestData(parsedNino, TaxYear.fromMtd(taxYear), claimsList)
 
-
   private val requestBody = Json.parse(
     """
       |{
@@ -70,7 +70,6 @@ class AmendLossClaimsOrderControllerSpec
       |}
     """.stripMargin
   )
-
 
   "amendLossClaimsOrder" should {
     "return OK" when {
@@ -107,9 +106,9 @@ class AmendLossClaimsOrderControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    private val controller = new AmendLossClaimsOrderController(
+    val controller = new AmendLossClaimsOrderController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockAmendLossClaimsOrderService,
@@ -137,6 +136,12 @@ class AmendLossClaimsOrderControllerSpec
       )
 
     MockedAppConfig.isApiDeprecated(Version4) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
   }
 
 }

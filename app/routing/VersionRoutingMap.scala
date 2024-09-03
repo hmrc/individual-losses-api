@@ -38,7 +38,6 @@ case class VersionRoutingMapImpl @Inject() (
     defaultRouter: Router,
     v4Router: v4.Routes,
     v5Router: v5.Routes
-
 ) extends VersionRoutingMap {
 
   val map: Map[Version, Router] = Map(

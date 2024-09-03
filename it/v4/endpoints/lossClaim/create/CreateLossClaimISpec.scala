@@ -24,7 +24,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreateLossClaimISpec extends IntegrationBaseSpec {
 
@@ -50,8 +50,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "claimId": "AAZZ1234567890a",
          |    "links": [{

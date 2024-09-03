@@ -22,6 +22,7 @@ import v5.bfLosses.create.model.response.CreateBFLossResponse
 case class Def1_CreateBFLossResponse(lossId: String) extends CreateBFLossResponse
 
 object Def1_CreateBFLossResponse {
+
   implicit val reads: Reads[Def1_CreateBFLossResponse] =
     (__ \ "lossId").read[String].map(Def1_CreateBFLossResponse.apply)
 

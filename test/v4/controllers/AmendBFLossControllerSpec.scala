@@ -24,6 +24,7 @@ import api.models.domain.Timestamp
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version4
@@ -38,7 +39,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendBFLossControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockAmendBFLossValidatorFactory
@@ -98,7 +99,7 @@ class AmendBFLossControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
 
         MockHateoasFactory
-          .wrap(amendBFLossResponse, AmendBFLossHateoasData(validNino, lossId))
+          .wrap(amendBFLossResponse, AmendBFLossHateoasData(nino, lossId))
           .returns(HateoasWrapper(amendBFLossResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
@@ -128,9 +129,9 @@ class AmendBFLossControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    private val controller = new AmendBFLossController(
+    val controller = new AmendBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockAmendBFLossService,
@@ -141,7 +142,7 @@ class AmendBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.amend(validNino, lossId)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.amend(nino, lossId)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -151,7 +152,7 @@ class AmendBFLossControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "4.0",
-          params = Map("nino" -> validNino, "lossId" -> lossId),
+          params = Map("nino" -> nino, "lossId" -> lossId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
@@ -159,6 +160,12 @@ class AmendBFLossControllerSpec
       )
 
     MockedAppConfig.isApiDeprecated(Version4) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
   }
 
 }

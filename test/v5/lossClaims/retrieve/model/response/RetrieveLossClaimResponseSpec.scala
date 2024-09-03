@@ -115,5 +115,4 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
     }
   }
 
-
 }

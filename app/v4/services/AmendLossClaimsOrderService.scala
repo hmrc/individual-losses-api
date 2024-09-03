@@ -30,8 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsConnector) extends BaseService {
 
   def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData)(implicit
-                                                                     ctx: RequestContext,
-                                                                     ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimsOrderResponse]] = {
 
     connector
       .amendLossClaimsOrder(request)

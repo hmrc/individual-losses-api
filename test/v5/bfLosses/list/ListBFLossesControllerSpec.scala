@@ -22,6 +22,7 @@ import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version5
@@ -102,7 +103,7 @@ class ListBFLossesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    private val controller = new ListBFLossesController(
+    val controller = new ListBFLossesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,
@@ -116,6 +117,13 @@ class ListBFLossesControllerSpec
       controller.list(validNino, taxYear, Some(businessId), Some(selfEmployment))(fakeRequest)
 
     MockedAppConfig.isApiDeprecated(Version5) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
   }
 
 }

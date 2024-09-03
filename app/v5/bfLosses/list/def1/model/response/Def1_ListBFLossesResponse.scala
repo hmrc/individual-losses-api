@@ -30,4 +30,5 @@ object Def1_ListBFLossesResponse {
 
   implicit val reads: Reads[Def1_ListBFLossesResponse] =
     implicitly[Reads[Seq[ListBFLossesItem]]].map(Def1_ListBFLossesResponse(_))
+
 }

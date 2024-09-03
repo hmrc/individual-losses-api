@@ -16,7 +16,7 @@
 
 package config
 
-import org.scalamock.handlers.CallHandler
+import org.scalamock.handlers.{CallHandler, CallHandler0}
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
 import routing.Version
@@ -50,9 +50,9 @@ trait MockAppConfig extends MockFactory {
     // HIP Config
     def hipBaseUrl: CallHandler[String] = (() => mockAppConfig.hipBaseUrl: String).expects()
 
-    def hipClientId: CallHandler[String]     = (() => mockAppConfig.hipClientId: String).expects()
-    def hipClientSecret: CallHandler[String] = (() => mockAppConfig.hipClientSecret: String).expects()
-    def hipEnvironment: CallHandler[String] = (() => mockAppConfig.hipEnv: String).expects()
+    def hipClientId: CallHandler[String]                        = (() => mockAppConfig.hipClientId: String).expects()
+    def hipClientSecret: CallHandler[String]                    = (() => mockAppConfig.hipClientSecret: String).expects()
+    def hipEnvironment: CallHandler[String]                     = (() => mockAppConfig.hipEnv: String).expects()
     def hipEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.hipEnvironmentHeaders: Option[Seq[String]]).expects()
 
     // API Config
@@ -70,8 +70,14 @@ trait MockAppConfig extends MockFactory {
     def endpointReleasedInProduction(version: String, key: String): CallHandler[Boolean] =
       (mockAppConfig.endpointReleasedInProduction: (String, String) => Boolean).expects(version, key)
 
+    def confidenceLevelConfig: CallHandler0[ConfidenceLevelConfig] =
+      (() => mockAppConfig.confidenceLevelConfig).expects()
+
     def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] =
       (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()
+
+    def endpointAllowsSupportingAgents(endpointName: String): CallHandler[Boolean] =
+      (mockAppConfig.endpointAllowsSupportingAgents(_: String)).expects(endpointName)
 
   }
 

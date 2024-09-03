@@ -21,10 +21,7 @@ import v5.bfLosses.amend.AmendBFLossSchema
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 import v5.bfLosses.common.domain.LossId
 
-case class Def1_AmendBFLossRequestData(
-                                        nino: Nino,
-                                        lossId: LossId,
-                                        amendBroughtForwardLoss: Def1_AmendBFLossRequestBody)
-  extends AmendBFLossRequestData {
+case class Def1_AmendBFLossRequestData(nino: Nino, lossId: LossId, amendBroughtForwardLoss: Def1_AmendBFLossRequestBody)
+    extends AmendBFLossRequestData {
   override val schema: AmendBFLossSchema = AmendBFLossSchema.Def1
 }

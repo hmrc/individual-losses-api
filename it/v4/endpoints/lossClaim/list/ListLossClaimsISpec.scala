@@ -24,7 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v4.fixtures.ListLossClaimsFixtures._
 
 class ListLossClaimsISpec extends IntegrationBaseSpec {
@@ -98,8 +98,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
         override val typeOfLoss: Option[String] = Some("uk-property-non-fhl")
         val downstreamResponse: JsValue         = nonFhlDownstreamResponseJson("2019-20")
 
-        val responseJson: JsValue = Json.parse(
-          s"""
+        val responseJson: JsValue = Json.parse(s"""
              |{
              |    "claims": [${nonFhlClaimMtdJson(taxYear, nino)}],
              |    "links": ${baseHateoasLinks(taxYear, nino)}
@@ -138,8 +137,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
         override val typeOfClaim: Option[String] = Some("carry-sideways")
         val downstreamResponse: JsValue          = selfEmploymentDownstreamResponseJson("2019-20")
 
-        val responseJson: JsValue = Json.parse(
-          s"""
+        val responseJson: JsValue = Json.parse(s"""
              |{
              |    "claims": [${selfEmploymentClaimMtdJson(taxYear, nino)}],
              |    "links": ${baseHateoasLinks(taxYear, nino)}

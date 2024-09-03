@@ -18,13 +18,12 @@ package api.controllers.validators.resolvers
 
 import api.models.errors.MtdError
 import cats.data.Validated
-import cats.data.Validated.{ Invalid, Valid }
+import cats.data.Validated.{Invalid, Valid}
 
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
-/**
-  * Checks that the date format is YYYY-MM-DD, and returns a new LocalDate.
+/** Checks that the date format is YYYY-MM-DD, and returns a new LocalDate.
   */
 object ResolveIsoDate extends Resolver[String, LocalDate] {
 
@@ -33,4 +32,5 @@ object ResolveIsoDate extends Resolver[String, LocalDate] {
     catch {
       case _: DateTimeParseException => Invalid(List(requireError(error, path)))
     }
+
 }

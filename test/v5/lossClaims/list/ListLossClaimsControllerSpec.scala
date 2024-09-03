@@ -21,6 +21,7 @@ import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import routing.Version5
@@ -98,7 +99,7 @@ class ListLossClaimsControllerSpec
 
   private trait Test extends ControllerTest {
 
-    private val controller = new ListLossClaimsController(
+    val controller = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListLossClaimsService,
@@ -111,6 +112,19 @@ class ListLossClaimsControllerSpec
       controller.list(validNino, taxYear, Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
 
     MockedAppConfig.isApiDeprecated(Version5) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
   }
 
 }

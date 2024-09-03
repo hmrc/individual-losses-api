@@ -37,6 +37,8 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "amend-loss-claims-order"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimsOrderController", endpointName = "Amend a Loss Claim Order")
 

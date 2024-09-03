@@ -24,7 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class Def1_RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -34,8 +34,7 @@ class Def1_RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
   val taxYear           = "2019-20"
   val downstreamTaxYear = "2020"
 
-  val downstreamResponseJson: JsValue = Json.parse(
-    s"""
+  val downstreamResponseJson: JsValue = Json.parse(s"""
        |{
        |    "incomeSourceId": "$businessId",
        |    "lossType": "INCOME",
@@ -51,8 +50,7 @@ class Def1_RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |    "businessId": "$businessId",
          |    "typeOfLoss": "self-employment",

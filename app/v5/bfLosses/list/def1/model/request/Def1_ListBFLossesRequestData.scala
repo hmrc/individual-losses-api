@@ -21,10 +21,10 @@ import v5.bfLosses.common.domain.IncomeSourceType
 import v5.bfLosses.list.ListBFLossesSchema
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
 
-case class Def1_ListBFLossesRequestData(
-                                         nino: Nino,
-                                         taxYearBroughtForwardFrom: TaxYear,
-                                         incomeSourceType: Option[IncomeSourceType],
-                                         businessId: Option[BusinessId]) extends ListBFLossesRequestData{
+case class Def1_ListBFLossesRequestData(nino: Nino,
+                                        taxYearBroughtForwardFrom: TaxYear,
+                                        incomeSourceType: Option[IncomeSourceType],
+                                        businessId: Option[BusinessId])
+    extends ListBFLossesRequestData {
   override val schema: ListBFLossesSchema = ListBFLossesSchema.Def1
 }

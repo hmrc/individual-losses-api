@@ -23,10 +23,11 @@ import v5.bfLosses.amend.model.response.AmendBFLossResponse
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 
 case class Def1_AmendBFLossResponse(businessId: String,
-                               typeOfLoss: TypeOfLoss,
-                               lossAmount: BigDecimal,
-                               taxYearBroughtForwardFrom: String,
-                               lastModified: Timestamp) extends AmendBFLossResponse
+                                    typeOfLoss: TypeOfLoss,
+                                    lossAmount: BigDecimal,
+                                    taxYearBroughtForwardFrom: String,
+                                    lastModified: Timestamp)
+    extends AmendBFLossResponse
 
 object Def1_AmendBFLossResponse {
   implicit val writes: OWrites[Def1_AmendBFLossResponse] = Json.writes[Def1_AmendBFLossResponse]

@@ -38,6 +38,8 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListLossClaimsController", endpointName = "List Loss Claims")
 
+  override val endpointName: String = "list-loss-claims"
+
   def list(nino: String, taxYear: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version5)

@@ -38,6 +38,8 @@ class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveBFLossController", endpointName = "Retrieve a Brought Forward Loss")
 
+  override val endpointName: String = "retrieve-bf-loss"
+
   def retrieve(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version5)

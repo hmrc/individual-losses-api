@@ -40,8 +40,8 @@ class MtdErrorSpec extends UnitSpec {
 
   "maybeWithExtraPath" should {
     "add an extra path to the error" in {
-        val result = error.maybeWithExtraPath(Some("extra path")).paths
-        result shouldBe Some(List("extra path"))
+      val result = error.maybeWithExtraPath(Some("extra path")).paths
+      result shouldBe Some(List("extra path"))
     }
   }
 

@@ -41,6 +41,8 @@ class DeleteLossClaimController @Inject() (val authService: EnrolmentsAuthServic
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteLossClaimController", endpointName = "Delete a Loss Claim")
 
+  override val endpointName: String = "delete-loss-claim"
+
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version4)

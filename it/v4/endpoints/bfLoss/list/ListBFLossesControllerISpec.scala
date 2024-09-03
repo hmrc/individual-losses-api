@@ -25,7 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListBFLossesControllerISpec extends IntegrationBaseSpec {
 
@@ -70,8 +70,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
     }
 
     val downstreamResponseJson: JsValue =
-      Json.parse(
-        s"""
+      Json.parse(s"""
            |[
            |  {
            |    "incomeSourceId": "XAIS12345678911",
@@ -93,8 +92,7 @@ class ListBFLossesControllerISpec extends IntegrationBaseSpec {
      """.stripMargin)
 
     val responseJson: JsValue =
-      Json.parse(
-        s"""
+      Json.parse(s"""
            |{
            |  "losses": [
            |    {

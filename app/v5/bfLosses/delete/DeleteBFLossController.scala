@@ -27,17 +27,19 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteBFLossController @Inject()(val authService: EnrolmentsAuthService,
-                                       val lookupService: MtdIdLookupService,
-                                       service: DeleteBFLossService,
-                                       validatorFactory: DeleteBFLossValidatorFactory,
-                                       auditService: AuditService,
-                                       cc: ControllerComponents,
-                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
+                                        val lookupService: MtdIdLookupService,
+                                        service: DeleteBFLossService,
+                                        validatorFactory: DeleteBFLossValidatorFactory,
+                                        auditService: AuditService,
+                                        cc: ControllerComponents,
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteBFLossController", endpointName = "Delete a Brought Forward Loss")
+
+  override val endpointName: String = "delete-bf-loss"
 
   def delete(nino: String, lossId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

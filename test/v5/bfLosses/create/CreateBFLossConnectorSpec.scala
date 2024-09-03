@@ -34,7 +34,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
   val lossId: String = "AAZZ1234567890a"
 
   val requestBody: Def1_CreateBFLossRequestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
-  val request: CreateBFLossRequestData         = Def1_CreateBFLossRequestData(nino = Nino(nino), requestBody)
+  val request: CreateBFLossRequestData          = Def1_CreateBFLossRequestData(nino = Nino(nino), requestBody)
 
   trait Test {
     _: ConnectorTest =>

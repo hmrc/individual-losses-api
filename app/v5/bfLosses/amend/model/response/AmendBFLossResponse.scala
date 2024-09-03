@@ -23,6 +23,7 @@ import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 trait AmendBFLossResponse
 
 object AmendBFLossResponse extends JsonWritesUtil {
+
   implicit val writes: OWrites[AmendBFLossResponse] = writesFrom { case a: Def1_AmendBFLossResponse =>
     implicitly[OWrites[Def1_AmendBFLossResponse]].writes(a)
   }

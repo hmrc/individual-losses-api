@@ -26,7 +26,7 @@ import v5.bfLosses.create.model.request.CreateBFLossRequestData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateBFLossValidatorFactory @Inject()(implicit todaySupplier: TodaySupplier = new TodaySupplier) {
+class CreateBFLossValidatorFactory @Inject() (implicit todaySupplier: TodaySupplier = new TodaySupplier) {
 
   def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] = {
     val schema = CreateBFLossSchema.schema
@@ -34,4 +34,5 @@ class CreateBFLossValidatorFactory @Inject()(implicit todaySupplier: TodaySuppli
       case Def1 => new Def1_CreateBFLossValidator(nino, body)
     }
   }
+
 }

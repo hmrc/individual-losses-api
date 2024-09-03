@@ -24,6 +24,7 @@ import api.models.domain.Timestamp
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import routing.Version4
@@ -99,7 +100,7 @@ class AmendLossClaimTypeControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimTypeResponse))))
 
         MockHateoasFactory
-          .wrap(amendLossClaimTypeResponse, AmendLossClaimTypeHateoasData(validNino, claimId.claimId))
+          .wrap(amendLossClaimTypeResponse, AmendLossClaimTypeHateoasData(nino, claimId.claimId))
           .returns(HateoasWrapper(amendLossClaimTypeResponse, Seq(testHateoasLink)))
 
         runOkTestWithAudit(
@@ -129,9 +130,9 @@ class AmendLossClaimTypeControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    private val controller = new AmendLossClaimTypeController(
+    val controller = new AmendLossClaimTypeController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockAmendLossClaimTypeService,
@@ -142,7 +143,7 @@ class AmendLossClaimTypeControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.amend(validNino, claimId.claimId)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.amend(nino, claimId.claimId)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -152,7 +153,7 @@ class AmendLossClaimTypeControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = "4.0",
-          params = Map("nino" -> validNino, "claimId" -> claimId.claimId),
+          params = Map("nino" -> nino, "claimId" -> claimId.claimId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
@@ -160,6 +161,13 @@ class AmendLossClaimTypeControllerSpec
       )
 
     MockedAppConfig.isApiDeprecated(Version4) returns false
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
   }
 
 }

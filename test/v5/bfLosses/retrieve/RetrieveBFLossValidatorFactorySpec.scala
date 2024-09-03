@@ -23,8 +23,8 @@ import v5.bfLosses.retrieve.def1.Def1_RetrieveBFLossValidator
 
 class RetrieveBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino        = "AA123456A"
-  private val validLossId      = "AAZZ1234567890a"
+  private val validNino   = "AA123456A"
+  private val validLossId = "AAZZ1234567890a"
 
   private val validatorFactory = new RetrieveBFLossValidatorFactory
 

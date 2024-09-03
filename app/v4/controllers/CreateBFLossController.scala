@@ -45,6 +45,8 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateBFLossController", endpointName = "Create a Brought Forward Loss")
 
+  override val endpointName: String = "create-bf-loss"
+
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version4)

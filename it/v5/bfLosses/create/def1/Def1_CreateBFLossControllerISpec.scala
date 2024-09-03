@@ -25,14 +25,13 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
 
   val lossId = "AAZZ1234567890a"
 
-  val requestBody: JsValue = Json.parse(
-    """
+  val requestBody: JsValue = Json.parse("""
       |{
       |    "businessId": "XKIS00000000988",
       |    "typeOfLoss": "self-employment",
@@ -57,15 +56,13 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         )
     }
 
-    lazy val responseBody: JsValue = Json.parse(
-      s"""
+    lazy val responseBody: JsValue = Json.parse(s"""
          |{
          |  "lossId": "AAZZ1234567890a"
          |}
       """.stripMargin)
 
-    val downstreamResponse: JsValue = Json.parse(
-      s"""
+    val downstreamResponse: JsValue = Json.parse(s"""
          |{
          |    "lossId": "$lossId"
          |}

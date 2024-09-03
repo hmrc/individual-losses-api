@@ -43,6 +43,8 @@ class ListBFLossesController @Inject() (val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "LisBFLossesController", endpointName = "List Brought Forward Losses")
 
+  override val endpointName: String = "list-bf-losses"
+
   def list(nino: String, taxYearBroughtForwardFrom: String, businessId: Option[String], typeOfLoss: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val apiVersion: Version = Version.from(request, orElse = Version4)

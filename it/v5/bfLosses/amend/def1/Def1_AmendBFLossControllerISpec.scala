@@ -25,7 +25,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import support.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -62,11 +62,10 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |      }
       """.stripMargin
 
-
   private trait Test {
 
-    val nino       = "AA123456A"
-    val lossId     = "AAZZ1234567890a"
+    val nino   = "AA123456A"
+    val lossId = "AAZZ1234567890a"
 
     val responseJson: JsValue = Json.parse(s"""
          |{

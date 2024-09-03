@@ -19,229 +19,268 @@ package api.services
 import api.models.auth.UserDetails
 import api.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import api.models.outcomes.AuthOutcome
+import api.services.EnrolmentsAuthService.{
+  authorisationDisabledPredicate,
+  authorisationEnabledPredicate,
+  mtdEnrolmentPredicate,
+  supportingAgentAuthPredicate
+}
 import config.{ConfidenceLevelConfig, MockAppConfig}
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.{AlternatePredicate, CompositePredicate, EmptyPredicate, Predicate}
+import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{EmptyRetrieval, Retrieval, ~}
+import uk.gov.hmrc.auth.core.{AuthConnector, ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments, InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
-  private val extraPredicatesAnd = CompositePredicate(
-    _,
-    AlternatePredicate(
-      AlternatePredicate(
-        CompositePredicate(AffinityGroup.Individual, ConfidenceLevel.L200),
-        AffinityGroup.Organisation
-      ),
-      AffinityGroup.Agent
-    )
-  )
-
-  "calling .buildPredicate" when {
-    "confidence level checks are on" should {
-      "return a Predicate containing confidence level 200 on top of the provided Predicate" when {
-        "given a simple Individual Predicate" in new Test {
-          mockConfidenceLevelCheckConfig()
-
-          target.buildPredicate(AffinityGroup.Individual) shouldBe extraPredicatesAnd(AffinityGroup.Individual)
-        }
-        "given a complex Individual Predicate" in new Test {
-          mockConfidenceLevelCheckConfig()
-
-          target.buildPredicate(CompositePredicate(AffinityGroup.Individual, EmptyPredicate)) shouldBe {
-            extraPredicatesAnd(CompositePredicate(AffinityGroup.Individual, EmptyPredicate))
-          }
-        }
-      }
-      "return a Predicate containing only the provided Predicate" when {
-        "given a simple Organisation Predicate" in new Test {
-          mockConfidenceLevelCheckConfig()
-
-          target.buildPredicate(AffinityGroup.Organisation) shouldBe extraPredicatesAnd(AffinityGroup.Organisation)
-        }
-        "given a complex Organisation Predicate" in new Test {
-          mockConfidenceLevelCheckConfig()
-
-          target.buildPredicate(CompositePredicate(AffinityGroup.Organisation, EmptyPredicate)) shouldBe {
-            extraPredicatesAnd(CompositePredicate(AffinityGroup.Organisation, EmptyPredicate))
-          }
-        }
-        "given a simple Agent Predicate" in new Test {
-          mockConfidenceLevelCheckConfig()
-
-          target.buildPredicate(AffinityGroup.Agent) shouldBe extraPredicatesAnd(AffinityGroup.Agent)
-        }
-        "given a complex Agent Predicate" in new Test {
-          mockConfidenceLevelCheckConfig()
-
-          target.buildPredicate(CompositePredicate(AffinityGroup.Agent, EmptyPredicate)) shouldBe {
-            extraPredicatesAnd(CompositePredicate(AffinityGroup.Agent, EmptyPredicate))
-          }
-        }
-      }
-    }
-    "confidence level checks are off" should {
-      "return a Predicate containing only the provided Predicate" when {
-        "given a simple Predicate" in new Test {
-          mockConfidenceLevelCheckConfig(authValidationEnabled = false)
-
-          target.buildPredicate(AffinityGroup.Individual) shouldBe AffinityGroup.Individual
-        }
-        "given a complex Predicate" in new Test {
-          mockConfidenceLevelCheckConfig(authValidationEnabled = false)
-
-          target.buildPredicate(CompositePredicate(AffinityGroup.Agent, Enrolment("HMRC-AS-AGENT"))) shouldBe
-            CompositePredicate(AffinityGroup.Agent, Enrolment("HMRC-AS-AGENT"))
-        }
-      }
-    }
-  }
+  private val mtdId = "123567890"
 
   "calling .authorised" when {
+
     "confidence level checks are on" should {
-      "return user details" in new Test {
-        mockConfidenceLevelCheckConfig()
-
-        val retrievalsResult = new ~(Some(AffinityGroup.Individual), Enrolments(Set.empty))
-        val expected         = Right(UserDetails("", "Individual", None))
-
-        MockedAuthConnector
-          .authorised(extraPredicatesAnd(EmptyPredicate), authRetrievals)
-          .returns(Future.successful(retrievalsResult))
-
-        val result: AuthOutcome = await(target.authorised(EmptyPredicate))
-        result shouldBe expected
-      }
+      behave like authService(
+        authValidationEnabled = true,
+        authorisationEnabledPredicate(mtdId),
+        mtdEnrolmentPredicate(mtdId),
+        supportingAgentAuthPredicate(mtdId)
+      )
     }
 
-    "the user is an authorised individual" should {
-      "return the 'Individual' user type in the user details" in new Test {
+    "confidence level checks are off" should {
+      behave like authService(
+        authValidationEnabled = false,
+        authorisationDisabledPredicate(mtdId),
+        mtdEnrolmentPredicate(mtdId),
+        supportingAgentAuthPredicate(mtdId)
+      )
+    }
 
-        mockConfidenceLevelCheckConfig(authValidationEnabled = false)
+    def authService(
+        authValidationEnabled: Boolean,
+        initialPredicate: Predicate,
+        primaryAgentPredicate: Predicate,
+        supportingAgentPredicate: Predicate
+    ): Unit = {
+      behave like authorisedIndividual(authValidationEnabled, initialPredicate)
+      behave like authorisedOrganisation(authValidationEnabled, initialPredicate)
+
+      behave like authorisedAgentsMissingArn(authValidationEnabled, initialPredicate, primaryAgentPredicate)
+      behave like authorisedPrimaryAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate)
+      behave like authorisedSupportingAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate, supportingAgentPredicate)
+
+      behave like disallowSupportingAgentForPrimaryOnlyEndpoint(authValidationEnabled, initialPredicate, primaryAgentPredicate)
+
+      behave like disallowUsersWithoutEnrolments(authValidationEnabled, initialPredicate)
+      behave like disallowWhenNotLoggedIn(authValidationEnabled, initialPredicate)
+    }
+
+    def authorisedIndividual(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "allow authorised individuals" in new Test {
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
 
         val retrievalsResult = new ~(Some(Individual), Enrolments(Set.empty))
-        val expected         = Right(UserDetails("", "Individual", None))
 
         MockedAuthConnector
-          .authorised(EmptyPredicate, authRetrievals)
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
           .returns(Future.successful(retrievalsResult))
 
-        val result: AuthOutcome = await(target.authorised(EmptyPredicate))
-        result shouldBe expected
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Right(UserDetails("", "Individual", None))
       }
-    }
 
-    "the user is an authorised organisation" should {
-      "return the 'Organisation' user type in the user details" in new Test {
-
-        mockConfidenceLevelCheckConfig(authValidationEnabled = false)
-
+    def authorisedOrganisation(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "allow authorised organisations" in new Test {
         val retrievalsResult = new ~(Some(Organisation), Enrolments(Set.empty))
-        val expected         = Right(UserDetails("", "Organisation", None))
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
 
         MockedAuthConnector
-          .authorised(EmptyPredicate, authRetrievals)
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
           .returns(Future.successful(retrievalsResult))
 
-        val result: AuthOutcome = await(target.authorised(EmptyPredicate))
-
-        result shouldBe expected
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Right(UserDetails("", "Organisation", None))
       }
-    }
 
-    "the user is an agent with missing ARN" should {
-      val arn = "123567890"
-      val incompleteEnrolments = Enrolments(
-        Set(
-          Enrolment(
-            "HMRC-AS-AGENT",
-            Seq(EnrolmentIdentifier("SomeOtherIdentifier", arn)),
-            "Active"
-          )
+    def authorisedAgentsMissingArn(
+        authValidationEnabled: Boolean,
+        initialPredicate: Predicate,
+        primaryAgentPredicate: Predicate
+    ): Unit =
+      "disallow agents that are missing an ARN" in new Test {
+        val arn = "123567890"
+        val enrolments: Enrolments = Enrolments(
+          Set(
+            Enrolment(
+              "HMRC-AS-AGENT",
+              List(EnrolmentIdentifier("NOAgentReferenceNumber", arn)),
+              "Active"
+            ))
         )
-      )
 
-      val retrievalsResult = new ~(Some(Agent), incompleteEnrolments)
-
-      "return an error" in new Test {
-
-        mockConfidenceLevelCheckConfig(authValidationEnabled = false)
-
-        val expected = Left(InternalError)
+        val initialRetrievalsResult = new ~(Some(Agent), enrolments)
 
         MockedAuthConnector
-          .authorised(EmptyPredicate, authRetrievals)
-          .returns(Future.successful(retrievalsResult))
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.successful(initialRetrievalsResult))
 
-        val result: AuthOutcome = await(target.authorised(EmptyPredicate))
-        result shouldBe expected
+        MockedAuthConnector
+          .authorised(primaryAgentPredicate, EmptyRetrieval)
+          .once()
+          .returns(Future.successful(EmptyRetrieval))
+
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Left(InternalError)
       }
-    }
 
-    "the user is not logged in" should {
-      "return an unauthenticated error" in new Test {
+    def authorisedPrimaryAgent(
+        authValidationEnabled: Boolean,
+        initialPredicate: Predicate,
+        primaryAgentPredicate: Predicate
+    ): Unit =
+      "allow authorised Primary agents with ARN" in new Test {
+        val arn = "123567890"
+        val enrolments: Enrolments = Enrolments(
+          Set(
+            Enrolment(
+              "HMRC-AS-AGENT",
+              List(EnrolmentIdentifier("AgentReferenceNumber", arn)),
+              "Active"
+            ))
+        )
 
-        mockConfidenceLevelCheckConfig(authValidationEnabled = false)
-
-        val expected = Left(ClientOrAgentNotAuthorisedError)
+        val initialRetrievalsResult = new ~(Some(Agent), enrolments)
 
         MockedAuthConnector
-          .authorised(EmptyPredicate, authRetrievals)
-          .returns(Future.failed(MissingBearerToken()))
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.successful(initialRetrievalsResult))
 
-        val result: AuthOutcome = await(target.authorised(EmptyPredicate))
-        result shouldBe expected
+        MockedAuthConnector
+          .authorised(primaryAgentPredicate, EmptyRetrieval)
+          .once()
+          .returns(Future.successful(EmptyRetrieval))
+
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Right(UserDetails("", "Agent", Some(arn)))
       }
-    }
 
-    "the user is not authorised" should {
-      "return an unauthorised error" in new Test {
+    def authorisedSupportingAgent(
+        authValidationEnabled: Boolean,
+        initialPredicate: Predicate,
+        primaryAgentPredicate: Predicate,
+        supportingAgentPredicate: Predicate
+    ): Unit =
+      "allow authorised Supporting agents with ARN" in new Test {
+        val arn = "123567890"
+        val enrolments: Enrolments = Enrolments(
+          Set(
+            Enrolment(
+              "HMRC-AS-AGENT",
+              List(EnrolmentIdentifier("AgentReferenceNumber", arn)),
+              "Active"
+            ))
+        )
 
-        mockConfidenceLevelCheckConfig(authValidationEnabled = false)
-
-        val expected = Left(ClientOrAgentNotAuthorisedError)
+        val initialRetrievalsResult = new ~(Some(Agent), enrolments)
 
         MockedAuthConnector
-          .authorised(EmptyPredicate, authRetrievals)
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.successful(initialRetrievalsResult))
+
+        MockedAuthConnector
+          .authorised(primaryAgentPredicate, EmptyRetrieval)
+          .once()
           .returns(Future.failed(InsufficientEnrolments()))
 
-        val result: AuthOutcome = await(target.authorised(EmptyPredicate))
-        result shouldBe expected
-      }
-    }
+        MockedAuthConnector
+          .authorised(supportingAgentPredicate, EmptyRetrieval)
+          .once()
+          .returns(Future.successful(EmptyRetrieval))
 
-    "calling getAgentReferenceFromEnrolments" should {
-      "return a valid AgentReferenceNumber" when {
-        "a valid agent Enrolment is supplied" in new Test {
-          val expectedArn = "123567890"
-          val actualArn: Option[String] = target.getAgentReferenceFromEnrolments(
-            Enrolments(
-              Set(
-                Enrolment(
-                  "HMRC-AS-AGENT",
-                  Seq(EnrolmentIdentifier("AgentReferenceNumber", expectedArn)),
-                  "Active"
-                )
-              )
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId, endpointAllowsSupportingAgents = true))
+        result shouldBe Right(UserDetails("", "Agent", Some(arn)))
+      }
+
+    def disallowSupportingAgentForPrimaryOnlyEndpoint(
+        authValidationEnabled: Boolean,
+        initialPredicate: Predicate,
+        primaryAgentPredicate: Predicate
+    ): Unit =
+      "disallow Supporting agents for a primary-only endpoint" in new Test {
+        val arn = "123567890"
+        val enrolments: Enrolments = Enrolments(
+          Set(
+            Enrolment(
+              "HMRC-AS-AGENT",
+              List(EnrolmentIdentifier("AgentReferenceNumber", arn)),
+              "Active"
             ))
+        )
 
-          actualArn shouldBe Some(expectedArn)
-        }
+        val initialRetrievalsResult = new ~(Some(Agent), enrolments)
+
+        MockedAuthConnector
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.successful(initialRetrievalsResult))
+
+        MockedAuthConnector
+          .authorised(primaryAgentPredicate, EmptyRetrieval)
+          .once()
+          .returns(Future.failed(InsufficientEnrolments()))
+
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Left(ClientOrAgentNotAuthorisedError)
       }
-    }
 
+    def disallowWhenNotLoggedIn(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "disallow users that are not logged in" in new Test {
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        MockedAuthConnector
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.failed(MissingBearerToken()))
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Left(ClientOrAgentNotAuthorisedError)
+      }
+
+    def disallowUsersWithoutEnrolments(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "disallow users without enrolments" in new Test {
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        MockedAuthConnector
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.failed(InsufficientEnrolments()))
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Left(ClientOrAgentNotAuthorisedError)
+      }
   }
 
-  private trait Test {
+  trait Test {
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-    val authRetrievals: Retrieval[Option[AffinityGroup] ~ Enrolments] = affinityGroup and authorisedEnrolments
+    lazy val enrolmentsAuthService = new EnrolmentsAuthService(mockAuthConnector, mockAppConfig)
 
     object MockedAuthConnector {
 
@@ -253,16 +292,16 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
     }
 
-    lazy val target = new EnrolmentsAuthService(mockAuthConnector, mockAppConfig)
-
-    def mockConfidenceLevelCheckConfig(authValidationEnabled: Boolean = true, confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200): Unit = {
-      MockedAppConfig.confidenceLevelCheckEnabled.returns(
-        ConfidenceLevelConfig(
-          confidenceLevel = confidenceLevel,
-          definitionEnabled = true,
-          authValidationEnabled = authValidationEnabled
+    def mockConfidenceLevelCheckConfig(authValidationEnabled: Boolean): Unit = {
+      MockedAppConfig.confidenceLevelConfig
+        .anyNumberOfTimes()
+        .returns(
+          ConfidenceLevelConfig(
+            confidenceLevel = ConfidenceLevel.L200,
+            definitionEnabled = true,
+            authValidationEnabled = authValidationEnabled
+          )
         )
-      )
     }
 
   }

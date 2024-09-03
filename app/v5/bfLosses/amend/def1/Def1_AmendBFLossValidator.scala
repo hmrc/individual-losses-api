@@ -30,7 +30,7 @@ import v5.bfLosses.common.domain.LossId
 import javax.inject.Singleton
 
 @Singleton
-class Def1_AmendBFLossValidator(nino: String, lossId:String, body: JsValue) extends Validator[AmendBFLossRequestData] {
+class Def1_AmendBFLossValidator(nino: String, lossId: String, body: JsValue) extends Validator[AmendBFLossRequestData] {
 
   private val resolveLossId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, LossIdFormatError)
   private val resolveJson   = new ResolveNonEmptyJsonObject[Def1_AmendBFLossRequestBody]()
@@ -56,6 +56,5 @@ class Def1_AmendBFLossValidator(nino: String, lossId:String, body: JsValue) exte
       Invalid(List(RuleIncorrectOrEmptyBodyError))
     }
   }
-
 
 }

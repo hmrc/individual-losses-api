@@ -43,4 +43,3 @@ object Def1_RetrieveLossClaimResponse {
   )(Def1_RetrieveLossClaimResponse.apply _)
 
 }
-

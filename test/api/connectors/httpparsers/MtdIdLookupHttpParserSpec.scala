@@ -16,7 +16,6 @@
 
 package api.connectors.httpparsers
 
-
 import play.api.http.Status.IM_A_TEAPOT
 import play.api.libs.json.{JsResultException, Json}
 import play.api.libs.json.Writes.StringWrites
@@ -37,7 +36,6 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
         "return the MtdId" in {
           val mtdId    = "test-mtd-id"
           val response = HttpResponse(OK, Json.obj("mtdbsa" -> mtdId), Map.empty[String, Seq[String]])
-
 
           mtdIdLookupHttpReads.read(method, url, response) shouldBe Right(mtdId)
         }
