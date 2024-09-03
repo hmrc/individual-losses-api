@@ -41,17 +41,14 @@ class IndividualLossesApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec
 
   override protected val downstreamSuccessStatus: Int = Status.NO_CONTENT
 
-  def requestJson(): JsValue = {
-    val claim1: Claim                 = Claim("1234567890ABEF1", 1)
-    val claim2: Claim                 = Claim("1234567890ABCDE", 2)
-    val claim3: Claim                 = Claim("1234567890ABDE0", 3)
-    val claimSeq: Seq[Claim]          = Seq(claim2, claim1, claim3)
+  private def requestJson(): JsValue = {
+    val claims = List(Claim("1234567890ABEF1", 1), Claim("1234567890ABCDE", 2), Claim("1234567890ABDE0", 3))
     def writes: OWrites[Claim]        = Json.writes[Claim]
-    def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
+    def writesSeq: Writes[List[Claim]] = Writes.list[Claim](writes)
     Json.parse(s"""
     |{
                   |   "typeOfClaim": "${TypeOfClaim.`carry-sideways`.toString}",
-                  |   "listOfLossClaims": ${Json.toJson(claimSeq)(writesSeq)}
+                  |   "listOfLossClaims": ${Json.toJson(claims)(writesSeq)}
     |}
       """.stripMargin)
   }
