@@ -42,7 +42,7 @@ class IndividualLossesApiAuthSupportingAgentsAllowedISpec extends AuthSupporting
   override protected val downstreamSuccessStatus: Int = Status.NO_CONTENT
 
   private def requestJson(): JsValue = {
-    val claims = Seq(Claim("1234567890ABEF1", 1), Claim("1234567890ABCDE", 2), Claim("1234567890ABDE0", 3))
+    val claims                        = Seq(Claim("1234567890ABEF1", 1), Claim("1234567890ABCDE", 2), Claim("1234567890ABDE0", 3))
     def writes: OWrites[Claim]        = Json.writes[Claim]
     def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
     Json.parse(s"""
