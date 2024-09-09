@@ -26,9 +26,6 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
 
-  private val readScope  = "read:self-assessment"
-  private val writeScope = "write:self-assessment"
-
   protected val mtdCategory = "INCOME_TAX_MTD"
 
   lazy val confidenceLevel: ConfidenceLevel = {
@@ -39,20 +36,6 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
 
   lazy val definition: Definition =
     Definition(
-      scopes = Seq(
-        Scope(
-          key = readScope,
-          name = "View your Self Assessment information",
-          description = "Allow read access to self assessment data",
-          confidenceLevel = confidenceLevel
-        ),
-        Scope(
-          key = writeScope,
-          name = "Change your Self Assessment information",
-          description = "Allow write access to self assessment data",
-          confidenceLevel = confidenceLevel
-        )
-      ),
       api = APIDefinition(
         name = "Individual Losses (MTD)",
         description = "An API for providing individual losses data",

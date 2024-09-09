@@ -45,20 +45,6 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
           .anyNumberOfTimes()
 
         factory.definition shouldBe Definition(
-          scopes = Seq(
-            Scope(
-              key = "read:self-assessment",
-              name = "View your Self Assessment information",
-              description = "Allow read access to self assessment data",
-              confidenceLevel
-            ),
-            Scope(
-              key = "write:self-assessment",
-              name = "Change your Self Assessment information",
-              description = "Allow write access to self assessment data",
-              confidenceLevel
-            )
-          ),
           api = APIDefinition(
             name = "Individual Losses (MTD)",
             description = "An API for providing individual losses data",
