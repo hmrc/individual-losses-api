@@ -16,10 +16,9 @@
 
 package v4.controllers.validators.resolvers
 
-import api.models.errors.TypeOfLossFormatError
 import cats.data.Validated.{Invalid, Valid}
-import support.UnitSpec
-import v4.controllers.validators.resolvers.ResolveBFTypeOfLoss
+import common.errors.TypeOfLossFormatError
+import shared.utils.UnitSpec
 import v4.models.domain.bfLoss.TypeOfLoss
 
 class ResolveBFTypeOfLossSpec extends UnitSpec {

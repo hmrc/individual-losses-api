@@ -16,15 +16,18 @@
 
 package v4.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.ClaimIdFormatError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import routing.Version4
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
 import v4.controllers.validators.MockDeleteLossClaimValidatorFactory
 import v4.models.domain.lossClaim.ClaimId
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
@@ -95,7 +98,7 @@ class DeleteLossClaimControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber = "4.0",
+          versionNumber = Version9.name,
           params = Map("nino" -> validNino, "claimId" -> claimId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
@@ -103,9 +106,9 @@ class DeleteLossClaimControllerSpec
         )
       )
 
-    MockedAppConfig.isApiDeprecated(Version4) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 

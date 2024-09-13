@@ -16,10 +16,11 @@
 
 package v5.lossClaims.list
 
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import common.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v5.lossClaims.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import v5.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
 import v5.lossClaims.list.def1.response.Def1_ListLossClaimsResponse

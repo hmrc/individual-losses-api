@@ -16,13 +16,14 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
-import api.models.errors.{LossIdFormatError, MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits._
+import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
+import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
 import v4.models.domain.bfLoss.LossId
 import v4.models.request.amendBFLosses.{AmendBFLossRequestBody, AmendBFLossRequestData}
 

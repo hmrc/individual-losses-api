@@ -16,12 +16,13 @@
 
 package v5.lossClaims.amendOrder.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
-import api.models.errors._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
+import shared.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import common.errors.TypeOfClaimFormatError
 import play.api.libs.json.JsValue
 import v4.controllers.validators.resolvers.ResolveLossTypeOfClaimFromJson
 import v4.models.domain.lossClaim.TypeOfClaim

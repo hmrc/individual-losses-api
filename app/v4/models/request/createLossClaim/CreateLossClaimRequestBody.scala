@@ -16,7 +16,7 @@
 
 package v4.models.request.createLossClaim
 
-import api.models.domain.TaxYear
+import shared.models.domain.TaxYear
 import play.api.libs.json._
 import v4.models.domain.lossClaim.TypeOfLoss._
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}

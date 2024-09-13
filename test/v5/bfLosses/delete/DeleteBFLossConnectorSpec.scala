@@ -16,10 +16,10 @@
 
 package v5.bfLosses.delete
 
-import api.connectors.ConnectorSpec
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
 import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
@@ -33,40 +33,39 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
   val request: DeleteBFLossRequestData = Def1_DeleteBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
-  trait Test {
-    _: ConnectorTest =>
-
-    val connector: DeleteBFLossConnector = new DeleteBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
-  }
-
   "deleteBFLosses" when {
     "given a non-TYS request" when {
       "DES is not migrated to HIP" must {
         "return a success response" in new DesTest with Test {
-          MockedAppConfig.featureSwitches returns Configuration("des_hip_migration_1504.enabled" -> false)
+          MockedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> false)
+
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-          ).returns(Future.successful(expected))
+          willDelete(url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId")
+            .returning(Future.successful(expected))
 
-          await(connector.deleteBFLoss(request)) shouldBe expected
+          val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
+          result shouldBe expected
         }
       }
       "DES is migrated to HIP" must {
         "return a success response" in new HipTest with Test {
-          MockedAppConfig.featureSwitches returns Configuration("des_hip_migration_1504.enabled" -> true)
+          MockedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> true)
+
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-          ).returns(Future.successful(expected))
+          willDelete(url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId")
+            .returning(Future.successful(expected))
 
-          await(connector.deleteBFLoss(request)) shouldBe expected
+          val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
+          result shouldBe expected
         }
       }
     }
+  }
+
+  trait Test { _: ConnectorTest =>
+    val connector: DeleteBFLossConnector = new DeleteBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }

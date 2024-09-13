@@ -16,16 +16,17 @@
 
 package v4.controllers.validators.resolvers
 
-import api.controllers.validators.resolvers.Resolver
-import api.models.errors.{MtdError, TypeOfLossFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import common.errors.TypeOfLossFormatError
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 import v4.models.domain.bfLoss.TypeOfLoss
 
-object ResolveBFTypeOfLoss extends Resolver[String, TypeOfLoss] {
+object ResolveBFTypeOfLoss extends ResolverSupport {
 
-  override def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], TypeOfLoss] = {
-    def useError = maybeError.getOrElse(TypeOfLossFormatError).maybeWithExtraPath(errorPath)
+  def apply(value: String, maybeError: Option[MtdError] = None): Validated[Seq[MtdError], TypeOfLoss] = {
+    def useError = maybeError.getOrElse(TypeOfLossFormatError)
 
     TypeOfLoss.parser
       .lift(value)

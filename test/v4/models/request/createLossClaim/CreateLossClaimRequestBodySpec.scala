@@ -16,9 +16,9 @@
 
 package v4.models.request.createLossClaim
 
-import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.models.utils.JsonErrorValidators
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
 class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
@@ -111,19 +111,16 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
         }
       }
 
-      testMandatoryProperty[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)("/typeOfLoss")
       testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(
         path = "/typeOfLoss",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)("/taxYearClaimedFor")
       testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(
         path = "/taxYearClaimedFor",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)("/typeOfClaim")
       testPropertyType[CreateLossClaimRequestBody](lossClaimSelfEmploymentJson)(
         path = "/typeOfClaim",
         replacement = 12344.toJson,

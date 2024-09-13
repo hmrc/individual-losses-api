@@ -16,9 +16,10 @@
 
 package v4.models.response.createBFLosses
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
-import config.AppConfig
 import play.api.libs.json._
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
+import v4.HateoasLinks
 
 case class CreateBFLossResponse(lossId: String)
 

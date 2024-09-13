@@ -16,10 +16,11 @@
 
 package v5.lossClaims.create
 
-import api.models.domain.Nino
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.{ServiceOutcome, ServiceSpec}
+import common.errors.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.{ServiceOutcome, ServiceSpec}
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse

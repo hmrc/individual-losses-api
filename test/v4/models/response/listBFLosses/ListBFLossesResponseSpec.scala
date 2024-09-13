@@ -16,11 +16,12 @@
 
 package v4.models.response.listBFLosses
 
-import api.hateoas.{HateoasFactory, HateoasLinks, HateoasWrapper, Link}
-import api.hateoas.Method.{GET, POST}
-import config.MockAppConfig
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.config.MockAppConfig
+import shared.hateoas.Method.{GET, POST}
+import shared.hateoas.{HateoasFactory, HateoasWrapper, Link}
+import shared.utils.UnitSpec
+import v4.HateoasLinks
 import v4.models.domain.bfLoss.TypeOfLoss
 
 class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {

@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.TypeOfLoss
 import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 import v4.models.response.createBFLosses.CreateBFLossResponse
@@ -51,7 +51,8 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
           body = requestBody
         ).returns(Future.successful(expected))
 
-        await(connector.createBFLoss(request)) shouldBe expected
+        val result: DownstreamOutcome[CreateBFLossResponse] = await(connector.createBFLoss(request))
+        result shouldBe expected
       }
     }
   }

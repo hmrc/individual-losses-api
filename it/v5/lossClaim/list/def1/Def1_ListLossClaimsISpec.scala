@@ -16,15 +16,16 @@
 
 package v5.lossClaim.list.def1
 
-import api.models.domain.TaxYear
-import api.models.errors._
+import common.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import shared.models.domain.TaxYear
+import shared.models.errors._
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v5.lossClaims.fixtures.ListLossClaimsFixtures._
 
 class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {

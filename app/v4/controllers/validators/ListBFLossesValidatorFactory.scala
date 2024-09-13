@@ -16,12 +16,13 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
-import api.models.errors._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
+import shared.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import common.errors.TypeOfLossFormatError
 import v4.models.domain.bfLoss.TypeOfLoss._
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
@@ -31,7 +32,7 @@ import javax.inject.Singleton
 @Singleton
 class ListBFLossesValidatorFactory {
 
-  private val resolveTaxYear = DetailedResolveTaxYear(maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
+  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYearBFLoss)
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
   private val availableLossTypeNames =
@@ -41,14 +42,14 @@ class ListBFLossesValidatorFactory {
                 taxYearBroughtForwardFrom: String,
                 typeOfLoss: Option[String],
                 businessId: Option[String]): Validator[ListBFLossesRequestData] =
-    new Validator[ListBFLossesRequestData] {
+    new Validator[ListBFLossesRequestData] with ResolverSupport {
 
       def validate: Validated[Seq[MtdError], ListBFLossesRequestData] =
         (
           ResolveNino(nino),
           resolveTaxYear(taxYearBroughtForwardFrom),
           resolveIncomeSourceType,
-          ResolveBusinessId(businessId)
+          ResolveBusinessId.resolver.resolveOptionally(businessId)
         ).mapN(ListBFLossesRequestData)
 
       private def resolveIncomeSourceType: Validated[Seq[MtdError], Option[IncomeSourceType]] =

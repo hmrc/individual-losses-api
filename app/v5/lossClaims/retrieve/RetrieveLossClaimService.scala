@@ -16,10 +16,11 @@
 
 package v5.lossClaims.retrieve
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import common.errors.ClaimIdFormatError
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 

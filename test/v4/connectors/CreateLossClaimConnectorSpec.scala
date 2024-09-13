@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLossClaimRequestData}
@@ -35,7 +35,6 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
     _: ConnectorTest =>
 
     val connector: CreateLossClaimConnector = new CreateLossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
   }
 
   "create LossClaim" when {
@@ -47,26 +46,17 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
       businessId = "XKIS00000000988"
     )
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
-
-    val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = inputHeaders)
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, CreateLossClaimResponse(claimId)))
 
-        MockedHttpClient
-          .post(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            config = dummyHeaderCarrierConfig,
-            body = lossClaim,
-            requiredHeaders = requiredIfsHeadersPost,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willPost(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim).returning(Future.successful(expected))
 
-        createLossClaimsResult(connector) shouldBe expected
+        val result: DownstreamOutcome[CreateLossClaimResponse] = createLossClaimsResult(connector)
+        result shouldBe expected
       }
     }
 

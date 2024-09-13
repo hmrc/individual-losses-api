@@ -16,10 +16,11 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import support.UnitSpec
+import common.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import shared.controllers.validators.Validator
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.listLossClaims.ListLossClaimsRequestData
 

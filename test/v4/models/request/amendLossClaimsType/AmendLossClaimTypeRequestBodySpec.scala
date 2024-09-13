@@ -17,7 +17,7 @@
 package v4.models.request.amendLossClaimsType
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.domain.lossClaim.TypeOfClaim._
 import v4.models.request.amendLossClaimType.AmendLossClaimTypeRequestBody

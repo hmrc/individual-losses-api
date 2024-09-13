@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, Timestamp}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v4.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
 import v4.models.response.retrieveLossClaim.RetrieveLossClaimResponse
@@ -29,13 +29,6 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890ag"
-
-  trait Test {
-    _: ConnectorTest =>
-
-    val connector: RetrieveLossClaimConnector = new RetrieveLossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
-  }
 
   "retrieve LossClaim" should {
     val validTaxYear: String    = "2019-20"
@@ -60,21 +53,22 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
     "return a successful response and correlationId" when {
       "provided with a valid request" in new IfsTest with Test {
-
         val expected: Left[ResponseWrapper[RetrieveLossClaimResponse], Nothing] = Left(ResponseWrapper(correlationId, retrieveResponse))
 
-        MockedHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyHeaderCarrierConfig,
-            requiredHeaders = requiredIfsHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
+          .returning(Future.successful(expected))
 
-        retrieveLossClaimResult(connector) shouldBe expected
+        val result: DownstreamOutcome[RetrieveLossClaimResponse] = retrieveLossClaimResult(connector)
+        result shouldBe expected
       }
     }
+  }
+
+  trait Test { _: ConnectorTest =>
+
+    val connector: RetrieveLossClaimConnector =
+      new RetrieveLossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
   }
 
 }

@@ -16,13 +16,11 @@
 
 package v5.bfLosses.list
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import routing.{Version, Version5}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -32,7 +30,6 @@ class ListBFLossesController @Inject() (val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
                                         service: ListBFLossesService,
                                         validatorFactory: ListBFLossesValidatorFactory,
-                                        hateoasFactory: HateoasFactory,
                                         cc: ControllerComponents,
                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
@@ -44,7 +41,6 @@ class ListBFLossesController @Inject() (val authService: EnrolmentsAuthService,
 
   def list(nino: String, taxYearBroughtForwardFrom: String, businessId: Option[String], typeOfLoss: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version5)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)

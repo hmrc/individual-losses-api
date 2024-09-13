@@ -16,10 +16,11 @@
 
 package v5.bfLosses.amend
 
-import api.models.domain.{Nino, Timestamp}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v5.bfLosses.amend
 import v5.bfLosses.amend.AmendBFLossService
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}

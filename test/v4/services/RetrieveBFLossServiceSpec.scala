@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.models.domain.{Nino, Timestamp}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import common.errors.LossIdFormatError
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v4.connectors.MockRetrieveBFLossConnector
 import v4.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v4.models.request.retrieveBFLoss.RetrieveBFLossRequestData

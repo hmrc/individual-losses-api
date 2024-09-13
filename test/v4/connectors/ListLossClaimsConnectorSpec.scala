@@ -16,10 +16,10 @@
 
 package v4.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
+import shared.models.outcomes.ResponseWrapper
 import v4.fixtures.ListLossClaimsFixtures._
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.listLossClaims.ListLossClaimsRequestData

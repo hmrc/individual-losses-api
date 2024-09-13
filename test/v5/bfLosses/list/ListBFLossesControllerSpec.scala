@@ -16,19 +16,20 @@
 
 package v5.bfLosses.list
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.MockHateoasFactory
-import api.models.domain.{BusinessId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.TypeOfLossFormatError
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import routing.Version5
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.domain.{BusinessId, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
 import v5.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v5.bfLosses.list
-import v5.bfLosses.list.ListBFLossesController
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}
 
@@ -40,8 +41,7 @@ class ListBFLossesControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with list.MockListBFLossesValidatorFactory
-    with list.MockListBFLossesService
-    with MockHateoasFactory {
+    with list.MockListBFLossesService {
 
   private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
@@ -108,7 +108,6 @@ class ListBFLossesControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,
       validatorFactory = mockListBFLossesValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -116,9 +115,9 @@ class ListBFLossesControllerSpec
     protected def callController(): Future[Result] =
       controller.list(validNino, taxYear, Some(businessId), Some(selfEmployment))(fakeRequest)
 
-    MockedAppConfig.isApiDeprecated(Version5) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 

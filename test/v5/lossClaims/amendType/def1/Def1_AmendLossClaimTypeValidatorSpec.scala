@@ -16,10 +16,11 @@
 
 package v5.lossClaims.amendType.def1
 
-import api.models.domain.Nino
-import api.models.errors._
+import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
+import shared.models.domain.Nino
+import shared.models.errors._
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim}
 import v5.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 

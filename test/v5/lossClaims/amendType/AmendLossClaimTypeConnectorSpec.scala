@@ -16,10 +16,9 @@
 
 package v5.lossClaims.amendType
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, Timestamp}
-import api.models.outcomes.ResponseWrapper
-import uk.gov.hmrc.http.HeaderCarrier
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v5.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
@@ -45,25 +44,15 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
 
     val amendLossClaimType: Def1_AmendLossClaimTypeRequestBody = Def1_AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
-
-    val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
-
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[AmendLossClaimTypeResponse]] = Right(ResponseWrapper(correlationId, response))
 
-        MockedHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyHeaderCarrierConfig,
-            body = amendLossClaimType,
-            requiredHeaders = requiredIfsHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willPut(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", amendLossClaimType)
+          .returning(Future.successful(expected))
 
-        amendLossClaimTypeResult(connector) shouldBe expected
+        val result: DownstreamOutcome[AmendLossClaimTypeResponse] = amendLossClaimTypeResult(connector)
+        result shouldBe expected
       }
     }
 
@@ -77,11 +66,8 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
           )))
   }
 
-  trait Test {
-    _: ConnectorTest =>
-
+  trait Test { _: ConnectorTest =>
     val connector: AmendLossClaimTypeConnector = new AmendLossClaimTypeConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
   }
 
 }

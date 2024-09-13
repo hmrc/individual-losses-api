@@ -16,8 +16,8 @@
 
 package v4.models.domain.lossClaim
 
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
+import shared.utils.UnitSpec
+import shared.utils.enums.EnumJsonSpecSupport
 import v4.models.domain.lossClaim.TypeOfLoss._
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {

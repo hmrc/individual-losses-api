@@ -16,10 +16,9 @@
 
 package v5.lossClaims.create
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
-import uk.gov.hmrc.http.HeaderCarrier
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
@@ -41,43 +40,28 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
       businessId = "XKIS00000000988"
     )
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
-
-    val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
-
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, Def1_CreateLossClaimResponse(claimId)))
 
-        MockedHttpClient
-          .post(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino",
-            config = dummyHeaderCarrierConfig,
-            body = lossClaim,
-            requiredHeaders = requiredIfsHeadersPost,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willPost(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim)
+          .returning(Future.successful(expected))
 
-        createLossClaimsResult(connector) shouldBe expected
+        val result: DownstreamOutcome[CreateLossClaimResponse] = await(
+          connector.createLossClaim(
+            Def1_CreateLossClaimRequestData(
+              nino = Nino(nino),
+              lossClaim
+            ))
+        )
+        result shouldBe expected
       }
     }
-
-    def createLossClaimsResult(connector: CreateLossClaimConnector): DownstreamOutcome[CreateLossClaimResponse] =
-      await(
-        connector.createLossClaim(
-          Def1_CreateLossClaimRequestData(
-            nino = Nino(nino),
-            lossClaim
-          )))
   }
 
-  trait Test {
-    _: ConnectorTest =>
-
+  trait Test { _: ConnectorTest =>
     val connector: CreateLossClaimConnector = new CreateLossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
   }
 
 }

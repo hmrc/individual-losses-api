@@ -16,8 +16,8 @@
 
 package v4.services
 
-import api.controllers.RequestContext
-import api.services.ServiceOutcome
+import shared.controllers.RequestContext
+import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v4.models.request.amendLossClaimType.AmendLossClaimTypeRequestData

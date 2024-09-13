@@ -16,13 +16,14 @@
 
 package v5.lossClaims.amendOrder.def1
 
-import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.ResolveParsedNumber
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import v4.controllers.validators.resolvers.ResolveLossClaimId
+import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken}
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.ResolveParsedNumber
+import shared.models.errors._
+import v5.lossClaims.amendOrder.common.resolvers.ResolveLossClaimId
 import v5.lossClaims.amendOrder.def1.model.request.Def1_AmendLossClaimsOrderRequestData
 
 object Def1_AmendLossClaimsOrderRulesValidator extends RulesValidator[Def1_AmendLossClaimsOrderRequestData] {
@@ -61,7 +62,7 @@ object Def1_AmendLossClaimsOrderRulesValidator extends RulesValidator[Def1_Amend
   private def validateListOfLossClaims(parsed: Def1_AmendLossClaimsOrderRequestData): Validated[Seq[MtdError], Unit] = {
     val results = parsed.body.listOfLossClaims.zipWithIndex.map { case (lossClaim, index) =>
       combine(
-        ResolveLossClaimId(lossClaim.claimId, path = s"/listOfLossClaims/$index/claimId"),
+        ResolveLossClaimId(lossClaim.claimId, Some(ClaimIdFormatError.withPath(s"/listOfLossClaims/$index/claimId"))),
         ResolveParsedNumber(min = 1, max = 99)(lossClaim.sequence, path = s"/listOfLossClaims/$index/sequence")
       )
     }

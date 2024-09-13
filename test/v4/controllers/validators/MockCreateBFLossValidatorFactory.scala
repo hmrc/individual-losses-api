@@ -16,14 +16,16 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.models.errors.MtdError
+import shared.controllers.validators.Validator
+import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.JsValue
 import v4.models.request.createBFLosses.CreateBFLossRequestData
+
+import java.time.Clock
 
 trait MockCreateBFLossValidatorFactory extends MockFactory {
 
@@ -33,8 +35,8 @@ trait MockCreateBFLossValidatorFactory extends MockFactory {
 
     def expectValidator(): CallHandler[Validator[CreateBFLossRequestData]] =
       (mockCreateBFLossValidatorFactory
-        .validator(_: String, _: JsValue))
-        .expects(*, *)
+        .validator(_: String, _: JsValue)(_: Clock))
+        .expects(*, *, *)
 
   }
 

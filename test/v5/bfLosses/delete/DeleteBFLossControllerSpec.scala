@@ -16,19 +16,21 @@
 
 package v5.bfLosses.delete
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.RuleDeleteAfterFinalDeclarationError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import routing.Version5
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
+import shared.services.MockAuditService
 import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete
-import v5.bfLosses.delete.DeleteBFLossController
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -97,7 +99,7 @@ class DeleteBFLossControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber = "4.0",
+          versionNumber = Version9.name,
           params = Map("nino" -> validNino, "lossId" -> lossId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
@@ -105,9 +107,9 @@ class DeleteBFLossControllerSpec
         )
       )
 
-    MockedAppConfig.isApiDeprecated(Version5) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 

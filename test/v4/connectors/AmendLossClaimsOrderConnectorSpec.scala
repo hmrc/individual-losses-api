@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData, Claim}
 
@@ -54,14 +54,16 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
     "given a tax year prior to 2023-24" should {
       "return a success response" in new TysIfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
-        val expected         = Right(ResponseWrapper(correlationId, ()))
+
+        private val expected = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
           url = s"$baseUrl/income-tax/claims-for-relief/preferences/22-23/$nino",
           body = amendLossClaimsOrder
         ).returns(Future.successful(expected))
 
-        await(connector.amendLossClaimsOrder(request)) shouldBe expected
+        val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsOrder(request))
+        result shouldBe expected
       }
     }
 

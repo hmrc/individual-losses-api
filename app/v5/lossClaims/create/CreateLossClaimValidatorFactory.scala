@@ -16,7 +16,7 @@
 
 package v5.lossClaims.create
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import play.api.libs.json.JsValue
 import v5.lossClaims.create.CreateLossClaimSchema.Def1
 import v5.lossClaims.create.def1.Def1_CreateLossClaimValidator

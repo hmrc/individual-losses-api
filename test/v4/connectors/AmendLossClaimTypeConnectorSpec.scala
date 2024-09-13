@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, Timestamp}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v4.models.request.amendLossClaimType.{AmendLossClaimTypeRequestBody, AmendLossClaimTypeRequestData}
@@ -51,25 +51,16 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
 
     val amendLossClaimType: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
-    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
-
-    val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
+    implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = inputHeaders)
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[AmendLossClaimTypeResponse]] = Right(ResponseWrapper(correlationId, response))
 
-        MockedHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId",
-            config = dummyHeaderCarrierConfig,
-            body = amendLossClaimType,
-            requiredHeaders = requiredIfsHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willPut(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", amendLossClaimType).returning(Future.successful(expected))
 
-        amendLossClaimTypeResult(connector) shouldBe expected
+        val result: DownstreamOutcome[AmendLossClaimTypeResponse] = amendLossClaimTypeResult(connector)
+        result shouldBe expected
       }
     }
 

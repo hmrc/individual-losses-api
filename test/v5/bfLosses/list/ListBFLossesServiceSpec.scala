@@ -16,10 +16,11 @@
 
 package v5.bfLosses.list
 
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import common.errors.TypeOfLossFormatError
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.list
 import v5.bfLosses.list.ListBFLossesService

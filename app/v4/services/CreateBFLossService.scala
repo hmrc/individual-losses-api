@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.controllers.RequestContext
-import api.models.errors.{RuleDuplicateSubmissionError, _}
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import common.errors.RuleDuplicateSubmissionError
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.CreateBFLossConnector
 import v4.models.request.createBFLosses.CreateBFLossRequestData
 import v4.models.response.createBFLosses.CreateBFLossResponse

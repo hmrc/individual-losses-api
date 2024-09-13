@@ -16,15 +16,18 @@
 
 package v5.lossClaims.retrieve
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.Timestamp
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.ClaimIdFormatError
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import routing.Version4
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.domain.Timestamp
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
@@ -112,9 +115,9 @@ class RetrieveLossClaimControllerSpec
 
     protected def callController(): Future[Result] = controller.retrieve(validNino, claimId)(fakeRequest)
 
-    MockedAppConfig.isApiDeprecated(Version4) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 

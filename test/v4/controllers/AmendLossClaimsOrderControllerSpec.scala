@@ -16,18 +16,21 @@
 
 package v4.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.TaxYear
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.RuleSequenceOrderBroken
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import routing.Version4
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.{GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.TaxYear
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
 import v4.controllers.validators.MockAmendLossClaimsOrderValidatorFactory
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData, Claim}
@@ -56,7 +59,7 @@ class AmendLossClaimsOrderControllerSpec
 
   private val amendLossClaimsOrderResponse = AmendLossClaimsOrderResponse()
 
-  private val testHateoasLink = Seq(
+  private val testHateoasLink = List(
     Link(href = s"/individuals/losses/$validNino/loss-claims/order/$taxYear", method = PUT, rel = "amend-loss-claim-order"),
     Link(href = s"/individuals/losses/$validNino/loss-claims", method = GET, rel = "list-loss-claims")
   )
@@ -165,7 +168,7 @@ class AmendLossClaimsOrderControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber = "4.0",
+          versionNumber = Version9.name,
           params = Map("nino" -> validNino, "taxYearClaimedFor" -> taxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
@@ -173,9 +176,9 @@ class AmendLossClaimsOrderControllerSpec
         )
       )
 
-    MockedAppConfig.isApiDeprecated(Version4) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 

@@ -16,10 +16,11 @@
 
 package v5.lossClaims.delete.def1
 
-import api.controllers.validators.Validator
-import api.models.domain.Nino
-import api.models.errors._
-import support.UnitSpec
+import common.errors.ClaimIdFormatError
+import shared.controllers.validators.Validator
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData

@@ -16,11 +16,11 @@
 
 package v4.models.response.createLossClaim
 
-import api.hateoas.Link
-import api.hateoas.Method.{DELETE, GET, POST}
-import config.MockAppConfig
+import shared.hateoas.Link
+import shared.hateoas.Method.{DELETE, GET, POST}
+import shared.config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v4.models.response.createLossClaim.{CreateLossClaimHateoasData, CreateLossClaimResponse}
 
 class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {

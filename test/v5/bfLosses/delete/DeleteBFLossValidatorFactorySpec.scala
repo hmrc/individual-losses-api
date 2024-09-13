@@ -16,8 +16,8 @@
 
 package v5.bfLosses.delete
 
-import api.models.utils.JsonErrorValidators
-import support.UnitSpec
+import shared.models.utils.JsonErrorValidators
+import shared.utils.UnitSpec
 import v5.bfLosses.delete.def1.Def1_DeleteBFLossValidator
 
 class DeleteBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {

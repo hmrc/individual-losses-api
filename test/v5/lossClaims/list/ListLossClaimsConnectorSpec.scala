@@ -16,10 +16,10 @@
 
 package v5.lossClaims.list
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.fixtures.ListLossClaimsFixtures._
 import v5.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
@@ -29,13 +29,13 @@ import scala.concurrent.Future
 
 class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890ag"
+  private val nino = Nino("AA123456A")
 
   "list LossClaims" when {
     "a valid request is supplied with only the tax year parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
-        willGet(s"$baseUrl/income-tax/23-24/claims-for-relief/$nino") returns Future.successful(success("2023-24"))
+        willGet(s"$baseUrl/income-tax/23-24/claims-for-relief/$nino")
+          .returning(Future.successful(success("2023-24")))
 
         val result: DownstreamOutcome[ListLossClaimsResponse] =
           listLossClaimsResult(connector, TaxYear.fromMtd("2023-24"))
@@ -46,8 +46,8 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
     "provided with a income source id parameter" should {
       "return a successful response with the correct correlationId" in new TysIfsTest with Test {
-        willGet(url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino", parameters = List(("incomeSourceId", "testId"))) returns Future
-          .successful(success("2023-24"))
+        willGet(url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino", List(("incomeSourceId", "testId")))
+          .returning(Future.successful(success("2023-24")))
 
         val result: DownstreamOutcome[ListLossClaimsResponse] =
           listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), businessId = Some(BusinessId("testId")))
@@ -61,7 +61,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         willGet(
           url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           parameters = List(("incomeSourceType", "02"))
-        ) returns Future.successful(success("2023-24"))
+        ).returning(Future.successful(success("2023-24")))
 
         val result: DownstreamOutcome[ListLossClaimsResponse] =
           listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`))
@@ -75,7 +75,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         willGet(
           url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           parameters = List(("claimType", "CSGI"))
-        ) returns Future.successful(success("2023-24"))
+        ).returning(Future.successful(success("2023-24")))
 
         val result: DownstreamOutcome[ListLossClaimsResponse] =
           listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), claimType = Some(TypeOfClaim.`carry-sideways`))
@@ -89,15 +89,17 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         willGet(
           url = s"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           parameters = List(("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI"))
-        ) returns Future.successful(success("2023-24"))
+        ).returning(Future.successful(success("2023-24")))
 
-        listLossClaimsResult(
+        val result: DownstreamOutcome[ListLossClaimsResponse] = listLossClaimsResult(
           connector = connector,
           taxYear = TaxYear("2024"),
           businessId = Some(BusinessId("testId")),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)
-        ) shouldBe success("2023-24")
+        )
+
+        result shouldBe success("2023-24")
       }
     }
 
@@ -109,7 +111,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
       await(
         connector.listLossClaims(
           Def1_ListLossClaimsRequestData(
-            nino = Nino(nino),
+            nino = nino,
             taxYearClaimedFor = taxYear,
             typeOfLoss = typeOfLoss,
             businessId = businessId,
@@ -117,15 +119,20 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
           )))
   }
 
-  trait Test {
-    _: ConnectorTest =>
-    val connector: ListLossClaimsConnector = new ListLossClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+  trait Test { _: ConnectorTest =>
 
-    protected def success(taxYear: String) = Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))
+    protected val connector: ListLossClaimsConnector =
+      new ListLossClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-    protected def downstreamError(code: String) = Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(code))))
+    protected def success(taxYear: String): Either[ResponseWrapper[DownstreamErrors], ResponseWrapper[ListLossClaimsResponse]] =
+      Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))
 
-    val outboundError = Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+    protected def downstreamError(code: String): Either[ResponseWrapper[DownstreamErrors], ResponseWrapper[ListLossClaimsResponse]] =
+      Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(code))))
+
+    protected val outboundError: Either[ResponseWrapper[OutboundError], ResponseWrapper[ListLossClaimsResponse]] =
+      Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+
   }
 
 }

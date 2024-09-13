@@ -16,10 +16,9 @@
 
 package v5.bfLosses.amend
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, Timestamp}
-import api.models.outcomes.ResponseWrapper
-import v5.bfLosses.amend.AmendBFLossConnector
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.outcomes.ResponseWrapper
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 import v5.bfLosses.amend.model.response.AmendBFLossResponse
@@ -34,13 +33,6 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
 
   val requestBody: Def1_AmendBFLossRequestBody = Def1_AmendBFLossRequestBody(500.13)
   val request: Def1_AmendBFLossRequestData     = Def1_AmendBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId), requestBody)
-
-  trait Test {
-    _: ConnectorTest =>
-
-    val connector: AmendBFLossConnector = new AmendBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
-  }
 
   "amendBFLosses" should {
     "return the expected response for a non-TYS request" when {
@@ -57,11 +49,16 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         willPut(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
           body = requestBody
-        ).returns(Future.successful(expected))
+        ).returning(Future.successful(expected))
 
-        await(connector.amendBFLoss(request)) shouldBe expected
+        val result: DownstreamOutcome[AmendBFLossResponse] = await(connector.amendBFLoss(request))
+        result shouldBe expected
       }
     }
+  }
+
+  trait Test { _: ConnectorTest =>
+    val connector: AmendBFLossConnector = new AmendBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }

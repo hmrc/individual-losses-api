@@ -16,17 +16,18 @@
 
 package v4.endpoints.bfLoss.amend
 
-import api.hateoas.HateoasLinks
-import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
+import v4.HateoasLinks
 
 class AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -43,17 +44,21 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |}
       """.stripMargin)
 
-  val requestJson: JsValue = Json.parse(s"""
-                                           |{
-                                           |    "lossAmount": $lossAmount
-                                           |}
-      """.stripMargin)
+  val requestJson: JsValue = Json.parse(
+    s"""
+       |{
+       |    "lossAmount": $lossAmount
+       |}
+      """.stripMargin
+  )
 
-  val invalidRequestJson: JsValue = Json.parse(s"""
-                                                  |{
-                                                  |    "lossAmount": 23.2714
-                                                  |}
-      """.stripMargin)
+  val invalidRequestJson: JsValue = Json.parse(
+    s"""
+       |{
+       |    "lossAmount": 23.2714
+       |}
+      """.stripMargin
+  )
 
   def errorBody(code: String): String =
     s"""

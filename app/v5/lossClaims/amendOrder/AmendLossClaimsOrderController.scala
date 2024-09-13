@@ -16,25 +16,27 @@
 
 package v5.lossClaims.amendOrder
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthService,
-                                                val lookupService: MtdIdLookupService,
-                                                service: AmendLossClaimsOrderService,
-                                                validatorFactory: AmendLossClaimsOrderValidatorFactory,
-                                                auditService: AuditService,
-                                                cc: ControllerComponents,
-                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class AmendLossClaimsOrderController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    service: AmendLossClaimsOrderService,
+    validatorFactory: AmendLossClaimsOrderValidatorFactory,
+    auditService: AuditService,
+    cc: ControllerComponents,
+    idGenerator: IdGenerator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "amend-loss-claims-order"
@@ -44,7 +46,6 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
 
   def amendClaimsOrder(nino: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, taxYearClaimedFor, request.body)
@@ -58,7 +59,7 @@ class AmendLossClaimsOrderController @Inject() (val authService: EnrolmentsAuthS
             auditService,
             auditType = "AmendLossClaimOrder",
             transactionName = "amend-loss-claim-order",
-            apiVersion = Version.from(request, orElse = Version4),
+            apiVersion = Version(request),
             params = Map("nino" -> nino, "taxYearClaimedFor" -> taxYearClaimedFor),
             requestBody = Some(request.body)
           ))

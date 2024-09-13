@@ -16,33 +16,33 @@
 
 package v5.lossClaims.retrieve
 
-import api.controllers._
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import routing.{Version, Version4}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RetrieveLossClaimController @Inject() (val authService: EnrolmentsAuthService,
-                                             val lookupService: MtdIdLookupService,
-                                             service: RetrieveLossClaimService,
-                                             validatorFactory: RetrieveLossClaimValidatorFactory,
-                                             cc: ControllerComponents,
-                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class RetrieveLossClaimController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    service: RetrieveLossClaimService,
+    validatorFactory: RetrieveLossClaimValidatorFactory,
+    cc: ControllerComponents,
+    idGenerator: IdGenerator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
+
+  override val endpointName: String = "retrieve-loss-claim"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveLossClaimController", endpointName = "Retrieve a Loss Claim")
 
-  override val endpointName: String = "retrieve-loss-claim"
-
   def retrieve(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, claimId)

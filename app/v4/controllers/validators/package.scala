@@ -16,9 +16,11 @@
 
 package v4.controllers
 
+import shared.models.domain.TaxYear
+
 package object validators {
 
-  val minimumTaxYearBFLoss    = 2019
-  val minimumTaxYearLossClaim = 2020
+  val minimumTaxYearBFLoss: TaxYear    = TaxYear.ending(2019)
+  val minimumTaxYearLossClaim: TaxYear = TaxYear.ending(2020)
 
 }

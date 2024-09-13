@@ -16,13 +16,12 @@
 
 package v5.lossClaims.amendOrder
 
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
-import v4.models.domain.lossClaim.TypeOfClaim
-import v5.lossClaims.amendOrder.AmendLossClaimsOrderService
-import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
+import _root_.common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
+import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData, TypeOfClaim}
 
 import scala.concurrent.Future
 

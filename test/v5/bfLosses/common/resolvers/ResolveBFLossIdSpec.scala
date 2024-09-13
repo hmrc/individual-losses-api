@@ -16,9 +16,9 @@
 
 package v5.bfLosses.common.resolvers
 
-import api.models.errors.LossIdFormatError
+import common.errors.LossIdFormatError
 import cats.data.Validated.{Invalid, Valid}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.LossId
 
 class ResolveBFLossIdSpec extends UnitSpec {

@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
@@ -57,10 +57,9 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
     "return the expected response" when {
       "downstream returns OK" when {
         "the connector sends a request with just the tax year parameter" in new TysIfsTest with Test {
-          val responseData: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear = taxYear)
-          val request: ListBFLossesRequestData                     = makeRequest(taxYear = taxYear)
-
-          val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
+          private val responseData       = makeResponse(taxYear = taxYear)
+          private val request            = makeRequest(taxYear = taxYear)
+          private val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
 
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino"
@@ -71,13 +70,14 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
         }
 
         "a valid request with all parameters" in new TysIfsTest with Test {
-          val responseData: ListBFLossesResponse[ListBFLossesItem] = makeResponse(taxYear)
-          val request: ListBFLossesRequestData =
-            makeRequest(taxYear = taxYear, businessId = Some(BusinessId("testId")), incomeSourceType = Some(IncomeSourceType.`01`))
-
-          val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
-
-          val queryParams = List(
+          private val responseData = makeResponse(taxYear)
+          private val request = makeRequest(
+            taxYear = taxYear,
+            businessId = Some(BusinessId("testId")),
+            incomeSourceType = Some(IncomeSourceType.`01`)
+          )
+          private val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
+          private val queryParams = List(
             ("incomeSourceId", "testId"),
             ("incomeSourceType", "01")
           )
@@ -85,7 +85,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
             parameters = queryParams
-          ).returns(Future.successful(downstreamResponse))
+          ).returning(Future.successful(downstreamResponse))
 
           val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
           result shouldBe downstreamResponse
