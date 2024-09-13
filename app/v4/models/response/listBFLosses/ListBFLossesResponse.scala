@@ -20,11 +20,11 @@ import cats.Functor
 import play.api.libs.json._
 import shared.config.AppConfig
 import shared.hateoas.{HateoasData, HateoasListLinksFactory, Link}
-import v4.HateoasLinks
+import v4.V4HateoasLinks
 
 case class ListBFLossesResponse[I](losses: Seq[I])
 
-object ListBFLossesResponse extends HateoasLinks {
+object ListBFLossesResponse extends V4HateoasLinks {
 
   implicit def writes[I: Writes]: OWrites[ListBFLossesResponse[I]] =
     Json.writes[ListBFLossesResponse[I]]

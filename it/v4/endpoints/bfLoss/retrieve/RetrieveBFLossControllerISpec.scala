@@ -26,7 +26,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v4.HateoasLinks
+import v4.V4HateoasLinks
 
 class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -36,7 +36,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
   val taxYear           = "2019-20"
   val downstreamTaxYear = "2020"
 
-  object Hateoas extends HateoasLinks
+  object Hateoas extends V4HateoasLinks
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
        |{

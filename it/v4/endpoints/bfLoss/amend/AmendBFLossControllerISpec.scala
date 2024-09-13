@@ -27,7 +27,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v4.HateoasLinks
+import v4.V4HateoasLinks
 
 class AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -68,7 +68,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
        |      }
       """.stripMargin
 
-  object Hateoas extends HateoasLinks
+  object Hateoas extends V4HateoasLinks
 
   private trait Test {
 

@@ -21,10 +21,10 @@ import shared.config.MockAppConfig
 import shared.hateoas.Method.{GET, POST}
 import shared.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import shared.utils.UnitSpec
-import v4.HateoasLinks
+import v4.V4HateoasLinks
 import v4.models.domain.bfLoss.TypeOfLoss
 
-class ListBFLossesResponseSpec extends UnitSpec with HateoasLinks {
+class ListBFLossesResponseSpec extends UnitSpec with V4HateoasLinks {
 
   val item1: ListBFLossesItem = ListBFLossesItem(
     lossId = "lossId1",

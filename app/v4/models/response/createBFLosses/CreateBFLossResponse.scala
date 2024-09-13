@@ -19,11 +19,11 @@ package v4.models.response.createBFLosses
 import play.api.libs.json._
 import shared.config.AppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
-import v4.HateoasLinks
+import v4.V4HateoasLinks
 
 case class CreateBFLossResponse(lossId: String)
 
-object CreateBFLossResponse extends HateoasLinks {
+object CreateBFLossResponse extends V4HateoasLinks {
   implicit val writes: OWrites[CreateBFLossResponse] = Json.writes[CreateBFLossResponse]
 
   implicit val downstreamToMtdReads: Reads[CreateBFLossResponse] =

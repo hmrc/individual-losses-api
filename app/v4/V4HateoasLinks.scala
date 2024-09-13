@@ -21,7 +21,7 @@ import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, POST, PUT}
 import v4.RelType._
 
-trait HateoasLinks {
+trait V4HateoasLinks {
 
   // Domain URIs
   private def bfLossBaseUri(appConfig: AppConfig, nino: String): String =
