@@ -18,16 +18,13 @@ package definition
 
 import cats.implicits.catsSyntaxValidatedId
 import shared.config.Deprecation.NotDeprecated
-import shared.config.{ConfidenceLevelConfig, MockAppConfig}
+import shared.config.MockAppConfig
 import shared.definition.APIStatus.BETA
 import shared.definition._
 import shared.routing.{Version4, Version5}
 import shared.utils.UnitSpec
-import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 class LossesApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
-
-  private val confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
 
   class Test {
     MockedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
@@ -35,7 +32,6 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
   }
 
   "definition" when {
-
     "called" should {
       "return a valid Definition case class" in new Test {
         List(Version4, Version5).foreach { version =>
@@ -43,10 +39,6 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
           MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
         }
-
-        MockedAppConfig.confidenceLevelConfig
-          .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
-          .anyNumberOfTimes()
 
         apiDefinitionFactory.definition shouldBe
           Definition(
@@ -70,25 +62,6 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
               requiresTrust = None
             )
           )
-      }
-    }
-
-  }
-
-  "confidenceLevel" when {
-    List(
-      (true, ConfidenceLevel.L250, ConfidenceLevel.L250),
-      (true, ConfidenceLevel.L200, ConfidenceLevel.L200),
-      (false, ConfidenceLevel.L200, ConfidenceLevel.L50)
-    ).foreach { case (definitionEnabled, configCL, expectedDefinitionCL) =>
-      s"confidence-level-check.definition.enabled is $definitionEnabled and confidence-level = $configCL" should {
-        s"return confidence level $expectedDefinitionCL" in new Test {
-          MockedAppConfig.confidenceLevelConfig returns ConfidenceLevelConfig(
-            confidenceLevel = configCL,
-            definitionEnabled = definitionEnabled,
-            authValidationEnabled = true)
-          apiDefinitionFactory.confidenceLevel shouldBe expectedDefinitionCL
-        }
       }
     }
   }
