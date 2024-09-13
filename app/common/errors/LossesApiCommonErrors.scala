@@ -22,7 +22,6 @@ import shared.models.errors.MtdError
 // MtdError types that are common to SA Accounts API.
 
 // Format Errors
-object AmountFormatError            extends MtdError("FORMAT_LOSS_AMOUNT", "The provided Loss amount is invalid", BAD_REQUEST)
 object ClaimIdFormatError           extends MtdError("FORMAT_CLAIM_ID", "The provided claim ID is invalid", BAD_REQUEST)
 object LossIdFormatError            extends MtdError("FORMAT_LOSS_ID", "The provided loss ID is invalid", BAD_REQUEST)
 object TypeOfLossFormatError        extends MtdError("FORMAT_TYPE_OF_LOSS", "The provided type of loss is invalid", BAD_REQUEST)
