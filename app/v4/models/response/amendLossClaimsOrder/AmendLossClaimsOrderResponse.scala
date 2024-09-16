@@ -16,14 +16,15 @@
 
 package v4.models.response.amendLossClaimsOrder
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
-import api.hateoas.RelType.LIST_LOSS_CLAIMS
-import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
+import v4.V4HateoasLinks
+import v4.RelType.LIST_LOSS_CLAIMS
 
 case class AmendLossClaimsOrderResponse()
 
-object AmendLossClaimsOrderResponse extends HateoasLinks {
+object AmendLossClaimsOrderResponse extends V4HateoasLinks {
   implicit val writes: OWrites[AmendLossClaimsOrderResponse] = OWrites[AmendLossClaimsOrderResponse](_ => Json.obj())
 
   implicit object AmendOrderLinksFactory extends HateoasLinksFactory[AmendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData] {

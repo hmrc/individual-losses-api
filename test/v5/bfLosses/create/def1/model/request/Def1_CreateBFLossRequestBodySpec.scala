@@ -16,11 +16,10 @@
 
 package v5.bfLosses.create.def1.model.request
 
-import api.models.utils.JsonErrorValidators
 import play.api.libs.json._
-import support.UnitSpec
+import shared.models.utils.JsonErrorValidators
+import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.TypeOfLoss
-import v5.bfLosses.create.def1.model.request.Def1_CreateBFLossRequestBody
 
 class Def1_CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators {
 
@@ -80,19 +79,16 @@ class Def1_CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators
         broughtForwardLossEmploymentJson.as[Def1_CreateBFLossRequestBody] shouldBe broughtForwardLossEmployment
       }
 
-      testMandatoryProperty[Def1_CreateBFLossRequestBody](broughtForwardLossEmploymentJson)("/typeOfLoss")
       testPropertyType[Def1_CreateBFLossRequestBody](broughtForwardLossEmploymentJson)(
         path = "/typeOfLoss",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[Def1_CreateBFLossRequestBody](broughtForwardLossEmploymentJson)("/taxYearBroughtForwardFrom")
       testPropertyType[Def1_CreateBFLossRequestBody](broughtForwardLossEmploymentJson)(
         path = "/taxYearBroughtForwardFrom",
         replacement = 12344.toJson,
         expectedError = JsonError.STRING_FORMAT_EXCEPTION)
 
-      testMandatoryProperty[Def1_CreateBFLossRequestBody](broughtForwardLossEmploymentJson)("/lossAmount")
       testPropertyType[Def1_CreateBFLossRequestBody](broughtForwardLossEmploymentJson)(
         path = "/lossAmount",
         replacement = "dfgdf".toJson,

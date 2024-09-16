@@ -16,32 +16,23 @@
 
 package v5.bfLosses.create
 
-import api.connectors.ConnectorSpec
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
 import v5.bfLosses.common.domain.TypeOfLoss
-import v5.bfLosses.create.CreateBFLossConnector
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.def1.model.response.Def1_CreateBFLossResponse
-import v5.bfLosses.create.model.request.CreateBFLossRequestData
 import v5.bfLosses.create.model.response.CreateBFLossResponse
 
 import scala.concurrent.Future
 
 class CreateBFLossConnectorSpec extends ConnectorSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  val nino   = "AA123456A"
+  val lossId = "AAZZ1234567890a"
 
-  val requestBody: Def1_CreateBFLossRequestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
-  val request: CreateBFLossRequestData          = Def1_CreateBFLossRequestData(nino = Nino(nino), requestBody)
-
-  trait Test {
-    _: ConnectorTest =>
-
-    val connector: CreateBFLossConnector = new CreateBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
-  }
+  private val requestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
+  private val request     = Def1_CreateBFLossRequestData(nino = Nino(nino), requestBody)
 
   "createBFLosses" should {
     "return the expected response for a non-TYS request" when {
@@ -52,11 +43,16 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
         willPost(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
           body = requestBody
-        ).returns(Future.successful(expected))
+        ).returning(Future.successful(expected))
 
-        await(connector.createBFLoss(request)) shouldBe expected
+        val result: DownstreamOutcome[CreateBFLossResponse] = await(connector.createBFLoss(request))
+        result shouldBe expected
       }
     }
+  }
+
+  trait Test { _: ConnectorTest =>
+    val connector: CreateBFLossConnector = new CreateBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }

@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, Timestamp}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v4.models.request.amendBFLosses.{AmendBFLossRequestBody, AmendBFLossRequestData}
 import v4.models.response.amendBFLosses.AmendBFLossResponse
@@ -43,21 +43,23 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
   "amendBFLosses" should {
     "return the expected response for a non-TYS request" when {
       "downstream returns OK" in new IfsTest with Test {
-        val response: AmendBFLossResponse = AmendBFLossResponse(
+        private val response = AmendBFLossResponse(
           businessId = "XKIS00000000988",
           typeOfLoss = TypeOfLoss.`self-employment`,
           lossAmount = 500.13,
           taxYearBroughtForwardFrom = "2019-20",
           lastModified = Timestamp("2018-07-13T12:13:48.763Z")
         )
-        val expected: Right[Nothing, ResponseWrapper[AmendBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
+
+        private val expected = Right(ResponseWrapper(correlationId, response))
 
         willPut(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
           body = requestBody
         ).returns(Future.successful(expected))
 
-        await(connector.amendBFLoss(request)) shouldBe expected
+        val result: DownstreamOutcome[AmendBFLossResponse] = await(connector.amendBFLoss(request))
+        result shouldBe expected
       }
     }
   }

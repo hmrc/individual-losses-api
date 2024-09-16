@@ -16,16 +16,19 @@
 
 package v4.controllers.validators.resolvers
 
-import api.controllers.validators.resolvers.Resolver
-import api.models.errors.{MtdError, TypeOfLossFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import common.errors.TypeOfLossFormatError
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 import v4.models.domain.lossClaim.TypeOfLoss
 
-object ResolveLossClaimTypeOfLoss extends Resolver[String, TypeOfLoss] {
+object ResolveLossClaimTypeOfLoss extends ResolverSupport {
 
-  def apply(value: String, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], TypeOfLoss] = {
-    def useError = maybeError.getOrElse(TypeOfLossFormatError).maybeWithExtraPath(errorPath)
+  val resolver: Resolver[String, TypeOfLoss] = (value: String) => ResolveLossClaimTypeOfLoss(value, None)
+
+  def apply(value: String, maybeError: Option[MtdError] = None): Validated[Seq[MtdError], TypeOfLoss] = {
+    def useError = maybeError.getOrElse(TypeOfLossFormatError)
 
     TypeOfLoss.parser
       .lift(value)

@@ -16,7 +16,7 @@
 
 package v4.models.request.listLossClaims
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
 case class ListLossClaimsRequestData(nino: Nino,

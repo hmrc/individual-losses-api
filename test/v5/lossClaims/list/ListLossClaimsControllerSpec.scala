@@ -16,15 +16,18 @@
 
 package v5.lossClaims.list
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.{BusinessId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.TypeOfClaimFormatError
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import routing.Version5
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.domain.{BusinessId, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import v5.lossClaims.list
@@ -111,20 +114,19 @@ class ListLossClaimsControllerSpec
     protected def callController(): Future[Result] =
       controller.list(validNino, taxYear, Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
 
-    MockedAppConfig.isApiDeprecated(Version5) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
     MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
     MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
-
   }
 
 }

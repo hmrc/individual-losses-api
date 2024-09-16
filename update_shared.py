@@ -33,7 +33,7 @@ def main():
         print("This script updates from BSAS; can't run it on BSAS itself.")
         return
 
-    if not is_bsas_on_main():
+    if not is_on_main_branch(bsas_api_dir):
         print("BSAS isn't on the main branch. Switch it to main then try again...")
         return
 
@@ -46,7 +46,9 @@ def main():
         return
 
     update_project_from_git(bsas_api_dir, "BSAS")
-    update_project_from_git(target_api_dir, "this API")
+
+    if (is_on_main_branch(target_api_dir)):
+        update_project_from_git(target_api_dir, "this API")
 
     if maybe_update_script_from_bsas():
         print(f"I've updated this script file from BSAS; please rerun it.")
@@ -109,8 +111,8 @@ def has_local_differences(project_dir):
         return False
 
 
-def is_bsas_on_main():
-    repo = pygit2.Repository(bsas_api_dir)
+def is_on_main_branch(project_dir):
+    repo = pygit2.Repository(project_dir)
     branch = repo.head.shorthand
 
     return branch == "main"

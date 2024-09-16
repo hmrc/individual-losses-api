@@ -16,17 +16,20 @@
 
 package v4.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.GET
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.RuleDuplicateSubmissionError
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import routing.Version4
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.GET
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
 import v4.controllers.validators.MockCreateBFLossValidatorFactory
 import v4.models.domain.bfLoss.TypeOfLoss
 import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
@@ -139,7 +142,7 @@ class CreateBFLossControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber = "4.0",
+          versionNumber = Version9.name,
           params = Map("nino" -> validNino),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
@@ -147,9 +150,9 @@ class CreateBFLossControllerSpec
         )
       )
 
-    MockedAppConfig.isApiDeprecated(Version4) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 

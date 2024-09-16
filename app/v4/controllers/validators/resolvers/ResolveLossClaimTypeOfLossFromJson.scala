@@ -16,19 +16,20 @@
 
 package v4.controllers.validators.resolvers
 
-import api.controllers.validators.resolvers.Resolver
-import api.models.errors.{MtdError, TypeOfLossFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import common.errors.TypeOfLossFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 import v4.models.domain.lossClaim.TypeOfLoss
 
 /** Given the whole request body, checks for the typeOfLoss field and validates it if present.
   */
-object ResolveLossClaimTypeOfLossFromJson extends Resolver[JsValue, Option[TypeOfLoss]] {
+object ResolveLossClaimTypeOfLossFromJson extends ResolverSupport {
 
-  override def apply(body: JsValue, maybeError: Option[MtdError], errorPath: Option[String]): Validated[Seq[MtdError], Option[TypeOfLoss]] = {
-    def useError = maybeError.getOrElse(TypeOfLossFormatError).maybeWithExtraPath(errorPath)
+  def apply(body: JsValue, maybeError: Option[MtdError]): Validated[Seq[MtdError], Option[TypeOfLoss]] = {
+    def useError = maybeError.getOrElse(TypeOfLossFormatError)
 
     val jsPath = body \ "typeOfLoss"
 

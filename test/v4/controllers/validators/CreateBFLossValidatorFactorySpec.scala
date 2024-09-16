@@ -16,16 +16,17 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.models.domain.{Nino, TodaySupplier}
-import api.models.errors._
-import config.{AppConfig, MockAppConfig}
+import common.errors.TypeOfLossFormatError
 import play.api.libs.json.{JsObject, JsValue, Json}
-import support.UnitSpec
+import shared.config.MockAppConfig
+import shared.controllers.validators.Validator
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.utils.UnitSpec
 import v4.models.domain.bfLoss.TypeOfLoss
 import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 
-import java.time.LocalDate
+import java.time.{Clock, LocalDate, ZoneOffset}
 
 class CreateBFLossValidatorFactorySpec extends UnitSpec {
 
@@ -57,11 +58,14 @@ class CreateBFLossValidatorFactorySpec extends UnitSpec {
   private val parsedRequestBody = CreateBFLossRequestBody(TypeOfLoss.`self-employment`, validBusinessId, validTaxYear, 1000)
 
   class Test extends MockAppConfig {
-    implicit val appConfig: AppConfig = mockAppConfig
 
-    implicit val todaySupplier: TodaySupplier = new TodaySupplier {
-      override def today(): LocalDate = LocalDate.parse("2022-07-11")
-    }
+    def fixedClock(year: Int, month: Int, dayOfMonth: Int): Clock =
+      Clock.fixed(LocalDate.of(year, month, dayOfMonth).atStartOfDay().toInstant(ZoneOffset.UTC), ZoneOffset.UTC)
+
+    def clockForTimeInYear(year: Int): Clock =
+      Clock.fixed(LocalDate.of(year, 6, 1).atStartOfDay().toInstant(ZoneOffset.UTC), ZoneOffset.UTC)
+
+    implicit val clock: Clock = fixedClock(2022, 7, 11)
 
     private val validatorFactory = new CreateBFLossValidatorFactory
 

@@ -16,10 +16,11 @@
 
 package auth
 
-import api.services.DownstreamStub
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
+import shared.auth.AuthSupportingAgentsAllowedISpec
+import shared.services.DownstreamStub
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendOrder.def1.model.request.Claim
 

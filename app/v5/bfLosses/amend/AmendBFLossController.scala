@@ -16,13 +16,13 @@
 
 package v5.bfLosses.amend
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4, Version5}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v5.bfLosses.amend
 
 import javax.inject.{Inject, Singleton}
@@ -38,14 +38,13 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "amend-bf-loss"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendBFLossController", endpointName = "Amend a Brought Forward Loss Amount")
 
-  override val endpointName: String = "amend-bf-loss"
-
   def amend(nino: String, lossId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version5)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, lossId, request.body)
@@ -59,7 +58,7 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
             auditService,
             auditType = "AmendBroughtForwardLoss",
             transactionName = "amend-brought-forward-loss",
-            apiVersion = Version.from(request, orElse = Version4),
+            apiVersion = Version(request),
             params = Map("nino" -> nino, "lossId" -> lossId),
             requestBody = Some(request.body),
             includeResponse = true

@@ -16,9 +16,9 @@
 
 package v4.controllers.validators.resolvers
 
-import api.models.errors.ClaimIdFormatError
 import cats.data.Validated.{Invalid, Valid}
-import support.UnitSpec
+import common.errors.ClaimIdFormatError
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.ClaimId
 
 class ResolveLossClaimIdSpec extends UnitSpec {

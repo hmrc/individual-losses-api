@@ -16,11 +16,11 @@
 
 package v4.models.response.createBFLoss
 
-import api.hateoas.{HateoasFactory, HateoasWrapper, Link}
-import api.hateoas.Method.{DELETE, GET, POST}
-import config.MockAppConfig
+import shared.hateoas.{HateoasFactory, HateoasWrapper, Link}
+import shared.hateoas.Method.{DELETE, GET, POST}
+import shared.config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v4.models.response.createBFLosses.{CreateBFLossHateoasData, CreateBFLossResponse}
 
 class CreateBFLossResponseSpec extends UnitSpec {

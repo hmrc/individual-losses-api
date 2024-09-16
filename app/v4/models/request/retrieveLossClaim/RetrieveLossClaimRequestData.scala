@@ -16,7 +16,7 @@
 
 package v4.models.request.retrieveLossClaim
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import v4.models.domain.lossClaim.ClaimId
 
 case class RetrieveLossClaimRequestData(nino: Nino, claimId: ClaimId)

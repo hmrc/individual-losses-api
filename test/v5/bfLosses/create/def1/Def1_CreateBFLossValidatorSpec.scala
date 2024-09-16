@@ -16,17 +16,18 @@
 
 package v5.bfLosses.create.def1
 
-import api.controllers.validators.Validator
-import api.models.domain.{Nino, TodaySupplier}
-import api.models.errors._
-import config.{AppConfig, MockAppConfig}
+import common.errors.TypeOfLossFormatError
 import play.api.libs.json.{JsObject, JsValue, Json}
-import support.UnitSpec
+import shared.config.MockAppConfig
+import shared.controllers.validators.Validator
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 
-import java.time.LocalDate
+import java.time.{Clock, Instant, ZoneId}
 
 class Def1_CreateBFLossValidatorSpec extends UnitSpec {
 
@@ -58,13 +59,15 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
   private val parsedRequestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, validBusinessId, validTaxYear, 1000)
 
   class Test extends MockAppConfig {
-    implicit val appConfig: AppConfig = mockAppConfig
 
-    implicit val todaySupplier: TodaySupplier = new TodaySupplier {
-      override def today(): LocalDate = LocalDate.parse("2022-07-11")
-    }
+//    implicit val todaySupplier: TodaySupplier = new TodaySupplier {
+//      override def today(): LocalDate = LocalDate.parse("2022-07-11")
+//    }
+    implicit val clock: Clock = Clock.fixed(Instant.parse("2022-07-11T10:00:00.00Z"), ZoneId.of("UTC"))
 
-    protected def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] = new Def1_CreateBFLossValidator(nino, body)
+    protected def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] =
+      new Def1_CreateBFLossValidator(nino, body)
+
   }
 
   "running a validation" should {
@@ -113,69 +116,69 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
 
     "return RuleTaxYearRangeInvalidError" when {
       "given a tax year with a range greater than a year" in new Test {
-        private val result = validator(validNino, requestBodyJson(taxYearBroughtForwardFrom = "2017-19")).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError.withPath("/taxYearBroughtForwardFrom"))
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(taxYearBroughtForwardFrom = "2017-19")).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError.withPath("/taxYearBroughtForwardFrom")))
       }
     }
 
     "return RuleTaxYearNotSupportedError" when {
       "given an out of range tax year" in new Test {
-        private val result = validator(validNino, requestBodyJson(taxYearBroughtForwardFrom = "2015-16")).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom"))
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(taxYearBroughtForwardFrom = "2015-16")).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom")))
       }
     }
 
     "return RuleTaxYearNotEndedError" when {
       "given an out of range tax year" in new Test {
-        private val result = validator(validNino, requestBodyJson(taxYearBroughtForwardFrom = "2022-23")).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(taxYearBroughtForwardFrom = "2022-23")).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom")))
       }
     }
 
     "return TypeOfLossFormatError" when {
       "given an invalid loss type" in new Test {
-        private val result = validator(validNino, requestBodyJson(typeOfLoss = "invalid")).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, TypeOfLossFormatError.withPath("/typeOfLoss"))
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(typeOfLoss = "invalid")).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, TypeOfLossFormatError.withPath("/typeOfLoss")))
       }
     }
 
     "return ValueFormatError" when {
       "given an invalid amount (Too high)" in new Test {
-        private val result = validator(validNino, requestBodyJson(lossAmount = 100000000000.00)).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, ValueFormatError.withPath("/lossAmount"))
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(lossAmount = 100000000000.00)).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, ValueFormatError.withPath("/lossAmount")))
       }
 
       "given an invalid amount (Negative)" in new Test {
-        private val result = validator(validNino, requestBodyJson(lossAmount = -100.00)).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, ValueFormatError.withPath("/lossAmount"))
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(lossAmount = -100.00)).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, ValueFormatError.withPath("/lossAmount")))
       }
 
       "given an invalid amount (3 decimal places)" in new Test {
-        private val result = validator(validNino, requestBodyJson(lossAmount = 100.734)).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, ValueFormatError.withPath("/lossAmount"))
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(lossAmount = 100.734)).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, ValueFormatError.withPath("/lossAmount")))
       }
     }
 
     "return BusinessIdFormatError error" when {
       "given an invalid business id" in new Test {
-        private val result = validator(validNino, requestBodyJson(businessId = "invalid")).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, BusinessIdFormatError)
-        )
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, requestBodyJson(businessId = "invalid")).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
       }
     }
 

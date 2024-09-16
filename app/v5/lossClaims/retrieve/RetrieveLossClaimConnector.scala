@@ -16,10 +16,10 @@
 
 package v5.lossClaims.retrieve
 
-import api.connectors.DownstreamUri.IfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData

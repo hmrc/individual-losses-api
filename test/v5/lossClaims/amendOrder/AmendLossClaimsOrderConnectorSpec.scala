@@ -16,12 +16,10 @@
 
 package v5.lossClaims.amendOrder
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
-import v4.models.domain.lossClaim.TypeOfClaim
-import v5.lossClaims.amendOrder.AmendLossClaimsOrderConnector
-import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
+import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData, TypeOfClaim}
 
 import scala.concurrent.Future
 
@@ -37,6 +35,40 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
     )
   )
 
+  "amendLossClaimsOrder" when {
+    "given a tax year prior to 2023-24" should {
+      "return a success response" in new TysIfsTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
+
+        private val expected = Right(ResponseWrapper(correlationId, ()))
+
+        willPut(
+          url = s"$baseUrl/income-tax/claims-for-relief/preferences/22-23/$nino",
+          body = amendLossClaimsOrder
+        ).returning(Future.successful(expected))
+
+        val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsOrder(request))
+        result shouldBe expected
+      }
+    }
+
+    "given a 2023-24 tax year" should {
+      "return a success response" in new TysIfsTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+
+        private val expected = Right(ResponseWrapper(correlationId, ()))
+
+        willPut(
+          url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
+          body = amendLossClaimsOrder
+        ).returning(Future.successful(expected))
+
+        val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsOrder(request))
+        result shouldBe expected
+      }
+    }
+  }
+
   trait Test {
     _: ConnectorTest =>
 
@@ -48,38 +80,9 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
       body = amendLossClaimsOrder
     )
 
-    val connector: AmendLossClaimsOrderConnector = new AmendLossClaimsOrderConnector(http = mockHttpClient, appConfig = mockAppConfig)
-  }
+    val connector: AmendLossClaimsOrderConnector =
+      new AmendLossClaimsOrderConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-  "amendLossClaimsOrder" when {
-    "given a tax year prior to 2023-24" should {
-      "return a success response" in new TysIfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
-        val expected         = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(
-          url = s"$baseUrl/income-tax/claims-for-relief/preferences/22-23/$nino",
-          body = amendLossClaimsOrder
-        ).returns(Future.successful(expected))
-
-        await(connector.amendLossClaimsOrder(request)) shouldBe expected
-      }
-    }
-
-    "given a 2023-24 tax year" should {
-      "return a success response" in new TysIfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
-
-        val expected = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(
-          url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
-          body = amendLossClaimsOrder
-        ).returns(Future.successful(expected))
-
-        await(connector.amendLossClaimsOrder(request)) shouldBe expected
-      }
-    }
   }
 
 }

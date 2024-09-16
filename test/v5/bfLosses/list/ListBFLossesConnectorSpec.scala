@@ -16,15 +16,14 @@
 
 package v5.bfLosses.list
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v5.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
-import v5.bfLosses.list.ListBFLossesConnector
+import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
 import v5.bfLosses.list.model.response.ListBFLossesResponse
-import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 
 import scala.concurrent.Future
 
@@ -33,54 +32,33 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
   private val nino    = "AA123456A"
   private val taxYear = TaxYear.fromMtd("2023-24")
 
-  def makeRequest(taxYear: TaxYear,
-                  incomeSourceType: Option[IncomeSourceType] = None,
-                  businessId: Option[BusinessId] = None): ListBFLossesRequestData =
-    Def1_ListBFLossesRequestData(
-      nino = Nino(nino),
-      taxYearBroughtForwardFrom = taxYear,
-      incomeSourceType = incomeSourceType,
-      businessId = businessId
-    )
-
-  def makeResponse(taxYear: TaxYear = TaxYear("2019")): Def1_ListBFLossesResponse =
-    Def1_ListBFLossesResponse(
-      List(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified"))
-    )
-
-  trait Test {
-    _: ConnectorTest =>
-
-    val connector: ListBFLossesConnector = new ListBFLossesConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
-  }
-
   "listBFLosses()" should {
 
     "return the expected response" when {
       "downstream returns OK" when {
         "the connector sends a request with just the tax year parameter" in new TysIfsTest with Test {
-          val responseData: ListBFLossesResponse = makeResponse(taxYear = taxYear)
-          val request: ListBFLossesRequestData   = makeRequest(taxYear = taxYear)
+          private val responseData       = makeResponse(taxYear = taxYear)
+          private val request            = makeRequest(taxYear = taxYear)
+          private val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
 
-          val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
-
-          willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino"
-          ).returns(Future.successful(downstreamResponse))
+          willGet(url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino")
+            .returning(Future.successful(downstreamResponse))
 
           val result: DownstreamOutcome[ListBFLossesResponse] = await(connector.listBFLosses(request))
           result shouldBe downstreamResponse
         }
 
         "a valid request with all parameters" in new TysIfsTest with Test {
-          val responseData: ListBFLossesResponse = makeResponse(taxYear)
-          val request: ListBFLossesRequestData =
-            makeRequest(taxYear = taxYear, businessId = Some(BusinessId("testId")), incomeSourceType = Some(IncomeSourceType.`01`))
+          private val responseData = makeResponse(taxYear)
+          private val request = makeRequest(
+            taxYear = taxYear,
+            businessId = Some(BusinessId("testId")),
+            incomeSourceType = Some(IncomeSourceType.`01`)
+          )
 
-          val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
+          private val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
 
-          val queryParams = List(
+          private val queryParams = List(
             ("incomeSourceId", "testId"),
             ("incomeSourceType", "01")
           )
@@ -88,7 +66,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
           willGet(
             url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
             parameters = queryParams
-          ).returns(Future.successful(downstreamResponse))
+          ).returning(Future.successful(downstreamResponse))
 
           val result: DownstreamOutcome[ListBFLossesResponse] = await(connector.listBFLosses(request))
           result shouldBe downstreamResponse
@@ -96,6 +74,29 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       }
     }
 
+  }
+
+  private def makeRequest(
+      taxYear: TaxYear,
+      incomeSourceType: Option[IncomeSourceType] = None,
+      businessId: Option[BusinessId] = None
+  ): ListBFLossesRequestData = {
+
+    Def1_ListBFLossesRequestData(
+      nino = Nino(nino),
+      taxYearBroughtForwardFrom = taxYear,
+      incomeSourceType = incomeSourceType,
+      businessId = businessId
+    )
+  }
+
+  private def makeResponse(taxYear: TaxYear): Def1_ListBFLossesResponse =
+    Def1_ListBFLossesResponse(
+      List(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified"))
+    )
+
+  trait Test { _: ConnectorTest =>
+    val connector: ListBFLossesConnector = new ListBFLossesConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }

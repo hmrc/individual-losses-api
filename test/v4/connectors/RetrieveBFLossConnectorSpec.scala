@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, Timestamp}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v4.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v4.models.response.retrieveBFLoss.RetrieveBFLossResponse
@@ -53,9 +53,10 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
 
         willGet(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-        ).returns(Future.successful(expected))
+        ).returning(Future.successful(expected))
 
-        await(connector.retrieveBFLoss(request)) shouldBe expected
+        val result: DownstreamOutcome[RetrieveBFLossResponse] = await(connector.retrieveBFLoss(request))
+        result shouldBe expected
       }
     }
   }

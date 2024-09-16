@@ -16,9 +16,9 @@
 
 package v4.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.LossId
 import v4.models.request.deleteBFLosses.DeleteBFLossRequestData
 
@@ -35,7 +35,6 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
     _: ConnectorTest =>
 
     val connector: DeleteBFLossConnector = new DeleteBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
   }
 
   "deleteBFLosses" should {
@@ -43,11 +42,11 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
       "downstream returns OK" in new DesTest with Test {
         val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        willDelete(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-        ).returns(Future.successful(expected))
+        willDelete(url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId")
+          .returning(Future.successful(expected))
 
-        await(connector.deleteBFLoss(request)) shouldBe expected
+        val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
+        result shouldBe expected
       }
     }
   }

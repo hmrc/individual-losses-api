@@ -16,10 +16,9 @@
 
 package v4.controllers.validators.resolvers
 
-import api.models.errors.LossIdFormatError
 import cats.data.Validated.{Invalid, Valid}
-import support.UnitSpec
-import v4.controllers.validators.resolvers.ResolveBFLossId
+import common.errors.LossIdFormatError
+import shared.utils.UnitSpec
 import v4.models.domain.bfLoss.LossId
 
 class ResolveBFLossIdSpec extends UnitSpec {

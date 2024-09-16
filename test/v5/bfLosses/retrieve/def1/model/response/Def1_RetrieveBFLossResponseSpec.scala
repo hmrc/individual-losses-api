@@ -16,9 +16,9 @@
 
 package v5.bfLosses.retrieve.def1.model.response
 
-import api.models.domain.Timestamp
+import shared.models.domain.Timestamp
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 

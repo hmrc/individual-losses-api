@@ -16,9 +16,9 @@
 
 package v5.lossClaims.create.model.response
 
-import config.MockAppConfig
+import shared.config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
 
 class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {

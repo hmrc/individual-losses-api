@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import common.errors.ClaimIdFormatError
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.DeleteLossClaimConnector
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
 

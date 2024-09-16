@@ -16,10 +16,10 @@
 
 package v5.lossClaims.retrieve.def1.model.response
 
-import api.models.domain.Timestamp
-import config.MockAppConfig
+import shared.models.domain.Timestamp
+import shared.config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
 class Def1_RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {

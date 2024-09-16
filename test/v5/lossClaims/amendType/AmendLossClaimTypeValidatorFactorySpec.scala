@@ -17,7 +17,7 @@
 package v5.lossClaims.amendType
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v5.lossClaims.amendType.def1.Def1_AmendLossClaimTypeValidator
 
 class AmendLossClaimTypeValidatorFactorySpec extends UnitSpec {

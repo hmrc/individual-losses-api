@@ -16,20 +16,22 @@
 
 package v5.lossClaims.list
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import v5.lossClaims.list.ListLossClaimsSchema.Def1
 import v5.lossClaims.list.def1.Def1_ListLossClaimsValidator
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
 
 class ListLossClaimsValidatorFactory {
 
-  def validator(nino: String,
-                taxYearClaimedFor: String,
-                typeOfLoss: Option[String],
-                businessId: Option[String],
-                typeOfClaim: Option[String]): Validator[ListLossClaimsRequestData] = {
-    val schema = ListLossClaimsSchema.schema
-    schema match {
+  def validator(
+      nino: String,
+      taxYearClaimedFor: String,
+      typeOfLoss: Option[String],
+      businessId: Option[String],
+      typeOfClaim: Option[String]
+  ): Validator[ListLossClaimsRequestData] = {
+
+    ListLossClaimsSchema.schema match {
       case Def1 => new Def1_ListLossClaimsValidator(nino, taxYearClaimedFor, typeOfLoss, businessId, typeOfClaim)
     }
   }

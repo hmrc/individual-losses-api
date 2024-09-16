@@ -17,7 +17,7 @@
 package v5.bfLosses.list.model.response
 
 import play.api.libs.json.OWrites
-import utils.JsonWritesUtil
+import shared.utils.JsonWritesUtil
 import v5.bfLosses.list.def1.model.response.Def1_ListBFLossesResponse
 
 trait ListBFLossesResponse {

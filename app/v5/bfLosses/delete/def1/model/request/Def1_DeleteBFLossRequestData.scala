@@ -16,7 +16,7 @@
 
 package v5.bfLosses.delete.def1.model.request
 
-import api.models.domain.Nino
+import shared.models.domain.Nino
 import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete.DeleteBFLossSchema
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData

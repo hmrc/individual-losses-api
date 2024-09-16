@@ -16,11 +16,10 @@
 
 package v5.bfLosses.retrieve
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, Timestamp}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.outcomes.ResponseWrapper
 import v5.bfLosses.common.domain.{LossId, TypeOfLoss}
-import v5.bfLosses.retrieve.RetrieveBFLossConnector
 import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
@@ -35,13 +34,6 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
 
   val request: RetrieveBFLossRequestData = Def1_RetrieveBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
-  trait Test {
-    _: ConnectorTest =>
-
-    val connector: RetrieveBFLossConnector = new RetrieveBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
-  }
-
   "retrieveBFLosses" should {
     "return the expected response for a non-TYS request" when {
       "downstream returns OK" in new IfsTest with Test {
@@ -52,15 +44,21 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
           taxYearBroughtForwardFrom = "2018-19",
           lastModified = Timestamp("2018-07-13T12:13:48.763Z")
         )
-        val expected: Right[Nothing, ResponseWrapper[RetrieveBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
 
-        willGet(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
-        ).returns(Future.successful(expected))
+        val expected: Right[Nothing, ResponseWrapper[RetrieveBFLossResponse]] =
+          Right(ResponseWrapper(correlationId, response))
 
-        await(connector.retrieveBFLoss(request)) shouldBe expected
+        willGet(url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId")
+          .returning(Future.successful(expected))
+
+        val result: DownstreamOutcome[RetrieveBFLossResponse] = await(connector.retrieveBFLoss(request))
+        result shouldBe expected
       }
     }
+  }
+
+  trait Test { _: ConnectorTest =>
+    val connector: RetrieveBFLossConnector = new RetrieveBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }

@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.models.domain.{Nino, Timestamp}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import common.errors.ClaimIdFormatError
+import shared.models.domain.{Nino, Timestamp}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v4.connectors.MockRetrieveLossClaimConnector
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v4.models.request.retrieveLossClaim.RetrieveLossClaimRequestData

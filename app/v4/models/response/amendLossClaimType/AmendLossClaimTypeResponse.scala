@@ -16,11 +16,12 @@
 
 package v4.models.response.amendLossClaimType
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
-import api.models.domain.{TaxYear, Timestamp}
-import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
+import shared.models.domain.{TaxYear, Timestamp}
+import v4.V4HateoasLinks
 import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 
 case class AmendLossClaimTypeResponse(taxYearClaimedFor: String,
@@ -30,7 +31,7 @@ case class AmendLossClaimTypeResponse(taxYearClaimedFor: String,
                                       sequence: Option[Int],
                                       lastModified: Timestamp)
 
-object AmendLossClaimTypeResponse extends HateoasLinks {
+object AmendLossClaimTypeResponse extends V4HateoasLinks {
   implicit val writes: OWrites[AmendLossClaimTypeResponse] = Json.writes[AmendLossClaimTypeResponse]
 
   implicit val reads: Reads[AmendLossClaimTypeResponse] = (

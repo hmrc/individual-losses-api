@@ -16,8 +16,8 @@
 
 package v4.models.response.createLossClaim
 
-import api.hateoas.{HateoasData, HateoasLinksFactory, Link}
-import config.AppConfig
+import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
+import shared.config.AppConfig
 import play.api.libs.json._
 import v4.models.response.amendBFLosses.AmendBFLossResponse.{amendLossClaimType, deleteLossClaim, getLossClaim}
 

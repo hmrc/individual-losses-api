@@ -16,13 +16,14 @@
 
 package v5.bfLosses.amend.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
-import api.models.errors.{LossIdFormatError, MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.catsSyntaxTuple3Semigroupal
+import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
+import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 import v5.bfLosses.common.domain.LossId

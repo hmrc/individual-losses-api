@@ -16,11 +16,12 @@
 
 package v5.lossClaims.amendType.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern}
-import api.models.errors.{ClaimIdFormatError, MtdError}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern}
+import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
+import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import v4.controllers.validators.resolvers.ResolveLossTypeOfClaimFromJson
 import v4.models.domain.lossClaim.ClaimId
@@ -33,7 +34,7 @@ class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsVa
   private val resolveJson    = new ResolveJsonObject[Def1_AmendLossClaimTypeRequestBody]()
 
   def validate: Validated[Seq[MtdError], AmendLossClaimTypeRequestData] =
-    ResolveLossTypeOfClaimFromJson(body, path = Some("/typeOfClaim"))
+    ResolveLossTypeOfClaimFromJson(body, Some(TypeOfClaimFormatError.withPath("/typeOfClaim")))
       .andThen(_ =>
         (
           ResolveNino(nino),

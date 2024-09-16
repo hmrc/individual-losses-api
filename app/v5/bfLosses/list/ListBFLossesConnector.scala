@@ -16,10 +16,10 @@
 
 package v5.bfLosses.list
 
-import api.connectors.DownstreamUri.TaxYearSpecificIfsUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import config.AppConfig
+import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
 import v5.bfLosses.list.model.response.ListBFLossesResponse

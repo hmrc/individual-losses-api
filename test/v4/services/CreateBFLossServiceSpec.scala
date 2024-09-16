@@ -16,10 +16,11 @@
 
 package v4.services
 
-import api.models.domain.Nino
-import api.models.errors.{RuleDuplicateSubmissionError, _}
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import common.errors.RuleDuplicateSubmissionError
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v4.connectors.MockCreateBFLossConnector
 import v4.models.domain.bfLoss.TypeOfLoss
 import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}

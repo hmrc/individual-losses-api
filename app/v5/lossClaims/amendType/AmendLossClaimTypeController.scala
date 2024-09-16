@@ -16,35 +16,36 @@
 
 package v5.lossClaims.amendType
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version5}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AmendLossClaimTypeController @Inject() (val authService: EnrolmentsAuthService,
-                                              val lookupService: MtdIdLookupService,
-                                              service: AmendLossClaimTypeService,
-                                              validatorFactory: AmendLossClaimTypeValidatorFactory,
-                                              auditService: AuditService,
-                                              cc: ControllerComponents,
-                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class AmendLossClaimTypeController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    service: AmendLossClaimTypeService,
+    validatorFactory: AmendLossClaimTypeValidatorFactory,
+    auditService: AuditService,
+    cc: ControllerComponents,
+    idGenerator: IdGenerator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
+
+  override val endpointName: String = "amend-loss-claim-type"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimTypeController", endpointName = "Amend a Loss Claim Type")
 
-  override val endpointName: String = "amend-loss-claim-type"
-
   def amend(nino: String, claimId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version5)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, claimId, request.body)
@@ -58,7 +59,7 @@ class AmendLossClaimTypeController @Inject() (val authService: EnrolmentsAuthSer
             auditService,
             auditType = "AmendLossClaim",
             transactionName = "amend-loss-claim",
-            apiVersion = Version.from(request, orElse = Version5),
+            apiVersion = Version(request),
             params = Map("nino" -> nino, "claimId" -> claimId),
             requestBody = Some(request.body),
             includeResponse = true

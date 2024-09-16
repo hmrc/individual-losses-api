@@ -16,9 +16,9 @@
 
 package v5.lossClaims.amendOrder
 
-import api.models.utils.JsonErrorValidators
+import shared.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsArray, JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v5.lossClaims.amendOrder.AmendLossClaimsOrderValidatorFactory
 import v5.lossClaims.amendOrder.def1.Def1_AmendLossClaimsOrderValidator
 

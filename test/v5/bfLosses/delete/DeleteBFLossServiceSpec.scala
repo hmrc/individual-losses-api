@@ -16,13 +16,13 @@
 
 package v5.bfLosses.delete
 
-import api.models.domain.Nino
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete
-import v5.bfLosses.delete.DeleteBFLossService
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 
 import scala.concurrent.Future

@@ -16,29 +16,31 @@
 
 package v5.bfLosses.create.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers._
-import api.models.domain.TodaySupplier
-import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple2Semigroupal
+import common.errors.TypeOfLossFormatError
 import play.api.libs.json.JsValue
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers._
+import shared.models.domain.TaxYear
+import shared.models.errors._
 import v5.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 
+import java.time.Clock
 import javax.inject.Inject
 
-class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implicit todaySupplier: TodaySupplier = new TodaySupplier)
+class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implicit val clock: Clock = Clock.systemUTC())
     extends Validator[CreateBFLossRequestData] {
-  val minimumTaxYearBFLoss        = 2019
-  val minimumTaxYearLossClaim     = 2020
+
+  private val minimumTaxYearBFLoss = TaxYear.ending(2019)
+
   private val resolveJson         = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
-  private val resolveTaxYear      = DetailedResolveTaxYear(allowIncompleteTaxYear = false, maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
 
   def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
-    ResolveBFTypeOfLossFromJson(body, None, errorPath = Some("/typeOfLoss"))
+    ResolveBFTypeOfLossFromJson(body, Some(TypeOfLossFormatError.withPath("/typeOfLoss")))
       .andThen(_ =>
         (
           ResolveNino(nino),
@@ -46,11 +48,26 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implici
         ).mapN(Def1_CreateBFLossRequestData)
           .andThen(validateParsedData))
 
-  private def validateParsedData(parsed: Def1_CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] =
+  private def validateParsedData(parsed: Def1_CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] = {
+    import parsed.broughtForwardLoss._
+    val taxYearErrorPath = "/taxYearBroughtForwardFrom"
+
+    val resolvedTaxYear =
+      ResolveTaxYearMinimum(
+        minimumTaxYearBFLoss,
+        notSupportedError = RuleTaxYearNotSupportedError.withPath(taxYearErrorPath),
+        formatError = TaxYearFormatError.withPath(taxYearErrorPath),
+        rangeError = RuleTaxYearRangeInvalidError.withPath(taxYearErrorPath)
+      )(taxYearBroughtForwardFrom) andThen (_ =>
+        ResolveIncompleteTaxYear(
+          RuleTaxYearNotEndedError.withPath(taxYearErrorPath)
+        ).resolver(taxYearBroughtForwardFrom))
+
     combine(
-      resolveTaxYear(parsed.broughtForwardLoss.taxYearBroughtForwardFrom, None, Some("/taxYearBroughtForwardFrom")),
-      ResolveBusinessId(parsed.broughtForwardLoss.businessId),
-      resolveParsedNumber(parsed.broughtForwardLoss.lossAmount, path = "/lossAmount")
+      resolvedTaxYear,
+      ResolveBusinessId(businessId),
+      resolveParsedNumber(lossAmount, path = "/lossAmount")
     ).map(_ => parsed)
+  }
 
 }

@@ -16,14 +16,14 @@
 
 package v4.controllers
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version4}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v4.controllers.validators.CreateLossClaimValidatorFactory
 import v4.models.response.createLossClaim.CreateLossClaimHateoasData
 import v4.services.CreateLossClaimService
@@ -42,14 +42,13 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "create-loss-claim"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateLossClaimController", endpointName = "Create a Loss Claim")
 
-  override val endpointName: String = "create-loss-claim"
-
   def create(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, request.body)
@@ -66,7 +65,7 @@ class CreateLossClaimController @Inject() (val authService: EnrolmentsAuthServic
             auditService,
             auditType = "CreateLossClaim",
             transactionName = "create-loss-claim",
-            apiVersion = Version.from(request, orElse = Version4),
+            apiVersion = Version(request),
             params = Map("nino" -> nino),
             requestBody = Some(request.body),
             includeResponse = true

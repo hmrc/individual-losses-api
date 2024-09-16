@@ -16,14 +16,15 @@
 
 package v4.models.response.listBFLosses
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasListLinksFactory, Link}
 import cats.Functor
-import config.AppConfig
 import play.api.libs.json._
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasListLinksFactory, Link}
+import v4.V4HateoasLinks
 
 case class ListBFLossesResponse[I](losses: Seq[I])
 
-object ListBFLossesResponse extends HateoasLinks {
+object ListBFLossesResponse extends V4HateoasLinks {
 
   implicit def writes[I: Writes]: OWrites[ListBFLossesResponse[I]] =
     Json.writes[ListBFLossesResponse[I]]

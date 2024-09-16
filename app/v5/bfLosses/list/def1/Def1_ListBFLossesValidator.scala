@@ -16,12 +16,14 @@
 
 package v5.bfLosses.list.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import common.errors.TypeOfLossFormatError
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
+import shared.models.domain.TaxYear
+import shared.models.errors._
 import v5.bfLosses.common.domain.TypeOfLoss._
 import v5.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
@@ -31,24 +33,25 @@ import javax.inject.Singleton
 
 @Singleton
 class Def1_ListBFLossesValidator(nino: String, taxYearBroughtForwardFrom: String, typeOfLoss: Option[String], businessId: Option[String])
-    extends Validator[ListBFLossesRequestData] {
+    extends Validator[ListBFLossesRequestData]
+    with ResolverSupport {
 
-  val minimumTaxYearBFLoss    = 2019
-  val minimumTaxYearLossClaim = 2020
+  private val minimumTaxYearBFLoss = TaxYear.ending(2019)
 
-  private val resolveTaxYear = DetailedResolveTaxYear(maybeMinimumTaxYear = Some(minimumTaxYearBFLoss))
+  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYearBFLoss)
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
   private val availableLossTypeNames =
     Seq(`uk-property-fhl`, `uk-property-non-fhl`, `self-employment`, `foreign-property-fhl-eea`, `foreign-property`).map(_.toString)
 
-  def validate: Validated[Seq[MtdError], ListBFLossesRequestData] =
+  def validate: Validated[Seq[MtdError], ListBFLossesRequestData] = {
     (
       ResolveNino(nino),
       resolveTaxYear(taxYearBroughtForwardFrom),
       resolveIncomeSourceType,
-      ResolveBusinessId(businessId)
+      ResolveBusinessId.resolver.resolveOptionally(businessId)
     ).mapN(Def1_ListBFLossesRequestData)
+  }
 
   private def resolveIncomeSourceType: Validated[Seq[MtdError], Option[IncomeSourceType]] =
     typeOfLoss

@@ -16,12 +16,12 @@
 
 package v4.controllers
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import routing.{Version, Version4}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v4.controllers.validators.DeleteLossClaimValidatorFactory
 import v4.services.DeleteLossClaimService
 
@@ -38,14 +38,13 @@ class DeleteLossClaimController @Inject() (val authService: EnrolmentsAuthServic
                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "delete-loss-claim"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteLossClaimController", endpointName = "Delete a Loss Claim")
 
-  override val endpointName: String = "delete-loss-claim"
-
   def delete(nino: String, claimId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, claimId)
@@ -54,13 +53,14 @@ class DeleteLossClaimController @Inject() (val authService: EnrolmentsAuthServic
         RequestHandler
           .withValidator(validator)
           .withService(service.deleteLossClaim)
-          .withAuditing(AuditHandler(
-            auditService,
-            auditType = "DeleteLossClaim",
-            transactionName = "delete-loss-claim",
-            apiVersion = Version.from(request, orElse = Version4),
-            params = Map("nino" -> nino, "claimId" -> claimId)
-          ))
+          .withAuditing(
+            AuditHandler(
+              auditService,
+              auditType = "DeleteLossClaim",
+              transactionName = "delete-loss-claim",
+              apiVersion = Version(request),
+              params = Map("nino" -> nino, "claimId" -> claimId)
+            ))
 
       requestHandler.handleRequest()
     }

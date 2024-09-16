@@ -16,17 +16,16 @@
 
 package v5.bfLosses.create
 
-import api.controllers.validators.Validator
-import api.models.domain.TodaySupplier
 import play.api.libs.json.JsValue
+import shared.controllers.validators.Validator
 import v5.bfLosses.create.CreateBFLossSchema.Def1
 import v5.bfLosses.create.def1.Def1_CreateBFLossValidator
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class CreateBFLossValidatorFactory @Inject() (implicit todaySupplier: TodaySupplier = new TodaySupplier) {
+class CreateBFLossValidatorFactory {
 
   def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] = {
     val schema = CreateBFLossSchema.schema

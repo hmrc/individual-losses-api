@@ -16,10 +16,11 @@
 
 package v5.bfLosses.create
 
-import api.controllers.RequestContext
-import api.models.errors.{RuleDuplicateSubmissionError, _}
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import common.errors.RuleDuplicateSubmissionError
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 import v5.bfLosses.create.model.response.CreateBFLossResponse
 

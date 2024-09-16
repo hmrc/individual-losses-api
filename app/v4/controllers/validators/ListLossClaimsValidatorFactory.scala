@@ -16,40 +16,41 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import common.errors.TypeOfClaimFormatError
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
+import shared.models.errors._
 import v4.controllers.validators.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.listLossClaims.ListLossClaimsRequestData
 
 class ListLossClaimsValidatorFactory {
 
-  private val resolveTaxYear = DetailedResolveTaxYear(maybeMinimumTaxYear = Some(minimumTaxYearLossClaim))
+  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYearLossClaim)
 
   def validator(nino: String,
                 taxYearClaimedFor: String,
                 typeOfLoss: Option[String],
                 businessId: Option[String],
                 typeOfClaim: Option[String]): Validator[ListLossClaimsRequestData] =
-    new Validator[ListLossClaimsRequestData] {
+    new Validator[ListLossClaimsRequestData] with ResolverSupport {
 
       def validate: Validated[Seq[MtdError], ListLossClaimsRequestData] = {
         (
           ResolveNino(nino),
           resolveTaxYear(taxYearClaimedFor),
-          ResolveLossClaimTypeOfLoss(typeOfLoss),
-          ResolveBusinessId(businessId),
+          ResolveLossClaimTypeOfLoss.resolver.resolveOptionally(typeOfLoss),
+          ResolveBusinessId.resolver.resolveOptionally(businessId),
           resolveTypeOfClaim
         ).mapN(ListLossClaimsRequestData)
 
       }
 
       private def resolveTypeOfClaim: Validated[Seq[MtdError], Option[TypeOfClaim]] =
-        ResolveLossTypeOfClaim(typeOfClaim) andThen {
+        ResolveLossTypeOfClaim.resolver.resolveOptionally(typeOfClaim) andThen {
           case Some(parsedTypeOfClaim) =>
             if (parsedTypeOfClaim == TypeOfClaim.`carry-sideways`)
               Valid(Some(parsedTypeOfClaim))

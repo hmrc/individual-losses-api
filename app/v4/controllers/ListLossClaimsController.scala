@@ -16,13 +16,12 @@
 
 package v4.controllers
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import routing.{Version, Version4}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v4.controllers.validators.ListLossClaimsValidatorFactory
 import v4.models.response.listLossClaims.ListLossClaimsHateoasData
 import v4.services.ListLossClaimsService
@@ -40,14 +39,13 @@ class ListLossClaimsController @Inject() (val authService: EnrolmentsAuthService
                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "list-loss-claims"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListLossClaimsController", endpointName = "List Loss Claims")
 
-  override val endpointName: String = "list-loss-claims"
-
   def list(nino: String, taxYear: String, typeOfLoss: Option[String], businessId: Option[String], typeOfClaim: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version4)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, taxYear, typeOfLoss = typeOfLoss, businessId = businessId, typeOfClaim = typeOfClaim)

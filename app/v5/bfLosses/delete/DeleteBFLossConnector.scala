@@ -16,10 +16,10 @@
 
 package v5.bfLosses.delete
 
-import api.connectors.DownstreamUri.DesToHipMigrationUri
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import shared.connectors.DownstreamUri.DesToHipMigrationUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 

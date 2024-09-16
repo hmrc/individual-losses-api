@@ -16,7 +16,7 @@
 
 package v5.bfLosses.list
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import v5.bfLosses.list.ListBFLossesSchema.Def1
 import v5.bfLosses.list.def1.Def1_ListBFLossesValidator
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
@@ -30,8 +30,8 @@ class ListBFLossesValidatorFactory {
                 taxYearBroughtForwardFrom: String,
                 typeOfLoss: Option[String],
                 businessId: Option[String]): Validator[ListBFLossesRequestData] = {
-    val schema = ListBFLossesSchema.schema
-    schema match {
+
+    ListBFLossesSchema.schema match {
       case Def1 => new Def1_ListBFLossesValidator(nino, taxYearBroughtForwardFrom, typeOfLoss, businessId)
     }
   }

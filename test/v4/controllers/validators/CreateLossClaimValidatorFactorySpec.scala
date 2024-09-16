@@ -16,12 +16,13 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.models.domain.Nino
-import api.models.errors._
-import api.models.utils.JsonErrorValidators
+import common.errors.{RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import play.api.libs.json.{JsObject, JsValue, Json}
-import support.UnitSpec
+import shared.controllers.validators.Validator
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLossClaimRequestData}
 

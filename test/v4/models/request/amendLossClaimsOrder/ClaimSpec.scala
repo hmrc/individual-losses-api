@@ -17,7 +17,7 @@
 package v4.models.request.amendLossClaimsOrder
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v4.models.request.amendLossClaimsOrder.Claim
 
 class ClaimSpec extends UnitSpec {

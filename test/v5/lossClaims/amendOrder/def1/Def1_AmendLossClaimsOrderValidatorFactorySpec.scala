@@ -16,14 +16,13 @@
 
 package v5.lossClaims.amendOrder.def1
 
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.utils.JsonErrorValidators
+import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken, TypeOfClaimFormatError}
 import play.api.libs.json.{JsArray, JsValue, Json}
-import support.UnitSpec
-import v4.models.domain.lossClaim.TypeOfClaim
-import v5.lossClaims.amendOrder.def1.Def1_AmendLossClaimsOrderValidator
-import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
+import shared.utils.UnitSpec
+import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData, TypeOfClaim}
 
 class Def1_AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 

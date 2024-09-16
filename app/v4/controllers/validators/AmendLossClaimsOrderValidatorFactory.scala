@@ -16,18 +16,20 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveParsedNumber, ResolveTaxYear}
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
-import v4.models.domain.lossClaim.TypeOfClaim
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveParsedNumber, ResolveTaxYear}
+import shared.models.errors._
 import v4.controllers.validators.resolvers.{ResolveLossClaimId, ResolveLossTypeOfClaimFromJson}
+import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData}
 
 import javax.inject.Singleton
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 @Singleton
 class AmendLossClaimsOrderValidatorFactory {
@@ -64,7 +66,7 @@ class AmendLossClaimsOrderValidatorFactory {
         ).map(_ => parsed)
 
       private def validateTaxYear(parsed: AmendLossClaimsOrderRequestData): Validated[Seq[MtdError], Unit] =
-        if (parsed.taxYearClaimedFor.year < minimumTaxYearLossClaim)
+        if (parsed.taxYearClaimedFor < minimumTaxYearLossClaim)
           Invalid(List(RuleTaxYearNotSupportedError))
         else
           Valid(())
@@ -72,10 +74,10 @@ class AmendLossClaimsOrderValidatorFactory {
       private def validateSequenceNumbers(parsed: AmendLossClaimsOrderRequestData): Validated[Seq[MtdError], Unit] = {
         val sequenceNums = parsed.body.listOfLossClaims.map(_.sequence).sorted
 
-        def startsWithOne =
+        def startsWithOne: Validated[Seq[MtdError], Unit] =
           if (sequenceNums.headOption.contains(1)) Valid(()) else Invalid(List(RuleInvalidSequenceStart))
 
-        def isContinuous = {
+        def isContinuous: Validated[Seq[MtdError], Unit] = {
           val noGaps = sequenceNums.sliding(2).forall {
             case a :: b :: Nil => b - a == 1
             case _             => true
@@ -90,7 +92,7 @@ class AmendLossClaimsOrderValidatorFactory {
       private def validateListOfLossClaims(parsed: AmendLossClaimsOrderRequestData): Validated[Seq[MtdError], Unit] = {
         val results = parsed.body.listOfLossClaims.zipWithIndex.map { case (lossClaim, index) =>
           combine(
-            ResolveLossClaimId(lossClaim.claimId, path = s"/listOfLossClaims/$index/claimId"),
+            ResolveLossClaimId(lossClaim.claimId, Some(ClaimIdFormatError.withPath(s"/listOfLossClaims/$index/claimId"))),
             ResolveParsedNumber(min = 1, max = 99)(lossClaim.sequence, path = s"/listOfLossClaims/$index/sequence")
           )
         }

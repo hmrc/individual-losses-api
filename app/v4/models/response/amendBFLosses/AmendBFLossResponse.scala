@@ -16,11 +16,12 @@
 
 package v4.models.response.amendBFLosses
 
-import api.hateoas.{HateoasLinks, HateoasLinksFactory, Link}
-import api.models.domain.{TaxYear, Timestamp}
-import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import shared.config.AppConfig
+import shared.hateoas.{HateoasLinksFactory, Link}
+import shared.models.domain.{TaxYear, Timestamp}
+import v4.V4HateoasLinks
 import v4.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 
 case class AmendBFLossResponse(businessId: String,
@@ -29,7 +30,7 @@ case class AmendBFLossResponse(businessId: String,
                                taxYearBroughtForwardFrom: String,
                                lastModified: Timestamp)
 
-object AmendBFLossResponse extends HateoasLinks {
+object AmendBFLossResponse extends V4HateoasLinks {
   implicit val writes: OWrites[AmendBFLossResponse] = Json.writes[AmendBFLossResponse]
 
   implicit val reads: Reads[AmendBFLossResponse] = (

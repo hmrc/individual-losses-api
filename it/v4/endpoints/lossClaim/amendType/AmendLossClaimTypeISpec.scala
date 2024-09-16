@@ -16,15 +16,16 @@
 
 package v4.endpoints.lossClaim.amendType
 
-import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.errors.{ClaimIdFormatError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 
 class AmendLossClaimTypeISpec extends IntegrationBaseSpec {
 

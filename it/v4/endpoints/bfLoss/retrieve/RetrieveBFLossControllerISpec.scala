@@ -16,16 +16,17 @@
 
 package v4.endpoints.bfLoss.retrieve
 
-import api.hateoas.HateoasLinks
-import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.errors.LossIdFormatError
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
+import v4.V4HateoasLinks
 
 class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
@@ -35,7 +36,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
   val taxYear           = "2019-20"
   val downstreamTaxYear = "2020"
 
-  object Hateoas extends HateoasLinks
+  object Hateoas extends V4HateoasLinks
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
        |{

@@ -16,10 +16,11 @@
 
 package v4.controllers.validators
 
-import api.controllers.validators.Validator
-import api.models.domain.Nino
-import api.models.errors._
-import support.UnitSpec
+import common.errors.ClaimIdFormatError
+import shared.controllers.validators.Validator
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.ClaimId
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
 

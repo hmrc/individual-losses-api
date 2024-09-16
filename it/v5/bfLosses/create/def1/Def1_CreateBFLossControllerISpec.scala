@@ -16,16 +16,17 @@
 
 package v5.bfLosses.create.def1
 
-import api.models.errors._
-import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import common.errors.{RuleDuplicateSubmissionError, TypeOfLossFormatError}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 
 class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
 

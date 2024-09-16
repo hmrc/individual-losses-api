@@ -17,7 +17,7 @@
 package v5.bfLosses.amend
 
 import play.api.libs.json.Reads
-import schema.DownstreamReadable
+import shared.schema.DownstreamReadable
 import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 import v5.bfLosses.amend.model.response.AmendBFLossResponse
 

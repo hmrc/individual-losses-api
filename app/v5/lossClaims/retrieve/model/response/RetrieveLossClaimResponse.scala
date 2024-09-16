@@ -17,7 +17,7 @@
 package v5.lossClaims.retrieve.model.response
 
 import play.api.libs.json._
-import utils.JsonWritesUtil
+import shared.utils.JsonWritesUtil
 import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 
 trait RetrieveLossClaimResponse

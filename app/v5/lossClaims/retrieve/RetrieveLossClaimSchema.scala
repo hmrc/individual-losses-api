@@ -17,7 +17,7 @@
 package v5.lossClaims.retrieve
 
 import play.api.libs.json.Reads
-import schema.DownstreamReadable
+import shared.schema.DownstreamReadable
 import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 

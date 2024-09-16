@@ -17,7 +17,7 @@
 package v4.models.response.amendBFLoss
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.utils.UnitSpec
 import v4.models.request.amendBFLosses.AmendBFLossRequestBody
 
 class AmendBFLossRequestBodySpec extends UnitSpec {

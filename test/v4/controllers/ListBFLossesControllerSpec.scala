@@ -16,17 +16,20 @@
 
 package v4.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, POST}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.domain.{BusinessId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.TypeOfLossFormatError
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import routing.Version4
+import shared.config.Deprecation.NotDeprecated
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.{GET, POST}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.domain.{BusinessId, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version9
 import v4.controllers.validators.MockListBFLossesValidatorFactory
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
@@ -151,9 +154,9 @@ class ListBFLossesControllerSpec
     protected def callController(): Future[Result] =
       controller.list(validNino, taxYear, Some(businessId), Some(selfEmployment))(fakeRequest)
 
-    MockedAppConfig.isApiDeprecated(Version4) returns false
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitches.anyNumberOfTimes().anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
