@@ -16,10 +16,10 @@
 
 package v5.bfLosses.delete
 
-import shared.connectors.DownstreamUri.DesToHipMigrationUri
+import shared.connectors.DownstreamUri.{DesUri, HipUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
+import shared.config.{AppConfig, ConfigFeatureSwitches}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
@@ -33,8 +33,11 @@ class DeleteBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppC
       request: DeleteBFLossRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
-    val downstreamUri =
-      DesToHipMigrationUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId", switchName = "des_hip_migration_1504")
+    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1504")) {
+      HipUri[Unit](s"income-tax/v1/brought-forward-losses/$nino/$lossId")
+    } else {
+      DesUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId")
+    }
 
     delete(downstreamUri)
   }

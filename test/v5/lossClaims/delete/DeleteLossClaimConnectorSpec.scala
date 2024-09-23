@@ -51,7 +51,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
           MockedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> true)
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
+          willDelete(s"$baseUrl/income-tax/v1/claims-for-relief/$nino/$claimId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
