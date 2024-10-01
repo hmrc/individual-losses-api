@@ -21,7 +21,7 @@ import shared.controllers.validators.Validator
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.utils.UnitSpec
-import v4.models.domain.lossClaim.ClaimId
+import v5.lossClaims.validators.models.ClaimId
 import v5.lossClaims.retrieve.RetrieveLossClaimValidatorFactory
 import v5.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData

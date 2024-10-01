@@ -17,8 +17,8 @@
 package v5.lossClaims.list.model.request
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.list.ListLossClaimsSchema
+import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
 
 trait ListLossClaimsRequestData {
   def nino: Nino

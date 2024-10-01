@@ -19,7 +19,7 @@ package v5.lossClaims.list.model.response
 import shared.config.MockAppConfig
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.list.def1.response.{Def1_ListLossClaimsResponse, ListLossClaimsItem}
 
 class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {

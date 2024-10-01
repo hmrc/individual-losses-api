@@ -17,8 +17,8 @@
 package v5.lossClaims.amendType.def1.model.request
 
 import play.api.libs.json.{Json, OWrites, Reads}
-import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestBody
+import v5.lossClaims.validators.models.TypeOfClaim
 
 case class Def1_AmendLossClaimTypeRequestBody(typeOfClaim: TypeOfClaim) extends AmendLossClaimTypeRequestBody
 

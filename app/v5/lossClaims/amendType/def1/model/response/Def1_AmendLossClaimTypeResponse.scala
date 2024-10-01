@@ -19,8 +19,8 @@ package v5.lossClaims.amendType.def1.model.response
 import shared.models.domain.{TaxYear, Timestamp}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
+import v5.lossClaims.validators.models.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 
 case class Def1_AmendLossClaimTypeResponse(taxYearClaimedFor: String,
                                            typeOfLoss: TypeOfLoss,

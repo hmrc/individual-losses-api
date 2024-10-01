@@ -18,7 +18,7 @@ package v5.lossClaims.fixtures
 
 import shared.models.domain.TaxYear
 import play.api.libs.json.{JsValue, Json}
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.list.def1.response.{Def1_ListLossClaimsResponse, ListLossClaimsItem}
 import v5.lossClaims.list.model.response.ListLossClaimsResponse
 

@@ -28,7 +28,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
-import v4.models.domain.lossClaim.ClaimId
+import v5.lossClaims.validators.models.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global

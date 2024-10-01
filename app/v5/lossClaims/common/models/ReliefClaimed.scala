@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amendOrder.def1.model.request
+package v5.lossClaims.validators.models
 
 import play.api.libs.json._
 import shared.utils.enums.Enums

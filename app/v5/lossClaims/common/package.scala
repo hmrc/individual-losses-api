@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amendOrder.common.domain
+package v5.lossClaims
 
-case class ClaimId(claimId: String) {
-  override def toString: String = claimId
+import shared.models.domain.TaxYear
+
+package object common {
+
+  val minimumTaxYearBFLoss: TaxYear    = TaxYear.ending(2019)
+  val minimumTaxYearLossClaim: TaxYear = TaxYear.ending(2020)
+
 }

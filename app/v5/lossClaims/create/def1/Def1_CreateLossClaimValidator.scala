@@ -24,12 +24,12 @@ import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveJsonObject, ResolveNino, ResolveTaxYearMinimum}
 import shared.models.errors.{MtdError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
-import v4.controllers.validators.minimumTaxYearLossClaim
-import v4.controllers.validators.resolvers.{ResolveLossClaimTypeOfLossFromJson, ResolveLossTypeOfClaimFromJson}
-import v4.models.domain.lossClaim.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
-import v4.models.domain.lossClaim.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
+import v5.lossClaims.common.minimumTaxYearLossClaim
+import v5.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLossFromJson, ResolveLossTypeOfClaimFromJson}
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestData
+import v5.lossClaims.validators.models.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
+import v5.lossClaims.validators.models.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
 
 class Def1_CreateLossClaimValidator(nino: String, body: JsValue) extends Validator[CreateLossClaimRequestData] {
 

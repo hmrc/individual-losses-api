@@ -20,7 +20,7 @@ import shared.models.domain.Timestamp
 import shared.config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 
 class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {

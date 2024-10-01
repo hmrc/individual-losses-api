@@ -23,8 +23,8 @@ import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequence
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
 import shared.models.errors._
-import v5.lossClaims.amendOrder.common.resolvers.ResolveLossClaimId
 import v5.lossClaims.amendOrder.def1.model.request.Def1_AmendLossClaimsOrderRequestData
+import v5.lossClaims.common.resolvers.ResolveLossClaimId
 
 object Def1_AmendLossClaimsOrderRulesValidator extends RulesValidator[Def1_AmendLossClaimsOrderRequestData] {
 

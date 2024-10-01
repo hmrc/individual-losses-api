@@ -17,9 +17,9 @@
 package v5.lossClaims.amendType.def1.model.request
 
 import shared.models.domain.Nino
-import v4.models.domain.lossClaim.ClaimId
 import v5.lossClaims.amendType.AmendLossClaimTypeSchema
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
+import v5.lossClaims.validators.models.ClaimId
 
 case class Def1_AmendLossClaimTypeRequestData(nino: Nino, claimId: ClaimId, body: Def1_AmendLossClaimTypeRequestBody)
     extends AmendLossClaimTypeRequestData {

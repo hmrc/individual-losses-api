@@ -21,7 +21,7 @@ import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.list.ListLossClaimsValidatorFactory
 import v5.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
