@@ -1,6 +1,6 @@
 summary: Amend Loss Claims Order
 description: |
-  This endpoint allows the developer to change the sequence in which certain losses are used.
+  This endpoint allows the developer to change the sequence in which carry sideways losses are used. 
   A National Insurance Number must be provided.
   
   ### Test data
