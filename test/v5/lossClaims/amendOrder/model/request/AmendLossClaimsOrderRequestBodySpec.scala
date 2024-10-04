@@ -18,7 +18,8 @@ package v5.lossClaims.amendOrder.model.request
 
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, TypeOfClaim}
+import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody}
+import v5.lossClaims.common.models.TypeOfClaim
 
 class AmendLossClaimsOrderRequestBodySpec extends UnitSpec {
 

@@ -24,10 +24,10 @@ import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveJsonObject, ResolveNino, ResolveTaxYearMinimum}
 import shared.models.errors.{MtdError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
-import v4.controllers.validators.minimumTaxYearLossClaim
-import v4.controllers.validators.resolvers.{ResolveLossClaimTypeOfLossFromJson, ResolveLossTypeOfClaimFromJson}
-import v4.models.domain.lossClaim.TypeOfClaim.{`carry-forward-to-carry-sideways`, `carry-forward`, `carry-sideways-fhl`, `carry-sideways`}
-import v4.models.domain.lossClaim.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
+import v5.lossClaims.common.minimumTaxYear
+import v5.lossClaims.common.models.TypeOfClaim._
+import v5.lossClaims.common.models.TypeOfLoss._
+import v5.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLossFromJson, ResolveLossTypeOfClaimFromJson}
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestData
 
@@ -53,7 +53,7 @@ class Def1_CreateLossClaimValidator(nino: String, body: JsValue) extends Validat
 
   private def validateParsedData(parsed: Def1_CreateLossClaimRequestData): Validated[Seq[MtdError], Def1_CreateLossClaimRequestData] = {
     val resolveTaxYear = ResolveTaxYearMinimum(
-      minimumTaxYearLossClaim,
+      minimumTaxYear,
       notSupportedError = RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor"),
       formatError = TaxYearClaimedForFormatError.withPath("/taxYearClaimedFor"),
       rangeError = RuleTaxYearRangeInvalidError.withPath("/taxYearClaimedFor")

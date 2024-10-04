@@ -17,7 +17,7 @@
 package v5.lossClaims.list.def1.request
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.list.ListLossClaimsSchema
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
 

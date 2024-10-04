@@ -20,7 +20,7 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
 import shared.models.outcomes.ResponseWrapper
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.fixtures.ListLossClaimsFixtures._
 import v5.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
 import v5.lossClaims.list.model.response.ListLossClaimsResponse

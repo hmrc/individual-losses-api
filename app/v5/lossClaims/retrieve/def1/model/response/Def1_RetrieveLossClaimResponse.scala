@@ -16,10 +16,10 @@
 
 package v5.lossClaims.retrieve.def1.model.response
 
-import shared.models.domain.{TaxYear, Timestamp}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
+import shared.models.domain.{TaxYear, Timestamp}
+import v5.lossClaims.common.models._
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
 case class Def1_RetrieveLossClaimResponse(taxYearClaimedFor: String,

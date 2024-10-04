@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.amendOrder.common.resolvers
+package v5.lossClaims.common.resolvers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import common.errors.ClaimIdFormatError
+import common.errors.TypeOfClaimFormatError
 import shared.controllers.validators.resolvers.ResolverSupport
 import shared.models.errors.MtdError
-import v5.lossClaims.amendOrder.common.domain.ClaimId
+import v5.lossClaims.common.models.TypeOfClaim
 
-object ResolveLossClaimId extends ResolverSupport {
+object ResolveLossTypeOfClaim extends ResolverSupport {
 
-  private val regexFormat = "^[A-Za-z0-9]{15}$".r
+  val resolver: Resolver[String, TypeOfClaim] = (value: String) => ResolveLossTypeOfClaim(value, None)
 
-  def apply(value: String, maybeError: Option[MtdError] = None): Validated[Seq[MtdError], ClaimId] =
-    if (regexFormat.matches(value))
-      Valid(ClaimId(value))
-    else
-      Invalid(List(maybeError.getOrElse(ClaimIdFormatError)))
+  def apply(value: String, maybeError: Option[MtdError] = None): Validated[Seq[MtdError], TypeOfClaim] = {
+    def useError = maybeError.getOrElse(TypeOfClaimFormatError)
+
+    TypeOfClaim.parser
+      .lift(value)
+      .map(parsed => Valid(parsed))
+      .getOrElse(Invalid(List(useError)))
+  }
 
 }

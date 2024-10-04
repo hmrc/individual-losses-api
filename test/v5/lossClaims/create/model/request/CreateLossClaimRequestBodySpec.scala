@@ -20,7 +20,7 @@ import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsValue, Json}
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.common.models._
 import v5.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 
 class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {

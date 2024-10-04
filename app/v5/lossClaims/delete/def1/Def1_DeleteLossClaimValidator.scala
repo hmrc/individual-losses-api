@@ -16,12 +16,12 @@
 
 package v5.lossClaims.delete.def1
 
+import cats.data.Validated
+import cats.implicits.catsSyntaxTuple2Semigroupal
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.ResolveNino
 import shared.models.errors.MtdError
-import cats.data.Validated
-import cats.implicits.catsSyntaxTuple2Semigroupal
-import v4.controllers.validators.resolvers.ResolveLossClaimId
+import v5.lossClaims.common.resolvers.ResolveLossClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 

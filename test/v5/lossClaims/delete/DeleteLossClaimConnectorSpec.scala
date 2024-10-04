@@ -20,7 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
-import v4.models.domain.lossClaim.ClaimId
+import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 
 import scala.concurrent.Future

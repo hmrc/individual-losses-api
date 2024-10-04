@@ -28,7 +28,7 @@ import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
-import v4.models.domain.lossClaim.TypeOfClaim
+import v5.lossClaims.common.models.TypeOfClaim
 import v5.lossClaims.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import v5.lossClaims.list
 import v5.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData

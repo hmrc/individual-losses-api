@@ -29,7 +29,8 @@ import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
-import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData, TypeOfClaim}
+import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
+import v5.lossClaims.common.models.TypeOfClaim
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -16,17 +16,17 @@
 
 package v5.lossClaims.amendType.def1
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern}
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
 import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
-import v4.controllers.validators.resolvers.ResolveLossTypeOfClaimFromJson
-import v4.models.domain.lossClaim.ClaimId
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern}
+import shared.models.errors.MtdError
 import v5.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
+import v5.lossClaims.common.models.ClaimId
+import v5.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
 
 class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsValue) extends Validator[AmendLossClaimTypeRequestData] {
 

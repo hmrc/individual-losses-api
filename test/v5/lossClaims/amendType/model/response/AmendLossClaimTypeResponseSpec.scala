@@ -16,12 +16,12 @@
 
 package v5.lossClaims.amendType.model.response
 
-import shared.models.domain.Timestamp
-import shared.config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
+import shared.config.MockAppConfig
+import shared.models.domain.Timestamp
 import shared.utils.UnitSpec
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
+import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 
 class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
 

@@ -19,7 +19,7 @@ package v5.lossClaims.create
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.common.models._
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
 import v5.lossClaims.create.model.response.CreateLossClaimResponse
