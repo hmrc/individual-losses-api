@@ -21,7 +21,7 @@ import cats.data.Validated.{Invalid, Valid}
 import common.errors.TypeOfLossFormatError
 import shared.controllers.validators.resolvers.ResolverSupport
 import shared.models.errors.MtdError
-import v5.lossClaims.validators.models.TypeOfLoss
+import v5.lossClaims.common.models.TypeOfLoss
 
 object ResolveLossClaimTypeOfLoss extends ResolverSupport {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,5 @@ package v5.lossClaims
 import shared.models.domain.TaxYear
 
 package object common {
-
-  val minimumTaxYearBFLoss: TaxYear    = TaxYear.ending(2019)
-  val minimumTaxYearLossClaim: TaxYear = TaxYear.ending(2020)
-
+  val minimumTaxYear: TaxYear = TaxYear.ending(2020)
 }

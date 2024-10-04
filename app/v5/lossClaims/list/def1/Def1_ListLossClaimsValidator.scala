@@ -23,11 +23,11 @@ import common.errors.TypeOfClaimFormatError
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
 import shared.models.errors._
-import v5.lossClaims.common.minimumTaxYearLossClaim
+import v5.lossClaims.common.minimumTaxYear
+import v5.lossClaims.common.models.TypeOfClaim
 import v5.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
 import v5.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
-import v5.lossClaims.validators.models.TypeOfClaim
 
 class Def1_ListLossClaimsValidator(nino: String,
                                    taxYearClaimedFor: String,
@@ -37,7 +37,7 @@ class Def1_ListLossClaimsValidator(nino: String,
     extends Validator[ListLossClaimsRequestData]
     with ResolverSupport {
 
-  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYearLossClaim)
+  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], ListLossClaimsRequestData] = {
     (

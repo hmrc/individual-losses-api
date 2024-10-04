@@ -19,7 +19,7 @@ package v5.lossClaims.amendType.model.request
 import play.api.libs.json.OWrites
 import shared.utils.JsonWritesUtil
 import v5.lossClaims.amendType.def1.model.request.Def1_AmendLossClaimTypeRequestBody
-import v5.lossClaims.validators.models.TypeOfClaim
+import v5.lossClaims.common.models.TypeOfClaim
 
 trait AmendLossClaimTypeRequestBody { def typeOfClaim: TypeOfClaim }
 

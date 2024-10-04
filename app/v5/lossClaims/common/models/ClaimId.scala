@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaims.validators.models
+package v5.lossClaims.common.models
 
 case class ClaimId(claimId: String) {
   override def toString: String = claimId

@@ -18,8 +18,8 @@ package v5.lossClaims.create.def1.model.request
 
 import play.api.libs.json._
 import shared.models.domain.TaxYear
-import v5.lossClaims.validators.models.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
-import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.common.models.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
+import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestBody
 
 case class Def1_CreateLossClaimRequestBody(taxYearClaimedFor: String, typeOfLoss: TypeOfLoss, typeOfClaim: TypeOfClaim, businessId: String)

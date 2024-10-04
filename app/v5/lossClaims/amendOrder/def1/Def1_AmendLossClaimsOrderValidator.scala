@@ -26,8 +26,8 @@ import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, 
 import shared.models.errors._
 import v5.lossClaims.amendOrder.def1.model.request.{Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
+import v5.lossClaims.common.models.TypeOfClaim
 import v5.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
-import v5.lossClaims.validators.models.TypeOfClaim
 
 class Def1_AmendLossClaimsOrderValidator(nino: String, taxYearClaimedFor: String, body: JsValue) extends Validator[AmendLossClaimsOrderRequestData] {
 

@@ -21,7 +21,7 @@ import cats.data.Validated.{Invalid, Valid}
 import common.errors.ClaimIdFormatError
 import shared.controllers.validators.resolvers.ResolverSupport
 import shared.models.errors.MtdError
-import v5.lossClaims.validators.models.ClaimId
+import v5.lossClaims.common.models.ClaimId
 
 object ResolveLossClaimId extends ResolverSupport {
 

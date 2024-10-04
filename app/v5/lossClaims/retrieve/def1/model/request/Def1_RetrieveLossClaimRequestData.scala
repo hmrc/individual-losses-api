@@ -17,9 +17,9 @@
 package v5.lossClaims.retrieve.def1.model.request
 
 import shared.models.domain.Nino
+import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.retrieve.RetrieveLossClaimSchema
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
-import v5.lossClaims.validators.models.ClaimId
 
 case class Def1_RetrieveLossClaimRequestData(nino: Nino, claimId: ClaimId) extends RetrieveLossClaimRequestData {
   val schema: RetrieveLossClaimSchema = RetrieveLossClaimSchema.Def1

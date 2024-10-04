@@ -22,9 +22,9 @@ import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
+import v5.lossClaims.common.models._
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestData
-import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
 
 class Def1_CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidators {
 

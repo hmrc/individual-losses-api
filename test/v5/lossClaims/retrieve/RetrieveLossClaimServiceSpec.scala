@@ -21,11 +21,11 @@ import shared.models.domain.{Nino, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
+import v5.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
-import v5.lossClaims.validators.models._
 
 import scala.concurrent.Future
 

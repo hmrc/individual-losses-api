@@ -22,7 +22,7 @@ import common.errors.TypeOfLossFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import shared.controllers.validators.resolvers.ResolverSupport
 import shared.models.errors.MtdError
-import v5.lossClaims.validators.models.TypeOfLoss
+import v5.lossClaims.common.models.TypeOfLoss
 
 /** Given the whole request body, checks for the typeOfLoss field and validates it if present.
   */

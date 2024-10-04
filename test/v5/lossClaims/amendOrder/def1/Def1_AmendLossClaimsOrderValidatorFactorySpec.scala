@@ -23,7 +23,7 @@ import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
-import v5.lossClaims.validators.models.TypeOfClaim
+import v5.lossClaims.common.models.TypeOfClaim
 
 class Def1_AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 

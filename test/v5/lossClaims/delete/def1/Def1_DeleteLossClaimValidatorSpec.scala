@@ -21,9 +21,9 @@ import shared.controllers.validators.Validator
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.utils.UnitSpec
+import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
-import v5.lossClaims.validators.models.ClaimId
 
 class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
 

@@ -17,9 +17,9 @@
 package v5.lossClaims.list.def1.request
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
+import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.list.ListLossClaimsSchema
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
-import v5.lossClaims.validators.models.{TypeOfClaim, TypeOfLoss}
 
 case class Def1_ListLossClaimsRequestData(nino: Nino,
                                           taxYearClaimedFor: TaxYear,

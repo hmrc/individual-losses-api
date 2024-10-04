@@ -21,7 +21,7 @@ import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v5.lossClaims.validators.models.ClaimId
+import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 

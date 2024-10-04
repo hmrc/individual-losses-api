@@ -19,14 +19,14 @@ package v5.lossClaims.common.resolvers
 import cats.data.Validated.{Invalid, Valid}
 import common.errors.TypeOfLossFormatError
 import shared.utils.UnitSpec
-import v5.lossClaims.validators.models.TypeOfLoss
+import v5.lossClaims.common.models.TypeOfLoss
+import v5.lossClaims.common.models.TypeOfLoss._
 
 class ResolveLossClaimTypeOfLossSpec extends UnitSpec {
 
   "The resolver" should {
 
     "return the resolved value" when {
-      import TypeOfLoss._
 
       checkValid(`uk-property-non-fhl`)
       checkValid(`foreign-property`)

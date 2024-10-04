@@ -19,7 +19,7 @@ package v5.lossClaims.list.def1.response
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import shared.models.domain.TaxYear
-import v5.lossClaims.validators.models.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
+import v5.lossClaims.common.models._
 
 case class ListLossClaimsItem(businessId: String,
                               typeOfClaim: TypeOfClaim,

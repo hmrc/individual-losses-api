@@ -18,8 +18,7 @@ package v5.lossClaims.common.models
 
 import shared.utils.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
-import v5.lossClaims.validators.models.TypeOfLoss._
-import v5.lossClaims.validators.models.{IncomeSourceType, TypeOfLoss}
+import v5.lossClaims.common.models.TypeOfLoss._
 
 class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 

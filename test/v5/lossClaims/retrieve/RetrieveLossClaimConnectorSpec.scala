@@ -19,10 +19,10 @@ package v5.lossClaims.retrieve
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
+import v5.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
-import v5.lossClaims.validators.models._
 
 import scala.concurrent.Future
 

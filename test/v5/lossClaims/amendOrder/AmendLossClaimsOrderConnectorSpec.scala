@@ -20,7 +20,7 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v5.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
-import v5.lossClaims.validators.models.TypeOfClaim
+import v5.lossClaims.common.models.TypeOfClaim
 
 import scala.concurrent.Future
 

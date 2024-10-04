@@ -25,8 +25,8 @@ import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, 
 import shared.models.errors.MtdError
 import v5.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
+import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
-import v5.lossClaims.validators.models.ClaimId
 
 class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsValue) extends Validator[AmendLossClaimTypeRequestData] {
 

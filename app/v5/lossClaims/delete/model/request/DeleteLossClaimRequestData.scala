@@ -17,7 +17,7 @@
 package v5.lossClaims.delete.model.request
 
 import shared.models.domain.Nino
-import v5.lossClaims.validators.models.ClaimId
+import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.delete.DeleteLossClaimSchema
 
 trait DeleteLossClaimRequestData {
