@@ -22,8 +22,8 @@ import common.errors.TypeOfLossFormatError
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
-import shared.models.domain.TaxYear
 import shared.models.errors._
+import v5.bfLosses.common.minimumTaxYear
 import v5.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
@@ -33,8 +33,6 @@ import javax.inject.Inject
 
 class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implicit val clock: Clock = Clock.systemUTC())
     extends Validator[CreateBFLossRequestData] {
-
-  private val minimumTaxYearBFLoss = TaxYear.ending(2019)
 
   private val resolveJson         = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
@@ -54,7 +52,7 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implici
 
     val resolvedTaxYear =
       ResolveTaxYearMinimum(
-        minimumTaxYearBFLoss,
+        minimumTaxYear,
         notSupportedError = RuleTaxYearNotSupportedError.withPath(taxYearErrorPath),
         formatError = TaxYearFormatError.withPath(taxYearErrorPath),
         rangeError = RuleTaxYearRangeInvalidError.withPath(taxYearErrorPath)
