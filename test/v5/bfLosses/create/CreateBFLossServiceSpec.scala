@@ -16,14 +16,13 @@
 
 package v5.bfLosses.create
 
-import common.errors.RuleDuplicateSubmissionError
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.create
-import v5.bfLosses.create.CreateBFLossService
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v5.bfLosses.create.def1.model.response.Def1_CreateBFLossResponse
 
@@ -75,15 +74,16 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         }
 
       val errors: Seq[(String, MtdError)] = List(
-        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-        "DUPLICATE_SUBMISSION"      -> RuleDuplicateSubmissionError,
-        "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
-        "TAX_YEAR_NOT_ENDED"        -> RuleTaxYearNotEndedError,
-        "INCOME_SOURCE_NOT_FOUND"   -> NotFoundError,
-        "INVALID_CORRELATIONID"     -> InternalError,
-        "INVALID_PAYLOAD"           -> InternalError,
-        "SERVER_ERROR"              -> InternalError,
-        "SERVICE_UNAVAILABLE"       -> InternalError
+        "INVALID_TAXABLE_ENTITY_ID"            -> NinoFormatError,
+        "DUPLICATE_SUBMISSION"                 -> RuleDuplicateSubmissionError,
+        "TAX_YEAR_NOT_SUPPORTED"               -> RuleTaxYearNotSupportedError,
+        "TAX_YEAR_NOT_ENDED"                   -> RuleTaxYearNotEndedError,
+        "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" -> RuleBflNotSupportedForFhlProperties,
+        "INCOME_SOURCE_NOT_FOUND"              -> NotFoundError,
+        "INVALID_CORRELATIONID"                -> InternalError,
+        "INVALID_PAYLOAD"                      -> InternalError,
+        "SERVER_ERROR"                         -> InternalError,
+        "SERVICE_UNAVAILABLE"                  -> InternalError
       )
 
       errors.foreach(args => (serviceError _).tupled(args))

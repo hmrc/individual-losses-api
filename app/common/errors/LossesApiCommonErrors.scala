@@ -45,3 +45,9 @@ object RuleNoAccountingPeriod   extends MtdError("RULE_NO_ACCOUNTING_PERIOD", "F
 object RuleInvalidSequenceStart extends MtdError("RULE_INVALID_SEQUENCE_START", "The sequence does not begin with 1", BAD_REQUEST)
 object RuleSequenceOrderBroken  extends MtdError("RULE_SEQUENCE_ORDER_BROKEN", "The sequence is not continuous", BAD_REQUEST)
 object RuleLossClaimsMissing    extends MtdError("RULE_LOSS_CLAIMS_MISSING", "One or more loss claims missing from this request", BAD_REQUEST)
+
+object RuleBflNotSupportedForFhlProperties
+    extends MtdError(
+      "RULE_BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES",
+      "Brought forward losses for income sources uk-property-fhl and foreign-property-fhl-eea is not supported from tax year 25/26.",
+      BAD_REQUEST)
