@@ -32,7 +32,7 @@ object Def1_CreateBFLossRequestBody {
 
   implicit val writes: OWrites[Def1_CreateBFLossRequestBody] = (loss: Def1_CreateBFLossRequestBody) => {
     loss.typeOfLoss match {
-      case `uk-property-fhl` | `uk-property-non-fhl` | `foreign-property-fhl-eea` | `foreign-property` =>
+      case `uk-property-fhl` | `uk-property` | `foreign-property-fhl-eea` | `foreign-property` =>
         Json.obj(
           "incomeSourceId"            -> loss.businessId,
           "incomeSourceType"          -> loss.typeOfLoss.toIncomeSourceType,

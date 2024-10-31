@@ -40,7 +40,7 @@ class Def1_ListBFLossesValidator(nino: String, taxYearBroughtForwardFrom: String
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
   private val availableLossTypeNames =
-    Seq(`uk-property-fhl`, `uk-property-non-fhl`, `self-employment`, `foreign-property-fhl-eea`, `foreign-property`).map(_.toString)
+    Seq(`uk-property-fhl`, `uk-property`, `self-employment`, `foreign-property-fhl-eea`, `foreign-property`).map(_.toString)
 
   def validate: Validated[Seq[MtdError], ListBFLossesRequestData] = {
     (
