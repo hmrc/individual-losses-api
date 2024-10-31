@@ -41,7 +41,7 @@ class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
 
   "Json Reads" when {
     "reading a property brought forward loss" must {
-      test(IncomeSourceType.`02`, TypeOfLoss.`uk-property-non-fhl`)
+      test(IncomeSourceType.`02`, TypeOfLoss.`uk-property`)
       test(IncomeSourceType.`03`, TypeOfLoss.`foreign-property-fhl-eea`)
       test(IncomeSourceType.`04`, TypeOfLoss.`uk-property-fhl`)
       test(IncomeSourceType.`15`, TypeOfLoss.`foreign-property`)
