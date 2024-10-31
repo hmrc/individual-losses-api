@@ -25,7 +25,7 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
   testRoundTrip[TypeOfLoss](
     ("self-employment", `self-employment`),
     ("self-employment-class4", `self-employment-class4`),
-    ("uk-property-non-fhl", `uk-property-non-fhl`),
+    ("uk-property", `uk-property`),
     ("uk-property-fhl", `uk-property-fhl`),
     ("foreign-property-fhl-eea", `foreign-property-fhl-eea`),
     ("foreign-property", `foreign-property`)
@@ -36,7 +36,7 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
       "work" in {
         `self-employment`.toLossType shouldBe Some(LossType.INCOME)
         `self-employment-class4`.toLossType shouldBe Some(LossType.CLASS4)
-        `uk-property-non-fhl`.toLossType shouldBe None
+        `uk-property`.toLossType shouldBe None
         `uk-property-fhl`.toLossType shouldBe None
         `foreign-property-fhl-eea`.toLossType shouldBe None
         `foreign-property`.toLossType shouldBe None
@@ -46,7 +46,7 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
     "getting IncomeSourceType" must {
       "work" in {
         `uk-property-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`04`)
-        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
+        `uk-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
         `foreign-property-fhl-eea`.toIncomeSourceType shouldBe Some(IncomeSourceType.`03`)
         `foreign-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`15`)
         `self-employment`.toIncomeSourceType shouldBe Some(IncomeSourceType.`01`)

@@ -17,7 +17,7 @@ components:
         The type of business the loss applies to.
       schema:
         type: string
-        enum: [ self-employment, uk-property-fhl, uk-property-non-fhl, uk-property-non-fhl, foreign-property-fhl-eea, foreign-property ]
+        enum: [ self-employment, uk-property-fhl, uk-property, foreign-property-fhl-eea, foreign-property ]
         example: self-employment
       required: false
     typeOfLossLosses:
