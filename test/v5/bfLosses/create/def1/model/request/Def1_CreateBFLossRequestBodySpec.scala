@@ -116,7 +116,7 @@ class Def1_CreateBFLossRequestBodySpec extends UnitSpec with JsonErrorValidators
         })
     }
     "given a valid BroughtForwardLoss UK Property model" should {
-      Seq(TypeOfLoss.`uk-property-fhl`, TypeOfLoss.`uk-property-non-fhl`).foreach(typeOfLoss =>
+      Seq(TypeOfLoss.`uk-property-fhl`, TypeOfLoss.`uk-property`).foreach(typeOfLoss =>
         s"return valid JSON with incomeSourceType set correctly for $typeOfLoss" in {
           val model = Def1_CreateBFLossRequestBody(
             typeOfLoss = typeOfLoss,
