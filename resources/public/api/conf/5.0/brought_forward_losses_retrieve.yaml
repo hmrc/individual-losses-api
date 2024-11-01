@@ -1,7 +1,14 @@
 summary: Retrieve a Brought Forward Loss
 description: |
   This endpoint allows the developer to retrieve an existing brought forward loss amount.
-  A National Insurance number and Loss ID must be provided.
+
+  <strong>
+    Note: Brought forward losses for the following 2 income sources will not be supported from tax year 2025-26 onwards:
+      <ul>
+        <li>uk-property-fhl</li>
+        <li>foreign-property-fhl-eea</li>
+      </ul>
+  </strong>
   
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
@@ -9,7 +16,7 @@ description: |
   | Header Value (Gov-Test-Scenario) | Scenario                                                          |
   |----------------------------------|-------------------------------------------------------------------|
   | N/A - DEFAULT                    | Simulates success response where type of loss is Self-Employment. |
-  | UK_PROPERTY                      | Simulates the scenario where type of loss is UK Property FHL.     |
+  | UK_PROPERTY_FHL                  | Simulates the scenario where type of loss is UK Property FHL.     |
   | FOREIGN_PROPERTY                 | Simulates the scenario where type of loss is Foreign Property.    |
   | NOT_FOUND                        | Simulates the scenario where no data is found.                    |
   | STATEFUL                         | Performs a stateful retrieve.                                     |
