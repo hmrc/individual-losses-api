@@ -179,6 +179,13 @@ components:
         code: RULE_INCORRECT_GOV_TEST_SCENARIO
         message: The Gov-Test-Scenario was not found
 
+    ruleBflNotSupportedForFhlProperties:
+      description: |
+        Brought forward losses for income sources "FHL Property - EEA" and "UK Property FHL" will not be supported from tax year 25/26.
+      value:
+        code: RULE_BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES
+        message: Brought forward losses for income sources uk-property-fhl and foreign-property-fhl-eea are not supported from tax year 25/26
+
     # 403
 
     clientOrAgentNotAuthorised:
