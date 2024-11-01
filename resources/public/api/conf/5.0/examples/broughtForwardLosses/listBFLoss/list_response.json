@@ -27,7 +27,7 @@
 	{
 	  "lossId": "A2Za0911235813d",
 	  "businessId": "XPIS12345678904",
-	  "typeOfLoss": "uk-property-non-fhl",
+	  "typeOfLoss": "uk-property",
 	  "lossAmount": 4882.99,
 	  "taxYearBroughtForwardFrom": "2021-22",
 	  "lastModified": "2022-12-05T11:55:55.763Z"

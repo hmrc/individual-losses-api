@@ -86,8 +86,8 @@ class Def1_ListBFLossesValidatorSpec extends UnitSpec {
         )
       }
 
-      "given a valid request with uk-property-non-fhl as type of loss" in {
-        val result = validator(validNino, validTaxYear, Some("uk-property-non-fhl"), Some(validBusinessId)).validateAndWrapResult()
+      "given a valid request with uk-property as type of loss" in {
+        val result = validator(validNino, validTaxYear, Some("uk-property"), Some(validBusinessId)).validateAndWrapResult()
         result shouldBe Right(
           Def1_ListBFLossesRequestData(parsedNino, parsedTaxYear, Some(IncomeSourceType.`02`), Some(parsedBusinessId))
         )
