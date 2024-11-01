@@ -49,5 +49,5 @@ object RuleLossClaimsMissing    extends MtdError("RULE_LOSS_CLAIMS_MISSING", "On
 object RuleBflNotSupportedForFhlProperties
     extends MtdError(
       "RULE_BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES",
-      "Brought forward losses for income sources uk-property-fhl and foreign-property-fhl-eea is not supported from tax year 25/26.",
+      "Brought forward losses for income sources uk-property-fhl and foreign-property-fhl-eea are not supported from tax year 25/26",
       BAD_REQUEST)
