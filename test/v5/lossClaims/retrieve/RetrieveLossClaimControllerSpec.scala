@@ -51,7 +51,7 @@ class RetrieveLossClaimControllerSpec
 
   private val response = Def1_RetrieveLossClaimResponse(
     taxYearClaimedFor = taxYear,
-    typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
+    typeOfLoss = TypeOfLoss.`uk-property`,
     businessId = businessId,
     typeOfClaim = TypeOfClaim.`carry-forward`,
     sequence = Some(1),
@@ -62,7 +62,7 @@ class RetrieveLossClaimControllerSpec
     s"""
       |{
       |    "taxYearClaimedFor": "$taxYear",
-      |    "typeOfLoss": "uk-property-non-fhl",
+      |    "typeOfLoss": "uk-property",
       |    "typeOfClaim": "carry-forward",
       |    "lastModified": "$lastModified",
       |    "businessId": "$businessId",

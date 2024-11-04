@@ -28,7 +28,7 @@ class ResolveLossClaimTypeOfLossSpec extends UnitSpec {
 
     "return the resolved value" when {
 
-      checkValid(`uk-property-non-fhl`)
+      checkValid(`uk-property`)
       checkValid(`foreign-property`)
       checkValid(`self-employment`)
 

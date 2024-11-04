@@ -177,7 +177,7 @@ class Def1_CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidator
 
       "a typeOfLoss is uk-property-non-fhl" when {
         permitOnly(
-          TypeOfLoss.`uk-property-non-fhl`,
+          TypeOfLoss.`uk-property`,
           List(TypeOfClaim.`carry-sideways`, TypeOfClaim.`carry-sideways-fhl`, TypeOfClaim.`carry-forward-to-carry-sideways`))
       }
 

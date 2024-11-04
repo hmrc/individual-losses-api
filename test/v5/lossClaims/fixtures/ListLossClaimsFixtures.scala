@@ -38,7 +38,7 @@ object ListLossClaimsFixtures {
     s"""
        |{
        |  "businessId": "XAIS12345678910",
-       |  "typeOfLoss": "uk-property-non-fhl",
+       |  "typeOfLoss": "uk-property",
        |  "typeOfClaim": "carry-sideways",
        |  "taxYearClaimedFor": "${TaxYear.fromMtd(taxYear).asMtd}",
        |  "claimId": "AAZZ1234567890A",

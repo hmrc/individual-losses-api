@@ -64,7 +64,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
         ).returning(Future.successful(success("2023-24")))
 
         val result: DownstreamOutcome[ListLossClaimsResponse] =
-          listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), typeOfLoss = Some(TypeOfLoss.`uk-property-non-fhl`))
+          listLossClaimsResult(connector = connector, TaxYear.fromMtd("2023-24"), typeOfLoss = Some(TypeOfLoss.`uk-property`))
 
         result shouldBe success("2023-24")
       }

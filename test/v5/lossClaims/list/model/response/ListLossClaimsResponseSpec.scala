@@ -129,7 +129,7 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
             ListLossClaimsItem(
               "000000000000002",
               TypeOfClaim.`carry-sideways`,
-              TypeOfLoss.`uk-property-non-fhl`,
+              TypeOfLoss.`uk-property`,
               "2019-20",
               "000000000000022",
               Some(2),

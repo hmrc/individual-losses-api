@@ -81,7 +81,7 @@ class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
         )
 
     "convert property JSON from downstream into a valid response for property type 02" in {
-      downstreamPropertyJson("02").as[Def1_AmendLossClaimTypeResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
+      downstreamPropertyJson("02").as[Def1_AmendLossClaimTypeResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property`)
     }
 
     "convert se json from downstream into a valid model" in {

@@ -25,7 +25,7 @@ sealed trait TypeOfLoss {
 
 object TypeOfLoss {
 
-  case object `uk-property-non-fhl` extends TypeOfLoss {
+  case object `uk-property` extends TypeOfLoss {
     override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
   }
 

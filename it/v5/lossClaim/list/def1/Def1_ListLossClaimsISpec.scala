@@ -51,7 +51,7 @@ class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
       }
 
       "querying for a specific typeOfLoss" in new Test {
-        override val typeOfLoss: Option[String] = Some("uk-property-non-fhl")
+        override val typeOfLoss: Option[String] = Some("uk-property")
 
         val downstreamResponse: JsValue = nonFhlDownstreamResponseJson("2019-20")
 
