@@ -4,6 +4,14 @@ get:
     This endpoint allows a developer to retrieve a list of all brought forward losses that have incurred before joining MTD.
     A National Insurance number must be provided.
     
+    <strong>
+      Note: Brought forward losses for the following 2 income sources will not be supported from tax year 2025-26 onwards:
+        <ul>
+          <li>uk-property-fhl</li>
+          <li>foreign-property-fhl-eea</li>
+        </ul>
+    </strong>
+    
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
@@ -13,6 +21,7 @@ get:
     | SELF_EMPLOYMENT                  | Simulates success response with only self-employment.    |
     | UK_PROPERTY                      | Simulates success response with only UK property.        |
     | FOREIGN_PROPERTY                 | Simulates success response with only foreign property.   |
+    | TAX_YEAR_NOT_SUPPORTED           | Simulates the scenario where the tax year specified in taxYearBroughtForwardFrom is not supported. |
     | NOT_FOUND                        | Simulates the scenario where no data is found.           |
     | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request:<br> • businessID<br> • typeOfLoss<br> • taxYearBroughtForwardFrom<br> • lastModified |
     | STATEFUL                         | Performs a stateful list.                                |

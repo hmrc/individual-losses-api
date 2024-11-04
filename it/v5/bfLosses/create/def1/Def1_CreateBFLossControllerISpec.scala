@@ -17,7 +17,7 @@
 package v5.bfLosses.create.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{RuleDuplicateSubmissionError, TypeOfLossFormatError}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, TypeOfLossFormatError}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json._
@@ -172,6 +172,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         serviceErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
         serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(UNPROCESSABLE_ENTITY, "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES", BAD_REQUEST, RuleBflNotSupportedForFhlProperties)
       }
     }
   }

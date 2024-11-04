@@ -17,7 +17,7 @@
 package v5.bfLosses.create
 
 import cats.implicits._
-import common.errors.RuleDuplicateSubmissionError
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -36,15 +36,16 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
   private val errorMap: PartialFunction[String, MtdError] = {
-    case "INVALID_TAXABLE_ENTITY_ID" => NinoFormatError
-    case "DUPLICATE_SUBMISSION"      => RuleDuplicateSubmissionError
-    case "TAX_YEAR_NOT_SUPPORTED"    => RuleTaxYearNotSupportedError
-    case "INCOME_SOURCE_NOT_FOUND"   => NotFoundError
-    case "TAX_YEAR_NOT_ENDED"        => RuleTaxYearNotEndedError
-    case "INVALID_CORRELATIONID"     => InternalError
-    case "INVALID_PAYLOAD"           => InternalError
-    case "SERVER_ERROR"              => InternalError
-    case "SERVICE_UNAVAILABLE"       => InternalError
+    case "INVALID_TAXABLE_ENTITY_ID"            => NinoFormatError
+    case "DUPLICATE_SUBMISSION"                 => RuleDuplicateSubmissionError
+    case "TAX_YEAR_NOT_SUPPORTED"               => RuleTaxYearNotSupportedError
+    case "INCOME_SOURCE_NOT_FOUND"              => NotFoundError
+    case "TAX_YEAR_NOT_ENDED"                   => RuleTaxYearNotEndedError
+    case "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" => RuleBflNotSupportedForFhlProperties
+    case "INVALID_CORRELATIONID"                => InternalError
+    case "INVALID_PAYLOAD"                      => InternalError
+    case "SERVER_ERROR"                         => InternalError
+    case "SERVICE_UNAVAILABLE"                  => InternalError
   }
 
 }
