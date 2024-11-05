@@ -9,7 +9,7 @@ description: |
   | Header Value (Gov-Test-Scenario) | Scenario                                                                                     |
   | -------------------------------- | -------------------------------------------------------------------------------------------- |
   | N/A - DEFAULT                    | Simulates successful self-employment response where typeOfClaim is "carry-forward".          |
-  | UK_PROPERTY                      | Simulates successful uk-property-non-fhl response where typeOfClaim is "carry-sideways-fhl". |
+  | UK_PROPERTY                      | Simulates successful uk-property response where typeOfClaim is "carry-sideways-fhl". |
   | FOREIGN_PROPERTY                 | Simulates successful foreign-property response where typeOfClaim is "carry-sideways".        |
   | NOT_FOUND                        | Simulates the scenario where no data is found.                                               |
   | STATEFUL                         | Performs a stateful retrieve.                                                                |
