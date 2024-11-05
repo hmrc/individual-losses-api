@@ -82,7 +82,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
 
     "convert property JSON from downstream into a valid model for property type 02" in {
       val result = downstreamPropertyJson("02").as[Def1_RetrieveLossClaimResponse]
-      result shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
+      result shouldBe downstreamToModel(TypeOfLoss.`uk-property`)
     }
 
     "convert se json from downstream into a valid model" in {

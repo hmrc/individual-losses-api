@@ -18,7 +18,7 @@ package v5.lossClaims.create.def1.model.request
 
 import play.api.libs.json._
 import shared.models.domain.TaxYear
-import v5.lossClaims.common.models.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property-non-fhl`}
+import v5.lossClaims.common.models.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property`}
 import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestBody
 
@@ -30,7 +30,7 @@ object Def1_CreateLossClaimRequestBody {
 
   implicit val writes: OWrites[Def1_CreateLossClaimRequestBody] = (requestBody: Def1_CreateLossClaimRequestBody) => {
     requestBody.typeOfLoss match {
-      case `uk-property-non-fhl` | `foreign-property` =>
+      case `uk-property` | `foreign-property` =>
         Json.obj(
           "taxYear"          -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).asDownstream,
           "incomeSourceType" -> requestBody.typeOfLoss.toIncomeSourceType,

@@ -75,8 +75,8 @@ class Def1_CreateLossClaimValidator(nino: String, body: JsValue) extends Validat
       case (`self-employment`, `carry-forward` | `carry-sideways`) => valid
       case (`self-employment`, _)                                  => invalid
 
-      case (`uk-property-non-fhl` | `foreign-property`, `carry-sideways` | `carry-sideways-fhl` | `carry-forward-to-carry-sideways`) => valid
-      case (`uk-property-non-fhl` | `foreign-property`, _)                                                                           => invalid
+      case (`uk-property` | `foreign-property`, `carry-sideways` | `carry-sideways-fhl` | `carry-forward-to-carry-sideways`) => valid
+      case (`uk-property` | `foreign-property`, _)                                                                           => invalid
     }
   }
 

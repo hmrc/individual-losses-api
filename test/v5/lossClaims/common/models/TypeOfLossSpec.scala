@@ -24,14 +24,14 @@ class TypeOfLossSpec extends UnitSpec with EnumJsonSpecSupport {
 
   testRoundTrip[TypeOfLoss](
     ("self-employment", `self-employment`),
-    ("uk-property-non-fhl", `uk-property-non-fhl`),
+    ("uk-property", `uk-property`),
     ("foreign-property", `foreign-property`)
   )
 
   "TypeClaimLoss" when {
     "getting downstream IncomeSourceType" must {
       "work" in {
-        `uk-property-non-fhl`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
+        `uk-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`02`)
         `self-employment`.toIncomeSourceType shouldBe Some(IncomeSourceType.`01`)
         `foreign-property`.toIncomeSourceType shouldBe Some(IncomeSourceType.`15`)
       }

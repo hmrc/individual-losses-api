@@ -51,7 +51,7 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
 
   val lossClaimUkPropertyNonFhl: Def1_CreateLossClaimRequestBody = Def1_CreateLossClaimRequestBody(
     taxYearClaimedFor = "2019-20",
-    typeOfLoss = TypeOfLoss.`uk-property-non-fhl`,
+    typeOfLoss = TypeOfLoss.`uk-property`,
     typeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`,
     businessId = "X2IS12356589871"
   )
@@ -59,7 +59,7 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
   val lossClaimUkPropertyNonFhlJson: JsValue = Json.parse("""
       |{
       |    "businessId": "X2IS12356589871",
-      |    "typeOfLoss": "uk-property-non-fhl",
+      |    "typeOfLoss": "uk-property",
       |    "typeOfClaim": "carry-forward-to-carry-sideways",
       |    "taxYearClaimedFor": "2019-20"
       |}

@@ -28,7 +28,7 @@ class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
     "getting downstream IncomeSourceType" must {
       "work" in {
         `01`.toTypeOfLoss shouldBe TypeOfLoss.`self-employment`
-        `02`.toTypeOfLoss shouldBe TypeOfLoss.`uk-property-non-fhl`
+        `02`.toTypeOfLoss shouldBe TypeOfLoss.`uk-property`
         `15`.toTypeOfLoss shouldBe TypeOfLoss.`foreign-property`
       }
     }
