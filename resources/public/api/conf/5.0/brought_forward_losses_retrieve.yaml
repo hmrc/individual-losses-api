@@ -1,6 +1,7 @@
 summary: Retrieve a Brought Forward Loss
 description: |
-  This endpoint allows the developer to retrieve an existing brought forward loss amount.
+  This endpoint allows the developer to retrieve an existing brought forward loss amount. 
+  A National Insurance number and Loss ID must be provided.
 
   <strong>
     Note: Brought forward losses for the following 2 income sources will not be supported from tax year 2025-26 onwards:
