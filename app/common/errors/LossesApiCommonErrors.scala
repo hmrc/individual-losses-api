@@ -38,6 +38,12 @@ object RuleDeleteAfterFinalDeclarationError
 object RuleTypeOfClaimInvalid
     extends MtdError("RULE_TYPE_OF_CLAIM_INVALID", "The claim type selected is not available for this type of loss", BAD_REQUEST)
 
+object RuleCSFHLClaimNotSupportedError
+    extends MtdError(
+      "RULE_CSFHL_CLAIM_NOT_SUPPORTED",
+      "carry-sideways-fhl claim for income sources foreign-property-fhl-eea and uk-property-fhl will not be supported from tax year 25/26",
+      BAD_REQUEST)
+
 object RuleClaimTypeNotChanged  extends MtdError("RULE_NO_CHANGE", "This claim matches a previous submission", BAD_REQUEST)
 object RulePeriodNotEnded       extends MtdError("RULE_ACCOUNTING_PERIOD_NOT_ENDED", "The accounting period has not yet ended", BAD_REQUEST)
 object RuleLossAmountNotChanged extends MtdError("RULE_NO_CHANGE", "The brought forward loss amount has not changed", BAD_REQUEST)

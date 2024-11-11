@@ -17,7 +17,7 @@
 package v5.lossClaim.amendType.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{ClaimIdFormatError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid, TypeOfClaimFormatError}
+import common.errors._
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -131,6 +131,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
       serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "CSFHL_CLAIM_NOT_SUPPORTED", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
       serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleClaimTypeNotChanged)
       serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
       serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
