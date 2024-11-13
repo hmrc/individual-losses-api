@@ -94,6 +94,13 @@ components:
         code: RULE_TYPE_OF_CLAIM_INVALID
         message: The claim type supplied is not available for this type of loss
 
+    ruleCsfhlClaimNotSupported:
+        description: |
+          carry-sideways-fhl claim for income sources "FHL Property - EEA" and "UK Property FHL" will not be supported from tax year 25/26.
+        value:
+          code: RULE_CSFHL_CLAIM_NOT_SUPPORTED
+          message: carry-sideways-fhl claim for income sources foreign-property-fhl-eea and uk-property-fhl will not be supported from tax year 25/26
+
     ruleNoChangeBroughtForward:
       description: |
         The loss amount supplied is the same as the existing stored loss amount.

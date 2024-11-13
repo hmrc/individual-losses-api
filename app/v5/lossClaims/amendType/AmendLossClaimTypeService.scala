@@ -17,7 +17,7 @@
 package v5.lossClaims.amendType
 
 import cats.implicits._
-import common.errors.{ClaimIdFormatError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import common.errors.{ClaimIdFormatError, RuleCSFHLClaimNotSupportedError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -41,6 +41,7 @@ class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnecto
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "INVALID_PAYLOAD"           -> InternalError,
     "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
+    "CSFHL_CLAIM_NOT_SUPPORTED" -> RuleCSFHLClaimNotSupportedError,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleClaimTypeNotChanged,
     "INVALID_CORRELATIONID"     -> InternalError,
