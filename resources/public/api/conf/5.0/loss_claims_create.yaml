@@ -1,8 +1,12 @@
 post:
   summary: Create a Loss Claim
   description: |
-    This endpoint allows a developer to create a Loss Claim against an income source for a specific tax year. Claims cannot be made until after the end of the accounting period.
+    This endpoint enables you to create a loss claim against an income source for a specific tax year. <Strong>Claims cannot be made until after the end of the accounting period.</Strong>
     A National Insurance number must be provided.
+    
+    <strong>
+      Note: carry-sideways-fhl type of loss claims for income sources uk-property-fhl and foreign-property-fhl-eea will not be supported from tax year 2025-26 onwards.
+    </strong>
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
@@ -12,9 +16,10 @@ post:
     | N/A - DEFAULT                    | Simulates success response.                                                           |
     | NOT_FOUND                        | Simulates the scenario where no data is found.                                        |
     | DUPLICATE                        | Simulates the scenario where a duplicated value is found.                             |
-    | ACCOUNTING_PERIOD_NOT_ENDED      | Simulates the scenario where the Loss claim has been made too soon.                   |
+    | ACCOUNTING_PERIOD_NOT_ENDED      | Simulates the scenario where the loss claim has been made too soon.                   |
     | NO_ACCOUNTING_PERIOD             | Simulates the scenario where there is no accounting period for the year of the claim. |
     | STATEFUL                         | Performs a stateful create.                                                           |
+    | CSFHL_CLAIM_NOT_SUPPORTED        | Simulates the scenario where carry-sideways-fhl claim submitted for income sources "FHL Property - EEA" and "UK Property FHL".|
 
   tags:
     - Loss Claims
@@ -99,6 +104,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
             RULE_INCORRECT_GOV_TEST_SCENARIO:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+            RULE_CSFHL_CLAIM_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleCsfhlClaimNotSupported'
 
     "403":
       description: Forbidden

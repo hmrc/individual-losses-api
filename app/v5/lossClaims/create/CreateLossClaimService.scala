@@ -17,7 +17,13 @@
 package v5.lossClaims.create
 
 import cats.implicits._
-import common.errors.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
+import common.errors.{
+  RuleCSFHLClaimNotSupportedError,
+  RuleDuplicateClaimSubmissionError,
+  RuleNoAccountingPeriod,
+  RulePeriodNotEnded,
+  RuleTypeOfClaimInvalid
+}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -47,6 +53,7 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
     case "SERVER_ERROR"                => InternalError
     case "SERVICE_UNAVAILABLE"         => InternalError
     case "INVALID_CORRELATIONID"       => InternalError
+    case "CSFHL_CLAIM_NOT_SUPPORTED"   => RuleCSFHLClaimNotSupportedError
   }
 
 }
