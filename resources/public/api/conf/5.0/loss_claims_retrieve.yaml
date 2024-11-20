@@ -3,13 +3,17 @@ description: |
   This endpoint allows a developer to retrieve the detail of an existing loss claim.
   A National Insurance Number and Claim ID must be provided.
   
+  <strong>
+    Note: carry-sideways-fhl type of loss claims for income sources uk-property-fhl and foreign-property-fhl-eea will not be supported from tax year 2025-26 onwards.
+  </strong>
+  
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
   | Header Value (Gov-Test-Scenario) | Scenario                                                                                     |
   | -------------------------------- | -------------------------------------------------------------------------------------------- |
   | N/A - DEFAULT                    | Simulates successful self-employment response where typeOfClaim is "carry-forward".          |
-  | UK_PROPERTY                      | Simulates successful uk-property response where typeOfClaim is "carry-sideways-fhl". |
+  | UK_PROPERTY                      | Simulates successful uk-property response where typeOfClaim is "carry-sideways-fhl".         |
   | FOREIGN_PROPERTY                 | Simulates successful foreign-property response where typeOfClaim is "carry-sideways".        |
   | NOT_FOUND                        | Simulates the scenario where no data is found.                                               |
   | STATEFUL                         | Performs a stateful retrieve.                                                                |
