@@ -4,6 +4,10 @@ get:
     This endpoint allows a developer to retrieve the existing loss claims information.
     A National Insurance Number must be provided.
     
+    <strong>
+      Note: carry-sideways-fhl type of loss claims for income sources uk-property-fhl and foreign-property-fhl-eea will not be supported from tax year 2025-26 onwards.
+    </strong>
+    
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
