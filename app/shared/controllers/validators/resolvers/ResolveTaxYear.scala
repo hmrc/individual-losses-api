@@ -21,7 +21,6 @@ import cats.data.Validated.{Invalid, Valid}
 import shared.models.domain.TaxYear
 import shared.models.errors._
 
-import java.time.Clock
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 object ResolveTaxYear extends ResolverSupport {
@@ -131,10 +130,9 @@ object ResolveTaxYearMinMax {
 
 }
 
-case class ResolveIncompleteTaxYear(incompleteTaxYearError: MtdError = RuleTaxYearNotEndedError)(implicit clock: Clock) extends ResolverSupport {
+case class ResolveIncompleteTaxYear(incompleteTaxYearError: MtdError = RuleTaxYearNotEndedError) extends ResolverSupport {
 
-  val resolver: Resolver[String, TaxYear] =
-    ResolveTaxYear.resolver thenValidate satisfies(incompleteTaxYearError)(_ < TaxYear.currentTaxYear)
+  val resolver: Resolver[String, TaxYear] = ResolveTaxYear.resolver thenValidate satisfies(incompleteTaxYearError)(_ < TaxYear("2028"))
 
   def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
 }

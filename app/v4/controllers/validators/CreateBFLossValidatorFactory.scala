@@ -25,7 +25,6 @@ import shared.models.errors._
 import v4.controllers.validators.resolvers.ResolveBFTypeOfLossFromJson
 import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 
-import java.time.Clock
 import javax.inject.Singleton
 
 @Singleton
@@ -33,7 +32,7 @@ class CreateBFLossValidatorFactory {
 
   private val resolveJson = new ResolveJsonObject[CreateBFLossRequestBody]()
 
-  def validator(nino: String, body: JsValue)(implicit clock: Clock = Clock.systemUTC()): Validator[CreateBFLossRequestData] =
+  def validator(nino: String, body: JsValue): Validator[CreateBFLossRequestData] =
     new Validator[CreateBFLossRequestData] {
 
       def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
