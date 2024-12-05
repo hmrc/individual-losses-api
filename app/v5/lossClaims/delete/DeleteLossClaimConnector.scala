@@ -37,7 +37,7 @@ class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: A
     import request._
 
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1509")) {
-      HipUri[Unit](s"income-tax/v1/claims-for-relief/$nino/$claimId")
+      HipUri[Unit](s"itsa/income-tax/v1/claims-for-relief/$nino/$claimId")
     } else {
       DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId")
     }
