@@ -34,7 +34,7 @@ class DeleteBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppC
 
     import request._
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1504")) {
-      HipUri[Unit](s"income-tax/v1/brought-forward-losses/$nino/$lossId")
+      HipUri[Unit](s"itsa/income-tax/v1/brought-forward-losses/$nino/$lossId")
     } else {
       DesUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId")
     }
