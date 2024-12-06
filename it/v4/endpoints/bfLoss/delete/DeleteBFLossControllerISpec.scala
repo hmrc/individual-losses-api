@@ -35,7 +35,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
     val lossId = "AAZZ1234567890a"
 
     def uri: String    = s"/$nino/brought-forward-losses/$lossId"
-    def desUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
+    def hipUrl: String = s"/income-tax/v1/brought-forward-losses/$nino/$lossId"
 
     def errorBody(code: String): String =
       s"""
@@ -68,7 +68,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, desUrl, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, hipUrl, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -85,7 +85,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.DELETE, desUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, hipUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())
