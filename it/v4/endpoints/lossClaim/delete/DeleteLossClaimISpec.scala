@@ -35,7 +35,7 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
     val claimId = "AAZZ1234567890a"
 
     def uri: String    = s"/$nino/loss-claims/$claimId"
-    def desUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def hipUrl: String = s"/itsa/income-tax/v1/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
@@ -68,7 +68,7 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, desUrl, Status.NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, hipUrl, Status.NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -85,7 +85,7 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.DELETE, desUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, hipUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())

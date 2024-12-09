@@ -16,10 +16,10 @@
 
 package v4.connectors
 
-import shared.connectors.DownstreamUri.DesUri
+import shared.connectors.DownstreamUri.{DesUri, HipUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
+import shared.config.{AppConfig, ConfigFeatureSwitches}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
@@ -36,7 +36,13 @@ class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: A
 
     import request._
 
-    delete(DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId"))
+    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1509")) {
+      HipUri[Unit](s"itsa/income-tax/v1/claims-for-relief/$nino/$claimId")
+    } else {
+      DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId")
+    }
+
+    delete(downstreamUri)
   }
 
 }
