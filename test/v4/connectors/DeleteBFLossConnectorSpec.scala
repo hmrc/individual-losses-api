@@ -53,7 +53,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(url = s"$baseUrl/income-tax/v1/brought-forward-losses/$nino/$lossId")
+          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/$lossId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))

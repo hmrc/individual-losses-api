@@ -35,7 +35,7 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
     val claimId = "AAZZ1234567890a"
 
     def uri: String    = s"/$nino/loss-claims/$claimId"
-    def hipUrl: String = s"/income-tax/v1/claims-for-relief/$nino/$claimId"
+    def hipUrl: String = s"/itsa/income-tax/v1/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""

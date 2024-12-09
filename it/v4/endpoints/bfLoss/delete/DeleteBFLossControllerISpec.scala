@@ -35,7 +35,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
     val lossId = "AAZZ1234567890a"
 
     def uri: String    = s"/$nino/brought-forward-losses/$lossId"
-    def hipUrl: String = s"/income-tax/v1/brought-forward-losses/$nino/$lossId"
+    def hipUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/$lossId"
 
     def errorBody(code: String): String =
       s"""
