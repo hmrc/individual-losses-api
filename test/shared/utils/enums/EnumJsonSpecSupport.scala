@@ -16,11 +16,43 @@
 
 package shared.utils.enums
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, JsString, Json, Reads, Writes}
 import shared.utils.UnitSpec
 
 trait EnumJsonSpecSupport {
   self: UnitSpec =>
+
+  /** Tests serialization to JSON
+    *
+    * @param namesAndValues
+    *   Pairs (object, name) for all the objects in the enumeration under test
+    * @tparam A
+    *   the type of enumeration (sealed trait of objects) being tested
+    */
+  def testSerialization[A: Writes](namesAndValues: (A, String)*): Unit =
+    "JSON writes" must {
+      "serialize correctly" in {
+        namesAndValues.foreach { case (obj, name) =>
+          Json.toJson(obj) shouldBe JsString(name)
+        }
+      }
+    }
+
+  /** Tests deserialization from JSON
+    *
+    * @param namesAndValues
+    *   Pairs (name, object) for all the objects in the enumeration under test
+    * @tparam A
+    *   the type of enumeration (sealed trait of objects) being tested
+    */
+  def testDeserialization[A: Reads](namesAndValues: (String, A)*): Unit =
+    "JSON reads" must {
+      "serialize correctly" in {
+        namesAndValues.foreach { case (name, obj) =>
+          JsString(name).as[A] shouldBe obj
+        }
+      }
+    }
 
   /** Tests round-tripping
     *

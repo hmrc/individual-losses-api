@@ -19,7 +19,7 @@ package shared.controllers
 import play.api.Configuration
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, Result}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.models.auth.UserDetails
 import shared.models.errors._
 import shared.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthorisedControllerSpec extends ControllerBaseSpec with MockAppConfig {
+class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConfig {
 
   private val nino  = "AA123456A"
   private val mtdId = "X123567890"
@@ -182,11 +182,11 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockAppConfig {
 
     protected def endpointAllowsSupportingAgents: Boolean = true
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> supportingAgentsfeatureEnabled
     )
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes() returns endpointAllowsSupportingAgents
 

@@ -17,7 +17,7 @@
 package shared.services
 
 import org.scalamock.handlers.CallHandler
-import shared.config.{ConfidenceLevelConfig, MockAppConfig}
+import shared.config.{ConfidenceLevelConfig, MockSharedAppConfig}
 import shared.models.auth.UserDetails
 import shared.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import shared.models.outcomes.AuthOutcome
@@ -36,7 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
+class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
 
   private val mtdId = "123567890"
 
@@ -280,7 +280,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
   trait Test {
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-    lazy val enrolmentsAuthService = new EnrolmentsAuthService(mockAuthConnector, mockAppConfig)
+    lazy val enrolmentsAuthService = new EnrolmentsAuthService(mockAuthConnector, mockSharedAppConfig)
 
     object MockedAuthConnector {
 
@@ -293,7 +293,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
     }
 
     def mockConfidenceLevelCheckConfig(authValidationEnabled: Boolean): Unit = {
-      MockedAppConfig.confidenceLevelConfig
+      MockedSharedAppConfig.confidenceLevelConfig
         .anyNumberOfTimes()
         .returns(
           ConfidenceLevelConfig(

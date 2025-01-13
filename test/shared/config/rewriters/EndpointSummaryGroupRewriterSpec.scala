@@ -17,12 +17,12 @@
 package shared.config.rewriters
 
 import com.github.jknack.handlebars.HandlebarsException
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 
-class EndpointSummaryGroupRewriterSpec extends UnitSpec with MockAppConfig {
+class EndpointSummaryGroupRewriterSpec extends UnitSpec with MockSharedAppConfig {
 
-  val rewriter = new EndpointSummaryGroupRewriter(mockAppConfig)
+  val rewriter = new EndpointSummaryGroupRewriter(mockSharedAppConfig)
 
   "EndpointSummaryGroupRewriter" when {
     val checkAndRewrite = rewriter.rewriteGroupedEndpointSummaries
@@ -46,9 +46,9 @@ class EndpointSummaryGroupRewriterSpec extends UnitSpec with MockAppConfig {
 
     "rewrite" should {
       "return the rewritten summaries when the 'maybeTestOnly' helper is present" in {
-        MockedAppConfig.endpointReleasedInProduction("2.0", "employment-expenses-create-and-amend") returns false
-        MockedAppConfig.endpointReleasedInProduction("2.0", "employment-expenses-retrieve") returns true
-        MockedAppConfig.endpointReleasedInProduction("2.0", "employment-expenses-delete") returns false
+        MockedSharedAppConfig.endpointReleasedInProduction("2.0", "employment-expenses-create-and-amend") returns false
+        MockedSharedAppConfig.endpointReleasedInProduction("2.0", "employment-expenses-retrieve") returns true
+        MockedSharedAppConfig.endpointReleasedInProduction("2.0", "employment-expenses-delete") returns false
 
         val yaml =
           """

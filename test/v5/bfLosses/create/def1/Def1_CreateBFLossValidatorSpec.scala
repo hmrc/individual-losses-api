@@ -18,7 +18,7 @@ package v5.bfLosses.create.def1
 
 import common.errors.TypeOfLossFormatError
 import play.api.libs.json.{JsObject, JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.Nino
 import shared.models.errors._
@@ -58,7 +58,7 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
   private val validRequestBody  = requestBodyJson()
   private val parsedRequestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, validBusinessId, validTaxYear, 1000)
 
-  class Test extends MockAppConfig {
+  class Test extends MockSharedAppConfig {
 
 //    implicit val todaySupplier: TodaySupplier = new TodaySupplier {
 //      override def today(): LocalDate = LocalDate.parse("2022-07-11")

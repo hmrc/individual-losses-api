@@ -37,7 +37,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
     "given a non-TYS request" when {
       "DES is not migrated to HIP" must {
         "return a success response" in new DesTest with Test {
-          MockedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> false)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> false)
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
@@ -50,7 +50,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
       }
       "DES is migrated to HIP" must {
         "return a success response" in new HipTest with Test {
-          MockedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> true)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> true)
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
@@ -65,7 +65,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { _: ConnectorTest =>
-    val connector: DeleteBFLossConnector = new DeleteBFLossConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: DeleteBFLossConnector = new DeleteBFLossConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 
 }

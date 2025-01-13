@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.GET
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
@@ -44,7 +44,7 @@ import scala.concurrent.Future
 class AmendBFLossControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockAppConfig
+    with MockSharedAppConfig
     with MockAmendBFLossValidatorFactory
     with MockAmendBFLossService
     with MockHateoasFactory {
@@ -162,13 +162,13 @@ class AmendBFLossControllerSpec
         )
       )
 
-    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
+    MockedSharedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
   }
 
 }

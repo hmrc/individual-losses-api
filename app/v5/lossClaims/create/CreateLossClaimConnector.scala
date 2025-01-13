@@ -19,7 +19,7 @@ package v5.lossClaims.create
 import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestData
 import v5.lossClaims.create.model.response.CreateLossClaimResponse
@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateLossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreateLossClaimConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def createLossClaim(request: CreateLossClaimRequestData)(implicit
       hc: HeaderCarrier,

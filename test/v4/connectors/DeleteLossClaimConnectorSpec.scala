@@ -34,7 +34,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
     "given a valid request" when {
       "DES is not migrated to HIP" should {
         "return a successful response " in new DesTest with Test {
-          MockedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> false)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> false)
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
@@ -48,7 +48,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
 
       "DES is migrated to HIP" should {
         "return a successful response " in new HipTest with Test {
-          MockedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> true)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> true)
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
           willDelete(s"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/$claimId")
@@ -63,7 +63,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { _: ConnectorTest =>
-    val connector: DeleteLossClaimConnector = new DeleteLossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: DeleteLossClaimConnector = new DeleteLossClaimConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
     val request: DeleteLossClaimRequestData = DeleteLossClaimRequestData(nino = nino, claimId = claimId)
   }

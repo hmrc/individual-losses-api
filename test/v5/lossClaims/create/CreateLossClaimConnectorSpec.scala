@@ -61,7 +61,7 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { _: ConnectorTest =>
-    val connector: CreateLossClaimConnector = new CreateLossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: CreateLossClaimConnector = new CreateLossClaimConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 
 }

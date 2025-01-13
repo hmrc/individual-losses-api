@@ -16,12 +16,12 @@
 
 package shared.config.rewriters
 
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
 
 import javax.inject.{Inject, Singleton}
 
-@Singleton class ApiVersionTitleRewriter @Inject() (appConfig: AppConfig) {
+@Singleton class ApiVersionTitleRewriter @Inject() (appConfig: SharedAppConfig) {
 
   private val rewriteTitleRegex = ".*(title: [\"]?)(.*)".r
 

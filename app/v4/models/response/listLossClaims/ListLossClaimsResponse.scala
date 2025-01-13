@@ -18,7 +18,7 @@ package v4.models.response.listLossClaims
 
 import cats.Functor
 import play.api.libs.json._
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasListLinksFactory, Link}
 import v4.V4HateoasLinks
 
@@ -34,7 +34,7 @@ object ListLossClaimsResponse extends V4HateoasLinks {
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListLossClaimsResponse, ListLossClaimsItem, ListLossClaimsHateoasData] {
 
-    override def links(appConfig: AppConfig, data: ListLossClaimsHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: ListLossClaimsHateoasData): Seq[Link] = {
       import data._
       val baseLinks = Seq(
         listLossClaim(appConfig, nino),
@@ -44,7 +44,7 @@ object ListLossClaimsResponse extends V4HateoasLinks {
       baseLinks
     }
 
-    override def itemLinks(appConfig: AppConfig, data: ListLossClaimsHateoasData, item: ListLossClaimsItem): Seq[Link] =
+    override def itemLinks(appConfig: SharedAppConfig, data: ListLossClaimsHateoasData, item: ListLossClaimsItem): Seq[Link] =
       Seq(getLossClaim(appConfig, data.nino, item.claimId))
 
   }

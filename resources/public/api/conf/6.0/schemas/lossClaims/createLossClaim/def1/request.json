@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "For all given tax year",
+  "description": "Create a Loss Claim Request",
+  "type": "object",
+  "properties": {
+	"taxYearClaimedFor": {
+	  "type": "string",
+	  "description": "The tax year to which the claim applies. The start year and end year must not span two tax years. The minimum tax year is 2019-20. No gaps are allowed, for example, 2022-24 is not valid.",
+	  "example": "2022-23"
+	},
+	"typeOfLoss": {
+	  "type": "string",
+	  "enum": [
+		"self-employment",
+		"uk-property",
+		"foreign-property"
+	  ],
+	  "description": "The type of business the loss applies to."
+	},
+	"typeOfClaim": {
+	  "type": "string",
+	  "description": "The type of claim to be applied. Permitted values for \"self-employment\": carry-forward, carry-sideways. Permitted values for \"uk-property\" and \"foreign-property\": carry-sideways, carry-sideways-fhl, carry-forward-to-carry-sideways.",
+	  "enum": [
+		"carry-forward",
+		"carry-sideways",
+		"carry-sideways-fhl",
+		"carry-forward-to-carry-sideways"
+	  ]
+	},
+	"businessId": {
+	  "type": "string",
+	  "description": "An identifier for the business, unique to the customer.",
+	  "example": "XAIS12345678910",
+	  "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+	}
+  },
+  "required": [
+	"taxYearClaimedFor",
+	"typeOfLoss",
+	"typeOfClaim",
+	"businessId"
+  ],
+  "additionalProperties": false
+}

@@ -34,11 +34,11 @@ trait RealAppConfig {
       .getOptional[Map[String, Boolean]]("api.supporting-agent-endpoints")
       .getOrElse(Map.empty)
 
-  protected lazy val realAppConfig: AppConfig = {
+  protected lazy val realAppConfig: SharedAppConfig = {
     val conf           = ConfigFactory.load()
     val configuration  = Configuration(conf)
     val servicesConfig = new ServicesConfig(configuration)
-    new AppConfig(servicesConfig, configuration)
+    new SharedAppConfig(servicesConfig, configuration)
   }
 
 }

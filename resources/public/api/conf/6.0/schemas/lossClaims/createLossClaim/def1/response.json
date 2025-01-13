@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "For all given tax year",
+  "description": "Create a Loss Claim Response",
+  "type": "object",
+  "properties": {
+	"claimId": {
+	  "description": "An identifier for the newly created loss claim.",
+	  "type": "string",
+	  "pattern": "^[A-Za-z0-9]{15}$",
+	  "example": "1234568790ABCDE"
+	}
+  },
+  "required": [
+	"claimId"
+  ],
+  "additionalProperties": false
+}

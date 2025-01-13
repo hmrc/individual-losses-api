@@ -38,5 +38,5 @@ trait FeatureSwitches {
 case class ConfigFeatureSwitches private (protected val featureSwitchConfig: Configuration) extends FeatureSwitches
 
 object ConfigFeatureSwitches {
-  def apply()(implicit appConfig: AppConfig): ConfigFeatureSwitches = ConfigFeatureSwitches(appConfig.featureSwitchConfig)
+  def apply()(implicit appConfig: SharedAppConfig): ConfigFeatureSwitches = ConfigFeatureSwitches(appConfig.featureSwitchConfig)
 }

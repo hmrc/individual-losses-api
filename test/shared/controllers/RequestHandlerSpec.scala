@@ -25,7 +25,7 @@ import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.{FakeRequest, ResultExtractors}
 import shared.config.Deprecation.{Deprecated, NotDeprecated}
-import shared.config.{AppConfig, Deprecation, MockAppConfig}
+import shared.config.{SharedAppConfig, Deprecation, MockSharedAppConfig}
 import shared.controllers.validators.Validator
 import shared.hateoas._
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
@@ -50,7 +50,7 @@ class RequestHandlerSpec
     with HeaderNames
     with ResultExtractors
     with ControllerSpecHateoasSupport
-    with MockAppConfig {
+    with MockSharedAppConfig {
 
   private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
@@ -77,8 +77,8 @@ class RequestHandlerSpec
     UserRequest[AnyContent](userDetails, fakeRequest)
   }
 
-  implicit val appConfig: AppConfig = mockAppConfig
-  private val mockService           = mock[DummyService]
+  implicit val appConfig: SharedAppConfig = mockSharedAppConfig
+  private val mockService                 = mock[DummyService]
 
   private def service =
     (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *).anyNumberOfTimes()
@@ -92,7 +92,7 @@ class RequestHandlerSpec
   case object HData extends HateoasData
 
   implicit object HLinksFactory extends HateoasLinksFactory[Output.type, HData.type] {
-    override def links(appConfig: AppConfig, data: HData.type): Seq[Link] = hateoaslinks
+    override def links(appConfig: SharedAppConfig, data: HData.type): Seq[Link] = hateoaslinks
   }
 
   trait DummyService {
@@ -100,7 +100,7 @@ class RequestHandlerSpec
   }
 
   def mockDeprecation(deprecationStatus: Deprecation): CallHandler[Validated[String, Deprecation]] =
-    MockedAppConfig
+    MockedSharedAppConfig
       .deprecationFor(Version(userRequest))
       .returns(deprecationStatus.valid)
       .anyNumberOfTimes()
@@ -148,7 +148,7 @@ class RequestHandlerSpec
         status(result) shouldBe NO_CONTENT
       }
 
-      "wrap the response with hateoas links if required§" in {
+      "wrap the response with hateoas links if required" in {
         val requestHandler = successRequestHandler.withHateoasResult(mockHateoasFactory)(HData, successCode)
 
         mockDeprecation(NotDeprecated)
@@ -175,7 +175,7 @@ class RequestHandlerSpec
         "return RuleRequestCannotBeFulfilled error" in {
           val requestHandler = successRequestHandler.withNoContentResult()
 
-          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(true).anyNumberOfTimes()
+          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(true).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val expectedContent = Json.parse(
@@ -190,7 +190,7 @@ class RequestHandlerSpec
           for (gtsHeader <- gtsHeaders) {
 
             val userRequest2 = UserRequest[AnyContent](userDetails, FakeRequest().withHeaders(versionHeader, gtsHeader))
-            val result       = requestHandler.handleRequest()(ctx, userRequest2, implicitly[ExecutionContext], mockAppConfig)
+            val result       = requestHandler.handleRequest()(ctx, userRequest2, implicitly[ExecutionContext], mockSharedAppConfig)
 
             status(result) shouldBe 422
             header("X-CorrelationId", result) shouldBe Some(generatedCorrelationId)
@@ -205,12 +205,12 @@ class RequestHandlerSpec
 
           service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
 
-          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(false).anyNumberOfTimes()
+          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(false).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
 
-          val result = requestHandler.handleRequest()(ctx2, userRequest, ec, mockAppConfig)
+          val result = requestHandler.handleRequest()(ctx2, userRequest, ec, mockSharedAppConfig)
 
           contentAsJson(result) shouldBe successResponseJson
           header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
@@ -233,7 +233,7 @@ class RequestHandlerSpec
               )
             )
 
-            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedSharedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 
@@ -257,7 +257,7 @@ class RequestHandlerSpec
                 None
               )
             )
-            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedSharedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 

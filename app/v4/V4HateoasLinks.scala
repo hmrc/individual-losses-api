@@ -16,7 +16,7 @@
 
 package v4
 
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, POST, PUT}
 import v4.RelType._
@@ -24,61 +24,61 @@ import v4.RelType._
 trait V4HateoasLinks {
 
   // Domain URIs
-  private def bfLossBaseUri(appConfig: AppConfig, nino: String): String =
+  private def bfLossBaseUri(appConfig: SharedAppConfig, nino: String): String =
     s"/${appConfig.apiGatewayContext}/$nino/brought-forward-losses"
 
-  private def bfLossUri(appConfig: AppConfig, nino: String, lossId: String): String =
+  private def bfLossUri(appConfig: SharedAppConfig, nino: String, lossId: String): String =
     bfLossBaseUri(appConfig, nino) + s"/$lossId"
 
-  private def bfLossChangeRequest(appConfig: AppConfig, nino: String, lossId: String): String =
+  private def bfLossChangeRequest(appConfig: SharedAppConfig, nino: String, lossId: String): String =
     bfLossUri(appConfig, nino, lossId) + "/change-loss-amount"
 
-  private def lossClaimsBaseUri(appConfig: AppConfig, nino: String): String =
+  private def lossClaimsBaseUri(appConfig: SharedAppConfig, nino: String): String =
     s"/${appConfig.apiGatewayContext}/$nino/loss-claims"
 
-  private def lossClaimUri(appConfig: AppConfig, nino: String, claimId: String): String =
+  private def lossClaimUri(appConfig: SharedAppConfig, nino: String, claimId: String): String =
     lossClaimsBaseUri(appConfig, nino) + s"/$claimId"
 
-  private def lossClaimOrderUri(appConfig: AppConfig, nino: String): String =
+  private def lossClaimOrderUri(appConfig: SharedAppConfig, nino: String): String =
     lossClaimsBaseUri(appConfig, nino) + s"/order"
 
-  private def lossClaimOrderTaxYearClaimedForUri(appConfig: AppConfig, nino: String, taxYearClaimedFor: String): String =
+  private def lossClaimOrderTaxYearClaimedForUri(appConfig: SharedAppConfig, nino: String, taxYearClaimedFor: String): String =
     lossClaimOrderUri(appConfig, nino) + s"/$taxYearClaimedFor"
 
-  private def lossClaimChangeRequest(appConfig: AppConfig, nino: String, lossId: String): String =
+  private def lossClaimChangeRequest(appConfig: SharedAppConfig, nino: String, lossId: String): String =
     lossClaimUri(appConfig, nino, lossId) + "/change-type-of-claim"
 
   // API resource links
-  def createBfLoss(appConfig: AppConfig, nino: String): Link =
+  def createBfLoss(appConfig: SharedAppConfig, nino: String): Link =
     Link(href = bfLossBaseUri(appConfig, nino), method = POST, rel = CREATE_BF_LOSS)
 
-  def getBFLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
+  def getBFLoss(appConfig: SharedAppConfig, nino: String, lossId: String): Link =
     Link(href = bfLossUri(appConfig, nino, lossId), method = GET, rel = SELF)
 
-  def amendBfLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
+  def amendBfLoss(appConfig: SharedAppConfig, nino: String, lossId: String): Link =
     Link(href = bfLossChangeRequest(appConfig, nino, lossId), method = POST, rel = AMEND_BF_LOSS)
 
-  def deleteBfLoss(appConfig: AppConfig, nino: String, lossId: String): Link =
+  def deleteBfLoss(appConfig: SharedAppConfig, nino: String, lossId: String): Link =
     Link(href = bfLossUri(appConfig, nino, lossId), method = DELETE, rel = DELETE_BF_LOSS)
 
-  def listBfLoss(appConfig: AppConfig, nino: String): Link = Link(href = bfLossBaseUri(appConfig, nino), method = GET, rel = SELF)
+  def listBfLoss(appConfig: SharedAppConfig, nino: String): Link = Link(href = bfLossBaseUri(appConfig, nino), method = GET, rel = SELF)
 
-  def createLossClaim(appConfig: AppConfig, nino: String): Link =
+  def createLossClaim(appConfig: SharedAppConfig, nino: String): Link =
     Link(href = lossClaimsBaseUri(appConfig, nino), method = POST, rel = CREATE_LOSS_CLAIM)
 
-  def getLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
+  def getLossClaim(appConfig: SharedAppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = GET, rel = SELF)
 
-  def amendLossClaimType(appConfig: AppConfig, nino: String, claimId: String): Link =
+  def amendLossClaimType(appConfig: SharedAppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimChangeRequest(appConfig, nino, claimId), method = POST, rel = AMEND_LOSS_CLAIM)
 
-  def deleteLossClaim(appConfig: AppConfig, nino: String, claimId: String): Link =
+  def deleteLossClaim(appConfig: SharedAppConfig, nino: String, claimId: String): Link =
     Link(href = lossClaimUri(appConfig, nino, claimId), method = DELETE, rel = DELETE_LOSS_CLAIM)
 
-  def amendLossClaimOrder(appConfig: AppConfig, nino: String, taxYearClaimedFor: String, rel: String = AMEND_LOSS_CLAIM_ORDER): Link =
+  def amendLossClaimOrder(appConfig: SharedAppConfig, nino: String, taxYearClaimedFor: String, rel: String = AMEND_LOSS_CLAIM_ORDER): Link =
     Link(href = lossClaimOrderTaxYearClaimedForUri(appConfig, nino, taxYearClaimedFor), method = PUT, rel)
 
-  def listLossClaim(appConfig: AppConfig, nino: String, rel: String = SELF): Link =
+  def listLossClaim(appConfig: SharedAppConfig, nino: String, rel: String = SELF): Link =
     Link(href = lossClaimsBaseUri(appConfig, nino), method = GET, rel)
 
 }

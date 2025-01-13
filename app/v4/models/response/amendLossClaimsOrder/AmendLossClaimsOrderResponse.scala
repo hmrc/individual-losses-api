@@ -17,7 +17,7 @@
 package v4.models.response.amendLossClaimsOrder
 
 import play.api.libs.json.{Json, OWrites}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import v4.V4HateoasLinks
 import v4.RelType.LIST_LOSS_CLAIMS
@@ -29,7 +29,7 @@ object AmendLossClaimsOrderResponse extends V4HateoasLinks {
 
   implicit object AmendOrderLinksFactory extends HateoasLinksFactory[AmendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData] {
 
-    override def links(appConfig: AppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
       import data._
       Seq(
         amendLossClaimOrder(appConfig, nino, taxYearClaimedFor),

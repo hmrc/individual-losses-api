@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Retrieve a Brought Forward Loss Response",
+  "description": "Retrieve a Brought Forward Loss Response",
+  "type": "object",
+  "properties": {
+	"businessId": {
+	  "type": "string",
+	  "description": "An identifier for the business, unique to the customer.",
+	  "example": "XAIS12345678910",
+	  "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+	},
+	"typeOfLoss": {
+	  "type": "string",
+	  "enum": [
+		"self-employment",
+		"self-employment-class4",
+		"uk-property-fhl",
+		"uk-property",
+		"foreign-property-fhl-eea",
+		"foreign-property"
+	  ],
+	  "description": "The type of business the loss applies to."
+	},
+	"lossAmount": {
+	  "type": "number",
+	  "description": "Brought Forward Loss amount related to the type of loss specified. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+	  "multipleOf": 0.01,
+	  "minimum": 0.00,
+	  "maximum": 99999999999.99,
+	  "example": "5000.99"
+	},
+	"taxYearBroughtForwardFrom": {
+	  "type": "string",
+	  "description": "The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.",
+	  "example": "2022-23"
+	},
+	"lastModified": {
+	  "type": "string",
+	  "description": "The timestamp when the entry was created or last modified.",
+	  "format": "date-time",
+	  "pattern": "^2[0-9]{3}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{0,3}|)Z$",
+	  "example": "2020-07-13T12:13:48.763Z"
+	}
+  },
+  "required": [
+	"businessId",
+	"typeOfLoss",
+	"lossAmount",
+	"taxYearBroughtForwardFrom",
+	"lastModified"
+  ],
+  "additionalProperties": false
+}

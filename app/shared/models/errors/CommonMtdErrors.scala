@@ -50,6 +50,9 @@ object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be betw
   def forPathAndRange(path: String, min: String, max: String): MtdError =
     ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max")
 
+  def forPathAndMin(path: String, min: String): MtdError =
+    ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be $min or more")
+
 }
 
 object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The provided calculation ID is invalid", BAD_REQUEST)

@@ -17,12 +17,12 @@
 package v5.lossClaims.retrieve.def1.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.models.domain.Timestamp
 import shared.utils.UnitSpec
 import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 
-class Def1_RetrieveLossClaimResponseSpec extends UnitSpec with MockAppConfig {
+class Def1_RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val nino: String    = "AA123456A"
   val claimId: String = "claimId"

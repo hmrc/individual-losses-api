@@ -19,7 +19,7 @@ package v4.connectors
 import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.amendBFLosses.AmendBFLossRequestData
 import v4.models.response.amendBFLosses.AmendBFLossResponse
@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendBFLossConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendBFLossConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def amendBFLoss(request: AmendBFLossRequestData)(implicit
       hc: HeaderCarrier,

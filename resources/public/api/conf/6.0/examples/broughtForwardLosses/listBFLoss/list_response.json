@@ -1,0 +1,52 @@
+{
+  "losses": [
+	{
+	  "lossId": "A2Za0911235813a",
+	  "businessId": "XBIS12345678901",
+	  "typeOfLoss": "self-employment",
+	  "lossAmount": 9420.01,
+	  "taxYearBroughtForwardFrom": "2021-22",
+	  "lastModified": "2022-12-02T11:55:55.763Z"
+	},
+	{
+	  "lossId": "A2Za0911235813b",
+	  "businessId": "XBIS12345678902",
+	  "typeOfLoss": "self-employment-class4",
+	  "lossAmount": 3298.50,
+	  "taxYearBroughtForwardFrom": "2021-22",
+	  "lastModified": "2022-12-03T11:55:55.763Z"
+	},
+	{
+	  "lossId": "A2Za0911235813c",
+	  "businessId": "XPIS12345678903",
+	  "typeOfLoss": "uk-property-fhl",
+	  "lossAmount": 1882.99,
+	  "taxYearBroughtForwardFrom": "2021-22",
+	  "lastModified": "2022-12-04T11:55:55.763Z"
+	},
+	{
+	  "lossId": "A2Za0911235813d",
+	  "businessId": "XPIS12345678904",
+	  "typeOfLoss": "uk-property",
+	  "lossAmount": 4882.99,
+	  "taxYearBroughtForwardFrom": "2021-22",
+	  "lastModified": "2022-12-05T11:55:55.763Z"
+	},
+	{
+	  "lossId": "A2Za0911235813e",
+	  "businessId": "XFIS12345678905",
+	  "typeOfLoss": "foreign-property-fhl-eea",
+	  "lossAmount": 2985.99,
+	  "taxYearBroughtForwardFrom": "2021-22",
+	  "lastModified": "2022-12-06T11:55:55.763Z"
+	},
+	{
+	  "lossId": "A2Za0911235813f",
+	  "businessId": "XFIS12345678906",
+	  "typeOfLoss": "foreign-property",
+	  "lossAmount": 3553.99,
+	  "taxYearBroughtForwardFrom": "2021-22",
+	  "lastModified": "2022-12-07T11:55:55.763Z"
+	}
+  ]
+}

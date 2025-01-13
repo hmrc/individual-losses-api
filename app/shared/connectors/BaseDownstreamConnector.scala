@@ -18,23 +18,23 @@ package shared.connectors
 
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
-import shared.config.AppConfig
-import shared.utils.Logging
+import shared.config.SharedAppConfig
+import shared.utils.{Logging, UrlUtils}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseDownstreamConnector extends Logging {
   val http: HttpClient
-  val appConfig: AppConfig
+  val appConfig: SharedAppConfig
 
   // This is to provide an implicit AppConfig in existing connector implementations (which
   // typically declare the abstract `appConfig` field non-implicitly) without having to change them.
-  implicit protected val _appConfig: AppConfig = appConfig
+  implicit protected lazy val _appConfig: SharedAppConfig = appConfig
 
   private val jsonContentTypeHeader = Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)
 
-  def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(implicit
+  def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], maybeIntent: Option[String] = None)(implicit
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -47,21 +47,12 @@ trait BaseDownstreamConnector extends Logging {
     }
 
     for {
-      headers <- getBackendHeaders(strategy, jsonContentTypeHeader)
+      headers <- getBackendHeaders(strategy, jsonContentTypeHeader ++ intentHeader(maybeIntent))
       result  <- doPost(headers)
     } yield result
   }
 
-  def get[Resp](uri: DownstreamUri[Resp])(implicit
-      ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]],
-      correlationId: String): Future[DownstreamOutcome[Resp]] = {
-
-    get(uri, queryParams = Seq.empty)
-  }
-
-  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)])(implicit
+  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Nil, maybeIntent: Option[String] = None)(implicit
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -73,12 +64,12 @@ trait BaseDownstreamConnector extends Logging {
       http.GET(getBackendUri(uri.path, strategy), queryParams)
 
     for {
-      headers <- getBackendHeaders(strategy)
+      headers <- getBackendHeaders(strategy, intentHeader(maybeIntent))
       result  <- doGet(headers)
     } yield result
   }
 
-  def delete[Resp](uri: DownstreamUri[Resp])(implicit
+  def delete[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Nil, maybeIntent: Option[String] = None)(implicit
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -87,11 +78,12 @@ trait BaseDownstreamConnector extends Logging {
     val strategy = uri.strategy
 
     def doDelete(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
-      http.DELETE(getBackendUri(uri.path, strategy))
+      val fullUrl = UrlUtils.appendQueryParams(getBackendUri(uri.path, strategy), queryParams)
+      http.DELETE(fullUrl)
     }
 
     for {
-      headers <- getBackendHeaders(strategy)
+      headers <- getBackendHeaders(strategy, intentHeader(maybeIntent))
       result  <- doDelete(headers)
     } yield result
   }
@@ -122,7 +114,7 @@ trait BaseDownstreamConnector extends Logging {
 
   private def getBackendHeaders(
       strategy: DownstreamStrategy,
-      additionalHeaders: Seq[(String, String)] = Seq.empty
+      additionalHeaders: Seq[(String, String)]
   )(implicit ec: ExecutionContext, hc: HeaderCarrier, correlationId: String): Future[HeaderCarrier] = {
 
     for {

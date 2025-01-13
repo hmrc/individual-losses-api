@@ -19,7 +19,7 @@ package v4.models.response.amendBFLoss
 import shared.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import shared.models.domain.Timestamp
 import shared.hateoas.Method.{DELETE, GET, POST}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 import v4.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
@@ -105,15 +105,15 @@ class AmendBFLossResponseSpec extends UnitSpec {
   }
 
   "HateoasFactory" must {
-    class Test extends MockAppConfig {
-      val hateoasFactory = new HateoasFactory(mockAppConfig)
+    class Test extends MockSharedAppConfig {
+      val hateoasFactory = new HateoasFactory(mockSharedAppConfig)
       val nino           = "someNino"
       val lossId         = "someLossId"
 
       // WLOG
       val bfLossResponse: AmendBFLossResponse = responseWith(typeOfLoss = TypeOfLoss.`self-employment`)
 
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
     }
 
     "expose the correct links" in new Test {

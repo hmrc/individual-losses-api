@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create a Brought Forward Loss Request",
+  "description": "Create a Brought Forward Loss Request",
+  "type": "object",
+  "properties": {
+	"taxYearBroughtForwardFrom": {
+	  "type": "string",
+	  "description": "The tax year to which the loss applies. The start year and end year must not span two tax years. No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2018-19. The tax year must have ended.",
+	  "example": "2020-21"
+	},
+	"typeOfLoss": {
+	  "type": "string",
+	  "enum": [
+		"self-employment",
+		"self-employment-class4",
+		"uk-property-fhl",
+		"uk-property",
+		"foreign-property-fhl-eea",
+		"foreign-property"
+	  ],
+	  "description": "The type of business the loss applies to."
+	},
+	"businessId": {
+	  "type": "string",
+	  "description": "An identifier for the business, unique to the customer.",
+	  "example": "XPIS12345678910",
+	  "pattern": "^X[A-Z0-9]{1}IS[0-9]{11}$"
+	},
+	"lossAmount": {
+	  "type": "number",
+	  "description": "Brought Forward Loss amount related to the type of loss specified. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+	  "multipleOf": 0.01,
+	  "minimum": 0.00,
+	  "maximum": 99999999999.99,
+	  "example": "2345.67"
+	}
+  },
+  "required": [
+	"taxYearBroughtForwardFrom",
+	"typeOfLoss",
+	"businessId",
+	"lossAmount"
+  ],
+  "additionalProperties": false
+}

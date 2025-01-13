@@ -18,7 +18,7 @@ package shared.definition
 
 import cats.implicits.catsSyntaxValidatedId
 import shared.config.Deprecation.NotDeprecated
-import shared.config.{AppConfig, MockAppConfig}
+import shared.config.{SharedAppConfig, MockSharedAppConfig}
 import shared.definition.APIStatus.{ALPHA, BETA}
 import shared.mocks.MockHttpClient
 import shared.routing._
@@ -33,7 +33,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
       s"return the expected status" in new Test {
         setupMockConfig(Version9)
-        MockedAppConfig.apiStatus(Version9) returns "BETA"
+        MockedSharedAppConfig.apiStatus(Version9) returns "BETA"
 
         val result: APIStatus = apiDefinitionFactory.checkBuildApiStatus(Version9)
         result shouldBe BETA
@@ -44,7 +44,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     "the 'apiStatus' parameter is present but invalid" should {
       s"default to alpha" in new Test {
         setupMockConfig(Version9)
-        MockedAppConfig.apiStatus(Version9) returns "not-a-status"
+        MockedSharedAppConfig.apiStatus(Version9) returns "not-a-status"
 
         apiDefinitionFactory.checkBuildApiStatus(Version9) shouldBe ALPHA
       }
@@ -52,9 +52,9 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
     "the 'deprecatedOn' parameter is missing for a deprecated version" should {
       "throw an exception" in new Test {
-        MockedAppConfig.apiStatus(Version9) returns "DEPRECATED"
+        MockedSharedAppConfig.apiStatus(Version9) returns "DEPRECATED"
 
-        MockedAppConfig
+        MockedSharedAppConfig
           .deprecationFor(Version9)
           .returns("deprecatedOn date is required for a deprecated version".invalid)
           .anyNumberOfTimes()
@@ -69,11 +69,11 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     }
   }
 
-  class Test extends MockHttpClient with MockAppConfig {
-    MockedAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
+  class Test extends MockHttpClient with MockSharedAppConfig {
+    MockedSharedAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
 
     protected val apiDefinitionFactory = new ApiDefinitionFactory {
-      protected val appConfig: AppConfig = mockAppConfig
+      protected val appConfig: SharedAppConfig = mockSharedAppConfig
 
       val definition: Definition = Definition(
         APIDefinition(
@@ -89,7 +89,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     }
 
     protected def setupMockConfig(version: Version): Unit = {
-      MockedAppConfig
+      MockedSharedAppConfig
         .deprecationFor(version)
         .returns(NotDeprecated.valid)
         .anyNumberOfTimes()

@@ -17,7 +17,7 @@
 package shared.definition
 
 import cats.data.Validated.Invalid
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.routing.Version
 import shared.utils.Logging
 
@@ -25,7 +25,7 @@ trait ApiDefinitionFactory extends Logging {
 
   protected val mtdCategory = "INCOME_TAX_MTD"
 
-  protected val appConfig: AppConfig
+  protected val appConfig: SharedAppConfig
 
   val definition: Definition
 

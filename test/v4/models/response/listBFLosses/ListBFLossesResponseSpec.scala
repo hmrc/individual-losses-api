@@ -17,7 +17,7 @@
 package v4.models.response.listBFLosses
 
 import play.api.libs.json.Json
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.hateoas.Method.{GET, POST}
 import shared.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import shared.utils.UnitSpec
@@ -107,10 +107,10 @@ class ListBFLossesResponseSpec extends UnitSpec with V4HateoasLinks {
   }
 
   "HateoasFactory" must {
-    class Test extends MockAppConfig {
-      val hateoasFactory = new HateoasFactory(mockAppConfig)
+    class Test extends MockSharedAppConfig {
+      val hateoasFactory = new HateoasFactory(mockSharedAppConfig)
       val nino           = "someNino"
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
     }
 
     "expose the correct links for list" in new Test {

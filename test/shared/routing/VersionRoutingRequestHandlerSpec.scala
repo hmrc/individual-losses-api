@@ -16,7 +16,6 @@
 
 package shared.routing
 
-import config.MockLossesConfig
 import org.apache.pekko.actor.ActorSystem
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -26,11 +25,11 @@ import play.api.mvc._
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import shared.utils.UnitSpec
 
-class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockAppConfig with MockLossesConfig with GuiceOneAppPerSuite {
+class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSharedAppConfig with GuiceOneAppPerSuite {
   test =>
 
   implicit private val actorSystem: ActorSystem = ActorSystem("test")
@@ -67,7 +66,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
       "use it" in new Test {
         val maybeAcceptHeader: Option[String] = None
 
-        MockedAppConfig
+        MockedSharedAppConfig
           .endpointsEnabled(Version3)
           .returns(true)
           .anyNumberOfTimes()
@@ -80,7 +79,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "the handler isn't found" should {
       "try without the trailing slash" in new Test {
         val maybeAcceptHeader: Option[String] = None
-        MockedAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
+        MockedSharedAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
 
         val result: Option[Handler] = requestHandler.routeRequest(buildRequest(""))
         result shouldBe Some(DefaultHandler)
@@ -101,7 +100,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     withClue("request ends with a trailing slash...") {
       new Test {
         val maybeAcceptHeader: Option[String] = Some(s"application/vnd.hmrc.$version+json")
-        MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+        MockedSharedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
 
         val result: Option[Handler] = requestHandler.routeRequest(buildRequest(s"$path/"))
         result shouldBe Some(handler)
@@ -110,7 +109,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     withClue("request doesn't end with a trailing slash...") {
       new Test {
         val maybeAcceptHeader: Option[String] = Some(s"application/vnd.hmrc.$version+json")
-        MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+        MockedSharedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
 
         val result: Option[Handler] = requestHandler.routeRequest(buildRequest(s"$path"))
         result shouldBe Some(handler)
@@ -175,7 +174,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     (() => filters.filters).stubs().returns(Nil)
 
     protected val requestHandler: VersionRoutingRequestHandler =
-      new VersionRoutingRequestHandler(routingMap, errorHandler, httpConfiguration, mockAppConfig, filters, action)
+      new VersionRoutingRequestHandler(routingMap, errorHandler, httpConfiguration, mockSharedAppConfig, filters, action)
 
     protected def buildRequest(path: String): RequestHeader =
       maybeAcceptHeader

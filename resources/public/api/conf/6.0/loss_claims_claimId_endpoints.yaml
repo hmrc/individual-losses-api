@@ -1,0 +1,14 @@
+get:
+  $ref: "./loss_claims_retrieve.yaml"
+  summary: Retrieve a Loss Claim
+  tags:
+    - Loss Claims
+  security:
+    - User-Restricted:
+        - read:self-assessment
+delete:
+  $ref: "./loss_claims_delete.yaml"
+  summary: Delete a Loss Claim
+  security:
+    - User-Restricted:
+        - write:self-assessment

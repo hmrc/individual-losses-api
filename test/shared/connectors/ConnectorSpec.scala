@@ -19,7 +19,7 @@ package shared.connectors
 import com.google.common.base.Charsets
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockAppConfig}
+import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
 import shared.mocks.MockHttpClient
 import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
@@ -47,7 +47,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       Some("this-api")
     )
 
-  protected trait ConnectorTest extends MockHttpClient with MockAppConfig {
+  protected trait ConnectorTest extends MockHttpClient with MockSharedAppConfig {
     protected val baseUrl: String = "http://test-BaseUrl"
 
     protected val requiredHeaders: Seq[(String, String)]
@@ -121,19 +121,19 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   protected trait DesTest extends StandardConnectorTest {
     val name = "des"
 
-    MockedAppConfig.desDownstreamConfig.anyNumberOfTimes() returns config
+    MockedSharedAppConfig.desDownstreamConfig.anyNumberOfTimes() returns config
   }
 
   protected trait IfsTest extends StandardConnectorTest {
     override val name = "ifs"
 
-    MockedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
+    MockedSharedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
   }
 
   protected trait TysIfsTest extends StandardConnectorTest {
     override val name = "tys-ifs"
 
-    MockedAppConfig.tysIfsDownstreamConfig.anyNumberOfTimes() returns config
+    MockedSharedAppConfig.tysIfsDownstreamConfig.anyNumberOfTimes() returns config
   }
 
   protected trait HipTest extends ConnectorTest {
@@ -153,7 +153,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       "Gov-Test-Scenario"    -> "DEFAULT"
     ) ++ intent.map("intent" -> _)
 
-    MockedAppConfig.hipDownstreamConfig
+    MockedSharedAppConfig.hipDownstreamConfig
       .anyNumberOfTimes() returns BasicAuthDownstreamConfig(this.baseUrl, environment, clientId, clientSecret, Some(allowedHeaders))
 
   }
