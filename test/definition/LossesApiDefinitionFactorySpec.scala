@@ -18,26 +18,26 @@ package definition
 
 import cats.implicits.catsSyntaxValidatedId
 import shared.config.Deprecation.NotDeprecated
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.definition.APIStatus.BETA
 import shared.definition._
-import shared.routing.{Version4, Version5}
+import shared.routing.{Version4, Version5, Version6}
 import shared.utils.UnitSpec
 
-class LossesApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
+class LossesApiDefinitionFactorySpec extends UnitSpec with MockSharedAppConfig {
 
   class Test {
-    MockedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
-    val apiDefinitionFactory = new LossesApiDefinitionFactory(mockAppConfig)
+    MockedSharedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
+    val apiDefinitionFactory = new LossesApiDefinitionFactory(mockSharedAppConfig)
   }
 
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        List(Version4, Version5).foreach { version =>
-          MockedAppConfig.apiStatus(version) returns "BETA"
-          MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
-          MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
+        List(Version4, Version5, Version6).foreach { version =>
+          MockedSharedAppConfig.apiStatus(version) returns "BETA"
+          MockedSharedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+          MockedSharedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
         }
 
         apiDefinitionFactory.definition shouldBe
@@ -55,6 +55,11 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
                 ),
                 APIVersion(
                   Version5,
+                  status = BETA,
+                  endpointsEnabled = true
+                ),
+                APIVersion(
+                  Version6,
                   status = BETA,
                   endpointsEnabled = true
                 )

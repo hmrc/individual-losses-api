@@ -17,7 +17,7 @@
 package shared.config.rewriters
 
 import com.github.jknack.handlebars.Options
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
 
 import javax.inject.{Inject, Singleton}
@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 /** For the OAS workaround where the "grouped endpoints" yaml file (e.g. employment_expenses.yaml) must include the matching summary text for each
   * endpoint. This rewriter uses handlebars and config to add [test only] if necessary.
   */
-@Singleton class EndpointSummaryGroupRewriter @Inject() (val appConfig: AppConfig) extends HandlebarsRewriter {
+@Singleton class EndpointSummaryGroupRewriter @Inject() (val appConfig: SharedAppConfig) extends HandlebarsRewriter {
 
   hb.registerHelper(
     "maybeTestOnly",

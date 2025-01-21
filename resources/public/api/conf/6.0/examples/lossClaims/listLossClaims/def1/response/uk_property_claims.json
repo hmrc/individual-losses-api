@@ -1,0 +1,13 @@
+{
+  "claims": [
+	{
+	  "businessId": "XPIS12356589871",
+	  "typeOfLoss": "uk-property",
+	  "typeOfClaim": "carry-sideways",
+	  "taxYearClaimedFor": "2019-20",
+	  "claimId": "AAZZ0123456789a",
+	  "sequence": 1,
+	  "lastModified": "2020-07-13T12:13:48.763Z"
+	}
+  ]
+}

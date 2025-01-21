@@ -18,7 +18,7 @@ package v4.models.response.retrieveLossClaim
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{TaxYear, Timestamp}
 import v4.V4HateoasLinks
@@ -45,7 +45,7 @@ object RetrieveLossClaimResponse extends V4HateoasLinks {
 
   implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveLossClaimResponse, GetLossClaimHateoasData] {
 
-    override def links(appConfig: AppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
       import data._
       Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }

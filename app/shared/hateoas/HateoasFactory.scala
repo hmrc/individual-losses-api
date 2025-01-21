@@ -18,11 +18,11 @@ package shared.hateoas
 
 import cats.Functor
 import cats.implicits._
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 
 import javax.inject.Inject
 
-class HateoasFactory @Inject() (appConfig: AppConfig) {
+class HateoasFactory @Inject() (appConfig: SharedAppConfig) {
 
   def wrap[A, D <: HateoasData](payload: A, data: D)(implicit lf: HateoasLinksFactory[A, D]): HateoasWrapper[A] = {
     val links = lf.links(appConfig, data)
@@ -39,10 +39,10 @@ class HateoasFactory @Inject() (appConfig: AppConfig) {
 }
 
 trait HateoasLinksFactory[A, D] {
-  def links(appConfig: AppConfig, data: D): Seq[Link]
+  def links(appConfig: SharedAppConfig, data: D): Seq[Link]
 }
 
 trait HateoasListLinksFactory[A[_], I, D] {
-  def itemLinks(appConfig: AppConfig, data: D, item: I): Seq[Link]
-  def links(appConfig: AppConfig, data: D): Seq[Link]
+  def itemLinks(appConfig: SharedAppConfig, data: D, item: I): Seq[Link]
+  def links(appConfig: SharedAppConfig, data: D): Seq[Link]
 }

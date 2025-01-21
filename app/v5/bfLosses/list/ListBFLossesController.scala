@@ -17,7 +17,7 @@
 package v5.bfLosses.list
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers._
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -31,7 +31,7 @@ class ListBFLossesController @Inject() (val authService: EnrolmentsAuthService,
                                         service: ListBFLossesService,
                                         validatorFactory: ListBFLossesValidatorFactory,
                                         cc: ControllerComponents,
-                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "list-bf-losses"

@@ -18,14 +18,14 @@ package shared.config.rewriters
 
 import controllers.Rewriter
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.config.rewriters.DocumentationRewriters.CheckRewrite
 import shared.utils.UnitSpec
 
-class OasFeatureRewriterSpec extends UnitSpec with MockAppConfig {
+class OasFeatureRewriterSpec extends UnitSpec with MockSharedAppConfig {
 
   private def setupCheckAndRewrite(oasFeatureEnabled: Boolean, oasFeatureReleasedInProd: Boolean): (CheckRewrite, Rewriter) = {
-    MockedAppConfig.featureSwitchConfig returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig returns Configuration(
       "oasFeature.enabled"                -> oasFeatureEnabled,
       "oasFeature.released-in-production" -> oasFeatureReleasedInProd
     )

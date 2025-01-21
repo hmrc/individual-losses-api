@@ -48,7 +48,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
   trait Test {
     _: ConnectorTest =>
 
-    val connector: ListBFLossesConnector = new ListBFLossesConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: ListBFLossesConnector = new ListBFLossesConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
   }
 

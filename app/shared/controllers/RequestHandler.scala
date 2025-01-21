@@ -23,7 +23,7 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.config.Deprecation.Deprecated
 import shared.controllers.validators.Validator
 import shared.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
@@ -37,7 +37,7 @@ import shared.utils.Logging
 import scala.concurrent.{ExecutionContext, Future}
 
 trait RequestHandler {
-  def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result]
+  def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result]
 }
 
 object RequestHandler {
@@ -61,7 +61,7 @@ object RequestHandler {
       responseModifier: Option[Output => Output] = None
   ) extends RequestHandler {
 
-    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
+    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result] =
       Delegate.handleRequest()
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
@@ -116,7 +116,7 @@ object RequestHandler {
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {
 
-      implicit class Response(result: Result)(implicit appConfig: AppConfig, apiVersion: Version) {
+      implicit class Response(result: Result)(implicit appConfig: SharedAppConfig, apiVersion: Version) {
 
         private def withDeprecationHeaders: List[(String, String)] = {
 
@@ -155,7 +155,7 @@ object RequestHandler {
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext,
-          appConfig: AppConfig
+          appConfig: SharedAppConfig
       ): Future[Result] = {
 
         logger.info(
@@ -186,7 +186,7 @@ object RequestHandler {
         }.merge
       }
 
-      private def simulateRequestCannotBeFulfilled(implicit request: UserRequest[_], appConfig: AppConfig): Boolean =
+      private def simulateRequestCannotBeFulfilled(implicit request: UserRequest[_], appConfig: SharedAppConfig): Boolean =
         request.headers.get("Gov-Test-Scenario").contains("REQUEST_CANNOT_BE_FULFILLED") &&
           appConfig.allowRequestCannotBeFulfilledHeader(Version(request))
 
@@ -196,7 +196,7 @@ object RequestHandler {
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext,
-          appConfig: AppConfig): Result = {
+          appConfig: SharedAppConfig): Result = {
 
         implicit val apiVersion: Version = Version(request)
 
@@ -212,8 +212,11 @@ object RequestHandler {
         result
       }
 
-      private def handleFailure(
-          errorWrapper: ErrorWrapper)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Result = {
+      private def handleFailure(errorWrapper: ErrorWrapper)(implicit
+          ctx: RequestContext,
+          request: UserRequest[_],
+          ec: ExecutionContext,
+          appConfig: SharedAppConfig): Result = {
 
         implicit val apiVersion: Version = Version(request)
         logger.warn(

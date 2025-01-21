@@ -16,7 +16,7 @@
 
 package shared.connectors
 
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.connectors.MtdIdLookupConnector.Outcome
 import shared.mocks.MockHttpClient
 
@@ -27,14 +27,14 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
   val nino  = "test-nino"
   val mtdId = "test-mtdId"
 
-  class Test extends MockHttpClient with MockAppConfig {
+  class Test extends MockHttpClient with MockSharedAppConfig {
 
     val connector = new MtdIdLookupConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
-    MockedAppConfig.mtdIdBaseUrl returns baseUrl
+    MockedSharedAppConfig.mtdIdBaseUrl returns baseUrl
   }
 
   "getMtdId" should {

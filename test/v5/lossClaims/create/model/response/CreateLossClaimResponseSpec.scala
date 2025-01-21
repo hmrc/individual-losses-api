@@ -16,12 +16,12 @@
 
 package v5.lossClaims.create.model.response
 
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
 
-class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
+class CreateLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val createClaimsResponse: CreateLossClaimResponse = Def1_CreateLossClaimResponse(claimId = "AAZZ1234567890a")
 

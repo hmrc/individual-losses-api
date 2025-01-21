@@ -17,7 +17,7 @@
 package shared.controllers
 
 import play.api.mvc._
-import shared.config.{AppConfig, ConfigFeatureSwitches}
+import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
 import shared.models.auth.UserDetails
 import shared.models.errors.MtdError
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -30,7 +30,7 @@ case class UserRequest[A](userDetails: UserDetails, request: Request[A]) extends
 
 abstract class AuthorisedController(
     cc: ControllerComponents
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit appConfig: SharedAppConfig, ec: ExecutionContext)
     extends BackendController(cc) {
 
   val authService: EnrolmentsAuthService

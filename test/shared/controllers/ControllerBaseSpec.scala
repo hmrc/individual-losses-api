@@ -23,7 +23,7 @@ import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, ResultExtractors}
 import shared.config.Deprecation.NotDeprecated
-import shared.config.{MockAppConfig, RealAppConfig}
+import shared.config.{MockSharedAppConfig, RealAppConfig}
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse}
 import shared.models.domain.Nino
 import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
@@ -42,7 +42,7 @@ abstract class ControllerBaseSpec
     with ResultExtractors
     with MockAuditService
     with ControllerSpecHateoasSupport
-    with MockAppConfig {
+    with MockSharedAppConfig {
 
   protected val apiVersion: Version = Version9
 
@@ -76,7 +76,7 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
     MockedEnrolmentsAuthService.authoriseUser()
     MockedIdGenerator.generateCorrelationId.returns(correlationId)
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .deprecationFor(apiVersion)
       .returns(NotDeprecated.valid)
       .anyNumberOfTimes()

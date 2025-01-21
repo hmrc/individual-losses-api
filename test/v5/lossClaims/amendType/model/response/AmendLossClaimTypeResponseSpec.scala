@@ -17,13 +17,13 @@
 package v5.lossClaims.amendType.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.models.domain.Timestamp
 import shared.utils.UnitSpec
 import v5.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 
-class AmendLossClaimTypeResponseSpec extends UnitSpec with MockAppConfig {
+class AmendLossClaimTypeResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val nino: String    = "AA123456A"
   val claimId: String = "claimId"

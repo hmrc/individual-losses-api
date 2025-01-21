@@ -17,13 +17,13 @@
 package shared.hateoas
 
 import cats.Functor
-import shared.config.{AppConfig, MockAppConfig}
+import shared.config.{SharedAppConfig, MockSharedAppConfig}
 import shared.hateoas.Method.GET
 import shared.utils.UnitSpec
 
-class HateoasFactorySpec extends UnitSpec with MockAppConfig {
+class HateoasFactorySpec extends UnitSpec with MockSharedAppConfig {
 
-  private val hateoasFactory = new HateoasFactory(mockAppConfig)
+  private val hateoasFactory = new HateoasFactory(mockSharedAppConfig)
   private val response       = Response("X")
 
   private case class Response(foo: String)
@@ -37,17 +37,17 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   private case class Data2(id: String) extends HateoasData
 
   private class Test {
-    MockedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
+    MockedSharedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
   }
 
   "wrap" should {
 
     implicit object LinksFactory1 extends HateoasLinksFactory[Response, Data1] {
-      override def links(appConfig: AppConfig, data: Data1): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel1"))
+      override def links(appConfig: SharedAppConfig, data: Data1): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel1"))
     }
 
     implicit object LinksFactory2 extends HateoasLinksFactory[Response, Data2] {
-      override def links(appConfig: AppConfig, data: Data2): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel2"))
+      override def links(appConfig: SharedAppConfig, data: Data2): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel2"))
     }
 
     "use the response specific links" in new Test {
@@ -66,10 +66,10 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
     }
 
     implicit object LinksFactory extends HateoasListLinksFactory[ListResponse, Response, Data1] {
-      override def itemLinks(appConfig: AppConfig, data: Data1, item: Response): Seq[Link] =
+      override def itemLinks(appConfig: SharedAppConfig, data: Data1, item: Response): Seq[Link] =
         Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}/${item.foo}", GET, "item"))
 
-      override def links(appConfig: AppConfig, data: Data1): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel"))
+      override def links(appConfig: SharedAppConfig, data: Data1): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel"))
     }
 
     "work" in new Test {

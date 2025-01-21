@@ -47,7 +47,7 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
       body = amendLossClaimsOrder
     )
 
-    val connector: AmendLossClaimsConnector = new AmendLossClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: AmendLossClaimsConnector = new AmendLossClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 
   "amendLossClaimsOrder" when {

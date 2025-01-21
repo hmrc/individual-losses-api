@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, POST}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
@@ -43,7 +43,7 @@ import scala.concurrent.Future
 class ListLossClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockAppConfig
+    with MockSharedAppConfig
     with MockListLossClaimsValidatorFactory
     with MockListLossClaimsService
     with MockHateoasFactory {
@@ -183,13 +183,13 @@ class ListLossClaimsControllerSpec
     protected def callController(): Future[Result] =
       controller.list(validNino, taxYear, Some(selfEmployment), Some(businessId), Some(claimType))(fakeRequest)
 
-    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
+    MockedSharedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
   }
 

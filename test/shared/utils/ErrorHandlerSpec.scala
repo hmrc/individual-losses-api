@@ -93,11 +93,11 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.parse(
           """
-            |{
-            |  "code": "INVALID_REQUEST",
-            |  "message": "unmatched error"
-            |}
-            |""".stripMargin
+          |{
+          |  "code": "INVALID_REQUEST",
+          |  "message": "unmatched error"
+          |}
+          |""".stripMargin
         )
       }
     }

@@ -21,7 +21,7 @@ import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.routing.{Version, Versions}
 import shared.support.IntegrationBaseSpec
 
@@ -29,7 +29,7 @@ import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  private val config = app.injector.instanceOf[AppConfig]
+  private val config = app.injector.instanceOf[SharedAppConfig]
 
   private lazy val enabledVersions: Seq[Version] =
     (1 to 99).collect {

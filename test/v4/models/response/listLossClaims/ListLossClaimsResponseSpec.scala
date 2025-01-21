@@ -18,12 +18,12 @@ package v4.models.response.listLossClaims
 
 import shared.hateoas.Link
 import shared.hateoas.Method.{GET, POST, PUT}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
-class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
+class ListLossClaimsResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val nino: String = "AA123456A"
   val taxYear      = "2018-19"
@@ -149,8 +149,8 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
   "Links Factory" should {
 
     "expose the correct top level links for list" in {
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
-      ListLossClaimsResponse.LinksFactory.links(mockAppConfig, ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
+      MockedSharedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      ListLossClaimsResponse.LinksFactory.links(mockSharedAppConfig, ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
         Seq(
           Link(s"/individuals/losses/$nino/loss-claims", GET, "self"),
           Link(s"/individuals/losses/$nino/loss-claims", POST, "create-loss-claim"),
@@ -159,9 +159,9 @@ class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
     }
 
     "expose the correct item level links for list" in {
-      MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
       ListLossClaimsResponse.LinksFactory.itemLinks(
-        mockAppConfig,
+        mockSharedAppConfig,
         ListLossClaimsHateoasData(nino, taxYearClaimedFor = taxYear),
         ListLossClaimsItem(
           "businessId",

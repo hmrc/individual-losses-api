@@ -18,12 +18,12 @@ package v4.models.response.amendLossClaimsOrder
 
 import shared.hateoas.Link
 import shared.hateoas.Method.{GET, PUT}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
 import v4.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 
-class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
+class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val nino: String = "AA123456A"
   val taxYear      = "2018-19"
@@ -38,9 +38,9 @@ class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockAppConfig {
   "Links Factory" should {
     "expose the correct links" when {
       "called" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
         AmendLossClaimsOrderResponse.AmendOrderLinksFactory.links(
-          mockAppConfig,
+          mockSharedAppConfig,
           AmendLossClaimsOrderHateoasData(nino, taxYearClaimedFor = taxYear)) shouldBe
           Seq(
             Link(s"/individuals/losses/$nino/loss-claims/order/$taxYear", PUT, "amend-loss-claim-order"),

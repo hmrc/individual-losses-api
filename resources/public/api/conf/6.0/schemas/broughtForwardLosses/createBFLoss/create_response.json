@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create a Brought Forward Loss Response",
+  "description": "Create a Brought Forward Loss Response",
+  "type": "object",
+  "properties": {
+	"lossId": {
+	  "description": "The unique identifier of the loss.",
+	  "type": "string",
+	  "pattern": "^[A-Za-z0-9]{15}$",
+	  "example": "AAZZ1234567890a"
+	}
+  },
+  "required": [
+	"lossId"
+  ],
+  "additionalProperties": false
+}

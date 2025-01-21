@@ -19,7 +19,7 @@ package v5.lossClaims.delete
 import shared.connectors.DownstreamUri.{DesUri, HipUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.{AppConfig, ConfigFeatureSwitches}
+import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def deleteLossClaim(request: DeleteLossClaimRequestData)(implicit
       hc: HeaderCarrier,

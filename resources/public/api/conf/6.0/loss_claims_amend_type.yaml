@@ -1,0 +1,120 @@
+post:
+  summary: Amend a Loss Claim Type
+  description: |
+    This endpoint allows a developer to change the type of claim for an existing loss claim type.
+    A National Insurance Number and Claim ID must be provided.
+    
+    <strong>
+      Note: carry-sideways-fhl type of loss claims for income sources uk-property-fhl and foreign-property-fhl-eea will not be supported from tax year 2025-26 onwards.
+    </strong>
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                                               |
+    | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | N/A - DEFAULT                    | Simulates success response.                                                                                                                            |
+    | FP_FORWARD                       | Simulates a Foreign Property carried forward scenario.                                                                                                 |
+    | FP_SIDEWAYS                      | Simulates a Foreign Property carried sideways scenario.                                                                                                |
+    | UK_FORWARD                       | Simulates a UK Property (Non-FHL) carried forward scenario.                                                                                                          |
+    | UK_FORWARD_TO_SIDEWAYS           | Simulates a UK Property (Non-FHL) carried forward to sideways scenario.                                                                                              |
+    | UK_SIDEWAYS                      | Simulates a UK Property (Non-FHL) carried sideways scenario.                                                                                                         |
+    | UK_SIDEWAYS_FHL                  | Simulates a UK Property FHL carried sideways scenario.                                                                                                             |
+    | SE_FORWARD                       | Simulates a Self Employment carried forward scenario.                                                                                                  |
+    | SE_SIDEWAYS                      | Simulates a Self Employment carried sideways scenario.                                                                                                 |
+    | NO_CHANGE                        | Simulates the scenario where the relief type has not changed.                                                                                          |
+    | TYPE_OF_CLAIM_INVALID            | Simulates the scenario where a claim type is invalid for the income source.                                                                            |         
+    | CSFHL_CLAIM_NOT_SUPPORTED        | Simulates the scenario where carry-sideways-fhl claim submitted for income sources "FHL Property - EEA" and "UK Property FHL".                         |
+    | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                         |
+    | STATEFUL                         | Performs a stateful update.                                                                                                                            |
+    | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request:<br> • typeOfClaim<br> •  typeOfLoss<br> • lastModified |
+
+  tags:
+    - Loss Claims
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/lossClaims/amendLossClaimType/def1/request.json'
+        examples:
+          example-1:
+            description: Given any tax year
+            value:
+              $ref: './examples/lossClaims/amendLossClaimType/def1/request.json'
+
+  responses:
+    "200":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/lossClaims/amendLossClaimType/def1/response.json'
+          examples:
+            example-1:
+              description: Given any tax year
+              value:
+                $ref: './examples/lossClaims/amendLossClaimType/def1/response.json'
+
+
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_CLAIM_ID:
+              $ref: './common/errors.yaml#/components/examples/formatClaimId'
+            FORMAT_VALUE:
+              $ref: './common/errors.yaml#/components/examples/formatValue'
+            RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+            FORMAT_TYPE_OF_CLAIM:
+              $ref: './common/errors.yaml#/components/examples/formatTypeOfClaim'
+            RULE_TYPE_OF_CLAIM_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTypeOfClaimInvalid'
+            RULE_CSFHL_CLAIM_NOT_SUPPORTED:
+                $ref: './common/errors.yaml#/components/examples/ruleCsfhlClaimNotSupported'
+            RULE_NO_CHANGE:
+              $ref: './common/errors.yaml#/components/examples/ruleNoChangeLossClaim'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'

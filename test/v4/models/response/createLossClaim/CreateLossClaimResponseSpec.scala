@@ -18,12 +18,12 @@ package v4.models.response.createLossClaim
 
 import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, POST}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 import v4.models.response.createLossClaim.{CreateLossClaimHateoasData, CreateLossClaimResponse}
 
-class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
+class CreateLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val createClaimsResponse: CreateLossClaimResponse = CreateLossClaimResponse(claimId = "AAZZ1234567890a")
 
@@ -65,9 +65,9 @@ class CreateLossClaimResponseSpec extends UnitSpec with MockAppConfig {
     "return the correct hateoas links" when {
 
       "provided with a claim id of 'claimId' and nino of 'AA123456A'" in {
-        MockedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("individuals/losses").anyNumberOfTimes()
 
-        CreateLossClaimResponse.LinksFactory.links(mockAppConfig, CreateLossClaimHateoasData("AA123456A", "claimId")) shouldBe
+        CreateLossClaimResponse.LinksFactory.links(mockSharedAppConfig, CreateLossClaimHateoasData("AA123456A", "claimId")) shouldBe
           Seq(
             Link("/individuals/losses/AA123456A/loss-claims/claimId", GET, "self"),
             Link("/individuals/losses/AA123456A/loss-claims/claimId", DELETE, "delete-loss-claim"),

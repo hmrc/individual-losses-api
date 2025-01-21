@@ -16,19 +16,19 @@
 
 package shared.config.rewriters
 
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 
-class EndpointSummaryRewriterSpec extends UnitSpec with MockAppConfig {
+class EndpointSummaryRewriterSpec extends UnitSpec with MockSharedAppConfig {
 
-  val rewriter = new EndpointSummaryRewriter(mockAppConfig)
+  val rewriter = new EndpointSummaryRewriter(mockSharedAppConfig)
 
   "check and rewrite for the endpoint yaml file" when {
     val (check, rewrite) = rewriter.rewriteEndpointSummary.asTuple
 
     "check() is given employment_expenses_create_and_amend.yaml with the endpoint API docs disabled (assuming in production)" should {
       "indicate rewrite needed" in {
-        MockedAppConfig.endpointReleasedInProduction("1.0", "employment-expenses-create-and-amend") returns false
+        MockedSharedAppConfig.endpointReleasedInProduction("1.0", "employment-expenses-create-and-amend") returns false
         val result = check("1.0", "employment_expenses_create_and_amend.yaml")
         result shouldBe true
       }
@@ -36,7 +36,7 @@ class EndpointSummaryRewriterSpec extends UnitSpec with MockAppConfig {
 
     "check() is given any other combination" should {
       "indicate rewrite not needed" in {
-        MockedAppConfig.endpointReleasedInProduction("1.0", "employment-expenses-create-and-amend") returns true
+        MockedSharedAppConfig.endpointReleasedInProduction("1.0", "employment-expenses-create-and-amend") returns true
         val result = check("1.0", "employment_expenses_create_and_amend.yaml")
         result shouldBe false
       }

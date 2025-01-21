@@ -33,14 +33,14 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
   val lossAmount = 2345.67
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
-       |{
-       |    "incomeSourceId": "XBIS12345678910",
-       |    "lossType": "INCOME",
-       |    "broughtForwardLossAmount": $lossAmount,
-       |    "taxYear": "2022",
-       |    "lossId": "AAZZ1234567890A",
-       |    "submissionDate": "2022-07-13T12:13:48.763Z"
-       |}
+                                                      |{
+                                                      |    "incomeSourceId": "XBIS12345678910",
+                                                      |    "lossType": "INCOME",
+                                                      |    "broughtForwardLossAmount": $lossAmount,
+                                                      |    "taxYear": "2022",
+                                                      |    "lossId": "AAZZ1234567890A",
+                                                      |    "submissionDate": "2022-07-13T12:13:48.763Z"
+                                                      |}
       """.stripMargin)
 
   val requestJson: JsValue = Json.parse(s"""
@@ -69,13 +69,13 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
     val lossId = "AAZZ1234567890a"
 
     val responseJson: JsValue = Json.parse(s"""
-         |{
-         |    "businessId": "XBIS12345678910",
-         |    "typeOfLoss": "self-employment",
-         |    "lossAmount": 2345.67,
-         |    "taxYearBroughtForwardFrom": "2021-22",
-         |    "lastModified": "2022-07-13T12:13:48.763Z"
-         |}
+                                              |{
+                                              |    "businessId": "XBIS12345678910",
+                                              |    "typeOfLoss": "self-employment",
+                                              |    "lossAmount": 2345.67,
+                                              |    "taxYearBroughtForwardFrom": "2021-22",
+                                              |    "lastModified": "2022-07-13T12:13:48.763Z"
+                                              |}
       """.stripMargin)
 
     def url: String    = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
@@ -180,5 +180,4 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
-
 }
