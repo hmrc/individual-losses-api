@@ -18,7 +18,7 @@ package v6.lossClaim.delete.def1
 
 import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.ClaimIdFormatError
+import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
@@ -100,6 +100,7 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
+      serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", Status.BAD_REQUEST, RuleOutsideAmendmentWindow)
       serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
     }

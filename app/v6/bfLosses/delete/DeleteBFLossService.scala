@@ -17,7 +17,7 @@
 package v6.bfLosses.delete
 
 import cats.implicits._
-import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
+import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -38,6 +38,7 @@ class DeleteBFLossService @Inject() (connector: DeleteBFLossConnector) extends B
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
+    "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )

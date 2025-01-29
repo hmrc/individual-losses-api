@@ -16,7 +16,13 @@
 
 package v6.lossClaims.amendType
 
-import common.errors.{ClaimIdFormatError, RuleCSFHLClaimNotSupportedError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import common.errors.{
+  ClaimIdFormatError,
+  RuleCSFHLClaimNotSupportedError,
+  RuleClaimTypeNotChanged,
+  RuleOutsideAmendmentWindow,
+  RuleTypeOfClaimInvalid
+}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -92,6 +98,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         "CSFHL_CLAIM_NOT_SUPPORTED" -> RuleCSFHLClaimNotSupportedError,
         "NOT_FOUND"                 -> NotFoundError,
         "CONFLICT"                  -> RuleClaimTypeNotChanged,
+        "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
         "INVALID_CORRELATIONID"     -> InternalError,
         "SERVER_ERROR"              -> InternalError,
         "SERVICE_UNAVAILABLE"       -> InternalError,

@@ -48,6 +48,7 @@ class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsOrderConn
     "NO_FULL_LIST"              -> RuleLossClaimsMissing,
     "CLAIM_NOT_FOUND"           -> NotFoundError,
     "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+    "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )

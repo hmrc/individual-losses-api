@@ -17,7 +17,7 @@
 package v6.bfLosses.create
 
 import cats.implicits._
-import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -42,6 +42,7 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
     case "INCOME_SOURCE_NOT_FOUND"              => NotFoundError
     case "TAX_YEAR_NOT_ENDED"                   => RuleTaxYearNotEndedError
     case "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" => RuleBflNotSupportedForFhlProperties
+    case "OUTSIDE_AMENDMENT_WINDOW"             => RuleOutsideAmendmentWindow
     case "INVALID_CORRELATIONID"                => InternalError
     case "INVALID_PAYLOAD"                      => InternalError
     case "SERVER_ERROR"                         => InternalError

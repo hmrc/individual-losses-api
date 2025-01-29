@@ -16,7 +16,7 @@
 
 package v6.bfLosses.delete
 
-import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
+import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -75,6 +75,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
         "INVALID_LOSS_ID"           -> LossIdFormatError,
         "NOT_FOUND"                 -> NotFoundError,
         "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
+        "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
         "SERVER_ERROR"              -> InternalError,
         "SERVICE_UNAVAILABLE"       -> InternalError,
         "UNEXPECTED_ERROR"          -> InternalError

@@ -20,7 +20,7 @@ import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
+import common.errors.{LossIdFormatError, RuleLossAmountNotChanged, RuleOutsideAmendmentWindow}
 import v6.bfLosses.amend
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.amend.model.response.AmendBFLossResponse
@@ -41,6 +41,7 @@ class AmendBFLossService @Inject() (connector: amend.AmendBFLossConnector) exten
       "INVALID_LOSS_ID"           -> LossIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
       "CONFLICT"                  -> RuleLossAmountNotChanged,
+      "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
       "INVALID_CORRELATIONID"     -> InternalError,
       "INVALID_PAYLOAD"           -> InternalError,
       "SERVER_ERROR"              -> InternalError,

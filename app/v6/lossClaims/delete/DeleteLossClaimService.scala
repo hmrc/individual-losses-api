@@ -17,7 +17,7 @@
 package v6.lossClaims.delete
 
 import cats.implicits._
-import common.errors.ClaimIdFormatError
+import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -37,6 +37,7 @@ class DeleteLossClaimService @Inject() (connector: DeleteLossClaimConnector) ext
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
+    "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
   )

@@ -17,7 +17,7 @@
 package v6.bfLosses.delete.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
+import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
@@ -101,6 +101,7 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
       serviceErrorTest(BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
       serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
       serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }

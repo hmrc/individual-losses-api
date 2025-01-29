@@ -21,6 +21,7 @@ import common.errors.{
   RuleCSFHLClaimNotSupportedError,
   RuleDuplicateClaimSubmissionError,
   RuleNoAccountingPeriod,
+  RuleOutsideAmendmentWindow,
   RulePeriodNotEnded,
   RuleTypeOfClaimInvalid
 }
@@ -54,6 +55,7 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
     case "SERVICE_UNAVAILABLE"         => InternalError
     case "INVALID_CORRELATIONID"       => InternalError
     case "CSFHL_CLAIM_NOT_SUPPORTED"   => RuleCSFHLClaimNotSupportedError
+    case "OUTSIDE_AMENDMENT_WINDOW"    => RuleOutsideAmendmentWindow
   }
 
 }
