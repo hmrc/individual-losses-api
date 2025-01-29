@@ -21,6 +21,7 @@ post:
     | DUPLICATE_SUBMISSION                 | Simulates the scenario where a duplicated loss is found.                                                                                             |
     | STATEFUL                             | Performs a stateful create.                                                                                                                          |
     | BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES | Simulates the scenario where brought forward losses are submitted for income sources uk-property-fhl or foreign-property-fhl-eea for tax year 25/26. |
+    | OUTSIDE_AMENDMENT_WINDOW             | Simulates the scenario where request cannot be completed as it is outside the amendment window.                                                      |
 
   tags:
     - Brought Forward Losses
@@ -103,6 +104,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
             RULE_BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES:
               $ref: './common/errors.yaml#/components/examples/ruleBflNotSupportedForFhlProperties'
+            RULE_OUTSIDE_AMENDMENT_WINDOW:
+              $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
     "403":
       description: Forbidden

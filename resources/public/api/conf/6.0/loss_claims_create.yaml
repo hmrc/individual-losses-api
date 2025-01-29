@@ -18,6 +18,7 @@ post:
     | DUPLICATE                        | Simulates the scenario where a duplicated value is found.                             |
     | ACCOUNTING_PERIOD_NOT_ENDED      | Simulates the scenario where the loss claim has been made too soon.                   |
     | NO_ACCOUNTING_PERIOD             | Simulates the scenario where there is no accounting period for the year of the claim. |
+    | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
     | STATEFUL                         | Performs a stateful create.                                                           |
     | CSFHL_CLAIM_NOT_SUPPORTED        | Simulates the scenario where carry-sideways-fhl claim submitted for income sources "FHL Property - EEA" and "UK Property FHL".|
 
@@ -106,6 +107,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
             RULE_CSFHL_CLAIM_NOT_SUPPORTED:
               $ref: './common/errors.yaml#/components/examples/ruleCsfhlClaimNotSupported'
+            RULE_OUTSIDE_AMENDMENT_WINDOW:
+              $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
     "403":
       description: Forbidden

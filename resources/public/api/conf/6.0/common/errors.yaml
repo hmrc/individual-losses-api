@@ -192,6 +192,13 @@ components:
       value:
         code: RULE_BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES
         message: Brought forward losses for income sources uk-property-fhl and foreign-property-fhl-eea are not supported from tax year 25/26
+        
+    ruleOutsideAmendmentWindow:
+      description: |
+        The request cannot be completed as you are outside the amendment window.
+      value: 
+        code: RULE_OUTSIDE_AMENDMENT_WINDOW
+        message: You are outside the amendment window
 
     # 403
 
