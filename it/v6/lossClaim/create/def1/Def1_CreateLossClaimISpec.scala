@@ -124,6 +124,7 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
       createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
       createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
       createErrorTest(UNPROCESSABLE_ENTITY, "CSFHL_CLAIM_NOT_SUPPORTED", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
     }
 
     "return 404 NOT FOUND" when {

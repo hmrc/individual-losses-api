@@ -16,16 +16,17 @@ post:
     | N/A - DEFAULT                    | Simulates success response.                                                                                                                            |
     | FP_FORWARD                       | Simulates a Foreign Property carried forward scenario.                                                                                                 |
     | FP_SIDEWAYS                      | Simulates a Foreign Property carried sideways scenario.                                                                                                |
-    | UK_FORWARD                       | Simulates a UK Property (Non-FHL) carried forward scenario.                                                                                                          |
-    | UK_FORWARD_TO_SIDEWAYS           | Simulates a UK Property (Non-FHL) carried forward to sideways scenario.                                                                                              |
-    | UK_SIDEWAYS                      | Simulates a UK Property (Non-FHL) carried sideways scenario.                                                                                                         |
-    | UK_SIDEWAYS_FHL                  | Simulates a UK Property FHL carried sideways scenario.                                                                                                             |
+    | UK_FORWARD                       | Simulates a UK Property (Non-FHL) carried forward scenario.                                                                                            |
+    | UK_FORWARD_TO_SIDEWAYS           | Simulates a UK Property (Non-FHL) carried forward to sideways scenario.                                                                                |
+    | UK_SIDEWAYS                      | Simulates a UK Property (Non-FHL) carried sideways scenario.                                                                                           |
+    | UK_SIDEWAYS_FHL                  | Simulates a UK Property FHL carried sideways scenario.                                                                                                 |
     | SE_FORWARD                       | Simulates a Self Employment carried forward scenario.                                                                                                  |
     | SE_SIDEWAYS                      | Simulates a Self Employment carried sideways scenario.                                                                                                 |
     | NO_CHANGE                        | Simulates the scenario where the relief type has not changed.                                                                                          |
     | TYPE_OF_CLAIM_INVALID            | Simulates the scenario where a claim type is invalid for the income source.                                                                            |         
     | CSFHL_CLAIM_NOT_SUPPORTED        | Simulates the scenario where carry-sideways-fhl claim submitted for income sources "FHL Property - EEA" and "UK Property FHL".                         |
     | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                         |
+    | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.                                                        |
     | STATEFUL                         | Performs a stateful update.                                                                                                                            |
     | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request:<br> • typeOfClaim<br> •  typeOfLoss<br> • lastModified |
 
@@ -97,6 +98,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleNoChangeLossClaim'
             RULE_INCORRECT_GOV_TEST_SCENARIO:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+            RULE_OUTSIDE_AMENDMENT_WINDOW:
+              $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
 
     "403":

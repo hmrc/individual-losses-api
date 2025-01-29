@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendOrder
 
-import _root_.common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
+import _root_.common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleOutsideAmendmentWindow, RuleSequenceOrderBroken}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -85,6 +85,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         ("NO_FULL_LIST", RuleLossClaimsMissing),
         ("CLAIM_NOT_FOUND", NotFoundError),
         ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+        ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindow),
         ("INVALID_PAYLOAD", InternalError),
         ("SERVER_ERROR", InternalError),
         ("SERVICE_UNAVAILABLE", InternalError)

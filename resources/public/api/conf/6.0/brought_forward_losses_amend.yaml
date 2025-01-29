@@ -25,6 +25,7 @@ post:
     | UK_PROPERTY                       | Simulates the scenario where type of loss is UK Property (Non-FHL).                                                                 |
     | NOT_FOUND                         | Simulates the scenario where no data is found.                                                                                      |
     | NO_CHANGE                         | Simulates the scenario where the brought forward loss amount has not changed.                                                       |
+    | OUTSIDE_AMENDMENT_WINDOW          | Simulates the scenario where request cannot be completed as it is outside the amendment window.                                     |
     | DYNAMIC                           | The following response values will change to correspond to the values submitted in the request:<br> • lossAmount<br> • lastModified |
     | STATEFUL                          | Performs a stateful update.                                                                                                         |
 
@@ -93,6 +94,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleNoChangeBroughtForward'
             RULE_INCORRECT_GOV_TEST_SCENARIO:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+            RULE_OUTSIDE_AMENDMENT_WINDOW:
+              $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
     "403":
       description: Forbidden

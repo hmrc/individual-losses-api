@@ -145,6 +145,7 @@ class Def1_AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
         (CONFLICT, "SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
         (CONFLICT, "NO_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
         (NOT_FOUND, "CLAIM_NOT_FOUND", NOT_FOUND, NotFoundError),
+        (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)

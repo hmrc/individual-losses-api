@@ -10,6 +10,7 @@ description: |
   | -------------------------------- | ---------------------------------------------- |
   | N/A - DEFAULT                    | Simulate success scenario                      |
   | NOT_FOUND                        | Simulates the scenario where no data is found. |
+  | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
   | STATEFUL                         | Performs a stateful delete.                    |
 
 
@@ -49,6 +50,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/formatClaimId'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          RULE_OUTSIDE_AMENDMENT_WINDOW:
+            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
   "403":
     description: Forbidden

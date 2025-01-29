@@ -16,7 +16,7 @@
 
 package v6.bfLosses.create
 
-import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -79,6 +79,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "TAX_YEAR_NOT_SUPPORTED"               -> RuleTaxYearNotSupportedError,
         "TAX_YEAR_NOT_ENDED"                   -> RuleTaxYearNotEndedError,
         "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" -> RuleBflNotSupportedForFhlProperties,
+        "OUTSIDE_AMENDMENT_WINDOW"             -> RuleOutsideAmendmentWindow,
         "INCOME_SOURCE_NOT_FOUND"              -> NotFoundError,
         "INVALID_CORRELATIONID"                -> InternalError,
         "INVALID_PAYLOAD"                      -> InternalError,

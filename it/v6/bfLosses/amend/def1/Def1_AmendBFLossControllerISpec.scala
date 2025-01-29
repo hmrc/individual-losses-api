@@ -17,7 +17,7 @@
 package v6.bfLosses.amend.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
+import common.errors.{LossIdFormatError, RuleLossAmountNotChanged, RuleOutsideAmendmentWindow}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status._
@@ -87,7 +87,7 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(url)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -170,6 +170,7 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
           (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
           (CONFLICT, "CONFLICT", BAD_REQUEST, RuleLossAmountNotChanged),
+          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
@@ -180,4 +181,5 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

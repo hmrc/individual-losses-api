@@ -11,6 +11,7 @@ description: |
   | N/A - DEFAULT                    | Simulates success response.                                                           |
   | LOSS_CLAIMS_MISSING              | Simulates the scenario where not all claims of the given type and year were included. |
   | NOT_FOUND                        | Simulates the scenario where one or more claims were not found.                       |
+  | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
   | STATEFUL                         | Performs a stateful update.                                                           |
 
 
@@ -79,6 +80,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          RULE_OUTSIDE_AMENDMENT_WINDOW:
+            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
   "403":
     description: Forbidden

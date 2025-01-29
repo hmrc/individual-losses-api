@@ -180,4 +180,5 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

@@ -16,7 +16,7 @@
 
 package v6.lossClaims.delete
 
-import common.errors.ClaimIdFormatError
+import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -80,6 +80,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
         "NOT_FOUND"                 -> NotFoundError,
+        "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
         "SERVER_ERROR"              -> InternalError,
         "SERVICE_UNAVAILABLE"       -> InternalError,
         "UNEXPECTED_ERROR"          -> InternalError

@@ -16,7 +16,13 @@
 
 package v6.lossClaims.create
 
-import common.errors.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
+import common.errors.{
+  RuleDuplicateClaimSubmissionError,
+  RuleNoAccountingPeriod,
+  RuleOutsideAmendmentWindow,
+  RulePeriodNotEnded,
+  RuleTypeOfClaimInvalid
+}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -96,6 +102,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
         "INCOME_SOURCE_NOT_FOUND"     -> NotFoundError,
         "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
         "NO_ACCOUNTING_PERIOD"        -> RuleNoAccountingPeriod,
+        "OUTSIDE_AMENDMENT_WINDOW"    -> RuleOutsideAmendmentWindow,
         "INVALID_PAYLOAD"             -> InternalError,
         "SERVER_ERROR"                -> InternalError,
         "SERVICE_UNAVAILABLE"         -> InternalError,

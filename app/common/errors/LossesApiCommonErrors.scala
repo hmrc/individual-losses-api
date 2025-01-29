@@ -57,3 +57,5 @@ object RuleBflNotSupportedForFhlProperties
       "RULE_BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES",
       "Brought forward losses for income sources uk-property-fhl and foreign-property-fhl-eea are not supported from tax year 25/26",
       BAD_REQUEST)
+
+object RuleOutsideAmendmentWindow extends MtdError("RULE_OUTSIDE_AMENDMENT_WINDOW", "You are outside the amendment window", BAD_REQUEST)

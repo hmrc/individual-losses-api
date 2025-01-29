@@ -16,13 +16,12 @@
 
 package v6.bfLosses.amend
 
-import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
+import common.errors.{LossIdFormatError, RuleLossAmountNotChanged, RuleOutsideAmendmentWindow}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.bfLosses.amend
-import v6.bfLosses.amend.AmendBFLossService
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 import v6.bfLosses.common.domain.{LossId, TypeOfLoss}
@@ -82,6 +81,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "NOT_FOUND"                 -> NotFoundError,
       "INVALID_PAYLOAD"           -> InternalError,
       "CONFLICT"                  -> RuleLossAmountNotChanged,
+      "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
       "INVALID_CORRELATIONID"     -> InternalError,
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError,
