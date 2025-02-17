@@ -1,7 +1,7 @@
 post:
   summary: Amend a Brought Forward Loss Amount
   description: |
-    This endpoint allows the developer to update an existing brought forward loss amount.
+    This endpoint enables you to update an existing brought forward loss amount.
     A National Insurance number and Loss ID must be provided.
     
     <strong>

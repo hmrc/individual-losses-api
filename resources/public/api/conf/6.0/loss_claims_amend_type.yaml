@@ -1,7 +1,7 @@
 post:
   summary: Amend a Loss Claim Type
   description: |
-    This endpoint allows a developer to change the type of claim for an existing loss claim type.
+    This endpoint enables you to change the type of claim for an existing loss claim type.
     A National Insurance Number and Claim ID must be provided.
     
     <strong>
