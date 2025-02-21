@@ -76,6 +76,9 @@ post:
 
     "400":
       description: Bad request
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
       content:
         application/json:
           schema:
@@ -108,6 +111,9 @@ post:
 
     "403":
       description: Forbidden
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
       content:
         application/json:
           schema:
@@ -118,6 +124,9 @@ post:
 
     "404":
       description: Not Found
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
       content:
         application/json:
           schema:
