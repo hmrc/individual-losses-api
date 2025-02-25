@@ -20,6 +20,7 @@ import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.SharedAppConfig
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v6.lossClaims.create.model.request.CreateLossClaimRequestData
 import v6.lossClaims.create.model.response.CreateLossClaimResponse
@@ -38,8 +39,10 @@ class CreateLossClaimConnector @Inject() (val http: HttpClient, val appConfig: S
     import request._
     import schema._
 
+    val taxYear: TaxYear = TaxYear.fromMtd(request.taxYearClaimedFor)
+
     val downstreamUri: DownstreamUri[DownstreamResp] =
-      IfsUri(s"income-tax/claims-for-relief/$nino")
+      IfsUri(s"income-tax/claims-for-relief/$nino/${taxYear.asTysDownstream}")
 
     post(lossClaim, downstreamUri)
 

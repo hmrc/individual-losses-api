@@ -20,7 +20,9 @@ import play.api.libs.json._
 import shared.utils.JsonWritesUtil
 import v6.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 
-trait CreateLossClaimRequestBody
+trait CreateLossClaimRequestBody {
+  def taxYearClaimedFor: String
+}
 
 object CreateLossClaimRequestBody extends JsonWritesUtil {
 

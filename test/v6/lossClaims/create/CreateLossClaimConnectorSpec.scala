@@ -45,7 +45,7 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, Def1_CreateLossClaimResponse(claimId)))
 
-        willPost(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim)
+        willPost(s"$baseUrl/income-tax/claims-for-relief/$nino/19-20", lossClaim)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[CreateLossClaimResponse] = await(
