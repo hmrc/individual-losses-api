@@ -39,6 +39,7 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
     case "INVALID_TAXABLE_ENTITY_ID"            => NinoFormatError
     case "DUPLICATE_SUBMISSION"                 => RuleDuplicateSubmissionError
     case "TAX_YEAR_NOT_SUPPORTED"               => RuleTaxYearNotSupportedError
+    case "INVALID_TAX_YEAR"                     => TaxYearFormatError
     case "INCOME_SOURCE_NOT_FOUND"              => NotFoundError
     case "TAX_YEAR_NOT_ENDED"                   => RuleTaxYearNotEndedError
     case "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" => RuleBflNotSupportedForFhlProperties

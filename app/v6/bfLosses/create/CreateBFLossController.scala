@@ -42,11 +42,11 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateBFLossController", endpointName = "Create a Brought Forward Loss")
 
-  def create(nino: String): Action[JsValue] =
+  def create(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, request.body)
+      val validator = validatorFactory.validator(nino, taxYear, request.body)
 
       val requestHandler =
         RequestHandler
@@ -58,7 +58,7 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
             auditType = "CreateBroughtForwardLoss",
             transactionName = "create-brought-forward-loss",
             apiVersion = Version(request),
-            params = Map("nino" -> nino),
+            params = Map("nino" -> nino, "taxYear" -> taxYear),
             requestBody = Some(request.body),
             includeResponse = true
           ))
