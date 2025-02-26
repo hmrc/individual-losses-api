@@ -31,11 +31,15 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino   = "AA123456A"
-    val lossId = "AAZZ1234567890a"
+    val nino    = "AA123456A"
+    val lossId  = "AAZZ1234567890a"
+    val taxYear = "2019-20"
 
-    def uri: String    = s"/$nino/brought-forward-losses/$lossId"
-    def hipUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/$lossId"
+    private val downstreamTaxYear = "19-20"
+
+    private def uri: String = s"/$nino/brought-forward-losses/$lossId/tax-year/$taxYear"
+
+    def hipUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/$downstreamTaxYear/$lossId"
 
     def errorBody(code: String): String =
       s"""
@@ -98,6 +102,7 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 
       serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
       serviceErrorTest(BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError)
       serviceErrorTest(BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
       serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
@@ -107,11 +112,16 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
     }
 
     "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String, requestLossId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String,
+                              requestLossId: String,
+                              requestTaxYear: String,
+                              expectedStatus: Int,
+                              expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String   = requestNino
-          override val lossId: String = requestLossId
+          override val nino: String    = requestNino
+          override val lossId: String  = requestLossId
+          override val taxYear: String = requestTaxYear
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -126,8 +136,11 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", "AAZZ1234567890a", BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADLOSSID", BAD_REQUEST, LossIdFormatError)
+      validationErrorTest("BADNINO", "AAZZ1234567890a", "2019-20", BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BADLOSSID", "2019-20", BAD_REQUEST, LossIdFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "BADTAXYEAR", BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "2020-22", BAD_REQUEST, RuleTaxYearRangeInvalidError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError)
     }
 
   }

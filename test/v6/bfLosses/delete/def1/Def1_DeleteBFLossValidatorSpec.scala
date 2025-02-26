@@ -18,7 +18,7 @@ package v6.bfLosses.delete.def1
 
 import common.errors.LossIdFormatError
 import shared.controllers.validators.Validator
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
 import v6.bfLosses.common.domain.LossId
@@ -33,45 +33,62 @@ class Def1_DeleteBFLossValidatorSpec extends UnitSpec {
   private val invalidNino   = "BAD_NINO"
   private val validLossId   = "AAZZ1234567890a"
   private val invalidLossId = "not-a-loss-id"
+  private val validTaxYear  = "2019-20"
 
-  private val parsedNino   = Nino(validNino)
-  private val parsedLossId = LossId(validLossId)
+  private val parsedNino    = Nino(validNino)
+  private val parsedLossId  = LossId(validLossId)
+  private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
 
-  private def validator(nino: String, lossId: String): Validator[DeleteBFLossRequestData] = new Def1_DeleteBFLossValidator(nino, lossId)
+  private def validator(nino: String, lossId: String, taxYear: String): Validator[DeleteBFLossRequestData] =
+    new Def1_DeleteBFLossValidator(nino, lossId, taxYear)
 
   "running a validation" should {
     "return the parsed request data" when {
-      "given a valid request" in {
-        val result = validator(validNino, validLossId).validateAndWrapResult()
+      "passed a valid request" in {
+        val result = validator(validNino, validLossId, validTaxYear).validateAndWrapResult()
         result shouldBe Right(
-          Def1_DeleteBFLossRequestData(parsedNino, parsedLossId)
+          Def1_DeleteBFLossRequestData(parsedNino, parsedLossId, parsedTaxYear)
         )
       }
     }
 
-    "return NinoFormatError error" when {
-      "given an invalid nino" in {
-        val result = validator(invalidNino, validLossId).validateAndWrapResult()
+    "return a single error" when {
+      "passed an invalid nino" in {
+        val result = validator(invalidNino, validLossId, validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
         )
       }
-    }
-
-    "return LossIdFormatError error" when {
-      "given an invalid loss ID" in {
-        val result = validator(validNino, invalidLossId).validateAndWrapResult()
+      "passed an invalid loss ID" in {
+        val result = validator(validNino, invalidLossId, validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, LossIdFormatError)
         )
       }
+      "passed an incorrectly formatted taxYear" in {
+        val result = validator(validNino, validLossId, "202324").validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
+
+      }
+
+      "passed a taxYear before the minimum supported" in {
+        validator(validNino, validLossId, "2017-18").validateAndWrapResult() shouldBe
+          Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
+      "passed a taxYear spanning an invalid tax year range" in {
+        val result = validator(validNino, validLossId, "2020-22").validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
+      }
     }
 
     "return multiple errors" when {
-      "given a request with multiple errors" in {
-        val result = validator(invalidNino, invalidLossId).validateAndWrapResult()
+      "passed a request with multiple errors" in {
+        val result = validator(invalidNino, invalidLossId, "invalidTaxYear").validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(LossIdFormatError, NinoFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(LossIdFormatError, NinoFormatError, TaxYearFormatError)))
         )
       }
     }

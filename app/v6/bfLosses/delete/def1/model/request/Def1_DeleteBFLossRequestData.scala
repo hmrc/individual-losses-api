@@ -16,11 +16,11 @@
 
 package v6.bfLosses.delete.def1.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.DeleteBFLossSchema
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
 
-case class Def1_DeleteBFLossRequestData(nino: Nino, lossId: LossId) extends DeleteBFLossRequestData {
+case class Def1_DeleteBFLossRequestData(nino: Nino, lossId: LossId, taxYear: TaxYear) extends DeleteBFLossRequestData {
   override val schema: DeleteBFLossSchema = DeleteBFLossSchema.Def1
 }

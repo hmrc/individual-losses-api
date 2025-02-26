@@ -36,6 +36,7 @@ class DeleteBFLossService @Inject() (connector: DeleteBFLossConnector) extends B
   private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_LOSS_ID"           -> LossIdFormatError,
+    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
     "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
