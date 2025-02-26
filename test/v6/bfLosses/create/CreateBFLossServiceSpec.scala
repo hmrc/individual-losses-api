@@ -17,7 +17,7 @@
 package v6.bfLosses.create
 
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -30,8 +30,9 @@ import scala.concurrent.Future
 
 class CreateBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  val nino: String    = "AA123456A"
+  val taxYear: String = "2026"
+  val lossId: String  = "AAZZ1234567890a"
 
   val bfLoss: Def1_CreateBFLossRequestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
@@ -40,7 +41,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   }
 
   "create BFLoss" when {
-    lazy val request = Def1_CreateBFLossRequestData(Nino(nino), bfLoss)
+    lazy val request = Def1_CreateBFLossRequestData(Nino(nino), TaxYear(taxYear), bfLoss)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {
@@ -80,6 +81,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "TAX_YEAR_NOT_ENDED"                   -> RuleTaxYearNotEndedError,
         "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" -> RuleBflNotSupportedForFhlProperties,
         "OUTSIDE_AMENDMENT_WINDOW"             -> RuleOutsideAmendmentWindow,
+        "INVALID_TAX_YEAR"                     -> TaxYearFormatError,
         "INCOME_SOURCE_NOT_FOUND"              -> NotFoundError,
         "INVALID_CORRELATIONID"                -> InternalError,
         "INVALID_PAYLOAD"                      -> InternalError,

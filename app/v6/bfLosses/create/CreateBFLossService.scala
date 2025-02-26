@@ -43,6 +43,7 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
     case "TAX_YEAR_NOT_ENDED"                   => RuleTaxYearNotEndedError
     case "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" => RuleBflNotSupportedForFhlProperties
     case "OUTSIDE_AMENDMENT_WINDOW"             => RuleOutsideAmendmentWindow
+    case "INVALID_TAX_YEAR"                     => TaxYearFormatError
     case "INVALID_CORRELATIONID"                => InternalError
     case "INVALID_PAYLOAD"                      => InternalError
     case "SERVER_ERROR"                         => InternalError

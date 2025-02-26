@@ -17,7 +17,7 @@
 package v6.bfLosses.create
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v6.bfLosses.common.domain.TypeOfLoss
 import v6.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
@@ -28,11 +28,13 @@ import scala.concurrent.Future
 
 class CreateBFLossConnectorSpec extends ConnectorSpec {
 
-  val nino   = "AA123456A"
-  val lossId = "AAZZ1234567890a"
+  val nino                   = "AA123456A"
+  val taxYear                = "2020"
+  val parsedTaxYear: TaxYear = TaxYear(taxYear)
+  val lossId                 = "AAZZ1234567890a"
 
   private val requestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
-  private val request     = Def1_CreateBFLossRequestData(nino = Nino(nino), requestBody)
+  private val request     = Def1_CreateBFLossRequestData(nino = Nino(nino), parsedTaxYear, requestBody)
 
   "createBFLosses" should {
     "return the expected response for a non-TYS request" when {
@@ -41,7 +43,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
         val expected: Right[Nothing, ResponseWrapper[CreateBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
 
         willPost(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/${parsedTaxYear.asTysDownstream}",
           body = requestBody
         ).returning(Future.successful(expected))
 
