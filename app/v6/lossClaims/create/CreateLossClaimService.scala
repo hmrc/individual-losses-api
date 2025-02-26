@@ -17,14 +17,7 @@
 package v6.lossClaims.create
 
 import cats.implicits._
-import common.errors.{
-  RuleCSFHLClaimNotSupportedError,
-  RuleDuplicateClaimSubmissionError,
-  RuleNoAccountingPeriod,
-  RuleOutsideAmendmentWindow,
-  RulePeriodNotEnded,
-  RuleTypeOfClaimInvalid
-}
+import common.errors._
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -44,6 +37,7 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
 
   private val errorMap: PartialFunction[String, MtdError] = {
     case "INVALID_TAXABLE_ENTITY_ID"   => NinoFormatError
+    case "INVALID_TAX_YEAR"            => TaxYearClaimedForFormatError
     case "DUPLICATE"                   => RuleDuplicateClaimSubmissionError
     case "INCOME_SOURCE_NOT_FOUND"     => NotFoundError
     case "ACCOUNTING_PERIOD_NOT_ENDED" => RulePeriodNotEnded

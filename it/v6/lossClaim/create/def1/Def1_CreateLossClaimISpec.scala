@@ -42,11 +42,11 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
 
     val nino = "AA123456A"
 
-    val requestJson: JsValue = Json.parse("""
+    val requestJson: JsValue = Json.parse(s"""
         |{
         |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
-        |    "taxYearClaimedFor": "2019-20",
+        |    "taxYearClaimedFor": "$taxYear",
         |    "typeOfClaim": "carry-forward"
         |}
       """.stripMargin)
@@ -90,7 +90,7 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
 
     trait CreateLossClaimControllerTest extends Test {
       def uri: String    = s"/$nino/loss-claims"
-      def ifsUrl: String = s"/income-tax/claims-for-relief/$nino"
+      def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/19-20"
     }
 
     "return a 201 status code" when {
@@ -120,6 +120,10 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
     }
 
     "return 400 BAD_REQUEST" when {
+      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      createErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       createErrorTest(CONFLICT, "DUPLICATE", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
       createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
       createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
@@ -141,10 +145,6 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
     }
 
     "return 400 (Bad Request)" when {
-
-      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"), BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest(
         "AA123456A",

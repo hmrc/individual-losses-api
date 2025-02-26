@@ -16,13 +16,7 @@
 
 package v6.lossClaims.create
 
-import common.errors.{
-  RuleDuplicateClaimSubmissionError,
-  RuleNoAccountingPeriod,
-  RuleOutsideAmendmentWindow,
-  RulePeriodNotEnded,
-  RuleTypeOfClaimInvalid
-}
+import common.errors._
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -96,6 +90,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
       val errors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
+        "INVALID_TAX_YEAR"            -> TaxYearClaimedForFormatError,
         "DUPLICATE"                   -> RuleDuplicateClaimSubmissionError,
         "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
         "INVALID_CLAIM_TYPE"          -> RuleTypeOfClaimInvalid,

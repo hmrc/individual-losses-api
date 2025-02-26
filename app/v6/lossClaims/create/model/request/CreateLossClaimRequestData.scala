@@ -22,5 +22,6 @@ import v6.lossClaims.create.CreateLossClaimSchema
 trait CreateLossClaimRequestData {
   def nino: Nino
   def lossClaim: CreateLossClaimRequestBody
+  def taxYearClaimedFor: String = lossClaim.taxYearClaimedFor
   val schema: CreateLossClaimSchema
 }
