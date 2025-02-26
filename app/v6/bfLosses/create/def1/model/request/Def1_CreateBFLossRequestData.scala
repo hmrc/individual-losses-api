@@ -16,10 +16,11 @@
 
 package v6.bfLosses.create.def1.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.bfLosses.create.CreateBFLossSchema
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
 
-case class Def1_CreateBFLossRequestData(nino: Nino, broughtForwardLoss: Def1_CreateBFLossRequestBody) extends CreateBFLossRequestData {
+case class Def1_CreateBFLossRequestData(nino: Nino, taxYear: TaxYear, broughtForwardLoss: Def1_CreateBFLossRequestBody)
+    extends CreateBFLossRequestData {
   val schema: CreateBFLossSchema = CreateBFLossSchema.Def1
 }

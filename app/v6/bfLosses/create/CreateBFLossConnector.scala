@@ -38,7 +38,7 @@ class CreateBFLossConnector @Inject() (val http: HttpClient, val appConfig: Shar
     import request._
     import schema._
 
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino")
+    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}")
 
     post(broughtForwardLoss, downstreamUri)
   }
