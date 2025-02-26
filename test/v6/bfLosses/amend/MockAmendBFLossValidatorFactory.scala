@@ -34,8 +34,8 @@ trait MockAmendBFLossValidatorFactory extends MockFactory {
 
     def expectValidator(): CallHandler[Validator[AmendBFLossRequestData]] = {
       (mockAmendBFLossValidatorFactory
-        .validator(_: String, _: String, _: JsValue))
-        .expects(*, *, *)
+        .validator(_: String, _: String, _: String, _: JsValue))
+        .expects(*, *, *, *)
     }
 
   }

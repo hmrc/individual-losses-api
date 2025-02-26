@@ -18,32 +18,40 @@ package v6.bfLosses.amend.def1
 
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import cats.implicits.catsSyntaxTuple3Semigroupal
+import cats.implicits.catsSyntaxTuple4Semigroupal
 import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern}
+import shared.controllers.validators.resolvers.{
+  ResolveNino,
+  ResolveNonEmptyJsonObject,
+  ResolveParsedNumber,
+  ResolveStringPattern,
+  ResolveTaxYearMinimum
+}
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.common.domain.LossId
-
+import v6.bfLosses.common.minimumTaxYear
 import javax.inject.Singleton
 
 @Singleton
-class Def1_AmendBFLossValidator(nino: String, lossId: String, body: JsValue) extends Validator[AmendBFLossRequestData] {
+class Def1_AmendBFLossValidator(nino: String, lossId: String, taxYear: String, body: JsValue) extends Validator[AmendBFLossRequestData] {
+  private val resolveLossId  = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, LossIdFormatError)
+  private val resolveJson    = new ResolveNonEmptyJsonObject[Def1_AmendBFLossRequestBody]()
+  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYear)
 
-  private val resolveLossId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, LossIdFormatError)
-  private val resolveJson   = new ResolveNonEmptyJsonObject[Def1_AmendBFLossRequestBody]()
-
-  def validate: Validated[Seq[MtdError], Def1_AmendBFLossRequestData] =
+  def validate: Validated[Seq[MtdError], Def1_AmendBFLossRequestData] = {
     validateJsonFields
       .andThen(_ =>
         (
           ResolveNino(nino),
           resolveLossId(lossId).map(LossId),
+          resolveTaxYear(taxYear),
           resolveJson(body)
         ).mapN(Def1_AmendBFLossRequestData))
+  }
 
   private def validateJsonFields: Validated[Seq[MtdError], Unit] = {
     val jsPath = body \ "lossAmount"

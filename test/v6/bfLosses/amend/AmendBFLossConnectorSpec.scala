@@ -17,7 +17,7 @@
 package v6.bfLosses.amend
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, Timestamp}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.outcomes.ResponseWrapper
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
@@ -28,11 +28,15 @@ import scala.concurrent.Future
 
 class AmendBFLossConnectorSpec extends ConnectorSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  val nino: String                    = "AA123456A"
+  val lossId: String                  = "AAZZ1234567890a"
+  val taxYear: String                 = "2020"
+  val taxYearDownstreamFormat: String = "19-20"
 
   val requestBody: Def1_AmendBFLossRequestBody = Def1_AmendBFLossRequestBody(500.13)
-  val request: Def1_AmendBFLossRequestData     = Def1_AmendBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId), requestBody)
+
+  val request: Def1_AmendBFLossRequestData =
+    Def1_AmendBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId), taxYear = TaxYear(taxYear), requestBody)
 
   "amendBFLosses" should {
     "return the expected response for a non-TYS request" when {
@@ -47,7 +51,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         val expected: Right[Nothing, ResponseWrapper[AmendBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
 
         willPut(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$taxYearDownstreamFormat/$lossId",
           body = requestBody
         ).returning(Future.successful(expected))
 

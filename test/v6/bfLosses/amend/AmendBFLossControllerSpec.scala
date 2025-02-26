@@ -25,7 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.Timestamp
+import shared.models.domain.{TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
@@ -43,20 +43,22 @@ class AmendBFLossControllerSpec
     with MockAmendBFLossValidatorFactory
     with MockAmendBFLossService {
 
-  private val lossId       = "AAZZ1234567890a"
-  private val parsedLossId = LossId(lossId)
-  private val lossAmount   = BigDecimal(2345.67)
-  private val amendBFLoss  = Def1_AmendBFLossRequestBody(lossAmount)
+  private val lossId        = "AAZZ1234567890a"
+  private val parsedLossId  = LossId(lossId)
+  private val lossAmount    = BigDecimal(2345.67)
+  private val taxYear       = "2020"
+  private val parsedTaxYear = TaxYear(taxYear)
+  private val amendBFLoss   = Def1_AmendBFLossRequestBody(lossAmount)
 
   private val amendBFLossResponse = Def1_AmendBFLossResponse(
     businessId = "XBIS12345678910",
     typeOfLoss = TypeOfLoss.`self-employment`,
     lossAmount = lossAmount,
-    taxYearBroughtForwardFrom = "2021-22",
+    taxYearBroughtForwardFrom = "2019-20",
     lastModified = Timestamp("2022-07-13T12:13:48.763Z")
   )
 
-  private val requestData = Def1_AmendBFLossRequestData(parsedNino, parsedLossId, amendBroughtForwardLoss = amendBFLoss)
+  private val requestData = Def1_AmendBFLossRequestData(parsedNino, parsedLossId, parsedTaxYear, amendBroughtForwardLoss = amendBFLoss)
 
   private val requestBody: JsValue = Json.parse(
     s"""
@@ -72,7 +74,7 @@ class AmendBFLossControllerSpec
        |    "businessId": "XBIS12345678910",
        |    "typeOfLoss": "self-employment",
        |    "lossAmount": $lossAmount,
-       |    "taxYearBroughtForwardFrom": "2021-22",
+       |    "taxYearBroughtForwardFrom": "2019-20",
        |    "lastModified": "2022-07-13T12:13:48.763Z"
        |}
     """.stripMargin
@@ -84,7 +86,7 @@ class AmendBFLossControllerSpec
         willUseValidator(returningSuccess(requestData))
 
         MockAmendBFLossService
-          .amend(Def1_AmendBFLossRequestData(parsedNino, LossId(lossId), amendBFLoss))
+          .amend(Def1_AmendBFLossRequestData(parsedNino, LossId(lossId), parsedTaxYear, amendBFLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, amendBFLossResponse))))
 
         runOkTestWithAudit(
@@ -106,7 +108,7 @@ class AmendBFLossControllerSpec
         willUseValidator(returningSuccess(requestData))
 
         MockAmendBFLossService
-          .amend(Def1_AmendBFLossRequestData(parsedNino, LossId(lossId), amendBFLoss))
+          .amend(Def1_AmendBFLossRequestData(parsedNino, LossId(lossId), parsedTaxYear, amendBFLoss))
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleLossAmountNotChanged))))
 
         runErrorTestWithAudit(RuleLossAmountNotChanged, maybeAuditRequestBody = Some(requestBody))
@@ -126,7 +128,7 @@ class AmendBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.amend(validNino, lossId)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.amend(validNino, lossId, taxYear)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -136,7 +138,7 @@ class AmendBFLossControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = Version9.name,
-          params = Map("nino" -> validNino, "lossId" -> lossId),
+          params = Map("nino" -> validNino, "lossId" -> lossId, "taxYear" -> taxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
