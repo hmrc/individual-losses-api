@@ -16,11 +16,12 @@
 
 package v6.bfLosses.delete.def1
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.ResolveNino
-import shared.models.errors.MtdError
 import cats.data.Validated
-import cats.implicits.catsSyntaxTuple2Semigroupal
+import cats.implicits.catsSyntaxTuple3Semigroupal
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
+import shared.models.errors.MtdError
+import v6.bfLosses.common.minimumTaxYear
 import v6.bfLosses.common.resolvers.ResolveBFLossId
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
@@ -28,12 +29,15 @@ import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
 import javax.inject.Singleton
 
 @Singleton
-class Def1_DeleteBFLossValidator(nino: String, body: String) extends Validator[DeleteBFLossRequestData] {
+class Def1_DeleteBFLossValidator(nino: String, body: String, taxYear: String) extends Validator[DeleteBFLossRequestData] {
+
+  private val resolveTaxYear: ResolveTaxYearMinimum = ResolveTaxYearMinimum(minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], DeleteBFLossRequestData] =
     (
       ResolveNino(nino),
-      ResolveBFLossId(body)
+      ResolveBFLossId(body),
+      resolveTaxYear(taxYear)
     ).mapN(Def1_DeleteBFLossRequestData)
 
 }

@@ -16,12 +16,13 @@
 
 package v6.bfLosses.delete.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.DeleteBFLossSchema
 
 trait DeleteBFLossRequestData {
   def nino: Nino
   def lossId: LossId
+  def taxYear: TaxYear
   val schema: DeleteBFLossSchema
 }

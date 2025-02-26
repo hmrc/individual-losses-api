@@ -17,7 +17,7 @@
 package v6.bfLosses.delete
 
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -29,14 +29,15 @@ import scala.concurrent.Future
 
 class DeleteBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  private val nino: String    = "AA123456A"
+  private val lossId: String  = "AAZZ1234567890a"
+  private val taxYear: String = "2019-20"
 
   trait Test extends delete.MockDeleteBFLossConnector {
     lazy val service = new DeleteBFLossService(connector)
   }
 
-  lazy val request: Def1_DeleteBFLossRequestData = Def1_DeleteBFLossRequestData(Nino(nino), LossId(lossId))
+  lazy val request: Def1_DeleteBFLossRequestData = Def1_DeleteBFLossRequestData(Nino(nino), LossId(lossId), TaxYear.fromMtd(taxYear))
 
   "Delete BF Loss" should {
     "return a Right" when {
@@ -73,6 +74,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
       val errors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_LOSS_ID"           -> LossIdFormatError,
+        "INVALID_TAX_YEAR"          -> TaxYearFormatError,
         "NOT_FOUND"                 -> NotFoundError,
         "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
         "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,

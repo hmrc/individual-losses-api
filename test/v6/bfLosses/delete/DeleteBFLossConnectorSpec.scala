@@ -18,7 +18,7 @@ package v6.bfLosses.delete
 
 import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
@@ -28,10 +28,11 @@ import scala.concurrent.Future
 
 class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
-  val nino: String   = "AA123456A"
-  val lossId: String = "AAZZ1234567890a"
+  private val nino: String    = "AA123456A"
+  private val lossId: String  = "AAZZ1234567890a"
+  private val taxYear: String = "2019-20"
 
-  val request: DeleteBFLossRequestData = Def1_DeleteBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
+  val request: DeleteBFLossRequestData = Def1_DeleteBFLossRequestData(Nino(nino), LossId(lossId), TaxYear.fromMtd(taxYear))
 
   "deleteBFLosses" when {
     "given a non-TYS request" when {
@@ -54,7 +55,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/$lossId")
+          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/19-20/$lossId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))

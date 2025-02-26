@@ -26,10 +26,10 @@ import javax.inject.Singleton
 @Singleton
 class DeleteBFLossValidatorFactory {
 
-  def validator(nino: String, body: String): Validator[DeleteBFLossRequestData] = {
+  def validator(nino: String, body: String, taxYear: String): Validator[DeleteBFLossRequestData] = {
     val schema = DeleteBFLossSchema.schema
     schema match {
-      case Def1 => new Def1_DeleteBFLossValidator(nino, body)
+      case Def1 => new Def1_DeleteBFLossValidator(nino, body, taxYear)
     }
   }
 

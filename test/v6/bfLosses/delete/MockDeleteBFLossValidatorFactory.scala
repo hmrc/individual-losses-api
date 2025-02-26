@@ -16,13 +16,12 @@
 
 package v6.bfLosses.delete
 
-import shared.controllers.validators.Validator
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v6.bfLosses.delete.DeleteBFLossValidatorFactory
+import shared.controllers.validators.Validator
+import shared.models.errors.MtdError
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 trait MockDeleteBFLossValidatorFactory extends MockFactory {
@@ -33,8 +32,8 @@ trait MockDeleteBFLossValidatorFactory extends MockFactory {
 
     def expectValidator(): CallHandler[Validator[DeleteBFLossRequestData]] =
       (mockDeleteBFLossValidatorFactory
-        .validator(_: String, _: String))
-        .expects(*, *)
+        .validator(_: String, _: String, _: String))
+        .expects(*, *, *)
 
   }
 

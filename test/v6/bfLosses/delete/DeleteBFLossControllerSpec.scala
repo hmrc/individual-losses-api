@@ -24,7 +24,8 @@ import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.audit._
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
@@ -45,7 +46,8 @@ class DeleteBFLossControllerSpec
     with MockAuditService {
 
   private val lossId      = "AAZZ1234567890a"
-  private val requestData = Def1_DeleteBFLossRequestData(parsedNino, LossId(lossId))
+  private val taxYear     = "2019-20"
+  private val requestData = Def1_DeleteBFLossRequestData(parsedNino, LossId(lossId), TaxYear.fromMtd(taxYear))
 
   "delete" should {
     "return NoContent" when {
@@ -90,7 +92,7 @@ class DeleteBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.delete(validNino, lossId)(fakeRequest)
+    protected def callController(): Future[Result] = controller.delete(validNino, lossId, taxYear)(fakeRequest)
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -100,7 +102,7 @@ class DeleteBFLossControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = Version9.name,
-          params = Map("nino" -> validNino, "lossId" -> lossId),
+          params = Map("nino" -> validNino, "lossId" -> lossId, "taxYear" -> taxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

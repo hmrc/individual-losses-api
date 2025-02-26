@@ -22,17 +22,17 @@ import v6.bfLosses.delete.def1.Def1_DeleteBFLossValidator
 
 class DeleteBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino   = "AA123456A"
-  private val validLossId = "AAZZ1234567890a"
+  private val validNino    = "AA123456A"
+  private val validLossId  = "AAZZ1234567890a"
+  private val validTaxYear = "2019-20"
 
   private val validatorFactory = new DeleteBFLossValidatorFactory
 
   "running a validation" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        val result = validatorFactory.validator(validNino, validLossId)
+        val result = validatorFactory.validator(validNino, validLossId, validTaxYear)
         result shouldBe a[Def1_DeleteBFLossValidator]
-
       }
     }
 

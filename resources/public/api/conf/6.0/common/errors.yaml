@@ -15,7 +15,7 @@ components:
         The format of the supplied taxYear value is not valid.
       value:
         code: FORMAT_TAX_YEAR
-        message: The provided tax year is invalid
+        message: The taxYear format is invalid
 
     formatTaxYearClaimedFor:
       description: |
@@ -29,14 +29,14 @@ components:
         The specified tax year is not supported. The tax year specified is before the minimum tax year value.
       value:
         code: RULE_TAX_YEAR_NOT_SUPPORTED
-        message: The specified tax year is not supported. The tax year specified is before the minimum tax year value
+        message: The tax year specified does not lie within the supported range
 
     ruleTaxYearRangeInvalid:
       description: |
         Tax year range invalid. A tax year range of one year is required.
       value:
         code: RULE_TAX_YEAR_RANGE_INVALID
-        message: Tax year range invalid. A tax year range of one year is required
+        message: A tax year range of one year is required
 
     formatClaimId:
       description: |
@@ -208,7 +208,7 @@ components:
       value:
         code: CLIENT_OR_AGENT_NOT_AUTHORISED
         message: |
-          The client and/or agent is not authorised
+          The client or agent is not authorised
 
     # 404
 

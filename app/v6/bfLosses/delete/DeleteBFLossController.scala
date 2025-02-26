@@ -41,11 +41,11 @@ class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteBFLossController", endpointName = "Delete a Brought Forward Loss")
 
-  def delete(nino: String, lossId: String): Action[AnyContent] =
+  def delete(nino: String, lossId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, lossId)
+      val validator = validatorFactory.validator(nino, lossId, taxYear)
 
       val requestHandler =
         RequestHandler
@@ -56,7 +56,7 @@ class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
             auditType = "DeleteBroughtForwardLoss",
             transactionName = "delete-brought-forward-loss",
             apiVersion = Version(request),
-            params = Map("nino" -> nino, "lossId" -> lossId)
+            params = Map("nino" -> nino, "lossId" -> lossId, "taxYear" -> taxYear)
           ))
 
       requestHandler.handleRequest()
