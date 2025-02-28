@@ -44,7 +44,7 @@ class CreateBFLossControllerSpec
     with create.MockCreateBFLossService {
 
   private val bfLoss               = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
-  private val requestData          = Def1_CreateBFLossRequestData(parsedNino, bfLoss)
+  private val requestData          = Def1_CreateBFLossRequestData(parsedNino, parsedTaxYear, bfLoss)
   private val createBFLossResponse = Def1_CreateBFLossResponse("AAZZ1234567890a")
 
   private val requestBody: JsValue = Json.parse(
@@ -72,7 +72,7 @@ class CreateBFLossControllerSpec
         willUseValidator(returningSuccess(requestData))
 
         MockCreateBFLossService
-          .create(Def1_CreateBFLossRequestData(parsedNino, bfLoss))
+          .create(Def1_CreateBFLossRequestData(parsedNino, parsedTaxYear, bfLoss))
           .returns(Future.successful(Right(ResponseWrapper(correlationId, createBFLossResponse))))
 
         runOkTestWithAudit(
@@ -95,7 +95,7 @@ class CreateBFLossControllerSpec
       willUseValidator(returningSuccess(requestData))
 
       MockCreateBFLossService
-        .create(Def1_CreateBFLossRequestData(parsedNino, bfLoss))
+        .create(Def1_CreateBFLossRequestData(parsedNino, parsedTaxYear, bfLoss))
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDuplicateSubmissionError, None))))
 
       runErrorTestWithAudit(RuleDuplicateSubmissionError, maybeAuditRequestBody = Some(requestBody))
@@ -114,7 +114,7 @@ class CreateBFLossControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.create(validNino)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.create(validNino, validTaxYear)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -124,7 +124,7 @@ class CreateBFLossControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = Version9.name,
-          params = Map("nino" -> validNino),
+          params = Map("nino" -> validNino, "taxYear" -> validTaxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

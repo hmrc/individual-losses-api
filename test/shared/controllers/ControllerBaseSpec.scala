@@ -25,7 +25,7 @@ import play.api.test.{FakeRequest, ResultExtractors}
 import shared.config.Deprecation.NotDeprecated
 import shared.config.{MockSharedAppConfig, RealAppConfig}
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import shared.routing.{Version, Version9}
 import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -61,9 +61,11 @@ abstract class ControllerBaseSpec
 trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLookupService with MockIdGenerator with RealAppConfig {
   _: ControllerBaseSpec =>
 
-  protected val correlationId    = "X-123"
-  protected val validNino        = "AA123456A"
-  protected val parsedNino: Nino = Nino(validNino)
+  protected val correlationId          = "X-123"
+  protected val validNino              = "AA123456A"
+  protected val validTaxYear           = "2020"
+  protected val parsedNino: Nino       = Nino(validNino)
+  protected val parsedTaxYear: TaxYear = TaxYear(validTaxYear)
 
   trait ControllerTest {
     protected val hc: HeaderCarrier = HeaderCarrier()

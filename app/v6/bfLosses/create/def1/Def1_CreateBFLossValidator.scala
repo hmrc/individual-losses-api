@@ -17,11 +17,12 @@
 package v6.bfLosses.create.def1
 
 import cats.data.Validated
-import cats.implicits.catsSyntaxTuple2Semigroupal
+import cats.implicits.catsSyntaxTuple3Semigroupal
 import common.errors.TypeOfLossFormatError
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import v6.bfLosses.common.minimumTaxYear
 import v6.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
@@ -31,17 +32,32 @@ import v6.bfLosses.create.model.request.CreateBFLossRequestData
 import java.time.Clock
 import javax.inject.Inject
 
-class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implicit val clock: Clock = Clock.systemUTC())
+class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body: JsValue)(implicit val clock: Clock = Clock.systemUTC())
     extends Validator[CreateBFLossRequestData] {
 
   private val resolveJson         = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
   private val resolveParsedNumber = ResolveParsedNumber()
+
+  def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
+    def withPath(error: MtdError) = taxYearErrorPath.fold(error)(error.withPath)
+
+    ResolveTaxYearMinimum(
+      minimumTaxYear,
+      notSupportedError = withPath(RuleTaxYearNotSupportedError),
+      formatError = withPath(TaxYearFormatError),
+      rangeError = withPath(RuleTaxYearRangeInvalidError)
+    )(taxYear) andThen (_ =>
+      ResolveIncompleteTaxYear(
+        withPath(RuleTaxYearNotEndedError)
+      ).resolver(taxYear))
+  }
 
   def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
     ResolveBFTypeOfLossFromJson(body, Some(TypeOfLossFormatError.withPath("/typeOfLoss")))
       .andThen(_ =>
         (
           ResolveNino(nino),
+          resolvedTaxYear(taxYear),
           resolveJson(body)
         ).mapN(Def1_CreateBFLossRequestData)
           .andThen(validateParsedData))
@@ -50,19 +66,8 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implici
     import parsed.broughtForwardLoss._
     val taxYearErrorPath = "/taxYearBroughtForwardFrom"
 
-    val resolvedTaxYear =
-      ResolveTaxYearMinimum(
-        minimumTaxYear,
-        notSupportedError = RuleTaxYearNotSupportedError.withPath(taxYearErrorPath),
-        formatError = TaxYearFormatError.withPath(taxYearErrorPath),
-        rangeError = RuleTaxYearRangeInvalidError.withPath(taxYearErrorPath)
-      )(taxYearBroughtForwardFrom) andThen (_ =>
-        ResolveIncompleteTaxYear(
-          RuleTaxYearNotEndedError.withPath(taxYearErrorPath)
-        ).resolver(taxYearBroughtForwardFrom))
-
     combine(
-      resolvedTaxYear,
+      resolvedTaxYear(taxYearBroughtForwardFrom, Some(taxYearErrorPath)),
       ResolveBusinessId(businessId),
       resolveParsedNumber(lossAmount, path = "/lossAmount")
     ).map(_ => parsed)

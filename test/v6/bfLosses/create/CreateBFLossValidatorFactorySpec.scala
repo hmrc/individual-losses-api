@@ -19,12 +19,12 @@ package v6.bfLosses.create
 import shared.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
-import v6.bfLosses.create.CreateBFLossValidatorFactory
 import v6.bfLosses.create.def1.Def1_CreateBFLossValidator
 
 class CreateBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
   private val validNino       = "AA123456A"
+  private val validTaxYear    = "2025-26"
   private val validLossAmount = 1000
 
   def requestBodyJson(lossAmount: BigDecimal = validLossAmount): JsValue = Json.parse(
@@ -42,7 +42,7 @@ class CreateBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators
   "running a validation" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        val result = validatorFactory.validator(validNino, validRequestBody)
+        val result = validatorFactory.validator(validNino, validTaxYear, validRequestBody)
         result shouldBe a[Def1_CreateBFLossValidator]
 
       }

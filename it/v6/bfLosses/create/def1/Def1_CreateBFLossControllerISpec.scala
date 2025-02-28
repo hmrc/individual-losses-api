@@ -23,6 +23,7 @@ import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
@@ -43,13 +44,14 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
 
   private trait Test {
     val nino           = "AA123456A"
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino"
+    val taxYear        = TaxYear("2024")
+    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}"
 
     def setupStubs(): StubMapping
 
     def request: WSRequest = {
       setupStubs()
-      buildRequest(s"/$nino/brought-forward-losses")
+      buildRequest(s"/$nino/brought-forward-losses/tax-year/${taxYear.asMtd}")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123"),
@@ -166,6 +168,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
         serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_ENDED", BAD_REQUEST, RuleTaxYearNotEndedError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
         serviceErrorTest(CONFLICT, "DUPLICATE_SUBMISSION", BAD_REQUEST, RuleDuplicateSubmissionError)
