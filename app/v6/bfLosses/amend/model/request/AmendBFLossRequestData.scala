@@ -16,13 +16,14 @@
 
 package v6.bfLosses.amend.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.bfLosses.amend.AmendBFLossSchema
 import v6.bfLosses.common.domain.LossId
 
 trait AmendBFLossRequestData {
   def nino: Nino
   def lossId: LossId
+  def taxYear: TaxYear
   val amendBroughtForwardLoss: AmendBFLossRequestBody
   val schema: AmendBFLossSchema
 }

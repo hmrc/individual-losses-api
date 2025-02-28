@@ -65,8 +65,10 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino   = "AA123456A"
-    val lossId = "AAZZ1234567890a"
+    val nino              = "AA123456A"
+    val lossId            = "AAZZ1234567890a"
+    val taxYear           = "2020-21"
+    val downstreamTaxYear = "20-21"
 
     val responseJson: JsValue = Json.parse(s"""
                                               |{
@@ -78,8 +80,8 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
                                               |}
       """.stripMargin)
 
-    def url: String    = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
+    def url: String    = s"/$nino/brought-forward-losses/$lossId/tax-year/$taxYear/change-loss-amount"
+    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$downstreamTaxYear/$lossId"
 
     def setupStubs(): StubMapping
 
@@ -118,13 +120,15 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
       "validation error occurs" when {
         def validationErrorTest(requestNino: String,
                                 requestLossId: String,
+                                requestTaxYear: String,
                                 requestBody: JsValue,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String   = requestNino
-            override val lossId: String = requestLossId
+            override val nino: String    = requestNino
+            override val lossId: String  = requestLossId
+            override val taxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -139,10 +143,11 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = List(
-          ("AA1123A", "XAIS12345678910", requestJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "XAIS1234dfxgchjbn5678910", requestJson, BAD_REQUEST, LossIdFormatError),
-          ("AA123456A", "XAIS12345678910", invalidRequestJson, BAD_REQUEST, ValueFormatError.withPath("/lossAmount")),
-          ("AA123456A", "XAIS12345678910", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+          ("AA1123A", "XAIS12345678910", "2020-21", requestJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "XAIS1234dfxgchjbn5678910", "2020-21", requestJson, BAD_REQUEST, LossIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2020-2021", requestJson, BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "2020-21", invalidRequestJson, BAD_REQUEST, ValueFormatError.withPath("/lossAmount")),
+          ("AA123456A", "XAIS12345678910", "2020-21", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -168,6 +173,7 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
         val input = List(
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
+          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
           (CONFLICT, "CONFLICT", BAD_REQUEST, RuleLossAmountNotChanged),
           (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),

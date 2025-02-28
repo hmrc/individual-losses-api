@@ -43,11 +43,11 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendBFLossController", endpointName = "Amend a Brought Forward Loss Amount")
 
-  def amend(nino: String, lossId: String): Action[JsValue] =
+  def amend(nino: String, lossId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, lossId, request.body)
+      val validator = validatorFactory.validator(nino, lossId, taxYear, request.body)
 
       val requestHandler =
         RequestHandler
@@ -59,7 +59,7 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
             auditType = "AmendBroughtForwardLoss",
             transactionName = "amend-brought-forward-loss",
             apiVersion = Version(request),
-            params = Map("nino" -> nino, "lossId" -> lossId),
+            params = Map("nino" -> nino, "lossId" -> lossId, "taxYear" -> taxYear),
             requestBody = Some(request.body),
             includeResponse = true
           ))

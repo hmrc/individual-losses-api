@@ -27,10 +27,10 @@ import javax.inject.Singleton
 @Singleton
 class AmendBFLossValidatorFactory {
 
-  def validator(nino: String, lossId: String, body: JsValue): Validator[AmendBFLossRequestData] = {
+  def validator(nino: String, lossId: String, taxYear: String, body: JsValue): Validator[AmendBFLossRequestData] = {
     val schema = AmendBFLossSchema.schema
     schema match {
-      case Def1 => new Def1_AmendBFLossValidator(nino, lossId, body)
+      case Def1 => new Def1_AmendBFLossValidator(nino, lossId, taxYear, body)
     }
   }
 

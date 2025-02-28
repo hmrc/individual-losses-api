@@ -25,6 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
@@ -42,6 +43,9 @@ class CreateBFLossControllerSpec
     with MockSharedAppConfig
     with create.MockCreateBFLossValidatorFactory
     with create.MockCreateBFLossService {
+
+  private val validTaxYear  = "2019-20"
+  private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
 
   private val bfLoss               = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
   private val requestData          = Def1_CreateBFLossRequestData(parsedNino, parsedTaxYear, bfLoss)

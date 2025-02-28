@@ -16,12 +16,12 @@
 
 package v6.bfLosses.amend.def1.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.bfLosses.amend.AmendBFLossSchema
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.common.domain.LossId
 
-case class Def1_AmendBFLossRequestData(nino: Nino, lossId: LossId, amendBroughtForwardLoss: Def1_AmendBFLossRequestBody)
+case class Def1_AmendBFLossRequestData(nino: Nino, lossId: LossId, taxYear: TaxYear, amendBroughtForwardLoss: Def1_AmendBFLossRequestBody)
     extends AmendBFLossRequestData {
   override val schema: AmendBFLossSchema = AmendBFLossSchema.Def1
 }

@@ -17,7 +17,7 @@
 package v6.bfLosses.amend
 
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged, RuleOutsideAmendmentWindow}
-import shared.models.domain.{Nino, Timestamp}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -30,10 +30,11 @@ import scala.concurrent.Future
 
 class AmendBFLossServiceSpec extends ServiceSpec {
 
-  private val nino   = Nino("AA123456A")
-  private val lossId = LossId("AAZZ1234567890a")
+  private val nino    = Nino("AA123456A")
+  private val lossId  = LossId("AAZZ1234567890a")
+  private val taxYear = TaxYear("2020")
 
-  val requestData: Def1_AmendBFLossRequestData = Def1_AmendBFLossRequestData(nino, lossId, Def1_AmendBFLossRequestBody(256.78))
+  val requestData: Def1_AmendBFLossRequestData = Def1_AmendBFLossRequestData(nino, lossId, taxYear, Def1_AmendBFLossRequestBody(256.78))
 
   val bfLossResponse: Def1_AmendBFLossResponse = Def1_AmendBFLossResponse(
     "XKIS00000000988",
@@ -78,6 +79,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
     val errors = List(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
       "NOT_FOUND"                 -> NotFoundError,
       "INVALID_PAYLOAD"           -> InternalError,
       "CONFLICT"                  -> RuleLossAmountNotChanged,
