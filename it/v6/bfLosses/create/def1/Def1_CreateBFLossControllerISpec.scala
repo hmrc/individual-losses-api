@@ -51,7 +51,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
 
     def request: WSRequest = {
       setupStubs()
-      buildRequest(s"/$nino/brought-forward-losses/tax-year/${taxYear.asMtd}")
+      buildRequest(s"/$nino/brought-forward-losses/tax-year/brought-forward-from/${taxYear.asMtd}")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123"),
