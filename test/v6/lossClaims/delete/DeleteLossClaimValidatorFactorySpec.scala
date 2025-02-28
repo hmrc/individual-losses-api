@@ -25,13 +25,14 @@ class DeleteLossClaimValidatorFactorySpec extends UnitSpec {
 
   private val validNino    = "AA123456A"
   private val validClaimId = "AAZZ1234567890a"
+  private val validTaxYear = "2019-20"
 
   private val validatorFactory = new DeleteLossClaimValidatorFactory
 
   "validator" should {
     "return the Def1 validator" when {
       "given a valid request" in {
-        val result: Validator[DeleteLossClaimRequestData] = validatorFactory.validator(validNino, validClaimId)
+        val result: Validator[DeleteLossClaimRequestData] = validatorFactory.validator(validNino, validClaimId, validTaxYear)
         result shouldBe a[Def1_DeleteLossClaimValidator]
 
       }

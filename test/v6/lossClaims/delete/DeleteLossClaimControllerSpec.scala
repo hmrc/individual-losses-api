@@ -25,6 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
@@ -42,7 +43,8 @@ class DeleteLossClaimControllerSpec
     with MockDeleteLossClaimValidatorFactory {
 
   private val claimId     = "AAZZ1234567890a"
-  private val requestData = Def1_DeleteLossClaimRequestData(parsedNino, ClaimId(claimId))
+  private val taxYear     = "2019-20"
+  private val requestData = Def1_DeleteLossClaimRequestData(parsedNino, ClaimId(claimId), TaxYear.fromMtd(taxYear))
 
   "delete" should {
     "return NO_CONTENT" when {
@@ -87,7 +89,7 @@ class DeleteLossClaimControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.delete(validNino, claimId)(fakeRequest)
+    protected def callController(): Future[Result] = controller.delete(validNino, claimId, taxYear)(fakeRequest)
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -97,7 +99,7 @@ class DeleteLossClaimControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = Version9.name,
-          params = Map("nino" -> validNino, "claimId" -> claimId),
+          params = Map("nino" -> validNino, "claimId" -> claimId, "taxYear" -> taxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
