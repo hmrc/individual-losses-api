@@ -60,7 +60,7 @@ tags:
 paths:
   /individuals/losses/{nino}/brought-forward-losses/tax-year/brought-forward-from/{taxYear}:
     $ref: "./brought_forward_losses_create.yaml"
-  /individuals/losses/{nino}/brought-forward-losses/{lossId}/change-loss-amount:
+  /individuals/losses/{nino}/brought-forward-losses/{lossId}/tax-year/{taxYear}/change-loss-amount:
     $ref: "./brought_forward_losses_amend.yaml"
   /individuals/losses/{nino}/brought-forward-losses/tax-year/{taxYearBroughtForwardFrom}:
     $ref: "./brought_forward_losses_list.yaml"

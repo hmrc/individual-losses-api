@@ -46,8 +46,8 @@ class AmendBFLossControllerSpec
   private val lossId        = "AAZZ1234567890a"
   private val parsedLossId  = LossId(lossId)
   private val lossAmount    = BigDecimal(2345.67)
-  private val taxYear       = "2020"
-  private val parsedTaxYear = TaxYear(taxYear)
+  private val taxYear       = "2019-20"
+  private val parsedTaxYear = TaxYear.fromMtd(taxYear)
   private val amendBFLoss   = Def1_AmendBFLossRequestBody(lossAmount)
 
   private val amendBFLossResponse = Def1_AmendBFLossResponse(

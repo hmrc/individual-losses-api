@@ -30,13 +30,13 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
 
   val nino: String                    = "AA123456A"
   val lossId: String                  = "AAZZ1234567890a"
-  val taxYear: String                 = "2020"
+  val taxYear: String                 = "2019-20"
   val taxYearDownstreamFormat: String = "19-20"
 
   val requestBody: Def1_AmendBFLossRequestBody = Def1_AmendBFLossRequestBody(500.13)
 
   val request: Def1_AmendBFLossRequestData =
-    Def1_AmendBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId), taxYear = TaxYear(taxYear), requestBody)
+    Def1_AmendBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId), taxYear = TaxYear.fromMtd(taxYear), requestBody)
 
   "amendBFLosses" should {
     "return the expected response for a non-TYS request" when {

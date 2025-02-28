@@ -79,6 +79,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
     val errors = List(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
       "NOT_FOUND"                 -> NotFoundError,
       "INVALID_PAYLOAD"           -> InternalError,
       "CONFLICT"                  -> RuleLossAmountNotChanged,
