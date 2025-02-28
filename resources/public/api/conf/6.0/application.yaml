@@ -58,7 +58,7 @@ tags:
     description: Resources related to a customer’s financial data for their loss claims.
 
 paths:
-  /individuals/losses/{nino}/brought-forward-losses/tax-year/{taxYear}:
+  /individuals/losses/{nino}/brought-forward-losses/tax-year/brought-forward-from/{taxYear}:
     $ref: "./brought_forward_losses_create.yaml"
   /individuals/losses/{nino}/brought-forward-losses/{lossId}/change-loss-amount:
     $ref: "./brought_forward_losses_amend.yaml"
