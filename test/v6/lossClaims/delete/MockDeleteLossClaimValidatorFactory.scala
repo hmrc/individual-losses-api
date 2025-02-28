@@ -32,8 +32,8 @@ trait MockDeleteLossClaimValidatorFactory extends MockFactory {
 
     def expectValidator(): CallHandler[Validator[DeleteLossClaimRequestData]] =
       (mockDeleteLossClaimValidatorFactory
-        .validator(_: String, _: String))
-        .expects(*, *)
+        .validator(_: String, _: String, _: String))
+        .expects(*, *, *)
 
   }
 

@@ -12,10 +12,10 @@ components:
 
     formatTaxYear:
       description: |
-        The format of the supplied taxYear value is not valid.
+        The format of the supplied taxYearClaimedFor value is not valid.
       value:
         code: FORMAT_TAX_YEAR
-        message: The taxYear format is invalid
+        message: The provided tax year claimed for is invalid
 
     formatTaxYearClaimedFor:
       description: |

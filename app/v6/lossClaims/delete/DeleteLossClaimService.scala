@@ -35,6 +35,7 @@ class DeleteLossClaimService @Inject() (connector: DeleteLossClaimConnector) ext
 
   private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,

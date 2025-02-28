@@ -17,7 +17,7 @@
 package v6.lossClaims.delete
 
 import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -29,17 +29,18 @@ import scala.concurrent.Future
 
 class DeleteLossClaimServiceSpec extends ServiceSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  private val nino: String    = "AA123456A"
+  private val claimId: String = "AAZZ1234567890a"
+  private val taxYear: String = "2019-20"
 
   trait Test extends MockDeleteLossClaimConnector {
     lazy val service = new DeleteLossClaimService(connector)
   }
 
-  lazy val request: DeleteLossClaimRequestData = Def1_DeleteLossClaimRequestData(Nino(nino), ClaimId(claimId))
+  lazy val request: DeleteLossClaimRequestData = Def1_DeleteLossClaimRequestData(Nino(nino), ClaimId(claimId), TaxYear.fromMtd(taxYear))
 
   "Delete Loss Claim" should {
-    "return a right" when {
+    "return a Right" when {
       "the connector call is successful" in new Test {
 
         val downstreamResponse: ResponseWrapper[Unit] = ResponseWrapper(correlationId, ())
@@ -79,6 +80,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
       val errors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+        "INVALID_TAX_YEAR"          -> TaxYearFormatError,
         "NOT_FOUND"                 -> NotFoundError,
         "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
         "SERVER_ERROR"              -> InternalError,

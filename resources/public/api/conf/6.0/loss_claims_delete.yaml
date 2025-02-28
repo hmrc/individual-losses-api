@@ -1,83 +1,84 @@
-summary: Delete a Loss Claim
-description: |
-  This endpoint allows a developer to delete an existing Loss Claim.
-  A National Insurance number and Claim ID must be provided.
+delete:
+  summary: Delete a Loss Claim
+  description: |
+    This endpoint allows a developer to delete an existing Loss Claim.
+    A National Insurance number and Claim ID must be provided.
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                       |
+    | -------------------------------- | ---------------------------------------------- |
+    | N/A - DEFAULT                    | Simulate success scenario                      |
+    | NOT_FOUND                        | Simulates the scenario where no data is found. |
+    | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
+    | STATEFUL                         | Performs a stateful delete.                    |
   
-  ### Test data
-  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
-  
-  | Header Value (Gov-Test-Scenario) | Scenario                                       |
-  | -------------------------------- | ---------------------------------------------- |
-  | N/A - DEFAULT                    | Simulate success scenario                      |
-  | NOT_FOUND                        | Simulates the scenario where no data is found. |
-  | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
-  | STATEFUL                         | Performs a stateful delete.                    |
+
+  tags:
+    - Loss Claims
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+  responses:
+    "204":
+      description: Success (No Content)
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content: { }
 
 
-tags:
-  - Loss Claims
+    "400":
+      description: Bad request
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_CLAIM_ID:
+              $ref: './common/errors.yaml#/components/examples/formatClaimId'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+            RULE_OUTSIDE_AMENDMENT_WINDOW:
+              $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
-parameters:
-  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
-  - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
-  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
-  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
-  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+    "403":
+      description: Forbidden
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
 
-security:
-  - User-Restricted:
-      - write:self-assessment
-
-responses:
-  "204":
-    description: Success (No Content)
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: { }
-
-
-  "400":
-    description: Bad request
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/error_response.yaml'
-        examples:
-          FORMAT_NINO:
-            $ref: './common/errors.yaml#/components/examples/formatNino'
-          FORMAT_CLAIM_ID:
-            $ref: './common/errors.yaml#/components/examples/formatClaimId'
-          RULE_INCORRECT_GOV_TEST_SCENARIO:
-            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
-          RULE_OUTSIDE_AMENDMENT_WINDOW:
-            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
-
-  "403":
-    description: Forbidden
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/error_response.yaml'
-        examples:
-          CLIENT_OR_AGENT_NOT_AUTHORISED:
-            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
-
-  "404":
-    description: Not Found
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/error_response.yaml'
-        examples:
-          MATCHING_RESOURCE_NOT_FOUND:
-            $ref: './common/errors.yaml#/components/examples/notFound'
+    "404":
+      description: Not Found
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'
