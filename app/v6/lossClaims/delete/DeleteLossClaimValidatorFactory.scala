@@ -17,12 +17,17 @@
 package v6.lossClaims.delete
 
 import shared.controllers.validators.Validator
+import v6.lossClaims.delete.DeleteLossClaimSchema.Def1
 import v6.lossClaims.delete.def1.Def1_DeleteLossClaimValidator
 import v6.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 class DeleteLossClaimValidatorFactory {
 
-  def validator(nino: String, claimId: String): Validator[DeleteLossClaimRequestData] =
-    new Def1_DeleteLossClaimValidator(nino, claimId)
+  def validator(nino: String, claimId: String, taxYear: String): Validator[DeleteLossClaimRequestData] = {
+    val schema = DeleteLossClaimSchema.schema
+    schema match {
+      case Def1 => new Def1_DeleteLossClaimValidator(nino, claimId, taxYear)
+    }
+  }
 
 }
