@@ -48,10 +48,10 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino              = "AA123456A"
-    val claimId           = "AAZZ1234567890a"
-    val taxYear           = "2020-21"
-    val downstreamTaxYear = "20-21"
+    val nino                        = "AA123456A"
+    val claimId                     = "AAZZ1234567890a"
+    val taxYearClaimedFor           = "2020-21"
+    val downstreamTaxYearClaimedFor = "20-21"
 
     val responseJson: JsValue = Json.parse(s"""
          |{
@@ -64,8 +64,8 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def uri: String    = s"/$nino/loss-claims/$claimId/tax-year/$taxYear/change-type-of-claim"
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$downstreamTaxYear/$claimId"
+    def uri: String    = s"/$nino/loss-claims/$claimId/tax-year/$taxYearClaimedFor/change-type-of-claim"
+    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$downstreamTaxYearClaimedFor/$claimId"
 
     def errorBody(code: String): String =
       s"""
@@ -77,7 +77,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
 
     def setupStubs(): StubMapping
 
-    def request(): WSRequest = {
+    def request(uri: String = uri): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
@@ -130,6 +130,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
 
       serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
       serviceErrorTest(BAD_REQUEST, "INVALID_CLAIM_ID", BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
       serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
@@ -146,11 +147,18 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
                               requestClaimId: String,
                               requestBody: JsValue,
                               expectedStatus: Int,
-                              expectedBody: MtdError): Unit = {
+                              expectedBody: MtdError,
+                              requestTaxYearClaimedFor: String = "2020-21",
+                              requestDownstreamTaxYearClaimedFor: String = "20-21"): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String    = requestNino
           override val claimId: String = requestClaimId
+
+          override def uri: String =
+            s"/$nino/loss-claims/$claimId/tax-year/$requestTaxYearClaimedFor/change-type-of-claim"
+          override def ifsUrl: String =
+            s"/income-tax/claims-for-relief/$nino/$requestDownstreamTaxYearClaimedFor/$claimId"
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -158,7 +166,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
             MtdIdLookupStub.ninoFound(requestNino)
           }
 
-          val response: WSResponse = await(request().post(requestBody))
+          val response: WSResponse = await(request(uri).post(requestBody))
           response.json shouldBe Json.toJson(expectedBody)
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
@@ -175,6 +183,15 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
         Json.obj("typeOfClaim" -> "xxx"),
         BAD_REQUEST,
         TypeOfClaimFormatError.withPath("/typeOfClaim"))
+
+      validationErrorTest(
+        "AA123456A",
+        "AAZZ1234567890a",
+        Json.obj("typeOfClaim" -> "carry-forward"),
+        BAD_REQUEST,
+        TaxYearClaimedForFormatError,
+        "202324"
+      )
     }
   }
 

@@ -21,7 +21,7 @@ import v6.lossClaims.amendType.AmendLossClaimTypeSchema
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.common.models.ClaimId
 
-case class Def1_AmendLossClaimTypeRequestData(nino: Nino, claimId: ClaimId, body: Def1_AmendLossClaimTypeRequestBody, taxYear: TaxYear)
+case class Def1_AmendLossClaimTypeRequestData(nino: Nino, claimId: ClaimId, body: Def1_AmendLossClaimTypeRequestBody, taxYearClaimedFor: TaxYear)
     extends AmendLossClaimTypeRequestData {
   override val schema: AmendLossClaimTypeSchema = AmendLossClaimTypeSchema.Def1
 }

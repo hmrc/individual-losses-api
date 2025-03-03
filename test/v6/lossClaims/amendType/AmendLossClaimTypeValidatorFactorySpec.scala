@@ -22,9 +22,9 @@ import v6.lossClaims.amendType.def1.Def1_AmendLossClaimTypeValidator
 
 class AmendLossClaimTypeValidatorFactorySpec extends UnitSpec {
 
-  private val validNino    = "AA123456A"
-  private val validClaimId = "AAZZ1234567890a"
-  private val taxYear      = "2019-20"
+  private val validNino         = "AA123456A"
+  private val validClaimId      = "AAZZ1234567890a"
+  private val taxYearClaimedFor = "2019-20"
 
   private def requestBodyJson(claimType: String = "carry-forward"): JsValue = Json.obj("typeOfClaim" -> claimType)
   private val validRequestBody: JsValue                                     = requestBodyJson()
@@ -34,7 +34,7 @@ class AmendLossClaimTypeValidatorFactorySpec extends UnitSpec {
   "Amend Loss Claim Validator" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        val result = validatorFactory.validator(validNino, validClaimId, validRequestBody, taxYear)
+        val result = validatorFactory.validator(validNino, validClaimId, validRequestBody, taxYearClaimedFor)
         result shouldBe a[Def1_AmendLossClaimTypeValidator]
       }
     }

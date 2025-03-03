@@ -44,11 +44,11 @@ class AmendLossClaimTypeController @Inject() (
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendLossClaimTypeController", endpointName = "Amend a Loss Claim Type")
 
-  def amend(nino: String, claimId: String, taxYear: String): Action[JsValue] =
+  def amend(nino: String, claimId: String, taxYearClaimedFor: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, claimId, request.body, taxYear)
+      val validator = validatorFactory.validator(nino, claimId, request.body, taxYearClaimedFor)
 
       val requestHandler =
         RequestHandler
@@ -60,7 +60,7 @@ class AmendLossClaimTypeController @Inject() (
             auditType = "AmendLossClaim",
             transactionName = "amend-loss-claim",
             apiVersion = Version(request),
-            params = Map("nino" -> nino, "claimId" -> claimId, "taxYear" -> taxYear),
+            params = Map("nino" -> nino, "claimId" -> claimId, "taxYearClaimedFor" -> taxYearClaimedFor),
             requestBody = Some(request.body),
             includeResponse = true
           ))

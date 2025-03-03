@@ -28,9 +28,9 @@ import scala.concurrent.Future
 
 class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890ag"
-  val taxYear: String = "2019-20"
+  val nino: String              = "AA123456A"
+  val claimId: String           = "AAZZ1234567890ag"
+  val taxYearClaimedFor: String = "2019-20"
 
   "amendLossClaimType" when {
 
@@ -64,7 +64,7 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
             nino = Nino(nino),
             claimId = ClaimId(claimId),
             amendLossClaimType,
-            TaxYear.fromMtd(taxYear)
+            TaxYear.fromMtd(taxYearClaimedFor)
           )))
   }
 

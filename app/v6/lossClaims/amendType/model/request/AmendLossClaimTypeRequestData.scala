@@ -24,6 +24,6 @@ trait AmendLossClaimTypeRequestData {
   def nino: Nino
   def claimId: ClaimId
   def body: AmendLossClaimTypeRequestBody
-  def taxYear: TaxYear
+  def taxYearClaimedFor: TaxYear
   val schema: AmendLossClaimTypeSchema
 }

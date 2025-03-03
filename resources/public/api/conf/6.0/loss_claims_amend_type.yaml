@@ -36,7 +36,7 @@ post:
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
     - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
-    - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+    - $ref: './common/pathParameters.yaml#/components/parameters/taxYearClaimedFor'
     - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
     - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
     - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
@@ -88,6 +88,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/formatNino'
             FORMAT_CLAIM_ID:
               $ref: './common/errors.yaml#/components/examples/formatClaimId'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYearClaimedFor'
             FORMAT_VALUE:
               $ref: './common/errors.yaml#/components/examples/formatValue'
             RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
