@@ -29,11 +29,11 @@ class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino                = "AA123456A"
-  private val invalidNino              = "badNino"
-  private val validClaimId             = "AAZZ1234567890a"
-  private val invalidClaimId           = "not-a-claim-id"
-  private val validTaxYearClaimedFor   = "2019-20"
+  private val validNino              = "AA123456A"
+  private val invalidNino            = "badNino"
+  private val validClaimId           = "AAZZ1234567890a"
+  private val invalidClaimId         = "not-a-claim-id"
+  private val validTaxYearClaimedFor = "2019-20"
 
   private val parsedNino              = Nino(validNino)
   private val parsedClaimId           = ClaimId(validClaimId)
@@ -45,7 +45,8 @@ class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
   "running a validation" should {
     "return the parsed request data" when {
       "passed a valid request" in {
-        val result: Either[ErrorWrapper, DeleteLossClaimRequestData] = validator(validNino, validClaimId, validTaxYearClaimedFor).validateAndWrapResult()
+        val result: Either[ErrorWrapper, DeleteLossClaimRequestData] =
+          validator(validNino, validClaimId, validTaxYearClaimedFor).validateAndWrapResult()
         result shouldBe Right(
           Def1_DeleteLossClaimRequestData(parsedNino, parsedClaimId, parsedTaxYearClaimedFor)
         )
@@ -86,7 +87,7 @@ class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
     }
 
     "return a RuleTaxYearRangeInvalidError error" when {
-      "passed a taxYear spanning an invalid tax year range" in {
+      "passed a taxYearClaimedFor spanning an invalid tax year range" in {
         val result = validator(validNino, validClaimId, "2020-22").validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
@@ -97,7 +98,7 @@ class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
       "passed a request with multiple errors" in {
         val result = validator(invalidNino, invalidClaimId, "invalidTaxYear").validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(ClaimIdFormatError, NinoFormatError, TaxYearFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(ClaimIdFormatError, NinoFormatError, TaxYearClaimedForFormatError)))
         )
       }
     }

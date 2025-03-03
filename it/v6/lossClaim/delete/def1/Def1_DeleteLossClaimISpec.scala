@@ -101,7 +101,7 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
 
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearClaimedForFormatError)
       serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
       serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", Status.BAD_REQUEST, RuleOutsideAmendmentWindow)
@@ -117,8 +117,8 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String    = requestNino
-          override val claimId: String = requestClaimId
+          override val nino: String              = requestNino
+          override val claimId: String           = requestClaimId
           override val taxYearClaimedFor: String = requestTaxYearClaimedFor
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
