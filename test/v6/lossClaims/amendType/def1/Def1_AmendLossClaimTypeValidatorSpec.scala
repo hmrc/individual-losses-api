@@ -18,7 +18,7 @@ package v6.lossClaims.amendType.def1
 
 import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.{JsValue, Json}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
@@ -32,63 +32,102 @@ class Def1_AmendLossClaimTypeValidatorSpec extends UnitSpec {
   private val invalidNino    = "badNino"
   private val validClaimId   = "AAZZ1234567890a"
   private val invalidClaimId = "not-a-claim-id"
+  private val validTaxYear   = "2019-20"
 
   private val parsedNino    = Nino(validNino)
   private val parsedClaimId = ClaimId(validClaimId)
+  private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
   private val parsedBody    = Def1_AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
   private def requestBodyJson(claimType: String = "carry-forward"): JsValue = Json.obj("typeOfClaim" -> claimType)
   private val validRequestBody: JsValue                                     = requestBodyJson()
+  private val invalidRequestBody: JsValue                                   = Json.obj("wrong-field" -> "value")
 
-  private def validator(nino: String, claimId: String, body: JsValue) = new Def1_AmendLossClaimTypeValidator(nino, claimId, body)
+  private def validator(nino: String, claimId: String, body: JsValue, taxYear: String) =
+    new Def1_AmendLossClaimTypeValidator(nino, claimId, body, taxYear)
 
   "Amend Loss Claim Validator" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        val result = validator(validNino, validClaimId, validRequestBody).validateAndWrapResult()
+        val result = validator(validNino, validClaimId, validRequestBody, validTaxYear).validateAndWrapResult()
         result shouldBe Right(
-          Def1_AmendLossClaimTypeRequestData(parsedNino, parsedClaimId, parsedBody)
+          Def1_AmendLossClaimTypeRequestData(parsedNino, parsedClaimId, parsedBody, parsedTaxYear)
         )
       }
     }
 
     "return NinoFormatError" when {
       "given an invalid nino" in {
-        val result = validator(invalidNino, validClaimId, validRequestBody).validateAndWrapResult()
+        val result = validator(invalidNino, validClaimId, validRequestBody, validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
         )
       }
     }
 
-    "return ClaimIdFormatError" when {
+    "return a single error" when {
       "given an invalid claimId" in {
-        val result = validator(validNino, invalidClaimId, validRequestBody).validateAndWrapResult()
+        val result = validator(validNino, invalidClaimId, validRequestBody, validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, ClaimIdFormatError)
         )
       }
-    }
 
-    "return RuleIncorrectOrEmptyBodyError" when {
       "given an empty JSON body" in {
-        val result = validator(validNino, validClaimId, Json.obj()).validateAndWrapResult()
+        val result = validator(validNino, validClaimId, Json.obj(), validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError)
         )
       }
 
       "given an invalid JSON body" in {
-        val result = validator(validNino, validClaimId, Json.obj("wrong-field" -> "value")).validateAndWrapResult()
+        val result = validator(validNino, validClaimId, invalidRequestBody, validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/typeOfClaim"))
         )
       }
 
       "given a JSON body with an invalid claim type" in {
-        val result = validator(validNino, validClaimId, requestBodyJson("not-a-claim-type")).validateAndWrapResult()
+        val result = validator(validNino, validClaimId, requestBodyJson("not-a-claim-type"), validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, TypeOfClaimFormatError.withPath("/typeOfClaim"))
+        )
+      }
+
+      "passed an incorrectly formatted taxYear" in {
+        val result = validator(validNino, validClaimId, validRequestBody, "202324").validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
+
+      }
+
+      "passed a taxYear before the minimum supported" in {
+        validator(validNino, validClaimId, validRequestBody, "2017-18").validateAndWrapResult() shouldBe
+          Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
+      "passed a taxYear spanning an invalid tax year range" in {
+        val result = validator(validNino, validClaimId, validRequestBody, "2020-22").validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
+      }
+    }
+
+    "return multiple errors" when {
+      "passed a request with multiple errors" in {
+        val result = validator(invalidNino, invalidClaimId, invalidRequestBody, "invalidTaxYear").validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            BadRequestError,
+            Some(
+              List(
+                ClaimIdFormatError,
+                NinoFormatError,
+                TaxYearFormatError,
+                RuleIncorrectOrEmptyBodyError.withPath("/typeOfClaim")
+              )
+            )
+          )
         )
       }
     }

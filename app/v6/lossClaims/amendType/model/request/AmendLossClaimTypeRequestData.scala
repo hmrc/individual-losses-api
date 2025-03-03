@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendType.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.lossClaims.amendType.AmendLossClaimTypeSchema
 import v6.lossClaims.common.models.ClaimId
 
@@ -24,5 +24,6 @@ trait AmendLossClaimTypeRequestData {
   def nino: Nino
   def claimId: ClaimId
   def body: AmendLossClaimTypeRequestBody
+  def taxYear: TaxYear
   val schema: AmendLossClaimTypeSchema
 }

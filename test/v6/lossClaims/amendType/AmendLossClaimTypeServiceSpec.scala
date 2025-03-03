@@ -23,7 +23,7 @@ import common.errors.{
   RuleOutsideAmendmentWindow,
   RuleTypeOfClaimInvalid
 }
-import shared.models.domain.{Nino, Timestamp}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -38,6 +38,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
+  val taxYear         = "2019-20"
 
   val requestBody: Def1_AmendLossClaimTypeRequestBody = Def1_AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
@@ -53,7 +54,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
   trait Test extends MockAmendLossClaimTypeConnector {
     lazy val service = new AmendLossClaimTypeService(mockAmendLossClaimTypeConnector)
-    val request      = Def1_AmendLossClaimTypeRequestData(Nino(nino), ClaimId(claimId), requestBody)
+    val request      = Def1_AmendLossClaimTypeRequestData(Nino(nino), ClaimId(claimId), requestBody, TaxYear.fromMtd(taxYear))
   }
 
   "amend LossClaim" when {

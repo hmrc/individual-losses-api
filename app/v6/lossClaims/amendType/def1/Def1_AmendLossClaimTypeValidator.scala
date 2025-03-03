@@ -21,17 +21,20 @@ import cats.implicits._
 import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern}
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern, ResolveTaxYearMinimum}
 import shared.models.errors.MtdError
+import v6.lossClaims.common.minimumTaxYear
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
 
-class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsValue) extends Validator[AmendLossClaimTypeRequestData] {
+class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsValue, taxYear: String)
+    extends Validator[AmendLossClaimTypeRequestData] {
 
-  private val resolveClaimId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, ClaimIdFormatError)
-  private val resolveJson    = new ResolveJsonObject[Def1_AmendLossClaimTypeRequestBody]()
+  private val resolveTaxYear: ResolveTaxYearMinimum = ResolveTaxYearMinimum(minimumTaxYear)
+  private val resolveClaimId                        = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, ClaimIdFormatError)
+  private val resolveJson                           = new ResolveJsonObject[Def1_AmendLossClaimTypeRequestBody]()
 
   def validate: Validated[Seq[MtdError], AmendLossClaimTypeRequestData] =
     ResolveLossTypeOfClaimFromJson(body, Some(TypeOfClaimFormatError.withPath("/typeOfClaim")))
@@ -39,7 +42,8 @@ class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsVa
         (
           ResolveNino(nino),
           resolveClaimId(claimId).map(ClaimId),
-          resolveJson(body)
+          resolveJson(body),
+          resolveTaxYear(taxYear)
         ).mapN(Def1_AmendLossClaimTypeRequestData))
 
 }

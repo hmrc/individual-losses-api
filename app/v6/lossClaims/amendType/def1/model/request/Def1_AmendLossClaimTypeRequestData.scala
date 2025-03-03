@@ -16,12 +16,12 @@
 
 package v6.lossClaims.amendType.def1.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.lossClaims.amendType.AmendLossClaimTypeSchema
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.common.models.ClaimId
 
-case class Def1_AmendLossClaimTypeRequestData(nino: Nino, claimId: ClaimId, body: Def1_AmendLossClaimTypeRequestBody)
+case class Def1_AmendLossClaimTypeRequestData(nino: Nino, claimId: ClaimId, body: Def1_AmendLossClaimTypeRequestBody, taxYear: TaxYear)
     extends AmendLossClaimTypeRequestData {
   override val schema: AmendLossClaimTypeSchema = AmendLossClaimTypeSchema.Def1
 }

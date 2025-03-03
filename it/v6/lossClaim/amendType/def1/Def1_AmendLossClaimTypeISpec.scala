@@ -48,8 +48,10 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino    = "AA123456A"
-    val claimId = "AAZZ1234567890a"
+    val nino              = "AA123456A"
+    val claimId           = "AAZZ1234567890a"
+    val taxYear           = "2020-21"
+    val downstreamTaxYear = "20-21"
 
     val responseJson: JsValue = Json.parse(s"""
          |{
@@ -62,8 +64,8 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def uri: String    = s"/$nino/loss-claims/$claimId/change-type-of-claim"
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def uri: String    = s"/$nino/loss-claims/$claimId/tax-year/$taxYear/change-type-of-claim"
+    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$downstreamTaxYear/$claimId"
 
     def errorBody(code: String): String =
       s"""

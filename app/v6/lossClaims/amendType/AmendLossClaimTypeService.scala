@@ -47,6 +47,7 @@ class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnecto
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "INVALID_PAYLOAD"           -> InternalError,
     "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
+    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
     "CSFHL_CLAIM_NOT_SUPPORTED" -> RuleCSFHLClaimNotSupportedError,
     "NOT_FOUND"                 -> NotFoundError,
     "CONFLICT"                  -> RuleClaimTypeNotChanged,
