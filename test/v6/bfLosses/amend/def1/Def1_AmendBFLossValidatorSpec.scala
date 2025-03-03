@@ -17,9 +17,9 @@
 package v6.bfLosses.amend.def1
 
 import common.errors.LossIdFormatError
-import shared.models.domain.Nino
-import shared.models.errors._
 import play.api.libs.json.{JsValue, Json}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
 import shared.utils.UnitSpec
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.common.domain.LossId
@@ -28,69 +28,81 @@ class Def1_AmendBFLossValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino     = "AA123456A"
-  private val invalidNino   = "BAD_NINO"
-  private val validLossId   = "AAZZ1234567890a"
-  private val invalidLossId = "AAZZ1234567890"
+  private val validNino       = "AA123456A"
+  private val invalidNino     = "BAD_NINO"
+  private val validLossId     = "AAZZ1234567890a"
+  private val invalidLossId   = "AAZZ1234567890"
+  private val validLossAmount = Json.obj("lossAmount" -> 3.0)
+  private val validTaxYear    = "2019-20"
+  private val invalidTaxYear  = "20201"
+  private val parsedNino      = Nino(validNino)
+  private val parsedLossId    = LossId(validLossId)
+  private val parsedTaxYear   = TaxYear.fromMtd(validTaxYear)
 
-  private val parsedNino   = Nino(validNino)
-  private val parsedLossId = LossId(validLossId)
-
-  private def validator(nino: String, lossId: String, body: JsValue) = new Def1_AmendBFLossValidator(nino, lossId, body)
+  private def validator(nino: String, lossId: String, taxYear: String, body: JsValue) = new Def1_AmendBFLossValidator(nino, lossId, taxYear, body)
 
   "running a validation" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        val result = validator(validNino, validLossId, Json.obj("lossAmount" -> 3.0)).validateAndWrapResult()
+        val result = validator(validNino, validLossId, validTaxYear, validLossAmount).validateAndWrapResult()
         result shouldBe Right(
-          Def1_AmendBFLossRequestData(parsedNino, parsedLossId, Def1_AmendBFLossRequestBody(3.0))
+          Def1_AmendBFLossRequestData(parsedNino, parsedLossId, parsedTaxYear, Def1_AmendBFLossRequestBody(3.0))
         )
       }
 
       "given a valid nino and the minimum loss amount" in {
-        val result = validator(validNino, validLossId, Json.obj("lossAmount" -> 0.0)).validateAndWrapResult()
+        val result = validator(validNino, validLossId, validTaxYear, Json.obj("lossAmount" -> 0.0)).validateAndWrapResult()
         result shouldBe Right(
-          Def1_AmendBFLossRequestData(parsedNino, parsedLossId, Def1_AmendBFLossRequestBody(0.0))
+          Def1_AmendBFLossRequestData(parsedNino, parsedLossId, parsedTaxYear, Def1_AmendBFLossRequestBody(0.0))
         )
       }
 
       "given a valid nino and the maximum loss amount" in {
-        val result = validator(validNino, validLossId, Json.obj("lossAmount" -> 99999999999.99)).validateAndWrapResult()
+        val result = validator(validNino, validLossId, validTaxYear, Json.obj("lossAmount" -> 99999999999.99)).validateAndWrapResult()
         result shouldBe Right(
-          Def1_AmendBFLossRequestData(parsedNino, parsedLossId, Def1_AmendBFLossRequestBody(99999999999.99))
+          Def1_AmendBFLossRequestData(parsedNino, parsedLossId, parsedTaxYear, Def1_AmendBFLossRequestBody(99999999999.99))
         )
       }
     }
-    "return a NinoFormatError" when {
-      "given an invalid nino" in {
-        val result = validator(invalidNino, validLossId, Json.obj("lossAmount" -> 3.0)).validateAndWrapResult()
+    "return a single error" when {
+      "passed an invalid nino" in {
+        val result = validator(invalidNino, validLossId, validTaxYear, validLossAmount).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
         )
       }
-    }
-
-    "return a LossIdFormatError" when {
-      "given an invalid lossId" in {
-        val result = validator(validNino, invalidLossId, Json.obj("lossAmount" -> 3.0)).validateAndWrapResult()
+      "passed an invalid loss ID" in {
+        val result = validator(validNino, invalidLossId, validTaxYear, validLossAmount).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, LossIdFormatError)
         )
       }
-    }
+      "passed an incorrectly formatted taxYear" in {
+        val result = validator(validNino, validLossId, "202324", validLossAmount).validateAndWrapResult()
 
-    "return a RuleIncorrectOrEmptyBodyError" when {
+        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
+      }
+
+      "passed a taxYear before the minimum supported" in {
+        validator(validNino, validLossId, "2017-18", validLossAmount).validateAndWrapResult() shouldBe
+          Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
+      "passed a taxYear spanning an invalid tax year range" in {
+        val result = validator(validNino, validLossId, "2020-22", validLossAmount).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
+      }
+
       "given a body without a lossAmount field" in {
-        val result = validator(validNino, validLossId, Json.obj()).validateAndWrapResult()
+        val result = validator(validNino, validLossId, validTaxYear, Json.obj()).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError)
         )
       }
-    }
 
-    "return a ValueFormatError" when {
-      "given a lossAmount greater than 2 decimal places" in {
-        val result = validator(validNino, validLossId, Json.obj("lossAmount" -> 99999999999.999)).validateAndWrapResult()
+      "given a body with a lossAmount greater than 2 decimal places" in {
+        val result = validator(validNino, validLossId, validTaxYear, Json.obj("lossAmount" -> 99999999999.999)).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, ValueFormatError.forPathAndRange("/lossAmount", "0", "99999999999.99"))
         )
@@ -98,10 +110,10 @@ class Def1_AmendBFLossValidatorSpec extends UnitSpec {
     }
 
     "return multiple errors" when {
-      "given a request with multiple errors" in {
-        val result = validator(invalidNino, invalidLossId, Json.obj("lossAmount" -> 3.0)).validateAndWrapResult()
+      "passed a request with multiple errors" in {
+        val result = validator(invalidNino, invalidLossId, invalidTaxYear, Json.obj("lossAmount" -> 3.0)).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(LossIdFormatError, NinoFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(LossIdFormatError, NinoFormatError, TaxYearFormatError)))
         )
       }
     }
