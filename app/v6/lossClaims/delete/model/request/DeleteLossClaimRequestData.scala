@@ -23,6 +23,6 @@ import v6.lossClaims.delete.DeleteLossClaimSchema
 trait DeleteLossClaimRequestData {
   val nino: Nino
   val claimId: ClaimId
-  val taxYear: TaxYear
+  val taxYearClaimedFor: TaxYear
   val schema: DeleteLossClaimSchema
 }

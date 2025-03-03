@@ -23,10 +23,10 @@ import v6.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 class DeleteLossClaimValidatorFactory {
 
-  def validator(nino: String, claimId: String, taxYear: String): Validator[DeleteLossClaimRequestData] = {
+  def validator(nino: String, claimId: String, taxYearClaimedFor: String): Validator[DeleteLossClaimRequestData] = {
     val schema = DeleteLossClaimSchema.schema
     schema match {
-      case Def1 => new Def1_DeleteLossClaimValidator(nino, claimId, taxYear)
+      case Def1 => new Def1_DeleteLossClaimValidator(nino, claimId, taxYearClaimedFor)
     }
   }
 

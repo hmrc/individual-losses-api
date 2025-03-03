@@ -9,7 +9,7 @@ GET        /:nino/brought-forward-losses/tax-year/:taxYearBroughtForwardFrom    
 # Loss Claims
 
 POST       /:nino/loss-claims                                                   v6.lossClaims.create.CreateLossClaimController.create(nino: String)
-DELETE     /:nino/loss-claims/:claimId/tax-year/:taxYear                        v6.lossClaims.delete.DeleteLossClaimController.delete(nino: String, claimId: String, taxYear: String)
+DELETE     /:nino/loss-claims/:claimId/tax-year/:taxYearClaimedFor              v6.lossClaims.delete.DeleteLossClaimController.delete(nino: String, claimId: String, taxYear: String)
 GET        /:nino/loss-claims/:claimId                                          v6.lossClaims.retrieve.RetrieveLossClaimController.retrieve(nino: String, claimId: String)
 POST       /:nino/loss-claims/:claimId/change-type-of-claim                     v6.lossClaims.amendType.AmendLossClaimTypeController.amend(nino: String, claimId: String)
 PUT        /:nino/loss-claims/order/:taxYearClaimedFor                          v6.lossClaims.amendOrder.AmendLossClaimsOrderController.amendClaimsOrder(nino: String, taxYearClaimedFor: String)

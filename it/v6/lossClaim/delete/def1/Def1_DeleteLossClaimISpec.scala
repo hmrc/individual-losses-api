@@ -18,7 +18,7 @@ package v6.lossClaim.delete.def1
 
 import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow}
+import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow, TaxYearClaimedForFormatError}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
@@ -31,13 +31,13 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino    = "AA123456A"
-    val claimId = "AAZZ1234567890a"
-    val taxYear = "2019-20"
+    val nino              = "AA123456A"
+    val claimId           = "AAZZ1234567890a"
+    val taxYearClaimedFor = "2019-20"
 
     private val downstreamTaxYear = "19-20"
 
-    def uri: String    = s"/$nino/loss-claims/$claimId/tax-year/$taxYear"
+    def uri: String    = s"/$nino/loss-claims/$claimId/tax-year/$taxYearClaimedFor"
     def hipUrl: String = s"/itsa/income-tax/v1/claims-for-relief/$nino/$downstreamTaxYear/$claimId"
 
     def errorBody(code: String): String =
@@ -112,14 +112,14 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
     "handle validation errors according to spec" when {
       def validationErrorTest(requestNino: String,
                               requestClaimId: String,
-                              requestTaxYear: String,
+                              requestTaxYearClaimedFor: String,
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String    = requestNino
           override val claimId: String = requestClaimId
-          override val taxYear: String = requestTaxYear
+          override val taxYearClaimedFor: String = requestTaxYearClaimedFor
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
@@ -135,7 +135,7 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
 
       validationErrorTest("BADNINO", "AAZZ1234567890a", "2019-20", Status.BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BADCLAIMID", "2019-20", Status.BAD_REQUEST, ClaimIdFormatError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", "BADTAXYEAR", Status.BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "BADTAXYEAR", Status.BAD_REQUEST, TaxYearClaimedForFormatError)
       validationErrorTest("AA123456A", "AAZZ1234567890a", "2020-22", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
       validationErrorTest("AA123456A", "AAZZ1234567890a", "2017-18", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
     }

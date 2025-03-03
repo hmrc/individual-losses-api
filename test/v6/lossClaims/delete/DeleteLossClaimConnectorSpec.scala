@@ -29,7 +29,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
 
   private val nino    = Nino("AA123456A")
   private val claimId = ClaimId("AAZZ1234567890ag")
-  private val taxYear = TaxYear.fromMtd("2019-20")
+  private val taxYearClaimedFor = TaxYear.fromMtd("2019-20")
 
   "delete LossClaim" when {
     "given a valid request" when {
@@ -66,7 +66,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
   trait Test { _: ConnectorTest =>
     val connector: DeleteLossClaimConnector = new DeleteLossClaimConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
-    val request: Def1_DeleteLossClaimRequestData = Def1_DeleteLossClaimRequestData(nino = nino, claimId = claimId, taxYear = taxYear)
+    val request: Def1_DeleteLossClaimRequestData = Def1_DeleteLossClaimRequestData(nino = nino, claimId = claimId, taxYearClaimedFor = taxYearClaimedFor)
   }
 
 }

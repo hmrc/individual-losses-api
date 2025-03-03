@@ -42,9 +42,9 @@ class DeleteLossClaimControllerSpec
     with MockDeleteLossClaimService
     with MockDeleteLossClaimValidatorFactory {
 
-  private val claimId     = "AAZZ1234567890a"
-  private val taxYear     = "2019-20"
-  private val requestData = Def1_DeleteLossClaimRequestData(parsedNino, ClaimId(claimId), TaxYear.fromMtd(taxYear))
+  private val claimId           = "AAZZ1234567890a"
+  private val taxYearClaimedFor = "2019-20"
+  private val requestData       = Def1_DeleteLossClaimRequestData(parsedNino, ClaimId(claimId), TaxYear.fromMtd(taxYearClaimedFor))
 
   "delete" should {
     "return NO_CONTENT" when {
@@ -89,7 +89,7 @@ class DeleteLossClaimControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.delete(validNino, claimId, taxYear)(fakeRequest)
+    protected def callController(): Future[Result] = controller.delete(validNino, claimId, taxYearClaimedFor)(fakeRequest)
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -99,7 +99,7 @@ class DeleteLossClaimControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = Version9.name,
-          params = Map("nino" -> validNino, "claimId" -> claimId, "taxYear" -> taxYear),
+          params = Map("nino" -> validNino, "claimId" -> claimId, "taxYearClaimedFor" -> taxYearClaimedFor),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

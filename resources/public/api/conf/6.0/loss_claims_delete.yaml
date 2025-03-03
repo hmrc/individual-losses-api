@@ -2,7 +2,7 @@ delete:
   summary: Delete a Loss Claim
   description: |
     This endpoint allows a developer to delete an existing Loss Claim.
-    A National Insurance number and Claim ID must be provided.
+    A National Insurance number, tax year and Claim ID must be provided.
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
@@ -21,6 +21,7 @@ delete:
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
     - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+    - $ref: './common/pathParameters.yaml#/components/parameters/taxYearClaimedFor'
     - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
     - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
     - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
@@ -50,6 +51,8 @@ delete:
           examples:
             FORMAT_NINO:
               $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYearClaimedFor'
             FORMAT_CLAIM_ID:
               $ref: './common/errors.yaml#/components/examples/formatClaimId'
             RULE_INCORRECT_GOV_TEST_SCENARIO:
