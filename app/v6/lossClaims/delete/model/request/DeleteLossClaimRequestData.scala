@@ -16,12 +16,13 @@
 
 package v6.lossClaims.delete.model.request
 
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.delete.DeleteLossClaimSchema
 
 trait DeleteLossClaimRequestData {
   val nino: Nino
   val claimId: ClaimId
+  val taxYearClaimedFor: TaxYear
   val schema: DeleteLossClaimSchema
 }

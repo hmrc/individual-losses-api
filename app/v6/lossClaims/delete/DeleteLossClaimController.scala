@@ -43,24 +43,23 @@ class DeleteLossClaimController @Inject() (
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteLossClaimController", endpointName = "Delete a Loss Claim")
 
-  def delete(nino: String, claimId: String): Action[AnyContent] =
+  def delete(nino: String, claimId: String, taxYearClaimedFor: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, claimId)
+      val validator = validatorFactory.validator(nino, claimId, taxYearClaimedFor)
 
       val requestHandler =
         RequestHandler
           .withValidator(validator)
           .withService(service.deleteLossClaim)
-          .withAuditing(
-            AuditHandler(
-              auditService,
-              auditType = "DeleteLossClaim",
-              transactionName = "delete-loss-claim",
-              apiVersion = Version(request),
-              params = Map("nino" -> nino, "claimId" -> claimId)
-            ))
+          .withAuditing(AuditHandler(
+            auditService,
+            auditType = "DeleteLossClaim",
+            transactionName = "delete-loss-claim",
+            apiVersion = Version(request),
+            params = Map("nino" -> nino, "claimId" -> claimId, "taxYearClaimedFor" -> taxYearClaimedFor)
+          ))
 
       requestHandler.handleRequest()
     }

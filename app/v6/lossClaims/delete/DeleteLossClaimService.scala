@@ -17,7 +17,7 @@
 package v6.lossClaims.delete
 
 import cats.implicits._
-import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow}
+import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow, TaxYearClaimedForFormatError}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -35,6 +35,7 @@ class DeleteLossClaimService @Inject() (connector: DeleteLossClaimConnector) ext
 
   private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
     "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
     "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,

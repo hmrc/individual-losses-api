@@ -17,20 +17,28 @@
 package v6.lossClaims.delete.def1
 
 import cats.data.Validated
-import cats.implicits.catsSyntaxTuple2Semigroupal
+import cats.implicits.catsSyntaxTuple3Semigroupal
+import common.errors.TaxYearClaimedForFormatError
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.ResolveNino
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
 import shared.models.errors.MtdError
+import v6.lossClaims.common.minimumTaxYear
 import v6.lossClaims.common.resolvers.ResolveLossClaimId
 import v6.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 import v6.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
-class Def1_DeleteLossClaimValidator(nino: String, claimId: String) extends Validator[DeleteLossClaimRequestData] {
+class Def1_DeleteLossClaimValidator(nino: String, claimId: String, taxYearClaimedFor: String) extends Validator[DeleteLossClaimRequestData] {
+
+  private val resolveTaxYearClaimedFor = ResolveTaxYearMinimum(
+    minimumTaxYear = minimumTaxYear,
+    formatError = TaxYearClaimedForFormatError
+  )
 
   def validate: Validated[Seq[MtdError], DeleteLossClaimRequestData] =
     (
       ResolveNino(nino),
-      ResolveLossClaimId(claimId)
+      ResolveLossClaimId(claimId),
+      resolveTaxYearClaimedFor(taxYearClaimedFor)
     ).mapN(Def1_DeleteLossClaimRequestData)
 
 }
