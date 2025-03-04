@@ -2,7 +2,7 @@ post:
   summary: Amend a Loss Claim Type
   description: |
     This endpoint enables you to change the type of claim for an existing loss claim type.
-    A National Insurance Number and Claim ID must be provided.
+    A National Insurance Number, tax year and Claim ID must be provided.
     
     <strong>
       Note: carry-sideways-fhl type of loss claims for income sources uk-property-fhl and foreign-property-fhl-eea will not be supported from tax year 2025-26 onwards.
@@ -36,6 +36,7 @@ post:
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
     - $ref: './common/pathParameters.yaml#/components/parameters/claimId'
+    - $ref: './common/pathParameters.yaml#/components/parameters/taxYearClaimedFor'
     - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
     - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
     - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
@@ -87,6 +88,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/formatNino'
             FORMAT_CLAIM_ID:
               $ref: './common/errors.yaml#/components/examples/formatClaimId'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYearClaimedFor'
             FORMAT_VALUE:
               $ref: './common/errors.yaml#/components/examples/formatValue'
             RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
@@ -103,6 +106,10 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
             RULE_OUTSIDE_AMENDMENT_WINDOW:
               $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
+            RULE_TAX_YEAR_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            RULE_TAX_YEAR_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
 
 
     "403":

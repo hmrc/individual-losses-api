@@ -25,7 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.Timestamp
+import shared.models.domain.{TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
@@ -45,8 +45,8 @@ class AmendLossClaimTypeControllerSpec
 
   private val claimId            = ClaimId("AAZZ1234567890a")
   private val amendLossClaimType = Def1_AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
-
-  private val requestData = Def1_AmendLossClaimTypeRequestData(parsedNino, claimId, amendLossClaimType)
+  private val taxYearClaimedFor  = "2019-20"
+  private val requestData        = Def1_AmendLossClaimTypeRequestData(parsedNino, claimId, amendLossClaimType, TaxYear.fromMtd(taxYearClaimedFor))
 
   private val amendLossClaimTypeResponse =
     Def1_AmendLossClaimTypeResponse(
@@ -127,7 +127,7 @@ class AmendLossClaimTypeControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.amend(validNino, claimId.claimId)(fakePostRequest(requestBody))
+    protected def callController(): Future[Result] = controller.amend(validNino, claimId.claimId, taxYearClaimedFor)(fakePostRequest(requestBody))
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -137,7 +137,7 @@ class AmendLossClaimTypeControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           versionNumber = Version9.name,
-          params = Map("nino" -> validNino, "claimId" -> claimId.claimId),
+          params = Map("nino" -> validNino, "claimId" -> claimId.claimId, "taxYearClaimedFor" -> taxYearClaimedFor),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

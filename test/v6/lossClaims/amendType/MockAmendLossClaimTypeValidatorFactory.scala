@@ -33,8 +33,8 @@ trait MockAmendLossClaimTypeValidatorFactory extends MockFactory {
 
     def expectValidator(): CallHandler[Validator[AmendLossClaimTypeRequestData]] = {
       (mockAmendLossClaimTypeValidatorFactory
-        .validator(_: String, _: String, _: JsValue))
-        .expects(*, *, *)
+        .validator(_: String, _: String, _: JsValue, _: String))
+        .expects(*, *, *, *)
     }
 
   }

@@ -21,9 +21,10 @@ import common.errors.{
   RuleCSFHLClaimNotSupportedError,
   RuleClaimTypeNotChanged,
   RuleOutsideAmendmentWindow,
-  RuleTypeOfClaimInvalid
+  RuleTypeOfClaimInvalid,
+  TaxYearClaimedForFormatError
 }
-import shared.models.domain.{Nino, Timestamp}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -36,8 +37,9 @@ import scala.concurrent.Future
 
 class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890a"
+  val nino: String      = "AA123456A"
+  val claimId: String   = "AAZZ1234567890a"
+  val taxYearClaimedFor = "2019-20"
 
   val requestBody: Def1_AmendLossClaimTypeRequestBody = Def1_AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
@@ -53,7 +55,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
   trait Test extends MockAmendLossClaimTypeConnector {
     lazy val service = new AmendLossClaimTypeService(mockAmendLossClaimTypeConnector)
-    val request      = Def1_AmendLossClaimTypeRequestData(Nino(nino), ClaimId(claimId), requestBody)
+    val request      = Def1_AmendLossClaimTypeRequestData(Nino(nino), ClaimId(claimId), requestBody, TaxYear.fromMtd(taxYearClaimedFor))
   }
 
   "amend LossClaim" when {
@@ -93,6 +95,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
       val errors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+        "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
         "INVALID_PAYLOAD"           -> InternalError,
         "INVALID_CLAIM_TYPE"        -> RuleTypeOfClaimInvalid,
         "CSFHL_CLAIM_NOT_SUPPORTED" -> RuleCSFHLClaimNotSupportedError,

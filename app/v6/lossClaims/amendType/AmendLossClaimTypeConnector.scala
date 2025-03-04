@@ -37,7 +37,7 @@ class AmendLossClaimTypeConnector @Inject() (val http: HttpClient, val appConfig
 
     import request._
     import schema._
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/claims-for-relief/$nino/$claimId")
+    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/claims-for-relief/$nino/${taxYearClaimedFor.asTysDownstream}/$claimId")
 
     put(body, downstreamUri)
   }

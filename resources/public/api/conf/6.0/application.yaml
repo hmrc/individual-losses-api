@@ -76,7 +76,7 @@ paths:
     $ref: "./loss_claims_retrieve.yaml"
   /individuals/losses/{nino}/loss-claims/{claimId}/tax-year/{taxYearClaimedFor}:
     $ref: "./loss_claims_delete.yaml"
-  /individuals/losses/{nino}/loss-claims/{claimId}/change-type-of-claim:
+  /individuals/losses/{nino}/loss-claims/{claimId}/tax-year/{taxYearClaimedFor}/change-type-of-claim:
     $ref: "./loss_claims_amend_type.yaml"
   /individuals/losses/{nino}/loss-claims/order/{taxYearClaimedFor}:
     $ref: "./loss_claims_amend_order_endpoints.yaml"

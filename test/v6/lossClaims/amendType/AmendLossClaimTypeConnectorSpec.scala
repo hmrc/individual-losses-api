@@ -17,7 +17,7 @@
 package v6.lossClaims.amendType
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, Timestamp}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.outcomes.ResponseWrapper
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
@@ -28,8 +28,9 @@ import scala.concurrent.Future
 
 class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890ag"
+  val nino: String              = "AA123456A"
+  val claimId: String           = "AAZZ1234567890ag"
+  val taxYearClaimedFor: String = "2019-20"
 
   "amendLossClaimType" when {
 
@@ -48,7 +49,7 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
       "return a successful response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[AmendLossClaimTypeResponse]] = Right(ResponseWrapper(correlationId, response))
 
-        willPut(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId", amendLossClaimType)
+        willPut(s"$baseUrl/income-tax/claims-for-relief/$nino/19-20/$claimId", amendLossClaimType)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[AmendLossClaimTypeResponse] = amendLossClaimTypeResult(connector)
@@ -62,7 +63,8 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
           Def1_AmendLossClaimTypeRequestData(
             nino = Nino(nino),
             claimId = ClaimId(claimId),
-            amendLossClaimType
+            amendLossClaimType,
+            TaxYear.fromMtd(taxYearClaimedFor)
           )))
   }
 
