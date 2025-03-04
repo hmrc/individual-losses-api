@@ -148,17 +148,12 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
                               requestBody: JsValue,
                               expectedStatus: Int,
                               expectedBody: MtdError,
-                              requestTaxYearClaimedFor: String = "2020-21",
-                              requestDownstreamTaxYearClaimedFor: String = "20-21"): Unit = {
+                              requestTaxYearClaimedFor: String = "2020-21"): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String    = requestNino
-          override val claimId: String = requestClaimId
-
-          override def uri: String =
-            s"/$nino/loss-claims/$claimId/tax-year/$requestTaxYearClaimedFor/change-type-of-claim"
-          override def ifsUrl: String =
-            s"/income-tax/claims-for-relief/$nino/$requestDownstreamTaxYearClaimedFor/$claimId"
+          override val nino: String              = requestNino
+          override val claimId: String           = requestClaimId
+          override val taxYearClaimedFor: String = requestTaxYearClaimedFor
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -191,6 +186,24 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
         BAD_REQUEST,
         TaxYearClaimedForFormatError,
         "202324"
+      )
+
+      validationErrorTest(
+        "AA123456A",
+        "AAZZ1234567890a",
+        Json.obj("typeOfClaim" -> "carry-forward"),
+        BAD_REQUEST,
+        RuleTaxYearRangeInvalidError,
+        "2018-24"
+      )
+
+      validationErrorTest(
+        "AA123456A",
+        "AAZZ1234567890a",
+        Json.obj("typeOfClaim" -> "carry-forward"),
+        BAD_REQUEST,
+        RuleTaxYearNotSupportedError,
+        "2017-18"
       )
     }
   }
