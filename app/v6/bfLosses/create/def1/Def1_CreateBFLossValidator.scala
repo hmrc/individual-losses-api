@@ -39,17 +39,14 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body:
   private val resolveParsedNumber = ResolveParsedNumber()
 
   def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
-    def withPath(error: MtdError) = taxYearErrorPath.fold(error)(error.withPath)
+    def withPath(error: MtdError): MtdError = taxYearErrorPath.fold(error)(error.withPath)
 
     ResolveTaxYearMinimum(
       minimumTaxYear,
       notSupportedError = withPath(RuleTaxYearNotSupportedError),
       formatError = withPath(TaxYearFormatError),
       rangeError = withPath(RuleTaxYearRangeInvalidError)
-    )(taxYear) andThen (_ =>
-      ResolveIncompleteTaxYear(
-        withPath(RuleTaxYearNotEndedError)
-      ).resolver(taxYear))
+    )(taxYear)
   }
 
   def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
@@ -67,7 +64,10 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body:
     val taxYearErrorPath = "/taxYearBroughtForwardFrom"
 
     combine(
-      resolvedTaxYear(taxYearBroughtForwardFrom, Some(taxYearErrorPath)),
+      resolvedTaxYear(taxYearBroughtForwardFrom, Some(taxYearErrorPath)).andThen(_ =>
+        ResolveIncompleteTaxYear(
+          RuleTaxYearNotEndedError.withPath(taxYearErrorPath)
+        ).apply(taxYearBroughtForwardFrom)),
       ResolveBusinessId(businessId),
       resolveParsedNumber(lossAmount, path = "/lossAmount")
     ).map(_ => parsed)

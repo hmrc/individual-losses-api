@@ -61,9 +61,6 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
 
   class Test extends MockSharedAppConfig {
 
-//    implicit val todaySupplier: TodaySupplier = new TodaySupplier {
-//      override def today(): LocalDate = LocalDate.parse("2022-07-11")
-//    }
     implicit val clock: Clock = Clock.fixed(Instant.parse("2022-07-11T10:00:00.00Z"), ZoneId.of("UTC"))
 
     protected def validator(nino: String, taxYear: String, body: JsValue): Validator[CreateBFLossRequestData] =
@@ -207,15 +204,6 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
           validator(validNino, "2015-16", requestBodyJson()).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
-      }
-    }
-
-    "return RuleTaxYearNotEnded error" when {
-      "given a not ended tax year parameter" in new Test {
-        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
-          validator(validNino, "2022-23", requestBodyJson()).validateAndWrapResult()
-
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotEndedError))
       }
     }
 
