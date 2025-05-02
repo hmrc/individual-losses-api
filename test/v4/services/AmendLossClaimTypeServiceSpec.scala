@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,16 @@
 package v4.services
 
 import common.errors.{ClaimIdFormatError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
-import shared.models.domain.{Nino, Timestamp}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v4.connectors.MockAmendLossClaimTypeConnector
+import v4.connectors.{MockAmendLossClaimTypeConnector, MockRetrieveLossClaimConnector}
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v4.models.request.amendLossClaimType.{AmendLossClaimTypeRequestBody, AmendLossClaimTypeRequestData}
+import v4.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
 import v4.models.response.amendLossClaimType.AmendLossClaimTypeResponse
+import v4.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import scala.concurrent.Future
 
@@ -35,7 +37,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
 
   val requestBody: AmendLossClaimTypeRequestBody = AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
-  val lossClaimResponse: AmendLossClaimTypeResponse =
+  val amendLossClaimResponse: AmendLossClaimTypeResponse =
     AmendLossClaimTypeResponse(
       "2019-20",
       TypeOfLoss.`self-employment`,
@@ -45,46 +47,102 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
       Timestamp("2018-07-13T12:13:48.763Z")
     )
 
-  trait Test extends MockAmendLossClaimTypeConnector {
-    lazy val service = new AmendLossClaimTypeService(mockAmendLossClaimTypeConnector)
+  val retrieveLossClaimResponse: RetrieveLossClaimResponse =
+    RetrieveLossClaimResponse(
+      "2019-20",
+      TypeOfLoss.`self-employment`,
+      TypeOfClaim.`carry-forward`,
+      "XKIS00000000988",
+      Some(1),
+      Timestamp("2018-07-13T12:13:48.763Z")
+    )
+
+  val taxYear: TaxYear = TaxYear.fromMtd(retrieveLossClaimResponse.taxYearClaimedFor)
+
+  trait Test extends MockAmendLossClaimTypeConnector with MockRetrieveLossClaimConnector {
+    lazy val service = new AmendLossClaimTypeService(mockRetrieveLossClaimConnector, mockAmendLossClaimTypeConnector)
   }
 
   "amend LossClaim" when {
-    lazy val request = AmendLossClaimTypeRequestData(Nino(nino), ClaimId(claimId), requestBody)
+    lazy val amendRequest: AmendLossClaimTypeRequestData   = AmendLossClaimTypeRequestData(Nino(nino), ClaimId(claimId), requestBody)
+    lazy val retrieveRequest: RetrieveLossClaimRequestData = RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {
-        MockAmendLossClaimTypeConnector
-          .amendLossClaimType(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, lossClaimResponse))))
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = retrieveRequest, isAmendRequest = true)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveLossClaimResponse))))
 
-        await(service.amendLossClaimType(request)) shouldBe Right(ResponseWrapper(correlationId, lossClaimResponse))
+        MockAmendLossClaimTypeConnector
+          .amendLossClaimType(amendRequest, taxYear)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, amendLossClaimResponse))))
+
+        await(service.amendLossClaimType(amendRequest)) shouldBe Right(ResponseWrapper(correlationId, amendLossClaimResponse))
       }
     }
 
     "return that wrapped error as-is" when {
-      "the connector returns an outbound error" in new Test {
+      "the retrieve connector returns an outbound error" in new Test {
         val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
 
-        MockAmendLossClaimTypeConnector.amendLossClaimType(request).returns(Future.successful(Left(downstreamResponse)))
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = retrieveRequest, isAmendRequest = true)
+          .returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.amendLossClaimType(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
+        await(service.amendLossClaimType(amendRequest)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
+      }
+
+      "the amend connector returns an outbound error" in new Test {
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
+        val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
+
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = retrieveRequest, isAmendRequest = true)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveLossClaimResponse))))
+
+        MockAmendLossClaimTypeConnector.amendLossClaimType(amendRequest, taxYear).returns(Future.successful(Left(downstreamResponse)))
+
+        await(service.amendLossClaimType(amendRequest)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "map errors according to spec" when {
-      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-        s"a $downstreamErrorCode error is returned from the service" in new Test {
-          MockAmendLossClaimTypeConnector
-            .amendLossClaimType(request)
+      def serviceErrorFromRetrieveConnector(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service when the retrieve connector call fails" in new Test {
+          MockRetrieveLossClaimConnector
+            .retrieveLossClaim(request = retrieveRequest, isAmendRequest = true)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          private val result = await(service.amendLossClaimType(request))
+          private val result = await(service.amendLossClaimType(amendRequest))
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors: Seq[(String, MtdError)] = List(
+      def serviceErrorFromAmendConnector(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service when the amend connector call fails" in new Test {
+          MockRetrieveLossClaimConnector
+            .retrieveLossClaim(request = retrieveRequest, isAmendRequest = true)
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveLossClaimResponse))))
+
+          MockAmendLossClaimTypeConnector
+            .amendLossClaimType(amendRequest, taxYear)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
+
+          private val result = await(service.amendLossClaimType(amendRequest))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
+        }
+
+      val retrieveErrors: Seq[(String, MtdError)] = List(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+        "NOT_FOUND"                 -> NotFoundError,
+        "INVALID_CORRELATIONID"     -> InternalError,
+        "SERVER_ERROR"              -> InternalError,
+        "SERVICE_UNAVAILABLE"       -> InternalError,
+        "UNEXPECTED_ERROR"          -> InternalError
+      )
+
+      val amendErrors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
         "INVALID_PAYLOAD"           -> InternalError,
@@ -97,7 +155,8 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         "UNEXPECTED_ERROR"          -> InternalError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
+      amendErrors.foreach(args => (serviceErrorFromAmendConnector _).tupled(args))
 
     }
   }

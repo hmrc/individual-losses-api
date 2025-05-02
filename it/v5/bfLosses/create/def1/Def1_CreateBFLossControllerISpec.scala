@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,10 @@ package v5.bfLosses.create.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, TypeOfLossFormatError}
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers._
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
@@ -32,18 +31,20 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
 
   val lossId = "AAZZ1234567890a"
 
-  val requestBody: JsValue = Json.parse("""
+  val requestBody: JsValue = Json.parse(
+    """
       |{
-      |    "businessId": "XKIS00000000988",
-      |    "typeOfLoss": "self-employment",
-      |    "taxYearBroughtForwardFrom": "2018-19",
-      |    "lossAmount": 256.78
+      |  "businessId": "XKIS00000000988",
+      |  "typeOfLoss": "self-employment",
+      |  "taxYearBroughtForwardFrom": "2018-19",
+      |  "lossAmount": 256.78
       |}
-      """.stripMargin)
+    """.stripMargin
+  )
 
   private trait Test {
-    val nino           = "AA123456A"
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino"
+    val nino                  = "AA123456A"
+    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}"
 
     def setupStubs(): StubMapping
 
@@ -57,24 +58,28 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         )
     }
 
-    lazy val responseBody: JsValue = Json.parse(s"""
-         |{
-         |  "lossId": "AAZZ1234567890a"
-         |}
-      """.stripMargin)
+    lazy val responseBody: JsValue = Json.parse(
+      """
+        |{
+        |  "lossId": "AAZZ1234567890a"
+        |}
+      """.stripMargin
+    )
 
-    val downstreamResponse: JsValue = Json.parse(s"""
-         |{
-         |    "lossId": "$lossId"
-         |}
-      """.stripMargin)
+    val downstreamResponse: JsValue = Json.parse(
+      s"""
+        |{
+        |  "lossId": "$lossId"
+        |}
+      """.stripMargin
+    )
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+        |{
+        |  "code": "$code",
+        |  "reason": "downstream message"
+        |}
       """.stripMargin
 
   }
@@ -86,7 +91,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request.post(requestBody))
@@ -144,15 +149,15 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
           RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
-      "ifs service error" when {
-        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $ifsCode error" in new Test {
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.POST, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request.post(requestBody))

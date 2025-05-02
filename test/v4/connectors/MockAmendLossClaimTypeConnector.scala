@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package v4.connectors
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.models.request.amendLossClaimType.AmendLossClaimTypeRequestData
 import v4.models.response.amendLossClaimType.AmendLossClaimTypeResponse
@@ -31,11 +32,11 @@ trait MockAmendLossClaimTypeConnector extends MockFactory {
 
   object MockAmendLossClaimTypeConnector {
 
-    def amendLossClaimType(request: AmendLossClaimTypeRequestData): CallHandler[Future[DownstreamOutcome[AmendLossClaimTypeResponse]]] = {
+    def amendLossClaimType(request: AmendLossClaimTypeRequestData,
+                           taxYear: TaxYear): CallHandler[Future[DownstreamOutcome[AmendLossClaimTypeResponse]]] =
       (mockAmendLossClaimTypeConnector
-        .amendLossClaimType(_: AmendLossClaimTypeRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
-    }
+        .amendLossClaimType(_: AmendLossClaimTypeRequestData, _: TaxYear)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(request, taxYear, *, *, *)
 
   }
 

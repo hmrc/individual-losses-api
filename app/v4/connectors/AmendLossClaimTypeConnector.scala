@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.config.SharedAppConfig
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.amendLossClaimType.AmendLossClaimTypeRequestData
 import v4.models.response.amendLossClaimType.AmendLossClaimTypeResponse
@@ -30,14 +31,15 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendLossClaimTypeConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def amendLossClaimType(request: AmendLossClaimTypeRequestData)(implicit
+  def amendLossClaimType(request: AmendLossClaimTypeRequestData, taxYear: TaxYear)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
+      correlationId: String
+  ): Future[DownstreamOutcome[AmendLossClaimTypeResponse]] = {
 
     import request._
 
-    put(amendLossClaimTypeRequestBody, IfsUri[AmendLossClaimTypeResponse](s"income-tax/claims-for-relief/$nino/$claimId"))
+    put(amendLossClaimTypeRequestBody, IfsUri[AmendLossClaimTypeResponse](s"income-tax/claims-for-relief/$nino/${taxYear.asTysDownstream}/$claimId"))
   }
 
 }

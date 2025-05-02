@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package v5.lossClaims.delete
 
 import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
@@ -27,8 +27,9 @@ import scala.concurrent.Future
 
 class DeleteLossClaimConnectorSpec extends ConnectorSpec {
 
-  private val nino    = Nino("AA123456A")
-  private val claimId = ClaimId("AAZZ1234567890ag")
+  private val nino              = Nino("AA123456A")
+  private val claimId           = ClaimId("AAZZ1234567890ag")
+  private val taxYearClaimedFor = TaxYear.fromMtd("2019-20")
 
   "delete LossClaim" when {
     "given a valid request" when {
@@ -41,7 +42,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
           willDelete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
             .returning(Future.successful(expected))
 
-          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
+          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request, taxYearClaimedFor))
           result shouldBe expected
         }
       }
@@ -51,10 +52,10 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
           MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> true)
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(s"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/$claimId")
+          willDelete(s"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId")
             .returning(Future.successful(expected))
 
-          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
+          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request, taxYearClaimedFor))
           result shouldBe expected
         }
       }

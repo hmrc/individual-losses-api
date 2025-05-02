@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
   val claimId: String = "AAZZ1234567890a"
 
   trait Test extends MockRetrieveLossClaimConnector {
-    lazy val service = new RetrieveLossClaimService(connector)
+    lazy val service = new RetrieveLossClaimService(mockRetrieveLossClaimConnector)
   }
 
   lazy val request: RetrieveLossClaimRequestData = Def1_RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
@@ -55,7 +55,9 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
               Timestamp("2018-07-13T12:13:48.763Z")
             )
           )
-        MockRetrieveLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Right(downstreamResponse)))
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = request, isAmendRequest = false)
+          .returns(Future.successful(Right(downstreamResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Right(downstreamResponse)
       }
@@ -65,7 +67,9 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
       "the connector returns an outbound error" in new Test {
         val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
-        MockRetrieveLossClaimConnector.retrieveLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = request, isAmendRequest = false)
+          .returns(Future.successful(Left(downstreamResponse)))
 
         await(service.retrieveLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
@@ -76,7 +80,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
         s"a $downstreamErrorCode error is returned from the service" in new Test {
 
           MockRetrieveLossClaimConnector
-            .retrieveLossClaim(request)
+            .retrieveLossClaim(request = request, isAmendRequest = false)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
           private val result = await(service.retrieveLossClaim(request))
