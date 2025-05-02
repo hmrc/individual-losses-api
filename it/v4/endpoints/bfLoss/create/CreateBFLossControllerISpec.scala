@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,10 @@ import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{RuleDuplicateSubmissionError, TypeOfLossFormatError}
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers._
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.support.IntegrationBaseSpec
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
@@ -32,18 +31,20 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
 
   val lossId = "AAZZ1234567890a"
 
-  val requestBody: JsValue = Json.parse("""
+  val requestBody: JsValue = Json.parse(
+    """
       |{
-      |    "businessId": "XKIS00000000988",
-      |    "typeOfLoss": "self-employment",
-      |    "taxYearBroughtForwardFrom": "2018-19",
-      |    "lossAmount": 256.78
+      |  "businessId": "XKIS00000000988",
+      |  "typeOfLoss": "self-employment",
+      |  "taxYearBroughtForwardFrom": "2018-19",
+      |  "lossAmount": 256.78
       |}
-      """.stripMargin)
+    """.stripMargin
+  )
 
   private trait Test {
-    val nino           = "AA123456A"
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino"
+    val nino                  = "AA123456A"
+    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}"
 
     def setupStubs(): StubMapping
 
@@ -57,41 +58,45 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
         )
     }
 
-    lazy val responseBody: JsValue = Json.parse(s"""
-         |{
-         |  "lossId": "AAZZ1234567890a",
-         |  "links": [
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-         |      "method": "DELETE",
-         |      "rel": "delete-brought-forward-loss"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-         |      "method": "POST",
-         |      "rel": "amend-brought-forward-loss"
-         |    }
-         |  ]
-         |}
-      """.stripMargin)
+    lazy val responseBody: JsValue = Json.parse(
+      s"""
+        |{
+        |  "lossId": "AAZZ1234567890a",
+        |  "links": [
+        |    {
+        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+        |      "method": "GET",
+        |      "rel": "self"
+        |    },
+        |    {
+        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
+        |      "method": "DELETE",
+        |      "rel": "delete-brought-forward-loss"
+        |    },
+        |    {
+        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
+        |      "method": "POST",
+        |      "rel": "amend-brought-forward-loss"
+        |    }
+        |  ]
+        |}
+      """.stripMargin
+    )
 
-    val downstreamResponse: JsValue = Json.parse(s"""
-         |{
-         |    "lossId": "$lossId"
-         |}
-      """.stripMargin)
+    val downstreamResponse: JsValue = Json.parse(
+      s"""
+        |{
+        |  "lossId": "$lossId"
+        |}
+      """.stripMargin
+    )
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+        |{
+        |  "code": "$code",
+        |  "reason": "downstream message"
+        |}
       """.stripMargin
 
   }
@@ -103,7 +108,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request.post(requestBody))
@@ -161,15 +166,15 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
           RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
-      "ifs service error" when {
-        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $ifsCode error" in new Test {
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.POST, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request.post(requestBody))

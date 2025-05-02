@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,21 @@ package v4.connectors
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockDeleteLossClaimConnector extends MockFactory {
-  val connector: DeleteLossClaimConnector = mock[DeleteLossClaimConnector]
+  val mockDeleteLossClaimConnector: DeleteLossClaimConnector = mock[DeleteLossClaimConnector]
 
   object MockDeleteLossClaimConnector {
 
-    def deleteLossClaim(deleteLossClaimRequest: DeleteLossClaimRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
-      (connector
-        .deleteLossClaim(_: DeleteLossClaimRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(deleteLossClaimRequest, *, *, *)
-    }
+    def deleteLossClaim(deleteLossClaimRequest: DeleteLossClaimRequestData, taxYear: TaxYear): CallHandler[Future[DownstreamOutcome[Unit]]] =
+      (mockDeleteLossClaimConnector
+        .deleteLossClaim(_: DeleteLossClaimRequestData, _: TaxYear)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(deleteLossClaimRequest, taxYear, *, *, *)
 
   }
 

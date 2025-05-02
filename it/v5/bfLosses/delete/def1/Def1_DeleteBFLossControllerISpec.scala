@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,10 @@ package v5.bfLosses.delete.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers._
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -34,15 +33,15 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    def uri: String    = s"/$nino/brought-forward-losses/$lossId"
-    def hipUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/$lossId"
+    private def uri: String   = s"/$nino/brought-forward-losses/$lossId"
+    def downstreamUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+        |{
+        |  "code": "$code",
+        |  "reason": "downstream message"
+        |}
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -68,7 +67,7 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, hipUrl, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUrl, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -85,7 +84,7 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.DELETE, hipUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, downstreamUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())

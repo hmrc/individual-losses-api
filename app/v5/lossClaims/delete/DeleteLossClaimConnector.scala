@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package v5.lossClaims.delete
 import shared.connectors.DownstreamUri.{DesUri, HipUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
@@ -29,15 +30,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteLossClaimConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def deleteLossClaim(request: DeleteLossClaimRequestData)(implicit
+  def deleteLossClaim(request: DeleteLossClaimRequestData, taxYear: TaxYear)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[Unit]] = {
+      correlationId: String
+  ): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1509")) {
-      HipUri[Unit](s"itsa/income-tax/v1/claims-for-relief/$nino/$claimId")
+      HipUri[Unit](s"itsa/income-tax/v1/claims-for-relief/$nino/${taxYear.asTysDownstream}/$claimId")
     } else {
       DesUri[Unit](s"income-tax/claims-for-relief/$nino/$claimId")
     }

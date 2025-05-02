@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package v5.lossClaims.retrieve
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
@@ -43,20 +44,31 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
       Timestamp("2018-07-13T12:13:48.763Z")
     )
 
-    val request = Def1_RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
-
-    def retrieveLossClaimResult(connector: RetrieveLossClaimConnector): DownstreamOutcome[RetrieveLossClaimResponse] =
-      await(connector.retrieveLossClaim(request))
+    val request: Def1_RetrieveLossClaimRequestData = Def1_RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
 
     "return a successful response and correlationId" when {
-      "provided with a valid request" in new IfsTest with Test {
-        private val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
+      List(
+        (false, false, None),
+        (false, true, None),
+        (true, false, None),
+        (true, true, Some("AMEND_LOSS_CLAIM"))
+      ).foreach { case (isAmendRequestValue, passIntentHeaderFlag, intentValue) =>
+        s"provided with a valid request, isAmendRequest is $isAmendRequestValue and passIntentHeader is $passIntentHeaderFlag" in new IfsTest
+          with Test {
+          override def intent: Option[String] = intentValue
 
-        willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
-          .returning(Future.successful(expected))
+          private val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
 
-        val result: DownstreamOutcome[RetrieveLossClaimResponse] = retrieveLossClaimResult(connector)
-        result shouldBe expected
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("passIntentHeader.enabled" -> passIntentHeaderFlag)
+
+          willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
+            .returning(Future.successful(expected))
+
+          val result: DownstreamOutcome[RetrieveLossClaimResponse] =
+            await(connector.retrieveLossClaim(request = request, isAmendRequest = isAmendRequestValue))
+
+          result shouldBe expected
+        }
       }
     }
   }

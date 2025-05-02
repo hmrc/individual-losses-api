@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@ import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockRetrieveLossClaimConnector extends MockFactory {
-  val connector: RetrieveLossClaimConnector = mock[RetrieveLossClaimConnector]
+  val mockRetrieveLossClaimConnector: RetrieveLossClaimConnector = mock[RetrieveLossClaimConnector]
 
   object MockRetrieveLossClaimConnector {
 
-    def retrieveLossClaim(request: RetrieveLossClaimRequestData): CallHandler[Future[DownstreamOutcome[RetrieveLossClaimResponse]]] = {
-      (connector
-        .retrieveLossClaim(_: RetrieveLossClaimRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
-    }
+    def retrieveLossClaim(request: RetrieveLossClaimRequestData,
+                          isAmendRequest: Boolean): CallHandler[Future[DownstreamOutcome[RetrieveLossClaimResponse]]] =
+      (mockRetrieveLossClaimConnector
+        .retrieveLossClaim(_: RetrieveLossClaimRequestData, _: Boolean)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(request, isAmendRequest, *, *, *)
 
   }
 

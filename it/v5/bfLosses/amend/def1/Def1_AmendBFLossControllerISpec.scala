@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ package v5.bfLosses.amend.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
-import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers._
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -32,54 +30,62 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
   val lossAmount = 2345.67
 
-  val downstreamResponseJson: JsValue = Json.parse(s"""
-                                                      |{
-                                                      |    "incomeSourceId": "XBIS12345678910",
-                                                      |    "lossType": "INCOME",
-                                                      |    "broughtForwardLossAmount": $lossAmount,
-                                                      |    "taxYear": "2022",
-                                                      |    "lossId": "AAZZ1234567890A",
-                                                      |    "submissionDate": "2022-07-13T12:13:48.763Z"
-                                                      |}
-      """.stripMargin)
+  val downstreamResponseJson: JsValue = Json.parse(
+    s"""
+      |{
+      |  "incomeSourceId": "XBIS12345678910",
+      |  "lossType": "INCOME",
+      |  "broughtForwardLossAmount": $lossAmount,
+      |  "taxYear": "2022",
+      |  "lossId": "AAZZ1234567890A",
+      |  "submissionDate": "2022-07-13T12:13:48.763Z"
+      |}
+    """.stripMargin
+  )
 
-  val requestJson: JsValue = Json.parse(s"""
-                                           |{
-                                           |    "lossAmount": $lossAmount
-                                           |}
-      """.stripMargin)
+  val requestJson: JsValue = Json.parse(
+    s"""
+      |{
+      |  "lossAmount": $lossAmount
+      |}
+    """.stripMargin
+  )
 
-  val invalidRequestJson: JsValue = Json.parse(s"""
-                                                  |{
-                                                  |    "lossAmount": 23.2714
-                                                  |}
-      """.stripMargin)
+  val invalidRequestJson: JsValue = Json.parse(
+    """
+      |{
+      |  "lossAmount": 23.2714
+      |}
+    """.stripMargin
+  )
 
   def errorBody(code: String): String =
     s"""
-       |      {
-       |        "code": "$code",
-       |        "reason": "downstream message"
-       |      }
-      """.stripMargin
+      |{
+      |  "code": "$code",
+      |  "reason": "downstream message"
+      |}
+    """.stripMargin
 
   private trait Test {
 
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    val responseJson: JsValue = Json.parse(s"""
-                                              |{
-                                              |    "businessId": "XBIS12345678910",
-                                              |    "typeOfLoss": "self-employment",
-                                              |    "lossAmount": 2345.67,
-                                              |    "taxYearBroughtForwardFrom": "2021-22",
-                                              |    "lastModified": "2022-07-13T12:13:48.763Z"
-                                              |}
-      """.stripMargin)
+    val responseJson: JsValue = Json.parse(
+      """
+        |{
+        |  "businessId": "XBIS12345678910",
+        |  "typeOfLoss": "self-employment",
+        |  "lossAmount": 2345.67,
+        |  "taxYearBroughtForwardFrom": "2021-22",
+        |  "lastModified": "2022-07-13T12:13:48.763Z"
+        |}
+      """.stripMargin
+    )
 
-    def url: String    = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
+    private def url: String   = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
+    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId"
 
     def setupStubs(): StubMapping
 
@@ -103,11 +109,11 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
@@ -149,14 +155,14 @@ class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
       }
 
       "downstream service error" when {
-        def serviceErrorTest(ifsStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $ifsStatus" in new Test {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.PUT, ifsUrl, ifsStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.PUT, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().post(requestJson))
