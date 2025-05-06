@@ -16,10 +16,10 @@
 
 package v5.bfLosses.retrieve
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import shared.config.SharedAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
@@ -38,7 +38,13 @@ class RetrieveBFLossConnector @Inject() (val http: HttpClient, val appConfig: Sh
     import request._
     import schema._
 
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
+    val downstreamUri: DownstreamUri[DownstreamResp] =
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1502")) {
+        HipUri(s"itsd/income-sources/brought-forward-losses/$nino/$lossId")
+      } else {
+        IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
+      }
+
     get(downstreamUri)
   }
 

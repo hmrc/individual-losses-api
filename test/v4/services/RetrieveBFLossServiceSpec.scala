@@ -74,7 +74,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors: Seq[(String, MtdError)] = Seq(
+      val ifsErrors: Seq[(String, MtdError)] = Seq(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_LOSS_ID"           -> LossIdFormatError,
         "NOT_FOUND"                 -> NotFoundError,
@@ -83,7 +83,13 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
         "SERVICE_UNAVAILABLE"       -> InternalError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      val hipErrors = Map(
+        "1215" -> NinoFormatError,
+        "1219" -> LossIdFormatError,
+        "5010" -> NotFoundError
+      )
+
+      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

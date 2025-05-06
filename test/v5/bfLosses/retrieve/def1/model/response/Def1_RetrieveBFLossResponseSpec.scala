@@ -16,19 +16,20 @@
 
 package v5.bfLosses.retrieve.def1.model.response
 
-import shared.models.domain.Timestamp
 import play.api.libs.json.{JsValue, Json}
+import shared.models.domain.Timestamp
 import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
 class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
 
-  private val businessId        = "000000000000001"
-  private val lossAmount        = 123.45
-  private val taxYearDownstream = "2020"
-  private val taxYear           = "2019-20"
-  private val lastModified      = Timestamp("2018-07-13T12:13:48.763Z")
+  private val businessId           = "000000000000001"
+  private val lossAmount           = 123.45
+  private val ifsTaxYearDownstream = "2020"
+  private val hipTaxYearDownstream = 2020
+  private val taxYear              = "2019-20"
+  private val lastModified         = Timestamp("2018-07-13T12:13:48.763Z")
 
   def responseWith(typeOfLoss: TypeOfLoss): RetrieveBFLossResponse =
     Def1_RetrieveBFLossResponse(
@@ -47,58 +48,92 @@ class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
       test(IncomeSourceType.`15`, TypeOfLoss.`foreign-property`)
 
       def test(incomeSourceType: IncomeSourceType, typeOfLoss: TypeOfLoss): Unit =
-        s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" in {
-          val downstreamJson =
-            Json.parse(s"""
-                 |{
-                 |  "incomeSourceId": "$businessId",
-                 |  "incomeSourceType": "$incomeSourceType",
-                 |  "broughtForwardLossAmount": $lossAmount,
-                 |  "taxYear": "$taxYearDownstream",
-                 |  "submissionDate": "$lastModified"
-                 |}
+        s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" when {
+          "feature switch is disabled (IFS enabled)" in {
+            val downstreamJson =
+              Json.parse(s"""
+                   |{
+                   |  "incomeSourceId": "$businessId",
+                   |  "incomeSourceType": "$incomeSourceType",
+                   |  "broughtForwardLossAmount": $lossAmount,
+                   |  "taxYear": "$ifsTaxYearDownstream",
+                   |  "submissionDate": "$lastModified"
+                   |}
              """.stripMargin)
 
-          downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+            downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+          }
+          "feature switch is enabled (HIP enabled)" in {
+            val downstreamJson =
+              Json.parse(s"""
+                   |{
+                   |  "incomeSourceId": "$businessId",
+                   |  "incomeSourceType": "$incomeSourceType",
+                   |  "broughtForwardLossAmount": $lossAmount,
+                   |  "taxYearBroughtForwardFrom": $hipTaxYearDownstream,
+                   |  "submissionDate": "$lastModified"
+                   |}
+             """.stripMargin)
+
+            downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+          }
         }
-    }
 
-    "reading a self-employment brought forward loss" must {
-      test(LossType.INCOME, TypeOfLoss.`self-employment`)
-      test(LossType.CLASS4, TypeOfLoss.`self-employment-class4`)
+      "reading a self-employment brought forward loss" must {
+        test(LossType.INCOME, TypeOfLoss.`self-employment`)
+        test(LossType.CLASS4, TypeOfLoss.`self-employment-class4`)
 
-      def test(lossType: LossType, typeOfLoss: TypeOfLoss): Unit =
-        s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" in {
-          val downstreamJson: JsValue =
-            Json.parse(s"""
-                 |{
-                 |  "incomeSourceId": "$businessId",
-                 |  "lossType": "$lossType",
-                 |  "broughtForwardLossAmount": $lossAmount,
-                 |  "taxYear": "$taxYearDownstream",
-                 |  "submissionDate": "$lastModified"
-                 |}
+        def test(lossType: LossType, typeOfLoss: TypeOfLoss): Unit =
+          s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" when {
+            "feature switch is disabled (IFS enabled)" in {
+              val downstreamJson: JsValue =
+                Json.parse(s"""
+                     |{
+                     |  "incomeSourceId": "$businessId",
+                     |  "lossType": "$lossType",
+                     |  "broughtForwardLossAmount": $lossAmount,
+                     |  "taxYear": "$ifsTaxYearDownstream",
+                     |  "submissionDate": "$lastModified"
+                     |}
                """.stripMargin)
 
-          downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
-        }
-    }
-  }
+              downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+            }
 
-  "Json Writes" should {
-    "convert a valid model into MTD JSON" in {
-      Json.toJson(responseWith(TypeOfLoss.`self-employment`)) shouldBe Json.parse(
-        s"""
-          |{
-          |  "businessId": "$businessId",
-          |  "typeOfLoss": "self-employment",
-          |  "lossAmount": $lossAmount,
-          |  "taxYearBroughtForwardFrom": "$taxYear",
-          |  "lastModified": "$lastModified"
-          |}
-      """.stripMargin
-      )
+            "feature switch is enabled (HIP enabled)" in {
+              val downstreamJson: JsValue =
+                Json.parse(s"""
+                     |{
+                     |  "incomeSourceId": "$businessId",
+                     |  "lossType": "$lossType",
+                     |  "broughtForwardLossAmount": $lossAmount,
+                     |  "taxYearBroughtForwardFrom": $hipTaxYearDownstream,
+                     |  "submissionDate": "$lastModified"
+                     |}
+               """.stripMargin)
+
+              downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+            }
+          }
+      }
     }
+
+    "Json Writes" should {
+      "convert a valid model into MTD JSON" in {
+        Json.toJson(responseWith(TypeOfLoss.`self-employment`)) shouldBe Json.parse(
+          s"""
+             |{
+             |  "businessId": "$businessId",
+             |  "typeOfLoss": "self-employment",
+             |  "lossAmount": $lossAmount,
+             |  "taxYearBroughtForwardFrom": "$taxYear",
+             |  "lastModified": "$lastModified"
+             |}
+      """.stripMargin
+        )
+      }
+    }
+
   }
 
 }

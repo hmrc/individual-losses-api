@@ -38,9 +38,9 @@ class RetrieveBFLossConnector @Inject() (val http: HttpClient, val appConfig: Sh
 
     val downstreamUri =
       if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1502")) {
-        HipUri[RetrieveBFLossResponse](s"itsd/income-sources/brought-forward-losses/$nino/$lossId")
+        HipUri(s"itsd/income-sources/brought-forward-losses/$nino/$lossId")
       } else {
-        IfsUri[RetrieveBFLossResponse](s"income-tax/brought-forward-losses/$nino/$lossId")
+        IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
       }
 
     get(downstreamUri)
