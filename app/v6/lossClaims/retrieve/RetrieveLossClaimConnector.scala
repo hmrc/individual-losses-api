@@ -16,12 +16,11 @@
 
 package v6.lossClaims.retrieve
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.SharedAppConfig
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-
 import v6.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 import v6.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
@@ -39,7 +38,12 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig:
     import request._
     import schema._
 
-    val downstreamUri = IfsUri[DownstreamResp](s"income-tax/claims-for-relief/$nino/$claimId")
+    lazy val downstreamUri: DownstreamUri[DownstreamResp] =
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1508")) {
+        HipUri(s"itsd/income-sources/claims-for-relief/$nino/$claimId")
+      } else {
+        IfsUri(s"income-tax/claims-for-relief/$nino/$claimId")
+      }
 
     get(downstreamUri)
   }
