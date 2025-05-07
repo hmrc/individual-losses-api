@@ -16,10 +16,10 @@
 
 package v4.connectors
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.SharedAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.createLossClaim.CreateLossClaimRequestData
 import v4.models.response.createLossClaim.CreateLossClaimResponse
@@ -36,7 +36,13 @@ class CreateLossClaimConnector @Inject() (val http: HttpClient, val appConfig: S
       correlationId: String): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
     import request._
 
-    post(lossClaim, IfsUri[CreateLossClaimResponse](s"income-tax/claims-for-relief/$nino"))
+    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1505")) {
+      post(lossClaim, HipUri[CreateLossClaimResponse](s"itsd/income-sources/claims-for-relief/$nino"))
+    } else {
+      post(lossClaim, IfsUri[CreateLossClaimResponse](s"income-tax/claims-for-relief/$nino"))
+    }
+
+    downstreamUri
   }
 
 }
