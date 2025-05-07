@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package v4.connectors
 import shared.connectors.DownstreamUri.{DesUri, HipUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.models.domain.TaxYear.currentTaxYear
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.deleteBFLosses.DeleteBFLossRequestData
 
@@ -35,7 +36,7 @@ class DeleteBFLossConnector @Inject() (val http: HttpClient, val appConfig: Shar
     import request._
 
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1504")) {
-      HipUri[Unit](s"itsa/income-tax/v1/brought-forward-losses/$nino/$lossId")
+      HipUri[Unit](s"itsa/income-tax/v1/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
     } else {
       DesUri[Unit](s"income-tax/brought-forward-losses/$nino/$lossId")
     }

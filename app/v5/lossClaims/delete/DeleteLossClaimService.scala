@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,36 @@ package v5.lossClaims.delete
 import cats.implicits._
 import common.errors.ClaimIdFormatError
 import shared.controllers.RequestContext
+import shared.models.domain.TaxYear
 import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import shared.services.{BaseService, ServiceOutcome}
 import v5.lossClaims.delete.model.request.DeleteLossClaimRequestData
+import v5.lossClaims.retrieve.RetrieveLossClaimConnector
+import v5.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
+import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeleteLossClaimService @Inject() (connector: DeleteLossClaimConnector) extends BaseService {
+class DeleteLossClaimService @Inject() (retrieveConnector: RetrieveLossClaimConnector, deleteConnector: DeleteLossClaimConnector)
+    extends BaseService {
 
-  def deleteLossClaim(request: DeleteLossClaimRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] =
-    connector
-      .deleteLossClaim(request)
-      .map(_.leftMap(mapDownstreamErrors(errorMap)))
+  def deleteLossClaim(request: DeleteLossClaimRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+    val retrieveRequest: Def1_RetrieveLossClaimRequestData = Def1_RetrieveLossClaimRequestData(request.nino, request.claimId)
+
+    for {
+      retrieveResult <- retrieveConnector.retrieveLossClaim(retrieveRequest)
+      deleteResult <- retrieveResult match {
+        case Right(ResponseWrapper(_, response: RetrieveLossClaimResponse)) =>
+          val taxYear: TaxYear = TaxYear.fromMtd(response.asInstanceOf[Def1_RetrieveLossClaimResponse].taxYearClaimedFor)
+          deleteConnector.deleteLossClaim(request, taxYear).map(_.leftMap(mapDownstreamErrors(errorMap)))
+
+        case Left(error) => Future.successful(Left(mapDownstreamErrors(errorMap)(error)))
+      }
+    } yield deleteResult
+  }
 
   private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,

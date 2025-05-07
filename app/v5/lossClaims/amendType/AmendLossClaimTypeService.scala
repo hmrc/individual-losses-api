@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,22 +19,40 @@ package v5.lossClaims.amendType
 import cats.implicits._
 import common.errors.{ClaimIdFormatError, RuleCSFHLClaimNotSupportedError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
 import shared.controllers.RequestContext
+import shared.models.domain.TaxYear
 import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import shared.services.{BaseService, ServiceOutcome}
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
+import v5.lossClaims.retrieve.RetrieveLossClaimConnector
+import v5.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
+import v5.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
+import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnector) extends BaseService {
+class AmendLossClaimTypeService @Inject() (retrieveConnector: RetrieveLossClaimConnector, amendConnector: AmendLossClaimTypeConnector)
+    extends BaseService {
 
   def amendLossClaimType(request: AmendLossClaimTypeRequestData)(implicit
       ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimTypeResponse]] =
-    connector
-      .amendLossClaimType(request)
-      .map(_.leftMap(mapDownstreamErrors(errorMap)))
+      ec: ExecutionContext
+  ): Future[ServiceOutcome[AmendLossClaimTypeResponse]] = {
+    val retrieveRequest: Def1_RetrieveLossClaimRequestData = Def1_RetrieveLossClaimRequestData(request.nino, request.claimId)
+
+    for {
+      retrieveResult <- retrieveConnector.retrieveLossClaim(request = retrieveRequest, isAmendRequest = true)
+      amendResult <- retrieveResult match {
+        case Right(ResponseWrapper(_, response: RetrieveLossClaimResponse)) =>
+          val taxYear: TaxYear = TaxYear.fromMtd(response.asInstanceOf[Def1_RetrieveLossClaimResponse].taxYearClaimedFor)
+          amendConnector.amendLossClaimType(request, taxYear).map(_.leftMap(mapDownstreamErrors(errorMap)))
+
+        case Left(error) => Future.successful(Left(mapDownstreamErrors(errorMap)(error)))
+      }
+    } yield amendResult
+  }
 
   private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,

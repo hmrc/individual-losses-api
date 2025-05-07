@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package v5.bfLosses.delete
 import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.Nino
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.outcomes.ResponseWrapper
 import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
@@ -34,7 +35,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
   val request: DeleteBFLossRequestData = Def1_DeleteBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
   "deleteBFLosses" when {
-    "given a non-TYS request" when {
+    "given a valid request" when {
       "DES is not migrated to HIP" must {
         "return a success response" in new DesTest with Test {
           MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> false)
@@ -54,7 +55,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/$lossId")
+          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))

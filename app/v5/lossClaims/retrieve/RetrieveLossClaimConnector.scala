@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@ package v5.lossClaims.retrieve
 import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.SharedAppConfig
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 import v5.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
@@ -31,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def retrieveLossClaim(request: RetrieveLossClaimRequestData)(implicit
+  def retrieveLossClaim(request: RetrieveLossClaimRequestData, isAmendRequest: Boolean = false)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
@@ -39,9 +38,12 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig:
     import request._
     import schema._
 
+    val maybeIntent: Option[String] =
+      if (isAmendRequest && ConfigFeatureSwitches().isEnabled("passIntentHeader")) Some("AMEND_LOSS_CLAIM") else None
+
     val downstreamUri = IfsUri[DownstreamResp](s"income-tax/claims-for-relief/$nino/$claimId")
 
-    get(downstreamUri)
+    get(uri = downstreamUri, maybeIntent = maybeIntent)
   }
 
 }

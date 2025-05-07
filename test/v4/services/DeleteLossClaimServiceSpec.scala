@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,15 @@
 package v4.services
 
 import common.errors.ClaimIdFormatError
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v4.connectors.MockDeleteLossClaimConnector
-import v4.models.domain.lossClaim.ClaimId
+import v4.connectors.{MockDeleteLossClaimConnector, MockRetrieveLossClaimConnector}
+import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
+import v4.models.request.retrieveLossClaim.RetrieveLossClaimRequestData
+import v4.models.response.retrieveLossClaim.RetrieveLossClaimResponse
 
 import scala.concurrent.Future
 
@@ -32,11 +34,24 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890a"
 
-  trait Test extends MockDeleteLossClaimConnector {
-    lazy val service = new DeleteLossClaimService(connector)
+  val retrieveLossClaimResponse: RetrieveLossClaimResponse =
+    RetrieveLossClaimResponse(
+      "2019-20",
+      TypeOfLoss.`self-employment`,
+      TypeOfClaim.`carry-forward`,
+      "XKIS00000000988",
+      Some(1),
+      Timestamp("2018-07-13T12:13:48.763Z")
+    )
+
+  val taxYear: TaxYear = TaxYear.fromMtd(retrieveLossClaimResponse.taxYearClaimedFor)
+
+  trait Test extends MockDeleteLossClaimConnector with MockRetrieveLossClaimConnector {
+    lazy val service = new DeleteLossClaimService(mockRetrieveLossClaimConnector, mockDeleteLossClaimConnector)
   }
 
-  lazy val request: DeleteLossClaimRequestData = DeleteLossClaimRequestData(Nino(nino), ClaimId(claimId))
+  lazy val deleteRequest: DeleteLossClaimRequestData     = DeleteLossClaimRequestData(Nino(nino), ClaimId(claimId))
+  lazy val retrieveRequest: RetrieveLossClaimRequestData = RetrieveLossClaimRequestData(Nino(nino), ClaimId(claimId))
 
   "Delete Loss Claim" should {
     "return a right" when {
@@ -45,38 +60,81 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         val downstreamResponse: ResponseWrapper[Unit] = ResponseWrapper(correlationId, ())
         val expected: ResponseWrapper[Unit]           = ResponseWrapper(correlationId, ())
 
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = retrieveRequest, isAmendRequest = false)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveLossClaimResponse))))
+
         MockDeleteLossClaimConnector
-          .deleteLossClaim(request)
+          .deleteLossClaim(deleteRequest, taxYear)
           .returns(Future.successful(Right(downstreamResponse)))
 
-        await(service.deleteLossClaim(request)) shouldBe Right(expected)
+        await(service.deleteLossClaim(deleteRequest)) shouldBe Right(expected)
 
       }
     }
 
     "return that wrapped error as-is" when {
-      "the connector returns an outbound error" in new Test {
+      "the retrieve connector returns an outbound error" in new Test {
         val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
-        MockDeleteLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.deleteLossClaim(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = retrieveRequest, isAmendRequest = false)
+          .returns(Future.successful(Left(downstreamResponse)))
+
+        await(service.deleteLossClaim(deleteRequest)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
+      }
+
+      "the delete connector returns an outbound error" in new Test {
+        val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
+        val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
+
+        MockRetrieveLossClaimConnector
+          .retrieveLossClaim(request = retrieveRequest, isAmendRequest = false)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveLossClaimResponse))))
+
+        MockDeleteLossClaimConnector.deleteLossClaim(deleteRequest, taxYear).returns(Future.successful(Left(downstreamResponse)))
+
+        await(service.deleteLossClaim(deleteRequest)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "map errors according to spec" when {
-      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-        s"a $downstreamErrorCode error is returned from the service" in new Test {
-
-          MockDeleteLossClaimConnector
-            .deleteLossClaim(request)
+      def serviceErrorFromRetrieveConnector(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service when the retrieve connector call fails" in new Test {
+          MockRetrieveLossClaimConnector
+            .retrieveLossClaim(request = retrieveRequest, isAmendRequest = false)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          private val result = await(service.deleteLossClaim(request))
+          private val result = await(service.deleteLossClaim(deleteRequest))
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors: Seq[(String, MtdError)] = List(
+      def serviceErrorFromDeleteConnector(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service when the delete connector call fails" in new Test {
+          MockRetrieveLossClaimConnector
+            .retrieveLossClaim(request = retrieveRequest, isAmendRequest = false)
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveLossClaimResponse))))
+
+          MockDeleteLossClaimConnector
+            .deleteLossClaim(deleteRequest, taxYear)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
+
+          private val result = await(service.deleteLossClaim(deleteRequest))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
+        }
+
+      val retrieveErrors: Seq[(String, MtdError)] = List(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+        "NOT_FOUND"                 -> NotFoundError,
+        "INVALID_CORRELATIONID"     -> InternalError,
+        "SERVER_ERROR"              -> InternalError,
+        "SERVICE_UNAVAILABLE"       -> InternalError,
+        "UNEXPECTED_ERROR"          -> InternalError
+      )
+
+      val deleteErrors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
         "NOT_FOUND"                 -> NotFoundError,
@@ -85,7 +143,8 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         "UNEXPECTED_ERROR"          -> InternalError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
+      deleteErrors.foreach(args => (serviceErrorFromDeleteConnector _).tupled(args))
     }
   }
 

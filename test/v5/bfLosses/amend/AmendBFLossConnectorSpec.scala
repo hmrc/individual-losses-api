@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package v5.bfLosses.amend
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
@@ -35,7 +36,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
   val request: Def1_AmendBFLossRequestData     = Def1_AmendBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId), requestBody)
 
   "amendBFLosses" should {
-    "return the expected response for a non-TYS request" when {
+    "return the expected response for a valid request" when {
       "downstream returns OK" in new IfsTest with Test {
         val response: AmendBFLossResponse = Def1_AmendBFLossResponse(
           businessId = "XKIS00000000988",
@@ -47,7 +48,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         val expected: Right[Nothing, ResponseWrapper[AmendBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
 
         willPut(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId",
           body = requestBody
         ).returning(Future.successful(expected))
 

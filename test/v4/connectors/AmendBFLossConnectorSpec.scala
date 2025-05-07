@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package v4.connectors
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.bfLoss.{LossId, TypeOfLoss}
@@ -41,7 +42,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
   }
 
   "amendBFLosses" should {
-    "return the expected response for a non-TYS request" when {
+    "return the expected response for a valid request" when {
       "downstream returns OK" in new IfsTest with Test {
         private val response = AmendBFLossResponse(
           businessId = "XKIS00000000988",
@@ -54,7 +55,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         private val expected = Right(ResponseWrapper(correlationId, response))
 
         willPut(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId",
+          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId",
           body = requestBody
         ).returns(Future.successful(expected))
 

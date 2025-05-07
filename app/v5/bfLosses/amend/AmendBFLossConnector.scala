@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 import v5.bfLosses.amend.model.response.AmendBFLossResponse
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
+import shared.models.domain.TaxYear.currentTaxYear
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +38,7 @@ class AmendBFLossConnector @Inject() (val http: HttpClient, val appConfig: Share
 
     import request._
     import schema._
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/$lossId")
+    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
     put(amendBroughtForwardLoss, downstreamUri)
 
   }
