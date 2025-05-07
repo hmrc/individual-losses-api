@@ -88,7 +88,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
 
         }
 
-      val errors: Seq[(String, MtdError)] = List(
+      val ifsErrors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID"   -> NinoFormatError,
         "DUPLICATE"                   -> RuleDuplicateClaimSubmissionError,
         "ACCOUNTING_PERIOD_NOT_ENDED" -> RulePeriodNotEnded,
@@ -102,7 +102,19 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
         "INVALID_CORRELATIONID"       -> InternalError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      val hipErrors: Map[String, MtdError] = Map(
+        "1125" -> NinoFormatError,
+        "1002" -> NotFoundError,
+        "1117" -> TaxYearFormatError,
+        "1228" -> RuleDuplicateClaimSubmissionError,
+        "1104" -> RulePeriodNotEnded,
+        "1105" -> RuleTypeOfClaimInvalid,
+        "1106" -> RuleNoAccountingPeriod,
+        "1107" -> RuleTaxYearNotSupportedError,
+        "5000" -> RuleTaxYearNotSupportedError
+      )
+
+      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

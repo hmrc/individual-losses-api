@@ -27,7 +27,7 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class CreateLossClaimISpec extends IntegrationBaseSpec {
+class CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
@@ -105,7 +105,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
 
     trait CreateLossClaimControllerTest extends Test {
       def uri: String    = s"/$nino/loss-claims"
-      def ifsUrl: String = s"/income-tax/claims-for-relief/$nino"
+      def hipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino"
     }
 
     "return a 201 status code" when {
@@ -116,7 +116,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, hipUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -207,7 +207,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
+          DownstreamStub.onError(DownstreamStub.POST, hipUrl, ifsStatus, errorBody(ifsCode))
         }
 
         val response: WSResponse = await(request().post(requestJson))
