@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,23 @@ class RetrieveLossClaimService @Inject() (connector: RetrieveLossClaimConnector)
       .retrieveLossClaim(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "INVALID_CORRELATIONID"     -> InternalError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
-  )
+  private val errorMap: Map[String, MtdError] = {
+    val ifsErrors = Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "INVALID_CORRELATIONID"     -> InternalError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
+    )
+
+    val hipErrors = Map(
+      "1215" -> NinoFormatError,
+      "1220" -> ClaimIdFormatError,
+      "5010" -> NotFoundError
+    )
+
+    ifsErrors ++ hipErrors
+  }
 
 }
