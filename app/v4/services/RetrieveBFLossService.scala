@@ -36,13 +36,24 @@ class RetrieveBFLossService @Inject() (connector: RetrieveBFLossConnector) exten
       .retrieveBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_LOSS_ID"           -> LossIdFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "INVALID_CORRELATIONID"     -> InternalError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
-  )
+  private val errorMap: Map[String, MtdError] = {
+
+    val ifsErrors = Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_LOSS_ID"           -> LossIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "INVALID_CORRELATIONID"     -> InternalError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
+    )
+
+    val hipErrors = Map(
+      "1215" -> NinoFormatError,
+      "1219" -> LossIdFormatError,
+      "5010" -> NotFoundError
+    )
+
+    ifsErrors ++ hipErrors
+  }
 
 }

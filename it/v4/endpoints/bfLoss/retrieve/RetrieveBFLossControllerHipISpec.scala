@@ -28,13 +28,13 @@ import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v4.V4HateoasLinks
 
-class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
+class RetrieveBFLossControllerHipISpec extends IntegrationBaseSpec {
 
   val lossAmount        = 531.99
   val businessId        = "XKIS00000000988"
   val lastModified      = "2018-07-13T12:13:48.763Z"
   val taxYear           = "2019-20"
-  val downstreamTaxYear = "2020"
+  val downstreamTaxYear = 2020
 
   object Hateoas extends V4HateoasLinks
 
@@ -43,7 +43,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
        |    "incomeSourceId": "$businessId",
        |    "lossType": "INCOME",
        |    "broughtForwardLossAmount": $lossAmount,
-       |    "taxYear": "$downstreamTaxYear",
+       |    "taxYearBroughtForwardFrom": $downstreamTaxYear,
        |    "lossId": "AAZZ1234567890a",
        |    "submissionDate": "$lastModified"
        |}
@@ -80,15 +80,20 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
+    def hipUrl: String = s"/itsd/income-sources/brought-forward-losses/$nino/$lossId"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
-      """.stripMargin
+         |{
+         |  "origin": "HIP",
+         |  "response":  [
+         |    {
+         |      "errorCode": "$code",
+         |      "errorDescription": "error message"
+         |    }
+         |  ]
+         |}
+         |""".stripMargin
 
     def setupStubs(): StubMapping
 
@@ -111,7 +116,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, hipUrl, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -153,7 +158,7 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.GET, hipUrl, ifsStatus, errorBody(ifsCode))
           }
 
           val response: WSResponse = await(request().get())
@@ -165,12 +170,9 @@ class RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(Status.BAD_REQUEST, "1215", Status.BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "1219", Status.BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(Status.NOT_FOUND, "5010", Status.NOT_FOUND, NotFoundError)
     }
   }
 

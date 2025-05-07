@@ -16,21 +16,22 @@
 
 package v4.models.response.retrieveBFLoss
 
+import play.api.libs.json.{JsValue, Json}
+import shared.config.MockSharedAppConfig
+import shared.hateoas.Method.{DELETE, GET, POST}
 import shared.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import shared.models.domain.Timestamp
-import shared.hateoas.Method.{DELETE, GET, POST}
-import shared.config.MockSharedAppConfig
-import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 import v4.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 
 class RetrieveBFLossResponseSpec extends UnitSpec {
 
-  private val businessId        = "000000000000001"
-  private val lossAmount        = 123.45
-  private val taxYearDownstream = "2020"
-  private val taxYear           = "2019-20"
-  private val lastModified      = Timestamp("2018-07-13T12:13:48.763Z")
+  private val businessId           = "000000000000001"
+  private val lossAmount           = 123.45
+  private val ifsTaxYearDownstream = "2020"
+  private val hipTaxYearDownstream = 2020
+  private val taxYear              = "2019-20"
+  private val lastModified         = Timestamp("2018-07-13T12:13:48.763Z")
 
   def responseWith(typeOfLoss: TypeOfLoss): RetrieveBFLossResponse =
     RetrieveBFLossResponse(
@@ -49,19 +50,35 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       test(IncomeSourceType.`15`, TypeOfLoss.`foreign-property`)
 
       def test(incomeSourceType: IncomeSourceType, typeOfLoss: TypeOfLoss): Unit =
-        s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" in {
-          val downstreamJson =
-            Json.parse(s"""
+        s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" when {
+          "feature switch is disabled (IFS enabled)" in {
+            val downstreamJson =
+              Json.parse(s"""
                  |{
                  |  "incomeSourceId": "$businessId",
                  |  "incomeSourceType": "$incomeSourceType",
                  |  "broughtForwardLossAmount": $lossAmount,
-                 |  "taxYear": "$taxYearDownstream",
+                 |  "taxYear": "$ifsTaxYearDownstream",
                  |  "submissionDate": "$lastModified"
                  |}
              """.stripMargin)
 
-          downstreamJson.as[RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+            downstreamJson.as[RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+          }
+          "feature switch is enabled (HIP enabled)" in {
+            val downstreamJson =
+              Json.parse(s"""
+                            |{
+                            |  "incomeSourceId": "$businessId",
+                            |  "incomeSourceType": "$incomeSourceType",
+                            |  "broughtForwardLossAmount": $lossAmount,
+                            |  "taxYearBroughtForwardFrom": $hipTaxYearDownstream,
+                            |  "submissionDate": "$lastModified"
+                            |}
+             """.stripMargin)
+
+            downstreamJson.as[RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+          }
         }
     }
 
@@ -70,19 +87,36 @@ class RetrieveBFLossResponseSpec extends UnitSpec {
       test(LossType.CLASS4, TypeOfLoss.`self-employment-class4`)
 
       def test(lossType: LossType, typeOfLoss: TypeOfLoss): Unit =
-        s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" in {
-          val downstreamJson: JsValue =
-            Json.parse(s"""
-                 |{
-                 |  "incomeSourceId": "$businessId",
-                 |  "lossType": "$lossType",
-                 |  "broughtForwardLossAmount": $lossAmount,
-                 |  "taxYear": "$taxYearDownstream",
-                 |  "submissionDate": "$lastModified"
-                 |}
+        s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" when {
+          "feature switch is disabled (IFS enabled)" in {
+            val downstreamJson: JsValue =
+              Json.parse(s"""
+                   |{
+                   |  "incomeSourceId": "$businessId",
+                   |  "lossType": "$lossType",
+                   |  "broughtForwardLossAmount": $lossAmount,
+                   |  "taxYear": "$ifsTaxYearDownstream",
+                   |  "submissionDate": "$lastModified"
+                   |}
                """.stripMargin)
 
-          downstreamJson.as[RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+            downstreamJson.as[RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+          }
+
+          "feature switch is enabled (HIP enabled)" in {
+            val downstreamJson: JsValue =
+              Json.parse(s"""
+                   |{
+                   |  "incomeSourceId": "$businessId",
+                   |  "lossType": "$lossType",
+                   |  "broughtForwardLossAmount": $lossAmount,
+                   |  "taxYearBroughtForwardFrom": $hipTaxYearDownstream,
+                   |  "submissionDate": "$lastModified"
+                   |}
+               """.stripMargin)
+
+            downstreamJson.as[RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+          }
         }
     }
   }

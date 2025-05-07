@@ -16,6 +16,7 @@
 
 package v6.bfLosses.retrieve
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
@@ -34,25 +35,52 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
 
   val request: RetrieveBFLossRequestData = Def1_RetrieveBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
-  "retrieveBFLosses" should {
-    "return the expected response for a non-TYS request" when {
-      "downstream returns OK" in new IfsTest with Test {
-        val response: RetrieveBFLossResponse = Def1_RetrieveBFLossResponse(
-          businessId = "fakeId",
-          typeOfLoss = TypeOfLoss.`self-employment`,
-          lossAmount = 2000.25,
-          taxYearBroughtForwardFrom = "2018-19",
-          lastModified = Timestamp("2018-07-13T12:13:48.763Z")
-        )
+  "retrieveBFLosses" when {
+    "the feature switch is disabled (IFS enabled)" should {
+      "return the expected response for a non-TYS request" when {
+        "downstream returns OK" in new IfsTest with Test {
+          val response: RetrieveBFLossResponse = Def1_RetrieveBFLossResponse(
+            businessId = "fakeId",
+            typeOfLoss = TypeOfLoss.`self-employment`,
+            lossAmount = 2000.25,
+            taxYearBroughtForwardFrom = "2018-19",
+            lastModified = Timestamp("2018-07-13T12:13:48.763Z")
+          )
 
-        val expected: Right[Nothing, ResponseWrapper[RetrieveBFLossResponse]] =
-          Right(ResponseWrapper(correlationId, response))
+          val expected: Right[Nothing, ResponseWrapper[RetrieveBFLossResponse]] =
+            Right(ResponseWrapper(correlationId, response))
 
-        willGet(url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId")
-          .returning(Future.successful(expected))
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1502.enabled" -> false)
+          willGet(url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId")
+            .returning(Future.successful(expected))
 
-        val result: DownstreamOutcome[RetrieveBFLossResponse] = await(connector.retrieveBFLoss(request))
-        result shouldBe expected
+          val result: DownstreamOutcome[RetrieveBFLossResponse] = await(connector.retrieveBFLoss(request))
+          result shouldBe expected
+        }
+      }
+    }
+    "the feature switch is enabled (HIP enabled)" should {
+      "return the expected response for a non-TYS request" when {
+        "downstream returns OK" in new HipTest with Test {
+          val response: RetrieveBFLossResponse = Def1_RetrieveBFLossResponse(
+            businessId = "fakeId",
+            typeOfLoss = TypeOfLoss.`self-employment`,
+            lossAmount = 2000.25,
+            taxYearBroughtForwardFrom = "2018-19",
+            lastModified = Timestamp("2018-07-13T12:13:48.763Z")
+          )
+
+          val expected: Right[Nothing, ResponseWrapper[RetrieveBFLossResponse]] =
+            Right(ResponseWrapper(correlationId, response))
+
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1502.enabled" -> true)
+          willGet(
+            url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId"
+          ).returning(Future.successful(expected))
+
+          val result: DownstreamOutcome[RetrieveBFLossResponse] = await(connector.retrieveBFLoss(request))
+          result shouldBe expected
+        }
       }
     }
   }
