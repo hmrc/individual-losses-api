@@ -31,7 +31,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
   val nino: String    = "AA123456A"
   val claimId: String = "AAZZ1234567890ag"
 
-  "retrieve LossClaim" should {
+  "retrieve LossClaim" when {
     val validTaxYear: String    = "2019-20"
     val validBusinessId: String = "XAIS01234567890"
     val nino: String            = "AA123456A"
@@ -48,28 +48,60 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
     val request: RetrieveLossClaimRequestData = RetrieveLossClaimRequestData(nino = Nino(nino), claimId = ClaimId(claimId))
 
-    "return a successful response and correlationId" when {
-      List(
-        (false, false, None),
-        (false, true, None),
-        (true, false, None),
-        (true, true, Some("AMEND_LOSS_CLAIM"))
-      ).foreach { case (isAmendRequestValue, passIntentHeaderFlag, intentValue) =>
-        s"provided with a valid request, isAmendRequest is $isAmendRequestValue and passIntentHeader is $passIntentHeaderFlag" in new IfsTest
-          with Test {
-          override def intent: Option[String] = intentValue
+    "the HIP feature switch is disabled (IFS enabled)" should {
+      "return a successful response and correlationId" when {
+        List(
+          (false, false, None),
+          (false, true, None),
+          (true, false, None),
+          (true, true, Some("AMEND_LOSS_CLAIM"))
+        ).foreach { case (isAmendRequestValue, passIntentHeaderFlag, intentValue) =>
+          s"provided with a valid request, isAmendRequest is $isAmendRequestValue and passIntentHeader is $passIntentHeaderFlag" in new IfsTest
+            with Test {
+            override def intent: Option[String] = intentValue
 
-          val expected: Left[ResponseWrapper[RetrieveLossClaimResponse], Nothing] = Left(ResponseWrapper(correlationId, retrieveResponse))
+            val expected: Left[ResponseWrapper[RetrieveLossClaimResponse], Nothing] = Left(ResponseWrapper(correlationId, retrieveResponse))
 
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("passIntentHeader.enabled" -> passIntentHeaderFlag)
+            MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> false)
+            MockedSharedAppConfig.featureSwitchConfig returns Configuration("passIntentHeader.enabled" -> passIntentHeaderFlag)
 
-          willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
-            .returning(Future.successful(expected))
+            willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
+              .returning(Future.successful(expected))
 
-          val result: DownstreamOutcome[RetrieveLossClaimResponse] =
-            await(connector.retrieveLossClaim(request = request, isAmendRequest = isAmendRequestValue))
+            val result: DownstreamOutcome[RetrieveLossClaimResponse] =
+              await(connector.retrieveLossClaim(request = request, isAmendRequest = isAmendRequestValue))
 
-          result shouldBe expected
+            result shouldBe expected
+          }
+        }
+      }
+    }
+
+    "the HIP feature switch is disabled (HIP enabled)" should {
+      "return a successful response and correlationId" when {
+        List(
+          (false, false, None),
+          (false, true, None),
+          (true, false, None),
+          (true, true, Some("AMEND_LOSS_CLAIM"))
+        ).foreach { case (isAmendRequestValue, passIntentHeaderFlag, intentValue) =>
+          s"provided with a valid request, isAmendRequest is $isAmendRequestValue and passIntentHeader is $passIntentHeaderFlag" in new HipTest
+            with Test {
+            override def intent: Option[String] = intentValue
+
+            val expected: Left[ResponseWrapper[RetrieveLossClaimResponse], Nothing] = Left(ResponseWrapper(correlationId, retrieveResponse))
+
+            MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> true)
+            MockedSharedAppConfig.featureSwitchConfig returns Configuration("passIntentHeader.enabled" -> passIntentHeaderFlag)
+
+            willGet(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId")
+              .returning(Future.successful(expected))
+
+            val result: DownstreamOutcome[RetrieveLossClaimResponse] =
+              await(connector.retrieveLossClaim(request = request, isAmendRequest = isAmendRequestValue))
+
+            result shouldBe expected
+          }
         }
       }
     }
