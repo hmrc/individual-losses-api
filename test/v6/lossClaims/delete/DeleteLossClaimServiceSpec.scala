@@ -77,16 +77,30 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors: Seq[(String, MtdError)] = List(
-        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-        "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-        "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
-        "NOT_FOUND"                 -> NotFoundError,
-        "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
-        "SERVER_ERROR"              -> InternalError,
-        "SERVICE_UNAVAILABLE"       -> InternalError,
-        "UNEXPECTED_ERROR"          -> InternalError
-      )
+      val errors: Seq[(String, MtdError)] = {
+
+        val itsaErrors = List(
+          "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+          "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+          "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
+          "NOT_FOUND"                 -> NotFoundError,
+          "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
+          "SERVER_ERROR"              -> InternalError,
+          "SERVICE_UNAVAILABLE"       -> InternalError,
+          "UNEXPECTED_ERROR"          -> InternalError
+        )
+
+        val itsdErrors = List(
+          "1215" -> NinoFormatError,
+          "1220" -> ClaimIdFormatError,
+          "5010" -> NotFoundError,
+          "1216" -> TaxYearClaimedForFormatError,
+          "4200" -> RuleOutsideAmendmentWindow,
+          "5000" -> RuleTaxYearNotSupportedError
+        )
+
+        itsaErrors ++ itsdErrors
+      }
 
       errors.foreach(args => (serviceError _).tupled(args))
     }

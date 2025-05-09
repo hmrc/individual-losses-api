@@ -33,13 +33,13 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
 
   "delete LossClaim" when {
     "given a valid request" when {
-      "DES is not migrated to HIP" should {
-        "return a successful response " in new DesTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> false)
+      "the feature switch is disabled (ITSA enabled)" should {
+        "return a successful response " in new HipTest with Test {
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1509.enabled" -> false)
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
+          willDelete(s"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request, taxYearClaimedFor))
@@ -47,12 +47,11 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
         }
       }
 
-      "DES is migrated to HIP" should {
-        "return a successful response " in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1509.enabled" -> true)
+      "the feature switch is disabled (ITSD enabled)" should {
+        "return a successful response" in new HipTest with Test {
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1509.enabled" -> true)
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
-
-          willDelete(s"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId")
+          willDelete(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request, taxYearClaimedFor))

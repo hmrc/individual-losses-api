@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.endpoints.lossClaim.delete
+package v5.lossClaim.delete.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.ClaimIdFormatError
@@ -25,7 +25,7 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class DeleteLossClaimISpec extends IntegrationBaseSpec {
+class Def1_DeleteLossClaimItsdISpec extends IntegrationBaseSpec {
 
   val retrieveDownstreamResponseJson: JsValue = Json.parse(
     """
@@ -46,16 +46,18 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
     val claimId = "AAZZ1234567890a"
 
     private def uri: String           = s"/$nino/loss-claims/$claimId"
-    def deleteDownstreamUrl: String   = s"/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId"
+    def deleteDownstreamUrl: String   = s"/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20"
     def retrieveDownstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
-        |{
-        |  "code": "$code",
-        |  "reason": "downstream message"
-        |}
-      """.stripMargin
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "error message"
+         |  }
+         |]
+         |""".stripMargin
 
     def setupStubs(): StubMapping
 
@@ -63,7 +65,7 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.4.0+json"),
+          (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -133,10 +135,11 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
       serviceRetrieveErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceRetrieveErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
 
-      serviceDeleteErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      serviceDeleteErrorTest(BAD_REQUEST, "INVALID_CLAIM_ID", BAD_REQUEST, ClaimIdFormatError)
+      serviceDeleteErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      serviceDeleteErrorTest(BAD_REQUEST, "1220", BAD_REQUEST, ClaimIdFormatError)
       serviceDeleteErrorTest(BAD_REQUEST, "UNEXPECTED_DOWNSTREAM_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
-      serviceDeleteErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
+      serviceDeleteErrorTest(NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
+      serviceDeleteErrorTest(BAD_REQUEST, "1117", NOT_FOUND, TaxYearFormatError)
       serviceDeleteErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceDeleteErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }

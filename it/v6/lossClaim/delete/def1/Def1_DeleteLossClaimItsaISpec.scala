@@ -20,14 +20,17 @@ import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow, TaxYearClaimedForFormatError}
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.test.Helpers._
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.support.IntegrationBaseSpec
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
+class Def1_DeleteLossClaimItsaISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.hipItsa_hipItsd_migration_1509.enabled" -> false) ++ super.servicesConfig
 
   private trait Test {
 
@@ -71,11 +74,11 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, hipUrl, Status.NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, hipUrl, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
-        response.status shouldBe Status.NO_CONTENT
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
@@ -99,14 +102,14 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearClaimedForFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", Status.BAD_REQUEST, RuleOutsideAmendmentWindow)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_CLAIM_ID", BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
+      serviceErrorTest(BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
+      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "handle validation errors according to spec" when {
@@ -133,11 +136,11 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", "AAZZ1234567890a", "2019-20", Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADCLAIMID", "2019-20", Status.BAD_REQUEST, ClaimIdFormatError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", "BADTAXYEAR", Status.BAD_REQUEST, TaxYearClaimedForFormatError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", "2020-22", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", "2017-18", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("BADNINO", "AAZZ1234567890a", "2019-20", BAD_REQUEST, NinoFormatError)
+      validationErrorTest("AA123456A", "BADCLAIMID", "2019-20", BAD_REQUEST, ClaimIdFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "BADTAXYEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "2020-22", BAD_REQUEST, RuleTaxYearRangeInvalidError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError)
     }
 
   }
