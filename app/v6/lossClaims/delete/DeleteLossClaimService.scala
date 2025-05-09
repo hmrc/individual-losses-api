@@ -33,14 +33,27 @@ class DeleteLossClaimService @Inject() (connector: DeleteLossClaimConnector) ext
       .deleteLossClaim(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
-    "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
-  )
+  private val errorMap: Map[String, MtdError] = {
+    val itsaErrors = Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
+      "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
+    )
+
+    val itsdErrors = List(
+      "1215" -> NinoFormatError,
+      "1220" -> ClaimIdFormatError,
+      "5010" -> NotFoundError,
+      "1216" -> TaxYearClaimedForFormatError,
+      "4200" -> RuleOutsideAmendmentWindow,
+      "5000" -> RuleTaxYearNotSupportedError
+    )
+
+    itsaErrors ++ itsdErrors
+  }
 
 }
