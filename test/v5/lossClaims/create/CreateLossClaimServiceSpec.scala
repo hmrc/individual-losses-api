@@ -16,7 +16,13 @@
 
 package v5.lossClaims.create
 
-import common.errors.{RuleCSFHLClaimNotSupportedError, RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
+import common.errors.{
+  RuleCSFHLClaimNotSupportedError,
+  RuleDuplicateClaimSubmissionError,
+  RuleNoAccountingPeriod,
+  RulePeriodNotEnded,
+  RuleTypeOfClaimInvalid
+}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
