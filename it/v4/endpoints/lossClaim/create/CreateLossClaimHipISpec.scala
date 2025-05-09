@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v6.lossClaim.create.def1
+package v4.endpoints.lossClaim.create
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors._
@@ -27,7 +27,7 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
+class CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
@@ -42,20 +42,35 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
 
     val nino = "AA123456A"
 
-    val requestJson: JsValue = Json.parse(s"""
+    val requestJson: JsValue = Json.parse("""
         |{
         |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
-        |    "taxYearClaimedFor": "$taxYear",
+        |    "taxYearClaimedFor": "2019-20",
         |    "typeOfClaim": "carry-forward"
         |}
       """.stripMargin)
 
     val responseJson: JsValue = Json.parse(s"""
-        |{
-        |    "claimId": "AAZZ1234567890a"
-        |}
-      """.stripMargin)
+         |{
+         |    "claimId": "AAZZ1234567890a",
+         |    "links": [{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
+         |      "method": "DELETE",
+         |      "rel": "delete-loss-claim"
+         |    },{
+         |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
+         |      "method": "POST",
+         |      "rel": "amend-loss-claim"
+         |    }
+         |    ]
+         |}
+  """.stripMargin)
 
     val downstreamResponseJson: JsValue = Json.parse("""
         |{
@@ -79,7 +94,7 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.6.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -90,7 +105,7 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
 
     trait CreateLossClaimControllerTest extends Test {
       def uri: String    = s"/$nino/loss-claims"
-      def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/19-20"
+      def hipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino"
     }
 
     "return a 201 status code" when {
@@ -101,7 +116,7 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, hipUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -120,15 +135,9 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
     }
 
     "return 400 BAD_REQUEST" when {
-      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      createErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       createErrorTest(CONFLICT, "DUPLICATE", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
       createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
       createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
-      createErrorTest(UNPROCESSABLE_ENTITY, "CSFHL_CLAIM_NOT_SUPPORTED", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
     }
 
     "return 404 NOT FOUND" when {
@@ -145,6 +154,10 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
     }
 
     "return 400 (Bad Request)" when {
+
+      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"), BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest(
         "AA123456A",
@@ -194,7 +207,7 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
+          DownstreamStub.onError(DownstreamStub.POST, hipUrl, ifsStatus, errorBody(ifsCode))
         }
 
         val response: WSResponse = await(request().post(requestJson))

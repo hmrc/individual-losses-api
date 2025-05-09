@@ -45,6 +45,16 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
     case "TAX_YEAR_NOT_SUPPORTED"      => RuleTaxYearNotSupportedError
     case "NO_ACCOUNTING_PERIOD"        => RuleNoAccountingPeriod
 
+    case "1125" => NinoFormatError
+    case "1002" => NotFoundError
+    case "1117" => TaxYearFormatError
+    case "1228" => RuleDuplicateClaimSubmissionError
+    case "1104" => RulePeriodNotEnded
+    case "1105" => RuleTypeOfClaimInvalid
+    case "1106" => RuleNoAccountingPeriod
+    case "1107" => RuleTaxYearNotSupportedError
+    case "5000" => RuleTaxYearNotSupportedError
+
     case "INVALID_PAYLOAD" | "SERVER_ERROR" | "SERVICE_UNAVAILABLE" | "INVALID_CORRELATIONID" =>
       InternalError
   }

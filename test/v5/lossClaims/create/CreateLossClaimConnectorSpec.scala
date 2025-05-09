@@ -16,6 +16,7 @@
 
 package v5.lossClaims.create
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
@@ -41,11 +42,30 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
     )
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
+      "return a successful IFS response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, Def1_CreateLossClaimResponse(claimId)))
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> false))
 
         willPost(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim)
+          .returning(Future.successful(expected))
+
+        val result: DownstreamOutcome[CreateLossClaimResponse] = await(
+          connector.createLossClaim(
+            Def1_CreateLossClaimRequestData(
+              nino = Nino(nino),
+              lossClaim
+            ))
+        )
+        result shouldBe expected
+      }
+
+      "return a successful HIP response with the correct correlationId" in new HipTest with Test {
+        val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
+          Right(ResponseWrapper(correlationId, Def1_CreateLossClaimResponse(claimId)))
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> true))
+
+        willPost(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino", lossClaim)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[CreateLossClaimResponse] = await(
