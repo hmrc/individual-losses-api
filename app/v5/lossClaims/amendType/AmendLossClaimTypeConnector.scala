@@ -16,10 +16,10 @@
 
 package v5.lossClaims.amendType
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import shared.config.SharedAppConfig
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
@@ -39,7 +39,13 @@ class AmendLossClaimTypeConnector @Inject() (val http: HttpClient, val appConfig
 
     import request._
     import schema._
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/claims-for-relief/$nino/${taxYear.asTysDownstream}/$claimId")
+    val downstreamUri: DownstreamUri[DownstreamResp] = {
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1506")) {
+        HipUri(s"itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=${taxYear.asTysDownstream}")
+      } else {
+        IfsUri(s"income-tax/claims-for-relief/$nino/${taxYear.asTysDownstream}/$claimId")
+      }
+    }
 
     put(body, downstreamUri)
   }
