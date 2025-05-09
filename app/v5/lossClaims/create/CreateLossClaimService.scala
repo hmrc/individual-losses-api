@@ -55,7 +55,7 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
     case "INVALID_CORRELATIONID"       => InternalError
     case "CSFHL_CLAIM_NOT_SUPPORTED"   => RuleCSFHLClaimNotSupportedError
 
-    case "1125" => NinoFormatError
+    case "1215" => NinoFormatError
     case "1002" => NotFoundError
     case "1117" => TaxYearFormatError
     case "1127" => RuleCSFHLClaimNotSupportedError

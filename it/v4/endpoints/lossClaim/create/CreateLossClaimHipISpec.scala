@@ -80,10 +80,12 @@ class CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "string"
+         |  }
+         |]
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -128,20 +130,17 @@ class CreateLossClaimHipISpec extends IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "return 400 BAD_REQUEST" when {
-      createErrorTest(CONFLICT, "DUPLICATE", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
-      createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
+      createErrorTest(CONFLICT, "1228", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1104", BAD_REQUEST, RulePeriodNotEnded)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1106", BAD_REQUEST, RuleNoAccountingPeriod)
     }
 
     "return 404 NOT FOUND" when {
-      createErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
+      createErrorTest(NOT_FOUND, "1002", NOT_FOUND, NotFoundError)
     }
 
     "return 400 (Bad Request) with paths for the missing mandatory field" when {
@@ -155,9 +154,11 @@ class CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
     "return 400 (Bad Request)" when {
 
-      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1105", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1107", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
+
       createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"), BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest(
         "AA123456A",

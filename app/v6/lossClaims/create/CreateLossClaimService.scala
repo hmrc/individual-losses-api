@@ -50,6 +50,18 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
     case "INVALID_CORRELATIONID"       => InternalError
     case "CSFHL_CLAIM_NOT_SUPPORTED"   => RuleCSFHLClaimNotSupportedError
     case "OUTSIDE_AMENDMENT_WINDOW"    => RuleOutsideAmendmentWindow
+
+    case "1215" => NinoFormatError
+    case "1002" => NotFoundError
+    case "1117" => TaxYearFormatError
+    case "1127" => RuleCSFHLClaimNotSupportedError
+    case "1228" => RuleDuplicateClaimSubmissionError
+    case "1104" => RulePeriodNotEnded
+    case "1105" => RuleTypeOfClaimInvalid
+    case "1106" => RuleNoAccountingPeriod
+    case "1107" => RuleTaxYearNotSupportedError
+    case "4200" => RuleOutsideAmendmentWindow
+    case "5000" => RuleTaxYearNotSupportedError
   }
 
 }

@@ -18,7 +18,7 @@ package v5.lossClaims.create
 
 import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v5.lossClaims.common.models._
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
@@ -29,8 +29,9 @@ import scala.concurrent.Future
 
 class CreateLossClaimConnectorSpec extends ConnectorSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890ag"
+  val nino: String     = "AA123456A"
+  val claimId: String  = "AAZZ1234567890ag"
+  val taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
   "create LossClaim" when {
 
@@ -65,7 +66,7 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
           Right(ResponseWrapper(correlationId, Def1_CreateLossClaimResponse(claimId)))
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> true))
 
-        willPost(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino", lossClaim)
+        willPost(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}", lossClaim)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[CreateLossClaimResponse] = await(

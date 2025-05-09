@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.create.def1
+package v6.lossClaim.create.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors._
@@ -27,7 +27,10 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
+class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1505.enabled" -> false) ++ super.servicesConfig
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
@@ -42,11 +45,11 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
     val nino = "AA123456A"
 
-    val requestJson: JsValue = Json.parse("""
+    val requestJson: JsValue = Json.parse(s"""
         |{
         |    "businessId": "XKIS00000000988",
         |    "typeOfLoss": "self-employment",
-        |    "taxYearClaimedFor": "2019-20",
+        |    "taxYearClaimedFor": "$taxYear",
         |    "typeOfClaim": "carry-forward"
         |}
       """.stripMargin)
@@ -65,12 +68,10 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         |[
-         |  {
-         |    "errorCode": "$code",
-         |    "errorDescription": "string"
-         |  }
-         |]
+         |      {
+         |        "code": "$code",
+         |        "reason": "downstream message"
+         |      }
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -81,7 +82,7 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -92,7 +93,7 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
     trait CreateLossClaimControllerTest extends Test {
       def uri: String    = s"/$nino/loss-claims"
-      def hipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino"
+      def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/19-20"
     }
 
     "return a 201 status code" when {
@@ -103,7 +104,7 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, hipUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -115,18 +116,26 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "return 400 BAD_REQUEST" when {
-      createErrorTest(CONFLICT, "1228", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "1104", BAD_REQUEST, RulePeriodNotEnded)
-      createErrorTest(UNPROCESSABLE_ENTITY, "1106", BAD_REQUEST, RuleNoAccountingPeriod)
-      createErrorTest(UNPROCESSABLE_ENTITY, "1127", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
+      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      createErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(CONFLICT, "DUPLICATE", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
+      createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
+      createErrorTest(UNPROCESSABLE_ENTITY, "CSFHL_CLAIM_NOT_SUPPORTED", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
     }
 
     "return 404 NOT FOUND" when {
-      createErrorTest(NOT_FOUND, "1002", NOT_FOUND, NotFoundError)
+      createErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
     }
 
     "return 400 (Bad Request) with paths for the missing mandatory field" when {
@@ -139,12 +148,6 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
     }
 
     "return 400 (Bad Request)" when {
-
-      createErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "1105", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(UNPROCESSABLE_ENTITY, "1107", BAD_REQUEST, RuleTaxYearNotSupportedError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
-
       createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"), BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest(
         "AA123456A",
@@ -194,7 +197,7 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onError(DownstreamStub.POST, hipUrl, ifsStatus, errorBody(ifsCode))
+          DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
         }
 
         val response: WSResponse = await(request().post(requestJson))

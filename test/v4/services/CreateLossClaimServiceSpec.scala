@@ -103,7 +103,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       )
 
       val hipErrors: Map[String, MtdError] = Map(
-        "1125" -> NinoFormatError,
+        "1215" -> NinoFormatError,
         "1002" -> NotFoundError,
         "1117" -> TaxYearFormatError,
         "1228" -> RuleDuplicateClaimSubmissionError,

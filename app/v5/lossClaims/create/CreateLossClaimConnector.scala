@@ -20,6 +20,7 @@ import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestData
 import v5.lossClaims.create.model.response.CreateLossClaimResponse
@@ -38,8 +39,10 @@ class CreateLossClaimConnector @Inject() (val http: HttpClient, val appConfig: S
     import request._
     import schema._
 
+    val taxYear: TaxYear = TaxYear.fromMtd(request.lossClaim.taxYearClaimedFor)
+
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1505")) {
-      post(lossClaim, HipUri(s"itsd/income-sources/claims-for-relief/$nino"))
+      post(lossClaim, HipUri(s"itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}"))
     } else {
       post(lossClaim, IfsUri(s"income-tax/claims-for-relief/$nino"))
     }

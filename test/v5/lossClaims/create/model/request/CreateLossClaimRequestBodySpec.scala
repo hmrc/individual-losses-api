@@ -16,14 +16,16 @@
 
 package v5.lossClaims.create.model.request
 
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.libs.json.{JsValue, Json}
+import play.api.Configuration
+import play.api.libs.json.{JsObject, JsValue, Json}
+import shared.config.MockSharedAppConfig
+import shared.models.domain.TaxYear
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v5.lossClaims.common.models._
 import v5.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 
-class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
+class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
 
   val lossClaimSelfEmployment: Def1_CreateLossClaimRequestBody = Def1_CreateLossClaimRequestBody(
     taxYearClaimedFor = "2019-20",
@@ -38,14 +40,6 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
       |    "businessId": "X2IS12356589871",
       |    "typeOfClaim": "carry-forward",
       |    "taxYearClaimedFor": "2019-20"
-      |}
-    """.stripMargin)
-
-  val lossClaimSelfEmploymentDownstreamJson: JsValue = Json.parse("""
-      |{
-      |    "incomeSourceId": "X2IS12356589871",
-      |    "reliefClaimed": "CF",
-      |    "taxYear": "2020"
       |}
     """.stripMargin)
 
@@ -65,15 +59,6 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimUkPropertyNonFhlDownstreamJson: JsValue = Json.parse("""
-      |{
-      |    "incomeSourceId": "X2IS12356589871",
-      |    "incomeSourceType": "02",
-      |    "reliefClaimed": "CFCSGI",
-      |    "taxYear": "2020"
-      |}
-    """.stripMargin)
-
   val lossClaimForeignProperty: Def1_CreateLossClaimRequestBody = Def1_CreateLossClaimRequestBody(
     taxYearClaimedFor = "2019-20",
     typeOfLoss = TypeOfLoss.`foreign-property`,
@@ -90,14 +75,26 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
       |}
     """.stripMargin)
 
-  val lossClaimForeignPropertyDowwnstreamJson: JsValue = Json.parse("""
-      |{
-      |    "incomeSourceId": "X2IS12356589871",
-      |    "incomeSourceType": "15",
-      |    "reliefClaimed": "CF",
-      |    "taxYear": "2020"
-      |}
-    """.stripMargin)
+  def expectedDownstreamJson(isHipEnabled: Boolean,
+                             mtdTaxYearClaimedFor: String,
+                             incomeSourceId: String,
+                             reliefClaimed: String,
+                             incomeSourceType: Option[String] = None): JsObject = {
+    val baseJson: JsObject = Json.obj(
+      "reliefClaimed"  -> reliefClaimed,
+      "incomeSourceId" -> incomeSourceId
+    )
+
+    val typeOfLossJson: JsObject = incomeSourceType.map(t => Json.obj("incomeSourceType" -> t)).getOrElse(Json.obj())
+
+    val taxYearClaimedForJson: JsObject = if (isHipEnabled) {
+      Json.obj("taxYearClaimedFor" -> TaxYear.fromMtd(mtdTaxYearClaimedFor).year)
+    } else {
+      Json.obj("taxYear" -> TaxYear.fromMtd(mtdTaxYearClaimedFor).asDownstream)
+    }
+
+    baseJson ++ typeOfLossJson ++ taxYearClaimedForJson
+  }
 
   "reads" when {
     "given a valid LossClaim Json" should {
@@ -132,19 +129,47 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators {
   }
 
   "writes" when {
-    "given a valid Loss Claim Employment model" should {
-      "return a valid Loss Claim Employment JSON" in {
-        Json.toJson(lossClaimSelfEmployment) shouldBe lossClaimSelfEmploymentDownstreamJson
+    "given a valid Loss Claim Self Employment model" should {
+      List(true, false).foreach { isHipEnabled =>
+        s"return a valid Loss Claim Self Employment JSON when feature switch is set to $isHipEnabled" in {
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1505.enabled" -> isHipEnabled)
+
+          Json.toJson(lossClaimSelfEmployment) shouldBe expectedDownstreamJson(
+            isHipEnabled = isHipEnabled,
+            mtdTaxYearClaimedFor = "2019-20",
+            incomeSourceId = "X2IS12356589871",
+            reliefClaimed = "CF")
+        }
       }
     }
-    "given a valid Loss Claim Property model" should {
-      "return a valid Loss Claim Property JSON" in {
-        Json.toJson(lossClaimUkPropertyNonFhl) shouldBe lossClaimUkPropertyNonFhlDownstreamJson
+    "given a valid Loss Claim UK Property model" should {
+      List(true, false).foreach { isHipEnabled =>
+        s"return a valid Loss Claim UK Property JSON when feature switch is set to $isHipEnabled" in {
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1505.enabled" -> isHipEnabled)
+
+          Json.toJson(lossClaimUkPropertyNonFhl) shouldBe expectedDownstreamJson(
+            isHipEnabled = isHipEnabled,
+            mtdTaxYearClaimedFor = "2019-20",
+            incomeSourceId = "X2IS12356589871",
+            reliefClaimed = "CFCSGI",
+            incomeSourceType = Some("02")
+          )
+        }
       }
     }
     "given a valid Loss Claim Foreign Property model" should {
-      "return a valid Loss Claim Foreign Property JSON" in {
-        Json.toJson(lossClaimForeignProperty) shouldBe lossClaimForeignPropertyDowwnstreamJson
+      List(true, false).foreach { isHipEnabled =>
+        s"return a valid Loss Claim Foreign Property JSON when feature switch is set to $isHipEnabled" in {
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1505.enabled" -> isHipEnabled)
+
+          Json.toJson(lossClaimForeignProperty) shouldBe expectedDownstreamJson(
+            isHipEnabled = isHipEnabled,
+            mtdTaxYearClaimedFor = "2019-20",
+            incomeSourceId = "X2IS12356589871",
+            reliefClaimed = "CF",
+            incomeSourceType = Some("15")
+          )
+        }
       }
     }
   }

@@ -18,7 +18,7 @@ package v4.connectors
 
 import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
@@ -29,8 +29,9 @@ import scala.concurrent.Future
 
 class CreateLossClaimConnectorSpec extends ConnectorSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890ag"
+  val nino: String     = "AA123456A"
+  val claimId: String  = "AAZZ1234567890ag"
+  val taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
   trait Test {
     _: ConnectorTest =>
@@ -66,7 +67,8 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
           Right(ResponseWrapper(correlationId, CreateLossClaimResponse(claimId)))
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> true))
 
-        willPost(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino", lossClaim).returning(Future.successful(expected))
+        willPost(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}", lossClaim)
+          .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[CreateLossClaimResponse] = createLossClaimsResult(connector)
         result shouldBe expected
