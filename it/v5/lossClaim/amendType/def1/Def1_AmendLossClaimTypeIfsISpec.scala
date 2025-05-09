@@ -25,7 +25,10 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
+class Def1_AmendLossClaimTypeIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1506.enabled" -> false) ++ super.servicesConfig
 
   override def servicesConfig: Map[String, Any] =
     Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig

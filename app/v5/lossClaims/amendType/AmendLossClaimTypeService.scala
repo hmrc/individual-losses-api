@@ -17,7 +17,13 @@
 package v5.lossClaims.amendType
 
 import cats.implicits._
-import common.errors.{ClaimIdFormatError, RuleCSFHLClaimNotSupportedError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import common.errors.{
+  ClaimIdFormatError,
+  RuleCSFHLClaimNotSupportedError,
+  RuleClaimTypeNotChanged,
+  RuleOutsideAmendmentWindow,
+  RuleTypeOfClaimInvalid
+}
 import shared.controllers.RequestContext
 import shared.models.domain.TaxYear
 import shared.models.errors._
@@ -47,7 +53,7 @@ class AmendLossClaimTypeService @Inject() (retrieveConnector: RetrieveLossClaimC
       amendResult <- retrieveResult match {
         case Right(ResponseWrapper(_, response: RetrieveLossClaimResponse)) =>
           val taxYear: TaxYear = TaxYear.fromMtd(response.asInstanceOf[Def1_RetrieveLossClaimResponse].taxYearClaimedFor)
-          amendConnector.amendLossClaimType(request, taxYear).map(_.leftMap(mapDownstreamErrors(errorMap)))
+          amendConnector.amendLossClaimType(request, taxYear).map(_.leftMap(mapDownstreamErrors(errorMap ++ hipErrorMap)))
 
         case Left(error) => Future.successful(Left(mapDownstreamErrors(errorMap)(error)))
       }
@@ -65,6 +71,20 @@ class AmendLossClaimTypeService @Inject() (retrieveConnector: RetrieveLossClaimC
     "INVALID_CORRELATIONID"     -> InternalError,
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
+  )
+
+  private val hipErrorMap: Map[String, MtdError] = Map(
+    "1117" -> TaxYearFormatError,
+    "1215" -> NinoFormatError,
+    "1216" -> InternalError,
+    "1220" -> ClaimIdFormatError,
+    "5010" -> NotFoundError,
+    "1000" -> InternalError,
+    "1105" -> RuleTypeOfClaimInvalid,
+    "1127" -> RuleCSFHLClaimNotSupportedError,
+    "1228" -> RuleClaimTypeNotChanged,
+    "4200" -> RuleOutsideAmendmentWindow,
+    "5000" -> RuleTaxYearNotSupportedError
   )
 
 }
