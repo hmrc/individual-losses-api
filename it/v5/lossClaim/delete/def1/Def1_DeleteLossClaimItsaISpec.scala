@@ -25,7 +25,10 @@ import play.api.test.Helpers._
 import shared.support.IntegrationBaseSpec
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
+class Def1_DeleteLossClaimItsaISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.hipItsa_hipItsd_migration_1509.enabled" -> false) ++ super.servicesConfig
 
   override def servicesConfig: Map[String, Any] =
     Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
