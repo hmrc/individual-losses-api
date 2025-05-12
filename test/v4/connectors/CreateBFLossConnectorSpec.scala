@@ -59,7 +59,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
         result shouldBe expected
       }
 
-      "Hip downstream returns OK" in new IfsTest with Test {
+      "Hip downstream returns OK" in new HipTest with Test {
         val response: CreateBFLossResponse                                  = CreateBFLossResponse(lossId)
         val expected: Right[Nothing, ResponseWrapper[CreateBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
 
