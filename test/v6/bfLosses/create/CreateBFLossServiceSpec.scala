@@ -16,7 +16,15 @@
 
 package v6.bfLosses.create
 
-import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
+import common.errors.{
+  RuleBflNotSupportedForFhlProperties,
+  RuleCSFHLClaimNotSupportedError,
+  RuleDuplicateSubmissionError,
+  RuleNoAccountingPeriod,
+  RuleOutsideAmendmentWindow,
+  RulePeriodNotEnded,
+  RuleTypeOfClaimInvalid
+}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -83,10 +91,20 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "OUTSIDE_AMENDMENT_WINDOW"             -> RuleOutsideAmendmentWindow,
         "INVALID_TAX_YEAR"                     -> TaxYearFormatError,
         "INCOME_SOURCE_NOT_FOUND"              -> NotFoundError,
-        "INVALID_CORRELATIONID"                -> InternalError,
+        "INVALID_CORRELATION_ID"               -> InternalError,
         "INVALID_PAYLOAD"                      -> InternalError,
         "SERVER_ERROR"                         -> InternalError,
-        "SERVICE_UNAVAILABLE"                  -> InternalError
+        "SERVICE_UNAVAILABLE"                  -> InternalError,
+        "1000"                                 -> InternalError,
+        "1002"                                 -> NotFoundError,
+        "1127"                                 -> RuleCSFHLClaimNotSupportedError,
+        "1228"                                 -> RuleDuplicateSubmissionError,
+        "1104"                                 -> RulePeriodNotEnded,
+        "1105"                                 -> RuleTypeOfClaimInvalid,
+        "1106"                                 -> RuleNoAccountingPeriod,
+        "1107"                                 -> RuleTaxYearNotSupportedError,
+        "4200"                                 -> RuleOutsideAmendmentWindow,
+        "5000"                                 -> RuleTaxYearNotSupportedError
       )
 
       errors.foreach(args => (serviceError _).tupled(args))
