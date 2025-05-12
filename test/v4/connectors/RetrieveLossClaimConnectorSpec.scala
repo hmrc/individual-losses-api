@@ -77,7 +77,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
       }
     }
 
-    "the HIP feature switch is disabled (HIP enabled)" should {
+    "the HIP feature switch is enabled (HIP enabled)" should {
       "return a successful response and correlationId" when {
         List(
           (false, false, None),

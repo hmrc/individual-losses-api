@@ -38,7 +38,7 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig:
     import request._
     import schema._
 
-    val maybeIntent: Option[String] =
+    lazy val maybeIntent: Option[String] =
       if (isAmendRequest && ConfigFeatureSwitches().isEnabled("passIntentHeader")) Some("AMEND_LOSS_CLAIM") else None
 
     lazy val downstreamUri: DownstreamUri[DownstreamResp] =

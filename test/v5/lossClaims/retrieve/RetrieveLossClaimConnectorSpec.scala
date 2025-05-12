@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
-  "retrieve LossClaim" should {
+  "retrieve LossClaim" when {
     val validTaxYear    = "2019-20"
     val validBusinessId = "XAIS01234567890"
     val nino            = "AA123456A"
@@ -75,7 +75,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
       }
     }
 
-    "the HIP feature switch is disabled (HIP enabled)" should {
+    "the HIP feature switch is enabled (HIP enabled)" should {
       "return a successful response and correlationId" when {
         List(
           (false, false, None),
@@ -83,13 +83,13 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
           (true, false, None),
           (true, true, Some("AMEND_LOSS_CLAIM"))
         ).foreach { case (isAmendRequestValue, passIntentHeaderFlag, intentValue) =>
-          s"provided with a valid request, isAmendRequest is $isAmendRequestValue and passIntentHeader is $passIntentHeaderFlag" in new IfsTest
+          s"provided with a valid request, isAmendRequest is $isAmendRequestValue and passIntentHeader is $passIntentHeaderFlag" in new HipTest
             with Test {
             override def intent: Option[String] = intentValue
 
             private val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
 
-            MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> false)
+            MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> true)
             MockedSharedAppConfig.featureSwitchConfig returns Configuration("passIntentHeader.enabled" -> passIntentHeaderFlag)
 
             willGet(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId")

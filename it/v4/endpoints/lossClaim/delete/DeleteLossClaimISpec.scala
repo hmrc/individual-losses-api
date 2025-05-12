@@ -27,6 +27,9 @@ import shared.support.IntegrationBaseSpec
 
 class DeleteLossClaimISpec extends IntegrationBaseSpec {
 
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
+
   val retrieveDownstreamResponseJson: JsValue = Json.parse(
     """
       |{
