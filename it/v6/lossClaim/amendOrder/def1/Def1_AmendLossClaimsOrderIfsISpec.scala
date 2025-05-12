@@ -30,7 +30,10 @@ import shared.support.IntegrationBaseSpec
 import v6.lossClaims.amendOrder.def1.model.request.Claim
 import v6.lossClaims.common.models.TypeOfClaim
 
-class Def1_AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
+class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1793.enabled" -> false) ++ super.servicesConfig
 
   val claim1: Claim        = Claim("1234567890ABEF1", 1)
   val claim2: Claim        = Claim("1234567890ABCDE", 2)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,22 +19,24 @@ package auth
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import shared.auth.AuthMainAgentsOnlyISpec
+import shared.auth.AuthSupportingAgentsAllowedISpec
 import shared.services.DownstreamStub
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendOrder.def1.model.request.Claim
 
-class IndividualLossesApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
+class IndividualLossesApiAuthSupportingAgentsAllowedHipISpec extends AuthSupportingAgentsAllowedISpec {
 
-  val callingApiVersion = "5.0"
+  val callingApiVersion = "6.0"
 
-  val supportingAgentsNotAllowedEndpoint = "amend-loss-claims-order"
+  val supportingAgentsAllowedEndpoint = "amend-loss-claims-order"
 
   val mtdUrl = s"/$nino/loss-claims/order/2023-24"
 
   def sendMtdRequest(request: WSRequest): WSResponse = await(request.put(requestJson()))
 
-  val downstreamUri = s"/income-tax/claims-for-relief/preferences/23-24/$nino"
+  val downstreamUri = s"/itsd/income-sources/claims-for-relief/$nino/preferences"
+
+  override val downstreamQueryParam: Map[String, String] = Map("taxYear" -> "23-24")
 
   override val downstreamHttpMethod: DownstreamStub.HTTPMethod = DownstreamStub.PUT
 
@@ -46,12 +48,14 @@ class IndividualLossesApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec
     val claims                        = Seq(Claim("1234567890ABEF1", 1), Claim("1234567890ABCDE", 2), Claim("1234567890ABDE0", 3))
     def writes: OWrites[Claim]        = Json.writes[Claim]
     def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
-    Json.parse(s"""
-    |{
-                  |   "typeOfClaim": "${TypeOfClaim.`carry-sideways`.toString}",
-                  |   "listOfLossClaims": ${Json.toJson(claims)(writesSeq)}
-    |}
-      """.stripMargin)
+    Json.parse(
+      s"""
+        |{
+        |   "typeOfClaim": "${TypeOfClaim.`carry-sideways`.toString}",
+        |   "listOfLossClaims": ${Json.toJson(claims)(writesSeq)}
+        |}
+      """.stripMargin
+    )
   }
 
 }

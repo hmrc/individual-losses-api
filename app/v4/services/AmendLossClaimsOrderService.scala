@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,19 +42,35 @@ class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsConnector
       }
   }
 
-  private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-    "INVALID_PAYLOAD"           -> InternalError,
-    "INVALID_CORRELATIONID"     -> InternalError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "NOT_SEQUENTIAL"            -> RuleSequenceOrderBroken,
-    "SEQUENCE_START"            -> RuleInvalidSequenceStart,
-    "NO_FULL_LIST"              -> RuleLossClaimsMissing,
-    "CLAIM_NOT_FOUND"           -> NotFoundError,
-    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
-  )
+  private val errorMap: Map[String, MtdError] = {
+    val ifsErrors = Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_PAYLOAD"           -> InternalError,
+      "INVALID_CORRELATIONID"     -> InternalError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "NOT_SEQUENTIAL"            -> RuleSequenceOrderBroken,
+      "SEQUENCE_START"            -> RuleInvalidSequenceStart,
+      "NO_FULL_LIST"              -> RuleLossClaimsMissing,
+      "CLAIM_NOT_FOUND"           -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
+    )
+
+    val hipErrors = Map(
+      "1215" -> NinoFormatError,
+      "1117" -> TaxYearFormatError,
+      "1216" -> InternalError,
+      "1000" -> InternalError,
+      "1108" -> NotFoundError,
+      "1109" -> RuleSequenceOrderBroken,
+      "1110" -> RuleInvalidSequenceStart,
+      "1111" -> RuleLossClaimsMissing,
+      "5000" -> RuleTaxYearNotSupportedError
+    )
+
+    ifsErrors ++ hipErrors
+  }
 
 }

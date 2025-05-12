@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,19 @@ package auth
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import shared.auth.AuthSupportingAgentsAllowedISpec
+import shared.auth.AuthMainAgentsOnlyISpec
 import shared.services.DownstreamStub
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendOrder.def1.model.request.Claim
 
-class IndividualLossesApiAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
+class IndividualLossesApiAuthMainAgentsOnlyIfsISpec extends AuthMainAgentsOnlyISpec {
 
-  val callingApiVersion = "5.0"
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1793.enabled" -> false) ++ super.servicesConfig
 
-  val supportingAgentsAllowedEndpoint = "amend-loss-claims-order"
+  val callingApiVersion = "6.0"
+
+  val supportingAgentsNotAllowedEndpoint = "amend-loss-claims-order"
 
   val mtdUrl = s"/$nino/loss-claims/order/2023-24"
 
@@ -47,10 +50,10 @@ class IndividualLossesApiAuthSupportingAgentsAllowedISpec extends AuthSupporting
     def writes: OWrites[Claim]        = Json.writes[Claim]
     def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
     Json.parse(s"""
-                  |{
+    |{
                   |   "typeOfClaim": "${TypeOfClaim.`carry-sideways`.toString}",
                   |   "listOfLossClaims": ${Json.toJson(claims)(writesSeq)}
-                  |}
+    |}
       """.stripMargin)
   }
 
