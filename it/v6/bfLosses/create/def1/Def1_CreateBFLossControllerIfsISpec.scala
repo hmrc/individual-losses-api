@@ -29,7 +29,10 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
+class Def1_CreateBFLossControllerIfsISpec extends IntegrationBaseSpec with JsonErrorValidators {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1500.enabled" -> false) ++ super.servicesConfig
 
   val lossId = "AAZZ1234567890a"
 
@@ -166,7 +169,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         }
 
         serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_ENDED", BAD_REQUEST, RuleTaxYearNotEndedError)

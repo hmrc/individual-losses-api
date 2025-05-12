@@ -19,7 +19,7 @@ package v6.bfLosses.create
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
 import v6.bfLosses.create.model.response.CreateBFLossResponse
