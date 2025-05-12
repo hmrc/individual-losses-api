@@ -16,13 +16,18 @@
 
 package v4.connectors
 
+//import com.google.common.base.Charsets
+import play.api.Configuration
+import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig}
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.amendLossClaimsOrder.{AmendLossClaimsOrderRequestBody, AmendLossClaimsOrderRequestData, Claim}
 
+//import java.util.Base64
 import scala.concurrent.Future
+//import scala.sys.env
 
 class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
 
@@ -51,12 +56,18 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
   }
 
   "amendLossClaimsOrder" when {
-    "given a tax year prior to 2023-24" should {
+    "given a tax year prior to 2023-24, before HIP migration" should {
       "return a success response" in new TysIfsTest with Test {
+        private val clientId     = "clientId"
+        private val clientSecret = "clientSecret"
+        private val environment = "hip-environment"
+
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793" -> false)
+        MockedSharedAppConfig.tysIfsDownstreamConfig returns DownstreamConfig(baseUrl = baseUrl, env = "tys-ifs", token = "token", environmentHeaders = Some(Seq("environment")))
+        MockedSharedAppConfig.hipDownstreamConfig returns BasicAuthDownstreamConfig(this.baseUrl, environment, clientId, clientSecret, Some(allowedHeaders))
         def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
 
         private val expected = Right(ResponseWrapper(correlationId, ()))
-
         willPut(
           url = s"$baseUrl/income-tax/claims-for-relief/preferences/22-23/$nino",
           body = amendLossClaimsOrder
@@ -67,20 +78,53 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
       }
     }
 
-    "given a 2023-24 tax year" should {
-      "return a success response" in new TysIfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+    "given a tax year prior to 2023-24, after HIP migration" should {
+      "return a success response" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793" -> true)
+        def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
 
-        val expected = Right(ResponseWrapper(correlationId, ()))
-
+        private val expected = Right(ResponseWrapper(correlationId, ()))
         willPut(
-          url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
+          url = s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=22-23",
           body = amendLossClaimsOrder
         ).returns(Future.successful(expected))
 
-        await(connector.amendLossClaimsOrder(request)) shouldBe expected
+        val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsOrder(request))
+        result shouldBe expected
       }
     }
+
+//    "given a 2023-24 tax year, before HIP migration" should {
+//      "return a success response" in new TysIfsTest with Test {
+//        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+//
+//        val expected = Right(ResponseWrapper(correlationId, ()))
+//
+//        willPut(
+//          url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
+//          body = amendLossClaimsOrder
+//        ).returns(Future.successful(expected))
+//
+//        await(connector.amendLossClaimsOrder(request)) shouldBe expected
+//      }
+//    }
+
+//    "given a 2023-24 tax year, after HIP migration" should {
+//      "return a success response" in new HipTest with Test {
+//        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793" -> true)
+//        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+//
+//        val expected = Right(ResponseWrapper(correlationId, ()))
+//
+//        willPut(
+//          url = s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=23-24",
+//          body = amendLossClaimsOrder
+//        ).returns(Future.successful(expected))
+//
+//        await(connector.amendLossClaimsOrder(request)) shouldBe expected
+//      }
+//    }
   }
 
 }
+

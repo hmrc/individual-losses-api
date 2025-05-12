@@ -16,10 +16,10 @@
 
 package v5.lossClaims.amendOrder
 
-import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.DownstreamUri.{HipUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.SharedAppConfig
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 
@@ -37,7 +37,11 @@ class AmendLossClaimsOrderConnector @Inject() (val http: HttpClient, val appConf
     import request._
 
     val downstreamUri =
-      TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYearClaimedFor.asTysDownstream}/$nino")
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1793")) {
+        HipUri[Unit](s"itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=${taxYearClaimedFor.asTysDownstream}")
+      } else {
+        TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYearClaimedFor.asTysDownstream}/$nino")
+      }
 
     put(body, downstreamUri)
   }

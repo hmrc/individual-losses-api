@@ -34,7 +34,8 @@ class IndividualLossesApiAuthSupportingAgentsAllowedISpec extends AuthSupporting
 
   def sendMtdRequest(request: WSRequest): WSResponse = await(request.put(requestJson()))
 
-  val downstreamUri = s"/income-tax/claims-for-relief/preferences/23-24/$nino"
+  // val downstreamUri = s"/income-tax/claims-for-relief/preferences/23-24/$nino"
+  val downstreamUri = s"/itsd/income-sources/claims-for-relief/$nino/preferences"
 
   override val downstreamHttpMethod: DownstreamStub.HTTPMethod = DownstreamStub.PUT
 

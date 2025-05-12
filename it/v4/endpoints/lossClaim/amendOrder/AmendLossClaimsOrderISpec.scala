@@ -62,7 +62,7 @@ class AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
           DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, Status.NO_CONTENT)
         }
 
-        val response: WSResponse = await(request().put(requestJson()))
+        val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
         response.status shouldBe Status.OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
@@ -136,18 +136,16 @@ class AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
       }
 
       val errors = List(
-        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-        (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-        (CONFLICT, "NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
-        (CONFLICT, "SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
-        (CONFLICT, "NO_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
-        (NOT_FOUND, "CLAIM_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+        (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "1000", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "1108", NOT_FOUND, NotFoundError),
+        (UNPROCESSABLE_ENTITY, "1109", BAD_REQUEST, RuleSequenceOrderBroken),
+        (UNPROCESSABLE_ENTITY, "1110", BAD_REQUEST, RuleInvalidSequenceStart),
+        (UNPROCESSABLE_ENTITY, "1111", BAD_REQUEST, RuleLossClaimsMissing),
+        (UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow),
+        (NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
       errors.foreach(args => (serviceErrorTest _).tupled(args))
@@ -161,7 +159,8 @@ class AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
     val nino              = "AA123456A"
     val taxYear           = "2023-24"
     val downstreamTaxYear = "23-24"
-    val downstreamUri     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
+    // val downstreamUri     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
+    val downstreamUri = s"/itsd/income-sources/claims-for-relief/$nino/preferences"
 
     def uri: String = s"/$nino/loss-claims/order/$taxYear"
 

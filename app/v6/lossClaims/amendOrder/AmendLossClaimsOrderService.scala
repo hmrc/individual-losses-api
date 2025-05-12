@@ -38,19 +38,16 @@ class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsOrderConn
   }
 
   private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-    "INVALID_PAYLOAD"           -> InternalError,
-    "INVALID_CORRELATIONID"     -> InternalError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "NOT_SEQUENTIAL"            -> RuleSequenceOrderBroken,
-    "SEQUENCE_START"            -> RuleInvalidSequenceStart,
-    "NO_FULL_LIST"              -> RuleLossClaimsMissing,
-    "CLAIM_NOT_FOUND"           -> NotFoundError,
-    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
-    "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindow,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
+    "1215" -> NinoFormatError,
+    "1117" -> TaxYearFormatError,
+    "1216" -> InternalError,
+    "1000" -> InternalError,
+    "1108" -> NotFoundError,
+    "1109" -> RuleSequenceOrderBroken,
+    "1110" -> RuleInvalidSequenceStart,
+    "1111" -> RuleLossClaimsMissing,
+    "4200" -> RuleOutsideAmendmentWindow,
+    "5000" -> RuleTaxYearNotSupportedError
   )
 
 }

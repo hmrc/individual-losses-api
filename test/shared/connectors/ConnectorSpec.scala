@@ -136,6 +136,33 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockedSharedAppConfig.tysIfsDownstreamConfig.anyNumberOfTimes() returns config
   }
 
+  protected trait TysIfsToHipTest extends ConnectorTest {
+    val name = "tys-ifs"
+    protected final val config: DownstreamConfig = DownstreamConfig(this.baseUrl, environment, token, Some(allowedHeaders))
+    MockedSharedAppConfig.tysIfsDownstreamConfig.anyNumberOfTimes() returns config
+
+    private val clientId     = "clientId"
+    private val clientSecret = "clientSecret"
+
+    private val token =
+      Base64.getEncoder.encodeToString(s"$clientId:$clientSecret".getBytes(Charsets.UTF_8))
+
+    private val environment = "hip-environment"
+
+    protected final lazy val requiredHeaders: Seq[(String, String)] = List(
+      "Authorization"        -> s"Basic $token",
+      "Environment"          -> environment,
+      "User-Agent"           -> "this-api",
+      "CorrelationId"        -> correlationId,
+      "Gov-Test-Scenario"    -> "DEFAULT"
+    ) ++ intent.map("intent" -> _)
+
+    MockedSharedAppConfig.hipDownstreamConfig
+      .anyNumberOfTimes() returns BasicAuthDownstreamConfig(this.baseUrl, environment, clientId, clientSecret, Some(allowedHeaders))
+
+
+  }
+
   protected trait HipTest extends ConnectorTest {
     private val clientId     = "clientId"
     private val clientSecret = "clientSecret"

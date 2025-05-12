@@ -16,8 +16,8 @@
 
 package v4.connectors
 
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -29,6 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
+//TODO rename class
   def amendLossClaimsOrder(request: AmendLossClaimsOrderRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
@@ -37,7 +38,11 @@ class AmendLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: S
     import request._
 
     val downstreamUri =
-      TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYearClaimedFor.asTysDownstream}/$nino")
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1793")) {
+       HipUri(s"itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=${taxYearClaimedFor.asTysDownstream}")
+      } else {
+        TaxYearSpecificIfsUri(s"income-tax/claims-for-relief/preferences/${taxYearClaimedFor.asTysDownstream}/$nino")
+      }
 
     put(
       uri = downstreamUri,

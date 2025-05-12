@@ -16,7 +16,7 @@
 
 package v4.services
 
-import common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
+import common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleOutsideAmendmentWindow, RuleSequenceOrderBroken}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -82,18 +82,16 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
       }
 
       val errors = List(
-        ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
-        ("INVALID_TAX_YEAR", TaxYearFormatError),
-        ("INVALID_CORRELATIONID", InternalError),
-        ("NOT_FOUND", NotFoundError),
-        ("NOT_SEQUENTIAL", RuleSequenceOrderBroken),
-        ("SEQUENCE_START", RuleInvalidSequenceStart),
-        ("NO_FULL_LIST", RuleLossClaimsMissing),
-        ("CLAIM_NOT_FOUND", NotFoundError),
-        ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
-        ("INVALID_PAYLOAD", InternalError),
-        ("SERVER_ERROR", InternalError),
-        ("SERVICE_UNAVAILABLE", InternalError)
+        ("1215", NinoFormatError),
+        ("1117", TaxYearFormatError),
+        ("1216", InternalError),
+        ("1000", InternalError),
+        ("1108", NotFoundError),
+        ("1109", RuleSequenceOrderBroken),
+        ("1110", RuleInvalidSequenceStart),
+        ("1111", RuleLossClaimsMissing),
+        ("4200", RuleOutsideAmendmentWindow),
+        ("5000", RuleTaxYearNotSupportedError)
       )
 
       errors.foreach(args => (serviceError _).tupled(args))

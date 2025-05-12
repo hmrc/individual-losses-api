@@ -16,6 +16,7 @@
 
 package v6.lossClaims.amendOrder
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -37,12 +38,12 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
   )
 
   "amendLossClaimsOrder" when {
-    "given a tax year prior to 2023-24" should {
+    "given a tax year prior to 2023-24 before HIP migration" should {
       "return a success response" in new TysIfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793" -> false)
         def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
 
         private val expected = Right(ResponseWrapper(correlationId, ()))
-
         willPut(
           url = s"$baseUrl/income-tax/claims-for-relief/preferences/22-23/$nino",
           body = amendLossClaimsOrder
@@ -53,14 +54,48 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
       }
     }
 
-    "given a 2023-24 tax year" should {
+    "given a tax year prior to 2023-24 after HIP migration" should {
+      "return a success response" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793" -> true)
+        def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
+
+        private val expected = Right(ResponseWrapper(correlationId, ()))
+        willPut(
+          url = s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=22-23",
+          body = amendLossClaimsOrder
+        ).returning(Future.successful(expected))
+
+        val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsOrder(request))
+        result shouldBe expected
+      }
+    }
+
+    "given a 2023-24 tax year before HIP migration" should {
       "return a success response" in new TysIfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793" -> false)
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
         private val expected = Right(ResponseWrapper(correlationId, ()))
-
+        // TODO use tax year variable below
         willPut(
           url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
+          body = amendLossClaimsOrder
+        ).returning(Future.successful(expected))
+
+        val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsOrder(request))
+        result shouldBe expected
+      }
+    }
+
+    "given a 2023-24 tax year after HIP migration" should {
+      "return a success response" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793" -> true)
+        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+
+        private val expected = Right(ResponseWrapper(correlationId, ()))
+        // TODO use tax year variable below
+        willPut(
+          url = s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=23-24",
           body = amendLossClaimsOrder
         ).returning(Future.successful(expected))
 

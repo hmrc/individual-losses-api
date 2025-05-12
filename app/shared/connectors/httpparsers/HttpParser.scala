@@ -64,19 +64,30 @@ trait HttpParser extends Logging {
     (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[Seq[DownstreamErrorCode]]
   }
 
+  private val hipErrorReads: Reads[Seq[DownstreamErrorCode]] = {
+    (__ \ "type").read[String].map(DownstreamErrorCode.apply)
+    // Read the entire response array as a Seq[DownstreamErrorCode]
+    (__ \ "response").read[Seq[DownstreamErrorCode]]
+  }
+
+  private val hipErrorReads2: Reads[Seq[DownstreamErrorCode]] =
+    Reads[Seq[JsObject]](_.validate[Seq[JsObject]]).map(_.map(obj => DownstreamErrorCode((obj \ "errorCode").as[String])))
+
   def parseErrors(response: HttpResponse): DownstreamError = {
     val singleError                       = response.validateJson[DownstreamErrorCode].map(err => DownstreamErrors(List(err)))
     lazy val multipleErrors               = response.validateJson(multipleErrorReads).map(errs => DownstreamErrors(errs))
     lazy val multipleTopLevelErrorCodes   = response.validateJson(multipleTopLevelErrorCodesReads).map(errs => DownstreamErrors(errs))
     lazy val multipleErrorCodesInResponse = response.validateJson(multipleErrorCodesInResponseReads).map(errs => DownstreamErrors(errs))
-    lazy val bvrErrors = response.validateJson(bvrErrorReads).map(errs => OutboundError(BVRError, Some(errs.map(_.toMtd(BVRError.httpStatus)))))
+    lazy val bvrErrors  = response.validateJson(bvrErrorReads).map(errs => OutboundError(BVRError, Some(errs.map(_.toMtd(BVRError.httpStatus)))))
+    lazy val hipErrors  = response.validateJson(hipErrorReads).map(errs => DownstreamErrors(errs))
+    lazy val hipErrors2 = response.validateJson(hipErrorReads2).map(errs => DownstreamErrors(errs))
 
     lazy val unableToParseJsonError = {
       logger.warn(s"unable to parse errors from response: ${response.body}")
       OutboundError(InternalError)
     }
 
-    singleError orElse multipleErrors orElse multipleTopLevelErrorCodes orElse multipleErrorCodesInResponse orElse bvrErrors getOrElse unableToParseJsonError
+    singleError orElse multipleErrors orElse multipleTopLevelErrorCodes orElse multipleErrorCodesInResponse orElse hipErrors orElse hipErrors2 orElse bvrErrors getOrElse unableToParseJsonError
   }
 
 }
