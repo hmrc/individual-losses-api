@@ -19,13 +19,14 @@ package v4.connectors
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteLossClaimConnector extends MockFactory {
+trait MockDeleteLossClaimConnector extends TestSuite with MockFactory {
   val mockDeleteLossClaimConnector: DeleteLossClaimConnector = mock[DeleteLossClaimConnector]
 
   object MockDeleteLossClaimConnector {

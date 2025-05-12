@@ -17,8 +17,9 @@
 package config
 
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 
-trait MockLossesConfig extends MockFactory {
+trait MockLossesConfig extends TestSuite with MockFactory {
 
   implicit val mockLossesConfig: LossesConfig = mock[LossesConfig]
 

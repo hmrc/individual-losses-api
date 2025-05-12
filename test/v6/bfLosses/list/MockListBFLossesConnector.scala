@@ -19,6 +19,7 @@ package v6.bfLosses.list
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v6.bfLosses.list.ListBFLossesConnector
 import v6.bfLosses.list.model.request.ListBFLossesRequestData
@@ -26,7 +27,7 @@ import v6.bfLosses.list.model.response.ListBFLossesResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListBFLossesConnector extends MockFactory {
+trait MockListBFLossesConnector extends TestSuite with MockFactory {
   val connector: ListBFLossesConnector = mock[ListBFLossesConnector]
 
   object MockedListBFLossesConnector {

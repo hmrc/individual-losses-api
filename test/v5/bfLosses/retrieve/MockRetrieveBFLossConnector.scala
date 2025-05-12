@@ -19,6 +19,7 @@ package v5.bfLosses.retrieve
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v5.bfLosses.retrieve.RetrieveBFLossConnector
 import v5.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
@@ -26,7 +27,7 @@ import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveBFLossConnector extends MockFactory {
+trait MockRetrieveBFLossConnector extends TestSuite with MockFactory {
 
   val connector: RetrieveBFLossConnector = mock[RetrieveBFLossConnector]
 

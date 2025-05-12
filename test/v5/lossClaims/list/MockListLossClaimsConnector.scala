@@ -19,13 +19,14 @@ package v5.lossClaims.list
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v5.lossClaims.list.model.request.ListLossClaimsRequestData
 import v5.lossClaims.list.model.response.ListLossClaimsResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListLossClaimsConnector extends MockFactory {
+trait MockListLossClaimsConnector extends TestSuite with MockFactory {
   val connector: ListLossClaimsConnector = mock[ListLossClaimsConnector]
 
   object MockedListLossClaimsConnector {

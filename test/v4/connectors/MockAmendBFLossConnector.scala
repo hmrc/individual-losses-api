@@ -19,13 +19,14 @@ package v4.connectors
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.models.request.amendBFLosses.AmendBFLossRequestData
 import v4.models.response.amendBFLosses.AmendBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendBFLossConnector extends MockFactory {
+trait MockAmendBFLossConnector extends TestSuite with MockFactory {
 
   val connector: AmendBFLossConnector = mock[AmendBFLossConnector]
 
