@@ -16,7 +16,14 @@
 
 package v4.services
 
-import common.errors.RuleDuplicateSubmissionError
+import common.errors.{
+  RuleCSFHLClaimNotSupportedError,
+  RuleDuplicateSubmissionError,
+  RuleNoAccountingPeriod,
+  RuleOutsideAmendmentWindow,
+  RulePeriodNotEnded,
+  RuleTypeOfClaimInvalid
+}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -82,7 +89,20 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "INVALID_CORRELATIONID"     -> InternalError,
         "INVALID_PAYLOAD"           -> InternalError,
         "SERVER_ERROR"              -> InternalError,
-        "SERVICE_UNAVAILABLE"       -> InternalError
+        "SERVICE_UNAVAILABLE"       -> InternalError,
+        "1215"                      -> NinoFormatError,
+        "1117"                      -> TaxYearFormatError,
+        "1216"                      -> InternalError,
+        "1000"                      -> InternalError,
+        "1002"                      -> NotFoundError,
+        "1127"                      -> RuleCSFHLClaimNotSupportedError,
+        "1228"                      -> RuleDuplicateSubmissionError,
+        "1104"                      -> RulePeriodNotEnded,
+        "1105"                      -> RuleTypeOfClaimInvalid,
+        "1106"                      -> RuleNoAccountingPeriod,
+        "1107"                      -> RuleTaxYearNotSupportedError,
+        "4200"                      -> RuleOutsideAmendmentWindow,
+        "5000"                      -> RuleTaxYearNotSupportedError
       )
 
       errors.foreach(args => (serviceError _).tupled(args))

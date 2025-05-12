@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package v4.endpoints.bfLoss.create
+package v5.bfLosses.create.def1
 
-import shared.models.errors._
-import shared.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{RuleDuplicateSubmissionError, TypeOfLossFormatError}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, TypeOfLossFormatError}
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
-import shared.models.domain.TaxYear.currentTaxYear
-import shared.support.IntegrationBaseSpec
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 
-class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
+class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonErrorValidators {
 
   val lossId = "AAZZ1234567890a"
 
@@ -44,7 +43,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
 
   private trait Test {
     val nino                  = "AA123456A"
-    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}"
+    def downstreamUrl: String = s"/itsd/income-sources/brought-forward-losses/$nino"
 
     def setupStubs(): StubMapping
 
@@ -52,33 +51,16 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
       setupStubs()
       buildRequest(s"/$nino/brought-forward-losses")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.4.0+json"),
+          (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123"),
           ("suspend-temporal-validations", "true")
         )
     }
 
     lazy val responseBody: JsValue = Json.parse(
-      s"""
+      """
         |{
-        |  "lossId": "AAZZ1234567890a",
-        |  "links": [
-        |    {
-        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-        |      "method": "GET",
-        |      "rel": "self"
-        |    },
-        |    {
-        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-        |      "method": "DELETE",
-        |      "rel": "delete-brought-forward-loss"
-        |    },
-        |    {
-        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-        |      "method": "POST",
-        |      "rel": "amend-brought-forward-loss"
-        |    }
-        |  ]
+        |  "lossId": "AAZZ1234567890a"
         |}
       """.stripMargin
     )
@@ -101,7 +83,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
 
   }
 
-  "Calling the create BFLoss endpoint" should {
+  "Calling the create BFLoss Hip endpoint" should {
     "return a 201 status code" when {
       "any valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
@@ -186,7 +168,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
         }
 
         serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_ENDED", BAD_REQUEST, RuleTaxYearNotEndedError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
@@ -194,6 +176,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
         serviceErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
         serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(UNPROCESSABLE_ENTITY, "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES", BAD_REQUEST, RuleBflNotSupportedForFhlProperties)
       }
     }
   }
