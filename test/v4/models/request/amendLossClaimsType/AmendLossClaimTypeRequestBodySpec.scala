@@ -16,18 +16,28 @@
 
 package v4.models.request.amendLossClaimsType
 
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.domain.lossClaim.TypeOfClaim._
 import v4.models.request.amendLossClaimType.AmendLossClaimTypeRequestBody
 
-class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
+class AmendLossClaimTypeRequestBodySpec extends UnitSpec with MockSharedAppConfig {
 
-  def downstreamJson(reliefClaimed: String): JsValue = Json.parse {
+  def ifsDownstreamJson(reliefClaimed: String): JsValue = Json.parse {
     s"""
        |{
        | "updatedReliefClaimedType" : "$reliefClaimed"
+       |}
+    """.stripMargin
+  }
+
+  def hipDownstreamJson(reliefClaimed: String): JsValue = Json.parse {
+    s"""
+       |{
+       | "updatedReliefClaimed" : "$reliefClaimed"
        |}
     """.stripMargin
   }
@@ -49,11 +59,19 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec {
       "CSFHL"  -> TypeOfClaim.`carry-sideways-fhl`
     )
 
-    "produce the correct Json for downstream submission" when {
-
+    "produce the correct Json for IFS downstream submission" when {
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
-          Json.toJson(AmendLossClaimTypeRequestBody(test._2)) shouldBe downstreamJson(test._1)
+          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1506.enabled" -> false))
+          Json.toJson(AmendLossClaimTypeRequestBody(test._2)) shouldBe ifsDownstreamJson(test._1)
+        })
+    }
+
+    "produce the correct Json for HIP downstream submission" when {
+      testData.foreach(test =>
+        s"supplied with a TypeOfClaim of ${test._2}" in {
+          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1506.enabled" -> true))
+          Json.toJson(AmendLossClaimTypeRequestBody(test._2)) shouldBe hipDownstreamJson(test._1)
         })
     }
   }

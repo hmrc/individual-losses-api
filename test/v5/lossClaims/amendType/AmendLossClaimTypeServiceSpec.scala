@@ -16,7 +16,13 @@
 
 package v5.lossClaims.amendType
 
-import common.errors.{ClaimIdFormatError, RuleCSFHLClaimNotSupportedError, RuleClaimTypeNotChanged, RuleTypeOfClaimInvalid}
+import common.errors.{
+  ClaimIdFormatError,
+  RuleCSFHLClaimNotSupportedError,
+  RuleClaimTypeNotChanged,
+  RuleOutsideAmendmentWindow,
+  RuleTypeOfClaimInvalid
+}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -149,7 +155,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         "UNEXPECTED_ERROR"          -> InternalError
       )
 
-      val amendErrors: Seq[(String, MtdError)] = List(
+      val amendIfsErrors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
         "INVALID_PAYLOAD"           -> InternalError,
@@ -163,8 +169,22 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         "UNEXPECTED_ERROR"          -> InternalError
       )
 
+      val amendHipErrors: Seq[(String, MtdError)] = List(
+        "1117" -> TaxYearFormatError,
+        "1215" -> NinoFormatError,
+        "1216" -> InternalError,
+        "1220" -> ClaimIdFormatError,
+        "5010" -> NotFoundError,
+        "1000" -> InternalError,
+        "1105" -> RuleTypeOfClaimInvalid,
+        "1127" -> RuleCSFHLClaimNotSupportedError,
+        "1228" -> RuleClaimTypeNotChanged,
+        "4200" -> RuleOutsideAmendmentWindow,
+        "5000" -> RuleTaxYearNotSupportedError
+      )
+
       retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
-      amendErrors.foreach(args => (serviceErrorFromAmendConnector _).tupled(args))
+      (amendIfsErrors ++ amendHipErrors).foreach(args => (serviceErrorFromAmendConnector _).tupled(args))
 
     }
   }

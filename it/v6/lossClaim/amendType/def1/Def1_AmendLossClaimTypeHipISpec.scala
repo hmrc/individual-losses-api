@@ -27,26 +27,26 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
+class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1506.enabled" -> false) ++ super.servicesConfig
+    Map("feature-switch.ifs_hip_migration_1506.enabled" -> true) ++ super.servicesConfig
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
-       |{
-       |  "incomeSourceId": "XKIS00000000988",
-       |  "reliefClaimed": "CF",
-       |  "taxYearClaimedFor": "2020",
-       |  "claimId": "notUsed",
-       |  "sequence": 1,
-       |  "submissionDate": "2018-07-13T12:13:48.763Z"
-       |}
+      |{
+      |  "incomeSourceId": "XKIS00000000988",
+      |  "reliefClaimed": "CF",
+      |  "taxYearClaimedFor": 2020,
+      |  "claimId": "AT0000000000001",
+      |  "sequence": 1,
+      |  "submissionDate": "2018-07-13T12:13:48.763Z"
+      |}
       """.stripMargin)
 
   val requestJson: JsValue = Json.parse(s"""
-       |{
-       |    "typeOfClaim": "carry-forward"
-       |}
+     |{
+     |    "typeOfClaim": "carry-forward"
+     |}
       """.stripMargin)
 
   private trait Test {
@@ -57,26 +57,28 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
     val downstreamTaxYearClaimedFor = "20-21"
 
     val responseJson: JsValue = Json.parse(s"""
-         |{
-         |  "businessId": "XKIS00000000988",
-         |  "typeOfLoss": "self-employment",
-         |  "typeOfClaim": "carry-forward",
-         |  "taxYearClaimedFor": "2019-20",
-         |  "lastModified":"2018-07-13T12:13:48.763Z",
-         |  "sequence": 1
-         |}
+      |{
+      |  "businessId": "XKIS00000000988",
+      |  "typeOfLoss": "self-employment",
+      |  "typeOfClaim": "carry-forward",
+      |  "taxYearClaimedFor": "2019-20",
+      |  "lastModified":"2018-07-13T12:13:48.763Z",
+      |  "sequence": 1
+      |}
       """.stripMargin)
 
     def uri: String    = s"/$nino/loss-claims/$claimId/tax-year/$taxYearClaimedFor/change-type-of-claim"
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$downstreamTaxYearClaimedFor/$claimId"
+    def hipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
-      """.stripMargin
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "error message"
+         |  }
+         |]
+         |""".stripMargin
 
     def setupStubs(): StubMapping
 
@@ -101,7 +103,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, ifsUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, hipUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -113,14 +115,14 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
     }
 
     "handle errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
+      def serviceErrorTest(hipStatus: Int, hipCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $hipCode error" in new Test {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.PUT, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.PUT, hipUrl, hipStatus, errorBody(hipCode))
           }
 
           val response: WSResponse = await(request().post(requestJson))
@@ -131,18 +133,17 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_CLAIM_ID", BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      serviceErrorTest(UNPROCESSABLE_ENTITY, "CSFHL_CLAIM_NOT_SUPPORTED", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
-      serviceErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
-      serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleClaimTypeNotChanged)
-      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
-      serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError)
+      serviceErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(BAD_REQUEST, "1220", BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "1000", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "1105", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "1127", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "1228", BAD_REQUEST, RuleClaimTypeNotChanged)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
+      serviceErrorTest(NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
     }
 
     "handle validation errors according to spec" when {

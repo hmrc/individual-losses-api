@@ -35,7 +35,12 @@ object AmendLossClaimTypeResponse extends V4HateoasLinks {
   implicit val writes: OWrites[AmendLossClaimTypeResponse] = Json.writes[AmendLossClaimTypeResponse]
 
   implicit val reads: Reads[AmendLossClaimTypeResponse] = (
-    (JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) and
+    (JsPath \ "taxYearClaimedFor")
+      .read[Int]
+      .map(_.toString)
+      .map(TaxYear(_))
+      .map(_.asMtd)
+      .orElse((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd)) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
