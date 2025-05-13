@@ -66,7 +66,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1500.enabled" -> true))
 
         willPost(
-          url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino",
+          url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino?taxYear=${currentTaxYear.asTysDownstream}",
           body = requestBody
         ).returns(Future.successful(expected))
 

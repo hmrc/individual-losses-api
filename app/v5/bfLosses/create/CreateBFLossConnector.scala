@@ -40,7 +40,7 @@ class CreateBFLossConnector @Inject() (val http: HttpClient, val appConfig: Shar
     import schema._
 
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1500")) {
-      HipUri(s"itsd/income-sources/brought-forward-losses/$nino")
+      HipUri(s"itsd/income-sources/brought-forward-losses/$nino?taxYear=${currentTaxYear.asTysDownstream}")
     } else {
       IfsUri(s"income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}")
     }
