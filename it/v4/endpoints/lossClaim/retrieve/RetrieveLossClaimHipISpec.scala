@@ -36,7 +36,7 @@ class RetrieveLossClaimHipISpec extends IntegrationBaseSpec {
        |{
        |  "incomeSourceId": "$businessId",
        |  "reliefClaimed": "CF",
-       |  "taxYearClaimedFor": "2020",
+       |  "taxYearClaimedFor": 2020,
        |  "claimId": "notUsed",
        |  "sequence": 1,
        |  "submissionDate": "$lastModified"
@@ -74,7 +74,6 @@ class RetrieveLossClaimHipISpec extends IntegrationBaseSpec {
          |}
   """.stripMargin)
 
-    def uri: String           = s"/$nino/loss-claims/$claimId"
     def downstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
@@ -94,7 +93,7 @@ class RetrieveLossClaimHipISpec extends IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"/$nino/loss-claims/$claimId")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")

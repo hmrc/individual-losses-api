@@ -62,7 +62,6 @@ class Def1_RetrieveLossClaimIfsISpec extends IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def uri: String           = s"/$nino/loss-claims/$claimId"
     def downstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
@@ -77,7 +76,7 @@ class Def1_RetrieveLossClaimIfsISpec extends IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"/$nino/loss-claims/$claimId")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")

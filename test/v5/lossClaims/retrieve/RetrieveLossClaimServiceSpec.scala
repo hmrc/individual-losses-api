@@ -87,7 +87,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors: Seq[(String, MtdError)] = List(
+      val ifsErrors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
         "NOT_FOUND"                 -> NotFoundError,
@@ -96,7 +96,13 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
         "SERVICE_UNAVAILABLE"       -> InternalError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      val hipErrors: Seq[(String, MtdError)] = List(
+        "1215" -> NinoFormatError,
+        "1220" -> ClaimIdFormatError,
+        "5010" -> NotFoundError
+      )
+
+      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

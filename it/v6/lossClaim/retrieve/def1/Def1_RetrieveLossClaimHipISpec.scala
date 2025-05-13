@@ -16,7 +16,6 @@
 
 package v6.lossClaim.retrieve.def1
 
-import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.ClaimIdFormatError
 import play.api.http.HeaderNames.ACCEPT
@@ -24,13 +23,11 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.support.IntegrationBaseSpec
+import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 
-class Def1_RetrieveLossClaimIfsISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
+class Def1_RetrieveLossClaimHipISpec extends IntegrationBaseSpec {
 
   val businessId   = "XKIS00000000988"
   val lastModified = "2018-07-13T12:13:48.763Z"
@@ -39,7 +36,7 @@ class Def1_RetrieveLossClaimIfsISpec extends IntegrationBaseSpec {
        |{
        |  "incomeSourceId": "$businessId",
        |  "reliefClaimed": "CF",
-       |  "taxYearClaimedFor": "2020",
+       |  "taxYearClaimedFor": 2020,
        |  "claimId": "notUsed",
        |  "sequence": 1,
        |  "submissionDate": "$lastModified"
@@ -62,22 +59,26 @@ class Def1_RetrieveLossClaimIfsISpec extends IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def uri: String           = s"/$nino/loss-claims/$claimId"
-    def downstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def downstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
-      """.stripMargin
+         |{
+         |  "origin": "HIP",
+         |  "response":  [
+         |    {
+         |      "errorCode": "$code",
+         |      "errorDescription": "error message"
+         |    }
+         |  ]
+         |}
+         |""".stripMargin
 
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"/$nino/loss-claims/$claimId")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -90,7 +91,6 @@ class Def1_RetrieveLossClaimIfsISpec extends IntegrationBaseSpec {
 
     "return a 200 status code" when {
       "any valid request is made" in new Test {
-
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
@@ -149,12 +149,9 @@ class Def1_RetrieveLossClaimIfsISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(Status.BAD_REQUEST, "1215", Status.BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "1220", Status.BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(Status.NOT_FOUND, "5010", Status.NOT_FOUND, NotFoundError)
     }
 
   }
