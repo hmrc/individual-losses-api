@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.endpoints.lossClaim.amendOrder
+package v5.lossClaim.amendOrder.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors._
@@ -27,10 +27,13 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v4.models.domain.lossClaim.TypeOfClaim
-import v4.models.request.amendLossClaimsOrder.Claim
+import v5.lossClaims.amendOrder.def1.model.request.Claim
+import v5.lossClaims.common.models.TypeOfClaim
 
-class AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
+class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1793.enabled" -> false) ++ super.servicesConfig
 
   val claim1: Claim        = Claim("1234567890ABEF1", 1)
   val claim2: Claim        = Claim("1234567890ABCDE", 2)
@@ -179,7 +182,7 @@ class AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.4.0+json"),
+          (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }

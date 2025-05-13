@@ -16,6 +16,7 @@
 
 package v6.lossClaims.amendOrder
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -26,7 +27,8 @@ import scala.concurrent.Future
 
 class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String     = "AA123456A"
+  val taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
   val amendLossClaimsOrder: Def1_AmendLossClaimsOrderRequestBody = Def1_AmendLossClaimsOrderRequestBody(
     typeOfClaim = TypeOfClaim.`carry-sideways`,
@@ -37,30 +39,28 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
   )
 
   "amendLossClaimsOrder" when {
-    "given a tax year prior to 2023-24" should {
-      "return a success response" in new TysIfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2022-23")
-
+    "given a valid request" should {
+      "return a success response when feature switch is disabled (TysIfs enabled)" in new TysIfsTest with Test {
         private val expected = Right(ResponseWrapper(correlationId, ()))
 
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793.enabled" -> false)
+
         willPut(
-          url = s"$baseUrl/income-tax/claims-for-relief/preferences/22-23/$nino",
+          url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
           body = amendLossClaimsOrder
         ).returning(Future.successful(expected))
 
         val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsOrder(request))
         result shouldBe expected
       }
-    }
 
-    "given a 2023-24 tax year" should {
-      "return a success response" in new TysIfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
-
+      "return a success response when feature switch is enabled (HIP enabled)" in new HipTest with Test {
         private val expected = Right(ResponseWrapper(correlationId, ()))
 
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793.enabled" -> true)
+
         willPut(
-          url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
+          url = s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=23-24",
           body = amendLossClaimsOrder
         ).returning(Future.successful(expected))
 
@@ -72,8 +72,6 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
 
   trait Test {
     _: ConnectorTest =>
-
-    def taxYear: TaxYear
 
     val request: Def1_AmendLossClaimsOrderRequestData = Def1_AmendLossClaimsOrderRequestData(
       nino = Nino(nino),

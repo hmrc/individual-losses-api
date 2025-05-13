@@ -42,7 +42,7 @@ object RetrieveBFLossResponse extends V4HateoasLinks {
         .read[String]
         .map(TaxYear(_))
         .map(_.asMtd)
-        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear(i.toString)).map(_.asMtd)) and
+        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(TaxYear.fromDownstreamInt).map(_.asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
   )(RetrieveBFLossResponse.apply _)
 
