@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package v5.lossClaims.retrieve
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
@@ -38,10 +38,15 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig:
     import request._
     import schema._
 
-    val maybeIntent: Option[String] =
+    lazy val maybeIntent: Option[String] =
       if (isAmendRequest && ConfigFeatureSwitches().isEnabled("passIntentHeader")) Some("AMEND_LOSS_CLAIM") else None
 
-    val downstreamUri = IfsUri[DownstreamResp](s"income-tax/claims-for-relief/$nino/$claimId")
+    lazy val downstreamUri: DownstreamUri[DownstreamResp] =
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1508")) {
+        HipUri(s"itsd/income-sources/claims-for-relief/$nino/$claimId")
+      } else {
+        IfsUri(s"income-tax/claims-for-relief/$nino/$claimId")
+      }
 
     get(uri = downstreamUri, maybeIntent = maybeIntent)
   }

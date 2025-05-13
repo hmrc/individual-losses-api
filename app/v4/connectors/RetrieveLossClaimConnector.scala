@@ -16,7 +16,7 @@
 
 package v4.connectors
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
@@ -37,10 +37,15 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClient, val appConfig:
 
     import request._
 
-    val maybeIntent: Option[String] =
+    lazy val maybeIntent: Option[String] =
       if (isAmendRequest && ConfigFeatureSwitches().isEnabled("passIntentHeader")) Some("AMEND_LOSS_CLAIM") else None
 
-    val downstreamUri: DownstreamUri[RetrieveLossClaimResponse] = IfsUri[RetrieveLossClaimResponse](s"income-tax/claims-for-relief/$nino/$claimId")
+    lazy val downstreamUri: DownstreamUri[RetrieveLossClaimResponse] =
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1508")) {
+        HipUri(s"itsd/income-sources/claims-for-relief/$nino/$claimId")
+      } else {
+        IfsUri(s"income-tax/claims-for-relief/$nino/$claimId")
+      }
 
     get(uri = downstreamUri, maybeIntent = maybeIntent)
   }

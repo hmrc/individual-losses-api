@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.retrieve.def1
+package v6.lossClaim.retrieve.def1
 
-import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.ClaimIdFormatError
 import play.api.http.HeaderNames.ACCEPT
@@ -24,10 +23,11 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.support.IntegrationBaseSpec
+import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 
-class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
+class Def1_RetrieveLossClaimHipISpec extends IntegrationBaseSpec {
 
   val businessId   = "XKIS00000000988"
   val lastModified = "2018-07-13T12:13:48.763Z"
@@ -36,7 +36,7 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
        |{
        |  "incomeSourceId": "$businessId",
        |  "reliefClaimed": "CF",
-       |  "taxYearClaimedFor": "2020",
+       |  "taxYearClaimedFor": 2020,
        |  "claimId": "notUsed",
        |  "sequence": 1,
        |  "submissionDate": "$lastModified"
@@ -59,24 +59,28 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
          |}
       """.stripMargin)
 
-    def uri: String    = s"/$nino/loss-claims/$claimId"
-    def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def downstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
-      """.stripMargin
+         |{
+         |  "origin": "HIP",
+         |  "response":  [
+         |    {
+         |      "errorCode": "$code",
+         |      "errorDescription": "error message"
+         |    }
+         |  ]
+         |}
+         |""".stripMargin
 
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"/$nino/loss-claims/$claimId")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -86,14 +90,12 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
   "Calling the retrieve LossClaim endpoint" should {
 
     "return a 200 status code" when {
-
       "any valid request is made" in new Test {
-
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -102,33 +104,6 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
-    }
-
-    "handle errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
-
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
-          }
-
-          val response: WSResponse = await(request().get())
-          response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedBody)
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-          response.header("Content-Type") shouldBe Some("application/json")
-        }
-      }
-
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CLAIM_ID", Status.BAD_REQUEST, ClaimIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "handle validation errors according to spec" when {
@@ -153,6 +128,30 @@ class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
 
       validationErrorTest("BADNINO", "AAZZ1234567890a", Status.BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "BADClaimId", Status.BAD_REQUEST, ClaimIdFormatError)
+    }
+
+    "handle errors according to spec" when {
+      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $downstreamCode error" in new Test {
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
+          }
+
+          val response: WSResponse = await(request().get())
+          response.status shouldBe expectedStatus
+          response.json shouldBe Json.toJson(expectedBody)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
+          response.header("Content-Type") shouldBe Some("application/json")
+        }
+      }
+
+      serviceErrorTest(Status.BAD_REQUEST, "1215", Status.BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "1220", Status.BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(Status.NOT_FOUND, "5010", Status.NOT_FOUND, NotFoundError)
     }
 
   }

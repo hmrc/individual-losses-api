@@ -16,6 +16,7 @@
 
 package v6.lossClaims.retrieve
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
@@ -28,7 +29,7 @@ import scala.concurrent.Future
 
 class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
-  "retrieve LossClaim" should {
+  "retrieve LossClaim" when {
     val validTaxYear    = "2019-20"
     val validBusinessId = "XAIS01234567890"
     val nino            = "AA123456A"
@@ -48,15 +49,37 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
     def retrieveLossClaimResult(connector: RetrieveLossClaimConnector): DownstreamOutcome[RetrieveLossClaimResponse] =
       await(connector.retrieveLossClaim(request))
 
-    "return a successful response and correlationId" when {
-      "provided with a valid request" in new IfsTest with Test {
-        private val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
+    "the HIP feature switch is disabled (IFS enabled)" should {
+      "return a successful response and correlationId" when {
+        "provided with a valid request" in new IfsTest with Test {
+          private val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
 
-        willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
-          .returning(Future.successful(expected))
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> false)
 
-        val result: DownstreamOutcome[RetrieveLossClaimResponse] = retrieveLossClaimResult(connector)
-        result shouldBe expected
+          willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
+            .returning(Future.successful(expected))
+
+          val result: DownstreamOutcome[RetrieveLossClaimResponse] = retrieveLossClaimResult(connector)
+
+          result shouldBe expected
+        }
+      }
+    }
+
+    "the HIP feature switch is enabled (HIP enabled)" should {
+      "return a successful response and correlationId" when {
+        "provided with a valid request" in new HipTest with Test {
+          private val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
+
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> true)
+
+          willGet(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId")
+            .returning(Future.successful(expected))
+
+          val result: DownstreamOutcome[RetrieveLossClaimResponse] = retrieveLossClaimResult(connector)
+
+          result shouldBe expected
+        }
       }
     }
   }
