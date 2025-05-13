@@ -61,7 +61,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
            |  "incomeSourceId": "000000000000001",
            |  "incomeSourceType": "$incomeSourceType",
            |  "reliefClaimed": "CSFHL",
-           |  "taxYearClaimedFor": "2020",
+           |  "taxYearClaimedFor": 2020,
            |  "claimId": "notUsed",
            |  "submissionDate": "2021-11-05T11:56:28Z",
            |  "sequence": 1
@@ -91,7 +91,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
           |{
           |  "incomeSourceId": "000000000000001",
           |  "reliefClaimed": "CF",
-          |  "taxYearClaimedFor": "2020",
+          |  "taxYearClaimedFor": 2020,
           |  "claimId": "notUsed",
           |  "submissionDate": "2021-11-05T11:56:28Z",
           |  "sequence": 1

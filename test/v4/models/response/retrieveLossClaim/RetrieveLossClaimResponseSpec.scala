@@ -40,7 +40,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
   )
 
   "Json Reads" should {
-    def downstreamPropertyJson(incomeSourceType: String): JsValue = {
+    def ifsDownstreamPropertyJson(incomeSourceType: String): JsValue = {
       Json.parse(
         s"""
            |{
@@ -115,7 +115,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
 
     "convert property JSON from downstream into a valid model for property type 02" when {
       "taxYearClaimedFor is a String" in {
-        downstreamPropertyJson("02").as[RetrieveLossClaimResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
+        ifsDownstreamPropertyJson("02").as[RetrieveLossClaimResponse] shouldBe downstreamToModel(TypeOfLoss.`uk-property-non-fhl`)
       }
 
       "taxYearClaimedFor is an Int" in {
