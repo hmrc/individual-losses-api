@@ -75,7 +75,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         }
       }
 
-      val errors = List(
+      val ifsErrors: Seq[(String, MtdError)] = List(
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("INVALID_TAX_YEAR", TaxYearFormatError),
         ("INVALID_CORRELATIONID", InternalError),
@@ -91,7 +91,20 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         ("SERVICE_UNAVAILABLE", InternalError)
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      val hipErrors: Seq[(String, MtdError)] = List(
+        ("1215", NinoFormatError),
+        ("1117", TaxYearFormatError),
+        ("1216", InternalError),
+        ("1000", InternalError),
+        ("1108", NotFoundError),
+        ("1109", RuleSequenceOrderBroken),
+        ("1110", RuleInvalidSequenceStart),
+        ("1111", RuleLossClaimsMissing),
+        ("4200", RuleOutsideAmendmentWindow),
+        ("5000", RuleTaxYearNotSupportedError)
+      )
+
+      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 
