@@ -26,7 +26,7 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
+class DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
@@ -34,14 +34,17 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
     val lossId = "AAZZ1234567890a"
 
     private def uri: String   = s"/$nino/brought-forward-losses/$lossId"
-    def downstreamUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId"
+    def downstreamUrl: String = s"/itsd/income-sources/brought-forward-losses/$nino/$lossId"
+    val downstreamParams: Map[String, String] = Map("taxYear" -> currentTaxYear.asTysDownstream)
 
     def errorBody(code: String): String =
       s"""
-        |{
-        |  "code": "$code",
-        |  "reason": "downstream message"
-        |}
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "string"
+         |  }
+         |]
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -67,7 +70,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUrl, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUrl, downstreamParams, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -84,7 +87,7 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.DELETE, downstreamUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, downstreamUrl, downstreamParams, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())
@@ -95,11 +98,11 @@ class DeleteBFLossControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
-      serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
+      serviceErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "1219", BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(CONFLICT, "1227", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
+      serviceErrorTest(CONFLICT, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      serviceErrorTest(NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
       serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }
