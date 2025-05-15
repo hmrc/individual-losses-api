@@ -16,9 +16,9 @@
 
 package v5.bfLosses.amend
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import shared.config.SharedAppConfig
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 import v5.bfLosses.amend.model.response.AmendBFLossResponse
@@ -38,9 +38,15 @@ class AmendBFLossConnector @Inject() (val http: HttpClient, val appConfig: Share
 
     import request._
     import schema._
-    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
-    put(amendBroughtForwardLoss, downstreamUri)
 
+    val downstreamUri: DownstreamUri[DownstreamResp] =
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1501")) {
+        HipUri(s"itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${currentTaxYear.asTysDownstream}")
+      } else {
+        IfsUri(s"income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
+      }
+
+    put(amendBroughtForwardLoss, downstreamUri)
   }
 
 }
