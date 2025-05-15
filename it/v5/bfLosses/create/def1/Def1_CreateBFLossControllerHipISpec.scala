@@ -76,10 +76,12 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
 
     def errorBody(code: String): String =
       s"""
-        |{
-        |  "errorCode": "$code",
-        |  "errorDescription": "downstream message"
-        |}
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "downstream message"
+         |  }
+         |]
       """.stripMargin
 
   }

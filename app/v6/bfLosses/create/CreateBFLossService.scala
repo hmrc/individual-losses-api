@@ -44,20 +44,20 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
     case "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES" => RuleBflNotSupportedForFhlProperties
     case "OUTSIDE_AMENDMENT_WINDOW"             => RuleOutsideAmendmentWindow
     case "INVALID_TAX_YEAR"                     => TaxYearFormatError
-    case "INVALID_CORRELATIONID"               => InternalError
+    case "INVALID_CORRELATIONID"                => InternalError
     case "INVALID_PAYLOAD"                      => InternalError
     case "SERVER_ERROR"                         => InternalError
     case "SERVICE_UNAVAILABLE"                  => InternalError
-    case "1000"                      => InternalError
-    case "1002"                      => NotFoundError
-    case "1103"                      => RuleTaxYearNotEndedError
-    case "1126"                      => RuleBflNotSupportedForFhlProperties
-    case "1117"                      => TaxYearFormatError
-    case "1215"                      => NinoFormatError
-    case "1216"                      => InternalError
-    case "1226"                      => RuleDuplicateSubmissionError
-    case "4200"                      => RuleOutsideAmendmentWindow
-    case "5000"                      => RuleTaxYearNotSupportedError
+    case "1000"                                 => InternalError
+    case "1002"                                 => NotFoundError
+    case "1103"                                 => RuleTaxYearNotEndedError
+    case "1126"                                 => RuleBflNotSupportedForFhlProperties
+    case "1117"                                 => TaxYearFormatError
+    case "1215"                                 => NinoFormatError
+    case "1216"                                 => InternalError
+    case "1226"                                 => RuleDuplicateSubmissionError
+    case "4200"                                 => RuleOutsideAmendmentWindow
+    case "5000"                                 => RuleTaxYearNotSupportedError
   }
 
 }

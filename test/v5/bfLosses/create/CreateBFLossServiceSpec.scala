@@ -16,15 +16,7 @@
 
 package v5.bfLosses.create
 
-import common.errors.{
-  RuleBflNotSupportedForFhlProperties,
-  RuleCSFHLClaimNotSupportedError,
-  RuleDuplicateSubmissionError,
-  RuleNoAccountingPeriod,
-  RuleOutsideAmendmentWindow,
-  RulePeriodNotEnded,
-  RuleTypeOfClaimInvalid
-}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -99,7 +91,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "1002"                                 -> NotFoundError,
         "4200"                                 -> RuleOutsideAmendmentWindow,
         "5000"                                 -> RuleTaxYearNotSupportedError,
-        "1003"                                 -> RuleTaxYearNotEndedError,
+        "1103"                                 -> RuleTaxYearNotEndedError,
         "1126"                                 -> RuleBflNotSupportedForFhlProperties,
         "1226"                                 -> RuleDuplicateSubmissionError
       )

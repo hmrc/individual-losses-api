@@ -93,10 +93,12 @@ class CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonErrorV
 
     def errorBody(code: String): String =
       s"""
-        |{
-        |  "code": "$code",
-        |  "reason": "downstream message"
-        |}
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "downstream message"
+         |  }
+         |]
       """.stripMargin
 
   }
@@ -185,8 +187,8 @@ class CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonErrorV
           }
         }
 
-        serviceErrorTest(BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(NOT_FOUND, "1002", NOT_FOUND, NotFoundError)
+        serviceErrorTest(BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(FORBIDDEN, "1103", BAD_REQUEST, RuleTaxYearNotEndedError)
         serviceErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError)
         serviceErrorTest(UNPROCESSABLE_ENTITY, "1126", BAD_REQUEST, RuleBflNotSupportedForFhlProperties)
@@ -195,7 +197,6 @@ class CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonErrorV
         serviceErrorTest(CONFLICT, "1226", BAD_REQUEST, RuleDuplicateSubmissionError)
         serviceErrorTest(UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
         serviceErrorTest(FORBIDDEN, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
-
 
       }
     }

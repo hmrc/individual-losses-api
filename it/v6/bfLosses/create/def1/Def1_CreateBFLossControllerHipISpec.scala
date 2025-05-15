@@ -73,10 +73,12 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "downstream message"
+         |  }
+         |]
       """.stripMargin
 
   }
@@ -175,7 +177,6 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
         serviceErrorTest(CONFLICT, "1226", BAD_REQUEST, RuleDuplicateSubmissionError)
         serviceErrorTest(UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
         serviceErrorTest(FORBIDDEN, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
-
 
       }
     }
