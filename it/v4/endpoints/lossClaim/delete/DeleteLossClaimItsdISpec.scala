@@ -45,9 +45,8 @@ class DeleteLossClaimItsdISpec extends IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    private def uri: String           = s"/$nino/loss-claims/$claimId"
-    def deleteDownstreamUrl: String   = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
-    def retrieveDownstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    private def uri: String   = s"/$nino/loss-claims/$claimId"
+    def downstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
@@ -83,8 +82,8 @@ class DeleteLossClaimItsdISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, retrieveDownstreamUrl, OK, retrieveDownstreamResponseJson)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, deleteDownstreamUrl, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, retrieveDownstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUrl, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -101,7 +100,7 @@ class DeleteLossClaimItsdISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, retrieveDownstreamUrl, downstreamStatus, errorBody(downstreamCode))
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().delete())
@@ -118,8 +117,8 @@ class DeleteLossClaimItsdISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onSuccess(DownstreamStub.GET, retrieveDownstreamUrl, OK, retrieveDownstreamResponseJson)
-            DownstreamStub.onError(DownstreamStub.DELETE, deleteDownstreamUrl, downstreamStatus, errorBody(downstreamCode))
+            DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, retrieveDownstreamResponseJson)
+            DownstreamStub.onError(DownstreamStub.DELETE, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().delete())

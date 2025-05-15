@@ -30,9 +30,6 @@ class Def1_DeleteLossClaimItsaISpec extends IntegrationBaseSpec {
   override def servicesConfig: Map[String, Any] =
     Map("feature-switch.hipItsa_hipItsd_migration_1509.enabled" -> false) ++ super.servicesConfig
 
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
-
   val retrieveDownstreamResponseJson: JsValue = Json.parse(
     """
       |{
@@ -53,7 +50,7 @@ class Def1_DeleteLossClaimItsaISpec extends IntegrationBaseSpec {
 
     private def uri: String           = s"/$nino/loss-claims/$claimId"
     def deleteDownstreamUrl: String   = s"/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId"
-    def retrieveDownstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def retrieveDownstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
