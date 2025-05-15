@@ -34,8 +34,10 @@
 
     <logger name="application" level="INFO"/>
 
-    <logger name="connector" level="ERROR">
+    <logger name="connector" level="TRACE">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="CONNECTOR_LOG_FILE"/>
+        <appender-ref ref="FILE"/>
     </logger>
 
     <root level="INFO">
