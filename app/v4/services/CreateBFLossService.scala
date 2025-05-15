@@ -17,14 +17,7 @@
 package v4.services
 
 import cats.implicits._
-import common.errors.{
-  RuleCSFHLClaimNotSupportedError,
-  RuleDuplicateSubmissionError,
-  RuleNoAccountingPeriod,
-  RuleOutsideAmendmentWindow,
-  RulePeriodNotEnded,
-  RuleTypeOfClaimInvalid
-}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -53,17 +46,14 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
     case "INVALID_PAYLOAD"           => InternalError
     case "SERVER_ERROR"              => InternalError
     case "SERVICE_UNAVAILABLE"       => InternalError
-    case "1215"                      => NinoFormatError
-    case "1117"                      => TaxYearFormatError
-    case "1216"                      => InternalError
     case "1000"                      => InternalError
     case "1002"                      => NotFoundError
-    case "1127"                      => RuleCSFHLClaimNotSupportedError
-    case "1228"                      => RuleDuplicateSubmissionError
-    case "1104"                      => RulePeriodNotEnded
-    case "1105"                      => RuleTypeOfClaimInvalid
-    case "1106"                      => RuleNoAccountingPeriod
-    case "1107"                      => RuleTaxYearNotSupportedError
+    case "1103"                      => RuleTaxYearNotEndedError
+    case "1126"                      => RuleBflNotSupportedForFhlProperties
+    case "1117"                      => TaxYearFormatError
+    case "1215"                      => NinoFormatError
+    case "1216"                      => InternalError
+    case "1226"                      => RuleDuplicateSubmissionError
     case "4200"                      => RuleOutsideAmendmentWindow
     case "5000"                      => RuleTaxYearNotSupportedError
   }

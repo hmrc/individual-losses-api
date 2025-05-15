@@ -97,14 +97,11 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "1216"                                 -> InternalError,
         "1000"                                 -> InternalError,
         "1002"                                 -> NotFoundError,
-        "1127"                                 -> RuleCSFHLClaimNotSupportedError,
-        "1228"                                 -> RuleDuplicateSubmissionError,
-        "1104"                                 -> RulePeriodNotEnded,
-        "1105"                                 -> RuleTypeOfClaimInvalid,
-        "1106"                                 -> RuleNoAccountingPeriod,
-        "1107"                                 -> RuleTaxYearNotSupportedError,
         "4200"                                 -> RuleOutsideAmendmentWindow,
-        "5000"                                 -> RuleTaxYearNotSupportedError
+        "5000"                                 -> RuleTaxYearNotSupportedError,
+        "1003"                                 -> RuleTaxYearNotEndedError,
+        "1126"                                 -> RuleBflNotSupportedForFhlProperties,
+        "1226"                                 -> RuleDuplicateSubmissionError
       )
 
       errors.foreach(args => (serviceError _).tupled(args))

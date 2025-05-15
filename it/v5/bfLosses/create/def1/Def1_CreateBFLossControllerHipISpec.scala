@@ -17,7 +17,8 @@
 package v5.bfLosses.create.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, TypeOfLossFormatError}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow, TypeOfLossFormatError}
+import play.api.http.Status.{BAD_REQUEST, UNPROCESSABLE_ENTITY}
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
@@ -76,8 +77,8 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
     def errorBody(code: String): String =
       s"""
         |{
-        |  "code": "$code",
-        |  "reason": "downstream message"
+        |  "errorCode": "$code",
+        |  "errorDescription": "downstream message"
         |}
       """.stripMargin
 
@@ -167,16 +168,17 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
           }
         }
 
-        serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
-        serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
-        serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_ENDED", BAD_REQUEST, RuleTaxYearNotEndedError)
-        serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
-        serviceErrorTest(CONFLICT, "DUPLICATE_SUBMISSION", BAD_REQUEST, RuleDuplicateSubmissionError)
-        serviceErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
-        serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-        serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
-        serviceErrorTest(UNPROCESSABLE_ENTITY, "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES", BAD_REQUEST, RuleBflNotSupportedForFhlProperties)
+        serviceErrorTest(BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(NOT_FOUND, "1002", NOT_FOUND, NotFoundError)
+        serviceErrorTest(FORBIDDEN, "1103", BAD_REQUEST, RuleTaxYearNotEndedError)
+        serviceErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError)
+        serviceErrorTest(UNPROCESSABLE_ENTITY, "1126", BAD_REQUEST, RuleBflNotSupportedForFhlProperties)
+        serviceErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+        serviceErrorTest(BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(CONFLICT, "1226", BAD_REQUEST, RuleDuplicateSubmissionError)
+        serviceErrorTest(UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
+        serviceErrorTest(FORBIDDEN, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
+
       }
     }
   }
