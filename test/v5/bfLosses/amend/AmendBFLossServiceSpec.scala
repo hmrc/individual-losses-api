@@ -76,7 +76,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       }
     }
 
-    val errors = List(
+    val ifsErrors = List(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_LOSS_ID"           -> LossIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
@@ -88,7 +88,18 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "UNEXPECTED_ERROR"          -> InternalError
     )
 
-    errors.foreach(args => (serviceError _).tupled(args))
+    val hipErrors = Map(
+      "1000" -> InternalError,
+      "1117" -> TaxYearFormatError,
+      "1215" -> NinoFormatError,
+      "1216" -> InternalError,
+      "1219" -> LossIdFormatError,
+      "1225" -> RuleLossAmountNotChanged,
+      "5000" -> RuleTaxYearNotSupportedError,
+      "5010" -> NotFoundError
+    )
+
+    (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
   }
 
   trait Test extends amend.MockAmendBFLossConnector {

@@ -16,6 +16,7 @@
 
 package v4.connectors
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.domain.{Nino, Timestamp}
@@ -43,7 +44,10 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
 
   "amendBFLosses" should {
     "return the expected response for a valid request" when {
-      "downstream returns OK" in new IfsTest with Test {
+      "downstream returns OK for IFS" in new IfsTest with Test {
+
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1501.enabled" -> false)
+
         private val response = AmendBFLossResponse(
           businessId = "XKIS00000000988",
           typeOfLoss = TypeOfLoss.`self-employment`,
@@ -56,6 +60,29 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
 
         willPut(
           url = s"$baseUrl/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId",
+          body = requestBody
+        ).returns(Future.successful(expected))
+
+        val result: DownstreamOutcome[AmendBFLossResponse] = await(connector.amendBFLoss(request))
+        result shouldBe expected
+      }
+
+      "downstream returns OK for HIP" in new HipTest with Test {
+
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1501.enabled" -> true)
+
+        private val response = AmendBFLossResponse(
+          businessId = "XKIS00000000988",
+          typeOfLoss = TypeOfLoss.`self-employment`,
+          lossAmount = 500.13,
+          taxYearBroughtForwardFrom = "2019-20",
+          lastModified = Timestamp("2018-07-13T12:13:48.763Z")
+        )
+
+        private val expected = Right(ResponseWrapper(correlationId, response))
+
+        willPut(
+          url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${currentTaxYear.asTysDownstream}",
           body = requestBody
         ).returns(Future.successful(expected))
 

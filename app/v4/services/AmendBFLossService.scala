@@ -35,8 +35,9 @@ class AmendBFLossService @Inject() (connector: AmendBFLossConnector) extends Bas
       .amendBFLoss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
 
-  private val errorMap: Map[String, MtdError] =
-    Map(
+  private val errorMap: Map[String, MtdError] = {
+
+    val ifsErrors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_LOSS_ID"           -> LossIdFormatError,
       "NOT_FOUND"                 -> NotFoundError,
@@ -46,5 +47,19 @@ class AmendBFLossService @Inject() (connector: AmendBFLossConnector) extends Bas
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError
     )
+
+    val hipErrors = Map(
+      "1000" -> InternalError,
+      "1117" -> TaxYearFormatError,
+      "1215" -> NinoFormatError,
+      "1216" -> InternalError,
+      "1219" -> LossIdFormatError,
+      "1225" -> RuleLossAmountNotChanged,
+      "5000" -> RuleTaxYearNotSupportedError,
+      "5010" -> NotFoundError
+    )
+
+    ifsErrors ++ hipErrors
+  }
 
 }
