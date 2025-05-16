@@ -16,10 +16,10 @@
 
 package v4.connectors
 
-import shared.connectors.DownstreamUri.IfsUri
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.SharedAppConfig
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.models.domain.TaxYear.currentTaxYear
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.models.request.amendBFLosses.AmendBFLossRequestData
@@ -38,7 +38,14 @@ class AmendBFLossConnector @Inject() (val http: HttpClient, val appConfig: Share
 
     import request._
 
-    put(amendBroughtForwardLoss, IfsUri[AmendBFLossResponse](s"income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId"))
+    val downstreamUri =
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1501")) {
+        HipUri[AmendBFLossResponse](s"itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${currentTaxYear.asTysDownstream}")
+      } else {
+        IfsUri[AmendBFLossResponse](s"income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
+      }
+
+    put(amendBroughtForwardLoss, downstreamUri)
   }
 
 }
