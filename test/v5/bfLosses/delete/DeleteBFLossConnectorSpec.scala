@@ -36,26 +36,26 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
   "deleteBFLosses" when {
     "given a valid request" when {
-      "DES is not migrated to HIP" must {
-        "return a success response" in new DesTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> false)
+      "HIP is pointed to ITSA" must {
+        "return a success response" in new HipTest with Test {
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1504.enabled" -> false)
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId")
+          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
           result shouldBe expected
         }
       }
-      "DES is migrated to HIP" must {
+      "HIP is pointed to ITSD" must {
         "return a success response" in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1504.enabled" -> true)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1504.enabled" -> true)
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId")
+          willDelete(url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${currentTaxYear.asTysDownstream}")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))

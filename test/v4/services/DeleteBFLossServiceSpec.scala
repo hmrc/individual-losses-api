@@ -16,7 +16,7 @@
 
 package v4.services
 
-import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
+import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -70,17 +70,29 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors: Seq[(String, MtdError)] = List(
+      val commonErrors: Seq[(String, MtdError)] = List(
+        "SERVER_ERROR"        -> InternalError,
+        "SERVICE_UNAVAILABLE" -> InternalError
+      )
+
+      val itsaErrors: Seq[(String, MtdError)] = List(
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
         "INVALID_LOSS_ID"           -> LossIdFormatError,
         "NOT_FOUND"                 -> NotFoundError,
         "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
-        "SERVER_ERROR"              -> InternalError,
-        "SERVICE_UNAVAILABLE"       -> InternalError,
         "UNEXPECTED_ERROR"          -> InternalError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      val itsdErrors: Seq[(String, MtdError)] = List(
+        "1215" -> NinoFormatError,
+        "1219" -> LossIdFormatError,
+        "1227" -> RuleDeleteAfterFinalDeclarationError,
+        "5000" -> RuleTaxYearNotSupportedError,
+        "5010" -> NotFoundError,
+        "4200" -> RuleOutsideAmendmentWindow
+      )
+
+      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(args => (serviceError _).tupled(args))
     }
 
   }
