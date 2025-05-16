@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.endpoints.bfLoss.delete
+package v5.bfLosses.delete.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
@@ -26,25 +26,25 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
+class Def1_DeleteBFLossControllerItsaISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.hipItsa_hipItsd_migration_1504.enabled" -> false) ++ super.servicesConfig
 
   private trait Test {
 
     val nino   = "AA123456A"
     val lossId = "AAZZ1234567890a"
 
-    private def uri: String                   = s"/$nino/brought-forward-losses/$lossId"
-    def downstreamUrl: String                 = s"/itsd/income-sources/brought-forward-losses/$nino/$lossId"
-    val downstreamParams: Map[String, String] = Map("taxYear" -> currentTaxYear.asTysDownstream)
+    private def uri: String   = s"/$nino/brought-forward-losses/$lossId"
+    def downstreamUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId"
 
     def errorBody(code: String): String =
       s"""
-         |[
-         |  {
-         |    "errorCode": "$code",
-         |    "errorDescription": "string"
-         |  }
-         |]
+        |{
+        |  "code": "$code",
+        |  "reason": "downstream message"
+        |}
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -53,7 +53,7 @@ class DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.4.0+json"),
+          (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -70,7 +70,7 @@ class DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUrl, downstreamParams, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUrl, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -87,7 +87,7 @@ class DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.DELETE, downstreamUrl, downstreamParams, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, downstreamUrl, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())
@@ -98,11 +98,11 @@ class DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(BAD_REQUEST, "1219", BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(CONFLICT, "1227", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
-      serviceErrorTest(CONFLICT, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
-      serviceErrorTest(NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
+      serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
       serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }
