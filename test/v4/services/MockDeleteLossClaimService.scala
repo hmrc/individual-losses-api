@@ -20,11 +20,12 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteLossClaimService extends MockFactory {
+trait MockDeleteLossClaimService extends TestSuite with MockFactory {
 
   val mockDeleteLossClaimService: DeleteLossClaimService = mock[DeleteLossClaimService]
 

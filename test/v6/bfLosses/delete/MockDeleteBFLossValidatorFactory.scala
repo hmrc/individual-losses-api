@@ -20,11 +20,12 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
 
-trait MockDeleteBFLossValidatorFactory extends MockFactory {
+trait MockDeleteBFLossValidatorFactory extends TestSuite with MockFactory {
 
   val mockDeleteBFLossValidatorFactory: DeleteBFLossValidatorFactory = mock[DeleteBFLossValidatorFactory]
 

@@ -41,7 +41,7 @@ object Def1_RetrieveBFLossResponse {
         .read[String]
         .map(TaxYear(_))
         .map(_.asMtd)
-        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(TaxYear.fromDownstreamInt).map(_.asMtd)) and
+        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear(i.toString)).map(_.asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
   )(Def1_RetrieveBFLossResponse.apply _)
 
