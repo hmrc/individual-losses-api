@@ -16,7 +16,7 @@
 
 package v4.services
 
-import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
+import common.errors.RuleDuplicateSubmissionError
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -88,10 +88,8 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "1216"                      -> InternalError,
         "1000"                      -> InternalError,
         "1002"                      -> NotFoundError,
-        "4200"                      -> RuleOutsideAmendmentWindow,
         "5000"                      -> RuleTaxYearNotSupportedError,
         "1103"                      -> RuleTaxYearNotEndedError,
-        "1126"                      -> RuleBflNotSupportedForFhlProperties,
         "1226"                      -> RuleDuplicateSubmissionError
       )
 
