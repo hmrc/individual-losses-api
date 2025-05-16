@@ -83,10 +83,20 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "OUTSIDE_AMENDMENT_WINDOW"             -> RuleOutsideAmendmentWindow,
         "INVALID_TAX_YEAR"                     -> TaxYearFormatError,
         "INCOME_SOURCE_NOT_FOUND"              -> NotFoundError,
-        "INVALID_CORRELATIONID"                -> InternalError,
+        "INVALID_CORRELATION_ID"               -> InternalError,
         "INVALID_PAYLOAD"                      -> InternalError,
         "SERVER_ERROR"                         -> InternalError,
-        "SERVICE_UNAVAILABLE"                  -> InternalError
+        "SERVICE_UNAVAILABLE"                  -> InternalError,
+        "1215"                                 -> NinoFormatError,
+        "1117"                                 -> TaxYearFormatError,
+        "1216"                                 -> InternalError,
+        "1000"                                 -> InternalError,
+        "1002"                                 -> NotFoundError,
+        "4200"                                 -> RuleOutsideAmendmentWindow,
+        "5000"                                 -> RuleTaxYearNotSupportedError,
+        "1103"                                 -> RuleTaxYearNotEndedError,
+        "1126"                                 -> RuleBflNotSupportedForFhlProperties,
+        "1226"                                 -> RuleDuplicateSubmissionError
       )
 
       errors.foreach(args => (serviceError _).tupled(args))

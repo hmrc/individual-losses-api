@@ -27,7 +27,10 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
+class Def1_CreateBFLossControllerIfsISpec extends IntegrationBaseSpec with JsonErrorValidators {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1500.enabled" -> false) ++ super.servicesConfig
 
   val lossId = "AAZZ1234567890a"
 
@@ -84,7 +87,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
 
   }
 
-  "Calling the create BFLoss endpoint" should {
+  "Calling the create BFLoss Ifs endpoint" should {
     "return a 201 status code" when {
       "any valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
