@@ -190,7 +190,6 @@ class CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonErrorV
         serviceErrorTest(NOT_FOUND, "1002", NOT_FOUND, NotFoundError)
         serviceErrorTest(BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(FORBIDDEN, "1103", BAD_REQUEST, RuleTaxYearNotEndedError)
-        serviceErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError)
         serviceErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
         serviceErrorTest(BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(CONFLICT, "1226", BAD_REQUEST, RuleDuplicateSubmissionError)

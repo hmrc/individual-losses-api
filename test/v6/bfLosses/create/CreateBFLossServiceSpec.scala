@@ -83,7 +83,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "OUTSIDE_AMENDMENT_WINDOW"             -> RuleOutsideAmendmentWindow,
         "INVALID_TAX_YEAR"                     -> TaxYearFormatError,
         "INCOME_SOURCE_NOT_FOUND"              -> NotFoundError,
-        "INVALID_CORRELATION_ID"               -> InternalError,
+        "INVALID_CORRELATIONID"               -> InternalError,
         "INVALID_PAYLOAD"                      -> InternalError,
         "SERVER_ERROR"                         -> InternalError,
         "SERVICE_UNAVAILABLE"                  -> InternalError,

@@ -84,7 +84,6 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "SERVER_ERROR"              -> InternalError,
         "SERVICE_UNAVAILABLE"       -> InternalError,
         "1215"                      -> NinoFormatError,
-        "1117"                      -> TaxYearFormatError,
         "1216"                      -> InternalError,
         "1000"                      -> InternalError,
         "1002"                      -> NotFoundError,
