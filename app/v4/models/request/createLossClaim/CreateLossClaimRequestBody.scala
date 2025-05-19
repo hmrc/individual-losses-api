@@ -18,6 +18,7 @@ package v4.models.request.createLossClaim
 
 import shared.models.domain.TaxYear
 import play.api.libs.json._
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import v4.models.domain.lossClaim.TypeOfLoss._
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 
@@ -26,22 +27,25 @@ case class CreateLossClaimRequestBody(taxYearClaimedFor: String, typeOfLoss: Typ
 object CreateLossClaimRequestBody {
   implicit val reads: Reads[CreateLossClaimRequestBody] = Json.reads[CreateLossClaimRequestBody]
 
-  implicit val writes: OWrites[CreateLossClaimRequestBody] = (requestBody: CreateLossClaimRequestBody) => {
-    requestBody.typeOfLoss match {
+  implicit def writes(implicit appConfig: SharedAppConfig): OWrites[CreateLossClaimRequestBody] = (requestBody: CreateLossClaimRequestBody) => {
+    val baseJson: JsObject = Json.obj(
+      "reliefClaimed"  -> requestBody.typeOfClaim.toReliefClaimed,
+      "incomeSourceId" -> requestBody.businessId
+    )
+
+    val typeOfLossJson: JsObject = requestBody.typeOfLoss match {
       case `uk-property-non-fhl` | `foreign-property` =>
-        Json.obj(
-          "taxYear"          -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).asDownstream,
-          "incomeSourceType" -> requestBody.typeOfLoss.toIncomeSourceType,
-          "reliefClaimed"    -> requestBody.typeOfClaim.toReliefClaimed,
-          "incomeSourceId"   -> requestBody.businessId
-        )
-      case `self-employment` =>
-        Json.obj(
-          "taxYear"        -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).asDownstream,
-          "reliefClaimed"  -> requestBody.typeOfClaim.toReliefClaimed,
-          "incomeSourceId" -> requestBody.businessId
-        )
+        Json.obj("incomeSourceType" -> requestBody.typeOfLoss.toIncomeSourceType)
+      case `self-employment` => Json.obj()
     }
+
+    val taxYearClaimedForJson: JsObject = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1505")) {
+      Json.obj("taxYearClaimedFor" -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).year)
+    } else {
+      Json.obj("taxYear" -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).asDownstream)
+    }
+
+    baseJson ++ typeOfLossJson ++ taxYearClaimedForJson
   }
 
 }

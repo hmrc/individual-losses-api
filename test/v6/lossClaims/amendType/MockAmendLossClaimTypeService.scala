@@ -20,12 +20,13 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendLossClaimTypeService extends MockFactory {
+trait MockAmendLossClaimTypeService extends TestSuite with MockFactory {
 
   val mockAmendLossClaimTypeService: AmendLossClaimTypeService = mock[AmendLossClaimTypeService]
 

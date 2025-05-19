@@ -19,13 +19,14 @@ package v6.lossClaims.amendType
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendLossClaimTypeConnector extends MockFactory {
+trait MockAmendLossClaimTypeConnector extends TestSuite with MockFactory {
 
   val mockAmendLossClaimTypeConnector: AmendLossClaimTypeConnector = mock[AmendLossClaimTypeConnector]
 

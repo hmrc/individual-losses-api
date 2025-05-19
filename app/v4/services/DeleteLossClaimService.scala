@@ -17,7 +17,7 @@
 package v4.services
 
 import cats.implicits._
-import common.errors.ClaimIdFormatError
+import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import shared.controllers.RequestContext
 import shared.models.domain.TaxYear
 import shared.models.errors._
@@ -49,12 +49,25 @@ class DeleteLossClaimService @Inject() (retrieveConnector: RetrieveLossClaimConn
     } yield deleteResult
   }
 
-  private val errorMap: Map[String, MtdError] = Map(
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
-  )
+  private val errorMap: Map[String, MtdError] = {
+    val itsaErrors = Map(
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+      "NOT_FOUND"                 -> NotFoundError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
+    )
+
+    val itsdErrors = List(
+      "1117" -> TaxYearClaimedForFormatError,
+      "1215" -> NinoFormatError,
+      "1216" -> InternalError,
+      "1220" -> ClaimIdFormatError,
+      "5000" -> RuleTaxYearNotSupportedError,
+      "5010" -> NotFoundError
+    )
+
+    itsaErrors ++ itsdErrors
+  }
 
 }

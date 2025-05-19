@@ -17,7 +17,7 @@
 package v4.endpoints.lossClaim.delete
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.ClaimIdFormatError
+import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
@@ -25,10 +25,7 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class DeleteLossClaimISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
+class DeleteLossClaimItsdISpec extends IntegrationBaseSpec {
 
   val retrieveDownstreamResponseJson: JsValue = Json.parse(
     """
@@ -48,23 +45,25 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
     val nino    = "AA123456A"
     val claimId = "AAZZ1234567890a"
 
-    private def uri: String           = s"/$nino/loss-claims/$claimId"
-    def deleteDownstreamUrl: String   = s"/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId"
-    def retrieveDownstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    private def uri: String   = s"/$nino/loss-claims/$claimId"
+    def downstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
-        |{
-        |  "code": "$code",
-        |  "reason": "downstream message"
-        |}
-      """.stripMargin
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "error message"
+         |  }
+         |]
+         |""".stripMargin
 
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
+        .addQueryStringParameters("taxYear" -> "19-20")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -83,8 +82,8 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, retrieveDownstreamUrl, OK, retrieveDownstreamResponseJson)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, deleteDownstreamUrl, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, retrieveDownstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUrl, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -101,7 +100,7 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, retrieveDownstreamUrl, downstreamStatus, errorBody(downstreamCode))
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().delete())
@@ -118,8 +117,8 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onSuccess(DownstreamStub.GET, retrieveDownstreamUrl, OK, retrieveDownstreamResponseJson)
-            DownstreamStub.onError(DownstreamStub.DELETE, deleteDownstreamUrl, downstreamStatus, errorBody(downstreamCode))
+            DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, retrieveDownstreamResponseJson)
+            DownstreamStub.onError(DownstreamStub.DELETE, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().delete())
@@ -136,10 +135,13 @@ class DeleteLossClaimISpec extends IntegrationBaseSpec {
       serviceRetrieveErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceRetrieveErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
 
-      serviceDeleteErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      serviceDeleteErrorTest(BAD_REQUEST, "INVALID_CLAIM_ID", BAD_REQUEST, ClaimIdFormatError)
+      serviceDeleteErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      serviceDeleteErrorTest(BAD_REQUEST, "1220", BAD_REQUEST, ClaimIdFormatError)
+      serviceDeleteErrorTest(NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
       serviceDeleteErrorTest(BAD_REQUEST, "UNEXPECTED_DOWNSTREAM_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
-      serviceDeleteErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
+      serviceDeleteErrorTest(NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
+      serviceDeleteErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearClaimedForFormatError)
+      serviceDeleteErrorTest(INTERNAL_SERVER_ERROR, "1216", INTERNAL_SERVER_ERROR, InternalError)
       serviceDeleteErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceDeleteErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }

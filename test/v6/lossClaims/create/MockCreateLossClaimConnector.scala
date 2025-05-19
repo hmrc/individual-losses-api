@@ -19,13 +19,14 @@ package v6.lossClaims.create
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v6.lossClaims.create.model.request.CreateLossClaimRequestData
 import v6.lossClaims.create.model.response.CreateLossClaimResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateLossClaimConnector extends MockFactory {
+trait MockCreateLossClaimConnector extends TestSuite with MockFactory {
   val connector: CreateLossClaimConnector = mock[CreateLossClaimConnector]
 
   object MockCreateLossClaimConnector {

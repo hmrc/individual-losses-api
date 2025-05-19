@@ -20,13 +20,14 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v6.bfLosses.retrieve.RetrieveBFLossService
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 import v6.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveBFLossService extends MockFactory {
+trait MockRetrieveBFLossService extends TestSuite with MockFactory {
 
   val mockRetrieveBFLossService: RetrieveBFLossService = mock[RetrieveBFLossService]
 

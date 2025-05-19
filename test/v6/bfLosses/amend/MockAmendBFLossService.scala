@@ -20,13 +20,14 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v6.bfLosses.amend.AmendBFLossService
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.amend.model.response.AmendBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendBFLossService extends MockFactory {
+trait MockAmendBFLossService extends TestSuite with MockFactory {
 
   val mockAmendBFLossService: AmendBFLossService = mock[AmendBFLossService]
 
