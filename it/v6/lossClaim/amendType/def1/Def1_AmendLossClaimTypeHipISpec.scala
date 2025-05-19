@@ -36,7 +36,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
       |{
       |  "incomeSourceId": "XKIS00000000988",
       |  "reliefClaimed": "CF",
-      |  "taxYearClaimedFor": 2020,
+      |  "taxYearClaimedFor": 2026,
       |  "claimId": "AT0000000000001",
       |  "sequence": 1,
       |  "submissionDate": "2018-07-13T12:13:48.763Z"
@@ -53,22 +53,23 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
 
     val nino                        = "AA123456A"
     val claimId                     = "AAZZ1234567890a"
-    val taxYearClaimedFor           = "2020-21"
-    val downstreamTaxYearClaimedFor = "20-21"
+    val taxYearClaimedFor           = "2025-26"
+    val downstreamTaxYearClaimedFor = "25-26"
 
     val responseJson: JsValue = Json.parse(s"""
       |{
       |  "businessId": "XKIS00000000988",
       |  "typeOfLoss": "self-employment",
       |  "typeOfClaim": "carry-forward",
-      |  "taxYearClaimedFor": "2019-20",
+      |  "taxYearClaimedFor": "2025-26",
       |  "lastModified":"2018-07-13T12:13:48.763Z",
       |  "sequence": 1
       |}
       """.stripMargin)
 
-    def uri: String    = s"/$nino/loss-claims/$claimId/tax-year/$taxYearClaimedFor/change-type-of-claim"
-    def hipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
+    def uri: String                           = s"/$nino/loss-claims/$claimId/tax-year/$taxYearClaimedFor/change-type-of-claim"
+    def hipUrl: String                        = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
+    val downstreamParams: Map[String, String] = Map("taxYear" -> downstreamTaxYearClaimedFor)
 
     def errorBody(code: String): String =
       s"""
@@ -103,7 +104,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, hipUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, hipUrl, downstreamParams, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -122,7 +123,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.PUT, hipUrl, hipStatus, errorBody(hipCode))
+            DownstreamStub.onError(DownstreamStub.PUT, hipUrl, downstreamParams, hipStatus, errorBody(hipCode))
           }
 
           val response: WSResponse = await(request().post(requestJson))
@@ -152,7 +153,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
                               requestBody: JsValue,
                               expectedStatus: Int,
                               expectedBody: MtdError,
-                              requestTaxYearClaimedFor: String = "2020-21"): Unit = {
+                              requestTaxYearClaimedFor: String = "2025-26"): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
           override val nino: String              = requestNino
