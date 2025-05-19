@@ -25,10 +25,10 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class AmendLossClaimTypeISpec extends IntegrationBaseSpec {
+class AmendLossClaimTypeIfsISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
+    Map("feature-switch.ifs_hip_migration_1506.enabled" -> false, "feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
 
   val downstreamResponseJson: JsValue = Json.parse(
     """

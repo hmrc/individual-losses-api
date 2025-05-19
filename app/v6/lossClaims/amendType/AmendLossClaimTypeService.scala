@@ -34,7 +34,7 @@ class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnecto
       ec: ExecutionContext): Future[ServiceOutcome[AmendLossClaimTypeResponse]] =
     connector
       .amendLossClaimType(request)
-      .map(_.leftMap(mapDownstreamErrors(errorMap)))
+      .map(_.leftMap(mapDownstreamErrors(errorMap ++ hipErrorMap)))
 
   private val errorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
@@ -49,6 +49,20 @@ class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnecto
     "INVALID_CORRELATIONID"     -> InternalError,
     "SERVER_ERROR"              -> InternalError,
     "SERVICE_UNAVAILABLE"       -> InternalError
+  )
+
+  private val hipErrorMap: Map[String, MtdError] = Map(
+    "1117" -> TaxYearFormatError,
+    "1215" -> NinoFormatError,
+    "1216" -> InternalError,
+    "1220" -> ClaimIdFormatError,
+    "5010" -> NotFoundError,
+    "1000" -> InternalError,
+    "1105" -> RuleTypeOfClaimInvalid,
+    "1127" -> RuleCSFHLClaimNotSupportedError,
+    "1228" -> RuleClaimTypeNotChanged,
+    "4200" -> RuleOutsideAmendmentWindow,
+    "5000" -> RuleTaxYearNotSupportedError
   )
 
 }
