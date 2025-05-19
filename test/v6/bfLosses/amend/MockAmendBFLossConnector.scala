@@ -19,6 +19,7 @@ package v6.bfLosses.amend
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v6.bfLosses.amend.AmendBFLossConnector
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
@@ -26,7 +27,7 @@ import v6.bfLosses.amend.model.response.AmendBFLossResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendBFLossConnector extends MockFactory {
+trait MockAmendBFLossConnector extends TestSuite with MockFactory {
 
   val connector: AmendBFLossConnector = mock[AmendBFLossConnector]
 

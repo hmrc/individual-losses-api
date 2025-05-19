@@ -20,12 +20,13 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListBFLossesService extends MockFactory {
+trait MockListBFLossesService extends TestSuite with MockFactory {
 
   val mockListBFLossesService: ListBFLossesService = mock[ListBFLossesService]
 

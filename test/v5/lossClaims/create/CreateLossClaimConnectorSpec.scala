@@ -16,8 +16,9 @@
 
 package v5.lossClaims.create
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v5.lossClaims.common.models._
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
@@ -28,8 +29,9 @@ import scala.concurrent.Future
 
 class CreateLossClaimConnectorSpec extends ConnectorSpec {
 
-  val nino: String    = "AA123456A"
-  val claimId: String = "AAZZ1234567890ag"
+  val nino: String     = "AA123456A"
+  val claimId: String  = "AAZZ1234567890ag"
+  val taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
   "create LossClaim" when {
 
@@ -41,11 +43,30 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
     )
 
     "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new IfsTest with Test {
+      "return a successful IFS response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, Def1_CreateLossClaimResponse(claimId)))
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> false))
 
         willPost(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim)
+          .returning(Future.successful(expected))
+
+        val result: DownstreamOutcome[CreateLossClaimResponse] = await(
+          connector.createLossClaim(
+            Def1_CreateLossClaimRequestData(
+              nino = Nino(nino),
+              lossClaim
+            ))
+        )
+        result shouldBe expected
+      }
+
+      "return a successful HIP response with the correct correlationId" in new HipTest with Test {
+        val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
+          Right(ResponseWrapper(correlationId, Def1_CreateLossClaimResponse(claimId)))
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> true))
+
+        willPost(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}", lossClaim)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[CreateLossClaimResponse] = await(

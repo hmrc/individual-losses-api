@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.endpoints.lossClaim.create
+package v5.lossClaim.create.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors._
@@ -27,7 +27,7 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class CreateLossClaimISpec extends IntegrationBaseSpec {
+class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
@@ -52,25 +52,10 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
       """.stripMargin)
 
     val responseJson: JsValue = Json.parse(s"""
-         |{
-         |    "claimId": "AAZZ1234567890a",
-         |    "links": [{
-         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/losses/$nino/loss-claims/$claimId",
-         |      "method": "DELETE",
-         |      "rel": "delete-loss-claim"
-         |    },{
-         |      "href": "/individuals/losses/$nino/loss-claims/$claimId/change-type-of-claim",
-         |      "method": "POST",
-         |      "rel": "amend-loss-claim"
-         |    }
-         |    ]
-         |}
-  """.stripMargin)
+        |{
+        |    "claimId": "AAZZ1234567890a"
+        |}
+      """.stripMargin)
 
     val downstreamResponseJson: JsValue = Json.parse("""
         |{
@@ -80,10 +65,12 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "string"
+         |  }
+         |]
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -94,7 +81,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.4.0+json"),
+          (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -105,7 +92,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
 
     trait CreateLossClaimControllerTest extends Test {
       def uri: String    = s"/$nino/loss-claims"
-      def ifsUrl: String = s"/income-tax/claims-for-relief/$nino"
+      def hipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino"
     }
 
     "return a 201 status code" when {
@@ -116,7 +103,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, hipUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -128,20 +115,18 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "return 400 BAD_REQUEST" when {
-      createErrorTest(CONFLICT, "DUPLICATE", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
-      createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
+      createErrorTest(CONFLICT, "1228", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1104", BAD_REQUEST, RulePeriodNotEnded)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1106", BAD_REQUEST, RuleNoAccountingPeriod)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1127", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
     }
 
     "return 404 NOT FOUND" when {
-      createErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
+      createErrorTest(NOT_FOUND, "1002", NOT_FOUND, NotFoundError)
     }
 
     "return 400 (Bad Request) with paths for the missing mandatory field" when {
@@ -155,9 +140,11 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
 
     "return 400 (Bad Request)" when {
 
-      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1105", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1107", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
+
       createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"), BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest(
         "AA123456A",
@@ -207,7 +194,7 @@ class CreateLossClaimISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
+          DownstreamStub.onError(DownstreamStub.POST, hipUrl, ifsStatus, errorBody(ifsCode))
         }
 
         val response: WSResponse = await(request().post(requestJson))

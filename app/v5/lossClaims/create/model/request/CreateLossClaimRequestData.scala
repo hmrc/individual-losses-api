@@ -18,9 +18,10 @@ package v5.lossClaims.create.model.request
 
 import shared.models.domain.Nino
 import v5.lossClaims.create.CreateLossClaimSchema
+import v5.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 
 trait CreateLossClaimRequestData {
   def nino: Nino
-  def lossClaim: CreateLossClaimRequestBody
+  def lossClaim: Def1_CreateLossClaimRequestBody
   val schema: CreateLossClaimSchema
 }

@@ -16,7 +16,6 @@
 
 package shared.routing
 
-import org.scalamock.scalatest.MockFactory
 import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json._
 import play.api.mvc.{Headers, RequestHeader}
@@ -24,7 +23,7 @@ import play.api.test.FakeRequest
 import shared.routing.Version.VersionReads
 import shared.utils.UnitSpec
 
-class VersionSpec extends UnitSpec with MockFactory {
+class VersionSpec extends UnitSpec {
 
   "Versions" when {
     "retrieved from a request header" should {

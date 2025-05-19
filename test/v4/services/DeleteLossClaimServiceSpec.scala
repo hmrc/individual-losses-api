@@ -16,7 +16,7 @@
 
 package v4.services
 
-import common.errors.ClaimIdFormatError
+import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -134,14 +134,28 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         "UNEXPECTED_ERROR"          -> InternalError
       )
 
-      val deleteErrors: Seq[(String, MtdError)] = List(
-        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-        "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
-        "NOT_FOUND"                 -> NotFoundError,
-        "SERVER_ERROR"              -> InternalError,
-        "SERVICE_UNAVAILABLE"       -> InternalError,
-        "UNEXPECTED_ERROR"          -> InternalError
-      )
+      val deleteErrors: Seq[(String, MtdError)] = {
+
+        val itsaErrors = List(
+          "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+          "INVALID_CLAIM_ID"          -> ClaimIdFormatError,
+          "NOT_FOUND"                 -> NotFoundError,
+          "SERVER_ERROR"              -> InternalError,
+          "SERVICE_UNAVAILABLE"       -> InternalError,
+          "UNEXPECTED_ERROR"          -> InternalError
+        )
+
+        val itsdErrors = List(
+          "1117" -> TaxYearClaimedForFormatError,
+          "1215" -> NinoFormatError,
+          "1216" -> InternalError,
+          "1220" -> ClaimIdFormatError,
+          "5000" -> RuleTaxYearNotSupportedError,
+          "5010" -> NotFoundError
+        )
+
+        itsaErrors ++ itsdErrors
+      }
 
       retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
       deleteErrors.foreach(args => (serviceErrorFromDeleteConnector _).tupled(args))

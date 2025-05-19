@@ -22,12 +22,13 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
 import v4.models.request.createBFLosses.CreateBFLossRequestData
 
 import java.time.Clock
 
-trait MockCreateBFLossValidatorFactory extends MockFactory {
+trait MockCreateBFLossValidatorFactory extends TestSuite with MockFactory {
 
   val mockCreateBFLossValidatorFactory: CreateBFLossValidatorFactory = mock[CreateBFLossValidatorFactory]
 

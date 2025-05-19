@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package v5.lossClaim.delete.def1
+package v4.endpoints.lossClaim.delete
 
-import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.ClaimIdFormatError
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
-import shared.support.IntegrationBaseSpec
+import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 
-class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
+class DeleteLossClaimItsaISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1508.enabled" -> false) ++ super.servicesConfig
+    Map("feature-switch.hipItsa_hipItsd_migration_1509.enabled" -> false) ++ super.servicesConfig
 
   val retrieveDownstreamResponseJson: JsValue = Json.parse(
     """
@@ -50,7 +50,7 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
 
     private def uri: String           = s"/$nino/loss-claims/$claimId"
     def deleteDownstreamUrl: String   = s"/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId"
-    def retrieveDownstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def retrieveDownstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
@@ -66,7 +66,7 @@ class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.5.0+json"),
+          (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
