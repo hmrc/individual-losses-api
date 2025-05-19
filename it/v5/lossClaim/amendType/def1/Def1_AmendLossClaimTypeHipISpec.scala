@@ -21,6 +21,7 @@ import common.errors._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -35,7 +36,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
       |{
       |  "incomeSourceId": "XKIS00000000988",
       |  "reliefClaimed": "CF",
-      |  "taxYearClaimedFor": "2020",
+      |  "taxYearClaimedFor": "2026",
       |  "claimId": "AAZZ1234567890a",
       |  "sequence": 1,
       |  "submissionDate": "2018-07-13T12:13:48.763Z"
@@ -82,9 +83,10 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-    private def uri: String           = s"/$nino/loss-claims/$claimId/change-type-of-claim"
-    def amendDownstreamHipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
-    def retrieveDownstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
+    private def uri: String                   = s"/$nino/loss-claims/$claimId/change-type-of-claim"
+    def amendDownstreamHipUrl: String         = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
+    def retrieveDownstreamUrl: String         = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
+    val downstreamParams: Map[String, String] = Map("taxYear" -> currentTaxYear.asTysDownstream)
 
     def errorBody(code: String): String =
       s"""
@@ -120,7 +122,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(DownstreamStub.GET, retrieveDownstreamUrl, OK, retrieveDownstreamResponseJson)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, amendDownstreamHipUrl, OK, amendDownstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, amendDownstreamHipUrl, downstreamParams, OK, amendDownstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -157,7 +159,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
             DownstreamStub.onSuccess(DownstreamStub.GET, retrieveDownstreamUrl, OK, retrieveDownstreamResponseJson)
-            DownstreamStub.onError(DownstreamStub.PUT, amendDownstreamHipUrl, downstreamStatus, errorBody(downstreamCode))
+            DownstreamStub.onError(DownstreamStub.PUT, amendDownstreamHipUrl, downstreamParams, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().post(requestJson))
