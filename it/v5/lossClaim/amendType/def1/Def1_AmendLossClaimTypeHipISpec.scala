@@ -28,7 +28,7 @@ import shared.support.IntegrationBaseSpec
 class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1506.enabled" -> true) ++ super.servicesConfig
+    Map("feature-switch.ifs_hip_migration_1506.enabled" -> true, "feature-switch.ifs_hip_migration_1508.enabled" -> true) ++ super.servicesConfig
 
   val retrieveDownstreamResponseJson: JsValue = Json.parse(
     """
@@ -84,7 +84,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
 
     private def uri: String           = s"/$nino/loss-claims/$claimId/change-type-of-claim"
     def amendDownstreamHipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
-    def retrieveDownstreamUrl: String = s"/income-tax/claims-for-relief/$nino/$claimId"
+    def retrieveDownstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
