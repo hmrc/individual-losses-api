@@ -14,89 +14,72 @@
  * limitations under the License.
  */
 
-package v4.endpoints.bfLoss.create
+package v6.bfLosses.create.def1
 
-import shared.models.errors._
-import shared.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{RuleDuplicateSubmissionError, TypeOfLossFormatError}
+import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow, TypeOfLossFormatError}
+import play.api.http.HeaderNames.ACCEPT
+import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
-import shared.models.domain.TaxYear.currentTaxYear
-import shared.support.IntegrationBaseSpec
+import play.api.test.Helpers.AUTHORIZATION
+import shared.models.domain.TaxYear
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 
-class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
+class Def1_CreateBFLossControllerIfsISpec extends IntegrationBaseSpec with JsonErrorValidators {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1500.enabled" -> false) ++ super.servicesConfig
 
   val lossId = "AAZZ1234567890a"
 
-  val requestBody: JsValue = Json.parse(
-    """
+  val requestBody: JsValue = Json.parse("""
       |{
-      |  "businessId": "XKIS00000000988",
-      |  "typeOfLoss": "self-employment",
-      |  "taxYearBroughtForwardFrom": "2018-19",
-      |  "lossAmount": 256.78
+      |    "businessId": "XKIS00000000988",
+      |    "typeOfLoss": "self-employment",
+      |    "taxYearBroughtForwardFrom": "2018-19",
+      |    "lossAmount": 256.78
       |}
-    """.stripMargin
-  )
+      """.stripMargin)
 
   private trait Test {
-    val nino                  = "AA123456A"
-    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}"
+    val nino           = "AA123456A"
+    val taxYear        = TaxYear("2024")
+    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}"
 
     def setupStubs(): StubMapping
 
     def request: WSRequest = {
       setupStubs()
-      buildRequest(s"/$nino/brought-forward-losses")
+      buildRequest(s"/$nino/brought-forward-losses/tax-year/brought-forward-from/${taxYear.asMtd}")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.4.0+json"),
+          (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123"),
           ("suspend-temporal-validations", "true")
         )
     }
 
-    lazy val responseBody: JsValue = Json.parse(
-      s"""
-        |{
-        |  "lossId": "AAZZ1234567890a",
-        |  "links": [
-        |    {
-        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-        |      "method": "GET",
-        |      "rel": "self"
-        |    },
-        |    {
-        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId",
-        |      "method": "DELETE",
-        |      "rel": "delete-brought-forward-loss"
-        |    },
-        |    {
-        |      "href": "/individuals/losses/$nino/brought-forward-losses/$lossId/change-loss-amount",
-        |      "method": "POST",
-        |      "rel": "amend-brought-forward-loss"
-        |    }
-        |  ]
-        |}
-      """.stripMargin
-    )
+    lazy val responseBody: JsValue = Json.parse(s"""
+         |{
+         |  "lossId": "AAZZ1234567890a"
+         |}
+      """.stripMargin)
 
-    val downstreamResponse: JsValue = Json.parse(
-      s"""
-        |{
-        |  "lossId": "$lossId"
-        |}
-      """.stripMargin
-    )
+    val downstreamResponse: JsValue = Json.parse(s"""
+         |{
+         |    "lossId": "$lossId"
+         |}
+      """.stripMargin)
 
     def errorBody(code: String): String =
       s"""
-        |{
-        |  "code": "$code",
-        |  "reason": "downstream message"
-        |}
+         |      {
+         |        "code": "$code",
+         |        "reason": "downstream message"
+         |      }
       """.stripMargin
 
   }
@@ -108,7 +91,7 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request.post(requestBody))
@@ -166,15 +149,15 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
           RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
-      "downstream service error" when {
-        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error" in new Test {
+      "ifs service error" when {
+        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $ifsCode error" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.POST, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request.post(requestBody))
@@ -186,14 +169,17 @@ class CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorVali
         }
 
         serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_ENDED", BAD_REQUEST, RuleTaxYearNotEndedError)
         serviceErrorTest(FORBIDDEN, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
         serviceErrorTest(CONFLICT, "DUPLICATE_SUBMISSION", BAD_REQUEST, RuleDuplicateSubmissionError)
         serviceErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
         serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+        serviceErrorTest(UNPROCESSABLE_ENTITY, "BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES", BAD_REQUEST, RuleBflNotSupportedForFhlProperties)
+        serviceErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
       }
     }
   }

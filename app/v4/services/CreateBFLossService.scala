@@ -46,6 +46,13 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
     case "INVALID_PAYLOAD"           => InternalError
     case "SERVER_ERROR"              => InternalError
     case "SERVICE_UNAVAILABLE"       => InternalError
+    case "1000"                      => InternalError
+    case "1002"                      => NotFoundError
+    case "1103"                      => RuleTaxYearNotEndedError
+    case "1215"                      => NinoFormatError
+    case "1216"                      => InternalError
+    case "1226"                      => RuleDuplicateSubmissionError
+    case "5000"                      => RuleTaxYearNotSupportedError
   }
 
 }

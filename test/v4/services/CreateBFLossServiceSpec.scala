@@ -82,7 +82,14 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "INVALID_CORRELATIONID"     -> InternalError,
         "INVALID_PAYLOAD"           -> InternalError,
         "SERVER_ERROR"              -> InternalError,
-        "SERVICE_UNAVAILABLE"       -> InternalError
+        "SERVICE_UNAVAILABLE"       -> InternalError,
+        "1215"                      -> NinoFormatError,
+        "1216"                      -> InternalError,
+        "1000"                      -> InternalError,
+        "1002"                      -> NotFoundError,
+        "5000"                      -> RuleTaxYearNotSupportedError,
+        "1103"                      -> RuleTaxYearNotEndedError,
+        "1226"                      -> RuleDuplicateSubmissionError
       )
 
       errors.foreach(args => (serviceError _).tupled(args))
