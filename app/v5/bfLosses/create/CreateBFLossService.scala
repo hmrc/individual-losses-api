@@ -49,7 +49,6 @@ class CreateBFLossService @Inject() (connector: CreateBFLossConnector) extends B
     case "1000"                                 => InternalError
     case "1002"                                 => NotFoundError
     case "1103"                                 => RuleTaxYearNotEndedError
-    case "1117"                                 => TaxYearFormatError
     case "1126"                                 => RuleBflNotSupportedForFhlProperties
     case "1215"                                 => NinoFormatError
     case "1216"                                 => InternalError
