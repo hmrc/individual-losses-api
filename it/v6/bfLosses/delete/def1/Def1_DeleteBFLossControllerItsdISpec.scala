@@ -23,11 +23,12 @@ import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
+class Def1_DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
@@ -35,11 +36,9 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
     val lossId  = "AAZZ1234567890a"
     val taxYear = "2019-20"
 
-    private val downstreamTaxYear = "19-20"
-
-    private def uri: String = s"/$nino/brought-forward-losses/$lossId/tax-year/$taxYear"
-
-    def hipUrl: String = s"/itsa/income-tax/v1/brought-forward-losses/$nino/$downstreamTaxYear/$lossId"
+    private def uri: String                   = s"/$nino/brought-forward-losses/$lossId/tax-year/$taxYear"
+    def hipUrl: String                        = s"/itsd/income-sources/brought-forward-losses/$nino/$lossId"
+    def downstreamParams: Map[String, String] = Map("taxYear" -> TaxYear.fromMtd(taxYear).asTysDownstream)
 
     def errorBody(code: String): String =
       s"""
@@ -72,7 +71,7 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, hipUrl, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, hipUrl, downstreamParams, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -89,7 +88,7 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.DELETE, hipUrl, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, hipUrl, downstreamParams, desStatus, errorBody(desCode))
           }
 
           val response: WSResponse = await(request().delete())
@@ -100,13 +99,12 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError)
-      serviceErrorTest(BAD_REQUEST, "UNEXPECTED_DES_ERROR_CODE", INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError)
-      serviceErrorTest(CONFLICT, "CONFLICT", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
-      serviceErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
+      serviceErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(BAD_REQUEST, "1219", BAD_REQUEST, LossIdFormatError)
+      serviceErrorTest(CONFLICT, "1227", BAD_REQUEST, RuleDeleteAfterFinalDeclarationError)
+      serviceErrorTest(UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
+      serviceErrorTest(NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      serviceErrorTest(NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
       serviceErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
     }

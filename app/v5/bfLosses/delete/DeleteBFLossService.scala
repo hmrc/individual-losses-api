@@ -31,15 +31,26 @@ class DeleteBFLossService @Inject() (connector: DeleteBFLossConnector) extends B
   def deleteBFLoss(request: DeleteBFLossRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] =
     connector
       .deleteBFLoss(request)
-      .map(_.leftMap(mapDownstreamErrors(errorMap)))
+      .map(_.leftMap(mapDownstreamErrors(commonErrorMap ++ itsaErrorMap ++ itsdErrorMap)))
 
-  private val errorMap: Map[String, MtdError] = Map(
+  private val commonErrorMap: Map[String, MtdError] = Map(
+    "SERVER_ERROR"        -> InternalError,
+    "SERVICE_UNAVAILABLE" -> InternalError
+  )
+
+  private val itsaErrorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_LOSS_ID"           -> LossIdFormatError,
     "NOT_FOUND"                 -> NotFoundError,
-    "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError,
-    "SERVER_ERROR"              -> InternalError,
-    "SERVICE_UNAVAILABLE"       -> InternalError
+    "CONFLICT"                  -> RuleDeleteAfterFinalDeclarationError
+  )
+
+  private val itsdErrorMap: Map[String, MtdError] = Map(
+    "1215" -> NinoFormatError,
+    "1219" -> LossIdFormatError,
+    "5000" -> RuleTaxYearNotSupportedError,
+    "5010" -> NotFoundError,
+    "1227" -> RuleDeleteAfterFinalDeclarationError
   )
 
 }
