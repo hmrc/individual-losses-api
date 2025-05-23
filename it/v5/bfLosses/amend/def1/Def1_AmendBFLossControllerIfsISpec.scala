@@ -26,7 +26,10 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
+class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1501.enabled" -> false) ++ super.servicesConfig
 
   val lossAmount = 2345.67
 

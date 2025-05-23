@@ -27,7 +27,10 @@ import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v4.V4HateoasLinks
 
-class AmendBFLossControllerISpec extends IntegrationBaseSpec {
+class AmendBFLossControllerHipISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1501.enabled" -> true) ++ super.servicesConfig
 
   val lossAmount = 2345.67
 
@@ -37,7 +40,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
       |  "incomeSourceId": "XBIS12345678910",
       |  "lossType": "INCOME",
       |  "broughtForwardLossAmount": $lossAmount,
-      |  "taxYear": "2022",
+      |  "taxYearBroughtForwardFrom": 2022,
       |  "lossId": "AAZZ1234567890A",
       |  "submissionDate": "2022-07-13T12:13:48.763Z"
       |}
@@ -62,11 +65,16 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
   def errorBody(code: String): String =
     s"""
-      |{
-      |  "code": "$code",
-      |  "reason": "downstream message"
-      |}
-    """.stripMargin
+       |{
+       |  "origin": "HIP",
+       |  "response":  [
+       |    {
+       |      "errorCode": "$code",
+       |      "errorDescription": "error message"
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
 
   object Hateoas extends V4HateoasLinks
 
@@ -104,8 +112,9 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-    private def url: String   = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
-    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId"
+    private def url: String              = s"/$nino/brought-forward-losses/$lossId/change-loss-amount"
+    def downstreamUrl: String            = s"/itsd/income-sources/brought-forward-losses/$nino/$lossId"
+    val queryParams: Map[String, String] = Map("taxYear" -> currentTaxYear.asTysDownstream)
 
     def setupStubs(): StubMapping
 
@@ -129,7 +138,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUrl, queryParams, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -182,7 +191,7 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.PUT, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.PUT, downstreamUrl, queryParams, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().post(requestJson))
@@ -192,14 +201,14 @@ class AmendBFLossControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = List(
-          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
-          (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-          (CONFLICT, "CONFLICT", BAD_REQUEST, RuleLossAmountNotChanged),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+          (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "1219", BAD_REQUEST, LossIdFormatError),
+          (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
+          (NOT_FOUND, "5010", NOT_FOUND, NotFoundError),
+          (CONFLICT, "1225", BAD_REQUEST, RuleLossAmountNotChanged),
+          (BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError),
+          (INTERNAL_SERVER_ERROR, "1000", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "1000", INTERNAL_SERVER_ERROR, InternalError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
