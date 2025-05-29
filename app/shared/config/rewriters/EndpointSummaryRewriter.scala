@@ -19,6 +19,7 @@ package shared.config.rewriters
 import shared.config.SharedAppConfig
 import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
 
+import java.util.regex.Pattern
 import javax.inject.{Inject, Singleton}
 
 @Singleton class EndpointSummaryRewriter @Inject() (appConfig: SharedAppConfig) {
@@ -49,9 +50,10 @@ import javax.inject.{Inject, Singleton}
               val whitespace = components(0)
               val summary    = components(1).replace("\"", "")
 
-              val replacement = s"""${whitespace}summary: "$summary [test only]""""
+              val replacement           = s"""${whitespace}summary: "$summary [test only]""""
+              val literalString: String = Pattern.quote(line)
 
-              yaml.replaceFirst(line, replacement)
+              yaml.replaceFirst(literalString, replacement)
           }
 
         rewritten.getOrElse(yaml)
