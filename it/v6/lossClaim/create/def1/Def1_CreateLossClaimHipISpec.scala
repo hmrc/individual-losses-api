@@ -120,7 +120,7 @@ class Def1_CreateLossClaimHipISpec extends IntegrationBaseSpec {
 
     "return 400 BAD_REQUEST" when {
       createErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
-      createErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError)
+      createErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearClaimedForFormatError)
       createErrorTest(UNPROCESSABLE_ENTITY, "1105", BAD_REQUEST, RuleTypeOfClaimInvalid)
       createErrorTest(UNPROCESSABLE_ENTITY, "1107", BAD_REQUEST, RuleTaxYearNotSupportedError)
       createErrorTest(UNPROCESSABLE_ENTITY, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)

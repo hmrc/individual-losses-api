@@ -16,7 +16,13 @@
 
 package v4.services
 
-import common.errors.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
+import common.errors.{
+  RuleDuplicateClaimSubmissionError,
+  RuleNoAccountingPeriod,
+  RulePeriodNotEnded,
+  RuleTypeOfClaimInvalid,
+  TaxYearClaimedForFormatError
+}
 import shared.models.domain.Nino
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -105,7 +111,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       val hipErrors: Map[String, MtdError] = Map(
         "1215" -> NinoFormatError,
         "1002" -> NotFoundError,
-        "1117" -> TaxYearFormatError,
+        "1117" -> TaxYearClaimedForFormatError,
         "1228" -> RuleDuplicateClaimSubmissionError,
         "1104" -> RulePeriodNotEnded,
         "1105" -> RuleTypeOfClaimInvalid,

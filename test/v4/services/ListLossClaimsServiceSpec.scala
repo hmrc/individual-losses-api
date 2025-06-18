@@ -16,7 +16,7 @@
 
 package v4.services
 
-import common.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -101,7 +101,7 @@ class ListLossClaimsServiceSpec extends ServiceSpec {
         "SERVER_ERROR"              -> InternalError,
         "SERVICE_UNAVAILABLE"       -> InternalError,
         "INVALID_CORRELATION_ID"    -> InternalError,
-        "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+        "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
         "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
         "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
         "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError

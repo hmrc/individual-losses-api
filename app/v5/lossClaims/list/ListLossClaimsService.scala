@@ -16,7 +16,7 @@
 
 package v5.lossClaims.list
 
-import common.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -54,7 +54,7 @@ class ListLossClaimsService @Inject() (connector: ListLossClaimsConnector) exten
       "INVALID_CORRELATION_ID"    -> InternalError,
       "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
       "INVALID_INCOMESOURCE_TYPE" -> TypeOfLossFormatError,
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
       "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
     )
 

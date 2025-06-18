@@ -40,7 +40,7 @@ class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsOrderConn
   private val errorMap: Map[String, MtdError] = {
     val ifsErrors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
       "INVALID_PAYLOAD"           -> InternalError,
       "INVALID_CORRELATIONID"     -> InternalError,
       "NOT_FOUND"                 -> NotFoundError,
@@ -55,7 +55,7 @@ class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsOrderConn
 
     val hipErrors = Map(
       "1215" -> NinoFormatError,
-      "1117" -> TaxYearFormatError,
+      "1117" -> TaxYearClaimedForFormatError,
       "1216" -> InternalError,
       "1000" -> InternalError,
       "1108" -> NotFoundError,

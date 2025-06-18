@@ -136,7 +136,7 @@ class Def1_AmendLossClaimsOrderHipISpec extends IntegrationBaseSpec {
 
       val errors = List(
         (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearClaimedForFormatError),
         (BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "1000", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "1108", NOT_FOUND, NotFoundError),

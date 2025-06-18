@@ -23,6 +23,7 @@ import common.errors.{
   RuleClaimTypeNotChanged,
   RuleOutsideAmendmentWindow,
   RuleTypeOfClaimInvalid,
+  TaxYearClaimedForFormatError,
   TypeOfClaimFormatError
 }
 import play.api.libs.json.{JsValue, Json}
@@ -201,7 +202,7 @@ class AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
       serviceRetrieveErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
       serviceRetrieveErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
 
-      serviceAmendErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError)
+      serviceAmendErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearClaimedForFormatError)
       serviceAmendErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
       serviceAmendErrorTest(BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError)
       serviceAmendErrorTest(BAD_REQUEST, "1220", BAD_REQUEST, ClaimIdFormatError)

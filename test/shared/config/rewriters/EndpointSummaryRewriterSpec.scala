@@ -45,7 +45,7 @@ class EndpointSummaryRewriterSpec extends UnitSpec with MockSharedAppConfig {
     "the summary already contains [test only]" should {
       "return the summary unchanged" in {
         val summary = """summary: "[tesT oNLy] Create and Amend employment expenses""""
-        val result = rewrite("", "", summary)
+        val result  = rewrite("", "", summary)
         result shouldBe summary
       }
     }
