@@ -16,7 +16,7 @@
 
 package v4.services
 
-import common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
+import common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, TaxYearClaimedForFormatError}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -45,7 +45,7 @@ class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsConnector
   private val errorMap: Map[String, MtdError] = {
     val ifsErrors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearClaimedForFormatError,
       "INVALID_PAYLOAD"           -> InternalError,
       "INVALID_CORRELATIONID"     -> InternalError,
       "NOT_FOUND"                 -> NotFoundError,
@@ -60,7 +60,7 @@ class AmendLossClaimsOrderService @Inject() (connector: AmendLossClaimsConnector
 
     val hipErrors = Map(
       "1215" -> NinoFormatError,
-      "1117" -> TaxYearFormatError,
+      "1117" -> TaxYearClaimedForFormatError,
       "1216" -> InternalError,
       "1000" -> InternalError,
       "1108" -> NotFoundError,

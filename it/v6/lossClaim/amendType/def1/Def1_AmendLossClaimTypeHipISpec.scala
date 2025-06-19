@@ -134,7 +134,7 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError)
+      serviceErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearClaimedForFormatError)
       serviceErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
       serviceErrorTest(BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError)
       serviceErrorTest(BAD_REQUEST, "1220", BAD_REQUEST, ClaimIdFormatError)

@@ -96,7 +96,7 @@ class AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
       }
 
       validationErrorTest("BADNINO", "2019-20", requestJson(), BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearFormatError)
+      validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearClaimedForFormatError)
       validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalidError)
       validationErrorTest("AA123456A", "2017-18", requestJson(), BAD_REQUEST, RuleTaxYearNotSupportedError)
       validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), BAD_REQUEST, TypeOfClaimFormatError)
@@ -141,7 +141,7 @@ class AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
       val errors = List(
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError),
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
         (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
         (CONFLICT, "NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),

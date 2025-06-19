@@ -16,7 +16,7 @@
 
 package v4.endpoints.lossClaim.list
 
-import common.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
@@ -201,7 +201,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
         (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError),
         (Status.BAD_REQUEST, "INVALID_CLAIM_TYPE", Status.BAD_REQUEST, TypeOfClaimFormatError),
         (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
+        (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearClaimedForFormatError),
         (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
         (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", Status.BAD_REQUEST, TypeOfLossFormatError),
         (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
@@ -230,7 +230,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
       }
       val errors = List(
         ("AA1234", "2019-20", None, None, None, Status.BAD_REQUEST, NinoFormatError),
-        ("AA123456A", "XXXX-YY", None, None, None, Status.BAD_REQUEST, TaxYearFormatError),
+        ("AA123456A", "XXXX-YY", None, None, None, Status.BAD_REQUEST, TaxYearClaimedForFormatError),
         ("AA123456A", "2018-19", None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
         ("AA123456A", "2019-21", None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
         ("AA123456A", "2019-20", Some("employment"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError),

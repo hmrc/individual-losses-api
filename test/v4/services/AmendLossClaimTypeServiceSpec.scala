@@ -21,7 +21,8 @@ import common.errors.{
   RuleCSFHLClaimNotSupportedError,
   RuleClaimTypeNotChanged,
   RuleOutsideAmendmentWindow,
-  RuleTypeOfClaimInvalid
+  RuleTypeOfClaimInvalid,
+  TaxYearClaimedForFormatError
 }
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
@@ -162,7 +163,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
       )
 
       val amendHipErrors: Seq[(String, MtdError)] = List(
-        "1117" -> TaxYearFormatError,
+        "1117" -> TaxYearClaimedForFormatError,
         "1215" -> NinoFormatError,
         "1216" -> InternalError,
         "1220" -> ClaimIdFormatError,

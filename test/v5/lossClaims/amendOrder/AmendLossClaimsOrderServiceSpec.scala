@@ -16,7 +16,7 @@
 
 package v5.lossClaims.amendOrder
 
-import _root_.common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken}
+import _root_.common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, TaxYearClaimedForFormatError}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -77,7 +77,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
       val ifsErrors: Seq[(String, MtdError)] = List(
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
-        ("INVALID_TAX_YEAR", TaxYearFormatError),
+        ("INVALID_TAX_YEAR", TaxYearClaimedForFormatError),
         ("INVALID_CORRELATIONID", InternalError),
         ("NOT_FOUND", NotFoundError),
         ("NOT_SEQUENTIAL", RuleSequenceOrderBroken),
@@ -92,7 +92,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
 
       val hipErrors: Seq[(String, MtdError)] = List(
         ("1215", NinoFormatError),
-        ("1117", TaxYearFormatError),
+        ("1117", TaxYearClaimedForFormatError),
         ("1216", InternalError),
         ("1000", InternalError),
         ("1108", NotFoundError),

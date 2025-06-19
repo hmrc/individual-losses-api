@@ -17,13 +17,7 @@
 package v5.lossClaims.amendType
 
 import cats.implicits._
-import common.errors.{
-  ClaimIdFormatError,
-  RuleCSFHLClaimNotSupportedError,
-  RuleClaimTypeNotChanged,
-  RuleOutsideAmendmentWindow,
-  RuleTypeOfClaimInvalid
-}
+import common.errors._
 import shared.controllers.RequestContext
 import shared.models.domain.TaxYear
 import shared.models.errors._
@@ -74,7 +68,7 @@ class AmendLossClaimTypeService @Inject() (retrieveConnector: RetrieveLossClaimC
   )
 
   private val hipErrorMap: Map[String, MtdError] = Map(
-    "1117" -> TaxYearFormatError,
+    "1117" -> TaxYearClaimedForFormatError,
     "1215" -> NinoFormatError,
     "1216" -> InternalError,
     "1220" -> ClaimIdFormatError,

@@ -52,7 +52,7 @@ class AmendLossClaimTypeService @Inject() (connector: AmendLossClaimTypeConnecto
   )
 
   private val hipErrorMap: Map[String, MtdError] = Map(
-    "1117" -> TaxYearFormatError,
+    "1117" -> TaxYearClaimedForFormatError,
     "1215" -> NinoFormatError,
     "1216" -> InternalError,
     "1220" -> ClaimIdFormatError,

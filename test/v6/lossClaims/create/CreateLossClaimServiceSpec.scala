@@ -107,7 +107,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
       val hipErrors: Seq[(String, MtdError)] = List(
         "1215" -> NinoFormatError,
         "1002" -> NotFoundError,
-        "1117" -> TaxYearFormatError,
+        "1117" -> TaxYearClaimedForFormatError,
         "1127" -> RuleCSFHLClaimNotSupportedError,
         "1228" -> RuleDuplicateClaimSubmissionError,
         "1104" -> RulePeriodNotEnded,

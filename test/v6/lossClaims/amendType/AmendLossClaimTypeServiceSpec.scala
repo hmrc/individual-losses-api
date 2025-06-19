@@ -109,7 +109,7 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
       )
 
       val hipErrors: Seq[(String, MtdError)] = List(
-        "1117" -> TaxYearFormatError,
+        "1117" -> TaxYearClaimedForFormatError,
         "1215" -> NinoFormatError,
         "1216" -> InternalError,
         "1220" -> ClaimIdFormatError,

@@ -17,7 +17,13 @@
 package v4.services
 
 import cats.implicits._
-import common.errors.{RuleDuplicateClaimSubmissionError, RuleNoAccountingPeriod, RulePeriodNotEnded, RuleTypeOfClaimInvalid}
+import common.errors.{
+  RuleDuplicateClaimSubmissionError,
+  RuleNoAccountingPeriod,
+  RulePeriodNotEnded,
+  RuleTypeOfClaimInvalid,
+  TaxYearClaimedForFormatError
+}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -47,7 +53,7 @@ class CreateLossClaimService @Inject() (connector: CreateLossClaimConnector) ext
 
     case "1215" => NinoFormatError
     case "1002" => NotFoundError
-    case "1117" => TaxYearFormatError
+    case "1117" => TaxYearClaimedForFormatError
     case "1228" => RuleDuplicateClaimSubmissionError
     case "1104" => RulePeriodNotEnded
     case "1105" => RuleTypeOfClaimInvalid
