@@ -230,7 +230,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
       }
       val errors = List(
         ("AA1234", "2019-20", None, None, None, Status.BAD_REQUEST, NinoFormatError),
-        ("AA123456A", "XXXX-YY", None, None, None, Status.BAD_REQUEST, TaxYearFormatError),
+        ("AA123456A", "XXXX-YY", None, None, None, Status.BAD_REQUEST, TaxYearClaimedForFormatError),
         ("AA123456A", "2018-19", None, None, None, Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
         ("AA123456A", "2019-21", None, None, None, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
         ("AA123456A", "2019-20", Some("employment"), None, None, Status.BAD_REQUEST, TypeOfLossFormatError),

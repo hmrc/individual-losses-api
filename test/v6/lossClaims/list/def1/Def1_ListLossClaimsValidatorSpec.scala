@@ -16,7 +16,7 @@
 
 package v6.lossClaims.list.def1
 
-import common.errors.{TypeOfClaimFormatError, TypeOfLossFormatError}
+import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -89,7 +89,7 @@ class Def1_ListLossClaimsValidatorSpec extends UnitSpec {
         val result =
           validator(validNino, invalidTaxYear, Some(validLossType), Some(validBusinessId), Some(validTypeOfClaim)).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, TaxYearFormatError)
+          ErrorWrapper(correlationId, TaxYearClaimedForFormatError)
         )
       }
     }
@@ -167,7 +167,7 @@ class Def1_ListLossClaimsValidatorSpec extends UnitSpec {
         val result =
           validator(invalidNino, invalidTaxYear, Some(validLossType), Some(validBusinessId), Some(validTypeOfClaim)).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearClaimedForFormatError)))
         )
       }
     }

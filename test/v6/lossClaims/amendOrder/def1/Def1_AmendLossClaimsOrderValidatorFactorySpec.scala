@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendOrder.def1
 
-import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken, TypeOfClaimFormatError}
+import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.{JsArray, JsValue, Json}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -92,7 +92,7 @@ class Def1_AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonEr
       "tax year format is invalid" in {
         val result = validator(validNino, "2020-XY", mtdRequest).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, TaxYearFormatError)
+          ErrorWrapper(correlationId, TaxYearClaimedForFormatError)
         )
       }
     }
@@ -210,7 +210,7 @@ class Def1_AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonEr
       "invalid nino and tax year are provided" in {
         val result = validator(invalidNino, "13900", mtdRequest).validateAndWrapResult()
         result shouldBe Left(
-          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError)))
+          ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearClaimedForFormatError)))
         )
       }
 

@@ -19,7 +19,7 @@ package v5.lossClaims.list.def1
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
-import common.errors.TypeOfClaimFormatError
+import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
 import shared.models.errors._
@@ -37,7 +37,7 @@ class Def1_ListLossClaimsValidator(nino: String,
     extends Validator[ListLossClaimsRequestData]
     with ResolverSupport {
 
-  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYear)
+  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYear, formatError = TaxYearClaimedForFormatError)
 
   def validate: Validated[Seq[MtdError], ListLossClaimsRequestData] = {
     (

@@ -19,10 +19,11 @@ package v5.lossClaims.amendOrder.def1
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import common.errors.TypeOfClaimFormatError
+import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
+import shared.controllers.validators.resolvers.ResolveTaxYear.resolverWithCustomErrors
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino}
 import shared.models.errors._
 import v5.lossClaims.amendOrder.def1.model.request.{Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
@@ -31,7 +32,8 @@ import v5.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
 
 class Def1_AmendLossClaimsOrderValidator(nino: String, taxYearClaimedFor: String, body: JsValue) extends Validator[AmendLossClaimsOrderRequestData] {
 
-  private val resolveJson = new ResolveJsonObject[Def1_AmendLossClaimsOrderRequestBody]
+  private val resolveJson    = new ResolveJsonObject[Def1_AmendLossClaimsOrderRequestBody]
+  private val resolveTaxYear = resolverWithCustomErrors(TaxYearClaimedForFormatError, RuleTaxYearRangeInvalidError)
 
   def validate: Validated[Seq[MtdError], AmendLossClaimsOrderRequestData] =
     ResolveLossTypeOfClaimFromJson(body)
@@ -39,7 +41,7 @@ class Def1_AmendLossClaimsOrderValidator(nino: String, taxYearClaimedFor: String
       .andThen(_ =>
         (
           ResolveNino(nino),
-          ResolveTaxYear(taxYearClaimedFor),
+          resolveTaxYear(taxYearClaimedFor),
           resolveJson(body)
         ).mapN(Def1_AmendLossClaimsOrderRequestData) andThen Def1_AmendLossClaimsOrderRulesValidator.validateBusinessRules)
 
