@@ -71,7 +71,7 @@ get:
             FORMAT_NINO:
               $ref: './common/errors.yaml#/components/examples/formatNino'
             FORMAT_TAX_YEAR:
-              $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+              $ref: './common/errors.yaml#/components/examples/formatTaxYearClaimedFor'
             RULE_TAX_YEAR_NOT_SUPPORTED:
               $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
             RULE_TAX_YEAR_RANGE_INVALID:
