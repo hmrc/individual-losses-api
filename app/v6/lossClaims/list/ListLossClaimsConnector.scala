@@ -20,7 +20,8 @@ import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.SharedAppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v6.lossClaims.list.model.request.ListLossClaimsRequestData
 import v6.lossClaims.list.model.response.ListLossClaimsResponse
 
@@ -28,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListLossClaimsConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class ListLossClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def listLossClaims(request: ListLossClaimsRequestData)(implicit
       hc: HeaderCarrier,

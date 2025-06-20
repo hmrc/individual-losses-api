@@ -20,7 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.createLossClaim.{CreateLossClaimRequestBody, CreateLossClaimRequestData}
 import v4.models.response.createLossClaim.CreateLossClaimResponse
@@ -54,9 +54,9 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
       "return a successful IFS response with the correct correlationId" in new IfsTest with Test {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, CreateLossClaimResponse(claimId)))
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> false))
+        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1505.enabled" -> false))
 
-        willPost(s"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim).returning(Future.successful(expected))
+        willPost(url"$baseUrl/income-tax/claims-for-relief/$nino", lossClaim).returning(Future.successful(expected))
 
         val result: DownstreamOutcome[CreateLossClaimResponse] = createLossClaimsResult(connector)
         result shouldBe expected
@@ -65,9 +65,9 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
       "return a successful HIP response with the correct correlationId" in new HipTest with Test {
         val expected: Right[Nothing, ResponseWrapper[CreateLossClaimResponse]] =
           Right(ResponseWrapper(correlationId, CreateLossClaimResponse(claimId)))
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1505.enabled" -> true))
+        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1505.enabled" -> true))
 
-        willPost(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}", lossClaim)
+        willPost(url"$baseUrl/itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}", lossClaim)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[CreateLossClaimResponse] = createLossClaimsResult(connector)

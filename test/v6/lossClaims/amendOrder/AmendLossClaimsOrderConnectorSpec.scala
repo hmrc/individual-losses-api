@@ -20,6 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v6.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
 import v6.lossClaims.common.models.TypeOfClaim
 
@@ -46,7 +47,7 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
         MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793.enabled" -> false)
 
         willPut(
-          url = s"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
+          url = url"$baseUrl/income-tax/claims-for-relief/preferences/23-24/$nino",
           body = amendLossClaimsOrder
         ).returning(Future.successful(expected))
 
@@ -60,7 +61,7 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
         MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793.enabled" -> true)
 
         willPut(
-          url = s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=23-24",
+          url = url"$baseUrl/itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=23-24",
           body = amendLossClaimsOrder
         ).returning(Future.successful(expected))
 

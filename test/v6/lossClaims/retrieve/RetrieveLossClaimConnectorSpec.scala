@@ -20,6 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v6.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
 import v6.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
@@ -56,7 +57,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
           MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> false)
 
-          willGet(s"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
+          willGet(url"$baseUrl/income-tax/claims-for-relief/$nino/$claimId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[RetrieveLossClaimResponse] = retrieveLossClaimResult(connector)
@@ -73,7 +74,7 @@ class RetrieveLossClaimConnectorSpec extends ConnectorSpec {
 
           MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1508.enabled" -> true)
 
-          willGet(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId")
+          willGet(url"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[RetrieveLossClaimResponse] = retrieveLossClaimResult(connector)

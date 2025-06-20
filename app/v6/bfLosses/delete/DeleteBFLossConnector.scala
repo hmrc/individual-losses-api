@@ -19,15 +19,16 @@ package v6.bfLosses.delete
 import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteBFLossConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class DeleteBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def deleteBFLoss(
       request: DeleteBFLossRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
