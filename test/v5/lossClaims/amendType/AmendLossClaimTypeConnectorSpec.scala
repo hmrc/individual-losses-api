@@ -20,6 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v5.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v5.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
@@ -48,10 +49,10 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
 
     "a valid request is supplied" should {
       "return a successful IFS response with the correct correlationId" in new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1506.enabled" -> false))
+        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> false))
         val expected: Right[Nothing, ResponseWrapper[AmendLossClaimTypeResponse]] = Right(ResponseWrapper(correlationId, response))
 
-        willPut(s"$baseUrl/income-tax/claims-for-relief/$nino/19-20/$claimId", amendLossClaimType)
+        willPut(url"$baseUrl/income-tax/claims-for-relief/$nino/19-20/$claimId", amendLossClaimType)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[AmendLossClaimTypeResponse] = amendLossClaimTypeResult(connector)
@@ -59,10 +60,10 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
       }
 
       "return a successful HIP response with the correct correlationId" in new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1506.enabled" -> true))
+        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> true))
         val expected: Right[Nothing, ResponseWrapper[AmendLossClaimTypeResponse]] = Right(ResponseWrapper(correlationId, response))
 
-        willPut(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20", amendLossClaimType)
+        willPut(url"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20", amendLossClaimType)
           .returning(Future.successful(expected))
 
         val result: DownstreamOutcome[AmendLossClaimTypeResponse] = amendLossClaimTypeResult(connector)

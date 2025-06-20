@@ -34,7 +34,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
 
   implicit private val actorSystem: ActorSystem = ActorSystem("test")
 
-  val action: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
+  val actionBuilder: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
 
   import play.api.mvc.Handler
   import play.api.routing.sird._
@@ -124,8 +124,8 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
 
       private val request = buildRequest("/v1")
 
-      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
-        val result = a.apply(request)
+      inside(requestHandler.routeRequest(request)) { case Some(action: EssentialAction) =>
+        val result = action.apply(request)
 
         status(result) shouldBe NOT_ACCEPTABLE
         contentAsJson(result) shouldBe InvalidAcceptHeaderError.asJson
@@ -140,8 +140,8 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
 
       private val request = buildRequest("/v1")
 
-      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
-        val result = a.apply(request)
+      inside(requestHandler.routeRequest(request)) { case Some(action: EssentialAction) =>
+        val result = action.apply(request)
 
         status(result) shouldBe NOT_FOUND
         contentAsJson(result) shouldBe UnsupportedVersionError.asJson
@@ -155,8 +155,8 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
       val maybeAcceptHeader: Option[String] = Some("application/vnd.hmrc.5.0+json")
 
       private val request = buildRequest("/v2")
-      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
-        val result = a.apply(request)
+      inside(requestHandler.routeRequest(request)) { case Some(action: EssentialAction) =>
+        val result = action.apply(request)
         status(result) shouldBe NOT_FOUND
         contentAsJson(result) shouldBe UnsupportedVersionError.asJson
       }
@@ -174,7 +174,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
     (() => filters.filters).stubs().returns(Nil)
 
     protected val requestHandler: VersionRoutingRequestHandler =
-      new VersionRoutingRequestHandler(routingMap, errorHandler, httpConfiguration, mockSharedAppConfig, filters, action)
+      new VersionRoutingRequestHandler(routingMap, errorHandler, httpConfiguration, mockSharedAppConfig, filters, actionBuilder)
 
     protected def buildRequest(path: String): RequestHeader =
       maybeAcceptHeader

@@ -20,6 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
@@ -42,7 +43,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(url = s"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/19-20/$lossId")
+          willDelete(url = url"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/19-20/$lossId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
@@ -55,7 +56,7 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${TaxYear.fromMtd(taxYear).asTysDownstream}")
+          willDelete(url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${TaxYear.fromMtd(taxYear).asTysDownstream}")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))

@@ -19,6 +19,7 @@ package v4.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
 import v4.models.response.listBFLosses.{ListBFLossesItem, ListBFLossesResponse}
@@ -62,7 +63,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
           private val downstreamResponse = Right(ResponseWrapper(correlationId, responseData))
 
           willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino"
+            url = url"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino"
           ).returns(Future.successful(downstreamResponse))
 
           val result: DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]] = await(connector.listBFLosses(request))
@@ -83,7 +84,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
           )
 
           willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
+            url = url"$baseUrl/income-tax/brought-forward-losses/${taxYear.asTysDownstream}/$nino",
             parameters = queryParams
           ).returning(Future.successful(downstreamResponse))
 

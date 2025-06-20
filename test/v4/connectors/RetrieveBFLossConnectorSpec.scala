@@ -20,6 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v4.models.domain.bfLoss.{LossId, TypeOfLoss}
 import v4.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v4.models.response.retrieveBFLoss.RetrieveBFLossResponse
@@ -55,7 +56,7 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
 
           MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1502.enabled" -> false)
           willGet(
-            url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
+            url = url"$baseUrl/income-tax/brought-forward-losses/$nino/$lossId"
           ).returning(Future.successful(expected))
 
           val result: DownstreamOutcome[RetrieveBFLossResponse] = await(connector.retrieveBFLoss(request))
@@ -78,7 +79,7 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
 
           MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1502.enabled" -> true)
           willGet(
-            url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId"
+            url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId"
           ).returning(Future.successful(expected))
 
           val result: DownstreamOutcome[RetrieveBFLossResponse] = await(connector.retrieveBFLoss(request))

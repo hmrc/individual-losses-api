@@ -63,7 +63,7 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec with MockSharedAppConfi
     "produce the correct Json for IFS downstream submission" when {
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1506.enabled" -> false))
+          MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> false))
           Json.toJson(Def1_AmendLossClaimTypeRequestBody(test._2)) shouldBe ifsDownstreamJson(test._1)
         })
     }
@@ -71,7 +71,7 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec with MockSharedAppConfi
     "produce the correct Json for HIP downstream submission" when {
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1506.enabled" -> true))
+          MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> true))
           Json.toJson(Def1_AmendLossClaimTypeRequestBody(test._2)) shouldBe hipDownstreamJson(test._1)
         })
     }

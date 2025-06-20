@@ -45,9 +45,9 @@ trait EmptinessChecker[A] {
         }
 
       structure match {
-        case o: Structure.Obj => recurseIfNotEmpty(o.keyedChildren)
-        case a: Structure.Arr => recurseIfNotEmpty(a.keyedChildren)
-        case _                => acc
+        case obj: Structure.Obj => recurseIfNotEmpty(obj.keyedChildren)
+        case arr: Structure.Arr => recurseIfNotEmpty(arr.keyedChildren)
+        case _                  => acc
       }
     }
 

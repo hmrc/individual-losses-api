@@ -21,6 +21,7 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.domain.{Nino, Timestamp}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v5.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 import v5.bfLosses.amend.model.response.AmendBFLossResponse
@@ -52,7 +53,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         val expected: Right[Nothing, ResponseWrapper[AmendBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
 
         willPut(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId",
+          url = url"$baseUrl/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}/$lossId",
           body = requestBody
         ).returning(Future.successful(expected))
 
@@ -75,7 +76,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         private val expected = Right(ResponseWrapper(correlationId, response))
 
         willPut(
-          url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${currentTaxYear.asTysDownstream}",
+          url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${currentTaxYear.asTysDownstream}",
           body = requestBody
         ).returns(Future.successful(expected))
 

@@ -21,6 +21,7 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.Nino
 import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v4.models.domain.bfLoss.TypeOfLoss
 import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 import v4.models.response.createBFLosses.CreateBFLossResponse
@@ -51,7 +52,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1500.enabled" -> false))
 
         willPost(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}",
+          url = url"$baseUrl/income-tax/brought-forward-losses/$nino/${currentTaxYear.asTysDownstream}",
           body = requestBody
         ).returns(Future.successful(expected))
 
@@ -66,7 +67,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1500.enabled" -> true))
 
         willPost(
-          url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino?taxYear=${currentTaxYear.asTysDownstream}",
+          url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino?taxYear=${currentTaxYear.asTysDownstream}",
           body = requestBody
         ).returns(Future.successful(expected))
 

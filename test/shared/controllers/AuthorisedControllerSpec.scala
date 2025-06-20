@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConfig {
+class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConfig with MockEnrolmentsAuthService with MockMtdIdLookupService {
 
   private val nino  = "AA123456A"
   private val mtdId = "X123567890"
@@ -161,7 +161,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConf
     }
   }
 
-  trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
+  trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
     class TestController extends AuthorisedController(cc) {
