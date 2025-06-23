@@ -20,7 +20,8 @@ import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v4.models.request.retrieveBFLoss.RetrieveBFLossRequestData
 import v4.models.response.retrieveBFLoss.RetrieveBFLossResponse
 
@@ -28,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveBFLossConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class RetrieveBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def retrieveBFLoss(request: RetrieveBFLossRequestData)(implicit
       hc: HeaderCarrier,

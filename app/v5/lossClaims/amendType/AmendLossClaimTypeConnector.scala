@@ -21,7 +21,8 @@ import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.models.domain.TaxYear
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v5.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 
@@ -29,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendLossClaimTypeConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class AmendLossClaimTypeConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def amendLossClaimType(request: AmendLossClaimTypeRequestData, taxYear: TaxYear)(implicit
       hc: HeaderCarrier,

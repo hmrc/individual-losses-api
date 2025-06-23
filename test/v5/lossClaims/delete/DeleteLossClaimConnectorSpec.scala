@@ -20,6 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v5.lossClaims.common.models.ClaimId
 import v5.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 
@@ -39,7 +40,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
 
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          willDelete(s"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId")
+          willDelete(url"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request, taxYearClaimedFor))
@@ -51,7 +52,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
         "return a successful response" in new HipTest with Test {
           MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1509.enabled" -> true)
           val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
-          willDelete(s"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20")
+          willDelete(url"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20")
             .returning(Future.successful(expected))
 
           val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request, taxYearClaimedFor))

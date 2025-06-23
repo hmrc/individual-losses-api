@@ -20,6 +20,7 @@ import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 import v6.bfLosses.amend.model.response.AmendBFLossResponse
@@ -55,7 +56,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         val expected: Right[Nothing, ResponseWrapper[AmendBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
 
         willPut(
-          url = s"$baseUrl/income-tax/brought-forward-losses/$nino/$taxYearDownstreamFormat/$lossId",
+          url = url"$baseUrl/income-tax/brought-forward-losses/$nino/$taxYearDownstreamFormat/$lossId",
           body = requestBody
         ).returning(Future.successful(expected))
 
@@ -78,7 +79,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
         private val expected = Right(ResponseWrapper(correlationId, response))
 
         willPut(
-          url = s"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=$taxYearDownstreamFormat",
+          url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=$taxYearDownstreamFormat",
           body = requestBody
         ).returns(Future.successful(expected))
 
