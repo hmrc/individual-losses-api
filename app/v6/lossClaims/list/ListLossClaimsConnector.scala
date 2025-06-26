@@ -16,7 +16,7 @@
 
 package v6.lossClaims.list
 
-import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.SharedAppConfig
@@ -39,8 +39,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: 
     import request._
     import schema._
 
-    val downstreamUri: DownstreamUri[DownstreamResp] = TaxYearSpecificIfsUri(
-      s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}")
+    val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}")
 
     val params = List(
       "incomeSourceId"   -> businessId.map(_.businessId),

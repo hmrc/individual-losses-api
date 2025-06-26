@@ -41,7 +41,7 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
 
   "amendLossClaimsOrder" when {
     "given a valid request" should {
-      "return a success response when feature switch is disabled (TysIfs enabled)" in new TysIfsTest with Test {
+      "return a success response when feature switch is disabled (TysIfs enabled)" in new IfsTest with Test {
         private val expected = Right(ResponseWrapper(correlationId, ()))
 
         MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1793.enabled" -> false)
