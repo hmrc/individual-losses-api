@@ -17,7 +17,7 @@
 package v4.connectors
 
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
-import shared.connectors.DownstreamUri.{HipUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,7 +40,7 @@ class AmendLossClaimsConnector @Inject() (val http: HttpClientV2, val appConfig:
     val downstreamUri: DownstreamUri[Unit] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1793")) {
       HipUri[Unit](s"itsd/income-sources/claims-for-relief/$nino/preferences?taxYear=${taxYearClaimedFor.asTysDownstream}")
     } else {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYearClaimedFor.asTysDownstream}/$nino")
+      IfsUri[Unit](s"income-tax/claims-for-relief/preferences/${taxYearClaimedFor.asTysDownstream}/$nino")
     }
 
     put(

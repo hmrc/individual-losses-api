@@ -17,7 +17,7 @@
 package v4.connectors
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -47,7 +47,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: 
     }
 
     get(
-      uri = TaxYearSpecificIfsUri(s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}"),
+      uri = IfsUri(s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}"),
       queryParams = params
     )
   }

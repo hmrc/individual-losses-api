@@ -31,9 +31,8 @@ trait MockSharedAppConfig extends TestSuite with MockFactory {
     // MTD ID Lookup Config
     def mtdIdBaseUrl: CallHandler0[String] = (() => mockSharedAppConfig.mtdIdBaseUrl: String).expects()
 
-    def desDownstreamConfig: CallHandler0[DownstreamConfig]    = (() => mockSharedAppConfig.desDownstreamConfig: DownstreamConfig).expects()
-    def ifsDownstreamConfig: CallHandler0[DownstreamConfig]    = (() => mockSharedAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
-    def tysIfsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockSharedAppConfig.tysIfsDownstreamConfig: DownstreamConfig).expects()
+    def desDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockSharedAppConfig.desDownstreamConfig: DownstreamConfig).expects()
+    def ifsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockSharedAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
 
     def hipDownstreamConfig: CallHandler[BasicAuthDownstreamConfig] =
       (() => mockSharedAppConfig.hipDownstreamConfig: BasicAuthDownstreamConfig).expects()

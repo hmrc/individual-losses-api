@@ -41,7 +41,6 @@ class SharedAppConfig @Inject() (val config: ServicesConfig, protected[config] v
 
   def desDownstreamConfig: DownstreamConfig          = downstreamConfig("des")
   def ifsDownstreamConfig: DownstreamConfig          = downstreamConfig("ifs")
-  def tysIfsDownstreamConfig: DownstreamConfig       = downstreamConfig("tys-ifs")
   def hipDownstreamConfig: BasicAuthDownstreamConfig = basicAuthDownstreamConfig("hip")
 
   // API Config

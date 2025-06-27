@@ -34,7 +34,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
   "list LossClaims" when {
     "a valid request is supplied with only the tax year parameter" should {
-      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         willGet(url"$baseUrl/income-tax/23-24/claims-for-relief/$nino")
           .returning(Future.successful(success("2023-24")))
 
@@ -46,7 +46,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     }
 
     "provided with a income source id parameter" should {
-      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         willGet(url = url"$baseUrl/income-tax/23-24/claims-for-relief/$nino", List(("incomeSourceId", "testId")))
           .returning(Future.successful(success("2023-24")))
 
@@ -58,7 +58,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     }
 
     "provided with a income source type parameter" should {
-      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         willGet(
           url = url"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           parameters = List(("incomeSourceType", "02"))
@@ -72,7 +72,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     }
 
     "provided with a claim type parameter" should {
-      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         willGet(
           url = url"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           parameters = List(("claimType", "CSGI"))
@@ -86,7 +86,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
     }
 
     "provided with all parameters" should {
-      "return a successful response with the correct correlationId" in new TysIfsTest with Test {
+      "return a successful response with the correct correlationId" in new IfsTest with Test {
         willGet(
           url = url"$baseUrl/income-tax/23-24/claims-for-relief/$nino",
           parameters = List(("incomeSourceId", "testId"), ("incomeSourceType", "01"), ("claimType", "CSGI"))
