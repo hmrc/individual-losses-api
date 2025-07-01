@@ -16,7 +16,7 @@
 
 package v5.bfLosses.list
 
-import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.SharedAppConfig
@@ -45,7 +45,7 @@ class ListBFLossesConnector @Inject() (val http: HttpClientV2, val appConfig: Sh
     ).flatten
 
     val downstreamUri: DownstreamUri[DownstreamResp] =
-      TaxYearSpecificIfsUri(
+      IfsUri(
         s"income-tax/brought-forward-losses/${taxYearBroughtForwardFrom.asTysDownstream}/$nino"
       )
 
