@@ -16,13 +16,17 @@
 
 package v6.bfLosses.create
 
+import config.LossesFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers._
+import shared.controllers.validators.Validator
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
+import v6.bfLosses.create.model.request.CreateBFLossRequestData
+import v6.bfLosses.create.model.response.CreateBFLossResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -46,15 +50,20 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, taxYear, request.body)
+      val validator: Validator[CreateBFLossRequestData] = validatorFactory.validator(
+        nino = nino,
+        taxYear = taxYear,
+        body = request.body,
+        temporalValidationEnabled = LossesFeatureSwitches().isTemporalValidationEnabled
+      )
 
-      val requestHandler =
+      val requestHandler: RequestHandler.RequestHandlerBuilder[CreateBFLossRequestData, CreateBFLossResponse] =
         RequestHandler
           .withValidator(validator)
           .withService(service.createBFLoss)
           .withPlainJsonResult(CREATED)
           .withAuditing(AuditHandler(
-            auditService,
+            auditService = auditService,
             auditType = "CreateBroughtForwardLoss",
             transactionName = "create-brought-forward-loss",
             apiVersion = Version(request),

@@ -16,35 +16,38 @@
 
 package v6.bfLosses.create
 
-import shared.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsValue, Json}
+import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
 import v6.bfLosses.create.def1.Def1_CreateBFLossValidator
+import v6.bfLosses.create.model.request.CreateBFLossRequestData
 
-class CreateBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
+class CreateBFLossValidatorFactorySpec extends UnitSpec {
 
-  private val validNino       = "AA123456A"
-  private val validTaxYear    = "2025-26"
-  private val validLossAmount = 1000
-
-  def requestBodyJson(lossAmount: BigDecimal = validLossAmount): JsValue = Json.parse(
-    s"""
-       |{
-       |  "lossAmount": "$lossAmount"
-       |}
-     """.stripMargin
+  private val requestBodyJson: JsValue = Json.parse(
+    """
+      |{
+      |  "typeOfLoss": "self-employment",
+      |  "businessId": "XAIS01234567890",
+      |  "taxYearBroughtForwardFrom": "2024-25",
+      |  "lossAmount": 1000
+      |}
+    """.stripMargin
   )
 
-  private val validRequestBody = requestBodyJson()
+  private val validatorFactory: CreateBFLossValidatorFactory = new CreateBFLossValidatorFactory
 
-  private val validatorFactory = new CreateBFLossValidatorFactory
+  "validator()" when {
+    "given any tax year" should {
+      "return the Validator for schema definition 1" in {
+        val result: Validator[CreateBFLossRequestData] = validatorFactory.validator(
+          nino = "AA123456A",
+          taxYear = "2025-26",
+          body = requestBodyJson,
+          temporalValidationEnabled = true
+        )
 
-  "running a validation" should {
-    "return the parsed domain object" when {
-      "given a valid request" in {
-        val result = validatorFactory.validator(validNino, validTaxYear, validRequestBody)
         result shouldBe a[Def1_CreateBFLossValidator]
-
       }
     }
 

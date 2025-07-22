@@ -58,7 +58,7 @@ class Def1_CreateBFLossControllerIfsISpec extends IntegrationBaseSpec with JsonE
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123"),
-          ("suspend-temporal-validations", "true")
+          ("suspend-temporal-validations", "false")
         )
     }
 

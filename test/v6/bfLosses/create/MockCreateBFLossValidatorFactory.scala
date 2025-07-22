@@ -24,7 +24,6 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
-import v6.bfLosses.create.CreateBFLossValidatorFactory
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
 
 trait MockCreateBFLossValidatorFactory extends TestSuite with MockFactory {
@@ -35,8 +34,8 @@ trait MockCreateBFLossValidatorFactory extends TestSuite with MockFactory {
 
     def expectValidator(): CallHandler[Validator[CreateBFLossRequestData]] =
       (mockCreateBFLossValidatorFactory
-        .validator(_: String, _: String, _: JsValue))
-        .expects(*, *, *)
+        .validator(_: String, _: String, _: JsValue, _: Boolean))
+        .expects(*, *, *, *)
 
   }
 
