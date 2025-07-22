@@ -18,12 +18,11 @@ package v6.bfLosses.create.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow, TypeOfLossFormatError}
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.{AUTHORIZATION, CONFLICT, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_FOUND}
+import play.api.test.Helpers._
 import shared.models.domain.TaxYear
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
@@ -31,21 +30,26 @@ import shared.support.IntegrationBaseSpec
 
 class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonErrorValidators {
 
-  val lossId = "AAZZ1234567890a"
+  private val lossId: String = "AAZZ1234567890a"
 
-  val requestBody: JsValue = Json.parse("""
+  private val requestBody: JsValue = Json.parse(
+    """
       |{
-      |    "businessId": "XKIS00000000988",
-      |    "typeOfLoss": "self-employment",
-      |    "taxYearBroughtForwardFrom": "2018-19",
-      |    "lossAmount": 256.78
+      |  "businessId": "XKIS00000000988",
+      |  "typeOfLoss": "self-employment",
+      |  "taxYearBroughtForwardFrom": "2018-19",
+      |  "lossAmount": 256.78
       |}
-      """.stripMargin)
+    """.stripMargin
+  )
 
   private trait Test {
-    val nino           = "AA123456A"
-    val taxYear        = TaxYear("2024")
-    def hipUrl: String = s"/itsd/income-sources/brought-forward-losses/$nino"
+    val nino: String             = "AA123456A"
+    private val taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+
+    def downstreamUrl: String = s"/itsd/income-sources/brought-forward-losses/$nino"
+
+    val suspendTemporalValidations: String = "false"
 
     def setupStubs(): StubMapping
 
@@ -55,45 +59,57 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123"),
-          ("suspend-temporal-validations", "true")
+          ("suspend-temporal-validations", suspendTemporalValidations)
         )
     }
 
-    lazy val responseBody: JsValue = Json.parse(s"""
-         |{
-         |  "lossId": "AAZZ1234567890a"
-         |}
-      """.stripMargin)
-
-    val downstreamResponse: JsValue = Json.parse(s"""
-         |{
-         |    "lossId": "$lossId"
-         |}
-      """.stripMargin)
+    lazy val responseBody: JsValue = Json.parse(
+      s"""
+        |{
+        |  "lossId": "$lossId"
+        |}
+      """.stripMargin
+    )
 
     def errorBody(code: String): String =
       s"""
-         |[
-         |  {
-         |    "errorCode": "$code",
-         |    "errorDescription": "downstream message"
-         |  }
-         |]
+        |[
+        |  {
+        |    "errorCode": "$code",
+        |    "errorDescription": "downstream message"
+        |  }
+        |]
       """.stripMargin
 
   }
 
-  "Calling the create BFLoss HIP endpoint" should {
+  "Calling the create BFLoss endpoint" should {
     "return a 201 status code" when {
-      "any valid request is made" in new Test {
+      "a valid request is made with a past tax year in the body and suspendTemporalValidations is false" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, hipUrl, OK, downstreamResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, OK, responseBody)
         }
 
         val response: WSResponse = await(request.post(requestBody))
+        response.json shouldBe responseBody
+        response.status shouldBe CREATED
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+
+      "a valid request is made with the current tax year in the body and suspendTemporalValidations is true" in new Test {
+        override val suspendTemporalValidations: String = "true"
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, OK, responseBody)
+        }
+
+        val response: WSResponse = await(request.post(requestBody.update("/taxYearBroughtForwardFrom", JsString(currentTaxYear.asMtd))))
         response.json shouldBe responseBody
         response.status shouldBe CREATED
         response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -144,19 +160,19 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
           TypeOfLossFormatError.withPath("/typeOfLoss"))
         validationErrorTest(
           "AA123456A",
-          requestBody.update("/taxYearBroughtForwardFrom", JsString("2090-91")),
+          requestBody.update("/taxYearBroughtForwardFrom", JsString(currentTaxYear.asMtd)),
           RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
-      "hip service error" when {
-        def serviceErrorTest(hipStatus: Int, hipCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $hipCode error" in new Test {
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns a code $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.POST, hipUrl, hipStatus, errorBody(hipCode))
+              DownstreamStub.onError(DownstreamStub.POST, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request.post(requestBody))

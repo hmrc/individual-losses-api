@@ -17,6 +17,7 @@
 package v6.bfLosses.create.def1
 
 import cats.data.Validated
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import common.errors.TypeOfLossFormatError
 import play.api.libs.json.JsValue
@@ -31,12 +32,14 @@ import v6.bfLosses.create.model.request.CreateBFLossRequestData
 
 import java.time.Clock
 import javax.inject.Inject
+import scala.math.Ordered.orderingToOrdered
 
-class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body: JsValue)(implicit val clock: Clock = Clock.systemUTC())
+class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body: JsValue, temporalValidationEnabled: Boolean)(implicit
+    val clock: Clock = Clock.systemUTC())
     extends Validator[CreateBFLossRequestData] {
 
-  private val resolveJson         = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
-  private val resolveParsedNumber = ResolveParsedNumber()
+  private val resolveJson: ResolveJsonObject[Def1_CreateBFLossRequestBody] = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
+  private val resolveParsedNumber: ResolveParsedNumber                     = ResolveParsedNumber()
 
   def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
     def withPath(error: MtdError): MtdError = taxYearErrorPath.fold(error)(error.withPath)
@@ -61,13 +64,19 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body:
 
   private def validateParsedData(parsed: Def1_CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] = {
     import parsed.broughtForwardLoss._
-    val taxYearErrorPath = "/taxYearBroughtForwardFrom"
+    val taxYearErrorPath: String = "/taxYearBroughtForwardFrom"
+
+    val taxYearValidation: Validated[Seq[MtdError], TaxYear] =
+      resolvedTaxYear(taxYearBroughtForwardFrom, Some(taxYearErrorPath)).andThen { parsedTaxYear =>
+        if (temporalValidationEnabled && parsedTaxYear >= TaxYear.currentTaxYear) {
+          Invalid(List(RuleTaxYearNotEndedError.withPath(taxYearErrorPath)))
+        } else {
+          Valid(parsedTaxYear)
+        }
+      }
 
     combine(
-      resolvedTaxYear(taxYearBroughtForwardFrom, Some(taxYearErrorPath)).andThen(_ =>
-        ResolveIncompleteTaxYear(
-          RuleTaxYearNotEndedError.withPath(taxYearErrorPath)
-        ).apply(taxYearBroughtForwardFrom)),
+      taxYearValidation,
       ResolveBusinessId(businessId),
       resolveParsedNumber(lossAmount, path = "/lossAmount")
     ).map(_ => parsed)

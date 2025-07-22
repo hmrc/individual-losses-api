@@ -33,45 +33,55 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino       = "AA123456A"
-  private val invalidNino     = "BAD_NINO"
-  private val validTypeOfLoss = "self-employment"
-  private val validBusinessId = "XAIS01234567890"
-  private val parsedNino      = Nino(validNino)
+  private val validNino: String           = "AA123456A"
+  private val validBusinessId: String     = "XAIS01234567890"
+  private val validLossAmount: BigDecimal = 1000
+  private val parsedNino: Nino            = Nino(validNino)
+  private val parsedTaxYear: TaxYear      = TaxYear.fromMtd("2020-21")
+  private val validTaxYear: String        = parsedTaxYear.asMtd
 
-  private val parsedTaxYear = TaxYear("2021")
-  private val validTaxYear  = parsedTaxYear.asMtd
-
-  private val emptyBody = JsObject.empty
-
-  private def requestBodyJson(typeOfLoss: String = validTypeOfLoss,
+  private def requestBodyJson(typeOfLoss: String = "self-employment",
                               businessId: String = validBusinessId,
                               taxYearBroughtForwardFrom: String = validTaxYear,
-                              lossAmount: BigDecimal = 1000): JsValue = Json.parse(
-    s"""{
-       |  "typeOfLoss" : "$typeOfLoss",
-       |  "businessId" : "$businessId",
-       |  "taxYearBroughtForwardFrom" : "$taxYearBroughtForwardFrom",
-       |  "lossAmount" : $lossAmount
-       |}""".stripMargin
-  )
+                              lossAmount: BigDecimal = validLossAmount): JsValue =
+    Json.parse(
+      s"""
+        |{
+        |  "typeOfLoss": "$typeOfLoss",
+        |  "businessId": "$businessId",
+        |  "taxYearBroughtForwardFrom": "$taxYearBroughtForwardFrom",
+        |  "lossAmount": $lossAmount
+        |}
+      """.stripMargin
+    )
 
-  private val validRequestBody  = requestBodyJson()
-  private val parsedRequestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, validBusinessId, validTaxYear, 1000)
+  private val validRequestBody: JsValue = requestBodyJson()
+
+  private val parsedRequestBody: Def1_CreateBFLossRequestBody = Def1_CreateBFLossRequestBody(
+    TypeOfLoss.`self-employment`,
+    validBusinessId,
+    validTaxYear,
+    validLossAmount
+  )
 
   class Test extends MockSharedAppConfig {
 
     implicit val clock: Clock = Clock.fixed(Instant.parse("2022-07-11T10:00:00.00Z"), ZoneId.of("UTC"))
 
-    protected def validator(nino: String, taxYear: String, body: JsValue): Validator[CreateBFLossRequestData] =
-      new Def1_CreateBFLossValidator(nino, taxYear, body)
+    protected def validator(nino: String,
+                            taxYear: String,
+                            body: JsValue,
+                            temporalValidationEnabled: Boolean = true): Validator[CreateBFLossRequestData] =
+      new Def1_CreateBFLossValidator(nino, taxYear, body, temporalValidationEnabled)
 
   }
 
   "running a validation" should {
     "return the parsed domain object" when {
       "given a valid request" in new Test {
-        private val result = validator(validNino, validTaxYear, validRequestBody).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, validTaxYear, validRequestBody).validateAndWrapResult()
+
         result shouldBe Right(
           Def1_CreateBFLossRequestData(parsedNino, parsedTaxYear, parsedRequestBody)
         )
@@ -80,16 +90,20 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
 
     "return NinoFormatError" when {
       "given an invalid nino" in new Test {
-        private val result = validator(invalidNino, validTaxYear, validRequestBody).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator("BAD_NINO", validTaxYear, validRequestBody).validateAndWrapResult()
+
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
         )
       }
     }
 
-    "return IncorrectOrEmptyBodySubmitted" when {
+    "return RuleIncorrectOrEmptyBodyError" when {
       "given an empty JSON body" in new Test {
-        private val result = validator(validNino, validTaxYear, emptyBody).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, validTaxYear, JsObject.empty).validateAndWrapResult()
+
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError)
         )
@@ -98,14 +112,18 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
 
     "return TaxYearFormatError" when {
       "given an invalid tax year" in new Test {
-        private val result = validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "2016")).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "2016")).validateAndWrapResult()
+
         result shouldBe Left(
           ErrorWrapper(correlationId, TaxYearFormatError.withPath("/taxYearBroughtForwardFrom"))
         )
       }
 
       "given a non-numeric tax year" in new Test {
-        private val result = validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "XXXX-YY")).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "XXXX-YY")).validateAndWrapResult()
+
         result shouldBe Left(
           ErrorWrapper(correlationId, TaxYearFormatError.withPath("/taxYearBroughtForwardFrom"))
         )
@@ -122,7 +140,7 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "given an out of range tax year" in new Test {
+      "given an unsupported tax year" in new Test {
         val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "2015-16")).validateAndWrapResult()
 
@@ -131,11 +149,26 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
     }
 
     "return RuleTaxYearNotEndedError" when {
-      "given an out of range tax year" in new Test {
+      "given a tax year that has not ended and temporal validation is enabled" in new Test {
         val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "2022-23")).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom")))
+      }
+    }
+
+    "not return RuleTaxYearNotEndedError and skip its validation" when {
+      "given a tax year that has not ended and temporal validation is disabled" in new Test {
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] = validator(
+          validNino,
+          validTaxYear,
+          requestBodyJson(taxYearBroughtForwardFrom = "2022-23"),
+          temporalValidationEnabled = false
+        ).validateAndWrapResult()
+
+        result shouldBe Right(
+          Def1_CreateBFLossRequestData(parsedNino, parsedTaxYear, parsedRequestBody.copy(taxYearBroughtForwardFrom = "2022-23"))
+        )
       }
     }
 
@@ -171,7 +204,7 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
-    "return BusinessIdFormatError error" when {
+    "return BusinessIdFormatError" when {
       "given an invalid business id" in new Test {
         val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, validTaxYear, requestBodyJson(businessId = "invalid")).validateAndWrapResult()
@@ -180,7 +213,7 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
-    "return TaxYearFormatError error" when {
+    "return TaxYearFormatError" when {
       "given an invalid tax year parameter" in new Test {
         val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, "BAD_TAX_YEAR", requestBodyJson()).validateAndWrapResult()
@@ -189,7 +222,7 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
-    "return RuleTaxYearRangeInvalidError error" when {
+    "return RuleTaxYearRangeInvalidError" when {
       "given an invalid tax year range in parameter" in new Test {
         val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, "2017-19", requestBodyJson()).validateAndWrapResult()
@@ -198,8 +231,8 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
       }
     }
 
-    "return RuleTaxYearNotSupported error" when {
-      "given an out of range tax year parameter" in new Test {
+    "return RuleTaxYearNotSupportedError" when {
+      "given an unsupported tax year parameter" in new Test {
         val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, "2015-16", requestBodyJson()).validateAndWrapResult()
 
@@ -209,10 +242,10 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
 
     "return multiple errors" when {
       "given a request with multiple errors" in new Test {
-        private val requestBody =
+        val requestBody: JsValue =
           requestBodyJson(typeOfLoss = "self-employment-class4", businessId = "wrong", taxYearBroughtForwardFrom = "2010-11")
 
-        private val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, validTaxYear, requestBody).validateAndWrapResult()
 
         result shouldBe Left(
