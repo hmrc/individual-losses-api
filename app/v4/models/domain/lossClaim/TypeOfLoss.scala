@@ -19,26 +19,18 @@ package v4.models.domain.lossClaim
 import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-sealed trait TypeOfLoss {
+trait HasTypeOfLoss {
   def toIncomeSourceType: Option[IncomeSourceType]
 }
 
+enum TypeOfLoss(val toIncomeSourceType: Option[IncomeSourceType]) {
+  case `uk-property-non-fhl` extends TypeOfLoss(Some(IncomeSourceType.`02`))
+  case `foreign-property`    extends TypeOfLoss(Some(IncomeSourceType.`15`))
+  case `self-employment`     extends TypeOfLoss(Some(IncomeSourceType.`01`))
+}
+
 object TypeOfLoss {
+  val parser: PartialFunction[String, TypeOfLoss] = Enums.parser(values)
 
-  case object `uk-property-non-fhl` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
-  }
-
-  case object `foreign-property` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`15`)
-  }
-
-  case object `self-employment` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`01`)
-  }
-
-  implicit val format: Format[TypeOfLoss] = Enums.format[TypeOfLoss]
-
-  val parser: PartialFunction[String, TypeOfLoss] = Enums.parser[TypeOfLoss]
-
+  given Format[TypeOfLoss] = Enums.format(values)
 }

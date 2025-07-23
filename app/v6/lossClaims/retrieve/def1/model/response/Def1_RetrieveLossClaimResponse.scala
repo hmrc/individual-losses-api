@@ -16,10 +16,10 @@
 
 package v6.lossClaims.retrieve.def1.model.response
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import shared.models.domain.{TaxYear, Timestamp}
-import v6.lossClaims.common.models._
+import v6.lossClaims.common.models.*
 import v6.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 
 case class Def1_RetrieveLossClaimResponse(taxYearClaimedFor: String,
@@ -34,9 +34,10 @@ object Def1_RetrieveLossClaimResponse {
   implicit val writes: OWrites[Def1_RetrieveLossClaimResponse] = Json.writes[Def1_RetrieveLossClaimResponse]
 
   implicit val reads: Reads[Def1_RetrieveLossClaimResponse] = (
-    ((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) orElse
+    ((JsPath \ "taxYearClaimedFor").read[String].map(taxYear => TaxYear.fromDownstream(taxYear)).map(_.asMtd) orElse
       (JsPath \ "taxYearClaimedFor").read[Int].map(TaxYear.fromDownstreamInt).map(_.asMtd)) and
-      ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
+      ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
+        orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and

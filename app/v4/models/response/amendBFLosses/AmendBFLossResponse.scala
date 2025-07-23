@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v4.models.response.amendBFLosses
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasLinksFactory, Link}
 import shared.models.domain.{TaxYear, Timestamp}
@@ -38,15 +38,15 @@ object AmendBFLossResponse extends V4HateoasLinks {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      ((__ \ "taxYear").read[String].map(TaxYear(_)).map(_.asMtd)
-        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear(i.toString)).map(_.asMtd)) and
+      ((__ \ "taxYear").read[String].map(TaxYear.fromDownstream).map(_.asMtd)
+        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear.fromDownstream(i.toString)).map(_.asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
-  )(AmendBFLossResponse.apply _)
+  )(AmendBFLossResponse.apply)
 
   implicit object AmendLinksFactory extends HateoasLinksFactory[AmendBFLossResponse, AmendBFLossHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: AmendBFLossHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(getBFLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId))
     }
 

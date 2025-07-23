@@ -17,8 +17,8 @@
 package v4.models.response.listLossClaims
 
 import shared.models.domain.TaxYear
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import v4.models.domain.lossClaim.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
 
 case class ListLossClaimsItem(businessId: String,
@@ -36,10 +36,10 @@ object ListLossClaimsItem {
     (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
-      (JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) and
+      (JsPath \ "taxYearClaimedFor").read[String].map(taxYear => TaxYear.fromDownstream(taxYear)).map(_.asMtd) and
       (JsPath \ "claimId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
       (JsPath \ "submissionDate").read[String]
-  )(ListLossClaimsItem.apply _)
+  )(ListLossClaimsItem.apply)
 
 }

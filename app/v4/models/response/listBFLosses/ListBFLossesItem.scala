@@ -17,8 +17,8 @@
 package v4.models.response.listBFLosses
 
 import shared.models.domain.TaxYear
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Json, OWrites, Reads, __}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import v4.models.domain.bfLoss.{IncomeSourceType, LossType, TypeOfLoss}
 
 case class ListBFLossesItem(lossId: String,
@@ -37,8 +37,8 @@ object ListBFLossesItem {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      (__ \ "taxYear").read[String].map(TaxYear(_).asMtd) and
+      (__ \ "taxYear").read[String].map(taxYear => TaxYear.fromDownstream(taxYear).asMtd) and
       (__ \ "submissionDate").read[String]
-  )(ListBFLossesItem.apply _)
+  )(ListBFLossesItem.apply)
 
 }

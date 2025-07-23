@@ -17,8 +17,8 @@
 package v6.bfLosses.retrieve.def1.model.response
 
 import shared.models.domain.{TaxYear, Timestamp}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import v6.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 import v6.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
@@ -39,9 +39,9 @@ object Def1_RetrieveBFLossResponse {
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear")
         .read[String]
-        .map(TaxYear(_))
+        .map(taxYear => TaxYear.fromDownstream(taxYear))
         .map(_.asMtd)
-        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear(i.toString)).map(_.asMtd)) and
+        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(taxYear => TaxYear.fromDownstreamInt(taxYear)).map(_.asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
   )(Def1_RetrieveBFLossResponse.apply _)
 

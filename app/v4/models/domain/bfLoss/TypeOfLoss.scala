@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,43 +16,24 @@
 
 package v4.models.domain.bfLoss
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait TypeOfLoss {
-  def toIncomeSourceType: Option[IncomeSourceType] = None
-  def toLossType: Option[LossType]                 = None
+trait HasTypeOfLoss {
+  def typeOfLoss: TypeOfLoss
+}
+
+enum TypeOfLoss(val toIncomeSourceType: Option[IncomeSourceType] = None, val toLossType: Option[LossType] = None) {
+  case `uk-property-fhl`          extends TypeOfLoss(Some(IncomeSourceType.`04`))
+  case `uk-property-non-fhl`      extends TypeOfLoss(Some(IncomeSourceType.`02`))
+  case `foreign-property-fhl-eea` extends TypeOfLoss(Some(IncomeSourceType.`03`))
+  case `foreign-property`         extends TypeOfLoss(Some(IncomeSourceType.`15`))
+  case `self-employment`          extends TypeOfLoss(Some(IncomeSourceType.`01`), Some(LossType.INCOME))
+  case `self-employment-class4`   extends TypeOfLoss(Some(LossType.CLASS4))
 }
 
 object TypeOfLoss {
+  val parser: PartialFunction[String, TypeOfLoss] = Enums.parser(values)
 
-  case object `uk-property-fhl` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`04`)
-  }
-
-  case object `uk-property-non-fhl` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
-  }
-
-  case object `foreign-property-fhl-eea` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`03`)
-  }
-
-  case object `foreign-property` extends TypeOfLoss {
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`15`)
-  }
-
-  case object `self-employment` extends TypeOfLoss {
-    override def toLossType: Option[LossType]                 = Some(LossType.INCOME)
-    override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`01`)
-  }
-
-  case object `self-employment-class4` extends TypeOfLoss {
-    override def toLossType: Option[LossType] = Some(LossType.CLASS4)
-  }
-
-  implicit val format: Format[TypeOfLoss] = Enums.format[TypeOfLoss]
-
-  val parser: PartialFunction[String, TypeOfLoss] = Enums.parser[TypeOfLoss]
-
+  given Format[TypeOfLoss] = Enums.format(values)
 }

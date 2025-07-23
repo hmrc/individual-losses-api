@@ -39,7 +39,7 @@ object Def1_RetrieveBFLossResponse {
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
       (__ \ "taxYear")
         .read[String]
-        .map(TaxYear(_))
+        .map(taxYear => TaxYear.fromDownstream(taxYear))
         .map(_.asMtd)
         .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(TaxYear.fromDownstreamInt).map(_.asMtd)) and
       (__ \ "submissionDate").read[Timestamp]

@@ -27,6 +27,6 @@ object Claim {
   implicit val writes: Writes[Claim] = (
     (JsPath \ "claimId").write[String] and
       (JsPath \ "sequence").write[Int]
-  )(unlift(Claim.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

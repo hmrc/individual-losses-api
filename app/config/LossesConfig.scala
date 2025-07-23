@@ -17,7 +17,7 @@
 package config
 
 import play.api.Configuration
-import shared.config.FeatureSwitches
+import shared.config.{FeatureSwitches, SharedAppConfig}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -29,6 +29,6 @@ class LossesConfig @Inject() (config: ServicesConfig, configuration: Configurati
 
   def featureSwitchConfig: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
-  def featureSwitches: FeatureSwitches = LossesFeatureSwitches(featureSwitchConfig)
+  def featureSwitches(implicit appConfig: SharedAppConfig): FeatureSwitches = LossesFeatureSwitches(featureSwitchConfig)
 
 }

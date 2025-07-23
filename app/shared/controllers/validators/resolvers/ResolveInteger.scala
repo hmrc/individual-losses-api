@@ -24,7 +24,7 @@ case class ResolveInteger(min: Int, max: Int) extends ResolverSupport {
   def resolver(error: => MtdError): Resolver[Int, Int] =
     resolveValid[Int] thenValidate validator(error)
 
-  def validator(error: => MtdError): Validator[Int] = { value: Int =>
+  def validator(error: => MtdError): Validator[Int] = { (value: Int) =>
     val valid = min <= value && value <= max
 
     Option.when(!valid)(List(error))

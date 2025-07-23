@@ -16,9 +16,8 @@
 
 package v5.lossClaims.common.models
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.enums.Enums
-import shared.utils.enums.Values.MkValues
 
 sealed trait TypeOfClaim {
   def toReliefClaimed: ReliefClaimed

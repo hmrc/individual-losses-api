@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,13 @@
 
 package shared.hateoas
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait Method
+enum Method {
+  case GET, POST, DELETE, PUT
+}
 
 object Method {
-  case object GET    extends Method
-  case object POST   extends Method
-  case object DELETE extends Method
-  case object PUT    extends Method
-
-  implicit val formats: Format[Method] = Enums.format[Method]
+  given Format[Method] = Enums.format(values)
 }

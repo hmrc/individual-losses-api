@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,19 @@
 
 package v4.models.domain.lossClaim
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait IncomeSourceType {
+trait HasIncomeSourceType {
   def toTypeOfLoss: TypeOfLoss
 }
 
+enum IncomeSourceType(val toTypeOfLoss: TypeOfLoss) {
+  case `01` extends IncomeSourceType(TypeOfLoss.`self-employment`)
+  case `02` extends IncomeSourceType(TypeOfLoss.`uk-property-non-fhl`)
+  case `15` extends IncomeSourceType(TypeOfLoss.`foreign-property`)
+}
+
 object IncomeSourceType {
-
-  case object `01` extends IncomeSourceType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
-  }
-
-  case object `02` extends IncomeSourceType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property-non-fhl`
-  }
-
-  case object `15` extends IncomeSourceType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`foreign-property`
-  }
-
-  implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
+  given Format[IncomeSourceType] = Enums.format(values)
 }

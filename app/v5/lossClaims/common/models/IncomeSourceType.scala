@@ -19,23 +19,16 @@ package v5.lossClaims.common.models
 import play.api.libs.json._
 import shared.utils.enums.Enums
 
-sealed trait IncomeSourceType {
+trait hasIncomeSourceType {
   def toTypeOfLoss: TypeOfLoss
 }
 
+enum IncomeSourceType(val toTypeOfLoss: TypeOfLoss) {
+  case `01` extends IncomeSourceType(TypeOfLoss.`self-employment`)
+  case `02` extends IncomeSourceType(TypeOfLoss.`uk-property`)
+  case `15` extends IncomeSourceType(TypeOfLoss.`foreign-property`)
+}
+
 object IncomeSourceType {
-
-  case object `01` extends IncomeSourceType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
-  }
-
-  case object `02` extends IncomeSourceType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`uk-property`
-  }
-
-  case object `15` extends IncomeSourceType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`foreign-property`
-  }
-
-  implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
+  given Format[IncomeSourceType] = Enums.format(values)
 }

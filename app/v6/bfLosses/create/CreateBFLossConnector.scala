@@ -31,13 +31,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def createBFLoss(request: CreateBFLossRequestData)(implicit
+  def createBFLoss(request: CreateBFLossRequestData)(using
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[CreateBFLossResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1500")) {
       HipUri(s"itsd/income-sources/brought-forward-losses/$nino?taxYear=${taxYear.asTysDownstream}")

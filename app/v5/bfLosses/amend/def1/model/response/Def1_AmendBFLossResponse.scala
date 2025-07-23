@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package v5.bfLosses.amend.def1.model.response
 
 import shared.models.domain.{TaxYear, Timestamp}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import v5.bfLosses.amend.model.response.AmendBFLossResponse
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 
@@ -37,9 +37,9 @@ object Def1_AmendBFLossResponse {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      ((__ \ "taxYear").read[String].map(TaxYear(_)).map(_.asMtd)
-        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear(i.toString)).map(_.asMtd)) and
+      ((__ \ "taxYear").read[String].map(taxYear => TaxYear.fromDownstream(taxYear)).map(_.asMtd)
+        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(taxYear => TaxYear.fromDownstreamInt(taxYear)).map(_.asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
-  )(Def1_AmendBFLossResponse.apply _)
+  )(Def1_AmendBFLossResponse.apply)
 
 }

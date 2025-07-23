@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,18 @@
 
 package v4.models.domain.bfLoss
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait LossType {
-  def toTypeOfLoss: TypeOfLoss
+trait HasLossType {
+  def typeOfLoss: TypeOfLoss
+}
+
+enum LossType(val toTypeOfLoss: TypeOfLoss) {
+  case INCOME extends LossType(TypeOfLoss.`self-employment`)
+  case CLASS4 extends LossType(TypeOfLoss.`self-employment-class4`)
 }
 
 object LossType {
-
-  case object INCOME extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment`
-  }
-
-  case object CLASS4 extends LossType {
-    override def toTypeOfLoss: TypeOfLoss = TypeOfLoss.`self-employment-class4`
-  }
-
-  implicit val format: Format[LossType] = Enums.format[LossType]
+  given Format[LossType] = Enums.format(values)
 }
