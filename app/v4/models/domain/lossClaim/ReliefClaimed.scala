@@ -16,12 +16,8 @@
 
 package v4.models.domain.lossClaim
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
-
-trait HasReliefClaimed {
-  def toTypeOfClaim: TypeOfClaim
-}
 
 enum ReliefClaimed(val toTypeOfClaim: TypeOfClaim) {
   case `CF`     extends ReliefClaimed(TypeOfClaim.`carry-forward`)

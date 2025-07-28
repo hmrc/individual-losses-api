@@ -18,37 +18,26 @@ package v6.bfLosses.common.domain
 
 import play.api.libs.json.Format
 import shared.utils.enums.Enums
-import v6.bfLosses.common.domain.IncomeSourceType.{`01`, `02`}
 
-sealed trait HasTypeOfLoss {
-  def incomeSourceType: Option[IncomeSourceType] = None
-  def lossType: Option[LossType]                 = None
+enum TypeOfLoss {
+  case `uk-property-fhl`, `uk-property`, `foreign-property-fhl-eea`, `foreign-property`, `self-employment`, `self-employment-class4`
+
+  def toIncomeSourceType: Option[IncomeSourceType] = this match {
+    case `uk-property-fhl`          => Some(IncomeSourceType.`04`)
+    case `uk-property`              => Some(IncomeSourceType.`02`)
+    case `foreign-property-fhl-eea` => Some(IncomeSourceType.`03`)
+    case `foreign-property`         => Some(IncomeSourceType.`15`)
+    case `self-employment`          => Some(IncomeSourceType.`01`)
+    case `self-employment-class4`   => None
+  }
+
+  def toLossType: Option[LossType] = this match {
+    case `self-employment`        => Some(LossType.INCOME)
+    case `self-employment-class4` => Some(LossType.CLASS4)
+    case _                        => None
+  }
+
 }
-
-enum TypeOfLoss(val toIncomeSourceType: Option[IncomeSourceType], val toLossType: Option[LossType]) {
-  case `self-employment` extends TypeOfLoss(Some(IncomeSourceType.`01`, Some(LossType.INCOME)))
-  case `uk-property`     extends TypeOfLoss(Some(IncomeSourceType.`02`))
-}
-
-//case object `uk-property-fhl` extends TypeOfLoss {
-//  override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`04`)
-//}
-//
-//case object `uk-property` extends TypeOfLoss {
-//  override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`02`)
-//}
-//
-//case object `foreign-property-fhl-eea` extends TypeOfLoss {
-//  override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`03`)
-//}
-//
-//case object `foreign-property` extends TypeOfLoss {
-//  override def toIncomeSourceType: Option[IncomeSourceType] = Some(IncomeSourceType.`15`)
-//}
-//
-//case object `self-employment-class4` extends TypeOfLoss {
-//  override def toLossType: Option[LossType] = Some(LossType.CLASS4)
-//}
 
 object TypeOfLoss {
   val parser: PartialFunction[String, TypeOfLoss] = Enums.parser(values)

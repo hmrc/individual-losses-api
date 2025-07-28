@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,8 @@
 
 package v5.lossClaims.common.models
 
-import play.api.libs.json._
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
-
-trait hasIncomeSourceType {
-  def toTypeOfLoss: TypeOfLoss
-}
 
 enum IncomeSourceType(val toTypeOfLoss: TypeOfLoss) {
   case `01` extends IncomeSourceType(TypeOfLoss.`self-employment`)

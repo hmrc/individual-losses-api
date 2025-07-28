@@ -17,7 +17,7 @@
 package v5.lossClaims.amendOrder.def1.model.request
 
 import play.api.libs.functional.syntax.*
-import play.api.libs.json.*
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
 case class Claim(claimId: String, sequence: Int)
 

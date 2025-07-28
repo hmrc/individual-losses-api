@@ -18,7 +18,6 @@ package shared.utils
 
 import scala.compiletime.{constValue, erasedValue, summonInline}
 import scala.deriving.Mirror
-import org.apache.pekko.util.Helpers.Requiring
 
 sealed trait EmptyPathsResult
 
@@ -100,12 +99,11 @@ object EmptinessChecker {
 
   def instance[A](func: A => Structure): EmptinessChecker[A] = (value: A) => func(value)
 
-  def instanceObj[A](func: A => Structure.Obj): ObjEmptinessChecker[A] = (value: A) => func(value)
-
-  def use[A, B: EmptinessChecker](func: A => B): EmptinessChecker[A] = EmptinessChecker.instance { a =>
-    val b = func(a)
-    EmptinessChecker[B].structureOf(b)
+  def use[A](func: A => List[(String, Structure)]): EmptinessChecker[A] = EmptinessChecker.instance { a =>
+    Structure.Obj(func(a))
   }
+
+  def field[A](name: String, value: A)(using checker: EmptinessChecker[A]): (String, Structure) = name -> checker.structureOf(value)
 
   def primitive[A]: EmptinessChecker[A] = EmptinessChecker.instance(_ => Structure.Primitive)
 

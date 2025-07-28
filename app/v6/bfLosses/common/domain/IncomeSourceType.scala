@@ -16,22 +16,17 @@
 
 package v6.bfLosses.common.domain
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
-
-sealed trait HasIncomeSourceType {
-  def toTypeOfLoss: TypeOfLoss
-}
 
 enum IncomeSourceType(val toTypeOfLoss: TypeOfLoss) {
   case `01` extends IncomeSourceType(TypeOfLoss.`self-employment`)
   case `02` extends IncomeSourceType(TypeOfLoss.`uk-property`)
-//  case `03` extends IncomeSourceType(TypeOfLoss.`foreign-property-fhl-eea`)
-//  case `04` extends IncomeSourceType(TypeOfLoss.`uk-property-fhl`)
-//  case `15` extends IncomeSourceType(TypeOfLoss.`foreign-property`)
+  case `03` extends IncomeSourceType(TypeOfLoss.`foreign-property-fhl-eea`)
+  case `04` extends IncomeSourceType(TypeOfLoss.`uk-property-fhl`)
+  case `15` extends IncomeSourceType(TypeOfLoss.`foreign-property`)
 }
 
 object IncomeSourceType {
-
   given Format[IncomeSourceType] = Enums.format(values)
 }

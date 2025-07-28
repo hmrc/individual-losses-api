@@ -16,12 +16,8 @@
 
 package v4.models.domain.bfLoss
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
-
-trait HasLossType {
-  def typeOfLoss: TypeOfLoss
-}
 
 enum LossType(val toTypeOfLoss: TypeOfLoss) {
   case INCOME extends LossType(TypeOfLoss.`self-employment`)

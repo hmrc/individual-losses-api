@@ -16,18 +16,19 @@
 
 package v4.models.domain.lossClaim
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-trait HasTypeOfClaim {
-  def toReliefClaimed: ReliefClaimed
-}
+enum TypeOfClaim {
+  case `carry-forward`, `carry-sideways`, `carry-forward-to-carry-sideways`, `carry-sideways-fhl`
 
-enum TypeOfClaim(val toReliefClaimed: ReliefClaimed) {
-  case `carry-forward`                   extends TypeOfClaim(ReliefClaimed.`CF`)
-  case `carry-sideways`                  extends TypeOfClaim(ReliefClaimed.`CSGI`)
-  case `carry-forward-to-carry-sideways` extends TypeOfClaim(ReliefClaimed.`CFCSGI`)
-  case `carry-sideways-fhl`              extends TypeOfClaim(ReliefClaimed.`CSFHL`)
+  def toReliefClaimed: ReliefClaimed = this match {
+    case `carry-forward`                   => ReliefClaimed.`CF`
+    case `carry-sideways`                  => ReliefClaimed.`CSGI`
+    case `carry-forward-to-carry-sideways` => ReliefClaimed.`CFCSGI`
+    case `carry-sideways-fhl`              => ReliefClaimed.`CSFHL`
+  }
+
 }
 
 object TypeOfClaim {

@@ -16,14 +16,13 @@
 
 package shared.models.domain
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
 enum Status {
   case valid, invalid, superseded
 }
 
-//noinspection ScalaStyle
 object Status {
   given Format[Status] = Enums.format(values)
 }

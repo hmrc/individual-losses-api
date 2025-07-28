@@ -16,7 +16,7 @@
 
 package shared.models.domain
 
-import play.api.libs.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
 enum Source {
@@ -24,5 +24,5 @@ enum Source {
 }
 
 object Source {
-  given json.Format[Source] = Enums.format(values)
+  given Format[Source] = Enums.format(values)
 }

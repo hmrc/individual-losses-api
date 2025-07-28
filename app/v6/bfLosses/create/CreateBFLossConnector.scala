@@ -19,7 +19,7 @@ package v6.bfLosses.create
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def createBFLoss(request: CreateBFLossRequestData)(using
+  def createBFLoss(request: CreateBFLossRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[CreateBFLossResponse]] = {
@@ -39,7 +39,7 @@ class CreateBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: Sh
     import request.*
     import schema.*
 
-    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1500")) {
+    val downstreamUri: DownstreamUri[DownstreamResp] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1500")) {
       HipUri(s"itsd/income-sources/brought-forward-losses/$nino?taxYear=${taxYear.asTysDownstream}")
     } else {
       IfsUri(s"income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}")
