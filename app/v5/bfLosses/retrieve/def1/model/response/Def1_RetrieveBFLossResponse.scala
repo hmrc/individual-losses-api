@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package v5.bfLosses.retrieve.def1.model.response
 
 import shared.models.domain.{TaxYear, Timestamp}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 import v5.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 
@@ -41,8 +41,8 @@ object Def1_RetrieveBFLossResponse {
         .read[String]
         .map(taxYear => TaxYear.fromDownstream(taxYear))
         .map(_.asMtd)
-        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(TaxYear.fromDownstreamInt).map(_.asMtd)) and
+        .orElse((__ \ "taxYearBroughtForwardFrom").read[Int].map(TaxYear.fromDownstreamInt(_).asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
-  )(Def1_RetrieveBFLossResponse.apply _)
+  )(Def1_RetrieveBFLossResponse.apply)
 
 }

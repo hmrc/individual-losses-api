@@ -19,7 +19,7 @@ package shared.controllers.validators.resolvers
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.models.domain.TaxYear
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 
 import java.time.{Clock, LocalDate, ZoneOffset}

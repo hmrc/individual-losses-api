@@ -18,7 +18,7 @@ package v5.lossClaims.retrieve
 
 import common.errors.ClaimIdFormatError
 import shared.models.domain.{Nino, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}

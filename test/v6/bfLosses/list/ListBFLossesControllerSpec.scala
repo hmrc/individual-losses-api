@@ -25,7 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v6.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
@@ -48,7 +48,7 @@ class ListBFLossesControllerSpec
   private val businessId     = "XKIS00000000988"
 
   private val requestData =
-    Def1_ListBFLossesRequestData(parsedNino, TaxYear("2019"), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
+    Def1_ListBFLossesRequestData(parsedNino, TaxYear.fromMtd("2018-19"), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
 
   private val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
   private val response: Def1_ListBFLossesResponse = Def1_ListBFLossesResponse(Seq(responseItem))
@@ -103,7 +103,7 @@ class ListBFLossesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new ListBFLossesController(
+    val controller: ListBFLossesController = new ListBFLossesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,

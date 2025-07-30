@@ -18,7 +18,7 @@ package shared.models.audit
 
 import shared.controllers.{AuditHandler, RequestContext}
 import shared.models.auth.UserDetails
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, JsValue, OWrites}
 import shared.routing.Version
 

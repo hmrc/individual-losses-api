@@ -16,7 +16,7 @@
 
 package v5.lossClaims.list.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.JsonWritesUtil
 import v5.lossClaims.list.def1.response.Def1_ListLossClaimsResponse
 

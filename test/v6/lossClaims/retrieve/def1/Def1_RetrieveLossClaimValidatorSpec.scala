@@ -19,7 +19,7 @@ package v6.lossClaims.retrieve.def1
 import common.errors.ClaimIdFormatError
 import shared.controllers.validators.Validator
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.retrieve.RetrieveLossClaimValidatorFactory

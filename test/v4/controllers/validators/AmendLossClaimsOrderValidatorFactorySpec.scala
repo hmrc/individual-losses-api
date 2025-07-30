@@ -19,7 +19,7 @@ package v4.controllers.validators
 import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.{JsArray, JsValue, Json}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.TypeOfClaim

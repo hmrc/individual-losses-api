@@ -19,7 +19,7 @@ package v4.services
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v4.connectors.MockListLossClaimsConnector

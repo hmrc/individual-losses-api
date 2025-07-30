@@ -27,7 +27,7 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, POST}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.domain.{BusinessId, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v4.controllers.validators.MockListLossClaimsValidatorFactory
@@ -54,7 +54,7 @@ class ListLossClaimsControllerSpec
   private val claimType      = "carry-sideways"
 
   private val requestData =
-    ListLossClaimsRequestData(parsedNino, TaxYear("2019"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
+    ListLossClaimsRequestData(parsedNino, TaxYear.fromMtd("2018-19"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
 
   private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
   private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
@@ -143,7 +143,7 @@ class ListLossClaimsControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))))
 
         MockHateoasFactory
-          .wrapList(singleClaimResponseModel(taxYear), ListLossClaimsHateoasData(validNino, taxYearClaimedFor = taxYear))
+          .wrap(singleClaimResponseModel(taxYear), ListLossClaimsHateoasData(validNino, taxYearClaimedFor = taxYear))
           .returns(HateoasWrapper(hateoasResponse, List(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
@@ -170,7 +170,7 @@ class ListLossClaimsControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new ListLossClaimsController(
+    val controller: ListLossClaimsController = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListLossClaimsService,

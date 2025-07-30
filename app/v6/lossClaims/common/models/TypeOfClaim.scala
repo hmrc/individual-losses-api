@@ -16,34 +16,22 @@
 
 package v6.lossClaims.common.models
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-sealed trait TypeOfClaim {
-  def toReliefClaimed: ReliefClaimed
+enum TypeOfClaim {
+  case `carry-forward`, `carry-sideways`, `carry-forward-to-carry-sideways`, `carry-sideways-fhl`
+
+  def toReliefClaimed: ReliefClaimed = this match {
+    case `carry-forward`                   => ReliefClaimed.`CF`
+    case `carry-sideways`                  => ReliefClaimed.`CSGI`
+    case `carry-forward-to-carry-sideways` => ReliefClaimed.`CFCSGI`
+    case `carry-sideways-fhl`              => ReliefClaimed.`CSFHL`
+  }
+
 }
 
 object TypeOfClaim {
-
-  case object `carry-forward` extends TypeOfClaim {
-    override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CF`
-  }
-
-  case object `carry-sideways` extends TypeOfClaim {
-    override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CSGI`
-  }
-
-  case object `carry-forward-to-carry-sideways` extends TypeOfClaim {
-    override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CFCSGI`
-  }
-
-  case object `carry-sideways-fhl` extends TypeOfClaim {
-    override def toReliefClaimed: ReliefClaimed = ReliefClaimed.`CSFHL`
-  }
-
-  implicit val format: Format[TypeOfClaim] = Enums.format[TypeOfClaim]
-
-  val parser: PartialFunction[String, TypeOfClaim] = Enums.parser[TypeOfClaim]
-
-  val values: Seq[TypeOfClaim] = implicitly[MkValues[TypeOfClaim]].values
+  val parser: PartialFunction[String, TypeOfClaim] = Enums.parser(values)
+  given Format[TypeOfClaim]                        = Enums.format(values)
 }

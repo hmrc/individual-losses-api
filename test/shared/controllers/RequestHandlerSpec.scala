@@ -27,7 +27,7 @@ import play.api.test.{FakeRequest, ResultExtractors}
 import shared.config.Deprecation.{Deprecated, NotDeprecated}
 import shared.config.{SharedAppConfig, Deprecation, MockSharedAppConfig}
 import shared.controllers.validators.Validator
-import shared.hateoas._
+import shared.hateoas.*
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails
 import shared.models.errors.{ErrorWrapper, InternalError, MtdError, NinoFormatError}

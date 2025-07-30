@@ -18,7 +18,7 @@ package v5.lossClaims.delete
 
 import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}

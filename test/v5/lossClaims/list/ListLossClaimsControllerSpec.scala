@@ -25,7 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v5.lossClaims.common.models.TypeOfClaim
@@ -49,7 +49,7 @@ class ListLossClaimsControllerSpec
   private val claimType      = "carry-sideways"
 
   private val requestData =
-    Def1_ListLossClaimsRequestData(parsedNino, TaxYear("2019"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
+    Def1_ListLossClaimsRequestData(parsedNino, TaxYear.fromMtd("2018-19"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
 
   private val mtdResponseJson = Json.parse(
     """
@@ -102,7 +102,7 @@ class ListLossClaimsControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new ListLossClaimsController(
+    val controller: ListLossClaimsController = new ListLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListLossClaimsService,

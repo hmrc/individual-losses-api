@@ -17,7 +17,7 @@
 package v4.controllers.validators
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator

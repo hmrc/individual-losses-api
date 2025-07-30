@@ -27,7 +27,7 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, POST}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.domain.{BusinessId, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v4.controllers.validators.MockListBFLossesValidatorFactory
@@ -52,7 +52,7 @@ class ListBFLossesControllerSpec
   private val businessId     = "XKIS00000000988"
 
   private val requestData =
-    ListBFLossesRequestData(parsedNino, TaxYear("2019"), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
+    ListBFLossesRequestData(parsedNino, TaxYear.fromMtd("2018-19"), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
 
   private val listHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
 
@@ -114,7 +114,7 @@ class ListBFLossesControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, ListBFLossHateoasData(validNino))
+          .wrap(response, ListBFLossHateoasData(validNino))
           .returns(HateoasWrapper(hateoasResponse, Seq(createHateoasLink, listHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
@@ -141,7 +141,7 @@ class ListBFLossesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new ListBFLossesController(
+    val controller: ListBFLossesController = new ListBFLossesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,

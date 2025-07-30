@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.TypeOfClaim
-import v4.models.domain.lossClaim.TypeOfClaim._
+import v4.models.domain.lossClaim.TypeOfClaim.*
 import v4.models.request.amendLossClaimType.AmendLossClaimTypeRequestBody
 
 class AmendLossClaimTypeRequestBodySpec extends UnitSpec with MockSharedAppConfig {

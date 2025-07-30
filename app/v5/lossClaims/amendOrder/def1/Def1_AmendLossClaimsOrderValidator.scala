@@ -18,13 +18,13 @@ package v5.lossClaims.amendOrder.def1
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.ResolveTaxYear.resolverWithCustomErrors
 import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino}
-import shared.models.errors._
+import shared.models.errors.*
 import v5.lossClaims.amendOrder.def1.model.request.{Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 import v5.lossClaims.common.models.TypeOfClaim

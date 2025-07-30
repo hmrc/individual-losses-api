@@ -18,7 +18,7 @@ package shared.controllers
 
 import cats.data.EitherT
 import cats.data.Validated.Valid
-import cats.implicits._
+import cats.implicits.*
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result

@@ -16,13 +16,13 @@
 
 package v4.endpoints.bfLoss.create
 
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{RuleDuplicateSubmissionError, TypeOfLossFormatError}
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import shared.models.domain.TaxYear.currentTaxYear
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec

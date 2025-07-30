@@ -20,7 +20,7 @@ import cats.data.Validated.{Invalid, Valid}
 import common.errors.TypeOfLossFormatError
 import shared.utils.UnitSpec
 import v5.lossClaims.common.models.TypeOfLoss
-import v5.lossClaims.common.models.TypeOfLoss._
+import v5.lossClaims.common.models.TypeOfLoss.*
 
 class ResolveLossClaimTypeOfLossSpec extends UnitSpec {
 

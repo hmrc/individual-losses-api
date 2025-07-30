@@ -23,7 +23,7 @@ import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v5.lossClaims.amendType.def1.model.request.Def1_AmendLossClaimTypeRequestBody
 import v5.lossClaims.common.models.TypeOfClaim
-import v5.lossClaims.common.models.TypeOfClaim._
+import v5.lossClaims.common.models.TypeOfClaim.*
 
 class AmendLossClaimTypeRequestBodySpec extends UnitSpec with MockSharedAppConfig {
 

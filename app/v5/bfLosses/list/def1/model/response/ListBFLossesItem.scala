@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package v5.bfLosses.list.def1.model.response
 
 import shared.models.domain.TaxYear
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{Json, OWrites, Reads, __}
 import v5.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 
@@ -37,8 +37,8 @@ object ListBFLossesItem {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      (__ \ "taxYear").read[String].map(taxYear => TaxYear.fromDownstream(taxYear).asMtd) and
+      (__ \ "taxYear").read[String].map(TaxYear.fromDownstream(_).asMtd) and
       (__ \ "submissionDate").read[String]
-  )(ListBFLossesItem.apply _)
+  )(ListBFLossesItem.apply)
 
 }

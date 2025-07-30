@@ -16,7 +16,7 @@
 
 package v6.bfLosses.list.def1.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import v6.bfLosses.list.model.response.ListBFLossesResponse
 
 case class Def1_ListBFLossesResponse(losses: Seq[ListBFLossesItem]) extends ListBFLossesResponse {

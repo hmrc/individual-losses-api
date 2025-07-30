@@ -18,7 +18,7 @@ package v6.bfLosses.amend
 
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged, RuleOutsideAmendmentWindow}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.bfLosses.amend
@@ -32,7 +32,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
 
   private val nino    = Nino("AA123456A")
   private val lossId  = LossId("AAZZ1234567890a")
-  private val taxYear = TaxYear("2020")
+  private val taxYear = TaxYear.fromMtd("2019-20")
 
   val requestData: Def1_AmendBFLossRequestData = Def1_AmendBFLossRequestData(nino, lossId, taxYear, Def1_AmendBFLossRequestBody(256.78))
 

@@ -18,11 +18,11 @@ package v4.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
-import shared.models.errors._
+import shared.models.errors.*
 import v4.controllers.validators.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
 import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.listLossClaims.ListLossClaimsRequestData

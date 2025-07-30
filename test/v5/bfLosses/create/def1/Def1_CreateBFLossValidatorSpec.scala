@@ -21,7 +21,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}

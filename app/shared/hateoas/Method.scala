@@ -16,7 +16,7 @@
 
 package shared.hateoas
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
 enum Method {

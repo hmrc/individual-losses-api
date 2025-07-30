@@ -16,10 +16,10 @@
 
 package v4.services
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors.ClaimIdFormatError
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.RetrieveLossClaimConnector
 import v4.models.request.retrieveLossClaim.RetrieveLossClaimRequestData

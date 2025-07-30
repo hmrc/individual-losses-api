@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,15 @@ package v4.models.domain.lossClaim
 import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-trait HasTypeOfLoss {
-  def toIncomeSourceType: Option[IncomeSourceType]
-}
+enum TypeOfLoss {
+  case `uk-property-non-fhl`, `foreign-property`, `self-employment`
 
-enum TypeOfLoss(val toIncomeSourceType: Option[IncomeSourceType]) {
-  case `uk-property-non-fhl` extends TypeOfLoss(Some(IncomeSourceType.`02`))
-  case `foreign-property`    extends TypeOfLoss(Some(IncomeSourceType.`15`))
-  case `self-employment`     extends TypeOfLoss(Some(IncomeSourceType.`01`))
+  def toIncomeSourceType: Option[IncomeSourceType] = this match {
+    case `uk-property-non-fhl` => Some(IncomeSourceType.`02`)
+    case `foreign-property`    => Some(IncomeSourceType.`15`)
+    case `self-employment`     => Some(IncomeSourceType.`01`)
+  }
+
 }
 
 object TypeOfLoss {

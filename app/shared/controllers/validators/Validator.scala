@@ -20,7 +20,7 @@ import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.utils.Logging
-import cats.implicits._
+import cats.implicits.*
 
 trait Validator[+PARSED] extends Logging {
 

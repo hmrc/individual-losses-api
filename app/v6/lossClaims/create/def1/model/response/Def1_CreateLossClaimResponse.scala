@@ -16,7 +16,7 @@
 
 package v6.lossClaims.create.def1.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import v6.lossClaims.create.model.response.CreateLossClaimResponse
 
 case class Def1_CreateLossClaimResponse(claimId: String) extends CreateLossClaimResponse

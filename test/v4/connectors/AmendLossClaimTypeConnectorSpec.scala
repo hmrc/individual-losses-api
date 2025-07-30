@@ -34,7 +34,7 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
   val taxYearClaimedFor: String = "2019-20"
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val connector: AmendLossClaimTypeConnector = new AmendLossClaimTypeConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 

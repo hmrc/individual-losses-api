@@ -18,7 +18,7 @@ package v4.connectors
 
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,7 +36,7 @@ class CreateLossClaimConnector @Inject() (val http: HttpClientV2, val appConfig:
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
-    import request._
+    import request.*
 
     val taxYear: TaxYear = TaxYear.fromMtd(request.lossClaim.taxYearClaimedFor)
 

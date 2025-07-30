@@ -17,7 +17,7 @@
 package v5.bfLosses.delete
 
 import shared.connectors.DownstreamUri.HipUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.models.domain.TaxYear.currentTaxYear
@@ -34,7 +34,7 @@ class DeleteBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: Sh
   def deleteBFLoss(
       request: DeleteBFLossRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import request._
+    import request.*
 
     val downstreamUri = if (ConfigFeatureSwitches().isEnabled("hipItsa_hipItsd_migration_1504")) {
       HipUri[Unit](s"itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${currentTaxYear.asTysDownstream}")

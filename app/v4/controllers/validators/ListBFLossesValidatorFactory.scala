@@ -18,12 +18,12 @@ package v4.controllers.validators
 
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
-import shared.models.errors._
+import shared.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import common.errors.TypeOfLossFormatError
-import v4.models.domain.bfLoss.TypeOfLoss._
+import v4.models.domain.bfLoss.TypeOfLoss.*
 import v4.models.domain.bfLoss.{IncomeSourceType, TypeOfLoss}
 import v4.models.request.listLossClaims.ListBFLossesRequestData
 

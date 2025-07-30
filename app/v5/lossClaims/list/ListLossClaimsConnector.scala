@@ -17,7 +17,7 @@
 package v5.lossClaims.list
 
 import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import shared.config.SharedAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,8 +36,8 @@ class ListLossClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: 
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     val downstreamUri: DownstreamUri[DownstreamResp] = IfsUri(s"income-tax/${taxYearClaimedFor.asTysDownstream}/claims-for-relief/${nino.nino}")
 

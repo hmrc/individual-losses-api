@@ -16,7 +16,7 @@
 
 package shared.utils
 
-import shared.utils.UrlUtils._
+import shared.utils.UrlUtils.*
 
 class UrlUtilsSpec extends UnitSpec {
 

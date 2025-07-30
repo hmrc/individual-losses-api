@@ -19,7 +19,7 @@ package v5.bfLosses.retrieve.def1
 import common.errors.LossIdFormatError
 import shared.controllers.validators.Validator
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.LossId
 import v5.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData

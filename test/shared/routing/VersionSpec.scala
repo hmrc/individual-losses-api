@@ -17,7 +17,7 @@
 package shared.routing
 
 import play.api.http.HeaderNames.ACCEPT
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.mvc.{Headers, RequestHeader}
 import play.api.test.FakeRequest
 import shared.routing.Version.VersionReads

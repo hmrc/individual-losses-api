@@ -23,7 +23,7 @@ import shared.config.MockSharedAppConfig
 import shared.models.domain.TaxYear
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
-import v6.lossClaims.common.models._
+import v6.lossClaims.common.models.*
 import v6.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 
 class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {

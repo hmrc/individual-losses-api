@@ -16,7 +16,7 @@
 
 package v6.lossClaims.create.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.JsonWritesUtil
 import v6.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
 

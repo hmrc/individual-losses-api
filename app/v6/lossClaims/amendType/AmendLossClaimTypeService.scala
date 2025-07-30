@@ -16,10 +16,10 @@
 
 package v6.lossClaims.amendType
 
-import cats.implicits._
-import common.errors._
+import cats.implicits.*
+import common.errors.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.amendType.model.response.AmendLossClaimTypeResponse

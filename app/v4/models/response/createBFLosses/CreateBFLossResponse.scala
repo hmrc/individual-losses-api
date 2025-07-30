@@ -16,7 +16,7 @@
 
 package v4.models.response.createBFLosses
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import v4.V4HateoasLinks
@@ -32,7 +32,7 @@ object CreateBFLossResponse extends V4HateoasLinks {
   implicit object LinksFactory extends HateoasLinksFactory[CreateBFLossResponse, CreateBFLossHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: CreateBFLossHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(getBFLoss(appConfig, nino, lossId), deleteBfLoss(appConfig, nino, lossId), amendBfLoss(appConfig, nino, lossId))
     }
 

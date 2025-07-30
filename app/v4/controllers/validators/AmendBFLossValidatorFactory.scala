@@ -18,7 +18,7 @@ package v4.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import cats.implicits._
+import cats.implicits.*
 import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import shared.controllers.validators.Validator

@@ -26,10 +26,10 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
-import v5.lossClaims.common.models._
+import v5.lossClaims.common.models.*
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
 
@@ -105,7 +105,7 @@ class CreateLossClaimControllerSpec
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new CreateLossClaimController(
+    val controller: CreateLossClaimController = new CreateLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockCreateLossClaimService,

@@ -38,8 +38,8 @@ object AmendBFLossResponse extends V4HateoasLinks {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      ((__ \ "taxYear").read[String].map(TaxYear.fromDownstream).map(_.asMtd)
-        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear.fromDownstream(i.toString)).map(_.asMtd)) and
+      ((__ \ "taxYear").read[String].map(TaxYear.fromDownstream(_).asMtd)
+        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(TaxYear.fromDownstreamInt(_).asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
   )(AmendBFLossResponse.apply)
 

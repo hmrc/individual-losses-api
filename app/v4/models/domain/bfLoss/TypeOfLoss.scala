@@ -16,20 +16,31 @@
 
 package v4.models.domain.bfLoss
 
-import play.api.libs.json.*
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
 trait HasTypeOfLoss {
   def typeOfLoss: TypeOfLoss
 }
 
-enum TypeOfLoss(val toIncomeSourceType: Option[IncomeSourceType] = None, val toLossType: Option[LossType] = None) {
-  case `uk-property-fhl`          extends TypeOfLoss(Some(IncomeSourceType.`04`))
-  case `uk-property-non-fhl`      extends TypeOfLoss(Some(IncomeSourceType.`02`))
-  case `foreign-property-fhl-eea` extends TypeOfLoss(Some(IncomeSourceType.`03`))
-  case `foreign-property`         extends TypeOfLoss(Some(IncomeSourceType.`15`))
-  case `self-employment`          extends TypeOfLoss(Some(IncomeSourceType.`01`), Some(LossType.INCOME))
-  case `self-employment-class4`   extends TypeOfLoss(Some(LossType.CLASS4))
+enum TypeOfLoss {
+  case `uk-property-fhl`, `uk-property-non-fhl`, `foreign-property-fhl-eea`, `foreign-property`, `self-employment`, `self-employment-class4`
+
+  def toIncomeSourceType: Option[IncomeSourceType] = this match {
+    case `uk-property-fhl`          => Some(IncomeSourceType.`04`)
+    case `uk-property-non-fhl`      => Some(IncomeSourceType.`02`)
+    case `foreign-property-fhl-eea` => Some(IncomeSourceType.`03`)
+    case `foreign-property`         => Some(IncomeSourceType.`15`)
+    case `self-employment`          => Some(IncomeSourceType.`01`)
+    case `self-employment-class4`   => None
+  }
+
+  def toLossType: Option[LossType] = this match {
+    case `self-employment`        => Some(LossType.INCOME)
+    case `self-employment-class4` => Some(LossType.CLASS4)
+    case _                        => None
+  }
+
 }
 
 object TypeOfLoss {

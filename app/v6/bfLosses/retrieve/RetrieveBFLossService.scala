@@ -16,10 +16,10 @@
 
 package v6.bfLosses.retrieve
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors.LossIdFormatError
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v6.bfLosses.retrieve
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData

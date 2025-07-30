@@ -16,7 +16,7 @@
 
 package shared.controllers
 
-import cats.syntax.either._
+import cats.syntax.either.*
 import play.api.libs.json.{JsValue, Writes}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails

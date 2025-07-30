@@ -24,7 +24,7 @@ import common.errors.{
   TaxYearClaimedForFormatError
 }
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v4.connectors.MockCreateLossClaimConnector

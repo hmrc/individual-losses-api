@@ -18,7 +18,7 @@ package v6.bfLosses.list
 
 import common.errors.TypeOfLossFormatError
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.bfLosses.common.domain.TypeOfLoss

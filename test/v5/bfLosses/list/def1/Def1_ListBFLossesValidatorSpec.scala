@@ -19,7 +19,7 @@ package v5.bfLosses.list.def1
 import common.errors.TypeOfLossFormatError
 import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v5.bfLosses.common.domain.IncomeSourceType
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData

@@ -18,7 +18,7 @@ package v6.bfLosses.create
 
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.bfLosses.common.domain.TypeOfLoss
@@ -30,9 +30,8 @@ import scala.concurrent.Future
 
 class CreateBFLossServiceSpec extends ServiceSpec {
 
-  val nino: String    = "AA123456A"
-  val taxYear: String = "2026"
-  val lossId: String  = "AAZZ1234567890a"
+  val nino: String   = "AA123456A"
+  val lossId: String = "AAZZ1234567890a"
 
   val bfLoss: Def1_CreateBFLossRequestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
 
@@ -41,7 +40,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
   }
 
   "create BFLoss" when {
-    lazy val request = Def1_CreateBFLossRequestData(Nino(nino), TaxYear(taxYear), bfLoss)
+    lazy val request = Def1_CreateBFLossRequestData(Nino(nino), TaxYear.fromMtd("2025-26"), bfLoss)
 
     "valid data is passed" should {
       "return a successful response with the correct correlationId" in new Test {

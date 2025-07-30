@@ -18,7 +18,7 @@ package v6.bfLosses.common.domain
 
 import shared.utils.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
-import v6.bfLosses.common.domain.IncomeSourceType._
+import v6.bfLosses.common.domain.IncomeSourceType.*
 
 class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 

@@ -18,7 +18,7 @@ package v5.bfLosses.retrieve
 
 import common.errors.LossIdFormatError
 import shared.models.domain.{Nino, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.bfLosses.common.domain.{LossId, TypeOfLoss}

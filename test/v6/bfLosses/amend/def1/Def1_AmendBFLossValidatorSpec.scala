@@ -19,7 +19,7 @@ package v6.bfLosses.amend.def1
 import common.errors.LossIdFormatError
 import play.api.libs.json.{JsValue, Json}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.common.domain.LossId

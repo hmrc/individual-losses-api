@@ -18,12 +18,12 @@ package v5.bfLosses.list.def1
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import common.errors.TypeOfLossFormatError
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
-import shared.models.errors._
-import v5.bfLosses.common.domain.TypeOfLoss._
+import shared.models.errors.*
+import v5.bfLosses.common.domain.TypeOfLoss.*
 import v5.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v5.bfLosses.common.minimumTaxYear
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData

@@ -16,12 +16,12 @@
 
 package v5.lossClaim.delete.def1
 
-import shared.models.errors._
+import shared.models.errors.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.ClaimIdFormatError
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 

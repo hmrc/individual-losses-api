@@ -18,7 +18,7 @@ package v6.bfLosses.list
 
 import common.errors.TypeOfLossFormatError
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v6.bfLosses.list.model.request.ListBFLossesRequestData
 import v6.bfLosses.list.model.response.ListBFLossesResponse

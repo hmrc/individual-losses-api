@@ -16,7 +16,6 @@
 
 package v4.models.domain.bfLoss
 
-import play.api.libs.json
 import play.api.libs.json.Format
 import shared.utils.enums.Enums
 

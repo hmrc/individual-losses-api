@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package shared.connectors
 
+import org.scalatest.TestSuite
 import shared.config.MockSharedAppConfig
 import shared.connectors.MtdIdLookupConnector.Outcome
 import shared.mocks.MockHttpClient
@@ -28,7 +29,7 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
   val nino  = "test-nino"
   val mtdId = "test-mtdId"
 
-  class Test extends MockHttpClient with MockSharedAppConfig {
+  trait Test extends ConnectorSpec with MockHttpClient with MockSharedAppConfig {
 
     val connector = new MtdIdLookupConnector(
       http = mockHttpClient,

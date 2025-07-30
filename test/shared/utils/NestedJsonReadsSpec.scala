@@ -16,9 +16,9 @@
 
 package shared.utils
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import shared.utils.NestedJsonReads._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
+import shared.utils.NestedJsonReads.*
 
 class NestedJsonReadsSpec extends UnitSpec {
 

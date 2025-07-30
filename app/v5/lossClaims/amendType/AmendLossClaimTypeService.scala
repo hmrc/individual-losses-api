@@ -16,11 +16,11 @@
 
 package v5.lossClaims.amendType
 
-import cats.implicits._
-import common.errors._
+import cats.implicits.*
+import common.errors.*
 import shared.controllers.RequestContext
 import shared.models.domain.TaxYear
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{BaseService, ServiceOutcome}
 import v5.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData

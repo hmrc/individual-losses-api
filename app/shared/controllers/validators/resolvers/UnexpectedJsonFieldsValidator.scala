@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,7 +122,6 @@ object UnexpectedJsonFieldsValidator extends ResolverSupport {
       instance(list => SchemaStructure.Arr(list.map(aInstance.schemaStructureOf)))
 
     // Lazy prevents infinite recursion in generic derivation
-
     final class Lazy[+A](val value: () => A) extends AnyVal
 
     object Lazy {

@@ -16,7 +16,7 @@
 
 package v6.lossClaims.list.def1.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import v6.lossClaims.list.model.response.ListLossClaimsResponse
 
 case class Def1_ListLossClaimsResponse(claims: Seq[ListLossClaimsItem]) extends ListLossClaimsResponse

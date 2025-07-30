@@ -19,16 +19,11 @@ package v6.bfLosses.common.domain
 import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait HasLossType {
-  def toTypeOfLoss: TypeOfLoss
-}
-
-enum LossType(val toLossType: TypeOfLoss) {
+enum LossType(val toTypeOfLoss: TypeOfLoss) {
   case INCOME extends LossType(TypeOfLoss.`self-employment`)
   case CLASS4 extends LossType(TypeOfLoss.`self-employment-class4`)
 }
 
 object LossType {
-
   given Format[LossType] = Enums.format(values)
 }

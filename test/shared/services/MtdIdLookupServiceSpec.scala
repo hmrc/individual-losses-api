@@ -17,7 +17,7 @@
 package shared.services
 
 import shared.connectors.{MockMtdIdLookupConnector, MtdIdLookupConnector}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.MtdIdLookupService.Outcome
 
 import scala.concurrent.Future

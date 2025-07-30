@@ -16,7 +16,7 @@
 
 package v6.bfLosses.create.def1.model.request
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v6.bfLosses.common.domain.TypeOfLoss

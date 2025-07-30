@@ -19,7 +19,7 @@ package v6.lossClaims.amendOrder.def1
 import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.{JsArray, JsValue, Json}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v6.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}

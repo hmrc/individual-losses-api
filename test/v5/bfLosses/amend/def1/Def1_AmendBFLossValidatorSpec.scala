@@ -18,7 +18,7 @@ package v5.bfLosses.amend.def1
 
 import common.errors.LossIdFormatError
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 import v5.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}

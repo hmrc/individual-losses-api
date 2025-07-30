@@ -36,8 +36,8 @@ class AmendBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: Sha
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[AmendBFLossResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     val downstreamUri: DownstreamUri[DownstreamResp] =
       if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1501")) {

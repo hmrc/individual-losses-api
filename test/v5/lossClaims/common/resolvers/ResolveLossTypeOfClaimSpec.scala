@@ -26,7 +26,7 @@ class ResolveLossTypeOfClaimSpec extends UnitSpec {
   "The resolver" should {
 
     "return the resolved value" when {
-      import TypeOfClaim._
+      import TypeOfClaim.*
 
       checkValid(`carry-forward`)
       checkValid(`carry-sideways`)

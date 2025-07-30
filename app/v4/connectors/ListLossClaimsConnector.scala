@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package v4.connectors
 
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v4.models.request.listLossClaims.ListLossClaimsRequestData
@@ -36,7 +36,7 @@ class ListLossClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: 
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListLossClaimsResponse[ListLossClaimsItem]]] = {
 
-    import request._
+    import request.*
 
     val params = List(
       "incomeSourceId"   -> businessId.map(_.businessId),

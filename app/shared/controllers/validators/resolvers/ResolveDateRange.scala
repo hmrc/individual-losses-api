@@ -18,7 +18,7 @@ package shared.controllers.validators.resolvers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import shared.models.domain.DateRange
 import shared.models.errors.{EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError}
 
@@ -29,7 +29,7 @@ case class ResolveDateRange(startDateFormatError: MtdError = StartDateFormatErro
                             endDateFormatError: MtdError = EndDateFormatError,
                             endBeforeStartDateError: MtdError = RuleEndBeforeStartDateError)
     extends ResolverSupport {
-  import ResolveDateRange._
+  import ResolveDateRange.*
 
   val resolver: Resolver[(String, String), DateRange] = { case (startDate, endDate) =>
     (

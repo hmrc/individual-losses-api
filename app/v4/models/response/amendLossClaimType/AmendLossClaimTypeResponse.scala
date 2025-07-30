@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,10 +37,8 @@ object AmendLossClaimTypeResponse extends V4HateoasLinks {
   implicit val reads: Reads[AmendLossClaimTypeResponse] = (
     (JsPath \ "taxYearClaimedFor")
       .read[Int]
-      .map(_.toString)
-      .map(taxYear => TaxYear.fromDownstream(taxYear))
-      .map(_.asMtd)
-      .orElse((JsPath \ "taxYearClaimedFor").read[String].map(taxYear => TaxYear.fromDownstream(taxYear)).map(_.asMtd)) and
+      .map(TaxYear.fromDownstreamInt(_).asMtd)
+      .orElse((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear.fromDownstream(_).asMtd)) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and

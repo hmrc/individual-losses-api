@@ -21,7 +21,7 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v4.fixtures.ListLossClaimsFixtures._
+import v4.fixtures.ListLossClaimsFixtures.*
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
 import v4.models.request.listLossClaims.ListLossClaimsRequestData
 import v4.models.response.listLossClaims.{ListLossClaimsItem, ListLossClaimsResponse}
@@ -34,14 +34,16 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
   val claimId: String = "AAZZ1234567890ag"
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
     val connector: ListLossClaimsConnector = new ListLossClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
-    protected def success(taxYear: String) = Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))
+    protected def success(taxYear: String): Right[Nothing, ResponseWrapper[ListLossClaimsResponse[ListLossClaimsItem]]] =
+      Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))
 
-    protected def downstreamError(code: String) = Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(code))))
+    protected def downstreamError(code: String): Left[ResponseWrapper[DownstreamErrors], Nothing] =
+      Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(code))))
 
-    val outboundError = Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+    val outboundError: Left[ResponseWrapper[OutboundError], Nothing] = Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
   }
 
   "list LossClaims" when {
@@ -105,7 +107,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
         listLossClaimsResult(
           connector = connector,
-          taxYear = TaxYear("2024"),
+          taxYear = TaxYear.fromMtd("2023-24"),
           businessId = Some(BusinessId("testId")),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)

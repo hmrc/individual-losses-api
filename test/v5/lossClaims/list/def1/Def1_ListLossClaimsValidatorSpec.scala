@@ -19,7 +19,7 @@ package v5.lossClaims.list.def1
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v5.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v5.lossClaims.list.ListLossClaimsValidatorFactory
