@@ -25,7 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, POST}
-import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.{HateoasFactory, HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
@@ -45,8 +45,7 @@ class ListLossClaimsControllerSpec
     with ControllerTestRunner
     with MockSharedAppConfig
     with MockListLossClaimsValidatorFactory
-    with MockListLossClaimsService
-    with MockHateoasFactory {
+    with MockListLossClaimsService {
 
   private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
@@ -55,36 +54,7 @@ class ListLossClaimsControllerSpec
 
   private val requestData =
     ListLossClaimsRequestData(parsedNino, TaxYear.fromMtd("2018-19"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
-
-  private val testHateoasLink       = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
-  private val testCreateHateoasLink = Link(href = "/foo/bar", method = POST, rel = "test-create-relationship")
-
-  private val hateoasResponse: ListLossClaimsResponse[HateoasWrapper[ListLossClaimsItem]] = ListLossClaimsResponse(
-    List(
-      HateoasWrapper(
-        ListLossClaimsItem(
-          "XAIS12345678910",
-          TypeOfClaim.`carry-sideways`,
-          TypeOfLoss.`self-employment`,
-          "2020-21",
-          "AAZZ1234567890A",
-          Some(1),
-          "2020-07-13T12:13:48.763Z"),
-        List(testHateoasLink)
-      ),
-      HateoasWrapper(
-        ListLossClaimsItem(
-          "XAIS12345678911",
-          TypeOfClaim.`carry-sideways`,
-          TypeOfLoss.`uk-property-non-fhl`,
-          "2020-21",
-          "AAZZ1234567890B",
-          Some(2),
-          "2020-07-13T12:13:48.763Z"),
-        List(testHateoasLink)
-      )
-    ))
-
+  
   private val mtdResponseJson = Json.parse(
     """
       |{
@@ -99,9 +69,9 @@ class ListLossClaimsControllerSpec
       |            "lastModified": "2020-07-13T12:13:48.763Z",
       |            "links" : [
       |               {
-      |                 "href": "/foo/bar",
+      |                 "href": "/individuals/losses/AA123456A/loss-claims/claimId",
       |                 "method": "GET",
-      |                 "rel": "test-relationship"
+      |                 "rel": "self"
       |               }
       |            ]
       |        },
@@ -115,18 +85,18 @@ class ListLossClaimsControllerSpec
       |            "lastModified": "2020-07-13T12:13:48.763Z",
       |            "links" : [
       |               {
-      |                 "href": "/foo/bar",
+      |                 "href": "/individuals/losses/AA123456A/loss-claims",
       |                 "method": "GET",
-      |                 "rel": "test-relationship"
+      |                 "rel": "self"
       |               }
       |            ]
       |        }
       |    ],
       |    "links" : [
       |       {
-      |         "href": "/foo/bar",
+      |         "href": "/individuals/losses/AA123456A/loss-claims",
       |         "method": "POST",
-      |         "rel": "test-create-relationship"
+      |         "rel": "create-loss-claim"
       |       }
       |    ]
       |}
@@ -141,10 +111,6 @@ class ListLossClaimsControllerSpec
         MockListLossClaimsService
           .list(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))))
-
-        MockHateoasFactory
-          .wrap(singleClaimResponseModel(taxYear), ListLossClaimsHateoasData(validNino, taxYearClaimedFor = taxYear))
-          .returns(HateoasWrapper(hateoasResponse, List(testCreateHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -175,7 +141,7 @@ class ListLossClaimsControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockListLossClaimsService,
       validatorFactory = mockListLossClaimsValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
+      hateoasFactory = new HateoasFactory(mockSharedAppConfig),
       cc = cc,
       idGenerator = mockIdGenerator
     )

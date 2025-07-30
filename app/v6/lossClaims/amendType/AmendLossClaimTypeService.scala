@@ -17,7 +17,7 @@
 package v6.lossClaims.amendType
 
 import cats.implicits.*
-import common.errors.*
+import common.errors._
 import shared.controllers.RequestContext
 import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}

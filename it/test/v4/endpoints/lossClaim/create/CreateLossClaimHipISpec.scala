@@ -17,7 +17,7 @@
 package v4.endpoints.lossClaim.create
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.*
+import common.errors._
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsValue, Json}

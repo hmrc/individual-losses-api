@@ -17,7 +17,7 @@
 package v4.endpoints.lossClaim.amendOrder
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.*
+import common.errors._
 import play.api.libs.json.*
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*

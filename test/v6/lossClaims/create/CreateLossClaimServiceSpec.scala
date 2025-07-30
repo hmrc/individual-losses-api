@@ -16,7 +16,7 @@
 
 package v6.lossClaims.create
 
-import common.errors.*
+import common.errors._
 import shared.models.domain.Nino
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper

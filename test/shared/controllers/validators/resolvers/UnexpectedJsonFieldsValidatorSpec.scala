@@ -19,7 +19,7 @@ package shared.controllers.validators.resolvers
 import play.api.libs.json.{JsObject, Json}
 import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import shared.models.errors.RuleIncorrectOrEmptyBodyError
-import shared.utils.UnitSpec
+import shared.utils.{EmptinessChecker, UnitSpec}
 
 class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
 
@@ -30,7 +30,7 @@ class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
     object Y extends SomeEnum
   }
 
-  case class Bar(a: Option[String] = None, b: Option[String] = None, e: Option[SomeEnum] = None)
+  case class Bar(a: Option[String] = None, b: Option[String] = None, e: Option[SomeEnum] = None) derives SchemaStructureSource
 
   case class Foo(bar: Bar, bars: Option[Seq[Bar]] = None, bar2: Option[Bar] = None)
 

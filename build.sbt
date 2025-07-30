@@ -21,7 +21,7 @@ import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "individual-losses-api"
 
-ThisBuild / scalaVersion := "3.3.5"
+ThisBuild / scalaVersion := "3.4.3"
 ThisBuild / majorVersion := 1
 ThisBuild / scalacOptions += "-Werror"
 ThisBuild / scalacOptions += "-nowarn" // Added help suppress warnings in migration. Must be removed when changes shown are complete

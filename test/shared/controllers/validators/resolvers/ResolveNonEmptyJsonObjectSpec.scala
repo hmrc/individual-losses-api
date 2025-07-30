@@ -18,6 +18,7 @@ package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.*
+import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import shared.models.errors.RuleIncorrectOrEmptyBodyError
 import shared.models.utils.JsonErrorValidators
 import shared.utils.EmptinessChecker.field
@@ -25,7 +26,7 @@ import shared.utils.{EmptinessChecker, UnitSpec}
 
 class ResolveNonEmptyJsonObjectSpec extends UnitSpec with ResolverSupport with JsonErrorValidators {
 
-  case class Bar(field1: String, field2: String)
+  case class Bar(field1: String, field2: String) derives EmptinessChecker, SchemaStructureSource
   case class Baz(field1: Option[String], field2: Option[String])
   case class Qux(mandatory: String, oneOf1: Option[String] = None, oneOf2: Option[String] = None)
 

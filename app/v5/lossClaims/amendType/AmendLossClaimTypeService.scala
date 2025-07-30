@@ -17,7 +17,7 @@
 package v5.lossClaims.amendType
 
 import cats.implicits.*
-import common.errors.*
+import common.errors._
 import shared.controllers.RequestContext
 import shared.models.domain.TaxYear
 import shared.models.errors.*
