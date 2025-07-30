@@ -55,7 +55,7 @@ class ListBFLossesControllerSpec
   private val response: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Seq(responseItem))
 
   private val mtdResponseJson: JsValue = Json.parse(
-    s"""
+    """
       |{
       |  "losses": [
       |    {
