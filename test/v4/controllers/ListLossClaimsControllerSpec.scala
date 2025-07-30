@@ -22,7 +22,6 @@ import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
-import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, POST}
 import shared.hateoas.{HateoasFactory, HateoasWrapper, Link, MockHateoasFactory}
@@ -43,7 +42,6 @@ import scala.concurrent.Future
 class ListLossClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockSharedAppConfig
     with MockListLossClaimsValidatorFactory
     with MockListLossClaimsService {
 
@@ -54,51 +52,45 @@ class ListLossClaimsControllerSpec
 
   private val requestData =
     ListLossClaimsRequestData(parsedNino, TaxYear.fromMtd("2018-19"), None, Some(BusinessId(businessId)), Some(TypeOfClaim.`carry-sideways`))
-  
+
   private val mtdResponseJson = Json.parse(
     """
       |{
-      |    "claims": [
+      |  "claims": [
+      |    {
+      |      "businessId": "testId",
+      |      "typeOfClaim": "carry-sideways",
+      |      "typeOfLoss": "self-employment",
+      |      "taxYearClaimedFor": "2018-19",
+      |      "claimId": "claimId",
+      |      "sequence": 1,
+      |      "lastModified": "2020-07-13T12:13:48.763Z",
+      |      "links": [
       |        {
-      |            "businessId": "XAIS12345678910",
-      |            "typeOfClaim": "carry-sideways",
-      |            "typeOfLoss": "self-employment",
-      |            "taxYearClaimedFor": "2020-21",
-      |            "claimId": "AAZZ1234567890A",
-      |            "sequence": 1,
-      |            "lastModified": "2020-07-13T12:13:48.763Z",
-      |            "links" : [
-      |               {
-      |                 "href": "/individuals/losses/AA123456A/loss-claims/claimId",
-      |                 "method": "GET",
-      |                 "rel": "self"
-      |               }
-      |            ]
-      |        },
-      |        {
-      |            "businessId": "XAIS12345678911",
-      |            "typeOfClaim": "carry-sideways",
-      |            "typeOfLoss": "uk-property-non-fhl",
-      |            "taxYearClaimedFor": "2020-21",
-      |            "claimId": "AAZZ1234567890B",
-      |            "sequence": 2,
-      |            "lastModified": "2020-07-13T12:13:48.763Z",
-      |            "links" : [
-      |               {
-      |                 "href": "/individuals/losses/AA123456A/loss-claims",
-      |                 "method": "GET",
-      |                 "rel": "self"
-      |               }
-      |            ]
+      |          "href": "/individuals/losses/AA123456A/loss-claims/claimId",
+      |          "method": "GET",
+      |          "rel": "self"
       |        }
-      |    ],
-      |    "links" : [
-      |       {
-      |         "href": "/individuals/losses/AA123456A/loss-claims",
-      |         "method": "POST",
-      |         "rel": "create-loss-claim"
-      |       }
-      |    ]
+      |      ]
+      |    }
+      |  ],
+      |  "links": [
+      |    {
+      |      "href": "/individuals/losses/AA123456A/loss-claims",
+      |      "method": "GET",
+      |      "rel": "self"
+      |    },
+      |    {
+      |      "href": "/individuals/losses/AA123456A/loss-claims",
+      |      "method": "POST",
+      |      "rel": "create-loss-claim"
+      |    },
+      |    {
+      |      "href": "/individuals/losses/AA123456A/loss-claims/order/2018-19",
+      |      "method": "PUT",
+      |      "rel": "amend-loss-claim-order"
+      |    }
+      |  ]
       |}
     """.stripMargin
   )

@@ -22,10 +22,9 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
-import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, POST}
-import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.{HateoasFactory, HateoasWrapper, Link}
 import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
@@ -42,10 +41,8 @@ import scala.concurrent.Future
 class ListBFLossesControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockSharedAppConfig
     with MockListBFLossesValidatorFactory
-    with MockListBFLossesService
-    with MockHateoasFactory {
+    with MockListBFLossesService {
 
   private val taxYear        = "2018-19"
   private val selfEmployment = "self-employment"
@@ -54,22 +51,11 @@ class ListBFLossesControllerSpec
   private val requestData =
     ListBFLossesRequestData(parsedNino, TaxYear.fromMtd("2018-19"), Some(IncomeSourceType.`02`), Some(BusinessId(businessId)))
 
-  private val listHateoasLink = Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = GET, rel = "self")
-
-  private val createHateoasLink =
-    Link(href = "/individuals/losses/TC663795B/brought-forward-losses", method = POST, rel = "create-brought-forward-loss")
-
-  private val getHateoasLink: String => Link = lossId =>
-    Link(href = s"/individuals/losses/TC663795B/brought-forward-losses/$lossId", method = GET, rel = "self")
-
   private val responseItem: ListBFLossesItem = ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, "2019-20", "lastModified")
   private val response: ListBFLossesResponse[ListBFLossesItem] = ListBFLossesResponse(Seq(responseItem))
 
-  private val hateoasResponse: ListBFLossesResponse[HateoasWrapper[ListBFLossesItem]] = ListBFLossesResponse(
-    Seq(HateoasWrapper(responseItem, Seq(getHateoasLink("lossId")))))
-
   private val mtdResponseJson: JsValue = Json.parse(
-    """
+    s"""
       |{
       |  "losses": [
       |    {
@@ -81,7 +67,7 @@ class ListBFLossesControllerSpec
       |      "lastModified": "lastModified",
       |      "links": [
       |        {
-      |          "href": "/individuals/losses/TC663795B/brought-forward-losses/lossId",
+      |          "href": "/individuals/losses/AA123456A/brought-forward-losses/lossId",
       |          "rel": "self",
       |          "method": "GET"
       |        }
@@ -90,14 +76,14 @@ class ListBFLossesControllerSpec
       |  ],
       |  "links": [
       |    {
-      |      "href": "/individuals/losses/TC663795B/brought-forward-losses",
-      |      "rel": "create-brought-forward-loss",
-      |      "method": "POST"
-      |    },
-      |    {
-      |      "href": "/individuals/losses/TC663795B/brought-forward-losses",
+      |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
       |      "rel": "self",
       |      "method": "GET"
+      |    },
+      |    {
+      |      "href": "/individuals/losses/AA123456A/brought-forward-losses",
+      |      "rel": "create-brought-forward-loss",
+      |      "method": "POST"
       |    }
       |  ]
       |}
@@ -112,10 +98,6 @@ class ListBFLossesControllerSpec
         MockListBFLossesService
           .list(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrap(response, ListBFLossHateoasData(validNino))
-          .returns(HateoasWrapper(hateoasResponse, Seq(createHateoasLink, listHateoasLink)))
 
         runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
       }
@@ -146,7 +128,7 @@ class ListBFLossesControllerSpec
       lookupService = mockMtdIdLookupService,
       service = mockListBFLossesService,
       validatorFactory = mockListBFLossesValidatorFactory,
-      hateoasFactory = mockHateoasFactory,
+      hateoasFactory = new HateoasFactory(mockSharedAppConfig),
       cc = cc,
       idGenerator = mockIdGenerator
     )
