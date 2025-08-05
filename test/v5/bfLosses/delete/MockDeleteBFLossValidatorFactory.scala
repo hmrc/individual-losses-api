@@ -16,14 +16,13 @@
 
 package v5.bfLosses.delete
 
-import shared.controllers.validators.Validator
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import v5.bfLosses.delete.DeleteBFLossValidatorFactory
+import shared.controllers.validators.Validator
+import shared.models.errors.MtdError
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 trait MockDeleteBFLossValidatorFactory extends TestSuite with MockFactory {

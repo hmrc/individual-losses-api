@@ -157,8 +157,8 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         itsaErrors ++ itsdErrors
       }
 
-      retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
-      deleteErrors.foreach(args => (serviceErrorFromDeleteConnector _).tupled(args))
+      retrieveErrors.foreach(serviceErrorFromRetrieveConnector.tupled)
+      deleteErrors.foreach(serviceErrorFromDeleteConnector.tupled)
     }
   }
 

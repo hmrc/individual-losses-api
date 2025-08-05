@@ -43,7 +43,7 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implici
         (
           ResolveNino(nino),
           resolveJson(body)
-        ).mapN(Def1_CreateBFLossRequestData)
+        ).mapN(Def1_CreateBFLossRequestData.apply)
           .andThen(validateParsedData))
 
   private def validateParsedData(parsed: Def1_CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] = {

@@ -59,7 +59,7 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body:
           ResolveNino(nino),
           resolvedTaxYear(taxYear),
           resolveJson(body)
-        ).mapN(Def1_CreateBFLossRequestData)
+        ).mapN(Def1_CreateBFLossRequestData.apply)
           .andThen(validateParsedData))
 
   private def validateParsedData(parsed: Def1_CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] = {

@@ -18,6 +18,7 @@ package auth
 
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthSupportingAgentsAllowedISpec
 import shared.services.DownstreamStub

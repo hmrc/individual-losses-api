@@ -21,6 +21,7 @@ import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissi
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.domain.TaxYear
@@ -46,9 +47,9 @@ class Def1_CreateBFLossControllerIfsISpec extends IntegrationBaseSpec with JsonE
       """.stripMargin)
 
   private trait Test {
-    val nino           = "AA123456A"
-    val taxYear        = TaxYear("2024")
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}"
+    val nino: String     = "AA123456A"
+    val taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+    def ifsUrl: String   = s"/income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}"
 
     def setupStubs(): StubMapping
 

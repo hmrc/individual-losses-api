@@ -63,7 +63,7 @@ class Def1_ListBFLossesControllerISpec extends IntegrationBaseSpec {
     def request(): WSRequest = {
       setupStubs()
       buildRequest(mtdUri)
-        .addQueryStringParameters(mtdQueryParams: _*)
+        .addQueryStringParameters(mtdQueryParams*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")

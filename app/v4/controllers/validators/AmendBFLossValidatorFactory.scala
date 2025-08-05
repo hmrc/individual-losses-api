@@ -43,10 +43,10 @@ class AmendBFLossValidatorFactory {
           .andThen(_ =>
             (
               ResolveNino(nino),
-              resolveLossId(lossId).map(LossId),
+              resolveLossId(lossId).map(LossId.apply),
               resolveJson(body)
             )
-              .mapN(AmendBFLossRequestData))
+              .mapN(AmendBFLossRequestData.apply))
 
       private def validateJsonFields: Validated[Seq[MtdError], Unit] = {
         val jsPath = (body \ "lossAmount")

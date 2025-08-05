@@ -16,7 +16,6 @@
 
 package shared.connectors
 
-import org.scalatest.TestSuite
 import shared.config.MockSharedAppConfig
 import shared.connectors.MtdIdLookupConnector.Outcome
 import shared.mocks.MockHttpClient

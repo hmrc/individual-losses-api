@@ -43,9 +43,9 @@ class AmendLossClaimTypeValidatorFactory {
           .andThen(_ =>
             (
               ResolveNino(nino),
-              resolveClaimId(claimId).map(ClaimId),
+              resolveClaimId(claimId).map(ClaimId.apply),
               resolveJson(body)
-            ).mapN(AmendLossClaimTypeRequestData))
+            ).mapN(AmendLossClaimTypeRequestData.apply))
 
     }
 

@@ -21,10 +21,9 @@ import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "individual-losses-api"
 
-ThisBuild / scalaVersion := "3.4.3"
+ThisBuild / scalaVersion := "3.5.2"
 ThisBuild / majorVersion := 1
-ThisBuild / scalacOptions += "-Werror"
-ThisBuild / scalacOptions += "-nowarn" // Added help suppress warnings in migration. Must be removed when changes shown are complete
+ThisBuild / scalacOptions ++= Seq("-Werror", "-Wconf:msg=Flag.*repeatedly:s")
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
@@ -49,11 +48,8 @@ lazy val microservice = Project(appName, file("."))
 lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
-  .settings(DefaultBuildSettings.itSettings() ++ ScalafmtPlugin.scalafmtConfigSettings)
+  .settings(DefaultBuildSettings.itSettings())
   .settings(
     Test / fork := true,
     Test / javaOptions += "-Dlogger.resource=logback-test.xml")
   .settings(libraryDependencies ++= AppDependencies.itDependencies)
-  .settings(
-    scalacOptions ++= Seq("-Xfatal-warnings")
-  )

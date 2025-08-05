@@ -45,7 +45,7 @@ class CreateLossClaimValidatorFactory {
             (
               ResolveNino(nino),
               resolveJson(body)
-            ).mapN(CreateLossClaimRequestData)
+            ).mapN(CreateLossClaimRequestData.apply)
               .andThen(validateParsedData))
 
       private def validateRequestBodyEnums: Validated[Seq[MtdError], Unit] =

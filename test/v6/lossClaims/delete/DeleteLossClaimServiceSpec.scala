@@ -103,7 +103,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         itsaErrors ++ itsdErrors
       }
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      errors.foreach(serviceError.tupled)
     }
   }
 

@@ -18,8 +18,8 @@ package v5.bfLosses.create.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, TypeOfLossFormatError}
-import play.api.http.Status.{BAD_REQUEST, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import shared.models.errors.*

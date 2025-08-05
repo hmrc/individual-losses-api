@@ -69,7 +69,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
       setupStubs()
 
       buildRequest(mtdUrl)
-        .addQueryStringParameters(mtdQueryParams: _*)
+        .addQueryStringParameters(mtdQueryParams*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -206,7 +206,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
         (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_TYPE", Status.BAD_REQUEST, TypeOfLossFormatError),
         (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(serviceErrorTest.tupled)
     }
     "handle validation errors according to spec" when {
       def validationErrorTest(requestNino: String,
@@ -237,7 +237,7 @@ class ListLossClaimsISpec extends IntegrationBaseSpec {
         ("AA123456A", "2019-20", Some("self-employment"), Some("XKIS0000000"), None, Status.BAD_REQUEST, BusinessIdFormatError),
         ("AA123456A", "2019-20", None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
       )
-      errors.foreach(args => (validationErrorTest _).tupled(args))
+      errors.foreach(validationErrorTest.tupled)
     }
 
   }

@@ -22,6 +22,7 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status.*
 import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors.*
@@ -153,7 +154,7 @@ class AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
         (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(serviceErrorTest.tupled)
 
     }
 

@@ -176,7 +176,7 @@ class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
         (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(serviceErrorTest.tupled)
     }
 
     "handle validation errors according to spec" when {
@@ -212,7 +212,7 @@ class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
         ("AA123456A", "2019-20", None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
       )
 
-      errors.foreach(args => (validationErrorTest _).tupled(args))
+      errors.foreach(validationErrorTest.tupled)
     }
 
   }
@@ -256,7 +256,7 @@ class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
       setupStubs()
 
       buildRequest(mtdUrl)
-        .addQueryStringParameters(mtdQueryParams: _*)
+        .addQueryStringParameters(mtdQueryParams*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")

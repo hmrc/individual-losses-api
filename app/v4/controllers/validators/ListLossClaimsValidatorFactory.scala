@@ -45,7 +45,7 @@ class ListLossClaimsValidatorFactory {
           ResolveLossClaimTypeOfLoss.resolver.resolveOptionally(typeOfLoss),
           ResolveBusinessId.resolver.resolveOptionally(businessId),
           resolveTypeOfClaim
-        ).mapN(ListLossClaimsRequestData)
+        ).mapN(ListLossClaimsRequestData.apply)
 
       }
 

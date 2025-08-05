@@ -39,6 +39,6 @@ class Def1_DeleteLossClaimValidator(nino: String, claimId: String, taxYearClaime
       ResolveNino(nino),
       ResolveLossClaimId(claimId),
       resolveTaxYearClaimedFor(taxYearClaimedFor)
-    ).mapN(Def1_DeleteLossClaimRequestData)
+    ).mapN(Def1_DeleteLossClaimRequestData.apply)
 
 }

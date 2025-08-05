@@ -23,17 +23,15 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method.{GET, POST}
-import shared.hateoas.{HateoasFactory, HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.HateoasFactory
 import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v4.controllers.validators.MockListLossClaimsValidatorFactory
 import v4.fixtures.ListLossClaimsFixtures.singleClaimResponseModel
-import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}
+import v4.models.domain.lossClaim.TypeOfClaim
 import v4.models.request.listLossClaims.ListLossClaimsRequestData
-import v4.models.response.listLossClaims.{ListLossClaimsHateoasData, ListLossClaimsItem, ListLossClaimsResponse}
 import v4.services.MockListLossClaimsService
 
 import scala.concurrent.ExecutionContext.Implicits.global

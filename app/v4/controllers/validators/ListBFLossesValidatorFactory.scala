@@ -50,7 +50,7 @@ class ListBFLossesValidatorFactory {
           resolveTaxYear(taxYearBroughtForwardFrom),
           resolveIncomeSourceType,
           ResolveBusinessId.resolver.resolveOptionally(businessId)
-        ).mapN(ListBFLossesRequestData)
+        ).mapN(ListBFLossesRequestData.apply)
 
       private def resolveIncomeSourceType: Validated[Seq[MtdError], Option[IncomeSourceType]] =
         typeOfLoss

@@ -67,7 +67,7 @@ object Def1_AmendLossClaimsOrderRulesValidator extends RulesValidator[Def1_Amend
       )
     }
 
-    combine(results: _*)
+    combine(results*)
   }
 
 }

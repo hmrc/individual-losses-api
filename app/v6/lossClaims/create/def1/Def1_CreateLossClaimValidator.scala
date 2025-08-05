@@ -41,7 +41,7 @@ class Def1_CreateLossClaimValidator(nino: String, body: JsValue) extends Validat
         (
           ResolveNino(nino),
           resolveJson(body)
-        ).mapN(Def1_CreateLossClaimRequestData)
+        ).mapN(Def1_CreateLossClaimRequestData.apply)
           .andThen(validateParsedData))
   }
 

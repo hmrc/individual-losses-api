@@ -16,12 +16,11 @@
 
 package v6.lossClaims.amendOrder
 
-import shared.controllers.RequestContext
-import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import v6.lossClaims.amendOrder.AmendLossClaimsOrderService
+import shared.controllers.RequestContext
+import shared.services.ServiceOutcome
 import v6.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 
 import scala.concurrent.{ExecutionContext, Future}

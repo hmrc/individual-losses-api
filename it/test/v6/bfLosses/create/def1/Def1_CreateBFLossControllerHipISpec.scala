@@ -19,6 +19,7 @@ package v6.bfLosses.create.def1
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError, RuleOutsideAmendmentWindow, TypeOfLossFormatError}
 import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import shared.models.domain.TaxYear

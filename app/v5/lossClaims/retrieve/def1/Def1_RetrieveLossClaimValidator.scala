@@ -31,7 +31,7 @@ class Def1_RetrieveLossClaimValidator(nino: String, claimId: String) extends Val
     (
       ResolveNino(nino),
       ResolveLossClaimId(claimId)
-    ).mapN(Def1_RetrieveLossClaimRequestData)
+    ).mapN(Def1_RetrieveLossClaimRequestData.apply)
 
   }
 

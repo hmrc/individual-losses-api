@@ -16,12 +16,11 @@
 
 package v5.bfLosses.delete
 
-import shared.controllers.RequestContext
-import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import v5.bfLosses.delete.DeleteBFLossService
+import shared.controllers.RequestContext
+import shared.services.ServiceOutcome
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import scala.concurrent.{ExecutionContext, Future}

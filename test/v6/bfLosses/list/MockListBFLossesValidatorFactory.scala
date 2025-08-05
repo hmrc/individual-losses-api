@@ -16,14 +16,13 @@
 
 package v6.bfLosses.list
 
-import shared.controllers.validators.Validator
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import v6.bfLosses.list.ListBFLossesValidatorFactory
+import shared.controllers.validators.Validator
+import shared.models.errors.MtdError
 import v6.bfLosses.list.model.request.ListBFLossesRequestData
 
 trait MockListBFLossesValidatorFactory extends TestSuite with MockFactory {

@@ -91,7 +91,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
         "1227" -> RuleDeleteAfterFinalDeclarationError
       )
 
-      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(args => (serviceError _).tupled(args))
+      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(serviceError.tupled)
     }
 
   }

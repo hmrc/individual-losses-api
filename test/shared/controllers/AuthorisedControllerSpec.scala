@@ -16,7 +16,6 @@
 
 package shared.controllers
 
-import org.scalatest.TestSuite
 import play.api.Configuration
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, Result}

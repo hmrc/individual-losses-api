@@ -17,7 +17,6 @@
 package shared.connectors
 
 import org.scalamock.handlers.CallHandler
-import org.scalatest.TestSuite
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{Json, Writes}
 import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}

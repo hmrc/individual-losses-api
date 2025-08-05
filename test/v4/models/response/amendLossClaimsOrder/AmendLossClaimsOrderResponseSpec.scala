@@ -16,12 +16,11 @@
 
 package v4.models.response.amendLossClaimsOrder
 
+import play.api.libs.json.Json
+import shared.config.MockSharedAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method.{GET, PUT}
-import shared.config.MockSharedAppConfig
-import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import v4.models.response.amendLossClaimsOrder.{AmendLossClaimsOrderHateoasData, AmendLossClaimsOrderResponse}
 
 class AmendLossClaimsOrderResponseSpec extends UnitSpec with MockSharedAppConfig {
 

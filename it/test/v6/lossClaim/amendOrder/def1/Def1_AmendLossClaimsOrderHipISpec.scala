@@ -19,6 +19,7 @@ package v6.lossClaim.amendOrder.def1
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors._
 import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import shared.models.errors.*
@@ -147,7 +148,7 @@ class Def1_AmendLossClaimsOrderHipISpec extends IntegrationBaseSpec {
         (NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(serviceErrorTest.tupled)
 
     }
 

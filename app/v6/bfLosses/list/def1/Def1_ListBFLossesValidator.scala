@@ -48,7 +48,7 @@ class Def1_ListBFLossesValidator(nino: String, taxYearBroughtForwardFrom: String
       resolveTaxYear(taxYearBroughtForwardFrom),
       resolveIncomeSourceType,
       ResolveBusinessId.resolver.resolveOptionally(businessId)
-    ).mapN(Def1_ListBFLossesRequestData)
+    ).mapN(Def1_ListBFLossesRequestData.apply)
   }
 
   private def resolveIncomeSourceType: Validated[Seq[MtdError], Option[IncomeSourceType]] =

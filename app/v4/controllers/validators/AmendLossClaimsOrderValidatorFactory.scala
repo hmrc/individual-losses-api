@@ -49,7 +49,7 @@ class AmendLossClaimsOrderValidatorFactory {
               ResolveNino(nino),
               resolveTaxYear(taxYearClaimedFor),
               resolveJson(body)
-            ).mapN(AmendLossClaimsOrderRequestData) andThen validateBusinessRules)
+            ).mapN(AmendLossClaimsOrderRequestData.apply) andThen validateBusinessRules)
 
       private def validatePermittedTypeOfClaim(maybeTypeOfClaim: Option[TypeOfClaim]): Validated[Seq[MtdError], Unit] = {
         maybeTypeOfClaim match {
@@ -99,7 +99,7 @@ class AmendLossClaimsOrderValidatorFactory {
           )
         }
 
-        combine(results: _*)
+        combine(results*)
       }
 
     }

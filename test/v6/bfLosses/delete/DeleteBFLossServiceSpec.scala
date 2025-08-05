@@ -95,7 +95,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
         "5010" -> NotFoundError
       )
 
-      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(args => (serviceError _).tupled(args))
+      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(serviceError.tupled)
     }
 
   }

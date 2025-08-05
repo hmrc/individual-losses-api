@@ -34,6 +34,6 @@ class Def1_DeleteBFLossValidator(nino: String, body: String) extends Validator[D
     (
       ResolveNino(nino),
       ResolveBFLossId(body)
-    ).mapN(Def1_DeleteBFLossRequestData)
+    ).mapN(Def1_DeleteBFLossRequestData.apply)
 
 }

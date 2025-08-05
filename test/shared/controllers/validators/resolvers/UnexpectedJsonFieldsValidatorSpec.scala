@@ -19,7 +19,7 @@ package shared.controllers.validators.resolvers
 import play.api.libs.json.{JsObject, Json}
 import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import shared.models.errors.RuleIncorrectOrEmptyBodyError
-import shared.utils.{EmptinessChecker, UnitSpec}
+import shared.utils.UnitSpec
 
 class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
 

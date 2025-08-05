@@ -100,8 +100,6 @@ object UnexpectedJsonFieldsValidator extends ResolverSupport {
 
     def instance[A](func: A => SchemaStructure): SchemaStructureSource[A] = (value: A) => func(value)
 
-    private def instanceObj[A](func: A => SchemaStructure.Obj): ObjSchemaStructureSource[A] = (value: A) => func(value)
-
     def leaf[A]: SchemaStructureSource[A] = SchemaStructureSource.instance(_ => SchemaStructure.Leaf)
 
     given SchemaStructureSource[String]     = instance(_ => SchemaStructure.Leaf)

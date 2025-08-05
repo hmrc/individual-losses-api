@@ -42,7 +42,7 @@ class CreateBFLossValidatorFactory {
             (
               ResolveNino(nino),
               resolveJson(body)
-            ).mapN(CreateBFLossRequestData)
+            ).mapN(CreateBFLossRequestData.apply)
               .andThen(validateParsedData))
 
       private def validateParsedData(parsed: CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] = {

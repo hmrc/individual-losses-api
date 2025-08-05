@@ -18,11 +18,13 @@ package auth
 
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OWrites, Writes}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthMainAgentsOnlyISpec
 import shared.services.DownstreamStub
 import v4.models.domain.lossClaim.TypeOfClaim
 import v5.lossClaims.amendOrder.def1.model.request.Claim
+
 
 class IndividualLossesApiAuthMainAgentsOnlyIfsISpec extends AuthMainAgentsOnlyISpec {
 

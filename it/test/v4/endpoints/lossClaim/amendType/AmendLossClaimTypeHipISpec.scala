@@ -17,16 +17,9 @@
 package v4.endpoints.lossClaim.amendType
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.{
-  ClaimIdFormatError,
-  RuleCSFHLClaimNotSupportedError,
-  RuleClaimTypeNotChanged,
-  RuleOutsideAmendmentWindow,
-  RuleTypeOfClaimInvalid,
-  TaxYearClaimedForFormatError,
-  TypeOfClaimFormatError
-}
+import common.errors.*
 import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import shared.models.domain.TaxYear.currentTaxYear

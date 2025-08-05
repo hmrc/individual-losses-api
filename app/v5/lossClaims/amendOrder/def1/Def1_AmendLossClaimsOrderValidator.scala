@@ -43,7 +43,7 @@ class Def1_AmendLossClaimsOrderValidator(nino: String, taxYearClaimedFor: String
           ResolveNino(nino),
           resolveTaxYear(taxYearClaimedFor),
           resolveJson(body)
-        ).mapN(Def1_AmendLossClaimsOrderRequestData) andThen Def1_AmendLossClaimsOrderRulesValidator.validateBusinessRules)
+        ).mapN(Def1_AmendLossClaimsOrderRequestData.apply) andThen Def1_AmendLossClaimsOrderRulesValidator.validateBusinessRules)
 
   private def validatePermittedTypeOfClaim(maybeTypeOfClaim: Option[TypeOfClaim]): Validated[Seq[MtdError], Unit] = {
     maybeTypeOfClaim match {

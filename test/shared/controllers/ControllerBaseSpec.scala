@@ -17,7 +17,6 @@
 package shared.controllers
 
 import cats.implicits.catsSyntaxValidatedId
-import org.scalatest.TestSuite
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}

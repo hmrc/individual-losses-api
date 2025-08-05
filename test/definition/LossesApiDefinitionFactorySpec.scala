@@ -17,8 +17,6 @@
 package definition
 
 import cats.implicits.catsSyntaxValidatedId
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
 import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.definition.*

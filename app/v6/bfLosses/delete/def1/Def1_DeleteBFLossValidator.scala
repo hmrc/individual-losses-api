@@ -38,6 +38,6 @@ class Def1_DeleteBFLossValidator(nino: String, body: String, taxYear: String) ex
       ResolveNino(nino),
       ResolveBFLossId(body),
       resolveTaxYear(taxYear)
-    ).mapN(Def1_DeleteBFLossRequestData)
+    ).mapN(Def1_DeleteBFLossRequestData.apply)
 
 }

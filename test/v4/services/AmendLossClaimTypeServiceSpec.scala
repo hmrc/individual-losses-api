@@ -176,8 +176,8 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         "5000" -> RuleTaxYearNotSupportedError
       )
 
-      retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
-      (amendIfsErrors ++ amendHipErrors).foreach(args => (serviceErrorFromAmendConnector _).tupled(args))
+      retrieveErrors.foreach(serviceErrorFromRetrieveConnector.tupled)
+      (amendIfsErrors ++ amendHipErrors).foreach(serviceErrorFromAmendConnector.tupled)
 
     }
   }

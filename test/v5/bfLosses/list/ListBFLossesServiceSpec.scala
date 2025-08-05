@@ -23,7 +23,6 @@ import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.bfLosses.common.domain.TypeOfLoss
 import v5.bfLosses.list
-import v5.bfLosses.list.ListBFLossesService
 import v5.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v5.bfLosses.list.def1.model.response.{Def1_ListBFLossesResponse, ListBFLossesItem}
 import v5.bfLosses.list.model.request.ListBFLossesRequestData
@@ -96,7 +95,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      errors.foreach(serviceError.tupled)
     }
   }
 

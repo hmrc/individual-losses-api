@@ -22,6 +22,7 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors.*
@@ -153,7 +154,7 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS12345678910", "2020-21", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
@@ -186,7 +187,7 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(serviceErrorTest.tupled)
       }
     }
   }

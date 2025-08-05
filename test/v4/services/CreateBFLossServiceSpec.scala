@@ -92,7 +92,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "1226"                      -> RuleDuplicateSubmissionError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      errors.foreach(serviceError.tupled)
     }
 
   }

@@ -46,9 +46,9 @@ class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsVa
       .andThen(_ =>
         (
           ResolveNino(nino),
-          resolveClaimId(claimId).map(ClaimId),
+          resolveClaimId(claimId).map(ClaimId.apply),
           resolveJson(body),
           resolveTaxYearClaimedFor(taxYearClaimedFor)
-        ).mapN(Def1_AmendLossClaimTypeRequestData))
+        ).mapN(Def1_AmendLossClaimTypeRequestData.apply))
 
 }
