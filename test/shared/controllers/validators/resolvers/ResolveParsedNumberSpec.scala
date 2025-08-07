@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,17 +37,22 @@ class ResolveParsedNumberSpec extends UnitSpec with ScalaCheckDrivenPropertyChec
       "return the error with the correct message if and only if the value is outside the inclusive range" when {
         implicit val arbitraryMoney: Arbitrary[BigDecimal] = Arbitrary(Arbitrary.arbitrary[BigInt].map(x => BigDecimal(x) / 100))
 
-        "using validate" in forAll { money: BigDecimal =>
-          val expected = if (min <= money && money <= max) Valid(money) else Invalid(List(error))
-          val result   = resolve(money, path)
-          result shouldBe expected
+        "using validate" in {
+          forAll { (money: BigDecimal) =>
+            val expected = if (min <= money && money <= max) Valid(money) else Invalid(List(error))
+            val result   = resolve(money, path)
+            result shouldBe expected
+          }
         }
 
-        "using validateOptional" in forAll { money: BigDecimal =>
-          val expected = if (min <= money && money <= max) Valid(Some(money)) else Invalid(List(error))
-          val result   = resolve(Some(money), path)
-          result shouldBe expected
+        "using validateOptional" in {
+          forAll { (money: BigDecimal) =>
+            val expected = if (min <= money && money <= max) Valid(Some(money)) else Invalid(List(error))
+            val result   = resolve(Some(money), path)
+            result shouldBe expected
+          }
         }
+
       }
 
       "more than two significant decimals are provided" when {

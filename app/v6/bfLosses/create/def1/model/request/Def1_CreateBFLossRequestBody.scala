@@ -17,9 +17,9 @@
 package v6.bfLosses.create.def1.model.request
 
 import shared.models.domain.TaxYear
-import play.api.libs.json._
+import play.api.libs.json.*
 import v6.bfLosses.common.domain.TypeOfLoss
-import v6.bfLosses.common.domain.TypeOfLoss._
+import v6.bfLosses.common.domain.TypeOfLoss.*
 import v6.bfLosses.create.model.request.CreateBFLossRequestBody
 
 case class Def1_CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal)

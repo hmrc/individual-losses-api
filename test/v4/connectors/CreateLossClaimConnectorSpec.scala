@@ -34,7 +34,7 @@ class CreateLossClaimConnectorSpec extends ConnectorSpec {
   val taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val connector: CreateLossClaimConnector = new CreateLossClaimConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }

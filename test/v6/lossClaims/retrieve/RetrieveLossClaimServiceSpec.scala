@@ -18,7 +18,7 @@ package v6.lossClaims.retrieve
 
 import common.errors.ClaimIdFormatError
 import shared.models.domain.{Nino, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}
@@ -98,7 +98,7 @@ class RetrieveLossClaimServiceSpec extends ServiceSpec {
         "5010" -> NotFoundError
       )
 
-      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+      (ifsErrors ++ hipErrors).foreach(serviceError.tupled)
     }
   }
 

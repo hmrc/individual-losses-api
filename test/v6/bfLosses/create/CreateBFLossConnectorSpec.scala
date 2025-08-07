@@ -31,8 +31,7 @@ import scala.concurrent.Future
 class CreateBFLossConnectorSpec extends ConnectorSpec {
 
   val nino                   = "AA123456A"
-  val taxYear                = "2020"
-  val parsedTaxYear: TaxYear = TaxYear(taxYear)
+  val parsedTaxYear: TaxYear = TaxYear.fromMtd("2019-20")
   val lossId                 = "AAZZ1234567890a"
 
   private val requestBody = Def1_CreateBFLossRequestBody(TypeOfLoss.`self-employment`, "XKIS00000000988", "2019-20", 256.78)
@@ -72,7 +71,7 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test { _: ConnectorTest =>
+  trait Test { self: ConnectorTest =>
     val connector: CreateBFLossConnector = new CreateBFLossConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 

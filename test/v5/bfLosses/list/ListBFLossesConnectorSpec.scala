@@ -96,7 +96,7 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       List(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified"))
     )
 
-  trait Test { _: ConnectorTest =>
+  trait Test { self: ConnectorTest =>
     val connector: ListBFLossesConnector = new ListBFLossesConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 

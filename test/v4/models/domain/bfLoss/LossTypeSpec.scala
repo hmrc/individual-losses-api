@@ -18,7 +18,7 @@ package v4.models.domain.bfLoss
 
 import shared.utils.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
-import v4.models.domain.bfLoss.LossType._
+import v4.models.domain.bfLoss.LossType.*
 
 class LossTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 

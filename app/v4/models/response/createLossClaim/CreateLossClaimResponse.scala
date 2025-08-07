@@ -18,7 +18,7 @@ package v4.models.response.createLossClaim
 
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.config.SharedAppConfig
-import play.api.libs.json._
+import play.api.libs.json.*
 import v4.models.response.amendBFLosses.AmendBFLossResponse.{amendLossClaimType, deleteLossClaim, getLossClaim}
 
 case class CreateLossClaimResponse(claimId: String)
@@ -32,7 +32,7 @@ object CreateLossClaimResponse {
   implicit object LinksFactory extends HateoasLinksFactory[CreateLossClaimResponse, CreateLossClaimHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: CreateLossClaimHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(getLossClaim(appConfig, nino, lossId), deleteLossClaim(appConfig, nino, lossId), amendLossClaimType(appConfig, nino, lossId))
     }
 

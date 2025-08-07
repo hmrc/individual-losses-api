@@ -18,7 +18,7 @@ package v5.lossClaim.list.def1
 
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import shared.models.domain.TaxYear
-import shared.models.errors._
+import shared.models.errors.*
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
@@ -26,7 +26,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v5.lossClaims.fixtures.ListLossClaimsFixtures._
+import v5.lossClaims.fixtures.ListLossClaimsFixtures.*
 
 class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
 
@@ -176,7 +176,7 @@ class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
         (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(serviceErrorTest.tupled)
     }
 
     "handle validation errors according to spec" when {
@@ -212,7 +212,7 @@ class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
         ("AA123456A", "2019-20", None, None, Some("FORWARD"), Status.BAD_REQUEST, TypeOfClaimFormatError)
       )
 
-      errors.foreach(args => (validationErrorTest _).tupled(args))
+      errors.foreach(validationErrorTest.tupled)
     }
 
   }
@@ -256,7 +256,7 @@ class Def1_ListLossClaimsISpec extends IntegrationBaseSpec {
       setupStubs()
 
       buildRequest(mtdUrl)
-        .addQueryStringParameters(mtdQueryParams: _*)
+        .addQueryStringParameters(mtdQueryParams*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.5.0+json"),
           (AUTHORIZATION, "Bearer 123")

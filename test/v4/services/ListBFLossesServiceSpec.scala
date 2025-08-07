@@ -18,7 +18,7 @@ package v4.services
 
 import common.errors.TypeOfLossFormatError
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v4.connectors.MockListBFLossesConnector
@@ -93,7 +93,7 @@ class ListBFLossesServiceSpec extends ServiceSpec {
         "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      errors.foreach(serviceError.tupled)
     }
   }
 

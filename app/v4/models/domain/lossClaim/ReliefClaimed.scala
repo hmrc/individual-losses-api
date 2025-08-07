@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,16 @@
 
 package v4.models.domain.lossClaim
 
-import play.api.libs.json._
+import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-sealed trait ReliefClaimed {
-  def toTypeOfClaim: TypeOfClaim
+enum ReliefClaimed(val toTypeOfClaim: TypeOfClaim) {
+  case `CF`     extends ReliefClaimed(TypeOfClaim.`carry-forward`)
+  case `CSGI`   extends ReliefClaimed(TypeOfClaim.`carry-sideways`)
+  case `CFCSGI` extends ReliefClaimed(TypeOfClaim.`carry-forward-to-carry-sideways`)
+  case `CSFHL`  extends ReliefClaimed(TypeOfClaim.`carry-sideways-fhl`)
 }
 
 object ReliefClaimed {
-
-  case object `CF` extends ReliefClaimed {
-    override def toTypeOfClaim: TypeOfClaim = TypeOfClaim.`carry-forward`
-  }
-
-  case object `CSGI` extends ReliefClaimed {
-    override def toTypeOfClaim: TypeOfClaim = TypeOfClaim.`carry-sideways`
-  }
-
-  case object `CFCSGI` extends ReliefClaimed {
-    override def toTypeOfClaim: TypeOfClaim = TypeOfClaim.`carry-forward-to-carry-sideways`
-  }
-
-  case object `CSFHL` extends ReliefClaimed {
-    override def toTypeOfClaim: TypeOfClaim = TypeOfClaim.`carry-sideways-fhl`
-  }
-
-  implicit val format: Format[ReliefClaimed] = Enums.format[ReliefClaimed]
+  given Format[ReliefClaimed] = Enums.format(values)
 }

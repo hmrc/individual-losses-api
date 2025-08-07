@@ -16,15 +16,14 @@
 
 package v5.lossClaims.amendOrder
 
-import shared.controllers.validators.Validator
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
-import v5.lossClaims.amendOrder.AmendLossClaimsOrderValidatorFactory
+import shared.controllers.validators.Validator
+import shared.models.errors.MtdError
 import v5.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 
 trait MockAmendLossClaimsOrderValidatorFactory extends TestSuite with MockFactory {

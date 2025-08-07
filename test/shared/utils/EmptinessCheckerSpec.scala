@@ -16,8 +16,8 @@
 
 package shared.utils
 
-import shared.utils.EmptinessChecker._
-import shared.utils.EmptyPathsResult._
+import shared.utils.EmptinessChecker.*
+import shared.utils.EmptyPathsResult.*
 
 class EmptinessCheckerSpec extends UnitSpec {
 

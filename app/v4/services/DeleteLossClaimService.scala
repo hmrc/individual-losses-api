@@ -16,11 +16,11 @@
 
 package v4.services
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import shared.controllers.RequestContext
 import shared.models.domain.TaxYear
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.{DeleteLossClaimConnector, RetrieveLossClaimConnector}

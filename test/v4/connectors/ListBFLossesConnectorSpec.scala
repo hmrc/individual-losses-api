@@ -41,13 +41,13 @@ class ListBFLossesConnectorSpec extends ConnectorSpec {
       businessId = businessId
     )
 
-  def makeResponse(taxYear: TaxYear = TaxYear("2019")): ListBFLossesResponse[ListBFLossesItem] =
+  def makeResponse(taxYear: TaxYear = TaxYear.fromMtd("2018-19")): ListBFLossesResponse[ListBFLossesItem] =
     ListBFLossesResponse(
       List(ListBFLossesItem("lossId", "businessId", TypeOfLoss.`uk-property-fhl`, 2.75, s"${taxYear.asMtd}", "lastModified"))
     )
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val connector: ListBFLossesConnector = new ListBFLossesConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 

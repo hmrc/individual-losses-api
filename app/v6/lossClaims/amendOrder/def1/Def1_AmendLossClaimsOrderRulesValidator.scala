@@ -18,11 +18,11 @@ package v6.lossClaims.amendOrder.def1
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
-import shared.models.errors._
+import shared.models.errors.*
 import v6.lossClaims.amendOrder.def1.model.request.Def1_AmendLossClaimsOrderRequestData
 import v6.lossClaims.common.resolvers.ResolveLossClaimId
 
@@ -67,7 +67,7 @@ object Def1_AmendLossClaimsOrderRulesValidator extends RulesValidator[Def1_Amend
       )
     }
 
-    combine(results: _*)
+    combine(results*)
   }
 
 }

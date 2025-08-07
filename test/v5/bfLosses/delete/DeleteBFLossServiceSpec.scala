@@ -18,7 +18,7 @@ package v5.bfLosses.delete
 
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.bfLosses.common.domain.LossId
@@ -91,7 +91,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
         "1227" -> RuleDeleteAfterFinalDeclarationError
       )
 
-      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(args => (serviceError _).tupled(args))
+      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(serviceError.tupled)
     }
 
   }

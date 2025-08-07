@@ -18,7 +18,7 @@ package v4.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import cats.implicits._
+import cats.implicits.*
 import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import shared.controllers.validators.Validator
@@ -43,10 +43,10 @@ class AmendBFLossValidatorFactory {
           .andThen(_ =>
             (
               ResolveNino(nino),
-              resolveLossId(lossId).map(LossId),
+              resolveLossId(lossId).map(LossId.apply),
               resolveJson(body)
             )
-              .mapN(AmendBFLossRequestData))
+              .mapN(AmendBFLossRequestData.apply))
 
       private def validateJsonFields: Validated[Seq[MtdError], Unit] = {
         val jsPath = (body \ "lossAmount")

@@ -18,7 +18,7 @@ package v4.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
@@ -45,7 +45,7 @@ class CreateLossClaimValidatorFactory {
             (
               ResolveNino(nino),
               resolveJson(body)
-            ).mapN(CreateLossClaimRequestData)
+            ).mapN(CreateLossClaimRequestData.apply)
               .andThen(validateParsedData))
 
       private def validateRequestBodyEnums: Validated[Seq[MtdError], Unit] =

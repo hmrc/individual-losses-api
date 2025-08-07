@@ -17,14 +17,15 @@
 package v5.lossClaim.amendOrder.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors._
+import common.errors.*
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.http.Status._
-import play.api.libs.json._
+import play.api.http.Status.*
+import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v5.lossClaims.amendOrder.def1.model.request.Claim
@@ -153,7 +154,7 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
         (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(serviceErrorTest.tupled)
 
     }
 

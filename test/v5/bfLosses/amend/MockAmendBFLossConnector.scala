@@ -16,12 +16,11 @@
 
 package v5.bfLosses.amend
 
-import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
+import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
-import v5.bfLosses.amend.AmendBFLossConnector
 import v5.bfLosses.amend.model.request.AmendBFLossRequestData
 import v5.bfLosses.amend.model.response.AmendBFLossResponse
 

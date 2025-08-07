@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,13 @@ import play.api.libs.json.{Format, Json, OFormat}
 import shared.routing.Version
 import shared.utils.enums.Enums
 
-sealed trait APIStatus
+enum APIStatus {
+  case ALPHA, BETA, STABLE, DEPRECATED, RETIRED
+}
 
 object APIStatus {
-  val parser: PartialFunction[String, APIStatus] = Enums.parser[APIStatus]
-
-  case object ALPHA extends APIStatus
-
-  case object BETA extends APIStatus
-
-  case object STABLE extends APIStatus
-
-  case object DEPRECATED extends APIStatus
-
-  implicit val formatAPIStatus: Format[APIStatus] = Enums.format[APIStatus]
-
-  case object RETIRED extends APIStatus
+  given Format[APIStatus]                        = Enums.format(values)
+  val parser: PartialFunction[String, APIStatus] = Enums.parser(values)
 }
 
 case class APIVersion(version: Version, status: APIStatus, endpointsEnabled: Boolean)

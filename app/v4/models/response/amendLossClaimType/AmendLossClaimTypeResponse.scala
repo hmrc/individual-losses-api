@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v4.models.response.amendLossClaimType
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{TaxYear, Timestamp}
@@ -37,21 +37,19 @@ object AmendLossClaimTypeResponse extends V4HateoasLinks {
   implicit val reads: Reads[AmendLossClaimTypeResponse] = (
     (JsPath \ "taxYearClaimedFor")
       .read[Int]
-      .map(_.toString)
-      .map(TaxYear(_))
-      .map(_.asMtd)
-      .orElse((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd)) and
+      .map(TaxYear.fromDownstreamInt(_).asMtd)
+      .orElse((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear.fromDownstream(_).asMtd)) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
       (JsPath \ "submissionDate").read[Timestamp]
-  )(AmendLossClaimTypeResponse.apply _)
+  )(AmendLossClaimTypeResponse.apply)
 
   implicit object AmendLinksFactory extends HateoasLinksFactory[AmendLossClaimTypeResponse, AmendLossClaimTypeHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: AmendLossClaimTypeHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
 

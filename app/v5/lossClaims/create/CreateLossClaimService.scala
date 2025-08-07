@@ -16,7 +16,7 @@
 
 package v5.lossClaims.create
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{
   RuleCSFHLClaimNotSupportedError,
   RuleDuplicateClaimSubmissionError,
@@ -26,7 +26,7 @@ import common.errors.{
   TaxYearClaimedForFormatError
 }
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v5.lossClaims.create.model.request.CreateLossClaimRequestData
 import v5.lossClaims.create.model.response.CreateLossClaimResponse

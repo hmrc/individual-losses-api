@@ -18,7 +18,7 @@ package v4.connectors
 
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -36,7 +36,7 @@ class ListBFLossesConnector @Inject() (val http: HttpClientV2, val appConfig: Sh
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse[ListBFLossesItem]]] = {
 
-    import request._
+    import request.*
 
     val queryParams = List(
       businessId.map("incomeSourceId"         -> _.businessId),

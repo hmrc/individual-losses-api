@@ -72,7 +72,7 @@ class AmendLossClaimsOrderConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val request: Def1_AmendLossClaimsOrderRequestData = Def1_AmendLossClaimsOrderRequestData(
       nino = Nino(nino),

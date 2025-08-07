@@ -25,7 +25,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.Timestamp
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v6.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}
@@ -104,7 +104,7 @@ class RetrieveLossClaimControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new RetrieveLossClaimController(
+    val controller: RetrieveLossClaimController = new RetrieveLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveLossClaimService,

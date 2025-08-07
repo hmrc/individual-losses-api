@@ -35,7 +35,7 @@ class RetrieveBFLossConnectorSpec extends ConnectorSpec {
   val request: RetrieveBFLossRequestData = RetrieveBFLossRequestData(nino = Nino(nino), lossId = LossId(lossId))
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val connector: RetrieveBFLossConnector = new RetrieveBFLossConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 

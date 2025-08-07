@@ -25,7 +25,7 @@ import common.errors.{
   TaxYearClaimedForFormatError
 }
 import shared.models.domain.{Nino, TaxYear, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
@@ -184,8 +184,8 @@ class AmendLossClaimTypeServiceSpec extends ServiceSpec {
         "5000" -> RuleTaxYearNotSupportedError
       )
 
-      retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
-      (amendIfsErrors ++ amendHipErrors).foreach(args => (serviceErrorFromAmendConnector _).tupled(args))
+      retrieveErrors.foreach(serviceErrorFromRetrieveConnector.tupled)
+      (amendIfsErrors ++ amendHipErrors).foreach(serviceErrorFromAmendConnector.tupled)
 
     }
   }

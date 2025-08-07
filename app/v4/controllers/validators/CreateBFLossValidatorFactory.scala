@@ -17,11 +17,11 @@
 package v4.controllers.validators
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
-import shared.models.errors._
+import shared.controllers.validators.resolvers.*
+import shared.models.errors.*
 import v4.controllers.validators.resolvers.ResolveBFTypeOfLossFromJson
 import v4.models.request.createBFLosses.{CreateBFLossRequestBody, CreateBFLossRequestData}
 
@@ -42,11 +42,11 @@ class CreateBFLossValidatorFactory {
             (
               ResolveNino(nino),
               resolveJson(body)
-            ).mapN(CreateBFLossRequestData)
+            ).mapN(CreateBFLossRequestData.apply)
               .andThen(validateParsedData))
 
       private def validateParsedData(parsed: CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] = {
-        import parsed.broughtForwardLoss._
+        import parsed.broughtForwardLoss.*
         val taxYearErrorPath = "/taxYearBroughtForwardFrom"
 
         val resolvedTaxYear =

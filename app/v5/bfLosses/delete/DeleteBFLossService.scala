@@ -16,10 +16,10 @@
 
 package v5.bfLosses.delete
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError}
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v5.bfLosses.delete.model.request.DeleteBFLossRequestData
 

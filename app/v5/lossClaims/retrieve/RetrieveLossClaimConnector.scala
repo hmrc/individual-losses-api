@@ -36,8 +36,8 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClientV2, val appConfi
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     lazy val maybeIntent: Option[String] =
       if (isAmendRequest && ConfigFeatureSwitches().isEnabled("passIntentHeader")) Some("AMEND_LOSS_CLAIM") else None

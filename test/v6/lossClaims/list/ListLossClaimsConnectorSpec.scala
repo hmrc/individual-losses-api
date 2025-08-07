@@ -22,7 +22,7 @@ import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, InternalErro
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
-import v6.lossClaims.fixtures.ListLossClaimsFixtures._
+import v6.lossClaims.fixtures.ListLossClaimsFixtures.*
 import v6.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
 import v6.lossClaims.list.model.response.ListLossClaimsResponse
 
@@ -94,7 +94,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
 
         val result: DownstreamOutcome[ListLossClaimsResponse] = listLossClaimsResult(
           connector = connector,
-          taxYear = TaxYear("2024"),
+          taxYear = TaxYear.fromMtd("2023-24"),
           businessId = Some(BusinessId("testId")),
           typeOfLoss = Some(TypeOfLoss.`self-employment`),
           claimType = Some(TypeOfClaim.`carry-sideways`)
@@ -120,7 +120,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
           )))
   }
 
-  trait Test { _: ConnectorTest =>
+  trait Test { self: ConnectorTest =>
 
     protected val connector: ListLossClaimsConnector =
       new ListLossClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)

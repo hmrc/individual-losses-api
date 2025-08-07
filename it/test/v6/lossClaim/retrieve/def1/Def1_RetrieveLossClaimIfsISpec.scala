@@ -16,7 +16,7 @@
 
 package v6.lossClaim.retrieve.def1
 
-import shared.models.errors._
+import shared.models.errors.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.ClaimIdFormatError
 import play.api.http.HeaderNames.ACCEPT

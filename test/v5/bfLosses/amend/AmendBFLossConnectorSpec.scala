@@ -65,7 +65,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
 
         MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1501.enabled" -> true)
 
-        private val response = Def1_AmendBFLossResponse(
+        private val response: Def1_AmendBFLossResponse = Def1_AmendBFLossResponse(
           businessId = "XKIS00000000988",
           typeOfLoss = TypeOfLoss.`self-employment`,
           lossAmount = 500.13,
@@ -86,7 +86,7 @@ class AmendBFLossConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test { _: ConnectorTest =>
+  trait Test { self: ConnectorTest =>
     val connector: AmendBFLossConnector = new AmendBFLossConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 

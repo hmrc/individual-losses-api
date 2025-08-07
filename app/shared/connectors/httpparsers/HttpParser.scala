@@ -16,8 +16,8 @@
 
 package shared.connectors.httpparsers
 
-import play.api.libs.json._
-import shared.models.errors._
+import play.api.libs.json.*
+import shared.models.errors.*
 import shared.utils.Logging
 import uk.gov.hmrc.http.HttpResponse
 

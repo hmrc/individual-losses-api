@@ -21,8 +21,8 @@ import cats.implicits.catsSyntaxTuple2Semigroupal
 import common.errors.TypeOfLossFormatError
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
-import shared.models.errors._
+import shared.controllers.validators.resolvers.*
+import shared.models.errors.*
 import v5.bfLosses.common.minimumTaxYear
 import v5.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
 import v5.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
@@ -43,11 +43,11 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, body: JsValue)(implici
         (
           ResolveNino(nino),
           resolveJson(body)
-        ).mapN(Def1_CreateBFLossRequestData)
+        ).mapN(Def1_CreateBFLossRequestData.apply)
           .andThen(validateParsedData))
 
   private def validateParsedData(parsed: Def1_CreateBFLossRequestData): Validated[Seq[MtdError], CreateBFLossRequestData] = {
-    import parsed.broughtForwardLoss._
+    import parsed.broughtForwardLoss.*
     val taxYearErrorPath = "/taxYearBroughtForwardFrom"
 
     val resolvedTaxYear =

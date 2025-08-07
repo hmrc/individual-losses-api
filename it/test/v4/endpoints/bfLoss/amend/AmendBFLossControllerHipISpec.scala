@@ -19,10 +19,11 @@ package v4.endpoints.bfLoss.amend
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
 import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import shared.models.domain.TaxYear.currentTaxYear
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v4.V4HateoasLinks
@@ -180,7 +181,7 @@ class AmendBFLossControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS12345678910", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
@@ -211,7 +212,7 @@ class AmendBFLossControllerHipISpec extends IntegrationBaseSpec {
           (SERVICE_UNAVAILABLE, "1000", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(serviceErrorTest.tupled)
       }
     }
   }

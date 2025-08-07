@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import cats.implicits.catsSyntaxTuple5Semigroupal
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
-import shared.models.errors._
+import shared.models.errors.*
 import v5.lossClaims.common.minimumTaxYear
 import v5.lossClaims.common.models.TypeOfClaim
 import v5.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
@@ -46,17 +46,18 @@ class Def1_ListLossClaimsValidator(nino: String,
       ResolveLossClaimTypeOfLoss.resolver.resolveOptionally(typeOfLoss),
       ResolveBusinessId.resolver.resolveOptionally(businessId),
       resolveTypeOfClaim
-    ).mapN(Def1_ListLossClaimsRequestData)
+    ).mapN(Def1_ListLossClaimsRequestData.apply)
 
   }
 
   private def resolveTypeOfClaim: Validated[Seq[MtdError], Option[TypeOfClaim]] =
     ResolveLossTypeOfClaim.resolver.resolveOptionally(typeOfClaim) andThen {
       case Some(parsedTypeOfClaim) =>
-        if (parsedTypeOfClaim == TypeOfClaim.`carry-sideways`)
+        if (parsedTypeOfClaim == TypeOfClaim.`carry-sideways`) {
           Valid(Some(parsedTypeOfClaim))
-        else
+        } else {
           Invalid(List(TypeOfClaimFormatError))
+        }
 
       case None =>
         Valid(None)

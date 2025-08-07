@@ -31,6 +31,6 @@ class Def1_DeleteLossClaimValidator(nino: String, claimId: String) extends Valid
     (
       ResolveNino(nino),
       ResolveLossClaimId(claimId)
-    ).mapN(Def1_DeleteLossClaimRequestData)
+    ).mapN(Def1_DeleteLossClaimRequestData.apply)
 
 }

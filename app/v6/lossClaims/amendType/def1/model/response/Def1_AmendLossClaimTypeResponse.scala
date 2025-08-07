@@ -16,8 +16,8 @@
 
 package v6.lossClaims.amendType.def1.model.response
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import shared.models.domain.{TaxYear, Timestamp}
 import v6.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 import v6.lossClaims.common.models.{IncomeSourceType, ReliefClaimed, TypeOfClaim, TypeOfLoss}
@@ -36,15 +36,14 @@ object Def1_AmendLossClaimTypeResponse {
   implicit val reads: Reads[Def1_AmendLossClaimTypeResponse] = (
     (JsPath \ "taxYearClaimedFor")
       .read[Int]
-      .map(_.toString)
-      .map(TaxYear(_))
+      .map(taxYear => TaxYear.fromDownstreamInt(taxYear))
       .map(_.asMtd)
-      .orElse((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd)) and
+      .orElse((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear.fromDownstream(_).asMtd)) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
       (JsPath \ "submissionDate").read[Timestamp]
-  )(Def1_AmendLossClaimTypeResponse.apply _)
+  )(Def1_AmendLossClaimTypeResponse.apply)
 
 }

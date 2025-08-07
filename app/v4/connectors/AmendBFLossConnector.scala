@@ -18,7 +18,7 @@ package v4.connectors
 
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.TaxYear.currentTaxYear
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,7 +37,7 @@ class AmendBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: Sha
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[AmendBFLossResponse]] = {
 
-    import request._
+    import request.*
 
     val downstreamUri =
       if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1501")) {

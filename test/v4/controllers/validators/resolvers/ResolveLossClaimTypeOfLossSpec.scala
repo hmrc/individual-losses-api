@@ -26,7 +26,7 @@ class ResolveLossClaimTypeOfLossSpec extends UnitSpec {
   "The resolver" should {
 
     "return the resolved value" when {
-      import TypeOfLoss._
+      import TypeOfLoss.*
 
       checkValid(`uk-property-non-fhl`)
       checkValid(`foreign-property`)

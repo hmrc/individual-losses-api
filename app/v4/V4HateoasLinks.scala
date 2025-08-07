@@ -19,7 +19,7 @@ package v4
 import shared.config.SharedAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, POST, PUT}
-import v4.RelType._
+import v4.RelType.*
 
 trait V4HateoasLinks {
 

@@ -16,10 +16,10 @@
 
 package v5.bfLosses.create
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError}
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v5.bfLosses.create.model.request.CreateBFLossRequestData
 import v5.bfLosses.create.model.response.CreateBFLossResponse

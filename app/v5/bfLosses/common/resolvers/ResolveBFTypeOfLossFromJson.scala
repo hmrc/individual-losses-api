@@ -17,7 +17,7 @@
 package v5.bfLosses.common.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import cats.data._
+import cats.data.*
 import common.errors.TypeOfLossFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import shared.controllers.validators.resolvers.ResolverSupport

@@ -27,7 +27,7 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.GET
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.domain.Timestamp
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v4.controllers.validators.MockRetrieveBFLossValidatorFactory
@@ -116,7 +116,7 @@ class RetrieveBFLossControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new RetrieveBFLossController(
+    val controller: RetrieveBFLossController = new RetrieveBFLossController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveBFLossService,

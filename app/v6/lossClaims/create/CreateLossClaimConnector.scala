@@ -37,8 +37,8 @@ class CreateLossClaimConnector @Inject() (val http: HttpClientV2, val appConfig:
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[CreateLossClaimResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     val taxYear: TaxYear = TaxYear.fromMtd(request.taxYearClaimedFor)
 

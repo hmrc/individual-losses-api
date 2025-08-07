@@ -16,10 +16,10 @@
 
 package v6.lossClaims.create
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors._
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v6.lossClaims.create.model.request.CreateLossClaimRequestData
 import v6.lossClaims.create.model.response.CreateLossClaimResponse

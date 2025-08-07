@@ -17,7 +17,7 @@
 package shared.models.audit
 
 import play.api.libs.json.Json
-import shared.models.audit.GenericAuditDetailFixture._
+import shared.models.audit.GenericAuditDetailFixture.*
 import shared.utils.UnitSpec
 
 class GenericAuditDetailSpec extends UnitSpec {

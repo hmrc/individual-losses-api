@@ -16,7 +16,7 @@
 
 package shared.services
 
-import play.api.http.Status._
+import play.api.http.Status.*
 import shared.connectors.MtdIdLookupConnector
 import shared.controllers.validators.resolvers.ResolveNino
 import shared.models.errors.{InvalidBearerTokenError, NinoFormatError, _}

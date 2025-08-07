@@ -16,7 +16,7 @@
 
 package v4.models.request.amendBFLosses
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class AmendBFLossRequestBody(lossAmount: BigDecimal)
 

@@ -17,8 +17,8 @@
 package v6.bfLosses.amend.def1.model.response
 
 import shared.models.domain.{TaxYear, Timestamp}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import v6.bfLosses.amend.model.response.AmendBFLossResponse
 import v6.bfLosses.common.domain.{IncomeSourceType, LossType, TypeOfLoss}
 
@@ -37,9 +37,9 @@ object Def1_AmendBFLossResponse {
       ((__ \ "lossType").read[LossType].map(_.toTypeOfLoss)
         orElse (__ \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)) and
       (__ \ "broughtForwardLossAmount").read[BigDecimal] and
-      ((__ \ "taxYear").read[String].map(TaxYear(_)).map(_.asMtd)
-        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(i => TaxYear(i.toString)).map(_.asMtd)) and
+      ((__ \ "taxYear").read[String].map(TaxYear.fromDownstream(_).asMtd)
+        orElse (__ \ "taxYearBroughtForwardFrom").read[Int].map(TaxYear.fromDownstreamInt(_).asMtd)) and
       (__ \ "submissionDate").read[Timestamp]
-  )(Def1_AmendBFLossResponse.apply _)
+  )(Def1_AmendBFLossResponse.apply)
 
 }

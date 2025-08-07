@@ -24,7 +24,7 @@ For Loss Claims, a developer can:
 
 ## Requirements
 
-- Scala 2.13.x
+- Scala 3.x.x
 - Java 11
 - sbt 1.9.x
 - [Service Manager V2](https://github.com/hmrc/sm2)

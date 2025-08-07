@@ -27,7 +27,7 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.GET
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.domain.Timestamp
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import v4.controllers.validators.MockRetrieveLossClaimValidatorFactory
@@ -122,7 +122,7 @@ class RetrieveLossClaimControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new RetrieveLossClaimController(
+    val controller: RetrieveLossClaimController = new RetrieveLossClaimController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveLossClaimService,

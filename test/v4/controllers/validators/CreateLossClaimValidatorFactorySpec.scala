@@ -20,7 +20,7 @@ import common.errors.{RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError, Type
 import play.api.libs.json.{JsObject, JsValue, Json}
 import shared.controllers.validators.Validator
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{TypeOfClaim, TypeOfLoss}

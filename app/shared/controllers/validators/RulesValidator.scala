@@ -18,7 +18,7 @@ package shared.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.Valid
-import cats.implicits._
+import cats.implicits.*
 import shared.models.errors.MtdError
 
 /** For complex additional validating that needs to take place after the initial validation and parsing of the JSON payload.
@@ -47,11 +47,11 @@ trait RulesValidator[PARSED] {
     * @return
     *   A combined validation result.
     */
-  protected def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] =
+  protected def combine(results: Validated[Seq[MtdError], ?]*): Validated[Seq[MtdError], Unit] =
     results.traverse_(identity)
 
   /** Provides utility operations for working with validation results. */
-  implicit protected class ResultOps(result: Validated[Seq[MtdError], _]) {
+  implicit protected class ResultOps(result: Validated[Seq[MtdError], ?]) {
 
     /** Converts the validation result to a result containing the given parsed data.
       *

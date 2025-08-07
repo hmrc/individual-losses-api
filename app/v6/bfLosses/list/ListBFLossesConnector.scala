@@ -36,8 +36,8 @@ class ListBFLossesConnector @Inject() (val http: HttpClientV2, val appConfig: Sh
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListBFLossesResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     val queryParams = List(
       businessId.map("incomeSourceId"         -> _.businessId),

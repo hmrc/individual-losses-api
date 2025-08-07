@@ -36,8 +36,8 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClientV2, val appConfi
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     lazy val downstreamUri: DownstreamUri[DownstreamResp] =
       if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1508")) {

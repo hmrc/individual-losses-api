@@ -19,7 +19,7 @@ package v5.lossClaims.amendType.def1
 import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.{JsValue, Json}
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v5.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v5.lossClaims.common.models.{ClaimId, TypeOfClaim}

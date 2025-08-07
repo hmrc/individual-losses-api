@@ -16,7 +16,7 @@
 
 package shared.controllers
 
-import shared.hateoas._
+import shared.hateoas.*
 import cats.Functor
 import play.api.http.{HttpEntity, Status}
 import play.api.libs.json.{JsValue, Json, Writes}

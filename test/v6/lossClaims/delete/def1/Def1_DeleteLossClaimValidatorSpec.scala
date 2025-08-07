@@ -19,7 +19,7 @@ package v6.lossClaims.delete.def1
 import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData

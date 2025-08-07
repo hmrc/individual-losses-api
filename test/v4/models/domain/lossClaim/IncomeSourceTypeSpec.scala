@@ -18,7 +18,7 @@ package v4.models.domain.lossClaim
 
 import shared.utils.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
-import v4.models.domain.lossClaim.IncomeSourceType._
+import v4.models.domain.lossClaim.IncomeSourceType.*
 
 class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 

@@ -18,7 +18,7 @@ package v6.lossClaims.delete
 
 import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow, TaxYearClaimedForFormatError}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.lossClaims.common.models.ClaimId
@@ -103,7 +103,7 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         itsaErrors ++ itsdErrors
       }
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      errors.foreach(serviceError.tupled)
     }
   }
 

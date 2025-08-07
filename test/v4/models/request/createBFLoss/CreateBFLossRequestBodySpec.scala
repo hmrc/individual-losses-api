@@ -16,7 +16,7 @@
 
 package v4.models.request.createBFLoss
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v4.models.domain.bfLoss.TypeOfLoss

@@ -33,7 +33,7 @@ class Def1_RetrieveBFLossValidator(nino: String, lossId: String) extends Validat
     (
       ResolveNino(nino),
       ResolveBFLossId(lossId)
-    ).mapN(Def1_RetrieveBFLossRequestData)
+    ).mapN(Def1_RetrieveBFLossRequestData.apply)
   }
 
 }

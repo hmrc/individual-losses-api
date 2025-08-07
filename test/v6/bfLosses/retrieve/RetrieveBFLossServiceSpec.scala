@@ -18,12 +18,11 @@ package v6.bfLosses.retrieve
 
 import common.errors.LossIdFormatError
 import shared.models.domain.{Nino, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v6.bfLosses.retrieve
-import v6.bfLosses.retrieve.RetrieveBFLossService
 import v6.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v6.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
 
@@ -90,7 +89,7 @@ class RetrieveBFLossServiceSpec extends ServiceSpec {
         "5010" -> NotFoundError
       )
 
-      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+      (ifsErrors ++ hipErrors).foreach(serviceError.tupled)
     }
   }
 

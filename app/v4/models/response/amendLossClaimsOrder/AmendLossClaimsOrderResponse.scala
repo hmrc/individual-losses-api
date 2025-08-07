@@ -30,7 +30,7 @@ object AmendLossClaimsOrderResponse extends V4HateoasLinks {
   implicit object AmendOrderLinksFactory extends HateoasLinksFactory[AmendLossClaimsOrderResponse, AmendLossClaimsOrderHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: AmendLossClaimsOrderHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(
         amendLossClaimOrder(appConfig, nino, taxYearClaimedFor),
         listLossClaim(appConfig, nino, LIST_LOSS_CLAIMS)

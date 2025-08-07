@@ -18,7 +18,7 @@ package v5.bfLosses.create
 
 import common.errors.{RuleBflNotSupportedForFhlProperties, RuleDuplicateSubmissionError}
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.bfLosses.common.domain.TypeOfLoss
@@ -94,7 +94,7 @@ class CreateBFLossServiceSpec extends ServiceSpec {
         "1226"                                 -> RuleDuplicateSubmissionError
       )
 
-      errors.foreach(args => (serviceError _).tupled(args))
+      errors.foreach(serviceError.tupled)
     }
 
   }

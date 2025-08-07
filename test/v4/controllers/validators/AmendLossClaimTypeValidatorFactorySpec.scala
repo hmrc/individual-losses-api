@@ -18,7 +18,7 @@ package v4.controllers.validators
 
 import common.errors.{ClaimIdFormatError, TypeOfClaimFormatError}
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.{ClaimId, TypeOfClaim}

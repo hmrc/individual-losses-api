@@ -18,7 +18,7 @@ package v4.connectors
 
 import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -36,7 +36,7 @@ class RetrieveLossClaimConnector @Inject() (val http: HttpClientV2, val appConfi
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimResponse]] = {
 
-    import request._
+    import request.*
 
     lazy val maybeIntent: Option[String] =
       if (isAmendRequest && ConfigFeatureSwitches().isEnabled("passIntentHeader")) Some("AMEND_LOSS_CLAIM") else None

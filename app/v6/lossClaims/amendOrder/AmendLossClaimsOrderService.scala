@@ -16,10 +16,10 @@
 
 package v6.lossClaims.amendOrder
 
-import _root_.common.errors._
-import cats.implicits._
+import _root_.common.errors.*
+import cats.implicits.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v6.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v4.models.response.retrieveLossClaim
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{TaxYear, Timestamp}
@@ -35,19 +35,19 @@ object RetrieveLossClaimResponse extends V4HateoasLinks {
   implicit val writes: OWrites[RetrieveLossClaimResponse] = Json.writes[RetrieveLossClaimResponse]
 
   implicit val reads: Reads[RetrieveLossClaimResponse] = (
-    ((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear(_)).map(_.asMtd) orElse
-      (JsPath \ "taxYearClaimedFor").read[Int].map(TaxYear.fromDownstreamInt).map(_.asMtd)) and
+    ((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear.fromDownstream(_).asMtd) orElse
+      (JsPath \ "taxYearClaimedFor").read[Int].map(TaxYear.fromDownstreamInt(_).asMtd)) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss) orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and
       (JsPath \ "incomeSourceId").read[String] and
       (JsPath \ "sequence").readNullable[Int] and
       (JsPath \ "submissionDate").read[Timestamp]
-  )(RetrieveLossClaimResponse.apply _)
+  )(RetrieveLossClaimResponse.apply)
 
   implicit object GetLinksFactory extends HateoasLinksFactory[RetrieveLossClaimResponse, GetLossClaimHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: GetLossClaimHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(getLossClaim(appConfig, nino, claimId), deleteLossClaim(appConfig, nino, claimId), amendLossClaimType(appConfig, nino, claimId))
     }
 

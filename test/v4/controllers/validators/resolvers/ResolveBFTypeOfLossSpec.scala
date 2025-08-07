@@ -26,7 +26,7 @@ class ResolveBFTypeOfLossSpec extends UnitSpec {
   "The resolver" should {
 
     "return the resolved value" when {
-      import TypeOfLoss._
+      import TypeOfLoss.*
 
       checkValid(`self-employment`)
       checkValid(`self-employment-class4`)

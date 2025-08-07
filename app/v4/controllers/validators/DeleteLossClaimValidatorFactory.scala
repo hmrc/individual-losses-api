@@ -36,7 +36,7 @@ class DeleteLossClaimValidatorFactory {
         (
           ResolveNino(nino),
           ResolveLossClaimId(claimId)
-        ).mapN(DeleteLossClaimRequestData)
+        ).mapN(DeleteLossClaimRequestData.apply)
 
     }
 

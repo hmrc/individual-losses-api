@@ -17,7 +17,7 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import shared.models.errors.MtdError
 import shared.utils.Logging
@@ -36,6 +36,6 @@ object ResolveJsonObject extends ResolverSupport {
   /** Gets a resolver that also validates for unexpected JSON fields
     */
   def strictResolver[A: Reads: SchemaStructureSource]: Resolver[JsValue, A] =
-    (ResolveJsonObjectInternal.resolver thenValidate UnexpectedJsonFieldsValidator.validator).map(_._2)
+    ResolveJsonObjectInternal.resolver.thenValidate(UnexpectedJsonFieldsValidator.validator).map(_._2)
 
 }

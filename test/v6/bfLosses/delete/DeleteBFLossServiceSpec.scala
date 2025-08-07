@@ -18,7 +18,7 @@ package v6.bfLosses.delete
 
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v6.bfLosses.common.domain.LossId
@@ -95,7 +95,7 @@ class DeleteBFLossServiceSpec extends ServiceSpec {
         "5010" -> NotFoundError
       )
 
-      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(args => (serviceError _).tupled(args))
+      (commonErrors ++ itsaErrors ++ itsdErrors).foreach(serviceError.tupled)
     }
 
   }

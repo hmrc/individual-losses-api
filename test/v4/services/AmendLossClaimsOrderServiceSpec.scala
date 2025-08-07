@@ -18,7 +18,7 @@ package v4.services
 
 import common.errors.{RuleInvalidSequenceStart, RuleLossClaimsMissing, RuleSequenceOrderBroken, TaxYearClaimedForFormatError}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v4.connectors.MockAmendLossClaimsConnector
@@ -108,7 +108,7 @@ class AmendLossClaimsOrderServiceSpec extends ServiceSpec {
         ("5000", RuleTaxYearNotSupportedError)
       )
 
-      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+      (ifsErrors ++ hipErrors).foreach(serviceError.tupled)
     }
   }
 

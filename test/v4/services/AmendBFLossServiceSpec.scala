@@ -18,7 +18,7 @@ package v4.services
 
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
 import shared.models.domain.{Nino, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v4.connectors.MockAmendBFLossConnector
@@ -98,7 +98,7 @@ class AmendBFLossServiceSpec extends ServiceSpec {
       "5010" -> NotFoundError
     )
 
-    (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+    (ifsErrors ++ hipErrors).foreach(args => serviceError.tupled(args))
   }
 
   trait Test extends MockAmendBFLossConnector {

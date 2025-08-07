@@ -25,10 +25,10 @@ import common.errors.{
   TaxYearClaimedForFormatError
 }
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
-import v5.lossClaims.common.models._
+import v5.lossClaims.common.models.*
 import v5.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v5.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse
 import v5.lossClaims.create.model.response.CreateLossClaimResponse
@@ -122,7 +122,7 @@ class CreateLossClaimServiceSpec extends ServiceSpec {
         "5000" -> RuleTaxYearNotSupportedError
       )
 
-      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+      (ifsErrors ++ hipErrors).foreach(serviceError.tupled)
     }
   }
 

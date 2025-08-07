@@ -18,7 +18,7 @@ package v5.lossClaims.common.models
 
 import shared.utils.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
-import v5.lossClaims.common.models.TypeOfClaim._
+import v5.lossClaims.common.models.TypeOfClaim.*
 
 class TypeOfClaimSpec extends UnitSpec with EnumJsonSpecSupport {
 

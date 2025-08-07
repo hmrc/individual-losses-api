@@ -19,7 +19,7 @@ package v4.controllers.validators
 import common.errors.ClaimIdFormatError
 import shared.controllers.validators.Validator
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v4.models.domain.lossClaim.ClaimId
 import v4.models.request.deleteLossClaim.DeleteLossClaimRequestData

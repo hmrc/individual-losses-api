@@ -20,7 +20,7 @@ import cats.data.Validated
 import play.api.libs.json.{JsValue, Reads}
 import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import shared.utils.EmptyPathsResult._
+import shared.utils.EmptyPathsResult.*
 import shared.utils.{EmptinessChecker, Logging}
 
 class ResolveNonEmptyJsonObject[A: Reads: EmptinessChecker] extends ResolverSupport {
@@ -43,11 +43,11 @@ object ResolveNonEmptyJsonObject extends ResolverSupport with Logging {
     }
   }
 
-  def resolver[A: Reads: EmptinessChecker]: Resolver[JsValue, A] = ResolveJsonObject.resolver thenValidate nonEmptyValidator
+  def resolver[A: Reads: EmptinessChecker]: Resolver[JsValue, A] = ResolveJsonObject.resolver.thenValidate(nonEmptyValidator)
 
   /** Gets a resolver that also validates for unexpected JSON fields
     */
   def strictResolver[A: Reads: EmptinessChecker: SchemaStructureSource]: Resolver[JsValue, A] =
-    ResolveJsonObject.strictResolver thenValidate nonEmptyValidator
+    ResolveJsonObject.strictResolver.thenValidate(nonEmptyValidator)
 
 }

@@ -36,7 +36,7 @@ class DeleteBFLossValidatorFactory {
         (
           ResolveNino(nino),
           ResolveBFLossId(lossId)
-        ).mapN(DeleteBFLossRequestData)
+        ).mapN(DeleteBFLossRequestData.apply)
 
     }
 

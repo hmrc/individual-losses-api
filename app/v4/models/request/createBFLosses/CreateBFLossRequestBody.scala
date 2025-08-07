@@ -17,9 +17,9 @@
 package v4.models.request.createBFLosses
 
 import shared.models.domain.TaxYear
-import play.api.libs.json._
+import play.api.libs.json.*
 import v4.models.domain.bfLoss.TypeOfLoss
-import v4.models.domain.bfLoss.TypeOfLoss._
+import v4.models.domain.bfLoss.TypeOfLoss.*
 
 case class CreateBFLossRequestBody(typeOfLoss: TypeOfLoss, businessId: String, taxYearBroughtForwardFrom: String, lossAmount: BigDecimal) {
   @transient lazy val taxYear: TaxYear = TaxYear.fromMtd(taxYearBroughtForwardFrom)

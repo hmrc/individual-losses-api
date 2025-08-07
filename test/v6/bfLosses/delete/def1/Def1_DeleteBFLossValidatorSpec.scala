@@ -19,7 +19,7 @@ package v6.bfLosses.delete.def1
 import common.errors.LossIdFormatError
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData

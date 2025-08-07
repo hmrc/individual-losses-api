@@ -16,7 +16,7 @@
 
 package v6.bfLosses.create.def1.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import v6.bfLosses.create.model.response.CreateBFLossResponse
 
 case class Def1_CreateBFLossResponse(lossId: String) extends CreateBFLossResponse

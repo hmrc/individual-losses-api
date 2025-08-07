@@ -16,10 +16,10 @@
 
 package v4.services
 
-import cats.implicits._
+import cats.implicits.*
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged}
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v4.connectors.AmendBFLossConnector
 import v4.models.request.amendBFLosses.AmendBFLossRequestData

@@ -47,10 +47,10 @@ class Def1_AmendBFLossValidator(nino: String, lossId: String, taxYear: String, b
       .andThen(_ =>
         (
           ResolveNino(nino),
-          resolveLossId(lossId).map(LossId),
+          resolveLossId(lossId).map(LossId.apply),
           resolveTaxYear(taxYear),
           resolveJson(body)
-        ).mapN(Def1_AmendBFLossRequestData))
+        ).mapN(Def1_AmendBFLossRequestData.apply))
   }
 
   private def validateJsonFields: Validated[Seq[MtdError], Unit] = {

@@ -17,7 +17,7 @@
 package v6.lossClaims.list.model.request
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import v6.lossClaims.common.models._
+import v6.lossClaims.common.models.*
 import v6.lossClaims.list.ListLossClaimsSchema
 
 trait ListLossClaimsRequestData {

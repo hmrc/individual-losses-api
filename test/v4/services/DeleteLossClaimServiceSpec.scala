@@ -18,7 +18,7 @@ package v4.services
 
 import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v4.connectors.{MockDeleteLossClaimConnector, MockRetrieveLossClaimConnector}
@@ -157,8 +157,8 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
         itsaErrors ++ itsdErrors
       }
 
-      retrieveErrors.foreach(args => (serviceErrorFromRetrieveConnector _).tupled(args))
-      deleteErrors.foreach(args => (serviceErrorFromDeleteConnector _).tupled(args))
+      retrieveErrors.foreach(serviceErrorFromRetrieveConnector.tupled)
+      deleteErrors.foreach(serviceErrorFromDeleteConnector.tupled)
     }
   }
 

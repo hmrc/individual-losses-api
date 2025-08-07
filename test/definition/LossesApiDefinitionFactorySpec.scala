@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,25 @@ package definition
 import cats.implicits.catsSyntaxValidatedId
 import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
+import shared.definition.*
 import shared.definition.APIStatus.BETA
-import shared.definition._
+import shared.mocks.MockHttpClient
 import shared.routing.{Version4, Version5, Version6}
 import shared.utils.UnitSpec
 
-class LossesApiDefinitionFactorySpec extends UnitSpec with MockSharedAppConfig {
-
-  class Test {
-    MockedSharedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
-    val apiDefinitionFactory = new LossesApiDefinitionFactory(mockSharedAppConfig)
-  }
+class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSharedAppConfig {
 
   "definition" when {
     "called" should {
-      "return a valid Definition case class" in new Test {
+      "return a valid Definition case class" in {
         List(Version4, Version5, Version6).foreach { version =>
+          MockedSharedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
           MockedSharedAppConfig.apiStatus(version) returns "BETA"
           MockedSharedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           MockedSharedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
         }
+
+        val apiDefinitionFactory = new LossesApiDefinitionFactory(mockSharedAppConfig)
 
         apiDefinitionFactory.definition shouldBe
           Definition(
