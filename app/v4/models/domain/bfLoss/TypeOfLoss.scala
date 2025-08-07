@@ -19,10 +19,6 @@ package v4.models.domain.bfLoss
 import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-trait HasTypeOfLoss {
-  def typeOfLoss: TypeOfLoss
-}
-
 enum TypeOfLoss {
   case `uk-property-fhl`, `uk-property-non-fhl`, `foreign-property-fhl-eea`, `foreign-property`, `self-employment`, `self-employment-class4`
 
