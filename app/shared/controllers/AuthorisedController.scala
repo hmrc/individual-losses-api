@@ -59,7 +59,7 @@ abstract class AuthorisedController(
 
       authService.authorised(mtdId, endpointAllowsSupportingAgents).flatMap[Result] {
         case Right(userDetails) =>
-          block(UserRequest(userDetails.copy(mtdId = mtdId), request))
+          block(UserRequest(userDetails, request))
         case Left(mtdError) =>
           errorResponse(mtdError)
       }
