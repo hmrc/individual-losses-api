@@ -69,14 +69,14 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
       behave like authorisedIndividual(authValidationEnabled, initialPredicate)
       behave like authorisedOrganisation(authValidationEnabled, initialPredicate)
 
-      behave like authorisedAgentsMissingArn(authValidationEnabled, initialPredicate, primaryAgentPredicate)
+      behave like authorisedAgentsMissingArn(authValidationEnabled, initialPredicate)
       behave like authorisedPrimaryAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate)
       behave like authorisedSupportingAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate, supportingAgentPredicate)
 
       behave like disallowSupportingAgentForPrimaryOnlyEndpoint(authValidationEnabled, initialPredicate, primaryAgentPredicate)
 
       behave like disallowUsersWithoutEnrolments(authValidationEnabled, initialPredicate)
-      behave like disallowWhenNotLoggedIn(authValidationEnabled, initialPredicate)
+      behave like disallowWhenNoBearerToken(authValidationEnabled, initialPredicate)
     }
 
     def authorisedIndividual(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
@@ -91,7 +91,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
           .returns(Future.successful(retrievalsResult))
 
         val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
-        result shouldBe Right(UserDetails("", "Individual", None))
+        result shouldBe Right(UserDetails(mtdId, "Individual", None))
       }
 
     def authorisedOrganisation(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
@@ -105,42 +105,29 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
           .returns(Future.successful(retrievalsResult))
 
         val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
-        result shouldBe Right(UserDetails("", "Organisation", None))
+        result shouldBe Right(UserDetails(mtdId, "Organisation", None))
       }
 
-    def authorisedAgentsMissingArn(
-        authValidationEnabled: Boolean,
-        initialPredicate: Predicate,
-        primaryAgentPredicate: Predicate
-    ): Unit =
+    def authorisedAgentsMissingArn(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit = {
       "disallow agents that are missing an ARN" in new Test {
-        val arn = "123567890"
-        val enrolments: Enrolments = Enrolments(
-          Set(
-            Enrolment(
-              "HMRC-AS-AGENT",
-              List(EnrolmentIdentifier("NOAgentReferenceNumber", arn)),
-              "Active"
-            ))
+        val retrievalsResult = new ~(
+          Some(Agent),
+          Enrolments(
+            Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("SomeOtherIdentifier", "123567890")), "Active"))
+          )
         )
 
-        val initialRetrievalsResult = new ~(Some(Agent), enrolments)
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
 
         MockedAuthConnector
           .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
           .once()
-          .returns(Future.successful(initialRetrievalsResult))
-
-        MockedAuthConnector
-          .authorised(primaryAgentPredicate, EmptyRetrieval)
-          .once()
-          .returns(Future.successful(EmptyRetrieval))
-
-        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+          .returns(Future.successful(retrievalsResult))
 
         val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
         result shouldBe Left(InternalError)
       }
+    }
 
     def authorisedPrimaryAgent(
         authValidationEnabled: Boolean,
@@ -173,7 +160,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
         mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
 
         val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
-        result shouldBe Right(UserDetails("", "Agent", Some(arn)))
+        result shouldBe Right(UserDetails(mtdId, "Agent", Some(arn)))
       }
 
     def authorisedSupportingAgent(
@@ -213,7 +200,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
         mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
 
         val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId, endpointAllowsSupportingAgents = true))
-        result shouldBe Right(UserDetails("", "Agent", Some(arn)))
+        result shouldBe Right(UserDetails(mtdId, "Supporting Agent", Some(arn)))
       }
 
     def disallowSupportingAgentForPrimaryOnlyEndpoint(
@@ -250,8 +237,8 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
         result shouldBe Left(ClientOrAgentNotAuthorisedError)
       }
 
-    def disallowWhenNotLoggedIn(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
-      "disallow users that are not logged in" in new Test {
+    def disallowWhenNoBearerToken(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "disallow users with no bearer token" in new Test {
         mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
 
         MockedAuthConnector
