@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "type": "object",
+      "title": "Loss Claim",
+      "properties": {
+        "submittedOn": { "type": "string", "format": "date-time" },
+        "carryBack": {
+          "type": "object",
+          "properties": {
+            "previousYearGeneralIncome": { "type": "number" },
+            "earlyYearLossesSection": { "type": "number" },
+            "terminalLossesSection": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "carrySideways": {
+          "type": "object",
+          "required": ["currentYearGeneralIncomeSection"],
+          "properties": {
+            "currentYearGeneralIncomeSection": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "preferenceOrder": {
+          "type": "object",
+          "description": "When submitting a previous year general income and current year general income together, this field for preference order must be submitted.",
+          "required": ["applyFirst"],
+          "properties": {
+            "applyFirst": {
+              "type": "string",
+              "enum": ["carrySideways", "carryBack", "carryForward"]
+            }
+          },
+          "additionalProperties": false
+        },
+        "carryForward": {
+          "type": "object",
+          "description": "Loss amounts to be carried forward. The losses from previous year must be entered separately and exclude any current year losses",
+          "properties": {
+            "currentYearLossesSection": { "type": "number" },
+            "previousYearLossesSection": { "type": "number" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "title": "Brought Forward Loss",
+      "required": ["losses"],
+      "properties": {
+        "submittedOn": { "type": "string", "format": "date-time" },
+        "carryForward": {
+          "type": "object",
+          "description": "Only mandatory if carryForward losses are being submitted",
+          "required": ["previousYearLossesSection"],
+          "properties": {
+            "previousYearLossesSection": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "losses": {
+          "type": "object",
+          "required": ["broughtForwardLosses"],
+          "properties": {
+            "broughtForwardLosses": { "type": "number" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  ],
+  "additionalProperties": false
+}
