@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Adjustment",
+  "type": "object",
+  "properties": {
+    "submittedOn": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time when the adjustment was submitted"
+    },
+    "carryBackLossesDecrease": {
+      "type": "object",
+      "description": "Some discussion about whether or not we want to use the term 'decrease' here",
+      "properties": {
+        "incomeTax": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "description": "Amount applied to Income Tax (minor units, e.g., pence)"
+        },
+        "class4": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "description": "Amount applied to Class 4 NIC (minor units)"
+        },
+        "capitalGainsTax": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "description": "Amount applied to Capital Gains Tax (minor units)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "averagingAdjustmentsDecrease": {
+      "type": "object",
+      "description": "Some discussion about whether or not we want to use the term 'decrease' here",
+      "properties": {
+        "incomeTax": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "description": "Amount applied to Income Tax (minor units, e.g., pence)"
+        },
+        "class4": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "description": "Amount applied to Class 4 NIC (minor units)"
+        },
+        "capitalGainsTax": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "description": "Amount applied to Capital Gains Tax (minor units)"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "carryBackLossesDecrease": {
+        "incomeTax": 1000,
+        "class4": 100,
+        "capitalGainsTax": 100
+      },
+      "averagingAdjustmentsDecrease": {
+        "incomeTax": 1000,
+        "class4": 100,
+        "capitalGainsTax": 100
+      }
+    }
+  ]
+}

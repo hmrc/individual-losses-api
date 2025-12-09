@@ -1,0 +1,339 @@
+openapi: "3.1.0"
+info:
+  title: Individual Losses (MTD)
+  version: "7.0"
+servers:
+  - url: https://test-api.service.hmrc.gov.uk
+    description: Sandbox
+  - url: https://api.service.hmrc.gov.uk
+    description: Production
+tags:
+  - name: Losses & Claims
+    description: Resources related to a customer’s financial data for their loss claims and brought forward losses.
+  - name: Averaging Adjustments/Credits
+    description: Resources related to a customer’s financial data for their averaging adjustments/credits.
+paths:
+  '/individuals/losses/{nino}/businesses/{businessId}/loss-claims/{taxYear}':
+    parameters:
+      - name: nino
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[A-CEGHJ-NOPR-TW-Z]{1}[A-CEGHJ-NOPR-TW-Z]{1}[0-9]{6}[A-D]{0,1}$"
+        description: National Insurance Number of the individual
+      - name: businessId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ""
+        description: Unique identifier for the self-employment business or property business
+      - name: taxYear
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^(20[2-9][0-9])-(20[2-9][0-9])$"
+        description: Tax year for which the loss claim is being made
+    get:
+      tags:
+        - Losses & Claims
+      summary: Retrieve a Loss or Claim
+      responses:
+        "200":
+          description: Success
+          content:
+              application/json:
+                schema:
+                  $ref: 'retrieveLossClaim.json'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                1007:
+                  description: Invalid income source ID
+                1117:
+                  description: The tax year provided is invalid
+                1215:
+                  description: Invalid taxable entity id
+                1216:
+                  description: Missing required tax year
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              examples:
+                5009:
+                  description: Unsuccessful authorisation
+
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                5010:
+                  description: The requested resource could not be found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples:
+                5000:
+                  description: <taxYear*> not supported
+    put:
+      tags:
+        - Losses & Claims
+      summary: Submit a Loss or Claim
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'submitLossClaim.json'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                1000:
+                  description: Input schema validation failure
+                1007:
+                  description: Invalid income source ID
+                1117:
+                  description: The tax year provided is invalid
+                1215:
+                  description: Invalid taxable entity id
+                1216:
+                  description: Missing required tax year
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              examples:
+                5009:
+                  description: Unsuccessful authorisation
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                5010:
+                  description: The requested resource could not be found
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              examples:
+                1XXXa:
+                  description: Preference order required for section 64 claims
+                1XXXb:
+                  description: Carry forward loss claims cannot be submitted with Terminal loss claims
+                1115:
+                  description: Submission is provided before the tax year has ended.
+                4200:
+                  description: The request cannot be completed as you are outside the amendment window.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples:
+                5000:
+                  description: <taxYear*> not supported
+    delete:
+      tags:
+        - Losses & Claims
+      summary: Delete a Loss or Claim
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                1007:
+                  description: Invalid income source ID
+                1117:
+                  description: The tax year provided is invalid
+                1215:
+                  description: Invalid taxable entity id
+                1216:
+                  description: Missing required tax year
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              examples:
+                5009:
+                  description: Unsuccessful authorisation
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                5010:
+                  description: The requested resource could not be found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples:
+                5000:
+                  description: <taxYear*> not supported
+  '/individuals/losses/{nino}/adjustments/{taxYear}':
+    parameters:
+      - name: nino
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[A-CEGHJ-NOPR-TW-Z]{1}[A-CEGHJ-NOPR-TW-Z]{1}[0-9]{6}[A-D]{0,1}$"
+        description: National Insurance Number of the individual
+      - name: taxYear
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^(20[2-9][0-9])-(20[2-9][0-9])$"
+        description: Tax year for which the loss claim is being made
+    get:
+      tags:
+        - Averaging Adjustments/Credits
+      summary: Retrieve an Adjustment
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: 'retrieveCreditAdjustments.json'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                1117:
+                  description: The tax year provided is invalid
+                1215:
+                  description: Invalid taxable entity id
+                1216:
+                  description: Missing required tax year
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              examples:
+                5009:
+                  description: Unsuccessful authorisation
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                5010:
+                  description: The requested resource could not be found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples:
+                5000:
+                  description: <taxYear*> not supported
+    put:
+      tags:
+        - Averaging Adjustments/Credits
+      summary: Submit an Adjustment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'submitCreditAdjustments.json'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                1000:
+                  description: Input schema validation failure
+                1117:
+                  description: The tax year provided is invalid
+                1215:
+                  description: Invalid taxable entity id
+                1216:
+                  description: Missing required tax year
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              examples:
+                5009:
+                  description: Unsuccessful authorisation
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                5010:
+                  description: The requested resource could not be found
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              examples:
+                1115:
+                  description: Submission is provided before the tax year has ended.
+                4200:
+                  description: The request cannot be completed as you are outside the amendment window.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples:
+                5000:
+                  description: <taxYear*> not supported
+    delete:
+      tags:
+        - Averaging Adjustments/Credits
+      summary: Delete an Adjustment
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                1117:
+                  description: The tax year provided is invalid
+                1215:
+                  description: Invalid taxable entity id
+                1216:
+                  description: Missing required tax year
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              examples:
+                5009:
+                  description: Unsuccessful authorisation
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples:
+                5010:
+                  description: The requested resource could not be found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples:
+                5000:
+                  description: <taxYear*> not supported
