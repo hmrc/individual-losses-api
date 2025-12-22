@@ -66,6 +66,8 @@ object InternalError extends MtdError("INTERNAL_SERVER_ERROR", "An internal serv
 
 object BadRequestError extends MtdError("INVALID_REQUEST", "Invalid request", BAD_REQUEST)
 
+object GatewayTimeoutError extends MtdError("GATEWAY_TIMEOUT", "The request has timed out", GATEWAY_TIMEOUT)
+
 object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error", BAD_REQUEST)
 
 object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error", INTERNAL_SERVER_ERROR)
