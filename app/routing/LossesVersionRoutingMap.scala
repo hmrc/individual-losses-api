@@ -27,13 +27,15 @@ import javax.inject.{Inject, Singleton}
     defaultRouter: Router,
     v4Router: v4.Routes,
     v5Router: v5.Routes,
-    v6Router: v6.Routes
+    v6Router: v6.Routes,
+    v7Router: v7.Routes
 ) extends VersionRoutingMap {
 
   val map: Map[Version, Router] = Map(
     Version4 -> v4Router,
     Version5 -> v5Router,
-    Version6 -> v6Router
+    Version6 -> v6Router,
+    Version7 -> v7Router
   )
 
 }

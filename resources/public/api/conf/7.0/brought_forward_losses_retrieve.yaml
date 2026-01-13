@@ -1,0 +1,105 @@
+get:
+  summary: Retrieve a Brought Forward Loss
+  description: |
+    This endpoint enables you to retrieve an existing brought forward loss amount. 
+    A National Insurance number and Loss ID must be provided.
+  
+    <strong>
+      Note: Brought forward losses for the following 2 income sources will not be supported from tax year 2025-26 onwards:
+        <ul>
+          <li>uk-property-fhl</li>
+          <li>foreign-property-fhl-eea</li>
+        </ul>
+    </strong>
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                                          |
+    |----------------------------------|-------------------------------------------------------------------|
+    | N/A - DEFAULT                    | Simulates success response where type of loss is Self-Employment. |
+    | UK_PROPERTY_FHL                  | Simulates the scenario where type of loss is UK Property FHL.     |
+    | FOREIGN_PROPERTY                 | Simulates the scenario where type of loss is Foreign Property.    |
+    | NOT_FOUND                        | Simulates the scenario where no data is found.                    |
+    | STATEFUL                         | Performs a stateful retrieve.                                     |
+
+  tags:
+    - Brought Forward Losses
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/lossId'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - read:self-assessment
+
+  responses:
+    "200":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/broughtForwardLosses/retrieveBFLoss/retrieve_response.json'
+          examples:
+            example-1:
+              description: Self-Employment Loss
+              value:
+                $ref: './examples/broughtForwardLosses/retrieveBFLoss/retrieve_se_response.json'
+            example-2:
+              description: UK FHL Property Loss
+              value:
+                $ref: './examples/broughtForwardLosses/retrieveBFLoss/retrieve_uk_property_fhl_response.json'
+            example-3:
+              description: Foreign Property Loss
+              value:
+                $ref: './examples/broughtForwardLosses/retrieveBFLoss/retrieve_foreign_property_response.json'
+
+    "400":
+      description: Bad request
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_LOSS_ID:
+              $ref: './common/errors.yaml#/components/examples/formatLossId'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+    "403":
+      description: Forbidden
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'
