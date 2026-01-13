@@ -58,7 +58,7 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
       setupStubs()
       buildRequest(s"/$nino/brought-forward-losses/tax-year/brought-forward-from/${taxYear.asMtd}")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.6.0+json"),
+          (ACCEPT, "application/vnd.hmrc.7.0+json"),
           (AUTHORIZATION, "Bearer 123"),
           ("suspend-temporal-validations", suspendTemporalValidations)
         )
