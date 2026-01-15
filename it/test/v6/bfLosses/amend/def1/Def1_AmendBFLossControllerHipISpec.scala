@@ -157,7 +157,9 @@ class Def1_AmendBFLossControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS1234dfxgchjbn5678910", "2020-21", requestJson, BAD_REQUEST, LossIdFormatError),
           ("AA123456A", "XAIS12345678910", "2020-2021", requestJson, BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2020-21", invalidRequestJson, BAD_REQUEST, ValueFormatError.withPath("/lossAmount")),
-          ("AA123456A", "XAIS12345678910", "2020-21", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+          ("AA123456A", "XAIS12345678910", "2020-21", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", "XAIS12345678910", "2017-18", requestJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", "XAIS12345678910", "2026-27", requestJson, BAD_REQUEST, RuleTaxYearForVersionNotSupportedError)
         )
 
         input.foreach(validationErrorTest.tupled)

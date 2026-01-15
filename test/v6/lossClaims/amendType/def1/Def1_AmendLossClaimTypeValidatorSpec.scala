@@ -48,10 +48,16 @@ class Def1_AmendLossClaimTypeValidatorSpec extends UnitSpec {
 
   "Amend Loss Claim Validator" should {
     "return the parsed domain object" when {
-      "given a valid request" in {
+      "given a valid request with the earliest tax year" in {
         val result = validator(validNino, validClaimId, validRequestBody, validTaxYearClaimedFor).validateAndWrapResult()
         result shouldBe Right(
           Def1_AmendLossClaimTypeRequestData(parsedNino, parsedClaimId, parsedBody, parsedTaxYearClaimedFor)
+        )
+      }
+      "given a valid request with the latest tax year" in {
+        val result = validator(validNino, validClaimId, validRequestBody, "2025-26").validateAndWrapResult()
+        result shouldBe Right(
+          Def1_AmendLossClaimTypeRequestData(parsedNino, parsedClaimId, parsedBody, TaxYear.fromMtd("2025-26"))
         )
       }
     }
@@ -101,9 +107,14 @@ class Def1_AmendLossClaimTypeValidatorSpec extends UnitSpec {
 
       }
 
-      "passed a taxYearClaimedFor before the minimum supported" in {
+      "passed a taxYear below the minimum tax year supported" in {
         validator(validNino, validClaimId, validRequestBody, "2017-18").validateAndWrapResult() shouldBe
           Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
+      "passed a taxYear above the maximum tax year supported" in {
+        validator(validNino, validClaimId, validRequestBody, "2026-27").validateAndWrapResult() shouldBe
+          Left(ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError))
       }
 
       "passed a taxYearClaimedFor spanning an invalid tax year range" in {

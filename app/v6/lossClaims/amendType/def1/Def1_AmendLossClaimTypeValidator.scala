@@ -21,9 +21,9 @@ import cats.implicits.*
 import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern, ResolveTaxYearMinimum}
-import shared.models.errors.MtdError
-import v6.lossClaims.common.minimumTaxYear
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern, ResolveTaxYearMinMax}
+import shared.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError}
+import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.common.models.ClaimId
@@ -32,8 +32,13 @@ import v6.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
 class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsValue, taxYearClaimedFor: String)
     extends Validator[AmendLossClaimTypeRequestData] {
 
-  private val resolveTaxYearClaimedFor: ResolveTaxYearMinimum =
-    ResolveTaxYearMinimum(minimumTaxYear = minimumTaxYear, formatError = TaxYearClaimedForFormatError)
+  private val resolveTaxYearClaimedFor =
+    ResolveTaxYearMinMax(
+      minMax = (minimumTaxYear, maximumTaxYear),
+      minError = RuleTaxYearNotSupportedError,
+      maxError = RuleTaxYearForVersionNotSupportedError,
+      formatError = TaxYearClaimedForFormatError
+    )
 
   private val resolveClaimId =
     new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, ClaimIdFormatError)

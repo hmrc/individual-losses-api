@@ -174,42 +174,71 @@ class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
         }
       }
 
-      validationErrorTest("BADNINO", "AAZZ1234567890a", requestJson, BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADClaimId", requestJson, BAD_REQUEST, ClaimIdFormatError)
-      validationErrorTest("AA123456A", "AAZZ1234567890a", Json.obj(), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
-
       validationErrorTest(
-        "AA123456A",
-        "AAZZ1234567890a",
-        Json.obj("typeOfClaim" -> "xxx"),
-        BAD_REQUEST,
-        TypeOfClaimFormatError.withPath("/typeOfClaim"))
-
+        requestNino = "BADNINO",
+        requestClaimId = "AAZZ1234567890a",
+        requestBody = requestJson,
+        expectedStatus = BAD_REQUEST,
+        expectedBody = NinoFormatError
+      )
+      
       validationErrorTest(
-        "AA123456A",
-        "AAZZ1234567890a",
-        Json.obj("typeOfClaim" -> "carry-forward"),
-        BAD_REQUEST,
-        TaxYearClaimedForFormatError,
-        "202324"
+        requestNino = "AA123456A",
+        requestClaimId = "BADClaimId",
+        requestBody = requestJson,
+        expectedStatus = BAD_REQUEST,
+        expectedBody = ClaimIdFormatError
+      )
+      
+      validationErrorTest(
+        requestNino = "AA123456A",
+        requestClaimId = "AAZZ1234567890a",
+        requestBody = Json.obj(), expectedStatus = BAD_REQUEST,
+        expectedBody = RuleIncorrectOrEmptyBodyError
+      )
+      
+      validationErrorTest(
+        requestNino = "AA123456A",
+        requestClaimId = "AAZZ1234567890a",
+        requestBody = Json.obj("typeOfClaim" -> "xxx"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = TypeOfClaimFormatError.withPath("/typeOfClaim")
       )
 
       validationErrorTest(
-        "AA123456A",
-        "AAZZ1234567890a",
-        Json.obj("typeOfClaim" -> "carry-forward"),
-        BAD_REQUEST,
-        RuleTaxYearRangeInvalidError,
-        "2018-24"
+        requestNino = "AA123456A",
+        requestClaimId = "AAZZ1234567890a",
+        requestBody = Json.obj("typeOfClaim" -> "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = TaxYearClaimedForFormatError,
+        requestTaxYearClaimedFor = "202324"
       )
 
       validationErrorTest(
-        "AA123456A",
-        "AAZZ1234567890a",
-        Json.obj("typeOfClaim" -> "carry-forward"),
-        BAD_REQUEST,
-        RuleTaxYearNotSupportedError,
-        "2017-18"
+        requestNino = "AA123456A",
+        requestClaimId = "AAZZ1234567890a",
+        requestBody = Json.obj("typeOfClaim" -> "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = RuleTaxYearRangeInvalidError,
+        requestTaxYearClaimedFor = "2018-24"
+      )
+
+      validationErrorTest(
+        requestNino = "AA123456A",
+        requestClaimId = "AAZZ1234567890a",
+        requestBody = Json.obj("typeOfClaim" -> "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = RuleTaxYearNotSupportedError,
+        requestTaxYearClaimedFor = "2017-18"
+      )
+
+      validationErrorTest(
+        requestNino = "AA123456A",
+        requestClaimId = "AAZZ1234567890a",
+        requestBody = Json.obj("typeOfClaim" -> "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = RuleTaxYearForVersionNotSupportedError,
+        requestTaxYearClaimedFor = "2026-27"
       )
     }
   }

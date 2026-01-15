@@ -29,38 +29,46 @@ class Def1_DeleteBFLossValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino     = "AA123456A"
-  private val invalidNino   = "BAD_NINO"
-  private val validLossId   = "AAZZ1234567890a"
-  private val invalidLossId = "not-a-loss-id"
-  private val validTaxYear  = "2019-20"
+  private val validNino           = "AA123456A"
+  private val invalidNino         = "BAD_NINO"
+  private val validLossId         = "AAZZ1234567890a"
+  private val invalidLossId       = "not-a-loss-id"
+  private val minimumvalidTaxYear = "2019-20"
+  private val maximumvalidTaxYear = "2025-26"
 
   private val parsedNino    = Nino(validNino)
   private val parsedLossId  = LossId(validLossId)
-  private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
+  private val parsedTaxYear = TaxYear.fromMtd(minimumvalidTaxYear)
 
   private def validator(nino: String, lossId: String, taxYear: String): Validator[DeleteBFLossRequestData] =
     new Def1_DeleteBFLossValidator(nino, lossId, taxYear)
 
   "running a validation" should {
     "return the parsed request data" when {
-      "passed a valid request" in {
-        val result = validator(validNino, validLossId, validTaxYear).validateAndWrapResult()
+      "passed a valid request with the earliest tax year" in {
+        val result = validator(validNino, validLossId, minimumvalidTaxYear).validateAndWrapResult()
         result shouldBe Right(
           Def1_DeleteBFLossRequestData(parsedNino, parsedLossId, parsedTaxYear)
+        )
+      }
+
+      "passed a valid request with the latest tax year" in {
+        val result = validator(validNino, validLossId, maximumvalidTaxYear).validateAndWrapResult()
+        result shouldBe Right(
+          Def1_DeleteBFLossRequestData(parsedNino, parsedLossId, TaxYear.fromMtd(maximumvalidTaxYear))
         )
       }
     }
 
     "return a single error" when {
       "passed an invalid nino" in {
-        val result = validator(invalidNino, validLossId, validTaxYear).validateAndWrapResult()
+        val result = validator(invalidNino, validLossId, minimumvalidTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
         )
       }
       "passed an invalid loss ID" in {
-        val result = validator(validNino, invalidLossId, validTaxYear).validateAndWrapResult()
+        val result = validator(validNino, invalidLossId, minimumvalidTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, LossIdFormatError)
         )
@@ -75,6 +83,11 @@ class Def1_DeleteBFLossValidatorSpec extends UnitSpec {
       "passed a taxYear before the minimum supported" in {
         validator(validNino, validLossId, "2017-18").validateAndWrapResult() shouldBe
           Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
+      "passed a taxYear before the maximum supported" in {
+        validator(validNino, validLossId, "2026-27").validateAndWrapResult() shouldBe
+          Left(ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError))
       }
 
       "passed a taxYear spanning an invalid tax year range" in {

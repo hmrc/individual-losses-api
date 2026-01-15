@@ -147,7 +147,7 @@ class Def1_CreateBFLossControllerIfsISpec extends IntegrationBaseSpec with JsonE
         validationErrorTest(
           "AA123456A",
           requestBody.update("/taxYearBroughtForwardFrom", JsString("2090-91")),
-          RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
+          RuleTaxYearForVersionNotSupportedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
       "ifs service error" when {

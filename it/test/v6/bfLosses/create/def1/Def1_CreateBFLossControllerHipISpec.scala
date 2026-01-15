@@ -136,33 +136,52 @@ class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonE
           }
         }
 
-        validationErrorTest("BADNINO", requestBody, NinoFormatError)
+        validationErrorTest(requestNino = "BADNINO", requestBody = requestBody, expectedBody = NinoFormatError)
+        
         validationErrorTest(
-          "AA123456A",
-          requestBody.update("/taxYearBroughtForwardFrom", JsString("XXX")),
-          TaxYearFormatError.withPath("/taxYearBroughtForwardFrom")
-        )
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("XXX")),
+          expectedBody = TaxYearFormatError.withPath("/taxYearBroughtForwardFrom"))
+        
         validationErrorTest(
-          "AA123456A",
-          requestBody.update("/taxYearBroughtForwardFrom", JsString("2021-23")),
-          RuleTaxYearRangeInvalidError.withPath("/taxYearBroughtForwardFrom")
-        )
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("2021-23")),
+          expectedBody = RuleTaxYearRangeInvalidError.withPath("/taxYearBroughtForwardFrom"))
+        
         validationErrorTest(
-          "AA123456A",
-          requestBody.update("/taxYearBroughtForwardFrom", JsString("2017-18")),
-          RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom")
-        )
-        validationErrorTest("AA123456A", requestBody.update("/lossAmount", JsNumber(12.345)), ValueFormatError.withPath("/lossAmount"))
-        validationErrorTest("AA123456A", requestBody.update("/businessId", JsString("not-a-business-id")), BusinessIdFormatError)
-        validationErrorTest("AA123456A", requestBody.removeProperty("/lossAmount"), RuleIncorrectOrEmptyBodyError.withPath("/lossAmount"))
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("2017-18")),
+          expectedBody = RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom"))
+        
         validationErrorTest(
-          "AA123456A",
-          requestBody.update("/typeOfLoss", JsString("not-a-loss-type")),
-          TypeOfLossFormatError.withPath("/typeOfLoss"))
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("2026-27")),
+          expectedBody = RuleTaxYearForVersionNotSupportedError.withPath("/taxYearBroughtForwardFrom"))
+        
         validationErrorTest(
-          "AA123456A",
-          requestBody.update("/taxYearBroughtForwardFrom", JsString(currentTaxYear.asMtd)),
-          RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/lossAmount", JsNumber(12.345)),
+          expectedBody = ValueFormatError.withPath("/lossAmount"))
+        
+        validationErrorTest(
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/businessId", JsString("not-a-business-id")),
+          expectedBody = BusinessIdFormatError)
+        
+        validationErrorTest(
+          requestNino = "AA123456A",
+          requestBody = requestBody.removeProperty("/lossAmount"),
+          expectedBody = RuleIncorrectOrEmptyBodyError.withPath("/lossAmount"))
+        
+        validationErrorTest(
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/typeOfLoss", JsString("not-a-loss-type")),
+          expectedBody = TypeOfLossFormatError.withPath("/typeOfLoss"))
+        
+        validationErrorTest(
+          requestNino = "AA123456A",
+          requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString(currentTaxYear.asMtd)),
+          expectedBody = RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
       "downstream service error" when {

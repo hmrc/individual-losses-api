@@ -27,20 +27,35 @@ import shared.controllers.validators.resolvers.{
   ResolveNonEmptyJsonObject,
   ResolveParsedNumber,
   ResolveStringPattern,
-  ResolveTaxYearMinimum
+  ResolveTaxYearMinMax
 }
-import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, ValueFormatError}
+import shared.models.domain.TaxYear
+import shared.models.errors.{
+  MtdError,
+  RuleIncorrectOrEmptyBodyError,
+  RuleTaxYearForVersionNotSupportedError,
+  RuleTaxYearNotSupportedError,
+  ValueFormatError
+}
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.common.domain.LossId
-import v6.bfLosses.common.minimumTaxYear
+import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}
+
 import javax.inject.Singleton
 
 @Singleton
 class Def1_AmendBFLossValidator(nino: String, lossId: String, taxYear: String, body: JsValue) extends Validator[AmendBFLossRequestData] {
-  private val resolveLossId  = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, LossIdFormatError)
-  private val resolveJson    = new ResolveNonEmptyJsonObject[Def1_AmendBFLossRequestBody]()
-  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYear)
+  private val resolveLossId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, LossIdFormatError)
+  private val resolveJson   = new ResolveNonEmptyJsonObject[Def1_AmendBFLossRequestBody]()
+
+  private val minMaxTaxYears: (TaxYear, TaxYear) = (minimumTaxYear, maximumTaxYear)
+
+  private val resolveTaxYear = ResolveTaxYearMinMax(
+    minMaxTaxYears,
+    minError = RuleTaxYearNotSupportedError,
+    maxError = RuleTaxYearForVersionNotSupportedError
+  )
 
   def validate: Validated[Seq[MtdError], Def1_AmendBFLossRequestData] = {
     validateJsonFields

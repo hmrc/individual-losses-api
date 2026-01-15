@@ -25,7 +25,7 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.*
 import shared.models.domain.TaxYear
 import shared.models.errors.*
-import v6.bfLosses.common.minimumTaxYear
+import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}
 import v6.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
 import v6.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
@@ -44,9 +44,10 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body:
   def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
     def withPath(error: MtdError): MtdError = taxYearErrorPath.fold(error)(error.withPath)
 
-    ResolveTaxYearMinimum(
-      minimumTaxYear,
-      notSupportedError = withPath(RuleTaxYearNotSupportedError),
+    ResolveTaxYearMinMax(
+      (minimumTaxYear, maximumTaxYear),
+      minError = withPath(RuleTaxYearNotSupportedError),
+      maxError = withPath(RuleTaxYearForVersionNotSupportedError),
       formatError = withPath(TaxYearFormatError),
       rangeError = withPath(RuleTaxYearRangeInvalidError)
     )(taxYear)

@@ -21,9 +21,9 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
 import shared.models.errors.*
-import v6.lossClaims.common.minimumTaxYear
+import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.common.models.TypeOfClaim
 import v6.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
 import v6.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
@@ -37,7 +37,12 @@ class Def1_ListLossClaimsValidator(nino: String,
     extends Validator[ListLossClaimsRequestData]
     with ResolverSupport {
 
-  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYear, formatError = TaxYearClaimedForFormatError)
+  private val resolveTaxYear = ResolveTaxYearMinMax(
+    minMax = (minimumTaxYear, maximumTaxYear),
+    minError = RuleTaxYearNotSupportedError,
+    maxError = RuleTaxYearForVersionNotSupportedError,
+    formatError = TaxYearClaimedForFormatError
+  )
 
   def validate: Validated[Seq[MtdError], ListLossClaimsRequestData] = {
     (

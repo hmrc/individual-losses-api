@@ -96,6 +96,7 @@ class Def1_AmendLossClaimsOrderHipISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearClaimedForFormatError)
       validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalidError)
       validationErrorTest("AA123456A", "2017-18", requestJson(), BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", "2026-27", requestJson(), BAD_REQUEST, RuleTaxYearForVersionNotSupportedError)
       validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), BAD_REQUEST, TypeOfClaimFormatError)
       validationErrorTest("AA123456A", "2023-24", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       validationErrorTest(

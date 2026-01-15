@@ -139,6 +139,7 @@ class Def1_DeleteBFLossControllerItsdISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", "AAZZ1234567890a", "BADTAXYEAR", BAD_REQUEST, TaxYearFormatError)
       validationErrorTest("AA123456A", "AAZZ1234567890a", "2020-22", BAD_REQUEST, RuleTaxYearRangeInvalidError)
       validationErrorTest("AA123456A", "AAZZ1234567890a", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", "AAZZ1234567890a", "2026-27", BAD_REQUEST, RuleTaxYearForVersionNotSupportedError)
     }
 
   }

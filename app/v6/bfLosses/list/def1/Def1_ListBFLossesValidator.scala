@@ -21,11 +21,12 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
 import common.errors.TypeOfLossFormatError
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum, ResolverSupport}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
+import shared.models.domain.TaxYear
 import shared.models.errors.*
 import v6.bfLosses.common.domain.TypeOfLoss.*
 import v6.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
-import v6.bfLosses.common.minimumTaxYear
+import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}
 import v6.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v6.bfLosses.list.model.request.ListBFLossesRequestData
 
@@ -36,7 +37,11 @@ class Def1_ListBFLossesValidator(nino: String, taxYearBroughtForwardFrom: String
     extends Validator[ListBFLossesRequestData]
     with ResolverSupport {
 
-  private val resolveTaxYear = ResolveTaxYearMinimum(minimumTaxYear)
+  private val resolveTaxYear = ResolveTaxYearMinMax(
+    (minimumTaxYear, maximumTaxYear),
+    minError = RuleTaxYearNotSupportedError,
+    maxError = RuleTaxYearForVersionNotSupportedError
+  )
 
   // only allow single self employment loss type - so main loss type validator does not quite do it for us
   private val availableLossTypeNames =
