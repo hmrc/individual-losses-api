@@ -1,0 +1,94 @@
+delete:
+  summary: Delete a Brought Forward Loss
+  description: |
+    This endpoint allows a developer to delete an existing brought forward loss. A National Insurance number, tax year and Loss ID must be provided.
+    The user should be aware that where a loss has been used as part of a successful final declaration activity, deletion will be blocked and an error code will be returned. In such a case, the user can amend the loss amount to zero.
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.    
+    
+    | Header Value (Gov-Test-Scenario)       | Scenario                                       |
+    |----------------------------------------|------------------------------------------------|
+    | N/A - DEFAULT                          | Simulates success response.                    |
+    | DELETE_AFTER_FINAL_DECLARATION         | Simulates the error scenario where the user has already submitted a final declaration for this tax year. |
+    | NOT_FOUND                              | Simulates the scenario where no data is found. |
+    | OUTSIDE_AMENDMENT_WINDOW               | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
+    | STATEFUL                               | Performs a stateful delete.                    |
+
+  tags:
+    - Brought Forward Losses
+
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/lossId'
+    - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+  responses:
+    "204":
+      description: Success (No Content)
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content: { }
+
+
+    "400":
+      description: Bad request
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_LOSS_ID:
+              $ref: './common/errors.yaml#/components/examples/formatLossId'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+            RULE_TAX_YEAR_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+            RULE_TAX_YEAR_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            RULE_DELETE_AFTER_FINAL_DECLARATION:
+              $ref: './common/errors.yaml#/components/examples/ruleDeleteAfterFinalDeclaration'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+            RULE_OUTSIDE_AMENDMENT_WINDOW:
+              $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
+
+    "403":
+      description: Forbidden
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'

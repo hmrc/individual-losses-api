@@ -18,7 +18,7 @@ package definition
 
 import shared.config.SharedAppConfig
 import shared.definition.*
-import shared.routing.{Version4, Version5, Version6}
+import shared.routing.{Version4, Version5, Version6, Version7}
 
 import javax.inject.{Inject, Singleton}
 
@@ -47,6 +47,11 @@ class LossesApiDefinitionFactory @Inject() (protected val appConfig: SharedAppCo
             version = Version6,
             status = buildAPIStatus(Version6),
             endpointsEnabled = appConfig.endpointsEnabled(version = Version6)
+          ),
+          APIVersion(
+            version = Version7,
+            status = buildAPIStatus(Version7),
+            endpointsEnabled = appConfig.endpointsEnabled(version = Version7)
           )
         ),
         requiresTrust = None

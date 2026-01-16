@@ -1,0 +1,220 @@
+components:
+  examples:
+
+    # 400
+
+    formatNino:
+      description: |
+        The format of the supplied NINO field is not valid.
+      value:
+        code: FORMAT_NINO
+        message: The provided NINO is invalid
+
+    formatTaxYear:
+      description: |
+        The format of the supplied taxYear value is not valid.
+      value:
+        code: FORMAT_TAX_YEAR
+        message: The taxYear format is invalid
+
+    formatTaxYearClaimedFor:
+      description: |
+        The format of the supplied taxYearClaimedFor value is not valid.
+      value:
+        code: FORMAT_TAX_YEAR
+        message: The provided tax year claimed for is invalid
+
+    ruleTaxYearNotSupported:
+      description: |
+        The specified tax year is not supported. The tax year specified is before the minimum tax year value.
+      value:
+        code: RULE_TAX_YEAR_NOT_SUPPORTED
+        message: The tax year specified does not lie within the supported range
+
+    ruleTaxYearRangeInvalid:
+      description: |
+        Tax year range invalid. A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_INVALID
+        message: A tax year range of one year is required
+
+    formatClaimId:
+      description: |
+        The format of the supplied Claim ID is not valid.
+      value:
+        code: FORMAT_CLAIM_ID
+        message: The provided Claim ID is invalid
+
+    formatTypeOfClaim:
+      description: |
+        The format of the type of claim is not valid.
+      value:
+        code: FORMAT_TYPE_OF_CLAIM
+        message: The provided type of claim is invalid
+
+    formatValue:
+      description: |
+        One or more values have been added with the incorrect format.
+      value:
+        code: FORMAT_VALUE
+        message: The value must be between 0 and 99999999999.99
+
+    ruleInvalidSequenceStart:
+      description: |
+        The sequence does not begin with 1.
+      value:
+        code: RULE_INVALID_SEQUENCE_START
+        message: The sequence must start with 1
+
+    ruleSequenceOrderBroken:
+      description: |
+        The sequence is not continuous.
+      value:
+        code: RULE_SEQUENCE_ORDER_BROKEN
+        message: The sequence order must be continuous
+
+    ruleLossClaimsMissing:
+      description: |
+        Not all of the loss claims of this type for this tax year were included in the submission.
+      value:
+        code: RULE_LOSS_CLAIMS_MISSING
+        message: One or more loss claims missing from this request
+
+    ruleIncorrectOrEmptyBody:
+      description: |
+        An empty or non-matching body was submitted.
+      value:
+        code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+        message: An empty or non-matching body was submitted
+
+    ruleTypeOfClaimInvalid:
+      description: |
+        The claim type supplied is not available for this type of loss.
+      value:
+        code: RULE_TYPE_OF_CLAIM_INVALID
+        message: The claim type supplied is not available for this type of loss
+
+    ruleCsfhlClaimNotSupported:
+        description: |
+          carry-sideways-fhl claim for income sources "FHL Property - EEA" and "UK Property FHL" will not be supported from tax year 25/26.
+        value:
+          code: RULE_CSFHL_CLAIM_NOT_SUPPORTED
+          message: carry-sideways-fhl claim for income sources foreign-property-fhl-eea and uk-property-fhl will not be supported from tax year 25/26
+
+    ruleNoChangeBroughtForward:
+      description: |
+        The loss amount supplied is the same as the existing stored loss amount.
+      value:
+        code: RULE_NO_CHANGE
+        message: The brought forward loss amount has not changed
+
+    ruleNoChangeLossClaim:
+      description: |
+        The loss amount supplied is the same as the existing stored loss amount.
+      value:
+        code: RULE_NO_CHANGE
+        message: This claim matches a previous submission
+
+    formatTypeOfLoss:
+      description: |
+        The format of the supplied type of loss field is not valid.
+      value:
+        code: FORMAT_TYPE_OF_LOSS
+        message: The provided type of Loss is invalid
+
+    formatBusinessId:
+      description: |
+        The format of the supplied Business ID field is not valid.
+      value:
+        code: FORMAT_BUSINESS_ID
+        message: The provided Business ID is invalid
+
+    ruleDuplicateSubmission:
+      description: |
+        The remote endpoint has indicated that submission already exists for this Resource.
+      value:
+        code: RULE_DUPLICATE_SUBMISSION
+        message: Submission already exists
+
+    ruleDuplicateClaimSubmission:
+      description: |
+        The type of claim is the same as a previous submission for this income source.
+      value:
+        code: RULE_DUPLICATE_SUBMISSION
+        message: This claim matches a previous submission
+
+    ruleAccountingPeriodNotEnded:
+      description: |
+        The accounting period has not yet ended.
+      value:
+        code: RULE_ACCOUNTING_PERIOD_NOT_ENDED
+        message: The accounting period has not yet ended
+
+    ruleNoAccountingPeriod:
+      description: |
+        There is no accounting period for the year of the claim.
+      value:
+        code: RULE_NO_ACCOUNTING_PERIOD
+        message: For the year of the claim there is no accounting period
+
+    formatLossId:
+      description: |
+        The format of the supplied Loss ID is not valid.
+      value:
+        code: FORMAT_LOSS_ID
+        message: The provided Loss ID is invalid
+
+    ruleTaxYearNotEnded:
+      description: |
+        The submission has been made before the taxYear it relates to has ended.
+      value:
+        code: RULE_TAX_YEAR_NOT_ENDED
+        message: Tax year not ended
+
+    ruleDeleteAfterFinalDeclaration:
+      description: |
+        The remote endpoint has indicated that the requested resource has been locked.
+      value:
+        code: RULE_DELETE_AFTER_FINAL_DECLARATION
+        message: This loss cannot be deleted after final declaration
+
+    ruleIncorrectGovTestScenario:
+      description: |
+        The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for 
+        this endpoint version. This error will only be returned in the Sandbox environment.
+      value:
+        code: RULE_INCORRECT_GOV_TEST_SCENARIO
+        message: The supplied Gov-Test-Scenario is not valid
+
+    ruleBflNotSupportedForFhlProperties:
+      description: |
+        Brought forward losses for income sources "FHL Property - EEA" and "UK Property FHL" will not be supported from tax year 25/26.
+      value:
+        code: RULE_BFL_NOT_SUPPORTED_FOR_FHL_PROPERTIES
+        message: Brought forward losses for income sources uk-property-fhl and foreign-property-fhl-eea are not supported from tax year 25/26
+        
+    ruleOutsideAmendmentWindow:
+      description: |
+        The request cannot be completed as you are outside the amendment window.
+      value: 
+        code: RULE_OUTSIDE_AMENDMENT_WINDOW
+        message: You are outside the amendment window
+
+    # 403
+
+    clientOrAgentNotAuthorised:
+      description: |
+        The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+      value:
+        code: CLIENT_OR_AGENT_NOT_AUTHORISED
+        message: |
+          The client or agent is not authorised
+
+    # 404
+
+    notFound:
+      description: |
+        Matching resource not found.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
+        message: Matching resource not found
