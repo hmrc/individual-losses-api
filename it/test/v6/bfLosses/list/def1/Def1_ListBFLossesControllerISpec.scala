@@ -258,6 +258,7 @@ class Def1_ListBFLossesControllerISpec extends IntegrationBaseSpec {
       validationErrorTest("BADNINO", "2023-24", None, None, BAD_REQUEST, NinoFormatError)
       validationErrorTest("AA123456A", "XXXX-YY", None, None, BAD_REQUEST, TaxYearFormatError)
       validationErrorTest("AA123456A", "2017-18", None, None, BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", "2026-27", None, None, BAD_REQUEST, RuleTaxYearForVersionNotSupportedError)
       validationErrorTest("AA123456A", "2019-21", None, None, BAD_REQUEST, RuleTaxYearRangeInvalidError)
       validationErrorTest("AA123456A", "2023-24", Some("bad-loss-type"), None, BAD_REQUEST, TypeOfLossFormatError)
       validationErrorTest("AA123456A", "2023-24", Some("self-employment"), Some("bad-self-employment-id"), BAD_REQUEST, BusinessIdFormatError)

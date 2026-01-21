@@ -58,11 +58,24 @@ class Def1_ListLossClaimsValidatorSpec extends UnitSpec {
 
   "running validation" should {
     "return the parsed request data" when {
-      "given a valid request" in {
+      "given a valid request with the earliest tax year" in {
         val result =
           validator(validNino, validTaxYear, Some(validLossType), Some(validBusinessId), Some(validTypeOfClaim)).validateAndWrapResult()
         result shouldBe Right(
           Def1_ListLossClaimsRequestData(parsedNino, parsedTaxYear, Some(parsedTypeOfLoss), Some(parsedBusinessId), Some(parsedTypeOfClaim))
+        )
+      }
+
+      "given a valid request with the latest tax year" in {
+        val result =
+          validator(validNino, "2025-26", Some(validLossType), Some(validBusinessId), Some(validTypeOfClaim)).validateAndWrapResult()
+        result shouldBe Right(
+          Def1_ListLossClaimsRequestData(
+            parsedNino,
+            TaxYear.fromMtd("2025-26"),
+            Some(parsedTypeOfLoss),
+            Some(parsedBusinessId),
+            Some(parsedTypeOfClaim))
         )
       }
 
@@ -104,10 +117,19 @@ class Def1_ListLossClaimsValidatorSpec extends UnitSpec {
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "the tax year is too early" in {
+      "given a tax year below the earliest tax year" in {
         val result = validator(validNino, "2018-19", Some(validLossType), Some(validBusinessId), Some(validTypeOfClaim)).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
+        )
+      }
+    }
+
+    "return RuleTaxYearForVersionNotSupportedError" when {
+      "given a tax year above the latest tax year" in {
+        val result = validator(validNino, "2026-27", Some(validLossType), Some(validBusinessId), Some(validTypeOfClaim)).validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError)
         )
       }
     }

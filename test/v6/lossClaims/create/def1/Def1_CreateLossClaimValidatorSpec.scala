@@ -65,10 +65,17 @@ class Def1_CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidator
   "running a validation" should {
 
     "return the parsed domain object" when {
-      "given a valid request" in {
+      "given a valid request with the earliest tax year" in {
         val result = validator(validNino, validRequestBody).validateAndWrapResult()
         result shouldBe Right(
           Def1_CreateLossClaimRequestData(parsedNino, parsedRequestBody)
+        )
+      }
+
+      "given a valid request with the latest tax year" in {
+        val result = validator(validNino, requestBodyJson(taxYearClaimedFor = "2025-26")).validateAndWrapResult()
+        result shouldBe Right(
+          Def1_CreateLossClaimRequestData(parsedNino, parsedRequestBody.copy("2025-26"))
         )
       }
     }
@@ -125,10 +132,19 @@ class Def1_CreateLossClaimValidatorSpec extends UnitSpec with JsonErrorValidator
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "given an out of range tax year" in {
+      "given a tax year before than the earliest tax year" in {
         val result = validator(validNino, requestBodyJson(taxYearClaimedFor = "2018-19")).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor"))
+        )
+      }
+    }
+
+    "return RuleTaxYearForVersionNotSupportedError" when {
+      "given a tax year later than the latest tax year" in {
+        val result = validator(validNino, requestBodyJson(taxYearClaimedFor = "2026-27")).validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError.withPath("/taxYearClaimedFor"))
         )
       }
     }

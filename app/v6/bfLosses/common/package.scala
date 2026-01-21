@@ -20,4 +20,5 @@ import shared.models.domain.TaxYear
 
 package object common {
   val minimumTaxYear: TaxYear = TaxYear.ending(2019)
+  val maximumTaxYear: TaxYear = TaxYear.ending(2026)
 }

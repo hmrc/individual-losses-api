@@ -44,11 +44,19 @@ class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
 
   "running a validation" should {
     "return the parsed request data" when {
-      "passed a valid request" in {
+      "passed a valid request with the earliest tax year" in {
         val result: Either[ErrorWrapper, DeleteLossClaimRequestData] =
           validator(validNino, validClaimId, validTaxYearClaimedFor).validateAndWrapResult()
         result shouldBe Right(
           Def1_DeleteLossClaimRequestData(parsedNino, parsedClaimId, parsedTaxYearClaimedFor)
+        )
+      }
+
+      "passed a valid request with the latest tax year" in {
+        val result: Either[ErrorWrapper, DeleteLossClaimRequestData] =
+          validator(validNino, validClaimId, "2025-26").validateAndWrapResult()
+        result shouldBe Right(
+          Def1_DeleteLossClaimRequestData(parsedNino, parsedClaimId, TaxYear.fromMtd("2025-26"))
         )
       }
     }
@@ -80,9 +88,16 @@ class Def1_DeleteLossClaimValidatorSpec extends UnitSpec {
     }
 
     "return a RuleTaxYearNotSupportedError error" when {
-      "passed a taxYearClaimedFor before the minimum supported" in {
+      "passed a taxYearClaimedFor before the earliest supported tax year" in {
         validator(validNino, validClaimId, "2017-18").validateAndWrapResult() shouldBe
           Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+    }
+
+    "return a RuleTaxYearForVersionNotSupportedError error" when {
+      "passed a taxYearClaimedFor after the latest supported tax year" in {
+        validator(validNino, validClaimId, "2026-27").validateAndWrapResult() shouldBe
+          Left(ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError))
       }
     }
 

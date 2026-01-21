@@ -62,10 +62,17 @@ class Def1_AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonEr
 
   "running a validation" should {
     "return the parsed domain object" when {
-      "given a valid request" in {
+      "given a valid request with the earliest tax year" in {
         val result = validator(validNino, validTaxYear, mtdRequest).validateAndWrapResult()
         result shouldBe Right(
           Def1_AmendLossClaimsOrderRequestData(parsedNino, parsedTaxYear, parsedBody)
+        )
+      }
+
+      "given a valid request with a valid latest tax year" in {
+        val result = validator(validNino, "2025-26", mtdRequest).validateAndWrapResult()
+        result shouldBe Right(
+          Def1_AmendLossClaimsOrderRequestData(parsedNino, TaxYear.fromMtd("2025-26"), parsedBody)
         )
       }
     }
@@ -98,10 +105,19 @@ class Def1_AmendLossClaimsOrderValidatorFactorySpec extends UnitSpec with JsonEr
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "tax year is too early" in {
+      "given a tax year before than the earliest tax year" in {
         val result = validator(validNino, "2018-19", mtdRequest).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
+        )
+      }
+    }
+
+    "return RuleTaxYearForVersionNotSupportedError" when {
+      "given a tax year later than the latest tax year" in {
+        val result = validator(validNino, "2026-27", mtdRequest).validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError)
         )
       }
     }
