@@ -4,6 +4,8 @@ post:
     This endpoint enables you to change the type of claim for an existing loss claim type.
     A National Insurance Number, tax year and Claim ID must be provided.
     
+    > <strong>This endpoint supports tax years up to, and including, 2025-26. For tax years 2026–27 onwards, a new version is in development.</strong>
+    
     <strong>
       Note: carry-sideways-fhl type of loss claims for income sources uk-property-fhl and foreign-property-fhl-eea will not be supported from tax year 2025-26 onwards.
     </strong>
@@ -108,6 +110,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
             RULE_TAX_YEAR_NOT_SUPPORTED:
               $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            RULE_TAX_YEAR_FOR_VERSION_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearForVersionNotSupported'
             RULE_TAX_YEAR_RANGE_INVALID:
               $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
 
