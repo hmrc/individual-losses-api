@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
 
 import scala.concurrent.Future
 
-class DeleteLossClaimConnectorSpec extends ConnectorSpec {
+class DeleteLossClaimsConnectorSpec extends ConnectorSpec {
 
   private val nino: String       = "AA123456A"
   private val businessId: String = "X0IS12345678901"
   private val taxYear: String    = "2025-26"
 
-  val request = DeleteLossClaimRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  val request = DeleteLossClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
-  "deleteLossClaim" when {
+  "deleteLossClaims" when {
     "HIP is pointing to ITSA" must {
       "return a success response" in new HipTest with Test {
 
@@ -41,7 +41,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
         willDelete(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=25-26")
           .returning(Future.successful(expected))
 
-        val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
+        val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaims(request))
         result shouldBe expected
       }
     }
@@ -49,7 +49,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
 
   trait Test {
     self: ConnectorTest =>
-    val connector: DeleteLossClaimConnector = new DeleteLossClaimConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: DeleteLossClaimsConnector = new DeleteLossClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 HM Revenue & Customs
+ * Copyright 2027 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete
 
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
@@ -23,12 +23,12 @@ import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, 
 import shared.models.domain.TaxYear
 import shared.models.errors.{MtdError, RuleTaxYearRangeInvalidError}
 import v7.bfLosses.common.minimumTaxYear26_27
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
 
 import javax.inject.Singleton
 
 @Singleton
-class DeleteLossClaimValidator(nino: String, businessId: String, taxYear: String) extends Validator[DeleteLossClaimRequestData] {
+class DeleteLossClaimsValidator(nino: String, businessId: String, taxYear: String) extends Validator[DeleteLossClaimsRequestData] {
 
   def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
     def withPath(error: MtdError): MtdError = taxYearErrorPath.fold(error)(error.withPath)
@@ -39,11 +39,11 @@ class DeleteLossClaimValidator(nino: String, businessId: String, taxYear: String
     )(taxYear)
   }
 
-  def validate: Validated[Seq[MtdError], DeleteLossClaimRequestData] =
+  def validate: Validated[Seq[MtdError], DeleteLossClaimsRequestData] =
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolvedTaxYear(taxYear)
-    ).mapN(DeleteLossClaimRequestData.apply)
+    ).mapN(DeleteLossClaimsRequestData.apply)
 
 }

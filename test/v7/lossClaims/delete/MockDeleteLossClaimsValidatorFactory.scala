@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete
 
 import org.scalamock.handlers.CallHandler
 import shared.controllers.validators.{MockValidatorFactory, Validator}
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
 
-trait MockDeleteLossClaimValidatorFactory extends MockValidatorFactory[DeleteLossClaimRequestData] {
+trait MockDeleteLossClaimsValidatorFactory extends MockValidatorFactory[DeleteLossClaimsRequestData] {
 
-  val mockDeleteLossClaimValidatorFactory: DeleteLossClaimValidatorFactory =
-    mock[DeleteLossClaimValidatorFactory]
+  val mockDeleteLossClaimsValidatorFactory: DeleteLossClaimsValidatorFactory =
+    mock[DeleteLossClaimsValidatorFactory]
 
-  def validator(): CallHandler[Validator[DeleteLossClaimRequestData]] = {
-    (mockDeleteLossClaimValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
+  def validator(): CallHandler[Validator[DeleteLossClaimsRequestData]] = {
+    (mockDeleteLossClaimsValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
   }
 
 }

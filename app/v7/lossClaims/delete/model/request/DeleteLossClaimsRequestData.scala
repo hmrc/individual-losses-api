@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 HM Revenue & Customs
+ * Copyright 2027 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete.model.request
 
-import shared.controllers.validators.Validator
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-import javax.inject.Singleton
-
-@Singleton
-class DeleteLossClaimValidatorFactory {
-
-  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteLossClaimRequestData] = {
-    new DeleteLossClaimValidator(nino, businessId, taxYear)
-  }
-
-}
+case class DeleteLossClaimsRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete
 
 import common.errors.RuleOutsideAmendmentWindow
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
 
 import scala.concurrent.Future
 
-class DeleteLossClaimServiceSpec extends ServiceSpec {
+class DeleteLossClaimsServiceSpec extends ServiceSpec {
 
   private val nino: String       = "AA123456A"
   private val businessId: String = "XAIS12345678910"
   private val taxYear: String    = "2019-20"
 
-  trait Test extends MockDeleteLossClaimConnector {
-    lazy val service = new DeleteLossClaimService(connector)
+  trait Test extends MockDeleteLossClaimsConnector {
+    lazy val service = new DeleteLossClaimsService(connector)
   }
 
-  lazy val request: DeleteLossClaimRequestData = DeleteLossClaimRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  lazy val request: DeleteLossClaimsRequestData = DeleteLossClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
-  "Delete Loss Claim" should {
+  "Delete Loss Claims" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val downstreamResponse: ResponseWrapper[Unit] = ResponseWrapper(correlationId, ())
         val expected: ResponseWrapper[Unit]           = ResponseWrapper(correlationId, ())
-        MockDeleteLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Right(downstreamResponse)))
+        MockDeleteLossClaimsConnector.deleteLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
 
-        await(service.deleteLossClaimService(request)) shouldBe Right(expected)
+        await(service.deleteLossClaimsService(request)) shouldBe Right(expected)
       }
     }
 
@@ -52,20 +52,20 @@ class DeleteLossClaimServiceSpec extends ServiceSpec {
       "the connector returns an outbound error" in new Test {
         val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
-        MockDeleteLossClaimConnector.deleteLossClaim(request).returns(Future.successful(Left(downstreamResponse)))
+        MockDeleteLossClaimsConnector.deleteLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
-        await(service.deleteLossClaimService(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
+        await(service.deleteLossClaimsService(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
     }
 
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
         s"a $downstreamErrorCode error is returned from the service" in new Test {
-          MockDeleteLossClaimConnector
-            .deleteLossClaim(request)
+          MockDeleteLossClaimsConnector
+            .deleteLossClaims(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          private val result = await(service.deleteLossClaimService(request))
+          private val result = await(service.deleteLossClaimsService(request))
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 

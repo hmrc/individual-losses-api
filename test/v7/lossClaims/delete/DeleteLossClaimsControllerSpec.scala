@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete
 
 import cats.implicits.catsSyntaxValidatedId
 import play.api.Configuration
@@ -29,29 +29,29 @@ import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import shared.services.MockAuditService
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeleteLossClaimControllerSpec
+class DeleteLossClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockSharedAppConfig
-    with MockDeleteLossClaimService
-    with MockDeleteLossClaimValidatorFactory
+    with MockDeleteLossClaimsService
+    with MockDeleteLossClaimsValidatorFactory
     with MockAuditService {
 
   private val businessId  = "X0IS12345678901"
   private val taxYear     = "2026-27"
-  private val requestData = DeleteLossClaimRequestData(parsedNino, BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData = DeleteLossClaimsRequestData(parsedNino, BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "delete" should {
     "return NoContent" when {
       "the request is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockDeleteLossClaimService
+        MockDeleteLossClaimsService
           .delete(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
@@ -68,7 +68,7 @@ class DeleteLossClaimControllerSpec
       "the service returns an error" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockDeleteLossClaimService
+        MockDeleteLossClaimsService
           .delete(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError, None))))
 
@@ -79,11 +79,11 @@ class DeleteLossClaimControllerSpec
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller: DeleteLossClaimController = new DeleteLossClaimController(
+    val controller: DeleteLossClaimsController = new DeleteLossClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      service = mockDeleteLossClaimService,
-      validatorFactory = mockDeleteLossClaimValidatorFactory,
+      service = mockDeleteLossClaimsService,
+      validatorFactory = mockDeleteLossClaimsValidatorFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -93,8 +93,8 @@ class DeleteLossClaimControllerSpec
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
-        auditType = "DeleteLossClaim",
-        transactionName = "delete-loss-claim",
+        auditType = "DeleteLossClaims",
+        transactionName = "delete-loss-claims",
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,

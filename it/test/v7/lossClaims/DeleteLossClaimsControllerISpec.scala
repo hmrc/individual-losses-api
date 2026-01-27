@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossClaim
+package v7.lossClaims
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.RuleOutsideAmendmentWindow
@@ -27,7 +27,7 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class DeleteLossClaimControllerISpec extends IntegrationBaseSpec {
+class DeleteLossClaimsControllerISpec extends IntegrationBaseSpec {
 
   private def errorBody(code: String): String =
     s"""

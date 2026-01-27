@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteLossClaimService extends TestSuite with MockFactory {
+trait MockDeleteLossClaimsService extends TestSuite with MockFactory {
 
-  val mockDeleteLossClaimService: DeleteLossClaimService = mock[DeleteLossClaimService]
+  val mockDeleteLossClaimsService: DeleteLossClaimsService = mock[DeleteLossClaimsService]
 
-  object MockDeleteLossClaimService {
+  object MockDeleteLossClaimsService {
 
-    def delete(requestData: DeleteLossClaimRequestData): CallHandler[Future[ServiceOutcome[Unit]]] = {
-      (mockDeleteLossClaimService
-        .deleteLossClaimService(_: DeleteLossClaimRequestData)(_: RequestContext, _: ExecutionContext))
+    def delete(requestData: DeleteLossClaimsRequestData): CallHandler[Future[ServiceOutcome[Unit]]] = {
+      (mockDeleteLossClaimsService
+        .deleteLossClaimsService(_: DeleteLossClaimsRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

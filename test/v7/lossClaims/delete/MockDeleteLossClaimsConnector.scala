@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package v7.lossClaim.delete
+package v7.lossClaims.delete
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
-import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
+import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteLossClaimConnector extends TestSuite with MockFactory {
+trait MockDeleteLossClaimsConnector extends TestSuite with MockFactory {
 
-  val connector: DeleteLossClaimConnector = mock[DeleteLossClaimConnector]
+  val connector: DeleteLossClaimsConnector = mock[DeleteLossClaimsConnector]
 
-  object MockDeleteLossClaimConnector {
+  object MockDeleteLossClaimsConnector {
 
-    def deleteLossClaim(deleteLossClaimRequestData: DeleteLossClaimRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def deleteLossClaims(deleteLossClaimsRequestData: DeleteLossClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
-        .deleteLossClaim(_: DeleteLossClaimRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(deleteLossClaimRequestData, *, *, *)
+        .deleteLossClaims(_: DeleteLossClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(deleteLossClaimsRequestData, *, *, *)
     }
 
   }

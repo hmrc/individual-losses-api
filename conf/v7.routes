@@ -7,4 +7,4 @@ GET        /:nino/brought-forward-losses/:lossId                                
 
 # Loss Claim
 
-DELETE     /:nino/businesses/:businessId/loss-claims/:taxYear                          v7.lossClaim.delete.DeleteLossClaimController.delete(nino: String, businessId: String, taxYear: String)
+DELETE     /:nino/businesses/:businessId/loss-claims/:taxYear                          v7.lossClaims.delete.DeleteLossClaimsController.delete(nino: String, businessId: String, taxYear: String)
