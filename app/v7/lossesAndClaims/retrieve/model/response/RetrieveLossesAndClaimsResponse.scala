@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package v7
+package v7.lossesAndClaims.retrieve.model.response
 
-import shared.models.domain.TaxYear
+import play.api.libs.json.*
 
-package object lossesAndClaims {
-  val minimumTaxYear: TaxYear = TaxYear.ending(2027)
+case class RetrieveLossClaimsResponse(submittedOn: String, claims: Option[Claims], losses: Option[Losses])
+
+object RetrieveLossClaimsResponse {
+  implicit val retrieveLossClaimsFormat: OFormat[RetrieveLossClaimsResponse] = Json.format[RetrieveLossClaimsResponse]
 }

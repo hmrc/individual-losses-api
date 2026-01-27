@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package v7
+package v7.lossesAndClaims.retrieve.model.request
 
-import shared.models.domain.TaxYear
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-package object lossesAndClaims {
-  val minimumTaxYear: TaxYear = TaxYear.ending(2027)
-}
+case class RetrieveLossesAndClaimsRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

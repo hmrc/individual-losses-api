@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package v7
+package v7.lossesAndClaims.retrieve.model.response
 
-import shared.models.domain.TaxYear
+import play.api.libs.json.{Json, OWrites, Reads, __}
 
-package object lossesAndClaims {
-  val minimumTaxYear: TaxYear = TaxYear.ending(2027)
+case class CarrySideways(currentYearGeneralIncome: Option[BigDecimal])
+
+object CarrySideways {
+  implicit val writes: OWrites[CarrySideways] = Json.writes[CarrySideways]
+
+  implicit val reads: Reads[CarrySideways] = (__ \ "currentYearGeneralIncomeSection64").readNullable[BigDecimal].map(CarrySideways.apply)
+
 }
