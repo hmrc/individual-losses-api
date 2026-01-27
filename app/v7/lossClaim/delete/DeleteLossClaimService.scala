@@ -17,6 +17,7 @@
 package v7.lossClaim.delete
 
 import cats.implicits.*
+import common.errors.RuleOutsideAmendmentWindow
 import shared.controllers.RequestContext
 import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
@@ -32,12 +33,22 @@ class DeleteLossClaimService @Inject() (connector: DeleteLossClaimConnector) ext
       request: DeleteLossClaimRequestData)(implicit cxt: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
     connector
       .deleteLossClaim(request)
-      .map(_.leftMap(mapDownstreamErrors(commonErrorMap)))
+      .map(_.leftMap(mapDownstreamErrors(commonErrorMap ++ itsdErrorMap)))
   }
 
   private val commonErrorMap: Map[String, MtdError] = Map(
     "SERVER_ERROR"        -> InternalError,
     "SERVICE_UNAVAILABLE" -> InternalError
+  )
+
+  private val itsdErrorMap: Map[String, MtdError] = Map(
+    "1215" -> NinoFormatError,
+    "1117" -> TaxYearFormatError,
+    "1216" -> InternalError,
+    "1007" -> BusinessIdFormatError,
+    "4200" -> RuleOutsideAmendmentWindow,
+    "5000" -> RuleTaxYearNotSupportedError,
+    "5010" -> NotFoundError
   )
 
 }
