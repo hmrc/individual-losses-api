@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 HM Revenue & Customs
+ * Copyright 2027 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package v7.lossClaim.delete
 
 import cats.implicits.catsSyntaxValidatedId
-import common.errors.RuleDeleteAfterFinalDeclarationError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
@@ -43,8 +42,8 @@ class DeleteLossClaimControllerSpec
     with MockDeleteLossClaimValidatorFactory
     with MockAuditService {
 
-  private val businessId  = "AAZZ1234567890a"
-  private val taxYear     = "2019-20"
+  private val businessId  = "X0IS12345678901"
+  private val taxYear     = "2026-27"
   private val requestData = DeleteLossClaimRequestData(parsedNino, BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "delete" should {
@@ -62,8 +61,8 @@ class DeleteLossClaimControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        willUseValidator(returning(NinoFormatError))
-        runErrorTestWithAudit(NinoFormatError)
+        willUseValidator(returning(BusinessIdFormatError))
+        runErrorTestWithAudit(BusinessIdFormatError)
       }
 
       "the service returns an error" in new Test {
@@ -71,9 +70,9 @@ class DeleteLossClaimControllerSpec
 
         MockDeleteLossClaimService
           .delete(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleDeleteAfterFinalDeclarationError, None))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError, None))))
 
-        runErrorTestWithAudit(RuleDeleteAfterFinalDeclarationError)
+        runErrorTestWithAudit(RuleTaxYearNotSupportedError)
       }
     }
   }
