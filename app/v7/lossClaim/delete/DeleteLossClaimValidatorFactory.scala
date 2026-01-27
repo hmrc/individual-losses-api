@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package v7.bfLosses
+package v7.lossClaim.delete
 
-import shared.models.domain.TaxYear
+import shared.controllers.validators.Validator
+import v7.lossClaim.delete.model.request.DeleteLossClaimRequestData
 
-package object common {
-  val minimumTaxYear: TaxYear      = TaxYear.ending(2019)
-  val minimumTaxYear26_27: TaxYear = TaxYear.ending(2027)
+import javax.inject.Singleton
+
+@Singleton
+class DeleteLossClaimValidatorFactory {
+
+  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteLossClaimRequestData] = {
+    new DeleteLossClaimValidator(nino, businessId, taxYear)
+  }
+
 }
