@@ -1,0 +1,5 @@
+get:
+  $ref: "./loss_and_claim_retrieve.yaml"
+
+delete:
+  $ref: "./loss_and_claim_delete.yaml"

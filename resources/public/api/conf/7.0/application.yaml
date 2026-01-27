@@ -57,4 +57,4 @@ tags:
 
 paths:
   /individuals/losses/{nino}/businesses/{businessId}/loss-claims/{taxYear}:
-    $ref: "./loss_and_claim_delete.yaml"
+    $ref: "./losses_and_claims.yaml"

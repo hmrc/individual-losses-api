@@ -1,3 +1,4 @@
 # Loss Claim
 
+GET        /:nino/businesses/:businessId/loss-claims/:taxYear                          v7.lossesAndClaims.retrieve.RetrieveLossesAndClaimsController.retrieve(nino: String, businessId: String, taxYear: String)
 DELETE     /:nino/businesses/:businessId/loss-claims/:taxYear                          v7.lossesAndClaims.delete.DeleteLossesAndClaimsController.delete(nino: String, businessId: String, taxYear: String)
