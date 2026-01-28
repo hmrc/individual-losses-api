@@ -1,5 +1,5 @@
 /*
- * Copyright 2027 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete
 
 import cats.implicits.catsSyntaxValidatedId
 import play.api.Configuration
@@ -29,29 +29,29 @@ import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import shared.services.MockAuditService
-import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeleteLossClaimsControllerSpec
+class DeleteLossesAndClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockSharedAppConfig
-    with MockDeleteLossClaimsService
-    with MockDeleteLossClaimsValidatorFactory
+    with MockDeleteLossesAndClaimsService
+    with MockDeleteLossesAndClaimsValidatorFactory
     with MockAuditService {
 
   private val businessId  = "X0IS12345678901"
   private val taxYear     = "2026-27"
-  private val requestData = DeleteLossClaimsRequestData(parsedNino, BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData = DeleteLossesAndClaimsRequestData(parsedNino, BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "delete" should {
     "return NoContent" when {
       "the request is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockDeleteLossClaimsService
+        MockDeleteLossesAndClaimsService
           .delete(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
@@ -68,7 +68,7 @@ class DeleteLossClaimsControllerSpec
       "the service returns an error" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockDeleteLossClaimsService
+        MockDeleteLossesAndClaimsService
           .delete(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError, None))))
 
@@ -79,7 +79,7 @@ class DeleteLossClaimsControllerSpec
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller: DeleteLossClaimsController = new DeleteLossClaimsController(
+    val controller: DeleteLossesAndClaimsController = new DeleteLossesAndClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockDeleteLossClaimsService,
@@ -93,8 +93,8 @@ class DeleteLossClaimsControllerSpec
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
-        auditType = "DeleteLossClaims",
-        transactionName = "delete-loss-claims",
+        auditType = "DeleteLossesAndClaims",
+        transactionName = "delete-losses-and-claims",
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,

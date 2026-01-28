@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.SharedAppConfig
@@ -26,18 +26,18 @@ import shared.utils.IdGenerator
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class DeleteLossClaimsController @Inject() (val authService: EnrolmentsAuthService,
-                                            val lookupService: MtdIdLookupService,
-                                            service: DeleteLossClaimsService,
-                                            validatorFactory: DeleteLossClaimsValidatorFactory,
-                                            auditService: AuditService,
-                                            cc: ControllerComponents,
-                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+class DeleteLossesAndClaimsController @Inject() (val authService: EnrolmentsAuthService,
+                                                 val lookupService: MtdIdLookupService,
+                                                 service: DeleteLossesAndClaimsService,
+                                                 validatorFactory: DeleteLossesAndClaimsValidatorFactory,
+                                                 auditService: AuditService,
+                                                 cc: ControllerComponents,
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
-  override val endpointName: String = "delete-loss-claims"
+  override val endpointName: String = "delete-losses-and-claims"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "DeleteLossClaimsController", endpointName = "Delete a Loss Claims")
+    EndpointLogContext(controllerName = "DeleteLossesAndClaimsController", endpointName = "Delete a Losses and Claims")
 
   def delete(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -51,8 +51,8 @@ class DeleteLossClaimsController @Inject() (val authService: EnrolmentsAuthServi
           .withService(service.deleteLossClaimsService)
           .withAuditing(AuditHandler(
             auditService,
-            auditType = "DeleteLossClaims",
-            transactionName = "delete-loss-claims",
+            auditType = "DeleteLossesAndClaims",
+            transactionName = "delete-losses-and-claims",
             apiVersion = Version(request),
             params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear)
           ))

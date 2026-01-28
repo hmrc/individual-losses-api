@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.{ErrorWrapper, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
-import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
-class DeleteLossClaimsValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
+class DeleteLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "X0IS12345678901"
   private val validTaxYear    = "2026-27"
 
   private implicit val correlationId: String = "1234"
-  private val validatorFactory               = new DeleteLossClaimsValidatorFactory
+  private val validatorFactory               = new DeleteLossesAndClaimsValidatorFactory
 
   private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
@@ -39,7 +39,7 @@ class DeleteLossClaimsValidatorFactorySpec extends UnitSpec with JsonErrorValida
     "return the parsed domain object" when {
       "given a valid request" in {
         val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear).validateAndWrapResult()
-        result shouldBe Right(DeleteLossClaimsRequestData(parsedNino, parsedBusinessId, parsedTaxYear))
+        result shouldBe Right(DeleteLossesAndClaimsRequestData(parsedNino, parsedBusinessId, parsedTaxYear))
       }
     }
 

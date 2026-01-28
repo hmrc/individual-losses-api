@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete
 
 import cats.implicits.*
 import shared.controllers.RequestContext
 import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
-import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 import common.errors.RuleOutsideAmendmentWindow
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteLossClaimsService @Inject() (connector: DeleteLossClaimsConnector) extends BaseService {
+class DeleteLossesAndClaimsService @Inject() (connector: DeleteLossesAndClaimsConnector) extends BaseService {
 
   def deleteLossClaimsService(
-      request: DeleteLossClaimsRequestData)(implicit cxt: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+      request: DeleteLossesAndClaimsRequestData)(implicit cxt: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
     connector
-      .deleteLossClaims(request)
+      .deleteLossesAndClaims(request)
       .map(_.leftMap(mapDownstreamErrors(commonErrorMap ++ itsdErrorMap)))
   }
 

@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete
 
 import common.errors.RuleOutsideAmendmentWindow
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
 import scala.concurrent.Future
 
-class DeleteLossClaimsServiceSpec extends ServiceSpec {
+class DeleteLossesAndClaimsServiceSpec extends ServiceSpec {
 
   private val nino: String       = "AA123456A"
   private val businessId: String = "XAIS12345678910"
   private val taxYear: String    = "2019-20"
 
-  trait Test extends MockDeleteLossClaimsConnector {
-    lazy val service = new DeleteLossClaimsService(connector)
+  trait Test extends MockDeleteLossesAndClaimsConnector {
+    lazy val service = new DeleteLossesAndClaimsService(connector)
   }
 
-  lazy val request: DeleteLossClaimsRequestData = DeleteLossClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  lazy val request: DeleteLossesAndClaimsRequestData = DeleteLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "Delete Loss Claims" should {
     "return a Right" when {

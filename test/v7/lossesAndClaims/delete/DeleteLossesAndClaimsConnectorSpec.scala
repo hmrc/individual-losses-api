@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
 import scala.concurrent.Future
 
-class DeleteLossClaimsConnectorSpec extends ConnectorSpec {
+class DeleteLossesAndClaimsConnectorSpec extends ConnectorSpec {
 
   private val nino: String       = "AA123456A"
   private val businessId: String = "X0IS12345678901"
   private val taxYear: String    = "2025-26"
 
-  val request = DeleteLossClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  val request = DeleteLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
-  "deleteLossClaims" when {
+  "deleteLossesAndClaims" when {
     "HIP is pointing to ITSA" must {
       "return a success response" in new HipTest with Test {
 
@@ -41,7 +41,7 @@ class DeleteLossClaimsConnectorSpec extends ConnectorSpec {
         willDelete(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=25-26")
           .returning(Future.successful(expected))
 
-        val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaims(request))
+        val result: DownstreamOutcome[Unit] = await(connector.deleteLossesAndClaims(request))
         result shouldBe expected
       }
     }
@@ -49,7 +49,7 @@ class DeleteLossClaimsConnectorSpec extends ConnectorSpec {
 
   trait Test {
     self: ConnectorTest =>
-    val connector: DeleteLossClaimsConnector = new DeleteLossClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: DeleteLossesAndClaimsConnector = new DeleteLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }
 
 }

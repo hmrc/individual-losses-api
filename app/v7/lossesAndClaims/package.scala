@@ -18,6 +18,6 @@ package v7
 
 import shared.models.domain.TaxYear
 
-package object lossClaims {
+package object lossesAndClaims {
   val minimumTaxYear: TaxYear = TaxYear.ending(2027)
 }

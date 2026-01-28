@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossClaims
+package v7.lossesAndClaims
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.RuleOutsideAmendmentWindow
@@ -27,7 +27,7 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class DeleteLossClaimsControllerISpec extends IntegrationBaseSpec {
+class DeleteLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
 
   private def errorBody(code: String): String =
     s"""
@@ -41,9 +41,9 @@ class DeleteLossClaimsControllerISpec extends IntegrationBaseSpec {
        |}
     """.stripMargin
 
-  "Calling the withdraw late accounting date rule endpoint" should {
+  "Calling the Delete losses and claims endpoint" should {
     "return a 204 status code" when {
-      "a valid request is made with a past tax year and suspendTemporalValidations is false" in new Test {
+      "a valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           MtdIdLookupStub.ninoFound(nino)

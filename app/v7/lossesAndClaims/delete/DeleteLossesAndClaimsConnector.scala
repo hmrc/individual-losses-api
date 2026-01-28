@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete
 
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.HipUri
@@ -22,20 +22,20 @@ import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteLossClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class DeleteLossesAndClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def deleteLossClaims(deleteLossClaimsRequestData: DeleteLossClaimsRequestData)(implicit
+  def deleteLossesAndClaims(deleteLossesAndClaimsRequestData: DeleteLossesAndClaimsRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import deleteLossClaimsRequestData.*
+    import deleteLossesAndClaimsRequestData.*
 
     val downstreamUri = HipUri[Unit](s"itsd/reliefs/loss-claims/$nino/$businessId?taxYear=${taxYear.asTysDownstream}")
 

@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package v7.lossClaims.delete
+package v7.lossesAndClaims.delete.model.request
 
-import shared.controllers.validators.Validator
-import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-import javax.inject.Singleton
-
-@Singleton
-class DeleteLossClaimsValidatorFactory {
-
-  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteLossClaimsRequestData] = {
-    new DeleteLossClaimsValidator(nino, businessId, taxYear)
-  }
-
-}
+case class DeleteLossesAndClaimsRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

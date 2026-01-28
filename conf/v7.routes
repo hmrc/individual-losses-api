@@ -1,3 +1,3 @@
 # Loss Claim
 
-DELETE     /:nino/businesses/:businessId/loss-claims/:taxYear                          v7.lossClaims.delete.DeleteLossClaimsController.delete(nino: String, businessId: String, taxYear: String)
+DELETE     /:nino/businesses/:businessId/loss-claims/:taxYear                          v7.lossesAndClaims.delete.DeleteLossesAndClaimsController.delete(nino: String, businessId: String, taxYear: String)
