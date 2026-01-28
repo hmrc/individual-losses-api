@@ -22,11 +22,11 @@ import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
 trait MockDeleteLossesAndClaimsValidatorFactory extends MockValidatorFactory[DeleteLossesAndClaimsRequestData] {
 
-  val mockDeleteLossClaimsValidatorFactory: DeleteLossesAndClaimsValidatorFactory =
+  val mockDeleteLossesAndClaimsValidatorFactory: DeleteLossesAndClaimsValidatorFactory =
     mock[DeleteLossesAndClaimsValidatorFactory]
 
   def validator(): CallHandler[Validator[DeleteLossesAndClaimsRequestData]] = {
-    (mockDeleteLossClaimsValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
+    (mockDeleteLossesAndClaimsValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
   }
 
 }

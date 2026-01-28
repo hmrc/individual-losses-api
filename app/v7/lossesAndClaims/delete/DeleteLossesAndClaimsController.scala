@@ -23,9 +23,10 @@ import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class DeleteLossesAndClaimsController @Inject() (val authService: EnrolmentsAuthService,
                                                  val lookupService: MtdIdLookupService,
                                                  service: DeleteLossesAndClaimsService,
@@ -37,7 +38,7 @@ class DeleteLossesAndClaimsController @Inject() (val authService: EnrolmentsAuth
   override val endpointName: String = "delete-losses-and-claims"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "DeleteLossesAndClaimsController", endpointName = "Delete a Losses and Claims")
+    EndpointLogContext(controllerName = "DeleteLossesAndClaimsController", endpointName = "Delete Losses and Claims")
 
   def delete(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

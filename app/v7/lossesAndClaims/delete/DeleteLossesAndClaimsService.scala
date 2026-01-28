@@ -17,11 +17,11 @@
 package v7.lossesAndClaims.delete
 
 import cats.implicits.*
+import common.errors.RuleOutsideAmendmentWindow
 import shared.controllers.RequestContext
 import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
-import common.errors.RuleOutsideAmendmentWindow
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,13 +33,8 @@ class DeleteLossesAndClaimsService @Inject() (connector: DeleteLossesAndClaimsCo
       request: DeleteLossesAndClaimsRequestData)(implicit cxt: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
     connector
       .deleteLossesAndClaims(request)
-      .map(_.leftMap(mapDownstreamErrors(commonErrorMap ++ itsdErrorMap)))
+      .map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
   }
-
-  private val commonErrorMap: Map[String, MtdError] = Map(
-    "SERVER_ERROR"        -> InternalError,
-    "SERVICE_UNAVAILABLE" -> InternalError
-  )
 
   private val itsdErrorMap: Map[String, MtdError] = Map(
     "1215" -> NinoFormatError,

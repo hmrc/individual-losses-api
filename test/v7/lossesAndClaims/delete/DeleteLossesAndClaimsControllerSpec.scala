@@ -82,8 +82,8 @@ class DeleteLossesAndClaimsControllerSpec
     val controller: DeleteLossesAndClaimsController = new DeleteLossesAndClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      service = mockDeleteLossClaimsService,
-      validatorFactory = mockDeleteLossClaimsValidatorFactory,
+      service = mockDeleteLossesAndClaimsService,
+      validatorFactory = mockDeleteLossesAndClaimsValidatorFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

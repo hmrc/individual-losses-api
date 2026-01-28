@@ -29,9 +29,9 @@ trait MockDeleteLossesAndClaimsConnector extends TestSuite with MockFactory {
 
   val connector: DeleteLossesAndClaimsConnector = mock[DeleteLossesAndClaimsConnector]
 
-  object MockDeleteLossClaimsConnector {
+  object MockDeleteLossesAndClaimsConnector {
 
-    def deleteLossClaims(deleteLossClaimsRequestData: DeleteLossesAndClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def deleteLossesAndClaims(deleteLossClaimsRequestData: DeleteLossesAndClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
         .deleteLossesAndClaims(_: DeleteLossesAndClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(deleteLossClaimsRequestData, *, *, *)

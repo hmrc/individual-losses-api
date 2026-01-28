@@ -32,18 +32,16 @@ class DeleteLossesAndClaimsConnectorSpec extends ConnectorSpec {
 
   val request = DeleteLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
-  "deleteLossesAndClaims" when {
-    "HIP is pointing to ITSA" must {
-      "return a success response" in new HipTest with Test {
+  "deleteLossesAndClaims" must {
+    "return a success response" in new HipTest with Test {
 
-        val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+      val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        willDelete(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=25-26")
-          .returning(Future.successful(expected))
+      willDelete(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=25-26")
+        .returning(Future.successful(expected))
 
-        val result: DownstreamOutcome[Unit] = await(connector.deleteLossesAndClaims(request))
-        result shouldBe expected
-      }
+      val result: DownstreamOutcome[Unit] = await(connector.deleteLossesAndClaims(request))
+      result shouldBe expected
     }
   }
 

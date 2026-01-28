@@ -1,5 +1,5 @@
 /*
- * Copyright 2027 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,11 +89,11 @@ class DeleteLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
           }
 
           val input = List(
-            ("AA1123A", "XAIS12345678910", "2024-25", BAD_REQUEST, NinoFormatError),
-            ("AA123456A", "invalid", "2024-25", BAD_REQUEST, BusinessIdFormatError),
+            ("AA1123A", "XAIS12345678910", "2026-27", BAD_REQUEST, NinoFormatError),
+            ("AA123456A", "invalid", "2026-27", BAD_REQUEST, BusinessIdFormatError),
             ("AA123456A", "XAIS12345678910", "invalid", BAD_REQUEST, TaxYearFormatError),
-            ("AA123456A", "XAIS12345678910", "2024-26", BAD_REQUEST, RuleTaxYearRangeInvalidError),
-            ("AA123456A", "XAIS12345678910", "2023-24", BAD_REQUEST, RuleTaxYearNotSupportedError)
+            ("AA123456A", "XAIS12345678910", "2025-27", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+            ("AA123456A", "XAIS12345678910", "2025-26", BAD_REQUEST, RuleTaxYearNotSupportedError)
           )
 
           input.foreach(validationErrorTest.tupled)

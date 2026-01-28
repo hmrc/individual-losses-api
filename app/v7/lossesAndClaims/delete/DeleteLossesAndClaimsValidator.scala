@@ -30,13 +30,11 @@ import javax.inject.Singleton
 @Singleton
 class DeleteLossesAndClaimsValidator(nino: String, businessId: String, taxYear: String) extends Validator[DeleteLossesAndClaimsRequestData] {
 
-  def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
-
-    def withPath(error: MtdError): MtdError = taxYearErrorPath.fold(error)(error.withPath)
+  def resolvedTaxYear(taxYear: String): Validated[Seq[MtdError], TaxYear] = {
 
     ResolveTaxYearMinimum(
       minimumTaxYear,
-      rangeError = withPath(RuleTaxYearRangeInvalidError)
+      rangeError = RuleTaxYearRangeInvalidError
     )(taxYear)
   }
 

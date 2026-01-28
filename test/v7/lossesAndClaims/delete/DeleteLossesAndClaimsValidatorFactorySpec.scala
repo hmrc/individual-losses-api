@@ -45,7 +45,7 @@ class DeleteLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonErrorV
 
     "return RuleTaxYearNotSupportedError" when {
       "given a tax year passed an unsupported tax year" in {
-        val result = validatorFactory.validator(validNino, validBusinessId, "2023-24").validateAndWrapResult()
+        val result = validatorFactory.validator(validNino, validBusinessId, "2025-26").validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
         )
@@ -54,7 +54,7 @@ class DeleteLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonErrorV
 
     "return RuleTaxYearRangeInvalid" when {
       "given a tax year range which isn't a single year" in {
-        val result = validatorFactory.validator(validNino, validBusinessId, "2023-26").validateAndWrapResult()
+        val result = validatorFactory.validator(validNino, validBusinessId, "2025-27").validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
         )

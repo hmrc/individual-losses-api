@@ -37,12 +37,12 @@ class DeleteLossesAndClaimsServiceSpec extends ServiceSpec {
 
   lazy val request: DeleteLossesAndClaimsRequestData = DeleteLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
-  "Delete Loss Claims" should {
+  "Delete Losses and Claims" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
         val downstreamResponse: ResponseWrapper[Unit] = ResponseWrapper(correlationId, ())
         val expected: ResponseWrapper[Unit]           = ResponseWrapper(correlationId, ())
-        MockDeleteLossClaimsConnector.deleteLossClaims(request).returns(Future.successful(Right(downstreamResponse)))
+        MockDeleteLossesAndClaimsConnector.deleteLossesAndClaims(request).returns(Future.successful(Right(downstreamResponse)))
 
         await(service.deleteLossClaimsService(request)) shouldBe Right(expected)
       }
@@ -52,7 +52,7 @@ class DeleteLossesAndClaimsServiceSpec extends ServiceSpec {
       "the connector returns an outbound error" in new Test {
         val someError: MtdError                                = MtdError("SOME_CODE", "some message", BAD_REQUEST)
         val downstreamResponse: ResponseWrapper[OutboundError] = ResponseWrapper(correlationId, OutboundError(someError))
-        MockDeleteLossClaimsConnector.deleteLossClaims(request).returns(Future.successful(Left(downstreamResponse)))
+        MockDeleteLossesAndClaimsConnector.deleteLossesAndClaims(request).returns(Future.successful(Left(downstreamResponse)))
 
         await(service.deleteLossClaimsService(request)) shouldBe Left(ErrorWrapper(correlationId, someError, None))
       }
@@ -61,18 +61,13 @@ class DeleteLossesAndClaimsServiceSpec extends ServiceSpec {
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
         s"a $downstreamErrorCode error is returned from the service" in new Test {
-          MockDeleteLossClaimsConnector
-            .deleteLossClaims(request)
+          MockDeleteLossesAndClaimsConnector
+            .deleteLossesAndClaims(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
           private val result = await(service.deleteLossClaimsService(request))
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
-
-      val commonErrors: Seq[(String, MtdError)] = List(
-        "SERVER_ERROR"        -> InternalError,
-        "SERVICE_UNAVAILABLE" -> InternalError
-      )
 
       val itsdErrors: Seq[(String, MtdError)] = List(
         "1215" -> NinoFormatError,
@@ -84,7 +79,7 @@ class DeleteLossesAndClaimsServiceSpec extends ServiceSpec {
         "5010" -> NotFoundError
       )
 
-      (commonErrors ++ itsdErrors).foreach(serviceError.tupled)
+      itsdErrors.foreach(serviceError.tupled)
     }
 
   }
