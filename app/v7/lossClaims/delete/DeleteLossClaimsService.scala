@@ -1,5 +1,5 @@
 /*
- * Copyright 2027 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package v7.lossClaims.delete
 
 import cats.implicits.*
-import common.errors.RuleOutsideAmendmentWindow
 import shared.controllers.RequestContext
 import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import common.errors.RuleOutsideAmendmentWindow
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package v7.bfLosses.retrieve
+package v7
 
-import shared.controllers.validators.Validator
-import v7.bfLosses.retrieve.RetrieveBFLossSchema.Def1
-import v7.bfLosses.retrieve.def1.Def1_RetrieveBFLossValidator
-import v7.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
+import shared.models.domain.TaxYear
 
-class RetrieveBFLossValidatorFactory {
-
-  def validator(nino: String, body: String): Validator[RetrieveBFLossRequestData] = {
-    val schema = RetrieveBFLossSchema.schema
-    schema match {
-      case Def1 => new Def1_RetrieveBFLossValidator(nino, body)
-    }
-  }
-
+package object lossClaims {
+  val minimumTaxYear: TaxYear = TaxYear.ending(2027)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2027 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
 import shared.models.errors.{MtdError, RuleTaxYearRangeInvalidError}
-import v7.bfLosses.common.minimumTaxYear26_27
 import v7.lossClaims.delete.model.request.DeleteLossClaimsRequestData
+import v7.lossClaims.minimumTaxYear
 
 import javax.inject.Singleton
 
@@ -31,10 +31,11 @@ import javax.inject.Singleton
 class DeleteLossClaimsValidator(nino: String, businessId: String, taxYear: String) extends Validator[DeleteLossClaimsRequestData] {
 
   def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
+
     def withPath(error: MtdError): MtdError = taxYearErrorPath.fold(error)(error.withPath)
 
     ResolveTaxYearMinimum(
-      minimumTaxYear26_27,
+      minimumTaxYear,
       rangeError = withPath(RuleTaxYearRangeInvalidError)
     )(taxYear)
   }
