@@ -5,7 +5,7 @@ info:
   title: Individual Losses (MTD)
   description: |
     The following groups of endpoints are stateful in the Sandbox:
-    * [Brought Forward Losses](#tag/Brought-Forward-Losses)
+    * [Losses and Claims]
     
     # Send fraud prevention data
     HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
@@ -53,8 +53,8 @@ components:
 
 tags:
   - name: Losses and Claims
-    description: Resources related to a customer’s financial data for their brought forward losses.
+    description: Resources related to a customer’s financial data for their loss claims.
 
 paths:
-  /individuals/losses/{nino}/losses-claims/tax-year/{taxYear}:
-    $ref: "./loss_and_claim_retrieve.yaml"
+  /individuals/losses/{nino}/businesses/{businessId}/loss-claims/{taxYear}:
+    $ref: "./loss_and_claim_delete.yaml"

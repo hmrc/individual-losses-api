@@ -13,7 +13,7 @@ components:
       name: businessId
       in: path
       description: |
-        The unique identifier of the loss.
+        The unique identifier of the business.
       schema:
         type: string
         example: AAZZ1234567890A
@@ -23,8 +23,8 @@ components:
       name: taxYear
       in: path
       description: |
-        The tax year to which the data applies. The start year and end year must not span two tax years. The minimum tax year is 2018-19. No gaps are allowed, for example, 2018-20 is not valid.
+        The tax year to which the data applies. The start year and end year must not span two tax years. The minimum tax year is 2026-27. No gaps are allowed, for example, 2026-28 is not valid.
       schema:
         type: string
-        example: 2018-19
+        example: 2026-27
       required: true
