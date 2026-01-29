@@ -52,13 +52,9 @@ components:
             read:self-assessment: Grant read access
 
 tags:
-  - name: Brought Forward Losses
+  - name: Losses and Claims
     description: Resources related to a customer’s financial data for their brought forward losses.
 
 paths:
-  /individuals/losses/{nino}/brought-forward-losses/tax-year/brought-forward-from/{taxYear}:
-    $ref: "./brought_forward_losses_create.yaml"
-  /individuals/losses/{nino}/brought-forward-losses/{lossId}:
-    $ref: "./brought_forward_losses_retrieve.yaml"
-  /individuals/losses/{nino}/brought-forward-losses/{lossId}/tax-year/{taxYear}:
-    $ref: "./brought_forward_losses_delete.yaml"
+  /individuals/losses/{nino}/losses-claims/tax-year/{taxYear}:
+    $ref: "./loss_and_claim_retrieve.yaml"
