@@ -1,5 +1,3 @@
-# Brought-forward losses
+# Loss Claim
 
-POST       /:nino/brought-forward-losses/tax-year/brought-forward-from/:taxYear        v7.bfLosses.create.CreateBFLossController.create(nino: String, taxYear: String)
-DELETE     /:nino/brought-forward-losses/:lossId/tax-year/:taxYear                     v7.bfLosses.delete.DeleteBFLossController.delete(nino: String, lossId: String, taxYear: String)
-GET        /:nino/brought-forward-losses/:lossId                                       v7.bfLosses.retrieve.RetrieveBFLossController.retrieve(nino: String, lossId: String)
+DELETE     /:nino/businesses/:businessId/loss-claims/:taxYear                          v7.lossesAndClaims.delete.DeleteLossesAndClaimsController.delete(nino: String, businessId: String, taxYear: String)
