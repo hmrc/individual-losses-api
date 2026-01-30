@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package v7
+package v7.lossesAndClaims.retrieve
 
-import shared.models.domain.TaxYear
+import shared.controllers.validators.Validator
+import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 
-package object lossesAndClaims {
-  val minimumTaxYear: TaxYear = TaxYear.ending(2027)
+import javax.inject.Singleton
+
+@Singleton
+class RetrieveLossesAndClaimsValidatorFactory {
+
+  def validator(nino: String, businessId: String, taxYear: String): Validator[RetrieveLossesAndClaimsRequestData] = {
+    new RetrieveLossesAndClaimsValidator(nino, businessId, taxYear)
+  }
+
 }
