@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String = requestNino
+          override val nino: String       = requestNino
           override val businessId: String = requestBusinessId
           override val taxYear: String    = requestTaxYear
 
@@ -119,8 +119,8 @@ class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
   private trait Test {
 
     val nino                      = "AA123456A"
-    val businessId        = "XKIS00000000988"
-    val taxYear           = "2026-27"
+    val businessId                = "XKIS00000000988"
+    val taxYear                   = "2026-27"
     private val lastModified      = "2026-08-24T14:15:22.544Z"
     private val downstreamTaxYear = "26-27"
 
