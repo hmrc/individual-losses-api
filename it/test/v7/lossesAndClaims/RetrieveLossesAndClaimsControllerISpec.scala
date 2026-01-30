@@ -149,7 +149,8 @@ class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
          |  "claims": {
          |    "carryBack": {
          |      "previousYearGeneralIncome": 5000.99,
-         |      "earlyYearLosses": 5000.99
+         |      "earlyYearLosses": 5000.99,
+         |      "terminalLosses": 5000.99
          |    },
          |    "carrySideways": {
          |      "currentYearGeneralIncome": 5000.99

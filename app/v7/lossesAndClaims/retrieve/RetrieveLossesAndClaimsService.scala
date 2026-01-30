@@ -21,7 +21,7 @@ import shared.controllers.RequestContext
 import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
-import v7.lossesAndClaims.retrieve.model.response.RetrieveLossClaimsResponse
+import v7.lossesAndClaims.retrieve.model.response.RetrieveLossesAndClaimsResponse
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,7 @@ class RetrieveLossesAndClaimsService @Inject() (connector: RetrieveLossesAndClai
 
   def retrieveLossesAndClaims(request: RetrieveLossesAndClaimsRequestData)(implicit
       ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrieveLossClaimsResponse]] = {
+      ec: ExecutionContext): Future[ServiceOutcome[RetrieveLossesAndClaimsResponse]] = {
     connector
       .retrieveLossesAndClaims(request)
       .map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
@@ -42,7 +42,7 @@ class RetrieveLossesAndClaimsService @Inject() (connector: RetrieveLossesAndClai
     "1216" -> InternalError,
     "1007" -> BusinessIdFormatError,
     "5010" -> NotFoundError,
-    "5000" -> InternalError
+    "5000" -> RuleTaxYearNotSupportedError
   )
 
 }

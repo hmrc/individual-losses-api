@@ -23,7 +23,7 @@ import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, Downstream
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
-import v7.lossesAndClaims.retrieve.model.response.RetrieveLossClaimsResponse
+import v7.lossesAndClaims.retrieve.model.response.RetrieveLossesAndClaimsResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,11 +34,11 @@ class RetrieveLossesAndClaimsConnector @Inject() (val http: HttpClientV2, val ap
   def retrieveLossesAndClaims(request: RetrieveLossesAndClaimsRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[RetrieveLossClaimsResponse]] = {
+      correlationId: String): Future[DownstreamOutcome[RetrieveLossesAndClaimsResponse]] = {
 
     import request.*
 
-    lazy val downstreamUri                     = HipUri[RetrieveLossClaimsResponse](s"itsd/reliefs/loss-claims/$nino/$businessId")
+    lazy val downstreamUri                     = HipUri[RetrieveLossesAndClaimsResponse](s"itsd/reliefs/loss-claims/$nino/$businessId")
     val queryParams                            = Map("taxYear" -> taxYear.asTysDownstream)
     val mappedQueryParams: Map[String, String] = queryParams.collect { case (k: String, v: String) => (k, v) }
 
