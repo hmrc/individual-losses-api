@@ -19,8 +19,7 @@ package v7.lossesAndClaims.retrieve
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers.*
-import shared.routing.Version
-import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
@@ -32,7 +31,6 @@ class RetrieveLossesAndClaimsController @Inject() (
     val lookupService: MtdIdLookupService,
     service: RetrieveLossesAndClaimsService,
     validatorFactory: RetrieveLossesAndClaimsValidatorFactory,
-    auditService: AuditService,
     cc: ControllerComponents,
     idGenerator: IdGenerator
 )(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
@@ -53,13 +51,6 @@ class RetrieveLossesAndClaimsController @Inject() (
         RequestHandler
           .withValidator(validator)
           .withService(service.retrieveLossesAndClaims)
-          .withAuditing(AuditHandler(
-            auditService,
-            auditType = "RetrieveLossesAndClaims",
-            transactionName = "retrieve-loss-and-claims",
-            apiVersion = Version(request),
-            params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear)
-          ))
           .withPlainJsonResult(OK)
 
       requestHandler.handleRequest()

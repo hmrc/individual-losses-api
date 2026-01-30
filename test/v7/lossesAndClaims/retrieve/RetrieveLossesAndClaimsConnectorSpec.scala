@@ -22,7 +22,15 @@ import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 import v7.lossesAndClaims.retrieve.model.response.PreferenceOrderEnum.`carry-back`
-import v7.lossesAndClaims.retrieve.model.response.{CarryBack, CarryForward, CarrySideways, Claims, Losses, PreferenceOrder, RetrieveLossesAndClaimsResponse}
+import v7.lossesAndClaims.retrieve.model.response.{
+  CarryBack,
+  CarryForward,
+  CarrySideways,
+  Claims,
+  Losses,
+  PreferenceOrder,
+  RetrieveLossesAndClaimsResponse
+}
 
 import scala.concurrent.Future
 
@@ -34,26 +42,32 @@ class RetrieveLossesAndClaimsConnectorSpec extends ConnectorSpec {
 
   val retrieveResponse: RetrieveLossesAndClaimsResponse = RetrieveLossesAndClaimsResponse(
     "2026-08-24T14:15:22.544Z",
-    Some(Claims(
-      Some(CarryBack(
-        Some(5000.99),
-        Some(5000.99),
-        Some(5000.99)
+    Some(
+      Claims(
+        Some(
+          CarryBack(
+            Some(5000.99),
+            Some(5000.99),
+            Some(5000.99)
+          )),
+        Some(
+          CarrySideways(
+            Some(5000.99)
+          )),
+        Some(
+          PreferenceOrder(
+            Some(`carry-back`)
+          )),
+        Some(
+          CarryForward(
+            Some(5000.99),
+            Some(5000.99)
+          ))
       )),
-      Some(CarrySideways(
-        Some(5000.99)
-      )),
-      Some(PreferenceOrder(
-        Some(`carry-back`)
-      )),
-      Some(CarryForward(
-        Some(5000.99),
+    Some(
+      Losses(
         Some(5000.99)
       ))
-    )),
-    Some(Losses(
-      Some(5000.99)
-    ))
   )
 
   val request = RetrieveLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))

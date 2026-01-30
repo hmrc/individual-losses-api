@@ -23,15 +23,14 @@ import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.*
 import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import shared.services.MockAuditService
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
+import v7.lossesAndClaims.retrieve.model.response.*
 import v7.lossesAndClaims.retrieve.model.response.PreferenceOrderEnum.`carry-back`
-import v7.lossesAndClaims.retrieve.model.response.{CarryBack, CarryForward, CarrySideways, Claims, Losses, PreferenceOrder, RetrieveLossesAndClaimsResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -78,8 +77,7 @@ class RetrieveLossesAndClaimsControllerSpec
       ))
   )
 
-  private val mtdResponseJson: JsValue = Json.parse(
-    s"""
+  private val mtdResponseJson: JsValue = Json.parse(s"""
        |{
        |  "submittedOn": "2026-08-24T14:15:22.544Z",
        |  "claims": {
@@ -121,7 +119,7 @@ class RetrieveLossesAndClaimsControllerSpec
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
         willUseValidator(returning(BusinessIdFormatError))
-        runErrorTestWithAudit(BusinessIdFormatError)
+        runErrorTest(BusinessIdFormatError)
       }
 
       "the service returns an error" in new Test {
@@ -131,39 +129,23 @@ class RetrieveLossesAndClaimsControllerSpec
           .retrieve(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError, None))))
 
-        runErrorTestWithAudit(RuleTaxYearNotSupportedError)
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+  private trait Test extends ControllerTest {
 
     val controller: RetrieveLossesAndClaimsController = new RetrieveLossesAndClaimsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockRetrieveLossesAndClaimsService,
       validatorFactory = mockRetrieveLossesAndClaimsValidatorFactory,
-      auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
     )
 
     protected def callController(): Future[Result] = controller.retrieve(validNino, businessId, taxYear)(fakeRequest)
-
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
-      AuditEvent(
-        auditType = "RetrieveLossesAndClaims",
-        transactionName = "retrieve-losses-and-claims",
-        detail = GenericAuditDetail(
-          userType = "Individual",
-          agentReferenceNumber = None,
-          versionNumber = Version9.name,
-          params = Map("nino" -> validNino, "businessId" -> businessId, "taxYear" -> taxYear),
-          requestBody = maybeRequestBody,
-          `X-CorrelationId` = correlationId,
-          auditResponse = auditResponse
-        )
-      )
 
     MockedSharedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 

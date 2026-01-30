@@ -23,8 +23,17 @@ import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.{BusinessIdFormatError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError, InternalError}
-import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.models.errors.{
+  BusinessIdFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError,
+  TaxYearFormatError
+}
+import shared.services.{AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
 class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
@@ -33,7 +42,6 @@ class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
     "return a 200 status code" when {
       "any valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
-          AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, downstreamQueryParams, Status.OK, downstreamResponseJson)
@@ -60,7 +68,6 @@ class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
           override val taxYear: String    = requestTaxYear
 
           override def setupStubs(): StubMapping = {
-            AuditStub.audit()
             MtdIdLookupStub.ninoFound(nino)
             AuthStub.authorised()
           }
@@ -88,7 +95,6 @@ class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
         s"downstream returns an $downstreamCode error" in new Test {
 
           override def setupStubs(): StubMapping = {
-            AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
             DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
@@ -149,8 +155,7 @@ class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
          |  "claims": {
          |    "carryBack": {
          |      "previousYearGeneralIncome": 5000.99,
-         |      "earlyYearLosses": 5000.99,
-         |      "terminalLosses": 5000.99
+         |      "earlyYearLosses": 5000.99
          |    },
          |    "carrySideways": {
          |      "currentYearGeneralIncome": 5000.99
