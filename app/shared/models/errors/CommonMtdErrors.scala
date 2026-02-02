@@ -139,6 +139,16 @@ object RuleEndBeforeStartDateError
 
 object RuleCountryCodeError extends MtdError("RULE_COUNTRY_CODE", "The country code is not a valid ISO 3166-1 alpha-3 country code", BAD_REQUEST)
 
+object RuleMissingPreferenceOrder extends MtdError("RULE_MISSING_PREFERENCE_ORDER", "Preference order required for section 64 claims", BAD_REQUEST)
+
+object RuleCarryForwardAndTerminalLossNotAllowed
+    extends MtdError(
+      "RULE_CARRY_FORWARD_AND_TERMINAL_LOSS_NOT_ALLOWED",
+      "Carry forward loss claims cannot be submitted with Terminal loss claims",
+      BAD_REQUEST)
+
+object RuleCarryBackClaim extends MtdError("RULE_CARRY_BACK_CLAIM", "Carry back claim type not valid for property sources", BAD_REQUEST)
+
 //Stub Errors
 object RuleIncorrectGovTestScenarioError
     extends MtdError("RULE_INCORRECT_GOV_TEST_SCENARIO", "The supplied Gov-Test-Scenario is not valid", BAD_REQUEST)
