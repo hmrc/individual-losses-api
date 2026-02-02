@@ -16,11 +16,12 @@
 
 package v7.lossesAndClaims.createAmend.request
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OFormat, Reads}
 import v7.lossesAndClaims.common.Losses
 
 case class CreateAmendLossesAndClaimsRequestBody(claims: Option[Claims], losses: Option[Losses])
 
 object CreateAmendLossesAndClaimsRequestBody {
+  implicit val reads: Reads[CreateAmendLossesAndClaimsRequestBody]    = Json.reads[CreateAmendLossesAndClaimsRequestBody]
   implicit val format: OFormat[CreateAmendLossesAndClaimsRequestBody] = Json.format[CreateAmendLossesAndClaimsRequestBody]
 }

@@ -16,13 +16,12 @@
 
 package v7.lossesAndClaims.createAmend
 
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
-import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.config.SharedAppConfig
+import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v6.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}

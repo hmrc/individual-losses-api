@@ -16,7 +16,6 @@
 
 package v7.lossesAndClaims.createAmend.request
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class CarrySideways(currentYearGeneralIncome: Option[BigDecimal])

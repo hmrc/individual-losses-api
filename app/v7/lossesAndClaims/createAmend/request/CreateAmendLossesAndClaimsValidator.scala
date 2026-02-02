@@ -16,17 +16,14 @@
 
 package v7.lossesAndClaims.createAmend.request
 
-import cats.Foldable.nonInheritedOps.toFoldableOps
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits.{catsSyntaxTuple3Semigroupal, catsSyntaxTuple4Semigroupal}
+import cats.implicits.{catsSyntaxTuple4Semigroupal, toFoldableOps}
 import play.api.libs.json.*
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.*
 import shared.models.domain.TaxYear
 import shared.models.errors.*
-import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
-import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 import v7.lossesAndClaims.minimumTaxYear
 
 import javax.inject.Singleton
@@ -35,14 +32,13 @@ import javax.inject.Singleton
 class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxYear: String, body: JsValue)
     extends Validator[CreateAmendLossesAndClaimsRequestData] {
 
-  private val resolveJson = new ResolveNonEmptyJsonObject[CreateAmendLossesAndClaimsRequestBody]()
+  private val resolveJson = new ResolveJsonObject[CreateAmendLossesAndClaimsRequestBody]()
 
   def resolvedTaxYear(taxYear: String): Validated[Seq[MtdError], TaxYear] = {
 
     ResolveTaxYearMinimum(
       minimumTaxYear,
       notSupportedError = RuleTaxYearNotSupportedError,
-      allowIncompleteTaxYear = false,
       rangeError = RuleTaxYearRangeInvalidError,
       taxYearNotEnded = RuleTaxYearNotEndedError
     )(taxYear)
@@ -75,12 +71,11 @@ class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxY
   }
 
   private def optionalDouble(path: JsPath)(implicit json: JsValue): Validated[Seq[MtdError], Unit] =
-    path match {
-      case JsDefined(value) =>
-        value.validate[BigDecimal] match {
-          case JsSuccess(_, _) => Valid(())
-          case JsError(_)      => Invalid(List(ValueFormatError.withPath(path.toString)))
-        }
-      case JsUndefined() => Invalid(List(RuleIncorrectOrEmptyBodyError))
+    path.readNullable[BigDecimal].reads(json) match {
+      case JsSuccess(_, _) =>
+        Valid(())
+      case JsError(_) =>
+        Invalid(List(ValueFormatError.withPath(path.toString)))
     }
+
 }
