@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package v7.lossesAndClaims.common
+package v7.lossesAndClaims.commons
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.Format
+import shared.utils.enums.Enums
 
-case class PreferenceOrder(applyFirst: Option[PreferenceOrderEnum])
+enum PreferenceOrderEnum {
+  case `carry-sideways`, `carry-back`
+}
 
-object PreferenceOrder {
-  implicit val format: OFormat[PreferenceOrder] = Json.format[PreferenceOrder]
+object PreferenceOrderEnum {
+  given Format[PreferenceOrderEnum] = Enums.format(values)
 }

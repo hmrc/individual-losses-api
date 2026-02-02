@@ -18,7 +18,7 @@ package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.*
-import v7.lossesAndClaims.common.PreferenceOrder
+import v7.lossesAndClaims.commons.PreferenceOrder
 
 case class Claims(carryBack: Option[CarryBack],
                   carrySideways: Option[CarrySideways],

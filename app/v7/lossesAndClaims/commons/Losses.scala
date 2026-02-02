@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossesAndClaims.common
+package v7.lossesAndClaims.commons
 
 import play.api.libs.json.{Json, OFormat}
 

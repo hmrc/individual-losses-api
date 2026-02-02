@@ -43,7 +43,7 @@ class CreateAmendLossesAndClaimsController @Inject() (val authService: Enrolment
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateAmendLossesAndClaimsController", endpointName = " Create and Amend Losses And Claims")
 
-  def createAndAmend(nino: String, businessId: String, taxYear: String): Action[JsValue] =
+  def createAmend(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
@@ -64,7 +64,7 @@ class CreateAmendLossesAndClaimsController @Inject() (val authService: Enrolment
             transactionName = "create-and-amend-losses-and-claims",
             apiVersion = Version(request),
             params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
-            requestBody = Some(request.body),
+            requestBody = Option(request.body),
             includeResponse = true
           ))
 

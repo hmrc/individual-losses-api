@@ -20,8 +20,8 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v7.lossesAndClaims.common.PreferenceOrderEnum.`carry-back`
-import v7.lossesAndClaims.common.{Losses, PreferenceOrder}
+import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
+import v7.lossesAndClaims.commons.{Losses, PreferenceOrder}
 import v7.lossesAndClaims.createAmend.request.*
 
 import scala.concurrent.Future
