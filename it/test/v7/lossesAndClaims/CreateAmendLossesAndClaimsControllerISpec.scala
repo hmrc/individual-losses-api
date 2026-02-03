@@ -39,7 +39,8 @@ class CreateAmendLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
     val nino       = "AA123456A"
     val businessId = "XKIS00000000988"
     val taxYear    = "2026-27"
-
+    val allowTemporalValidationSuspension: String = "true"
+    
     val requestJson: JsValue = Json.parse(s"""
          |{
          |  "claims": {
@@ -107,7 +108,8 @@ class CreateAmendLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.7.0+json"),
-          (AUTHORIZATION, "Bearer 123")
+          (AUTHORIZATION, "Bearer 123"),
+          ("suspend-temporal-validations", allowTemporalValidationSuspension)
         )
     }
 

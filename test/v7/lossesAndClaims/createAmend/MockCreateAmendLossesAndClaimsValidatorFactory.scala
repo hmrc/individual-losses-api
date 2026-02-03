@@ -27,7 +27,7 @@ trait MockCreateAmendLossesAndClaimsValidatorFactory extends MockValidatorFactor
     mock[CreateAmendLossesAndClaimsValidationFactory]
 
   def validator(): CallHandler[Validator[CreateAmendLossesAndClaimsRequestData]] = {
-    (mockCreateAmendLossesAndClaimsValidatorFactory.validator(_: String, _: String, _: String, _: JsValue)).expects(*, *, *, *)
+    (mockCreateAmendLossesAndClaimsValidatorFactory.validator(_: String, _: String, _: String, _: JsValue, _: Boolean)).expects(*, *, *, *, *)
   }
 
 }

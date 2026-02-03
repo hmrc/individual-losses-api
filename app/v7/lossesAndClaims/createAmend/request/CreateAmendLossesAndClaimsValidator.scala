@@ -30,7 +30,7 @@ import v7.lossesAndClaims.minimumTaxYear
 import javax.inject.Singleton
 
 @Singleton
-class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxYear: String, body: JsValue)
+class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxYear: String, body: JsValue, temporalValidationEnabled: Boolean)
     extends Validator[CreateAmendLossesAndClaimsRequestData] {
 
   private val resolveJson = new ResolveJsonObject[CreateAmendLossesAndClaimsRequestBody]()
@@ -41,6 +41,7 @@ class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxY
       minimumTaxYear,
       notSupportedError = RuleTaxYearNotSupportedError,
       rangeError = RuleTaxYearRangeInvalidError,
+      allowIncompleteTaxYear = !temporalValidationEnabled,
       taxYearNotEnded = RuleTaxYearNotEndedError
     )(taxYear)
   }

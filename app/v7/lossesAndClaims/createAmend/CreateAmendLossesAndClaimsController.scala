@@ -16,6 +16,7 @@
 
 package v7.lossesAndClaims.createAmend
 
+import config.LossesFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
@@ -51,7 +52,8 @@ class CreateAmendLossesAndClaimsController @Inject() (val authService: Enrolment
         nino = nino,
         businessId = businessId,
         taxYear = taxYear,
-        body = request.body
+        body = request.body,
+        temporalValidationEnabled = LossesFeatureSwitches().isTemporalValidationEnabled
       )
       val requestHandler =
         RequestHandler

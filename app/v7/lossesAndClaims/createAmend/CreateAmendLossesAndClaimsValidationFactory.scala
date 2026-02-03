@@ -25,7 +25,11 @@ import javax.inject.Singleton
 @Singleton
 class CreateAmendLossesAndClaimsValidationFactory {
 
-  def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[CreateAmendLossesAndClaimsRequestData] =
-    new CreateAmendLossesAndClaimsValidator(nino, businessId, taxYear, body)
+  def validator(nino: String,
+                businessId: String,
+                taxYear: String,
+                body: JsValue,
+                temporalValidationEnabled: Boolean): Validator[CreateAmendLossesAndClaimsRequestData] =
+    new CreateAmendLossesAndClaimsValidator(nino, businessId, taxYear, body, temporalValidationEnabled)
 
 }
