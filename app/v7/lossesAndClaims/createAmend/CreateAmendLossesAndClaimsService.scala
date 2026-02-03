@@ -43,7 +43,7 @@ class CreateAmendLossesAndClaimsService @Inject(connector: CreateAmendLossesAndC
 
   def createAmendLossesAndClaims(
       request: CreateAmendLossesAndClaimsRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
-    connector.amendLossClaimsAndLosses(request).map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
+    connector.createAmendLossClaimsAndLosses(request).map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
 
   }
 

@@ -18,6 +18,7 @@ package v7.lossesAndClaims.createAmend
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
@@ -72,8 +73,21 @@ class CreateAmendLossesAndClaimsConnectorSpec extends ConnectorSpec {
       willPut(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27", createAmendLossesAndClaimsRequestBody)
         .returning(Future.successful(expected))
 
-      val result: DownstreamOutcome[Unit] = await(connector.amendLossClaimsAndLosses(request))
+      val result: DownstreamOutcome[Unit] = await(connector.createAmendLossClaimsAndLosses(request))
       result shouldBe expected
+    }
+
+    "return an unsuccessful response" when {
+      "the downstream request is unsuccessful" in new HipTest with Test {
+        val downstreamErrorResponse: DownstreamErrors                 = DownstreamErrors.single(DownstreamErrorCode("SOME_ERROR"))
+        val outcome: Left[ResponseWrapper[DownstreamErrors], Nothing] = Left(ResponseWrapper(correlationId, downstreamErrorResponse))
+
+        willPut(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27", createAmendLossesAndClaimsRequestBody)
+          .returns(Future.successful(outcome))
+
+        val result: DownstreamOutcome[Unit] = await(connector.createAmendLossClaimsAndLosses(request))
+        result shouldBe outcome
+      }
     }
   }
 

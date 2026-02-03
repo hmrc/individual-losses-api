@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateAmendLossesAndClaimsConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def amendLossClaimsAndLosses(request: CreateAmendLossesAndClaimsRequestData)(implicit
+  def createAmendLossClaimsAndLosses(request: CreateAmendLossesAndClaimsRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {

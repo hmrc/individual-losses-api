@@ -34,7 +34,7 @@ trait MockCreateAmendLossesAndClaimsConnector extends TestSuite with MockFactory
     def createAndAmendLossesAndClaims(
         createAndAmendLossClaimsRequestData: CreateAmendLossesAndClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
-        .amendLossClaimsAndLosses(_: CreateAmendLossesAndClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .createAmendLossClaimsAndLosses(_: CreateAmendLossesAndClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(createAndAmendLossClaimsRequestData, *, *, *)
     }
 

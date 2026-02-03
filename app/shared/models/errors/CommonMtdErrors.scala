@@ -139,7 +139,19 @@ object RuleEndBeforeStartDateError
 
 object RuleCountryCodeError extends MtdError("RULE_COUNTRY_CODE", "The country code is not a valid ISO 3166-1 alpha-3 country code", BAD_REQUEST)
 
-object RuleMissingPreferenceOrder extends MtdError("RULE_MISSING_PREFERENCE_ORDER", "Preference order required for section 64 claims", BAD_REQUEST)
+object RuleMissingPreferenceOrder
+    extends MtdError(
+      "RULE_MISSING_PREFERENCE_ORDER",
+      "Preference order is required when both previousYearGeneralIncome and currentYearGeneralIncome are submitted",
+      BAD_REQUEST)
+
+object RulePreferenceOrderNotAllowed
+    extends MtdError(
+      "RULE_PREFERENCE_ORDER_NOT_ALLOWED",
+      "Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted",
+      BAD_REQUEST)
+
+object FormatPreferenceOrder extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
 
 object RuleCarryForwardAndTerminalLossNotAllowed
     extends MtdError(

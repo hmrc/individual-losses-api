@@ -18,12 +18,13 @@ package v7.lossesAndClaims.createAmend.request
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits.{catsSyntaxTuple4Semigroupal, toFoldableOps}
+import cats.implicits.{catsSyntaxTuple2Semigroupal, catsSyntaxTuple4Semigroupal, toFoldableOps}
 import play.api.libs.json.*
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.*
 import shared.models.domain.TaxYear
 import shared.models.errors.*
+import v7.lossesAndClaims.commons.PreferenceOrderEnum
 import v7.lossesAndClaims.minimumTaxYear
 
 import javax.inject.Singleton
@@ -45,7 +46,7 @@ class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxY
   }
 
   def validate: Validated[Seq[MtdError], CreateAmendLossesAndClaimsRequestData] = {
-    formatValidate(body)
+    validateRequestBody(body)
       .andThen(_ =>
         (
           ResolveNino(nino),
@@ -55,7 +56,7 @@ class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxY
         ).mapN(CreateAmendLossesAndClaimsRequestData.apply))
   }
 
-  private val doublePaths = Seq(
+  private val doubleValuedPath = Seq(
     __ \ "claims" \ "carryBack" \ "previousYearGeneralIncome",
     __ \ "claims" \ "carryBack" \ "earlyYearLosses",
     __ \ "claims" \ "carryBack" \ "terminalLosses",
@@ -65,17 +66,90 @@ class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxY
     __ \ "losses" \ "broughtForwardLosses"
   )
 
-  private def formatValidate(json: JsValue): Validated[Seq[MtdError], Unit] = {
+  private val preferenceOrderPath = __ \ "claims" \ "preferenceOrder"
+
+  private val allPaths = doubleValuedPath :+ preferenceOrderPath
+
+  private def validateRequestBody(json: JsValue): Validated[Seq[MtdError], Unit] = {
     implicit val js: JsValue = json
-    doublePaths.traverse_(optionalDouble)
+    val pathsDefined =
+      allPaths.exists(path => path.asSingleJson(json).isDefined)
+
+    if (!pathsDefined) {
+      val undefinedPaths = allPaths.map(_.toString())
+      Invalid(List(RuleIncorrectOrEmptyBodyError.withPaths(undefinedPaths)))
+    } else {
+      doubleValuedPath.traverse_(validateDoubleValuedPath).andThen { _ =>
+        (json \ "claims").validate[Claims].asEither match {
+          case Left(_) =>
+            Validated.invalid(Seq(FormatPreferenceOrder.withPath(preferenceOrderPath.toString())))
+          case Right(claims) =>
+            validateClaims(claims)
+        }
+      }
+    }
   }
 
-  private def optionalDouble(path: JsPath)(implicit json: JsValue): Validated[Seq[MtdError], Unit] =
+  private def validateDoubleValuedPath(path: JsPath)(implicit json: JsValue): Validated[Seq[MtdError], Unit] = {
     path.readNullable[BigDecimal].reads(json) match {
       case JsSuccess(_, _) =>
         Valid(())
       case JsError(_) =>
         Invalid(List(ValueFormatError.withPath(path.toString)))
     }
+  }
+
+  private def validateClaims(claims: Claims): Validated[Seq[MtdError], Unit] = {
+    val previousYearGeneralIncome =
+      claims.carryBack.flatMap(_.previousYearGeneralIncome)
+
+    val currentYearGeneralIncome =
+      claims.carrySideways.flatMap(_.currentYearGeneralIncome)
+
+    val applyFirst =
+      claims.preferenceOrder.flatMap(_.applyFirst)
+    (
+      validateApplyFirstPresence(previousYearGeneralIncome, currentYearGeneralIncome, applyFirst),
+      validateTerminalLossesVsCarryForward(claims)
+    ).mapN((_, _) => ())
+  }
+
+  private def validateApplyFirstPresence(
+      previousYearIncome: Option[BigDecimal],
+      currentYearIncome: Option[BigDecimal],
+      applyFirst: Option[PreferenceOrderEnum]
+  ): Validated[Seq[MtdError], Unit] = {
+
+    val path = preferenceOrderPath.toString()
+
+    (previousYearIncome.isDefined, currentYearIncome.isDefined, applyFirst.isDefined) match
+      case (true, true, false) =>
+        Validated.invalid(Seq(RuleMissingPreferenceOrder.withPath(path)))
+
+      case (true, false, true) | (false, true, true) | (false, false, true) =>
+        Validated.invalid(Seq(RulePreferenceOrderNotAllowed.withPath(path)))
+
+      case _ => Validated.valid(())
+  }
+
+  private def validateTerminalLossesVsCarryForward(
+      claims: Claims
+  ): Validated[Seq[MtdError], Unit] = {
+
+    val terminalPath     = __ \ "claims" \ "carryBack" \ "terminalLosses"
+    val carryForwardPath = __ \ "claims" \ "carryForward"
+
+    val terminalLossesDefined = claims.carryBack.flatMap(_.terminalLosses).isDefined
+    val carryForwardDefined   = claims.carryForward.isDefined
+
+    if (terminalLossesDefined && carryForwardDefined)
+      Validated.invalid(
+        Seq(
+          RuleCarryForwardAndTerminalLossNotAllowed
+            .withPaths(List(terminalPath.toString, carryForwardPath.toString))
+        ))
+    else
+      Validated.valid(())
+  }
 
 }
