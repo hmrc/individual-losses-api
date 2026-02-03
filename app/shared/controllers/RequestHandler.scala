@@ -70,9 +70,6 @@ object RequestHandler {
     def withAuditing(auditHandler: AuditHandler): RequestHandlerBuilder[Input, Output] =
       copy(auditHandler = Some(auditHandler))
 
-    def withResponseModifier(responseModifier: Output => Output): RequestHandlerBuilder[Input, Output] =
-      copy(responseModifier = Option(responseModifier))
-
     /** Shorthand for
       * {{{
       * withResultCreator(ResultCreator.plainJson(successStatus))

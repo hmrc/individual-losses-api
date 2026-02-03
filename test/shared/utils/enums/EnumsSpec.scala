@@ -68,6 +68,19 @@ class EnumsSpec extends UnitSpec with Inspectors {
       }
     }
 
+    "read using default Show" in {
+      val enumReads: Reads[Enum] = Enums.reads(values)
+
+      enumReads.reads(JsString("enum-one")) shouldBe JsSuccess(`enum-one`)
+      enumReads.reads(JsString("unknown")) shouldBe a[JsError]
+    }
+
+    "write using default Show" in {
+      val enumWrites: Writes[Enum] = Enums.writes[Enum]
+
+      enumWrites.writes(`enum-two`) shouldBe JsString("enum-two")
+    }
+
     "allow roundtrip" in {
       forAll(values.toList) { value =>
         val foo: Foo[Enum] = Foo(value)

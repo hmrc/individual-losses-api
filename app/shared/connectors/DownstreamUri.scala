@@ -28,20 +28,10 @@ object DownstreamUri {
   private def withStandardStrategy[Resp](path: String, config: DownstreamConfig) =
     DownstreamUri(path, DownstreamStrategy.standardStrategy(config))
 
-  def DesUri[Resp](value: String)(implicit appConfig: SharedAppConfig): DownstreamUri[Resp] =
-    withStandardStrategy(value, appConfig.desDownstreamConfig)
-
   def IfsUri[Resp](value: String)(implicit appConfig: SharedAppConfig): DownstreamUri[Resp] =
     withStandardStrategy(value, appConfig.ifsDownstreamConfig)
 
   def HipUri[Resp](path: String)(implicit appConfig: SharedAppConfig): DownstreamUri[Resp] =
     DownstreamUri(path, DownstreamStrategy.basicAuthStrategy(appConfig.hipDownstreamConfig))
-
-  def DesToHipMigrationUri[Resp](path: String, switchName: String)(implicit appConfig: SharedAppConfig): DownstreamUri[Resp] = {
-    lazy val desStrategy = DownstreamStrategy.standardStrategy(appConfig.desDownstreamConfig)
-    lazy val hipStategy  = DownstreamStrategy.basicAuthStrategy(appConfig.hipDownstreamConfig)
-
-    DownstreamUri(path, DownstreamStrategy.switchedStrategy(onStrategy = hipStategy, offStrategy = desStrategy, switchName))
-  }
 
 }
