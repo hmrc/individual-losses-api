@@ -27,9 +27,10 @@ import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class CreateAmendLossesAndClaimsController @Inject() (val authService: EnrolmentsAuthService,
                                                       val lookupService: MtdIdLookupService,
                                                       service: CreateAmendLossesAndClaimsService,

@@ -22,6 +22,5 @@ import v7.lossesAndClaims.commons.Losses
 case class CreateAmendLossesAndClaimsRequestBody(claims: Option[Claims], losses: Option[Losses])
 
 object CreateAmendLossesAndClaimsRequestBody {
-  implicit val reads: Reads[CreateAmendLossesAndClaimsRequestBody]    = Json.reads[CreateAmendLossesAndClaimsRequestBody]
   implicit val format: OFormat[CreateAmendLossesAndClaimsRequestBody] = Json.format[CreateAmendLossesAndClaimsRequestBody]
 }
