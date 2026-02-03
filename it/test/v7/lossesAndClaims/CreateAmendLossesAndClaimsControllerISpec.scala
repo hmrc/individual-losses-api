@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,7 +150,7 @@ class CreateAmendLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
       createErrorTest(UNPROCESSABLE_ENTITY, "1254", BAD_REQUEST, RuleCarryForwardAndTerminalLossNotAllowed)
       createErrorTest(UNPROCESSABLE_ENTITY, "1262", BAD_REQUEST, RuleCarryBackClaim)
       createErrorTest(UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
-      createErrorTest(NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(NOT_IMPLEMENTED, "5000", INTERNAL_SERVER_ERROR, RuleTaxYearNotSupportedErrorV7)
       createErrorTest(NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
       createErrorTest(BAD_REQUEST, "UNMATCHED_STUB_ERROR", BAD_REQUEST, RuleIncorrectGovTestScenarioError)
     }

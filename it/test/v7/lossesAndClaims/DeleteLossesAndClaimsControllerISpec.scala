@@ -122,7 +122,7 @@ class DeleteLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "5010", NOT_FOUND, NotFoundError),
-          (UNPROCESSABLE_ENTITY, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (UNPROCESSABLE_ENTITY, "5000", INTERNAL_SERVER_ERROR, RuleTaxYearNotSupportedErrorV7),
           (BAD_REQUEST, "UNMATCHED_STUB_ERROR", BAD_REQUEST, RuleIncorrectGovTestScenarioError),
           (UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
         )

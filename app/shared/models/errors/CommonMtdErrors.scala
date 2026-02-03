@@ -101,6 +101,9 @@ object RuleRequestCannotBeFulfilledError
 object RuleTaxYearNotSupportedError
     extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", BAD_REQUEST)
 
+object RuleTaxYearNotSupportedErrorV7
+    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", INTERNAL_SERVER_ERROR)
+
 object RuleTaxYearForVersionNotSupportedError
     extends MtdError(
       "RULE_TAX_YEAR_FOR_VERSION_NOT_SUPPORTED",

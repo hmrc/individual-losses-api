@@ -29,7 +29,7 @@ import shared.models.errors.{
   RuleCarryForwardAndTerminalLossNotAllowed,
   RuleMissingPreferenceOrder,
   RuleTaxYearNotEndedError,
-  RuleTaxYearNotSupportedError,
+  RuleTaxYearNotSupportedErrorV7,
   TaxYearFormatError
 }
 import shared.services.{BaseService, ServiceOutcome}
@@ -58,7 +58,7 @@ class CreateAmendLossesAndClaimsService @Inject(connector: CreateAmendLossesAndC
     "1254" -> RuleCarryForwardAndTerminalLossNotAllowed,
     "1262" -> RuleCarryBackClaim,
     "4200" -> RuleOutsideAmendmentWindow,
-    "5000" -> RuleTaxYearNotSupportedError,
+    "5000" -> RuleTaxYearNotSupportedErrorV7,
     "5010" -> NotFoundError
   )
 

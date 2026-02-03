@@ -103,7 +103,7 @@ class CreateAmendLossesAndClaimsServiceSpec extends ServiceSpec {
         "1254" -> RuleCarryForwardAndTerminalLossNotAllowed,
         "1262" -> RuleCarryBackClaim,
         "4200" -> RuleOutsideAmendmentWindow,
-        "5000" -> RuleTaxYearNotSupportedError,
+        "5000" -> RuleTaxYearNotSupportedErrorV7,
         "5010" -> NotFoundError
       )
 
