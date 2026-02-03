@@ -17,12 +17,11 @@
 package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v7.lossesAndClaims.commons.PreferenceOrderEnum.{`carry-back`, `carry-sideways`}
 import v7.lossesAndClaims.commons.{Losses, PreferenceOrder}
 
-class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec with MockSharedAppConfig {
+class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec {
 
   val nino: String       = "AA123456A"
   val taxYear: String    = "2026-27"
