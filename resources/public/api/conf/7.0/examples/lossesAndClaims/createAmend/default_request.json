@@ -1,0 +1,21 @@
+{
+  "claims": {
+    "carryBack": {
+      "previousYearGeneralIncome": 5000.99,
+      "earlyYearLosses": 5000.99
+    },
+    "carrySideways": {
+      "currentYearGeneralIncome": 5000.99
+    },
+    "preferenceOrder": {
+      "applyFirst": "carry-sideways"
+    },
+    "carryForward": {
+      "currentYearLosses": 5000.99,
+      "previousYearsLosses": 5000.99
+    }
+  },
+  "losses": {
+    "broughtForwardLosses": 5000.99
+  }
+}

@@ -1,3 +1,6 @@
+put:
+  $ref: "./losses_and_claims_create_amend.yaml"
+  summary: Create or Amend Losses and Claims
 get:
   $ref: "./loss_and_claim_retrieve.yaml"
   security:

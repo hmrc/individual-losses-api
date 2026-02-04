@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create Amend Losses And Claims Request",
+  "description": "Create Amend Losses And Claims Request",
+  "type": "object",
+  "properties": {
+    "claims": {
+      "type": "object",
+      "description": "Object containing claim details.",
+      "properties": {
+        "carryBack": {
+          "type": "object",
+          "description": "Object containing loss amounts to be carried back.",
+          "properties": {
+            "previousYearGeneralIncome": {
+              "type": "number",
+              "description": "The amount of the current tax year's trading losses to carry back under Section 64 to be off set against general income of the previous year(s). The value must be between 0 and 99999999999.99 up to 2 decimal places. \n\nFor example: 5000.99",
+              "example": "1999.99",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 99999999999.99
+            },
+            "earlyYearLosses": {
+              "type": "number",
+              "description": "The amount of the current tax year's trading losses to carry back under Section 72 to be set off against general income of the previous year(s). The value must be between 0 and 99999999999.99 up to 2 decimal places. \n\nFor example: 5000.99",
+              "example": "1999.99",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 99999999999.99
+            },
+            "terminalLosses": {
+              "type": "number",
+              "description": "The amount of the current tax year's trading losses to be carry back under Section 89 and applied against profits of the three previous years, starting with the earliest year first. The value must be between 0 and 99999999999.99 up to 2 decimal places. \n\nFor example: 5000.99",
+              "example": "1999.99",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 99999999999.99
+            }
+          }
+        },
+        "carrySideways": {
+          "type": "object",
+          "description": "Object containing loss amounts to be carried sideways to the current tax year general income.",
+          "properties": {
+            "currentYearGeneralIncome": {
+              "type": "number",
+              "description": "The amount of the current tax year's trading losses to be off set general income of the current tax year under Section 64. The value must be between 0 and 99999999999.99 up to 2 decimal places. \n\nFor example: 5000.99",
+              "example": "1999.99",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 99999999999.99
+            }
+          }
+        },
+        "preferenceOrder": {
+          "type": "object",
+          "description": "Object containing loss amounts to be carried sideways to the current tax year general income.",
+          "properties": {
+            "applyFirst": {
+              "type": "string",
+              "enum": [
+                "carry-sideways",
+                "carry-back"
+              ],
+              "description": "Specifies the preference order when the current tax year's trading losses have been claimed under Section 64 to set against general income of a previous year and set against general income of the current tax year.\n\n <strong> Limited to the following possible values: <ul> <li>carry-sideways</li> <li>carry-back</li> </ul> </strong>"
+            }
+          }
+        },
+        "carryForward": {
+          "type": "object",
+          "description": "Object containing loss amounts to be carried forward.",
+          "properties": {
+            "currentYearLosses": {
+              "type": "number",
+              "description": "The amount of trading losses in the current tax year carried forward to offset future profits of the same trade under Section 83. The value must be between 0 and 99999999999.99 up to 2 decimal places. \n\nFor example: 5000.9",
+              "example": "1999.99",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 99999999999.99
+            },
+            "previousYearsLosses": {
+              "type": "number",
+              "description": "The amount of trading losses from previous years carried forward to offset future profits of the same trade under Section 83. The value must be between 0 and 99999999999.99 up to 2 decimal places.\n\nFor example: 5000.99",
+              "example": "1999.99",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 99999999999.99
+            }
+          }
+        }
+      }
+    },
+    "losses": {
+      "type": "object",
+      "description": "Object containing brought forward loss amount.",
+      "properties": {
+        "broughtForwardLosses": {
+          "type": "number",
+          "description": "The amount of brought forward losses to be applied in the current tax year against any the current tax year profits. The value must be between 0 and 99999999999.99 up to 2 decimal places. \n\nFor example: 5000.99",
+          "example": "1999.99",
+          "multipleOf": 0.01,
+          "minimum": 0,
+          "maximum": 99999999999.99
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

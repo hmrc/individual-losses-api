@@ -16,6 +16,13 @@ components:
       value:
         code: FORMAT_TAX_YEAR
         message: The taxYear format is invalid
+    
+    formatBusinessId:
+      description: |
+        The format of the supplied Business ID field is not valid.
+      value:
+        code: FORMAT_BUSINESS_ID
+        message: The provided Business ID is invalid
 
     ruleTaxYearNotSupported:
       description: |
@@ -31,12 +38,68 @@ components:
         code: RULE_TAX_YEAR_RANGE_INVALID
         message: A tax year range of one year is required
 
-    formatBusinessId:
+    ruleTaxYearNotEnded:
       description: |
-        The format of the supplied Business ID field is not valid.
+        The submission has been made before the taxYear it relates to has ended.
       value:
-        code: FORMAT_BUSINESS_ID
-        message: The provided Business ID is invalid
+        code: RULE_TAX_YEAR_NOT_ENDED
+        message: The specified tax year has not yet ended
+    
+    formatValueError:
+      description: |
+        The submission has been made before the taxYear it relates to has ended.
+      value:
+        code: FORMAT_VALUE
+        message: The value must be between 0 and 99999999999.99
+    
+    formatPreferenceOrderError:
+      description: |
+        The provided preference order is invalid
+      value:
+        code: FORMAT_PREFERENCE_ORDER
+        message: The value must be between 0 and 99999999999.99
+    
+    ruleMissingPreferenceOrder:
+      description: |
+        Preference order is required when both previousYearGeneralIncome and currentYearGeneralIncome are submitted.
+      value:
+        code: RULE_MISSING_PREFERENCE_ORDER
+        message: Preference order is required when both previousYearGeneralIncome and currentYearGeneralIncome are submitted
+
+    rulePrederenceOrderNotAllowed:
+      description: |
+        Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted.
+      value:
+        code: RULE_PREFERENCE_ORDER_NOT_ALLOWED
+        message: Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted.
+
+    ruleCarryForwardAndTerminalLossNotAllowed:
+      description: |
+        Carry forward loss claims cannot be submitted with terminal loss claims.
+      value:
+        code: RULE_CARRY_FORWARD_AND_TERMINAL_LOSS_NOT_ALLOWED
+        message: Carry forward loss claims cannot be submitted with terminal loss claims
+
+    ruleCarryBackClaim:
+      description: |
+        Carry back claim type is not valid for property income sources.
+      value:
+        code: RULE_CARRY_BACK_CLAIM
+        message: Carry back claim type is not valid for property income sources.
+    
+    ruleIncorrectOrEmptyBody:
+      description: |
+        An empty or non-matching body was submitted.
+      value:
+        code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+        message: An empty or non-matching body was submitted
+    
+    ruleOutsideAmendmentWindow:
+      description: |
+        The request cannot be completed as you are outside the amendment window.
+      value:
+        code: RULE_OUTSIDE_AMENDMENT_WINDOW
+        message: You are outside the amendment window
     
     ruleIncorrectGovTestScenario:
       description: |
