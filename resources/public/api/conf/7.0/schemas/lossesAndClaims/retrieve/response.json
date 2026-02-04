@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "For all given tax year",
+  "description": "Retrieve Losses and Claims Response",
+  "type": "object",
+  "properties": {
+	"submittedOn": {
+	  "type": "string",
+	  "description": "The date and time of the submission, in the format YYYY-MM-DDThh:mm:ss.SSSZ",
+      "format": "date-time",
+	  "example": "2026-08-24T14:15:22.544Z"
+	},
+	"claims": {
+	  "type": "object",
+	  "description": "Object containing claim details.",
+      "properties": {
+        "carryBack": {
+          "type": "object",
+          "description": "Object containing loss amounts to be carried back.",
+          "properties": {
+            "previousYearGeneralIncome": {
+              "type": "number",
+              "description": "The amount of the current tax year's trading losses to carry back under Section 64 to be off set against general income of the previous year(s). The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+              "multipleOf": 0.01,
+              "minimum": 0.00,
+              "maximum": 99999999999.99,
+              "example": "5000.99"
+            },
+            "earlyYearLosses": {
+              "type": "number",
+              "description": "The amount of current tax year's trading losses to carry back under Section 72 to be set off against general income of the previous year(s). The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+              "multipleOf": 0.01,
+              "minimum": 0.00,
+              "maximum": 99999999999.99,
+              "example": "5000.99"
+            },
+            "terminalLosses": {
+              "type": "number",
+              "description": "The amount of current tax year's trading losses to be carry back under Section 89 and applied against profits of the three previous years, starting with the earliest year first. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+              "multipleOf": 0.01,
+              "minimum": 0.00,
+              "maximum": 99999999999.99,
+              "example": "5000.99"
+            }
+          }
+        },
+        "carrySideways": {
+          "type": "object",
+          "description": "Object containing loss amounts to be carried back.",
+          "properties": {
+            "currentYearGeneralIncome": {
+              "type": "number",
+              "description": "The amount of the current tax year's trading losses to be off set general income of the current tax year under Section 64. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+              "multipleOf": 0.01,
+              "minimum": 0.00,
+              "maximum": 99999999999.99,
+              "example": "5000.99"
+            }
+          }
+        },
+        "preferenceOrder": {
+          "type": "object",
+          "description": "Object containing a preference order to be specified.",
+          "properties": {
+            "applyFirst": {
+              "type": "string",
+              "description": "Specifies the preference order when current tax year's trading losses have been claimed under Section 64 to set against general income of a previous year and set against general income of the current tax year.\n\nLimited to the following possible values:\n* carry-sideways \n\n* carry-back",
+              "enum":[
+                "carry-sideways",
+                "carry-back"
+              ]
+            }
+          }
+        }
+      }
+	},
+    "losses": {
+      "type": "object",
+      "description": "Object containing brought forward loss amount.",
+      "properties": {
+        "broughtForwardLosses": {
+          "type": "number",
+          "description": "The amount of brought forward losses to be applied in the current tax year against any current tax year profits. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "example": "5000.99"
+        }
+      }
+    }
+  },
+  "required": [
+	"submittedOn"
+  ],
+  "additionalProperties": false
+}

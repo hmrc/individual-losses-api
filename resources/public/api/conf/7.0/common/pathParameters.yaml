@@ -13,11 +13,11 @@ components:
       name: businessId
       in: path
       description: |
-        The unique identifier of the business.
+        An identifier for the business, unique to the customer.
       schema:
         type: string
-        example: AAZZ1234567890A
-        pattern: ^[A-Za-z0-9]{15}$
+        example: XAIS12345678910
+        pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
       required: true
     taxYear:
       name: taxYear
