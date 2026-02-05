@@ -1,5 +1,11 @@
 get:
   $ref: "./loss_and_claim_retrieve.yaml"
+  security:
+    - User-Restricted:
+        - read:self-assessment
 
 delete:
   $ref: "./loss_and_claim_delete.yaml"
+  security:
+    - User-Restricted:
+        - write:self-assessment

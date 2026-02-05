@@ -1,22 +1,17 @@
-summary: Retrieve a Losses and Claims
+summary: Retrieve Losses and Claims
 description: |
-  This endpoint allows a developer to retrieve the detail of an existing loss claim.
-  A National Insurance Number, Business Id, and Tax Year must be provided.
-  
-  <strong>
-    Note: carry-sideways-fhl type of loss claims for income sources uk-property-fhl and foreign-property-fhl-eea will not be supported from tax year 2025-26 onwards.
-  </strong>
+  This endpoint allows a developer to retrieve a claim or a brought-forward-loss for a specified individual and business for a given tax year.  
+  A National Insurance number, business ID and tax year are required.
   
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario) | Scenario                                                                                     |
-  | -------------------------------- | -------------------------------------------------------------------------------------------- |
-  | N/A - DEFAULT                    | Simulates successful self-employment response where typeOfClaim is "carry-forward".          |
-  | UK_PROPERTY                      | Simulates successful uk-property response where typeOfClaim is "carry-sideways-fhl".         |
-  | FOREIGN_PROPERTY                 | Simulates successful foreign-property response where typeOfClaim is "carry-sideways".        |
-  | NOT_FOUND                        | Simulates the scenario where no data is found.                                               |
-  | STATEFUL                         | Performs a stateful retrieve.                                                                |
+  | Header Value (Gov-Test-Scenario) | Scenario                                                       |
+  | -------------------------------- | -------------------------------------------------------------- |
+  | N/A - DEFAULT                    | Simulates successful response with losses and claims.          |
+  | TERMINAL_LOSS_CLAIM              | Simulates success response with terminal loss claim.           |
+  | NOT_FOUND                        | Simulates the scenario where no data is found.                 |
+  | STATEFUL                         | Performs a stateful retrieve.                                  |
 
 
 tags:
@@ -43,20 +38,14 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/lossClaims/retrieveLossClaim/def1/response.json'
+          $ref: './schemas/lossesAndClaims/retrieve/response.json'
         examples:
-          example-1:
-            description: Self-Employment Loss Claim
+          Losses and Claims:
             value:
-              $ref: './examples/lossClaims/retrieveLossClaim/def1/response/self_employment_claims.json'
-          example-2:
-            description: UK Property Loss Claim
+              $ref: './examples/lossesAndClaims/retrieve/retrieve_losses_and_claims.json'
+          Terminal Loss Claim:
             value:
-              $ref: './examples/lossClaims/retrieveLossClaim/def1/response/uk_property_claims.json'
-          example-3:
-            description: Foreign Property Loss Claim
-            value:
-              $ref: './examples/lossClaims/retrieveLossClaim/def1/response/foreign_property_claims.json'
+              $ref: './examples/lossesAndClaims/retrieve/retrieve_terminal_losses_and_claims.json'
 
   "400":
     description: Bad request
@@ -70,8 +59,14 @@ responses:
         examples:
           FORMAT_NINO:
             $ref: './common/errors.yaml#/components/examples/formatNino'
-          FORMAT_CLAIM_ID:
-            $ref: './common/errors.yaml#/components/examples/formatClaimId'
+          FORMAT_TAX_YEAR:
+            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+          FORMAT_BUSINESS_ID:
+            $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+          RULE_TAX_YEAR_RANGE_INVALID:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
