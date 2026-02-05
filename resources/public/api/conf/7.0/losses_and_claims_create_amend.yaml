@@ -34,12 +34,12 @@ requestBody:
       schema:
         $ref: './schemas/lossesAndClaimsCreateAmend/request.json'
       examples:
-        default-request:
-          description: Default Example
+        Losses and Claims:
+          description: Losses and Claims Example
           value:
             $ref: './examples/lossesAndClaims/createAmend/default_request.json'
-        terminal-loss-claim-request:
-          description: Terminal Loss Claim Example
+        Terminal Losses and Claims:
+          description: Terminal Losses and Claims Example
           value:
             $ref: './examples/lossesAndClaims/createAmend/terminal_loss_claim_request.json'
 
