@@ -1,3 +1,4 @@
+summary: Create or Amend Losses and Claims
 description: |
   This endpoint allows a developer to submit or amend a claim or a brought-forward-loss for a specified individual and business for a given tax year.  A National Insurance number, business ID and tax year are required.
   

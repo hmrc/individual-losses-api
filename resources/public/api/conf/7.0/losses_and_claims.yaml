@@ -1,14 +1,17 @@
 put:
   $ref: "./losses_and_claims_create_amend.yaml"
-  summary: Create or Amend Losses and Claims
+  security:
+    - User-Restricted:
+        - write:self-assessment
+  
 get:
-  $ref: "./loss_and_claim_retrieve.yaml"
+  $ref: "./losses_and_claims_retrieve.yaml"
   security:
     - User-Restricted:
         - read:self-assessment
 
 delete:
-  $ref: "./loss_and_claim_delete.yaml"
+  $ref: "./losses_and_claims_delete.yaml"
   security:
     - User-Restricted:
         - write:self-assessment

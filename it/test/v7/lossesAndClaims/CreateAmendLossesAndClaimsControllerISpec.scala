@@ -133,7 +133,7 @@ class CreateAmendLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
           DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamURL, NO_CONTENT)
         }
 
-        val response: WSResponse = await(request().post(requestJson))
+        val response: WSResponse = await(request().put(requestJson))
         response.status shouldBe NO_CONTENT
       }
     }
@@ -165,7 +165,7 @@ class CreateAmendLossesAndClaimsControllerISpec extends IntegrationBaseSpec {
           DownstreamStub.onError(DownstreamStub.PUT, downstreamURL, status, errorBody(code))
         }
 
-        val response: WSResponse = await(request().post(requestJson))
+        val response: WSResponse = await(request().put(requestJson))
         response.status shouldBe expectedStatus
         response.json shouldBe Json.toJson(expectedBody)
       }
