@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,28 @@
  * limitations under the License.
  */
 
-package shared.definition
+package v7.lossesAndClaims.commons
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{JsValue, Json}
+import shared.utils.UnitSpec
 
-case class Definition(api: APIDefinition)
+class LossesSpec extends UnitSpec {
 
-object Definition {
-  implicit val formatDefinition: OFormat[Definition] = Json.format[Definition]
+  val requestBody: Losses = Losses(
+    Option(5000.99)
+  )
+
+  val defaultMtdRequestJson: JsValue = Json.parse(s"""
+       |{
+       |      "broughtForwardLosses": 5000.99
+       |}
+       |""".stripMargin)
+
+  "Json Validate" should {
+    "read a default model from JSON" in {
+      val result = defaultMtdRequestJson.validate[Losses]
+      result.isSuccess shouldBe true
+    }
+  }
+
 }

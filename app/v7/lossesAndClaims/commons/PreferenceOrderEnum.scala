@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package shared.definition
+package v7.lossesAndClaims.commons
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.Format
+import shared.utils.enums.Enums
 
-case class Definition(api: APIDefinition)
+enum PreferenceOrderEnum {
+  case `carry-sideways`, `carry-back`
+}
 
-object Definition {
-  implicit val formatDefinition: OFormat[Definition] = Json.format[Definition]
+object PreferenceOrderEnum {
+  given Format[PreferenceOrderEnum] = Enums.format(values)
 }

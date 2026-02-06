@@ -14,33 +14,49 @@
  * limitations under the License.
  */
 
-package v7.lossesAndClaims.delete
+package v7.lossesAndClaims.createAmend
 
-import cats.implicits.*
+import cats.implicits.catsSyntaxEither
 import common.errors.RuleOutsideAmendmentWindow
 import shared.controllers.RequestContext
-import shared.models.errors.*
+import shared.models.errors.{
+  BusinessIdFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleCarryBackClaim,
+  RuleCarryForwardAndTerminalLossNotAllowed,
+  RuleMissingPreferenceOrder,
+  RuleTaxYearNotEndedError,
+  RuleTaxYearNotSupportedErrorV7,
+  TaxYearFormatError
+}
 import shared.services.{BaseService, ServiceOutcome}
-import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
+import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteLossesAndClaimsService @Inject() (connector: DeleteLossesAndClaimsConnector) extends BaseService {
+class CreateAmendLossesAndClaimsService @Inject(connector: CreateAmendLossesAndClaimsConnector) extends BaseService {
 
-  def deleteLossClaimsService(
-      request: DeleteLossesAndClaimsRequestData)(implicit cxt: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
-    connector
-      .deleteLossesAndClaims(request)
-      .map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
+  def createAmendLossesAndClaims(
+      request: CreateAmendLossesAndClaimsRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+    connector.createAmendLossClaimsAndLosses(request).map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
+
   }
 
   private val itsdErrorMap: Map[String, MtdError] = Map(
     "1215" -> NinoFormatError,
     "1117" -> TaxYearFormatError,
     "1216" -> InternalError,
+    "1000" -> InternalError,
     "1007" -> BusinessIdFormatError,
+    "1115" -> RuleTaxYearNotEndedError,
+    "1253" -> RuleMissingPreferenceOrder,
+    "1254" -> RuleCarryForwardAndTerminalLossNotAllowed,
+    "1262" -> RuleCarryBackClaim,
     "4200" -> RuleOutsideAmendmentWindow,
     "5000" -> RuleTaxYearNotSupportedErrorV7,
     "5010" -> NotFoundError

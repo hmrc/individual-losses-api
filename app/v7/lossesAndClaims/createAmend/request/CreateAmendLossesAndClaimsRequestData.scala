@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package v4.controllers.validators.resolvers
+package v7.lossesAndClaims.createAmend.request
 
-import cats.data.Validated
-import shared.controllers.validators.resolvers.ResolverSupport
-import shared.models.errors.MtdError
-import v4.models.domain.bfLoss.IncomeSourceType
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-object ResolveBFIncomeSourceType extends ResolverSupport {
-
-  def apply(value: String, maybeError: Option[MtdError] = None): Validated[Seq[MtdError], Option[IncomeSourceType]] =
-    ResolveBFTypeOfLoss(value, maybeError)
-      .map(_.toIncomeSourceType)
-
-}
+case class CreateAmendLossesAndClaimsRequestData(nino: Nino,
+                                                 businessId: BusinessId,
+                                                 taxYear: TaxYear,
+                                                 createAmendLossesAndClaimsRequestBody: CreateAmendLossesAndClaimsRequestBody)

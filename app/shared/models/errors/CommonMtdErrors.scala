@@ -101,6 +101,9 @@ object RuleRequestCannotBeFulfilledError
 object RuleTaxYearNotSupportedError
     extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", BAD_REQUEST)
 
+object RuleTaxYearNotSupportedErrorV7
+    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", INTERNAL_SERVER_ERROR)
+
 object RuleTaxYearForVersionNotSupportedError
     extends MtdError(
       "RULE_TAX_YEAR_FOR_VERSION_NOT_SUPPORTED",
@@ -138,6 +141,28 @@ object RuleEndBeforeStartDateError
     extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "The supplied accounting period end date is before the start date", BAD_REQUEST)
 
 object RuleCountryCodeError extends MtdError("RULE_COUNTRY_CODE", "The country code is not a valid ISO 3166-1 alpha-3 country code", BAD_REQUEST)
+
+object RuleMissingPreferenceOrder
+    extends MtdError(
+      "RULE_MISSING_PREFERENCE_ORDER",
+      "Preference order is required when both previousYearGeneralIncome and currentYearGeneralIncome are submitted",
+      BAD_REQUEST)
+
+object RulePreferenceOrderNotAllowed
+    extends MtdError(
+      "RULE_PREFERENCE_ORDER_NOT_ALLOWED",
+      "Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted",
+      BAD_REQUEST)
+
+object FormatPreferenceOrder extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
+
+object RuleCarryForwardAndTerminalLossNotAllowed
+    extends MtdError(
+      "RULE_CARRY_FORWARD_AND_TERMINAL_LOSS_NOT_ALLOWED",
+      "Carry forward loss claims cannot be submitted with Terminal loss claims",
+      BAD_REQUEST)
+
+object RuleCarryBackClaim extends MtdError("RULE_CARRY_BACK_CLAIM", "Carry back claim type not valid for property sources", BAD_REQUEST)
 
 //Stub Errors
 object RuleIncorrectGovTestScenarioError
