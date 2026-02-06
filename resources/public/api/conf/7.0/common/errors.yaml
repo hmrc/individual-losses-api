@@ -94,13 +94,6 @@ components:
         code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
         message: An empty or non-matching body was submitted
     
-    ruleOutsideAmendmentWindow:
-      description: |
-        The request cannot be completed as you are outside the amendment window.
-      value:
-        code: RULE_OUTSIDE_AMENDMENT_WINDOW
-        message: You are outside the amendment window
-    
     ruleIncorrectGovTestScenario:
       description: |
         The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for 
