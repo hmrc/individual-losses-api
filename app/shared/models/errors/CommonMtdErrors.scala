@@ -59,6 +59,8 @@ object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The p
 
 object StringFormatError extends MtdError(code = "FORMAT_STRING", message = "The supplied string format is not valid", BAD_REQUEST)
 
+object FormatPreferenceOrder extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
 
@@ -154,15 +156,13 @@ object RulePreferenceOrderNotAllowed
       "Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted",
       BAD_REQUEST)
 
-object FormatPreferenceOrder extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
-
 object RuleCarryForwardAndTerminalLossNotAllowed
     extends MtdError(
       "RULE_CARRY_FORWARD_AND_TERMINAL_LOSS_NOT_ALLOWED",
-      "Carry forward loss claims cannot be submitted with Terminal loss claims",
+      "Carry forward loss claims cannot be submitted with terminal loss claims",
       BAD_REQUEST)
 
-object RuleCarryBackClaim extends MtdError("RULE_CARRY_BACK_CLAIM", "Carry back claim type not valid for property sources", BAD_REQUEST)
+object RuleCarryBackClaim extends MtdError("RULE_CARRY_BACK_CLAIM", "Carry back claim type is not valid for property income sources", BAD_REQUEST)
 
 //Stub Errors
 object RuleIncorrectGovTestScenarioError

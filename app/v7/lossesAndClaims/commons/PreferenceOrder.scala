@@ -18,7 +18,7 @@ package v7.lossesAndClaims.commons
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PreferenceOrder(applyFirst: Option[PreferenceOrderEnum])
+case class PreferenceOrder(applyFirst: Option[String])
 
 object PreferenceOrder {
   implicit val format: OFormat[PreferenceOrder] = Json.format[PreferenceOrder]

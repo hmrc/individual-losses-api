@@ -33,12 +33,6 @@ object Claims {
       (JsPath \ "carrySideways").writeNullable[CarrySideways] and
       (JsPath \ "preferenceOrderSection64").writeNullable[PreferenceOrder] and
       (JsPath \ "carryForward").writeNullable[CarryForward]
-  )(claims =>
-    (
-      claims.carryBack,
-      claims.carrySideways,
-      claims.preferenceOrder,
-      claims.carryForward
-    ))
+  )(o => Tuple.fromProductTyped(o))
 
 }

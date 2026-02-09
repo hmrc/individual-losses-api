@@ -27,10 +27,6 @@ object CarryForward {
   implicit val write: OWrites[CarryForward] = (
     (JsPath \ "currentYearLossesSection83").writeNullable[BigDecimal] and
       (JsPath \ "previousYearsLossesSection83").writeNullable[BigDecimal]
-  )(carryForward =>
-    (
-      carryForward.currentYearLosses,
-      carryForward.previousYearsLosses
-    ))
+  )(o => Tuple.fromProductTyped(o))
 
 }
