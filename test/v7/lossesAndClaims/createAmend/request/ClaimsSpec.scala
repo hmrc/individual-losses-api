@@ -18,8 +18,6 @@ package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
-import v7.lossesAndClaims.commons.PreferenceOrder
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
 
 class ClaimsSpec extends UnitSpec {
 
@@ -36,7 +34,7 @@ class ClaimsSpec extends UnitSpec {
       )),
     Option(
       PreferenceOrder(
-        Option(`carry-back`)
+        Option("carry-back")
       )),
     Option(
       CarryForward(

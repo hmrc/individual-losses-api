@@ -22,7 +22,7 @@ import cats.implicits.*
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.*
 import shared.models.errors.*
-import v7.lossesAndClaims.commons.{Losses, PreferenceOrder, PreferenceOrderEnum}
+import v7.lossesAndClaims.commons.PreferenceOrderEnum
 import v7.lossesAndClaims.createAmend.request.*
 
 object CreateAmendLossesAndClaimsRulesValidator extends RulesValidator[CreateAmendLossesAndClaimsRequestData] {
@@ -87,9 +87,9 @@ object CreateAmendLossesAndClaimsRulesValidator extends RulesValidator[CreateAme
     val preferenceOrderProvided: Boolean = claims.preferenceOrder.exists(_.applyFirst.isDefined)
 
     if (preferenceOrderRequired && !preferenceOrderProvided) {
-      Invalid(List(RuleMissingPreferenceOrder.withPath("/claims")))
+      Invalid(List(RuleMissingPreferenceOrderError.withPath("/claims")))
     } else if (!preferenceOrderRequired && preferenceOrderProvided) {
-      Invalid(List(RulePreferenceOrderNotAllowed.withPath("/claims/preferenceOrder/applyFirst")))
+      Invalid(List(RulePreferenceOrderNotAllowedError.withPath("/claims/preferenceOrder/applyFirst")))
     } else {
       valid
     }
@@ -119,7 +119,7 @@ object CreateAmendLossesAndClaimsRulesValidator extends RulesValidator[CreateAme
     val carryForwardDefined: Boolean = claims.carryForward.isDefined
 
     if (terminalLossesDefined && carryForwardDefined) {
-      Invalid(List(RuleCarryForwardAndTerminalLossNotAllowed.withPath("/claims")))
+      Invalid(List(RuleCarryForwardAndTerminalLossNotAllowedError.withPath("/claims")))
     } else {
       valid
     }

@@ -21,8 +21,6 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
-import v7.lossesAndClaims.commons.{Losses, PreferenceOrder}
 import v7.lossesAndClaims.createAmend.request.*
 
 import scala.concurrent.Future
@@ -48,7 +46,7 @@ class CreateAmendLossesAndClaimsConnectorSpec extends ConnectorSpec {
           )),
         Option(
           PreferenceOrder(
-            Option(`carry-back`)
+            Option("carry-back")
           )),
         Option(
           CarryForward(

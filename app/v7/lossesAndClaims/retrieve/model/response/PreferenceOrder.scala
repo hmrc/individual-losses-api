@@ -17,6 +17,7 @@
 package v7.lossesAndClaims.retrieve.model.response
 
 import play.api.libs.json.{Json, OFormat}
+import v7.lossesAndClaims.commons.PreferenceOrderEnum
 
 case class PreferenceOrder(applyFirst: Option[PreferenceOrderEnum])
 

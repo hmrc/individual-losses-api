@@ -19,7 +19,7 @@ package v7.lossesAndClaims.retrieve.model.response
 import play.api.libs.json.{JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
-import v7.lossesAndClaims.retrieve.model.response.PreferenceOrderEnum.{`carry-back`, `carry-sideways`}
+import v7.lossesAndClaims.commons.PreferenceOrderEnum.{`carry-back`, `carry-sideways`}
 
 class RetrieveLossesAndClaimsResponseSpec extends UnitSpec with MockSharedAppConfig {
 

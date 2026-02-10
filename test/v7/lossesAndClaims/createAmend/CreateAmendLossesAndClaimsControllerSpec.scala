@@ -29,8 +29,6 @@ import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors.{BusinessIdFormatError, ErrorWrapper, NinoFormatError}
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
-import v7.lossesAndClaims.commons.{Losses, PreferenceOrder}
 import v7.lossesAndClaims.createAmend.request.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -63,7 +61,7 @@ class CreateAmendLossesAndClaimsControllerSpec
           )),
         Option(
           PreferenceOrder(
-            Option(`carry-back`)
+            Option("carry-back")
           )),
         Option(
           CarryForward(

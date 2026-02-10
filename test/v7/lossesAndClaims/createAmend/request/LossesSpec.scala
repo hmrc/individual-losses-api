@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v7.lossesAndClaims.commons
+package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec

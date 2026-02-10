@@ -25,6 +25,7 @@ import shared.models.domain.TaxYear
 import shared.models.errors.*
 import v7.lossesAndClaims.createAmend.CreateAmendLossesAndClaimsRulesValidator.validateBusinessRules
 import v7.lossesAndClaims.createAmend.request.{CreateAmendLossesAndClaimsRequestBody, CreateAmendLossesAndClaimsRequestData}
+import v7.lossesAndClaims.minimumTaxYear
 
 class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxYear: String, body: JsValue, temporalValidationEnabled: Boolean)
     extends Validator[CreateAmendLossesAndClaimsRequestData] {
@@ -32,7 +33,7 @@ class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxY
   private val resolveJson = new ResolveNonEmptyJsonObject[CreateAmendLossesAndClaimsRequestBody]()
 
   private val resolveTaxYear = ResolveTaxYearMinimum(
-    minimumTaxYear = TaxYear.fromMtd("2026-27"),
+    minimumTaxYear,
     allowIncompleteTaxYear = !temporalValidationEnabled
   )
 

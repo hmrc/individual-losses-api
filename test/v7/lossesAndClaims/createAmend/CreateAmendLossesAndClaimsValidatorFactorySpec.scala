@@ -16,13 +16,12 @@
 
 package v7.lossesAndClaims.createAmend
 
+import org.scalactic.Prettifier.default
 import play.api.libs.json.{JsValue, Json}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-sideways`
-import v7.lossesAndClaims.commons.{Losses, PreferenceOrder}
 import v7.lossesAndClaims.createAmend.request.*
 
 class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
@@ -192,7 +191,7 @@ class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonE
           )),
         Option(
           PreferenceOrder(
-            Option(`carry-sideways`)
+            Option("carry-sideways")
           )),
         Option(
           CarryForward(
@@ -236,20 +235,7 @@ class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonE
     "return RuleIncorrectOrEmptyBodyError" when {
       "given a tax year passed an unsupported tax year" in {
         val result = validatorFactory.validator(validNino, validBusinessId, "2025-26", emptyBody, false).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            RuleIncorrectOrEmptyBodyError.withPaths(List(
-              "/claims/carryBack/previousYearGeneralIncome",
-              "/claims/carryBack/earlyYearLosses",
-              "/claims/carryBack/terminalLosses",
-              "/claims/carrySideways/currentYearGeneralIncome",
-              "/claims/carryForward/currentYearLosses",
-              "/claims/carryForward/previousYearsLosses",
-              "/losses/broughtForwardLosses",
-              "/claims/preferenceOrder"
-            ))
-          ))
+        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError))))
       }
     }
 
@@ -282,14 +268,16 @@ class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonE
       }
     }
 
-    "return ValueFormatError" when {
+    "return RuleIncorrectOrEmptyBodyError" when {
       "given a json body not valid" in {
         val result =
           validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidFieldValueDoubleRequestJson, false).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(
             correlationId,
-            ValueFormatError.withPaths(List("/claims/carryBack/previousYearGeneralIncome", "/claims/carrySideways/currentYearGeneralIncome")))
+            RuleIncorrectOrEmptyBodyError.withPaths(
+              List("/claims/carryBack/previousYearGeneralIncome", "/claims/carrySideways/currentYearGeneralIncome"))
+          )
         )
       }
     }
@@ -298,7 +286,7 @@ class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonE
       "given a json body not valid" in {
         val result =
           validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidPreferenceOrderRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RulePreferenceOrderNotAllowed.withPaths(List("/claims/preferenceOrder"))))
+        result shouldBe Left(ErrorWrapper(correlationId, RulePreferenceOrderNotAllowedError.withPaths(List("/claims/preferenceOrder/applyFirst"))))
       }
     }
 
@@ -306,7 +294,7 @@ class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonE
       "given a json body not valid" in {
         val result =
           validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidPreferenceOrderNotSetRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleMissingPreferenceOrder.withPaths(List("/claims/preferenceOrder"))))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleMissingPreferenceOrderError.withPaths(List("/claims"))))
       }
     }
 
@@ -314,7 +302,7 @@ class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonE
       "given a json body not valid" in {
         val result =
           validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidPreferenceOrderValueRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, FormatPreferenceOrder.withPaths(List("/claims/preferenceOrder"))))
+        result shouldBe Left(ErrorWrapper(correlationId, FormatPreferenceOrder.withPaths(List("/claims/preferenceOrder/applyFirst"))))
       }
     }
 
@@ -324,10 +312,7 @@ class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonE
           validatorFactory
             .validator(validNino, validBusinessId, "2026-27", invalidRuleCarryForwardAndTerminalLossNotAllowed, false)
             .validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            RuleCarryForwardAndTerminalLossNotAllowed.withPaths(List("/claims/carryBack/terminalLosses", "/claims/carryForward"))))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleCarryForwardAndTerminalLossNotAllowedError.withPaths(List("/claims"))))
       }
     }
   }
