@@ -75,7 +75,7 @@ class DeleteLossesAndClaimsServiceSpec extends ServiceSpec {
         "1216" -> InternalError,
         "1007" -> BusinessIdFormatError,
         "4200" -> RuleOutsideAmendmentWindow,
-        "5000" -> RuleTaxYearNotSupportedErrorV7,
+        "5000" -> InternalError,
         "5010" -> NotFoundError
       )
 

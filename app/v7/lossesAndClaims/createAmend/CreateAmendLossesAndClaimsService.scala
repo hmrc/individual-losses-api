@@ -25,11 +25,10 @@ import shared.models.errors.{
   MtdError,
   NinoFormatError,
   NotFoundError,
-  RuleCarryBackClaim,
-  RuleCarryForwardAndTerminalLossNotAllowed,
-  RuleMissingPreferenceOrder,
+  RuleCarryBackClaimError,
+  RuleCarryForwardAndTerminalLossNotAllowedError,
+  RuleMissingPreferenceOrderError,
   RuleTaxYearNotEndedError,
-  RuleTaxYearNotSupportedErrorV7,
   TaxYearFormatError
 }
 import shared.services.{BaseService, ServiceOutcome}
@@ -54,11 +53,11 @@ class CreateAmendLossesAndClaimsService @Inject(connector: CreateAmendLossesAndC
     "1000" -> InternalError,
     "1007" -> BusinessIdFormatError,
     "1115" -> RuleTaxYearNotEndedError,
-    "1253" -> RuleMissingPreferenceOrder,
-    "1254" -> RuleCarryForwardAndTerminalLossNotAllowed,
-    "1262" -> RuleCarryBackClaim,
+    "1253" -> RuleMissingPreferenceOrderError,
+    "1254" -> RuleCarryForwardAndTerminalLossNotAllowedError,
+    "1262" -> RuleCarryBackClaimError,
     "4200" -> RuleOutsideAmendmentWindow,
-    "5000" -> RuleTaxYearNotSupportedErrorV7,
+    "5000" -> InternalError,
     "5010" -> NotFoundError
   )
 

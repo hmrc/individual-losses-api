@@ -17,7 +17,6 @@
 package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{Json, OFormat, Reads}
-import v7.lossesAndClaims.commons.Losses
 
 case class CreateAmendLossesAndClaimsRequestBody(claims: Option[Claims], losses: Option[Losses])
 

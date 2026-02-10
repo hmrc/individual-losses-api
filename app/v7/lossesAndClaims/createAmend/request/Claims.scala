@@ -18,7 +18,6 @@ package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.*
-import v7.lossesAndClaims.commons.PreferenceOrder
 
 case class Claims(carryBack: Option[CarryBack],
                   carrySideways: Option[CarrySideways],
@@ -33,12 +32,6 @@ object Claims {
       (JsPath \ "carrySideways").writeNullable[CarrySideways] and
       (JsPath \ "preferenceOrderSection64").writeNullable[PreferenceOrder] and
       (JsPath \ "carryForward").writeNullable[CarryForward]
-  )(claims =>
-    (
-      claims.carryBack,
-      claims.carrySideways,
-      claims.preferenceOrder,
-      claims.carryForward
-    ))
+  )(o => Tuple.fromProductTyped(o))
 
 }

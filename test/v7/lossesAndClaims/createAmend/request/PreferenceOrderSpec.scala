@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package v7.lossesAndClaims.commons
+package v7.lossesAndClaims.createAmend.request
 
+import org.scalactic.Prettifier.default
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
 
 class PreferenceOrderSpec extends UnitSpec {
 
   val requestBody: PreferenceOrder = PreferenceOrder(
-    Option(`carry-back`)
+    Option("carry-back")
   )
 
   val defaultMtdRequestJson: JsValue = Json.parse(s"""

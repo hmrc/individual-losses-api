@@ -59,6 +59,8 @@ object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The p
 
 object StringFormatError extends MtdError(code = "FORMAT_STRING", message = "The supplied string format is not valid", BAD_REQUEST)
 
+object FormatPreferenceOrder extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
 
@@ -101,9 +103,6 @@ object RuleRequestCannotBeFulfilledError
 object RuleTaxYearNotSupportedError
     extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", BAD_REQUEST)
 
-object RuleTaxYearNotSupportedErrorV7
-    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", INTERNAL_SERVER_ERROR)
-
 object RuleTaxYearForVersionNotSupportedError
     extends MtdError(
       "RULE_TAX_YEAR_FOR_VERSION_NOT_SUPPORTED",
@@ -142,27 +141,26 @@ object RuleEndBeforeStartDateError
 
 object RuleCountryCodeError extends MtdError("RULE_COUNTRY_CODE", "The country code is not a valid ISO 3166-1 alpha-3 country code", BAD_REQUEST)
 
-object RuleMissingPreferenceOrder
+object RuleMissingPreferenceOrderError
     extends MtdError(
       "RULE_MISSING_PREFERENCE_ORDER",
       "Preference order is required when both previousYearGeneralIncome and currentYearGeneralIncome are submitted",
       BAD_REQUEST)
 
-object RulePreferenceOrderNotAllowed
+object RulePreferenceOrderNotAllowedError
     extends MtdError(
       "RULE_PREFERENCE_ORDER_NOT_ALLOWED",
       "Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted",
       BAD_REQUEST)
 
-object FormatPreferenceOrder extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
-
-object RuleCarryForwardAndTerminalLossNotAllowed
+object RuleCarryForwardAndTerminalLossNotAllowedError
     extends MtdError(
       "RULE_CARRY_FORWARD_AND_TERMINAL_LOSS_NOT_ALLOWED",
-      "Carry forward loss claims cannot be submitted with Terminal loss claims",
+      "Carry forward loss claims cannot be submitted with terminal loss claims",
       BAD_REQUEST)
 
-object RuleCarryBackClaim extends MtdError("RULE_CARRY_BACK_CLAIM", "Carry back claim type not valid for property sources", BAD_REQUEST)
+object RuleCarryBackClaimError
+    extends MtdError("RULE_CARRY_BACK_CLAIM", "Carry back claim type is not valid for property income sources", BAD_REQUEST)
 
 //Stub Errors
 object RuleIncorrectGovTestScenarioError

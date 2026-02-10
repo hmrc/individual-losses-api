@@ -24,5 +24,7 @@ enum PreferenceOrderEnum {
 }
 
 object PreferenceOrderEnum {
+  val parser: PartialFunction[String, PreferenceOrderEnum] = Enums.parser(values)
+
   given Format[PreferenceOrderEnum] = Enums.format(values)
 }

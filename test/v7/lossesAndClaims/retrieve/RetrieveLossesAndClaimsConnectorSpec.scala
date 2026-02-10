@@ -20,8 +20,8 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
+import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
-import v7.lossesAndClaims.retrieve.model.response.PreferenceOrderEnum.`carry-back`
 import v7.lossesAndClaims.retrieve.model.response.{
   CarryBack,
   CarryForward,

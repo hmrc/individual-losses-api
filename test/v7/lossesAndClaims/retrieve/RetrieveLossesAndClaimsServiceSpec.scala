@@ -20,8 +20,8 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
+import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
-import v7.lossesAndClaims.retrieve.model.response.PreferenceOrderEnum.`carry-back`
 import v7.lossesAndClaims.retrieve.model.response.{
   CarryBack,
   CarryForward,

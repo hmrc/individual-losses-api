@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package v7.lossesAndClaims.retrieve.model.response
+package v7.lossesAndClaims.createAmend.request
 
-import play.api.libs.json.Format
-import shared.utils.enums.Enums
+import play.api.libs.json.{Json, OFormat}
 
-enum PreferenceOrderEnum {
-  case `carry-sideways`, `carry-back`
-}
+case class Losses(broughtForwardLosses: Option[BigDecimal])
 
-object PreferenceOrderEnum {
-  given Format[PreferenceOrderEnum] = Enums.format(values)
+object Losses {
+  implicit val format: OFormat[Losses] = Json.format[Losses]
 }

@@ -18,8 +18,6 @@ package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.{`carry-back`, `carry-sideways`}
-import v7.lossesAndClaims.commons.{Losses, PreferenceOrder}
 
 class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec {
 
@@ -90,7 +88,7 @@ class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec {
           )),
         Option(
           PreferenceOrder(
-            Option(`carry-back`)
+            Option("carry-back")
           )),
         Option(
           CarryForward(
@@ -181,7 +179,7 @@ class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec {
           )),
         Option(
           PreferenceOrder(
-            Option(`carry-sideways`)
+            Option("carry-sideways")
           )),
         Option(
           CarryForward(

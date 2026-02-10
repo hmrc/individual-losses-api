@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v7.lossesAndClaims.commons
+package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Losses(broughtForwardLosses: Option[BigDecimal])
+case class PreferenceOrder(applyFirst: Option[String])
 
-object Losses {
-  implicit val format: OFormat[Losses] = Json.format[Losses]
+object PreferenceOrder {
+  implicit val format: OFormat[PreferenceOrder] = Json.format[PreferenceOrder]
 }

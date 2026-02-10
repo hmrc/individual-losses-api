@@ -28,11 +28,6 @@ object CarryBack {
     (JsPath \ "previousYearGeneralIncomeSection64").writeNullable[BigDecimal] and
       (JsPath \ "earlyYearLossesSection72").writeNullable[BigDecimal] and
       (JsPath \ "terminalLossesSection89").writeNullable[BigDecimal]
-  )(carryBack =>
-    (
-      carryBack.previousYearGeneralIncome,
-      carryBack.earlyYearLosses,
-      carryBack.terminalLosses
-    ))
+  )(o => Tuple.fromProductTyped(o))
 
 }

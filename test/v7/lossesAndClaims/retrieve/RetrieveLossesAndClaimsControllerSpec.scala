@@ -28,9 +28,9 @@ import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version9
 import shared.services.MockAuditService
+import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 import v7.lossesAndClaims.retrieve.model.response.*
-import v7.lossesAndClaims.retrieve.model.response.PreferenceOrderEnum.`carry-back`
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
