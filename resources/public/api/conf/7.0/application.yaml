@@ -4,8 +4,10 @@ info:
   version: "7.0"
   title: Individual Losses (MTD)
   description: |
-    The following groups of endpoints are stateful in the Sandbox:
-    * [Losses and Claims](#tag/Losses-and-Claims)
+    The following endpoints are stateful in the Sandbox:
+      * Create or Amend Losses and Claims
+      * Retrieve Losses and Claims
+      * Delete Losses and Claims
     
     # Send fraud prevention data
     HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
@@ -50,10 +52,6 @@ components:
           scopes:
             write:self-assessment: Grant write access
             read:self-assessment: Grant read access
-
-tags:
-  - name: Losses and Claims
-    description: Resources related to a customer’s financial data for their brought-forward-losses or claims.
 
 paths:
   /individuals/losses/{nino}/businesses/{businessId}/loss-claims/{taxYear}:

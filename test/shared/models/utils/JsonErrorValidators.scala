@@ -66,6 +66,19 @@ trait JsonErrorValidators extends UnitSpec {
       json.as[JsObject](updateReads)
     }
 
+    def collectPaths(base: String = ""): Seq[String] = json match {
+      case JsObject(fields) =>
+        fields.toSeq.flatMap { case (key, value) =>
+          val path = s"$base/$key"
+          path +: value.collectPaths(path)
+        }
+      case JsArray(values) =>
+        values.toSeq.zipWithIndex.flatMap { case (value, i) =>
+          value.collectPaths(s"$base/$i")
+        }
+      case _ => Seq.empty
+    }
+
     def replaceWithEmptyObject(path: String): JsValue =
       removeProperty(path).update(path, JsObject.empty)
 

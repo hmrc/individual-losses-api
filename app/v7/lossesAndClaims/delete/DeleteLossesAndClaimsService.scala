@@ -29,14 +29,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteLossesAndClaimsService @Inject() (connector: DeleteLossesAndClaimsConnector) extends BaseService {
 
-  def deleteLossClaimsService(
+  def deleteLossesAndClaims(
       request: DeleteLossesAndClaimsRequestData)(implicit cxt: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
     connector
       .deleteLossesAndClaims(request)
-      .map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private val itsdErrorMap: Map[String, MtdError] = Map(
+  private val errorMap: Map[String, MtdError] = Map(
     "1215" -> NinoFormatError,
     "1117" -> TaxYearFormatError,
     "1216" -> InternalError,

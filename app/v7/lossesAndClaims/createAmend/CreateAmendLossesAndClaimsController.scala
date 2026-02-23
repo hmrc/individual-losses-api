@@ -40,10 +40,10 @@ class CreateAmendLossesAndClaimsController @Inject() (val authService: Enrolment
                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
-  override val endpointName: String = "create-and-amend-losses-and-claims"
+  override val endpointName: String = "create-or-amend-losses-and-claims"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "CreateAmendLossesAndClaimsController", endpointName = " Create and Amend Losses And Claims")
+    EndpointLogContext(controllerName = "CreateAmendLossesAndClaimsController", endpointName = endpointName)
 
   def createAmend(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
@@ -60,15 +60,13 @@ class CreateAmendLossesAndClaimsController @Inject() (val authService: Enrolment
         RequestHandler
           .withValidator(validator)
           .withService(service.createAmendLossesAndClaims)
-          .withNoContentResult()
           .withAuditing(AuditHandler(
             auditService,
             auditType = "CreateAmendLossesAndClaims",
-            transactionName = "create-and-amend-losses-and-claims",
+            transactionName = "create-or-amend-losses-and-claims",
             apiVersion = Version(request),
             params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
-            requestBody = Option(request.body),
-            includeResponse = true
+            requestBody = Some(request.body)
           ))
 
       requestHandler.handleRequest()

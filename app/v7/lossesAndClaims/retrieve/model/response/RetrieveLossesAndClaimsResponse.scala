@@ -17,9 +17,10 @@
 package v7.lossesAndClaims.retrieve.model.response
 
 import play.api.libs.json.*
+import shared.models.domain.Timestamp
 
-case class RetrieveLossesAndClaimsResponse(submittedOn: String, claims: Option[Claims], losses: Option[Losses])
+case class RetrieveLossesAndClaimsResponse(submittedOn: Timestamp, claims: Option[Claims], losses: Option[Losses])
 
 object RetrieveLossesAndClaimsResponse {
-  implicit val retrieveLossClaimsFormat: OFormat[RetrieveLossesAndClaimsResponse] = Json.format[RetrieveLossesAndClaimsResponse]
+  implicit val format: OFormat[RetrieveLossesAndClaimsResponse] = Json.format[RetrieveLossesAndClaimsResponse]
 }

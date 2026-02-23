@@ -42,11 +42,10 @@ class CreateAmendLossesAndClaimsService @Inject(connector: CreateAmendLossesAndC
 
   def createAmendLossesAndClaims(
       request: CreateAmendLossesAndClaimsRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
-    connector.createAmendLossClaimsAndLosses(request).map(_.leftMap(mapDownstreamErrors(itsdErrorMap)))
-
+    connector.createAmendLossesAndClaims(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private val itsdErrorMap: Map[String, MtdError] = Map(
+  private val errorMap: Map[String, MtdError] = Map(
     "1215" -> NinoFormatError,
     "1117" -> TaxYearFormatError,
     "1216" -> InternalError,

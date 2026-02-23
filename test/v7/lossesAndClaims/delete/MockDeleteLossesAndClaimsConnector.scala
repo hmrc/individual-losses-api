@@ -31,10 +31,10 @@ trait MockDeleteLossesAndClaimsConnector extends TestSuite with MockFactory {
 
   object MockDeleteLossesAndClaimsConnector {
 
-    def deleteLossesAndClaims(deleteLossClaimsRequestData: DeleteLossesAndClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def deleteLossesAndClaims(deleteLossesAndClaimsRequestData: DeleteLossesAndClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
         .deleteLossesAndClaims(_: DeleteLossesAndClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(deleteLossClaimsRequestData, *, *, *)
+        .expects(deleteLossesAndClaimsRequestData, *, *, *)
     }
 
   }

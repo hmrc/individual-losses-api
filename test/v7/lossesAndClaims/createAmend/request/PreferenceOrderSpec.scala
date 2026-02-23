@@ -16,26 +16,29 @@
 
 package v7.lossesAndClaims.createAmend.request
 
-import org.scalactic.Prettifier.default
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.preferenceOrder
 
 class PreferenceOrderSpec extends UnitSpec {
 
-  val requestBody: PreferenceOrder = PreferenceOrder(
-    Option("carry-back")
+  private val json: JsValue = Json.parse(
+    """
+      |{
+      |  "applyFirst": "carry-sideways"
+      |}
+    """.stripMargin
   )
 
-  val defaultMtdRequestJson: JsValue = Json.parse(s"""
-       |{
-       |      "applyFirst": "carry-back"
-       |}
-       |""".stripMargin)
+  "Json Reads" should {
+    "read model from JSON" in {
+      json.as[PreferenceOrder] shouldBe preferenceOrder
+    }
+  }
 
-  "Json Validate" should {
-    "read a default model from JSON" in {
-      val result = defaultMtdRequestJson.validate[PreferenceOrder]
-      result.isSuccess shouldBe true
+  "Json Writes" should {
+    "write model to JSON" in {
+      Json.toJson(preferenceOrder) shouldBe json
     }
   }
 

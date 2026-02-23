@@ -21,6 +21,7 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.requestBodyModel
 import v7.lossesAndClaims.createAmend.request.*
 
 import scala.concurrent.Future
@@ -29,49 +30,24 @@ class CreateAmendLossesAndClaimsServiceSpec extends ServiceSpec {
 
   private val nino: String       = "AA123456A"
   private val businessId: String = "XAIS12345678910"
-  private val taxYear: String    = "2019-20"
+  private val taxYear: String    = "2026-27"
 
-  val createAmendLossesAndClaimsRequestBody: CreateAmendLossesAndClaimsRequestBody = CreateAmendLossesAndClaimsRequestBody(
-    Option(
-      Claims(
-        Option(
-          CarryBack(
-            Option(5000.99),
-            Option(5000.99),
-            Option(5000.99)
-          )),
-        Option(
-          CarrySideways(
-            Option(5000.99)
-          )),
-        Option(
-          PreferenceOrder(
-            Option("carry-back")
-          )),
-        Option(
-          CarryForward(
-            Option(5000.99),
-            Option(5000.99)
-          ))
-      )),
-    Option(
-      Losses(
-        Option(5000.99)
-      ))
+  private val request: CreateAmendLossesAndClaimsRequestData = CreateAmendLossesAndClaimsRequestData(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear),
+    createAmendLossesAndClaimsRequestBody = requestBodyModel
   )
 
-  trait Test extends MockCreateAmendLossesAndClaimsConnector {
+  private trait Test extends MockCreateAmendLossesAndClaimsConnector {
     lazy val service = new CreateAmendLossesAndClaimsService(connector)
   }
 
-  "createAmend Losses and Claims" when {
-    lazy val request =
-      CreateAmendLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), createAmendLossesAndClaimsRequestBody)
-
-    "valid data is passed" should {
-      "return a successful response with the correct correlationId" in new Test {
-        MockCreateAndAmendLossesAndClaimsConnector
-          .createAndAmendLossesAndClaims(request)
+  "createAmendLossesAndClaims" should {
+    "return a Right" when {
+      "the connector call is successful" in new Test {
+        MockCreateAmendLossesAndClaimsConnector
+          .createAmendLossesAndClaims(request)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         await(service.createAmendLossesAndClaims(request)) shouldBe Right(ResponseWrapper(correlationId, ()))
@@ -81,8 +57,8 @@ class CreateAmendLossesAndClaimsServiceSpec extends ServiceSpec {
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
         s"a $downstreamErrorCode error is returned from the service" in new Test {
-          MockCreateAndAmendLossesAndClaimsConnector
-            .createAndAmendLossesAndClaims(request)
+          MockCreateAmendLossesAndClaimsConnector
+            .createAmendLossesAndClaims(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
           private val result = await(service.createAmendLossesAndClaims(request))
@@ -90,7 +66,7 @@ class CreateAmendLossesAndClaimsServiceSpec extends ServiceSpec {
 
         }
 
-      val itsdError: Seq[(String, MtdError)] = List(
+      val errors: Seq[(String, MtdError)] = List(
         "1215" -> NinoFormatError,
         "1117" -> TaxYearFormatError,
         "1216" -> InternalError,
@@ -105,7 +81,7 @@ class CreateAmendLossesAndClaimsServiceSpec extends ServiceSpec {
         "5010" -> NotFoundError
       )
 
-      itsdError.foreach(serviceError.tupled)
+      errors.foreach(serviceError.tupled)
     }
   }
 

@@ -28,16 +28,19 @@ class DeleteLossesAndClaimsConnectorSpec extends ConnectorSpec {
 
   private val nino: String       = "AA123456A"
   private val businessId: String = "X0IS12345678901"
-  private val taxYear: String    = "2025-26"
+  private val taxYear: String    = "2026-27"
 
-  val request = DeleteLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val request: DeleteLossesAndClaimsRequestData = DeleteLossesAndClaimsRequestData(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
+  )
 
   "deleteLossesAndClaims" must {
     "return a success response" in new HipTest with Test {
-
       val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-      willDelete(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=25-26")
+      willDelete(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27")
         .returning(Future.successful(expected))
 
       val result: DownstreamOutcome[Unit] = await(connector.deleteLossesAndClaims(request))
@@ -45,7 +48,7 @@ class DeleteLossesAndClaimsConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test {
+  private trait Test {
     self: ConnectorTest =>
     val connector: DeleteLossesAndClaimsConnector = new DeleteLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }

@@ -1,6 +1,6 @@
 summary: Retrieve Losses and Claims
 description: |
-  This endpoint allows a developer to retrieve a claim or a brought-forward-loss for a specified individual and business for a given tax year.  
+  This endpoint allows a developer to retrieve a claim or a brought-forward-loss for a specified individual and business for a given tax year.
   A National Insurance number, business ID and tax year are required.
   
   ### Test data
@@ -12,10 +12,6 @@ description: |
   | TERMINAL_LOSS_CLAIM              | Simulates success response with terminal loss claim.           |
   | NOT_FOUND                        | Simulates the scenario where no data is found.                 |
   | STATEFUL                         | Performs a stateful retrieve.                                  |
-
-
-tags:
-  - Losses and Claims
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -35,6 +31,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -45,13 +47,19 @@ responses:
               $ref: './examples/lossesAndClaims/retrieve/retrieve_losses_and_claims.json'
           Terminal Loss Claim:
             value:
-              $ref: './examples/lossesAndClaims/retrieve/retrieve_terminal_losses_and_claims.json'
+              $ref: './examples/lossesAndClaims/retrieve/retrieve_terminal_loss_claim.json'
 
   "400":
     description: Bad request
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -75,6 +83,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -88,6 +102,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:

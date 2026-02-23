@@ -18,23 +18,27 @@ package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.losses
 
 class LossesSpec extends UnitSpec {
 
-  val requestBody: Losses = Losses(
-    Option(5000.99)
+  private val json: JsValue = Json.parse(
+    """
+      |{
+      |  "broughtForwardLosses": 5000.99
+      |}
+    """.stripMargin
   )
 
-  val defaultMtdRequestJson: JsValue = Json.parse(s"""
-       |{
-       |      "broughtForwardLosses": 5000.99
-       |}
-       |""".stripMargin)
+  "Json Reads" should {
+    "read model from JSON" in {
+      json.as[Losses] shouldBe losses
+    }
+  }
 
-  "Json Validate" should {
-    "read a default model from JSON" in {
-      val result = defaultMtdRequestJson.validate[Losses]
-      result.isSuccess shouldBe true
+  "Json Writes" should {
+    "write model to JSON" in {
+      Json.toJson(losses) shouldBe json
     }
   }
 

@@ -21,28 +21,17 @@ import cats.implicits.catsSyntaxTuple3Semigroupal
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
-import shared.models.errors.{MtdError, RuleTaxYearRangeInvalidError}
+import shared.models.errors.MtdError
 import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 import v7.lossesAndClaims.minimumTaxYear
 
-import javax.inject.Singleton
-
-@Singleton
 class DeleteLossesAndClaimsValidator(nino: String, businessId: String, taxYear: String) extends Validator[DeleteLossesAndClaimsRequestData] {
-
-  def resolvedTaxYear(taxYear: String): Validated[Seq[MtdError], TaxYear] = {
-
-    ResolveTaxYearMinimum(
-      minimumTaxYear,
-      rangeError = RuleTaxYearRangeInvalidError
-    )(taxYear)
-  }
 
   def validate: Validated[Seq[MtdError], DeleteLossesAndClaimsRequestData] =
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
-      resolvedTaxYear(taxYear)
+      ResolveTaxYearMinimum(minimumTaxYear)(taxYear)
     ).mapN(DeleteLossesAndClaimsRequestData.apply)
 
 }

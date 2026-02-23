@@ -15,7 +15,7 @@ components:
         The format of the supplied taxYear value is not valid.
       value:
         code: FORMAT_TAX_YEAR
-        message: The taxYear format is invalid
+        message: The provided tax year is invalid
     
     formatBusinessId:
       description: |
@@ -47,17 +47,17 @@ components:
     
     formatValueError:
       description: |
-        The submission has been made before the taxYear it relates to has ended.
+        One or more values have been added with the incorrect format.
       value:
         code: FORMAT_VALUE
         message: The value must be between 0 and 99999999999.99
     
     formatPreferenceOrderError:
       description: |
-        The provided preference order is invalid
+        The format of the supplied preference order is not valid.
       value:
         code: FORMAT_PREFERENCE_ORDER
-        message: The value must be between 0 and 99999999999.99
+        message: The provided preference order is invalid
     
     ruleMissingPreferenceOrder:
       description: |
@@ -66,12 +66,12 @@ components:
         code: RULE_MISSING_PREFERENCE_ORDER
         message: Preference order is required when both previousYearGeneralIncome and currentYearGeneralIncome are submitted
 
-    rulePrederenceOrderNotAllowed:
+    rulePreferenceOrderNotAllowed:
       description: |
         Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted.
       value:
         code: RULE_PREFERENCE_ORDER_NOT_ALLOWED
-        message: Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted.
+        message: Preference order must not be provided unless both previousYearGeneralIncome and currentYearGeneralIncome are submitted
 
     ruleCarryForwardAndTerminalLossNotAllowed:
       description: |
@@ -85,7 +85,7 @@ components:
         Carry back claim type is not valid for property income sources.
       value:
         code: RULE_CARRY_BACK_CLAIM
-        message: Carry back claim type is not valid for property income sources.
+        message: Carry back claim type is not valid for property income sources
     
     ruleIncorrectOrEmptyBody:
       description: |
@@ -113,17 +113,16 @@ components:
 
     clientOrAgentNotAuthorised:
       description: |
-        The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+        The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
       value:
         code: CLIENT_OR_AGENT_NOT_AUTHORISED
-        message: |
-          The client or agent is not authorised
+        message: The client or agent is not authorised
 
     # 404
 
     notFound:
       description: |
-        Matching resource not found.
+        The supplied income source could not be found.
       value:
         code: MATCHING_RESOURCE_NOT_FOUND
         message: Matching resource not found

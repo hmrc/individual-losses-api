@@ -16,19 +16,14 @@
 
 package v7.lossesAndClaims.delete
 
-import cats.implicits.catsSyntaxValidatedId
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.Deprecation.NotDeprecated
-import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.*
 import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.Version9
-import shared.services.MockAuditService
 import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,17 +32,20 @@ import scala.concurrent.Future
 class DeleteLossesAndClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockSharedAppConfig
     with MockDeleteLossesAndClaimsService
-    with MockDeleteLossesAndClaimsValidatorFactory
-    with MockAuditService {
+    with MockDeleteLossesAndClaimsValidatorFactory {
 
-  private val businessId  = "X0IS12345678901"
-  private val taxYear     = "2026-27"
-  private val requestData = DeleteLossesAndClaimsRequestData(parsedNino, BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val businessId: String = "X0IS12345678901"
+  private val taxYear: String    = "2026-27"
+
+  private val requestData: DeleteLossesAndClaimsRequestData = DeleteLossesAndClaimsRequestData(
+    nino = parsedNino,
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
+  )
 
   "delete" should {
-    "return NoContent" when {
+    "return NO_CONTENT" when {
       "the request is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 
@@ -70,9 +68,9 @@ class DeleteLossesAndClaimsControllerSpec
 
         MockDeleteLossesAndClaimsService
           .delete(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError, None))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, NotFoundError, None))))
 
-        runErrorTestWithAudit(RuleTaxYearNotSupportedError)
+        runErrorTestWithAudit(NotFoundError)
       }
     }
   }
@@ -98,7 +96,7 @@ class DeleteLossesAndClaimsControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber = Version9.name,
+          versionNumber = apiVersion.name,
           params = Map("nino" -> validNino, "businessId" -> businessId, "taxYear" -> taxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
@@ -106,13 +104,11 @@ class DeleteLossesAndClaimsControllerSpec
         )
       )
 
-    MockedSharedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
-
     MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns true
 
   }
 

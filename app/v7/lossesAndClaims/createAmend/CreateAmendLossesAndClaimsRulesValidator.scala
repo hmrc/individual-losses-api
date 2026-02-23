@@ -74,7 +74,7 @@ object CreateAmendLossesAndClaimsRulesValidator extends RulesValidator[CreateAme
       preferenceOrder.applyFirst.fold(valid) { applyFirst =>
         resolveEnum(
           PreferenceOrderEnum.parser,
-          FormatPreferenceOrder.withPath("/claims/preferenceOrder/applyFirst")
+          PreferenceOrderFormatError.withPath("/claims/preferenceOrder/applyFirst")
         )(applyFirst).toUnit
       }
     }

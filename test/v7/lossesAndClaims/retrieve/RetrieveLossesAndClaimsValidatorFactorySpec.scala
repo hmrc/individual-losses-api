@@ -17,23 +17,23 @@
 package v7.lossesAndClaims.retrieve
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.{ErrorWrapper, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
-import shared.models.utils.JsonErrorValidators
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 
-class RetrieveLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
+class RetrieveLossesAndClaimsValidatorFactorySpec extends UnitSpec {
 
-  private val validNino       = "AA123456A"
-  private val validBusinessId = "X0IS12345678901"
-  private val validTaxYear    = "2026-27"
+  private val validNino: String       = "AA123456A"
+  private val validBusinessId: String = "X0IS12345678901"
+  private val validTaxYear: String    = "2026-27"
 
   private implicit val correlationId: String = "1234"
-  private val validatorFactory               = new RetrieveLossesAndClaimsValidatorFactory
 
-  private val parsedNino       = Nino(validNino)
-  private val parsedBusinessId = BusinessId(validBusinessId)
-  private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
+  private val validatorFactory: RetrieveLossesAndClaimsValidatorFactory = new RetrieveLossesAndClaimsValidatorFactory
+
+  private val parsedNino: Nino             = Nino(validNino)
+  private val parsedBusinessId: BusinessId = BusinessId(validBusinessId)
+  private val parsedTaxYear: TaxYear       = TaxYear.fromMtd(validTaxYear)
 
   "running a validation" should {
     "return the parsed domain object" when {
@@ -43,24 +43,45 @@ class RetrieveLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonErro
       }
     }
 
+    "return NinoFormatError" when {
+      "given a badly formatted nino" in {
+        val result = validatorFactory.validator("validNino", validBusinessId, validTaxYear).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
+      }
+    }
+
+    "return TaxYearFormatError" when {
+      "given a badly formatted tax year" in {
+        val result = validatorFactory.validator(validNino, validBusinessId, "2026").validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
+      }
+    }
+
+    "return BusinessIdFormatError" when {
+      "given a badly formatted business ID" in {
+        val result = validatorFactory.validator(validNino, "invalidBusinessId", validTaxYear).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
+      }
+    }
+
     "return RuleTaxYearNotSupportedError" when {
-      "given a tax year passed an unsupported tax year" in {
+      "given an unsupported tax year" in {
         val result = validatorFactory.validator(validNino, validBusinessId, "2025-26").validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
-        )
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
       }
     }
 
-    "return RuleTaxYearRangeInvalid" when {
-      "given a tax year range which isn't a single year" in {
+    "return RuleTaxYearRangeInvalidError" when {
+      "given a tax year with an invalid range" in {
         val result = validatorFactory.validator(validNino, validBusinessId, "2025-27").validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
-        )
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
       }
     }
-
   }
 
 }

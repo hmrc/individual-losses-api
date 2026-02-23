@@ -16,21 +16,14 @@
 
 package v7.lossesAndClaims.retrieve
 
-import cats.implicits.catsSyntaxValidatedId
 import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.Deprecation.NotDeprecated
-import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.Version9
-import shared.services.MockAuditService
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
+import v7.lossesAndClaims.retrieve.fixtures.RetrieveLossesAndClaimsFixtures.{mtdResponseBodyJson, responseBodyModel}
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
-import v7.lossesAndClaims.retrieve.model.response.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,70 +31,17 @@ import scala.concurrent.Future
 class RetrieveLossesAndClaimsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockSharedAppConfig
     with MockRetrieveLossesAndClaimsService
-    with MockRetrieveLossesAndClaimsValidatorFactory
-    with MockAuditService {
+    with MockRetrieveLossesAndClaimsValidatorFactory {
 
-  private val businessId  = "X0IS12345678901"
-  private val taxYear     = "2026-27"
-  private val requestData = RetrieveLossesAndClaimsRequestData(parsedNino, BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val businessId: String = "X0IS12345678901"
+  private val taxYear: String    = "2026-27"
 
-  private val retrieveResponse: RetrieveLossesAndClaimsResponse = RetrieveLossesAndClaimsResponse(
-    "2026-08-24T14:15:22.544Z",
-    Some(
-      Claims(
-        Some(
-          CarryBack(
-            Some(5000.99),
-            Some(5000.99),
-            Some(5000.99)
-          )),
-        Some(
-          CarrySideways(
-            Some(5000.99)
-          )),
-        Some(
-          PreferenceOrder(
-            Some(`carry-back`)
-          )),
-        Some(
-          CarryForward(
-            Some(5000.99),
-            Some(5000.99)
-          ))
-      )),
-    Some(
-      Losses(
-        Some(5000.99)
-      ))
+  private val requestData: RetrieveLossesAndClaimsRequestData = RetrieveLossesAndClaimsRequestData(
+    nino = parsedNino,
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
   )
-
-  private val mtdResponseJson: JsValue = Json.parse(s"""
-       |{
-       |  "submittedOn": "2026-08-24T14:15:22.544Z",
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncome": 5000.99,
-       |      "earlyYearLosses": 5000.99,
-       |      "terminalLosses": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncome": 5000.99
-       |    },
-       |    "preferenceOrder": {
-       |      "applyFirst": "carry-back"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-          """.stripMargin)
 
   "retrieve" should {
     "return OK" when {
@@ -110,9 +50,9 @@ class RetrieveLossesAndClaimsControllerSpec
 
         MockRetrieveLossesAndClaimsService
           .retrieve(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveResponse))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBodyModel))))
 
-        runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseJson))
+        runOkTest(expectedStatus = OK, maybeExpectedResponseBody = Some(mtdResponseBodyJson))
       }
     }
 
@@ -127,9 +67,9 @@ class RetrieveLossesAndClaimsControllerSpec
 
         MockRetrieveLossesAndClaimsService
           .retrieve(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError, None))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, NotFoundError, None))))
 
-        runErrorTest(RuleTaxYearNotSupportedError)
+        runErrorTest(NotFoundError)
       }
     }
   }
@@ -147,13 +87,11 @@ class RetrieveLossesAndClaimsControllerSpec
 
     protected def callController(): Future[Result] = controller.retrieve(validNino, businessId, taxYear)(fakeRequest)
 
-    MockedSharedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
-
     MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns true
 
   }
 
