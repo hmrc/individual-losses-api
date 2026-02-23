@@ -39,7 +39,7 @@ class RetrieveLossesAndClaimsController @Inject() (
   override val endpointName: String = "retrieve-losses-and-claims"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "RetrieveLossesAndClaimsController", endpointName = "Retrieve Losses And Claims")
+    EndpointLogContext(controllerName = "RetrieveLossesAndClaimsController", endpointName = endpointName)
 
   def retrieve(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -51,7 +51,7 @@ class RetrieveLossesAndClaimsController @Inject() (
         RequestHandler
           .withValidator(validator)
           .withService(service.retrieveLossesAndClaims)
-          .withPlainJsonResult(OK)
+          .withPlainJsonResult()
 
       requestHandler.handleRequest()
     }

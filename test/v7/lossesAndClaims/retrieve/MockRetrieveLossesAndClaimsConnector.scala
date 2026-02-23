@@ -32,11 +32,11 @@ trait MockRetrieveLossesAndClaimsConnector extends TestSuite with MockFactory {
 
   object MockRetrieveLossesAndClaimsConnector {
 
-    def retrieveLossesAndClaims(retrieveLossClaimsRequestData: RetrieveLossesAndClaimsRequestData)
+    def retrieveLossesAndClaims(retrieveLossesAndClaimsRequestData: RetrieveLossesAndClaimsRequestData)
         : CallHandler[Future[DownstreamOutcome[RetrieveLossesAndClaimsResponse]]] = {
       (connector
         .retrieveLossesAndClaims(_: RetrieveLossesAndClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(retrieveLossClaimsRequestData, *, *, *)
+        .expects(retrieveLossesAndClaimsRequestData, *, *, *)
     }
 
   }

@@ -17,302 +17,174 @@
 package v7.lossesAndClaims.createAmend
 
 import org.scalactic.Prettifier.default
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.*
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.{requestBodyJson, requestBodyModel}
 import v7.lossesAndClaims.createAmend.request.*
+
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 class CreateAmendLossesAndClaimsValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
-  private val validNino       = "AA123456A"
-  private val validBusinessId = "X0IS12345678901"
-  private val validTaxYear    = "2026-27"
+  private val validNino: String       = "AA123456A"
+  private val validBusinessId: String = "X0IS12345678901"
+  private val validTaxYear: String    = "2026-27"
 
   private implicit val correlationId: String = "1234"
-  private val validatorFactory               = new CreateAmendLossesAndClaimsValidationFactory
 
-  private val parsedNino       = Nino(validNino)
-  private val parsedBusinessId = BusinessId(validBusinessId)
-  private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
+  private val validatorFactory: CreateAmendLossesAndClaimsValidationFactory = new CreateAmendLossesAndClaimsValidationFactory
 
-  val defaultRequestJson: JsValue = Json.parse(s"""
-                                                  |{
-                                                  |  "claims": {
-                                                  |    "carryBack": {
-                                                  |      "previousYearGeneralIncome": 5000.99,
-                                                  |      "earlyYearLosses": 5000.99
-                                                  |    },
-                                                  |    "carrySideways": {
-                                                  |      "currentYearGeneralIncome": 5000.99
-                                                  |    },
-                                                  |    "preferenceOrder": {
-                                                  |      "applyFirst": "carry-sideways"
-                                                  |    },
-                                                  |    "carryForward": {
-                                                  |      "currentYearLosses": 5000.99,
-                                                  |      "previousYearsLosses": 5000.99
-                                                  |    }
-                                                  |  },
-                                                  |  "losses": {
-                                                  |    "broughtForwardLosses": 5000.99
-                                                  |  }
-                                                  |}
-            """.stripMargin)
-
-  val emptyBody: JsValue = Json.parse(s"""
-       |{}
-       |""".stripMargin)
-
-  val invalidFieldValueDoubleRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncome": "something",
-       |      "earlyYearLosses": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncome": "something"
-       |    },
-       |    "preferenceOrder": {
-       |      "applyFirst": "carry-sideways"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-              """.stripMargin)
-
-  val invalidPreferenceOrderRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "preferenceOrder": {
-       |      "applyFirst": "carry-sideways"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-                """.stripMargin)
-
-  val invalidPreferenceOrderValueRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncome": 5000.99,
-       |      "earlyYearLosses": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncome": 5000.99
-       |    },
-       |    "preferenceOrder": {
-       |      "applyFirst": "somthing"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-       """.stripMargin)
-
-  val invalidRuleCarryForwardAndTerminalLossNotAllowed: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncome": 5000.99,
-       |      "earlyYearLosses": 5000.99,
-       |      "terminalLosses": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncome": 5000.99
-       |    },
-       |    "preferenceOrder": {
-       |      "applyFirst": "carry-sideways"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-       """.stripMargin)
-
-  val invalidPreferenceOrderNotSetRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncome": 5000.99,
-       |      "earlyYearLosses": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncome": 5000.99
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-                """.stripMargin)
-
-  val createAmendLossesAndClaimsRequestBody: CreateAmendLossesAndClaimsRequestBody = CreateAmendLossesAndClaimsRequestBody(
-    Option(
-      Claims(
-        Option(
-          CarryBack(
-            Option(5000.99),
-            Option(5000.99),
-            None
-          )),
-        Option(
-          CarrySideways(
-            Option(5000.99)
-          )),
-        Option(
-          PreferenceOrder(
-            Option("carry-sideways")
-          )),
-        Option(
-          CarryForward(
-            Option(5000.99),
-            Option(5000.99)
-          ))
-      )),
-    Option(
-      Losses(
-        Option(5000.99)
-      ))
-  )
+  private val parsedNino: Nino             = Nino(validNino)
+  private val parsedBusinessId: BusinessId = BusinessId(validBusinessId)
+  private val parsedTaxYear: TaxYear       = TaxYear.fromMtd(validTaxYear)
 
   "running a validation" should {
     "return the parsed domain object" when {
-      "given a valid request" in {
-        val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, defaultRequestJson, false).validateAndWrapResult()
+      "given a valid request with temporal validation disabled" in {
+        val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, requestBodyJson, false).validateAndWrapResult()
+
         result shouldBe Right(
-          CreateAmendLossesAndClaimsRequestData(parsedNino, parsedBusinessId, parsedTaxYear, createAmendLossesAndClaimsRequestBody))
+          CreateAmendLossesAndClaimsRequestData(parsedNino, parsedBusinessId, parsedTaxYear, requestBodyModel)
+        )
       }
     }
 
     "return NinoFormatError" when {
-      "given a tax year passed an unsupported tax year" in {
-        val result = validatorFactory.validator("validNino", validBusinessId, "2026-27", defaultRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, NinoFormatError)
-        )
+      "given a badly formatted nino" in {
+        val result = validatorFactory.validator("validNino", validBusinessId, validTaxYear, requestBodyJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
+      }
+    }
+
+    "return TaxYearFormatError" when {
+      "given a badly formatted tax year" in {
+        val result = validatorFactory.validator(validNino, validBusinessId, "2026", requestBodyJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
       }
     }
 
     "return BusinessIdFormatError" when {
-      "given a tax year passed an unsupported tax year" in {
-        val result = validatorFactory.validator(validNino, "invalidBusinessId", "2026-27", defaultRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, BusinessIdFormatError)
-        )
-      }
-    }
+      "given a badly formatted business ID" in {
+        val result = validatorFactory.validator(validNino, "invalidBusinessId", validTaxYear, requestBodyJson, false).validateAndWrapResult()
 
-    "return RuleIncorrectOrEmptyBodyError" when {
-      "given a tax year passed an unsupported tax year" in {
-        val result = validatorFactory.validator(validNino, validBusinessId, "2025-26", emptyBody, false).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError))))
+        result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
       }
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "given a tax year passed an unsupported tax year" in {
-        val result = validatorFactory.validator(validNino, validBusinessId, "2025-26", defaultRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
-        )
+      "given an unsupported tax year" in {
+        val result = validatorFactory.validator(validNino, validBusinessId, "2025-26", requestBodyJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
       }
     }
 
-    "return RuleTaxYearRangeInvalid" when {
-      "given a tax year range which isn't a single year" in {
-        val result = validatorFactory.validator(validNino, validBusinessId, "2025-27", defaultRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
-        )
+    "return RuleTaxYearRangeInvalidError" when {
+      "given a tax year with an invalid range" in {
+        val result = validatorFactory.validator(validNino, validBusinessId, "2025-27", requestBodyJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
       }
     }
 
     "return RuleTaxYearNotEndedError" when {
-      "given a tax year range which isn't a single year" in {
-        val result = validatorFactory
-          .validator(validNino, validBusinessId, "2026-27", defaultRequestJson, temporalValidationEnabled = true)
-          .validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleTaxYearNotEndedError)
-        )
+      "given a tax year that has not ended with temporal validation enabled" in {
+        val notEndedTaxYear = parsedTaxYear.max(TaxYear.currentTaxYear)
+
+        val result = validatorFactory.validator(validNino, validBusinessId, notEndedTaxYear.asMtd, requestBodyJson, true).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotEndedError))
+      }
+    }
+
+    "return PreferenceOrderFormatError" when {
+      "given a json body with a badly formatted preference order" in {
+        val invalidJson = requestBodyJson.update("/claims/preferenceOrder/applyFirst", JsString("carry-bag"))
+
+        val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, invalidJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, PreferenceOrderFormatError.withPath("/claims/preferenceOrder/applyFirst")))
+      }
+    }
+
+    "return ValueFormatError" when {
+      Seq(
+        "/claims/carryBack/previousYearGeneralIncome",
+        "/claims/carryBack/earlyYearLosses",
+        "/claims/carryBack/terminalLosses",
+        "/claims/carrySideways/currentYearGeneralIncome",
+        "/claims/carryForward/currentYearLosses",
+        "/claims/carryForward/previousYearsLosses",
+        "/losses/broughtForwardLosses"
+      ).foreach { path =>
+        s"given a json body with a badly formatted value for field $path" in {
+          val invalidJsonBase: JsValue = requestBodyJson.update(path, JsNumber(-5000.99))
+
+          val invalidJson: JsValue = if (path.endsWith("terminalLosses")) {
+            invalidJsonBase.removeProperty("/claims/carryForward")
+          } else {
+            invalidJsonBase
+          }
+
+          val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, invalidJson, false).validateAndWrapResult()
+
+          result shouldBe Left(ErrorWrapper(correlationId, ValueFormatError.withPath(path)))
+        }
       }
     }
 
     "return RuleIncorrectOrEmptyBodyError" when {
-      "given a json body not valid" in {
-        val result =
-          validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidFieldValueDoubleRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            RuleIncorrectOrEmptyBodyError.withPaths(
-              List("/claims/carryBack/previousYearGeneralIncome", "/claims/carrySideways/currentYearGeneralIncome"))
-          )
-        )
+      "given an empty json body" in {
+        val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, JsObject.empty, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
+      }
+
+      requestBodyJson.collectPaths().foreach { path =>
+        s"given a json body with an incorrect type for field $path" in {
+          val invalidJson = requestBodyJson.update(path, JsBoolean(true))
+
+          val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, invalidJson, false).validateAndWrapResult()
+
+          result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath(path)))
+        }
       }
     }
 
-    "return RulePreferenceOrderNotAllowed" when {
-      "given a json body not valid" in {
-        val result =
-          validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidPreferenceOrderRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RulePreferenceOrderNotAllowedError.withPaths(List("/claims/preferenceOrder/applyFirst"))))
+    "return RulePreferenceOrderNotAllowedError" when {
+      "given a json body with preference order specified but no previousYearGeneralIncome and currentYearGeneralIncome supplied" in {
+        val invalidJson = requestBodyJson
+          .removeProperty("/claims/carryBack/previousYearGeneralIncome")
+          .removeProperty("/claims/carrySideways")
+
+        val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, invalidJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RulePreferenceOrderNotAllowedError.withPath("/claims/preferenceOrder/applyFirst")))
       }
     }
 
-    "return RuleMissingPreferenceOrder" when {
-      "given a json body not valid" in {
-        val result =
-          validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidPreferenceOrderNotSetRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleMissingPreferenceOrderError.withPaths(List("/claims"))))
+    "return RuleMissingPreferenceOrderError" when {
+      "given a json body with previousYearGeneralIncome and currentYearGeneralIncome supplied but no preference order specified" in {
+        val invalidJson = requestBodyJson.removeProperty("/claims/preferenceOrder")
+
+        val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, invalidJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleMissingPreferenceOrderError.withPath("/claims")))
       }
     }
 
-    "return FormatPreferenceOrder" when {
-      "given a json body not valid" in {
-        val result =
-          validatorFactory.validator(validNino, validBusinessId, "2026-27", invalidPreferenceOrderValueRequestJson, false).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, FormatPreferenceOrder.withPaths(List("/claims/preferenceOrder/applyFirst"))))
-      }
-    }
+    "return RuleCarryForwardAndTerminalLossNotAllowedError" when {
+      "given a json body with carry forward and terminal loss claims supplied" in {
+        val invalidJson = requestBodyJson.update("/claims/carryBack/terminalLosses", JsNumber(5000.99))
 
-    "return RuleCarryForwardAndTerminalLossNotAllowed" when {
-      "given a json body not valid" in {
-        val result =
-          validatorFactory
-            .validator(validNino, validBusinessId, "2026-27", invalidRuleCarryForwardAndTerminalLossNotAllowed, false)
-            .validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleCarryForwardAndTerminalLossNotAllowedError.withPaths(List("/claims"))))
+        val result = validatorFactory.validator(validNino, validBusinessId, validTaxYear, invalidJson, false).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleCarryForwardAndTerminalLossNotAllowedError.withPath("/claims")))
       }
     }
   }

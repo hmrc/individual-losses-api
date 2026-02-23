@@ -38,11 +38,10 @@ class RetrieveLossesAndClaimsConnector @Inject() (val http: HttpClientV2, val ap
 
     import request.*
 
-    lazy val downstreamUri                     = HipUri[RetrieveLossesAndClaimsResponse](s"itsd/reliefs/loss-claims/$nino/$businessId")
-    val queryParams                            = Map("taxYear" -> taxYear.asTysDownstream)
-    val mappedQueryParams: Map[String, String] = queryParams.collect { case (k: String, v: String) => (k, v) }
+    val downstreamUri = HipUri[RetrieveLossesAndClaimsResponse](s"itsd/reliefs/loss-claims/$nino/$businessId")
+    val queryParams   = List("taxYear" -> taxYear.asTysDownstream)
 
-    get(downstreamUri, mappedQueryParams.toList)
+    get(downstreamUri, queryParams)
   }
 
 }

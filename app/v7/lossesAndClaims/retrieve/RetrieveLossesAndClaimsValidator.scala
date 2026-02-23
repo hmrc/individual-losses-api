@@ -28,16 +28,10 @@ import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestD
 
 class RetrieveLossesAndClaimsValidator(nino: String, businessId: String, taxYear: String) extends Validator[RetrieveLossesAndClaimsRequestData] {
 
-  def resolvedTaxYear(taxYear: String): Validated[Seq[MtdError], TaxYear] = {
-    ResolveTaxYearMinimum(
-      minimumTaxYear
-    )(taxYear)
-  }
-
   def validate: Validated[Seq[MtdError], RetrieveLossesAndClaimsRequestData] = (
     ResolveNino(nino),
     ResolveBusinessId(businessId),
-    resolvedTaxYear(taxYear)
+    ResolveTaxYearMinimum(minimumTaxYear)(taxYear)
   ).mapN(RetrieveLossesAndClaimsRequestData.apply)
 
 }

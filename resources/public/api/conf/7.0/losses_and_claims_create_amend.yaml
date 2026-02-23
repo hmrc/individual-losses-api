@@ -13,15 +13,13 @@ description: |
   | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.  |
   | STATEFUL                         | Performs a stateful create or update.                                                            |
 
-tags:
-  - Losses and Claims
-
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
   - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
-  - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
   - $ref: './common/headers.yaml#/components/parameters/suspendTemporalValidationsHeader'
 
@@ -33,14 +31,12 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/lossesAndClaimsCreateAmend/request.json'
+        $ref: './schemas/lossesAndClaims/createAmend/request.json'
       examples:
         Losses and Claims:
-          description: Losses and Claims Example
           value:
             $ref: './examples/lossesAndClaims/createAmend/default_request.json'
-        Terminal Losses and Claims:
-          description: Terminal Losses and Claims Example
+        Terminal Loss Claim:
           value:
             $ref: './examples/lossesAndClaims/createAmend/terminal_loss_claim_request.json'
 
@@ -50,13 +46,24 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: { }
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
   
   "400":
     description: Bad request
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -78,16 +85,16 @@ responses:
             $ref: './common/errors.yaml#/components/examples/formatValueError'
           FORMAT_PREFERENCE_ORDER:
             $ref: './common/errors.yaml#/components/examples/formatPreferenceOrderError'
+          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
           RULE_MISSING_PREFERENCE_ORDER:
             $ref: './common/errors.yaml#/components/examples/ruleMissingPreferenceOrder'
           RULE_PREFERENCE_ORDER_NOT_ALLOWED:
-            $ref: './common/errors.yaml#/components/examples/rulePrederenceOrderNotAllowed'
+            $ref: './common/errors.yaml#/components/examples/rulePreferenceOrderNotAllowed'
           RULE_CARRY_FORWARD_AND_TERMINAL_LOSS_NOT_ALLOWED:
             $ref: './common/errors.yaml#/components/examples/ruleCarryForwardAndTerminalLossNotAllowed'
           RULE_CARRY_BACK_CLAIM:
             $ref: './common/errors.yaml#/components/examples/ruleCarryBackClaim'
-          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
-            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
           RULE_OUTSIDE_AMENDMENT_WINDOW:
             $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
@@ -98,6 +105,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:
@@ -111,6 +124,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
     content:
       application/json:
         schema:

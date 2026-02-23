@@ -18,40 +18,39 @@ package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.carryBack
 
 class CarryBackSpec extends UnitSpec {
 
-  val carryBackRequestBody: CarryBack = CarryBack(
-    Option(5000.99),
-    Option(5000.99),
-    Option(5000.99)
+  private val mtdJson: JsValue = Json.parse(
+    """
+      |{
+      |  "previousYearGeneralIncome": 5000.99,
+      |  "earlyYearLosses": 5000.99,
+      |  "terminalLosses": 5000.99
+      |}
+     """.stripMargin
   )
 
-  val defaultMtdRequestJson: JsValue = Json.parse(s"""
-       |{
-       |     "previousYearGeneralIncome": 5000.99,
-       |     "earlyYearLosses": 5000.99,
-       |     "terminalLosses": 5000.99
-       |}
-       |""".stripMargin)
-
-  val defaultDownstreamRequestJson: JsValue = Json.parse(s"""
-       |{
-       |     "previousYearGeneralIncomeSection64": 5000.99,
-       |     "earlyYearLossesSection72": 5000.99,
-       |     "terminalLossesSection89": 5000.99
-       |}
-       |""".stripMargin)
+  private val downstreamJson: JsValue = Json.parse(
+    """
+      |{
+      |  "previousYearGeneralIncomeSection64": 5000.99,
+      |  "earlyYearLossesSection72": 5000.99,
+      |  "terminalLossesSection89": 5000.99
+      |}
+    """.stripMargin
+  )
 
   "Json Reads" should {
-    "read a default model from JSON" in {
-      defaultMtdRequestJson.as[CarryBack] shouldBe carryBackRequestBody
+    "read model from JSON" in {
+      mtdJson.as[CarryBack] shouldBe carryBack
     }
   }
 
   "Json Writes" should {
-    "write a default model to JSON" in {
-      Json.toJson(carryBackRequestBody) shouldBe defaultDownstreamRequestJson
+    "write model to JSON" in {
+      Json.toJson(carryBack) shouldBe downstreamJson
     }
   }
 

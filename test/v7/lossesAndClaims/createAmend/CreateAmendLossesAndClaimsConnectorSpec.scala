@@ -21,6 +21,7 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.requestBodyModel
 import v7.lossesAndClaims.createAmend.request.*
 
 import scala.concurrent.Future
@@ -31,47 +32,21 @@ class CreateAmendLossesAndClaimsConnectorSpec extends ConnectorSpec {
   private val businessId: String = "X0IS12345678901"
   private val taxYear: String    = "2026-27"
 
-  val createAmendLossesAndClaimsRequestBody: CreateAmendLossesAndClaimsRequestBody = CreateAmendLossesAndClaimsRequestBody(
-    Option(
-      Claims(
-        Option(
-          CarryBack(
-            Option(5000.99),
-            Option(5000.99),
-            Option(5000.99)
-          )),
-        Option(
-          CarrySideways(
-            Option(5000.99)
-          )),
-        Option(
-          PreferenceOrder(
-            Option("carry-back")
-          )),
-        Option(
-          CarryForward(
-            Option(5000.99),
-            Option(5000.99)
-          ))
-      )),
-    Option(
-      Losses(
-        Option(5000.99)
-      ))
+  private val request: CreateAmendLossesAndClaimsRequestData = CreateAmendLossesAndClaimsRequestData(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear),
+    createAmendLossesAndClaimsRequestBody = requestBodyModel
   )
-
-  val request =
-    CreateAmendLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), createAmendLossesAndClaimsRequestBody)
 
   "createAmendLossesAndClaims" must {
     "return a success response" in new HipTest with Test {
-
       val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-      willPut(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27", createAmendLossesAndClaimsRequestBody)
+      willPut(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27", requestBodyModel)
         .returning(Future.successful(expected))
 
-      val result: DownstreamOutcome[Unit] = await(connector.createAmendLossClaimsAndLosses(request))
+      val result: DownstreamOutcome[Unit] = await(connector.createAmendLossesAndClaims(request))
       result shouldBe expected
     }
 
@@ -80,16 +55,16 @@ class CreateAmendLossesAndClaimsConnectorSpec extends ConnectorSpec {
         val downstreamErrorResponse: DownstreamErrors                 = DownstreamErrors.single(DownstreamErrorCode("SOME_ERROR"))
         val outcome: Left[ResponseWrapper[DownstreamErrors], Nothing] = Left(ResponseWrapper(correlationId, downstreamErrorResponse))
 
-        willPut(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27", createAmendLossesAndClaimsRequestBody)
+        willPut(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27", requestBodyModel)
           .returns(Future.successful(outcome))
 
-        val result: DownstreamOutcome[Unit] = await(connector.createAmendLossClaimsAndLosses(request))
+        val result: DownstreamOutcome[Unit] = await(connector.createAmendLossesAndClaims(request))
         result shouldBe outcome
       }
     }
   }
 
-  trait Test {
+  private trait Test {
     self: ConnectorTest =>
 
     val connector: CreateAmendLossesAndClaimsConnector =

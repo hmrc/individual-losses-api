@@ -29,13 +29,13 @@ trait MockCreateAmendLossesAndClaimsConnector extends TestSuite with MockFactory
 
   val connector: CreateAmendLossesAndClaimsConnector = mock[CreateAmendLossesAndClaimsConnector]
 
-  object MockCreateAndAmendLossesAndClaimsConnector {
+  object MockCreateAmendLossesAndClaimsConnector {
 
-    def createAndAmendLossesAndClaims(
-        createAndAmendLossClaimsRequestData: CreateAmendLossesAndClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def createAmendLossesAndClaims(
+        createAmendLossesAndClaimsRequestData: CreateAmendLossesAndClaimsRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (connector
-        .createAmendLossClaimsAndLosses(_: CreateAmendLossesAndClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(createAndAmendLossClaimsRequestData, *, *, *)
+        .createAmendLossesAndClaims(_: CreateAmendLossesAndClaimsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(createAmendLossesAndClaimsRequestData, *, *, *)
     }
 
   }

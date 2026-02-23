@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@
 package shared.auth
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status.OK
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers.*
 import shared.services.*
 import shared.support.IntegrationBaseSpec
 
@@ -41,15 +39,15 @@ abstract class AuthSupportingAgentsAllowedISpec extends IntegrationBaseSpec {
 
   protected val downstreamUri: String
 
-  protected val maybeDownstreamResponseJson: Option[JsValue]
+  protected val maybeDownstreamResponseJson: Option[JsValue] = None
 
   protected val downstreamQueryParam: Map[String, String] = Map.empty
 
-  protected val downstreamHttpMethod: DownstreamStub.HTTPMethod = DownstreamStub.POST
+  protected val downstreamHttpMethod: DownstreamStub.HTTPMethod = DownstreamStub.PUT
 
-  protected val downstreamSuccessStatus: Int = OK
+  protected val downstreamSuccessStatus: Int = NO_CONTENT
 
-  protected val expectedMtdSuccessStatus: Int = OK
+  protected val expectedMtdSuccessStatus: Int = NO_CONTENT
 
   /** One endpoint where supporting agents are allowed.
     */
@@ -111,7 +109,8 @@ abstract class AuthSupportingAgentsAllowedISpec extends IntegrationBaseSpec {
       buildRequest(mtdUrl)
         .withHttpHeaders(
           (ACCEPT, s"application/vnd.hmrc.$callingApiVersion+json"),
-          (AUTHORIZATION, "Bearer 123")
+          (AUTHORIZATION, "Bearer 123"),
+          ("suspend-temporal-validations", "true")
         )
     }
 

@@ -20,17 +20,9 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
+import v7.lossesAndClaims.retrieve.fixtures.RetrieveLossesAndClaimsFixtures.responseBodyModel
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
-import v7.lossesAndClaims.retrieve.model.response.{
-  CarryBack,
-  CarryForward,
-  CarrySideways,
-  Claims,
-  Losses,
-  PreferenceOrder,
-  RetrieveLossesAndClaimsResponse
-}
+import v7.lossesAndClaims.retrieve.model.response.RetrieveLossesAndClaimsResponse
 
 import scala.concurrent.Future
 
@@ -40,55 +32,25 @@ class RetrieveLossesAndClaimsConnectorSpec extends ConnectorSpec {
   private val businessId: String = "X0IS12345678901"
   private val taxYear: String    = "2026-27"
 
-  val retrieveResponse: RetrieveLossesAndClaimsResponse = RetrieveLossesAndClaimsResponse(
-    "2026-08-24T14:15:22.544Z",
-    Some(
-      Claims(
-        Some(
-          CarryBack(
-            Some(5000.99),
-            Some(5000.99),
-            Some(5000.99)
-          )),
-        Some(
-          CarrySideways(
-            Some(5000.99)
-          )),
-        Some(
-          PreferenceOrder(
-            Some(`carry-back`)
-          )),
-        Some(
-          CarryForward(
-            Some(5000.99),
-            Some(5000.99)
-          ))
-      )),
-    Some(
-      Losses(
-        Some(5000.99)
-      ))
+  private val request: RetrieveLossesAndClaimsRequestData = RetrieveLossesAndClaimsRequestData(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
   )
-
-  val request = RetrieveLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
-
-  def retrieveLossClaimResult(connector: RetrieveLossesAndClaimsConnector): DownstreamOutcome[RetrieveLossesAndClaimsResponse] =
-    await(connector.retrieveLossesAndClaims(request))
 
   "retrieveLossesAndClaims" must {
     "return a success response" in new HipTest with Test {
-
-      private val expected = Left(ResponseWrapper(correlationId, retrieveResponse))
+      private val expected = Left(ResponseWrapper(correlationId, responseBodyModel))
 
       willGet(url = url"$baseUrl/itsd/reliefs/loss-claims/$nino/$businessId?taxYear=26-27")
         .returning(Future.successful(expected))
 
-      val result: DownstreamOutcome[RetrieveLossesAndClaimsResponse] = retrieveLossClaimResult(connector)
+      val result: DownstreamOutcome[RetrieveLossesAndClaimsResponse] = await(connector.retrieveLossesAndClaims(request))
       result shouldBe expected
     }
   }
 
-  trait Test {
+  private trait Test {
     self: ConnectorTest =>
     val connector: RetrieveLossesAndClaimsConnector = new RetrieveLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
   }

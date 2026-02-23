@@ -18,34 +18,35 @@ package v7.lossesAndClaims.createAmend.request
 
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.carrySideways
 
 class CarrySidewaysSpec extends UnitSpec {
 
-  val requestBody: CarrySideways = CarrySideways(
-    Option(5000.99)
+  private val mtdJson: JsValue = Json.parse(
+    """
+      |{
+      |  "currentYearGeneralIncome": 5000.99
+      |}
+    """.stripMargin
   )
 
-  val defaultMtdRequestJson: JsValue = Json.parse(s"""
-       |{
-       |      "currentYearGeneralIncome": 5000.99
-       |}
-       |""".stripMargin)
-
-  val defaultDownstreamRequestJson: JsValue = Json.parse(s"""
-       |{
-       |     "currentYearGeneralIncomeSection64": 5000.99
-       |}
-       |""".stripMargin)
+  private val downstreamJson: JsValue = Json.parse(
+    """
+      |{
+      |  "currentYearGeneralIncomeSection64": 5000.99
+      |}
+    """.stripMargin
+  )
 
   "Json Reads" should {
-    "read a default model from JSON" in {
-      defaultMtdRequestJson.as[CarrySideways] shouldBe requestBody
+    "read model from JSON" in {
+      mtdJson.as[CarrySideways] shouldBe carrySideways
     }
   }
 
   "Json Writes" should {
-    "write a default model to JSON" in {
-      Json.toJson(requestBody) shouldBe defaultDownstreamRequestJson
+    "write model to JSON" in {
+      Json.toJson(carrySideways) shouldBe downstreamJson
     }
   }
 

@@ -33,7 +33,7 @@ trait MockDeleteLossesAndClaimsService extends TestSuite with MockFactory {
 
     def delete(requestData: DeleteLossesAndClaimsRequestData): CallHandler[Future[ServiceOutcome[Unit]]] = {
       (mockDeleteLossesAndClaimsService
-        .deleteLossClaimsService(_: DeleteLossesAndClaimsRequestData)(_: RequestContext, _: ExecutionContext))
+        .deleteLossesAndClaims(_: DeleteLossesAndClaimsRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

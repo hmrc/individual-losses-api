@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The p
 
 object StringFormatError extends MtdError(code = "FORMAT_STRING", message = "The supplied string format is not valid", BAD_REQUEST)
 
-object FormatPreferenceOrder extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
+object PreferenceOrderFormatError extends MtdError("FORMAT_PREFERENCE_ORDER", "The provided preference order is invalid", BAD_REQUEST)
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)

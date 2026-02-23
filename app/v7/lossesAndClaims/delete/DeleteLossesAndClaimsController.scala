@@ -35,10 +35,11 @@ class DeleteLossesAndClaimsController @Inject() (val authService: EnrolmentsAuth
                                                  cc: ControllerComponents,
                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
+
   override val endpointName: String = "delete-losses-and-claims"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "DeleteLossesAndClaimsController", endpointName = "Delete Losses and Claims")
+    EndpointLogContext(controllerName = "DeleteLossesAndClaimsController", endpointName = endpointName)
 
   def delete(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -49,7 +50,7 @@ class DeleteLossesAndClaimsController @Inject() (val authService: EnrolmentsAuth
       val requestHandler =
         RequestHandler
           .withValidator(validator)
-          .withService(service.deleteLossClaimsService)
+          .withService(service.deleteLossesAndClaims)
           .withAuditing(AuditHandler(
             auditService,
             auditType = "DeleteLossesAndClaims",

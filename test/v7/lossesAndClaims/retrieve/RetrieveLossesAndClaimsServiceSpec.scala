@@ -20,17 +20,9 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
+import v7.lossesAndClaims.retrieve.fixtures.RetrieveLossesAndClaimsFixtures.responseBodyModel
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
-import v7.lossesAndClaims.retrieve.model.response.{
-  CarryBack,
-  CarryForward,
-  CarrySideways,
-  Claims,
-  Losses,
-  PreferenceOrder,
-  RetrieveLossesAndClaimsResponse
-}
+import v7.lossesAndClaims.retrieve.model.response.RetrieveLossesAndClaimsResponse
 
 import scala.concurrent.Future
 
@@ -38,52 +30,25 @@ class RetrieveLossesAndClaimsServiceSpec extends ServiceSpec {
 
   private val nino: String       = "AA123456A"
   private val businessId: String = "XAIS12345678910"
-  private val taxYear: String    = "2019-20"
+  private val taxYear: String    = "2026-27"
 
-  val retrieveResponse: RetrieveLossesAndClaimsResponse = RetrieveLossesAndClaimsResponse(
-    "2026-08-24T14:15:22.544Z",
-    Some(
-      Claims(
-        Some(
-          CarryBack(
-            Some(5000.99),
-            Some(5000.99),
-            Some(5000.99)
-          )),
-        Some(
-          CarrySideways(
-            Some(5000.99)
-          )),
-        Some(
-          PreferenceOrder(
-            Some(`carry-back`)
-          )),
-        Some(
-          CarryForward(
-            Some(5000.99),
-            Some(5000.99)
-          ))
-      )),
-    Some(
-      Losses(
-        Some(5000.99)
-      ))
+  private val request: RetrieveLossesAndClaimsRequestData = RetrieveLossesAndClaimsRequestData(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
-  trait Test extends MockRetrieveLossesAndClaimsConnector {
+  private trait Test extends MockRetrieveLossesAndClaimsConnector {
     lazy val service = new RetrieveLossesAndClaimsService(connector)
   }
 
-  lazy val request: RetrieveLossesAndClaimsRequestData =
-    RetrieveLossesAndClaimsRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
-
-  "Retrieve Losses and Claims" should {
+  "retrieveLossesAndClaims" should {
     "return a Right" when {
       "the connector call is successful" in new Test {
-        val downstreamResponse: ResponseWrapper[RetrieveLossesAndClaimsResponse] = ResponseWrapper(correlationId, retrieveResponse)
+        val downstreamResponse: ResponseWrapper[RetrieveLossesAndClaimsResponse] = ResponseWrapper(correlationId, responseBodyModel)
         MockRetrieveLossesAndClaimsConnector
           .retrieveLossesAndClaims(request)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveResponse))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBodyModel))))
 
         await(service.retrieveLossesAndClaims(request)) shouldBe Right(downstreamResponse)
       }
@@ -110,16 +75,16 @@ class RetrieveLossesAndClaimsServiceSpec extends ServiceSpec {
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val itsdErrors: Seq[(String, MtdError)] = List(
+      val errors: Seq[(String, MtdError)] = List(
         "1215" -> NinoFormatError,
         "1117" -> TaxYearFormatError,
         "1216" -> InternalError,
         "1007" -> BusinessIdFormatError,
-        "5000" -> RuleTaxYearNotSupportedError,
+        "5000" -> InternalError,
         "5010" -> NotFoundError
       )
 
-      itsdErrors.foreach(serviceError.tupled)
+      errors.foreach(serviceError.tupled)
     }
 
   }

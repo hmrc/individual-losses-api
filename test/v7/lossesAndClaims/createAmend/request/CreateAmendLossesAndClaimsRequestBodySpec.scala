@@ -16,192 +16,55 @@
 
 package v7.lossesAndClaims.createAmend.request
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsNumber, JsValue, Json}
+import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
+import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.*
 
-class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec {
+class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec with JsonErrorValidators {
 
-  val nino: String       = "AA123456A"
-  val taxYear: String    = "2026-27"
-  val businessId: String = "X0IS12345678901"
+  private val downstreamJson: JsValue = Json.parse(
+    """
+      |{
+      |  "claims": {
+      |    "carryBack": {
+      |      "previousYearGeneralIncomeSection64": 5000.99,
+      |      "earlyYearLossesSection72": 5000.99,
+      |      "terminalLossesSection89": 5000.99
+      |    },
+      |    "carrySideways": {
+      |      "currentYearGeneralIncomeSection64": 5000.99
+      |    },
+      |    "preferenceOrderSection64": {
+      |      "applyFirst": "carry-sideways"
+      |    },
+      |    "carryForward": {
+      |      "currentYearLossesSection83": 5000.99,
+      |      "previousYearsLossesSection83": 5000.99
+      |    }
+      |  },
+      |  "losses": {
+      |    "broughtForwardLosses": 5000.99
+      |  }
+      |}
+    """.stripMargin
+  )
 
-  val defaultDownstreamRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncomeSection64": 5000.99,
-       |      "earlyYearLossesSection72": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncomeSection64": 5000.99
-       |    },
-       |    "preferenceOrderSection64": {
-       |      "applyFirst": "carry-back"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLossesSection83": 5000.99,
-       |      "previousYearsLossesSection83": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-            """.stripMargin)
+  private val mtdRequestJson: JsValue = requestBodyJson.update("/claims/carryBack/terminalLosses", JsNumber(5000.99))
 
-  val defaultMtdRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncome": 5000.99,
-       |      "earlyYearLosses": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncome": 5000.99
-       |    },
-       |    "preferenceOrder": {
-       |      "applyFirst": "carry-back"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-            """.stripMargin)
-
-  private val defaultCreateAmendRequestBody: CreateAmendLossesAndClaimsRequestBody = CreateAmendLossesAndClaimsRequestBody(
-    Option(
-      Claims(
-        Option(
-          CarryBack(
-            Option(5000.99),
-            Option(5000.99),
-            None
-          )),
-        Option(
-          CarrySideways(
-            Option(5000.99)
-          )),
-        Option(
-          PreferenceOrder(
-            Option("carry-back")
-          )),
-        Option(
-          CarryForward(
-            Option(5000.99),
-            Option(5000.99)
-          ))
-      )),
-    Option(
-      Losses(
-        Option(5000.99)
-      ))
+  private val model: CreateAmendLossesAndClaimsRequestBody = requestBodyModel.copy(
+    claims = Some(claims.copy(carryBack = Some(carryBack.copy(terminalLosses = Some(5000.99)))))
   )
 
   "Json Reads" should {
-    "read a default model from JSON" in {
-      defaultMtdRequestJson.as[CreateAmendLossesAndClaimsRequestBody] shouldBe defaultCreateAmendRequestBody
+    "read model from JSON" in {
+      mtdRequestJson.as[CreateAmendLossesAndClaimsRequestBody] shouldBe model
     }
   }
 
   "Json Writes" should {
-    "write a default model to JSON" in {
-      Json.toJson(defaultCreateAmendRequestBody) shouldBe defaultDownstreamRequestJson
-    }
-  }
-
-  val terminalLossesDownstreamRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncomeSection64": 5000.99,
-       |      "earlyYearLossesSection72": 5000.99,
-       |      "terminalLossesSection89": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncomeSection64": 5000.99
-       |    },
-       |    "preferenceOrderSection64": {
-       |      "applyFirst": "carry-sideways"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLossesSection83": 5000.99,
-       |      "previousYearsLossesSection83": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-              """.stripMargin)
-
-  val terminalLossesMtdRequestJson: JsValue = Json.parse(s"""
-       |{
-       |  "claims": {
-       |    "carryBack": {
-       |      "previousYearGeneralIncome": 5000.99,
-       |      "earlyYearLosses": 5000.99,
-       |      "terminalLosses": 5000.99
-       |    },
-       |    "carrySideways": {
-       |      "currentYearGeneralIncome": 5000.99
-       |    },
-       |    "preferenceOrder": {
-       |      "applyFirst": "carry-sideways"
-       |    },
-       |    "carryForward": {
-       |      "currentYearLosses": 5000.99,
-       |      "previousYearsLosses": 5000.99
-       |    }
-       |  },
-       |  "losses": {
-       |    "broughtForwardLosses": 5000.99
-       |  }
-       |}
-              """.stripMargin)
-
-  private val terminalLossesCreateAmendRequest: CreateAmendLossesAndClaimsRequestBody = CreateAmendLossesAndClaimsRequestBody(
-    Option(
-      Claims(
-        Option(
-          CarryBack(
-            Option(5000.99),
-            Option(5000.99),
-            Option(5000.99)
-          )),
-        Option(
-          CarrySideways(
-            Option(5000.99)
-          )),
-        Option(
-          PreferenceOrder(
-            Option("carry-sideways")
-          )),
-        Option(
-          CarryForward(
-            Option(5000.99),
-            Option(5000.99)
-          ))
-      )),
-    Option(
-      Losses(
-        Option(5000.99)
-      ))
-  )
-
-  "Json Reads" should {
-    "read a terminal losses model from JSON" in {
-      terminalLossesMtdRequestJson.as[CreateAmendLossesAndClaimsRequestBody] shouldBe terminalLossesCreateAmendRequest
-    }
-  }
-
-  "Json Writes" should {
-    "write a terminal losses model to JSON" in {
-      Json.toJson(terminalLossesCreateAmendRequest) shouldBe terminalLossesDownstreamRequestJson
+    "write model to JSON" in {
+      Json.toJson(model) shouldBe downstreamJson
     }
   }
 
