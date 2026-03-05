@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import shared.config.MockSharedAppConfig
 import shared.definition.*
 import shared.definition.APIStatus.BETA
 import shared.mocks.MockHttpClient
-import shared.routing.{Version4, Version5, Version6, Version7}
+import shared.routing.{Version6, Version7}
 import shared.utils.UnitSpec
 
 class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSharedAppConfig {
@@ -30,7 +30,7 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with M
   "definition" when {
     "called" should {
       "return a valid Definition case class" in {
-        List(Version4, Version5, Version6, Version7).foreach { version =>
+        List(Version6, Version7).foreach { version =>
           MockedSharedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
           MockedSharedAppConfig.apiStatus(version) returns "BETA"
           MockedSharedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
@@ -47,16 +47,6 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with M
               context = "individuals/losses",
               categories = List("INCOME_TAX_MTD"),
               versions = List(
-                APIVersion(
-                  Version4,
-                  status = BETA,
-                  endpointsEnabled = true
-                ),
-                APIVersion(
-                  Version5,
-                  status = BETA,
-                  endpointsEnabled = true
-                ),
                 APIVersion(
                   Version6,
                   status = BETA,
