@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,23 +112,6 @@ object ListBFLossesFixtures {
        |    "submissionDate": "2020-08-13T12:13:48.763Z"
        |  }
        |]
-   """.stripMargin
-  )
-
-  def baseHateoasLinks(nino: String): JsValue = Json.parse(
-    s"""
-      |[
-      |  {
-      |    "href": "/individuals/losses/$nino/brought-forward-losses",
-      |    "rel": "self",
-      |    "method": "GET"
-      |  },
-      |  {
-      |    "href": "/individuals/losses/$nino/brought-forward-losses",
-      |    "rel": "create-brought-forward-loss",
-      |    "method": "POST"
-      |  }
-      |]
    """.stripMargin
   )
 
