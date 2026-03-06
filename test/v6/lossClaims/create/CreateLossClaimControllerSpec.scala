@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import play.api.mvc.Result
 import shared.config.Deprecation.NotDeprecated
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
@@ -41,8 +40,7 @@ class CreateLossClaimControllerSpec
     with ControllerTestRunner
     with MockSharedAppConfig
     with MockCreateLossClaimService
-    with MockCreateLossClaimValidatorFactory
-    with MockHateoasFactory {
+    with MockCreateLossClaimValidatorFactory {
 
   private val lossClaim   = Def1_CreateLossClaimRequestBody("2017-18", TypeOfLoss.`self-employment`, TypeOfClaim.`carry-sideways`, "XKIS00000000988")
   private val requestData = Def1_CreateLossClaimRequestData(parsedNino, lossClaim)
