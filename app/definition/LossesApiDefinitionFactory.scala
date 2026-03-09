@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package definition
 
 import shared.config.SharedAppConfig
 import shared.definition.*
-import shared.routing.{Version4, Version5, Version6, Version7}
+import shared.routing.{Version6, Version7}
 
 import javax.inject.{Inject, Singleton}
 
@@ -33,16 +33,6 @@ class LossesApiDefinitionFactory @Inject() (protected val appConfig: SharedAppCo
         context = appConfig.apiGatewayContext,
         categories = List("INCOME_TAX_MTD"),
         versions = List(
-          APIVersion(
-            version = Version4,
-            status = buildAPIStatus(Version4),
-            endpointsEnabled = appConfig.endpointsEnabled(version = Version4)
-          ),
-          APIVersion(
-            version = Version5,
-            status = buildAPIStatus(Version5),
-            endpointsEnabled = appConfig.endpointsEnabled(version = Version5)
-          ),
           APIVersion(
             version = Version6,
             status = buildAPIStatus(Version6),
