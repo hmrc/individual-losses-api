@@ -17,7 +17,6 @@
 package v6.lossClaims.create.def1.model.request
 
 import play.api.libs.json.*
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.models.domain.TaxYear
 import v6.lossClaims.common.models.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property`}
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
@@ -29,11 +28,12 @@ case class Def1_CreateLossClaimRequestBody(taxYearClaimedFor: String, typeOfLoss
 object Def1_CreateLossClaimRequestBody {
   implicit val reads: Reads[Def1_CreateLossClaimRequestBody] = Json.reads[Def1_CreateLossClaimRequestBody]
 
-  implicit def writes(implicit appConfig: SharedAppConfig): OWrites[Def1_CreateLossClaimRequestBody] =
+  implicit val writes: OWrites[Def1_CreateLossClaimRequestBody] =
     (requestBody: Def1_CreateLossClaimRequestBody) => {
       val baseJson = Json.obj(
-        "reliefClaimed"  -> requestBody.typeOfClaim.toReliefClaimed,
-        "incomeSourceId" -> requestBody.businessId
+        "reliefClaimed"     -> requestBody.typeOfClaim.toReliefClaimed,
+        "incomeSourceId"    -> requestBody.businessId,
+        "taxYearClaimedFor" -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).year
       )
 
       val typeOfLossJson = requestBody.typeOfLoss match {
@@ -41,13 +41,7 @@ object Def1_CreateLossClaimRequestBody {
         case `self-employment`                  => Json.obj()
       }
 
-      val taxYearClaimedForJson = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1505")) {
-        Json.obj("taxYearClaimedFor" -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).year)
-      } else {
-        Json.obj("taxYear" -> TaxYear.fromMtd(requestBody.taxYearClaimedFor).asDownstream)
-      }
-
-      baseJson ++ typeOfLossJson ++ taxYearClaimedForJson
+      baseJson ++ typeOfLossJson
     }
 
 }

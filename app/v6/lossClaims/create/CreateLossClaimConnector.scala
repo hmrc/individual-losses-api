@@ -16,8 +16,8 @@
 
 package v6.lossClaims.create
 
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
-import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.config.SharedAppConfig
+import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.TaxYear
@@ -42,11 +42,7 @@ class CreateLossClaimConnector @Inject() (val http: HttpClientV2, val appConfig:
 
     val taxYear: TaxYear = TaxYear.fromMtd(request.taxYearClaimedFor)
 
-    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1505")) {
-      post(lossClaim, HipUri(s"itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}"))
-    } else {
-      post(lossClaim, IfsUri(s"income-tax/claims-for-relief/$nino/${taxYear.asTysDownstream}"))
-    }
+    val downstreamUri = post(lossClaim, HipUri(s"itsd/income-sources/claims-for-relief/$nino?taxYear=${taxYear.asTysDownstream}"))
 
     downstreamUri
   }

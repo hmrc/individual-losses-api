@@ -16,8 +16,8 @@
 
 package v6.bfLosses.create
 
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
-import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.config.SharedAppConfig
+import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,11 +39,8 @@ class CreateBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: Sh
     import request.*
     import schema.*
 
-    val downstreamUri: DownstreamUri[DownstreamResp] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1500")) {
-      HipUri(s"itsd/income-sources/brought-forward-losses/$nino?taxYear=${taxYear.asTysDownstream}")
-    } else {
-      IfsUri(s"income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}")
-    }
+    val downstreamUri: DownstreamUri[DownstreamResp] = HipUri(s"itsd/income-sources/brought-forward-losses/$nino?taxYear=${taxYear.asTysDownstream}")
+
     post(broughtForwardLoss, downstreamUri)
   }
 
