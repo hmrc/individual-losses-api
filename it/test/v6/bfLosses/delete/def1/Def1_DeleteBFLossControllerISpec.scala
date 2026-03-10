@@ -81,14 +81,14 @@ class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
     }
 
     "handle errors according to spec" when {
-      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $desCode error" in new Test {
+      def serviceErrorTest(status: Int, code: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $code error" in new Test {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.DELETE, hipUrl, downstreamParams, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.DELETE, hipUrl, downstreamParams, status, errorBody(code))
           }
 
           val response: WSResponse = await(request().delete())
