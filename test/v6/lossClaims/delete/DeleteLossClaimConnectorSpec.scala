@@ -16,7 +16,6 @@
 
 package v6.lossClaims.delete
 
-import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -33,31 +32,14 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
   private val taxYearClaimedFor = TaxYear.fromMtd("2019-20")
 
   "delete LossClaim" when {
-    "given a valid request" when {
-      "the feature switch is disabled (ITSA enabled)" should {
-        "return a successful response " in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1509.enabled" -> false)
+    "given a valid request" should {
+      "return a successful response" in new HipTest with Test {
+        val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+        willDelete(url"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20")
+          .returning(Future.successful(expected))
 
-          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
-
-          willDelete(url"$baseUrl/itsa/income-tax/v1/claims-for-relief/$nino/19-20/$claimId")
-            .returning(Future.successful(expected))
-
-          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
-          result shouldBe expected
-        }
-      }
-
-      "the feature switch is disabled (ITSD enabled)" should {
-        "return a successful response" in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1509.enabled" -> true)
-          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
-          willDelete(url"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20")
-            .returning(Future.successful(expected))
-
-          val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
-          result shouldBe expected
-        }
+        val result: DownstreamOutcome[Unit] = await(connector.deleteLossClaim(request))
+        result shouldBe expected
       }
     }
 

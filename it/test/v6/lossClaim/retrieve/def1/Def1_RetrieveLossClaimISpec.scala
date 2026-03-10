@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package v6.bfLosses.retrieve.def1
+package v6.lossClaim.retrieve.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.errors.LossIdFormatError
+import common.errors.ClaimIdFormatError
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
@@ -27,58 +27,58 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_RetrieveBFLossControllerIfsISpec extends IntegrationBaseSpec {
+class Def1_RetrieveLossClaimISpec extends IntegrationBaseSpec {
 
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1502.enabled" -> false) ++ super.servicesConfig
-
-  val lossAmount        = 531.99
-  val businessId        = "XKIS00000000988"
-  val lastModified      = "2018-07-13T12:13:48.763Z"
-  val taxYear           = "2019-20"
-  val downstreamTaxYear = "2020"
+  val businessId   = "XKIS00000000988"
+  val lastModified = "2018-07-13T12:13:48.763Z"
 
   val downstreamResponseJson: JsValue = Json.parse(s"""
        |{
-       |    "incomeSourceId": "$businessId",
-       |    "lossType": "INCOME",
-       |    "broughtForwardLossAmount": $lossAmount,
-       |    "taxYear": "$downstreamTaxYear",
-       |    "lossId": "AAZZ1234567890a",
-       |    "submissionDate": "$lastModified"
+       |  "incomeSourceId": "$businessId",
+       |  "reliefClaimed": "CF",
+       |  "taxYearClaimedFor": 2020,
+       |  "claimId": "notUsed",
+       |  "sequence": 1,
+       |  "submissionDate": "$lastModified"
        |}
       """.stripMargin)
 
   private trait Test {
 
-    val nino   = "AA123456A"
-    val lossId = "AAZZ1234567890a"
+    val nino    = "AA123456A"
+    val claimId = "AAZZ1234567890a"
 
     val responseJson: JsValue = Json.parse(s"""
          |{
          |    "businessId": "$businessId",
          |    "typeOfLoss": "self-employment",
-         |    "taxYearBroughtForwardFrom": "$taxYear",
-         |    "lossAmount": $lossAmount,
-         |    "lastModified":"$lastModified"
+         |    "typeOfClaim": "carry-forward",
+         |    "taxYearClaimedFor": "2019-20",
+         |    "lastModified":"$lastModified",
+         |    "sequence": 1
          |}
       """.stripMargin)
 
-    def ifsUrl: String = s"/income-tax/brought-forward-losses/$nino/$lossId"
+    def downstreamUrl: String = s"/itsd/income-sources/claims-for-relief/$nino/$claimId"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
-      """.stripMargin
+         |{
+         |  "origin": "HIP",
+         |  "response":  [
+         |    {
+         |      "errorCode": "$code",
+         |      "errorDescription": "error message"
+         |    }
+         |  ]
+         |}
+         |""".stripMargin
 
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"/$nino/brought-forward-losses/$lossId")
+      buildRequest(s"/$nino/loss-claims/$claimId")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.6.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -87,7 +87,7 @@ class Def1_RetrieveBFLossControllerIfsISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the retrieve BFLoss endpoint" should {
+  "Calling the retrieve LossClaim endpoint" should {
 
     "return a 200 status code" when {
       "any valid request is made" in new Test {
@@ -95,23 +95,23 @@ class Def1_RetrieveBFLossControllerIfsISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifsUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().get())
-        response.json shouldBe responseJson
         response.status shouldBe Status.OK
+        response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
     "handle validation errors according to spec" when {
-      def validationErrorTest(requestNino: String, requestLossId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String, requestClaimId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String   = requestNino
-          override val lossId: String = requestLossId
+          override val nino: String    = requestNino
+          override val claimId: String = requestClaimId
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -120,28 +120,28 @@ class Def1_RetrieveBFLossControllerIfsISpec extends IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(request().get())
-          response.json shouldBe Json.toJson(expectedBody)
           response.status shouldBe expectedStatus
+          response.json shouldBe Json.toJson(expectedBody)
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
       validationErrorTest("BADNINO", "AAZZ1234567890a", Status.BAD_REQUEST, NinoFormatError)
-      validationErrorTest("AA123456A", "BADLOSSID", Status.BAD_REQUEST, LossIdFormatError)
+      validationErrorTest("AA123456A", "BADClaimId", Status.BAD_REQUEST, ClaimIdFormatError)
     }
 
     "handle errors according to spec" when {
-      def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $ifsCode error" in new Test {
+      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $downstreamCode error" in new Test {
+
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, ifsUrl, ifsStatus, errorBody(ifsCode))
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().get())
-          response.json shouldBe Json.toJson(expectedBody)
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -149,13 +149,11 @@ class Def1_RetrieveBFLossControllerIfsISpec extends IntegrationBaseSpec {
         }
       }
 
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_LOSS_ID", Status.BAD_REQUEST, LossIdFormatError)
-      serviceErrorTest(Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError)
-      serviceErrorTest(Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError)
-      serviceErrorTest(Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+      serviceErrorTest(Status.BAD_REQUEST, "1215", Status.BAD_REQUEST, NinoFormatError)
+      serviceErrorTest(Status.BAD_REQUEST, "1220", Status.BAD_REQUEST, ClaimIdFormatError)
+      serviceErrorTest(Status.NOT_FOUND, "5010", Status.NOT_FOUND, NotFoundError)
     }
+
   }
 
 }

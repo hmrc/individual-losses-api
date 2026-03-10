@@ -28,11 +28,8 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_AmendLossClaimTypeHipISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1506.enabled" -> true, "feature-switch.ifs_hip_migration_1508.enabled" -> true) ++ super.servicesConfig
-
+class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
+  
   val downstreamResponseJson: JsValue = Json.parse(s"""
       |{
       |  "incomeSourceId": "XKIS00000000988",

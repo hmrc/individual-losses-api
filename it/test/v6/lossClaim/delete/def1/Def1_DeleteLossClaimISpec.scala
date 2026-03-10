@@ -25,7 +25,7 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_DeleteLossClaimItsdISpec extends IntegrationBaseSpec {
+class Def1_DeleteLossClaimISpec extends IntegrationBaseSpec {
 
   private trait Test {
 

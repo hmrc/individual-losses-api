@@ -28,10 +28,7 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1505.enabled" -> false) ++ super.servicesConfig
+class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
 
   def generateLossClaim(businessId: String, typeOfLoss: String, taxYear: String, typeOfClaim: String): JsObject =
     Json.obj("businessId" -> businessId, "typeOfLoss" -> typeOfLoss, "taxYearClaimedFor" -> taxYear, "typeOfClaim" -> typeOfClaim)
@@ -69,10 +66,12 @@ class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+         |[
+         |  {
+         |    "errorCode": "$code",
+         |    "errorDescription": "string"
+         |  }
+         |]
       """.stripMargin
 
     def setupStubs(): StubMapping
@@ -94,7 +93,7 @@ class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
 
     trait CreateLossClaimControllerTest extends Test {
       def uri: String    = s"/$nino/loss-claims"
-      def ifsUrl: String = s"/income-tax/claims-for-relief/$nino/19-20"
+      def hipUrl: String = s"/itsd/income-sources/claims-for-relief/$nino"
     }
 
     "return a 201 status code" when {
@@ -105,7 +104,7 @@ class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUrl, OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, hipUrl, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -117,26 +116,24 @@ class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
     }
 
     "return 500 (Internal Server Error)" when {
-      createErrorTest(BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
-      createErrorTest(BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError)
+      createErrorTest(BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError)
     }
 
     "return 400 BAD_REQUEST" when {
-      createErrorTest(BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
-      createErrorTest(BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "INVALID_CLAIM_TYPE", BAD_REQUEST, RuleTypeOfClaimInvalid)
-      createErrorTest(UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
-      createErrorTest(CONFLICT, "DUPLICATE", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "ACCOUNTING_PERIOD_NOT_ENDED", BAD_REQUEST, RulePeriodNotEnded)
-      createErrorTest(UNPROCESSABLE_ENTITY, "NO_ACCOUNTING_PERIOD", BAD_REQUEST, RuleNoAccountingPeriod)
-      createErrorTest(UNPROCESSABLE_ENTITY, "CSFHL_CLAIM_NOT_SUPPORTED", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
-      createErrorTest(UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow)
+      createErrorTest(BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError)
+      createErrorTest(BAD_REQUEST, "1117", BAD_REQUEST, TaxYearClaimedForFormatError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1105", BAD_REQUEST, RuleTypeOfClaimInvalid)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1107", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      createErrorTest(CONFLICT, "1228", BAD_REQUEST, RuleDuplicateClaimSubmissionError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1104", BAD_REQUEST, RulePeriodNotEnded)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1106", BAD_REQUEST, RuleNoAccountingPeriod)
+      createErrorTest(UNPROCESSABLE_ENTITY, "1127", BAD_REQUEST, RuleCSFHLClaimNotSupportedError)
+      createErrorTest(UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
     }
 
     "return 404 NOT FOUND" when {
-      createErrorTest(NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
+      createErrorTest(NOT_FOUND, "1002", NOT_FOUND, NotFoundError)
     }
 
     "return 400 (Bad Request) with paths for the missing mandatory field" when {
@@ -149,46 +146,75 @@ class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
     }
 
     "return 400 (Bad Request)" when {
-      createLossClaimValidationErrorTest("BADNINO", generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"), BAD_REQUEST, NinoFormatError)
       createLossClaimValidationErrorTest(
-        "AA123456A",
-        generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
-        BAD_REQUEST,
-        TaxYearClaimedForFormatError.withPath("/taxYearClaimedFor")
+        requestNino = "BADNINO",
+        requestBody = generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = NinoFormatError
       )
-      createLossClaimValidationErrorTest("AA123456A", Json.obj(), BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+      
       createLossClaimValidationErrorTest(
-        "AA123456A",
-        generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
-        BAD_REQUEST,
-        RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor")
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = TaxYearClaimedForFormatError.withPath("/taxYearClaimedFor")
       )
+      
       createLossClaimValidationErrorTest(
-        "AA123456A",
-        generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
-        BAD_REQUEST,
-        RuleTaxYearRangeInvalidError.withPath("/taxYearClaimedFor")
+        requestNino = "AA123456A", 
+        requestBody = Json.obj(), 
+        expectedStatus = BAD_REQUEST, 
+        expectedBody = RuleIncorrectOrEmptyBodyError
       )
+      
       createLossClaimValidationErrorTest(
-        "AA123456A",
-        generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),
-        BAD_REQUEST,
-        TypeOfLossFormatError.withPath("/typeOfLoss"))
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor")
+      )
+      
       createLossClaimValidationErrorTest(
-        "AA123456A",
-        generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"),
-        BAD_REQUEST,
-        BusinessIdFormatError)
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim(businessId, typeOfLoss, "2026-27", "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = RuleTaxYearForVersionNotSupportedError.withPath("/taxYearClaimedFor")
+      )
+      
       createLossClaimValidationErrorTest(
-        "AA123456A",
-        generateLossClaim(businessId, typeOfLoss, taxYear, "carry-sideways-fhl"),
-        BAD_REQUEST,
-        RuleTypeOfClaimInvalid)
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = RuleTaxYearRangeInvalidError.withPath("/taxYearClaimedFor")
+      )
+      
       createLossClaimValidationErrorTest(
-        "AA123456A",
-        generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward-type"),
-        BAD_REQUEST,
-        TypeOfClaimFormatError.withPath("/typeOfClaim"))
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = TypeOfLossFormatError.withPath("/typeOfLoss")
+      )
+      
+      createLossClaimValidationErrorTest(
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = BusinessIdFormatError
+      )
+      
+      createLossClaimValidationErrorTest(
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim(businessId, typeOfLoss, taxYear, "carry-sideways-fhl"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = RuleTypeOfClaimInvalid
+      )
+      
+      createLossClaimValidationErrorTest(
+        requestNino = "AA123456A",
+        requestBody = generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward-type"),
+        expectedStatus = BAD_REQUEST,
+        expectedBody = TypeOfClaimFormatError.withPath("/typeOfClaim")
+      )
     }
 
     def createErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
@@ -198,7 +224,7 @@ class Def1_CreateLossClaimIfsISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onError(DownstreamStub.POST, ifsUrl, ifsStatus, errorBody(ifsCode))
+          DownstreamStub.onError(DownstreamStub.POST, hipUrl, ifsStatus, errorBody(ifsCode))
         }
 
         val response: WSResponse = await(request().post(requestJson))
