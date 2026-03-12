@@ -16,14 +16,14 @@
 
 package v6.bfLosses.amend
 
-import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.config.SharedAppConfig
+import shared.connectors.DownstreamUri.HipUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.amend.model.response.AmendBFLossResponse
-import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,12 +39,8 @@ class AmendBFLossConnector @Inject() (val http: HttpClientV2, val appConfig: Sha
     import request.*
     import schema.*
 
-    val downstreamUri: DownstreamUri[DownstreamResp] =
-      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1501")) {
-        HipUri(s"itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${taxYear.asTysDownstream}")
-      } else {
-        IfsUri(s"income-tax/brought-forward-losses/$nino/${taxYear.asTysDownstream}/$lossId")
-      }
+    val downstreamUri: DownstreamUri[DownstreamResp] = HipUri(
+      s"itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${taxYear.asTysDownstream}")
 
     put(amendBroughtForwardLoss, downstreamUri)
   }

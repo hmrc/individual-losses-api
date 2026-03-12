@@ -16,7 +16,6 @@
 
 package v6.lossClaims.amendType
 
-import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.outcomes.ResponseWrapper
@@ -48,22 +47,8 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
     val amendLossClaimType: Def1_AmendLossClaimTypeRequestBody = Def1_AmendLossClaimTypeRequestBody(TypeOfClaim.`carry-forward`)
 
     "a valid request is supplied" should {
-      "return a successful IFS response with the correct correlationId" in new IfsTest with Test {
+      "return a successful response with the correct correlationId" in new HipTest with Test {
         val expected: Right[Nothing, ResponseWrapper[AmendLossClaimTypeResponse]] = Right(ResponseWrapper(correlationId, response))
-
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> false))
-
-        willPut(url"$baseUrl/income-tax/claims-for-relief/$nino/19-20/$claimId", amendLossClaimType)
-          .returning(Future.successful(expected))
-
-        val result: DownstreamOutcome[AmendLossClaimTypeResponse] = amendLossClaimTypeResult(connector)
-        result shouldBe expected
-      }
-
-      "return a successful HIP response with the correct correlationId" in new HipTest with Test {
-        val expected: Right[Nothing, ResponseWrapper[AmendLossClaimTypeResponse]] = Right(ResponseWrapper(correlationId, response))
-
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> true))
 
         willPut(url"$baseUrl/itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=19-20", amendLossClaimType)
           .returning(Future.successful(expected))

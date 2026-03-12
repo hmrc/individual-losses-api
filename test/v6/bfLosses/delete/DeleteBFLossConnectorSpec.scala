@@ -16,7 +16,6 @@
 
 package v6.bfLosses.delete
 
-import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -36,32 +35,15 @@ class DeleteBFLossConnectorSpec extends ConnectorSpec {
   val request: DeleteBFLossRequestData = Def1_DeleteBFLossRequestData(Nino(nino), LossId(lossId), TaxYear.fromMtd(taxYear))
 
   "deleteBFLosses" when {
-    "given a non-TYS request" when {
-      "HIP is pointed to ITSA" must {
-        "return a success response" in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1504.enabled" -> false)
+    "given a non-TYS request" must {
+      "return a success response" in new HipTest with Test {
+        val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+        willDelete(url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${TaxYear.fromMtd(taxYear).asTysDownstream}")
+          .returning(Future.successful(expected))
 
-          willDelete(url = url"$baseUrl/itsa/income-tax/v1/brought-forward-losses/$nino/19-20/$lossId")
-            .returning(Future.successful(expected))
-
-          val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
-          result shouldBe expected
-        }
-      }
-      "HIP is pointed to ITSD" must {
-        "return a success response" in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("hipItsa_hipItsd_migration_1504.enabled" -> true)
-
-          val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
-
-          willDelete(url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino/$lossId?taxYear=${TaxYear.fromMtd(taxYear).asTysDownstream}")
-            .returning(Future.successful(expected))
-
-          val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
-          result shouldBe expected
-        }
+        val result: DownstreamOutcome[Unit] = await(connector.deleteBFLoss(request))
+        result shouldBe expected
       }
     }
   }

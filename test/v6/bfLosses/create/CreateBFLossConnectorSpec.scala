@@ -16,7 +16,6 @@
 
 package v6.bfLosses.create
 
-import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -39,26 +38,9 @@ class CreateBFLossConnectorSpec extends ConnectorSpec {
 
   "createBFLosses" should {
     "return the expected response for a non-TYS request" when {
-      "Ifs downstream returns OK" in new IfsTest with Test {
+      "downstream returns OK" in new HipTest with Test {
         val response: CreateBFLossResponse                                  = Def1_CreateBFLossResponse(lossId)
         val expected: Right[Nothing, ResponseWrapper[CreateBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
-
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1500.enabled" -> false))
-
-        willPost(
-          url = url"$baseUrl/income-tax/brought-forward-losses/$nino/${parsedTaxYear.asTysDownstream}",
-          body = requestBody
-        ).returning(Future.successful(expected))
-
-        val result: DownstreamOutcome[CreateBFLossResponse] = await(connector.createBFLoss(request))
-        result shouldBe expected
-      }
-
-      "Hip downstream returns OK" in new HipTest with Test {
-        val response: CreateBFLossResponse                                  = Def1_CreateBFLossResponse(lossId)
-        val expected: Right[Nothing, ResponseWrapper[CreateBFLossResponse]] = Right(ResponseWrapper(correlationId, response))
-
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1500.enabled" -> true))
 
         willPost(
           url = url"$baseUrl/itsd/income-sources/brought-forward-losses/$nino?taxYear=${parsedTaxYear.asTysDownstream}",

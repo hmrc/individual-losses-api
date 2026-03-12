@@ -16,7 +16,6 @@
 
 package v6.lossClaims.amendType.model.request
 
-import play.api.Configuration
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.{JsValue, Json}
 import shared.config.MockSharedAppConfig
@@ -26,14 +25,6 @@ import v6.lossClaims.common.models.TypeOfClaim
 import v6.lossClaims.common.models.TypeOfClaim.*
 
 class AmendLossClaimTypeRequestBodySpec extends UnitSpec with MockSharedAppConfig {
-
-  def ifsDownstreamJson(reliefClaimed: String): JsValue = Json.parse {
-    s"""
-       |{
-       | "updatedReliefClaimedType" : "$reliefClaimed"
-       |}
-    """.stripMargin
-  }
 
   def hipDownstreamJson(reliefClaimed: String): JsValue = Json.parse {
     s"""
@@ -60,18 +51,9 @@ class AmendLossClaimTypeRequestBodySpec extends UnitSpec with MockSharedAppConfi
       "CSFHL"  -> TypeOfClaim.`carry-sideways-fhl`
     )
 
-    "produce the correct Json for IFS downstream submission" when {
+    "produce the correct Json for downstream submission" when {
       testData.foreach(test =>
         s"supplied with a TypeOfClaim of ${test._2}" in {
-          MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> false))
-          Json.toJson(Def1_AmendLossClaimTypeRequestBody(test._2)) shouldBe ifsDownstreamJson(test._1)
-        })
-    }
-
-    "produce the correct Json for HIP downstream submission" when {
-      testData.foreach(test =>
-        s"supplied with a TypeOfClaim of ${test._2}" in {
-          MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("ifs_hip_migration_1506.enabled" -> true))
           Json.toJson(Def1_AmendLossClaimTypeRequestBody(test._2)) shouldBe hipDownstreamJson(test._1)
         })
     }

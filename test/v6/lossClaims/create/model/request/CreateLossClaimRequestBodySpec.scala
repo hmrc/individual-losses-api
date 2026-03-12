@@ -16,7 +16,6 @@
 
 package v6.lossClaims.create.model.request
 
-import play.api.Configuration
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsObject, JsValue, Json}
 import shared.config.MockSharedAppConfig
@@ -76,25 +75,19 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators w
       |}
     """.stripMargin)
 
-  def expectedDownstreamJson(isHipEnabled: Boolean,
-                             mtdTaxYearClaimedFor: String,
+  def expectedDownstreamJson(mtdTaxYearClaimedFor: String,
                              incomeSourceId: String,
                              reliefClaimed: String,
                              incomeSourceType: Option[String] = None): JsObject = {
     val baseJson: JsObject = Json.obj(
-      "reliefClaimed"  -> reliefClaimed,
-      "incomeSourceId" -> incomeSourceId
+      "reliefClaimed"     -> reliefClaimed,
+      "incomeSourceId"    -> incomeSourceId,
+      "taxYearClaimedFor" -> TaxYear.fromMtd(mtdTaxYearClaimedFor).year
     )
 
     val typeOfLossJson: JsObject = incomeSourceType.map(t => Json.obj("incomeSourceType" -> t)).getOrElse(Json.obj())
 
-    val taxYearClaimedForJson: JsObject = if (isHipEnabled) {
-      Json.obj("taxYearClaimedFor" -> TaxYear.fromMtd(mtdTaxYearClaimedFor).year)
-    } else {
-      Json.obj("taxYear" -> TaxYear.fromMtd(mtdTaxYearClaimedFor).asDownstream)
-    }
-
-    baseJson ++ typeOfLossJson ++ taxYearClaimedForJson
+    baseJson ++ typeOfLossJson
   }
 
   "reads" when {
@@ -131,47 +124,35 @@ class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators w
 
   "writes" when {
     "given a valid Loss Claim Self Employment model" should {
-      List(true, false).foreach { isHipEnabled =>
-        s"return a valid Loss Claim Self Employment JSON when feature switch is set to $isHipEnabled" in {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1505.enabled" -> isHipEnabled)
+      "return a valid Loss Claim Self Employment JSON" in {
 
-          Json.toJson(lossClaimSelfEmployment) shouldBe expectedDownstreamJson(
-            isHipEnabled = isHipEnabled,
-            mtdTaxYearClaimedFor = "2019-20",
-            incomeSourceId = "X2IS12356589871",
-            reliefClaimed = "CF"
-          )
-        }
+        Json.toJson(lossClaimSelfEmployment) shouldBe expectedDownstreamJson(
+          mtdTaxYearClaimedFor = "2019-20",
+          incomeSourceId = "X2IS12356589871",
+          reliefClaimed = "CF"
+        )
       }
     }
     "given a valid Loss Claim UK Property model" should {
-      List(true, false).foreach { isHipEnabled =>
-        s"return a valid Loss Claim UK Property JSON when feature switch is set to $isHipEnabled" in {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1505.enabled" -> isHipEnabled)
+      s"return a valid Loss Claim UK Property JSON" in {
 
-          Json.toJson(lossClaimUkPropertyNonFhl) shouldBe expectedDownstreamJson(
-            isHipEnabled = isHipEnabled,
-            mtdTaxYearClaimedFor = "2019-20",
-            incomeSourceId = "X2IS12356589871",
-            reliefClaimed = "CFCSGI",
-            incomeSourceType = Some("02")
-          )
-        }
+        Json.toJson(lossClaimUkPropertyNonFhl) shouldBe expectedDownstreamJson(
+          mtdTaxYearClaimedFor = "2019-20",
+          incomeSourceId = "X2IS12356589871",
+          reliefClaimed = "CFCSGI",
+          incomeSourceType = Some("02")
+        )
       }
     }
     "given a valid Loss Claim Foreign Property model" should {
-      List(true, false).foreach { isHipEnabled =>
-        s"return a valid Loss Claim Foreign Property JSON when feature switch is set to $isHipEnabled" in {
-          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_1505.enabled" -> isHipEnabled)
+      s"return a valid Loss Claim Foreign Property JSON" in {
 
-          Json.toJson(lossClaimForeignProperty) shouldBe expectedDownstreamJson(
-            isHipEnabled = isHipEnabled,
-            mtdTaxYearClaimedFor = "2019-20",
-            incomeSourceId = "X2IS12356589871",
-            reliefClaimed = "CF",
-            incomeSourceType = Some("15")
-          )
-        }
+        Json.toJson(lossClaimForeignProperty) shouldBe expectedDownstreamJson(
+          mtdTaxYearClaimedFor = "2019-20",
+          incomeSourceId = "X2IS12356589871",
+          reliefClaimed = "CF",
+          incomeSourceType = Some("15")
+        )
       }
     }
   }

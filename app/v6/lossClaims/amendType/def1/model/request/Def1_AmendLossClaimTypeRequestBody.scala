@@ -17,7 +17,7 @@
 package v6.lossClaims.amendType.def1.model.request
 
 import play.api.libs.json.{Json, OWrites, Reads}
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.config.SharedAppConfig
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestBody
 import v6.lossClaims.common.models.TypeOfClaim
 
@@ -28,10 +28,8 @@ object Def1_AmendLossClaimTypeRequestBody {
 
   implicit def writes(implicit appConfig: SharedAppConfig): OWrites[Def1_AmendLossClaimTypeRequestBody] =
     (o: Def1_AmendLossClaimTypeRequestBody) => {
-      val updateReliefClaimed =
-        if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1506")) "updatedReliefClaimed" else "updatedReliefClaimedType"
       Json.obj(
-        updateReliefClaimed -> o.typeOfClaim.toReliefClaimed
+        "updatedReliefClaimed" -> o.typeOfClaim.toReliefClaimed
       )
     }
 

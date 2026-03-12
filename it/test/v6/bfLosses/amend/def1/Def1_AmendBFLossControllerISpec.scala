@@ -29,10 +29,7 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1501.enabled" -> false) ++ super.servicesConfig
+class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
 
   val lossAmount = 2345.67
 
@@ -41,7 +38,7 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
                                                       |    "incomeSourceId": "XBIS12345678910",
                                                       |    "lossType": "INCOME",
                                                       |    "broughtForwardLossAmount": $lossAmount,
-                                                      |    "taxYear": "2022",
+                                                      |    "taxYearBroughtForwardFrom": 2022,
                                                       |    "lossId": "AAZZ1234567890A",
                                                       |    "submissionDate": "2022-07-13T12:13:48.763Z"
                                                       |}
@@ -61,11 +58,16 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
 
   def errorBody(code: String): String =
     s"""
-       |      {
-       |        "code": "$code",
-       |        "reason": "downstream message"
-       |      }
-      """.stripMargin
+       |{
+       |  "origin": "HIP",
+       |  "response":  [
+       |    {
+       |      "errorCode": "$code",
+       |      "errorDescription": "error message"
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
 
   private trait Test {
 
@@ -84,8 +86,9 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
                                               |}
       """.stripMargin)
 
-    def url: String           = s"/$nino/brought-forward-losses/$lossId/tax-year/$taxYear/change-loss-amount"
-    def downstreamUrl: String = s"/income-tax/brought-forward-losses/$nino/$downstreamTaxYear/$lossId"
+    def url: String                      = s"/$nino/brought-forward-losses/$lossId/tax-year/$taxYear/change-loss-amount"
+    def downstreamUrl: String            = s"/itsd/income-sources/brought-forward-losses/$nino/$lossId"
+    val queryParams: Map[String, String] = Map("taxYear" -> downstreamTaxYear)
 
     def setupStubs(): StubMapping
 
@@ -109,7 +112,7 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUrl, Status.OK, downstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUrl, queryParams, Status.OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestJson))
@@ -151,7 +154,9 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS1234dfxgchjbn5678910", "2020-21", requestJson, BAD_REQUEST, LossIdFormatError),
           ("AA123456A", "XAIS12345678910", "2020-2021", requestJson, BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2020-21", invalidRequestJson, BAD_REQUEST, ValueFormatError.withPath("/lossAmount")),
-          ("AA123456A", "XAIS12345678910", "2020-21", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
+          ("AA123456A", "XAIS12345678910", "2020-21", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", "XAIS12345678910", "2017-18", requestJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", "XAIS12345678910", "2026-27", requestJson, BAD_REQUEST, RuleTaxYearForVersionNotSupportedError)
         )
 
         input.foreach(validationErrorTest.tupled)
@@ -165,7 +170,7 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.PUT, downstreamUrl, ifsStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.PUT, downstreamUrl, queryParams, ifsStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().post(requestJson))
@@ -175,16 +180,15 @@ class Def1_AmendBFLossControllerIfsISpec extends IntegrationBaseSpec {
         }
 
         val input = List(
-          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_LOSS_ID", BAD_REQUEST, LossIdFormatError),
-          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-          (CONFLICT, "CONFLICT", BAD_REQUEST, RuleLossAmountNotChanged),
-          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+          (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "1219", BAD_REQUEST, LossIdFormatError),
+          (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
+          (NOT_FOUND, "5010", NOT_FOUND, NotFoundError),
+          (CONFLICT, "1225", BAD_REQUEST, RuleLossAmountNotChanged),
+          (BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError),
+          (INTERNAL_SERVER_ERROR, "1000", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "1000", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow)
         )
 
         input.foreach(serviceErrorTest.tupled)

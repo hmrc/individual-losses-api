@@ -16,7 +16,7 @@
 
 package v6.lossClaims.delete
 
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -37,11 +37,7 @@ class DeleteLossClaimConnector @Inject() (val http: HttpClientV2, val appConfig:
 
     import request.*
 
-    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("hipItsa_hipItsd_migration_1509")) {
-      HipUri[Unit](s"itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=${taxYearClaimedFor.asTysDownstream}")
-    } else {
-      HipUri[Unit](s"itsa/income-tax/v1/claims-for-relief/$nino/${taxYearClaimedFor.asTysDownstream}/$claimId")
-    }
+    val downstreamUri = HipUri[Unit](s"itsd/income-sources/claims-for-relief/$nino/$claimId?taxYear=${taxYearClaimedFor.asTysDownstream}")
 
     delete(downstreamUri)
   }

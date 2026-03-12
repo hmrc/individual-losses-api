@@ -29,7 +29,7 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_CreateBFLossControllerHipISpec extends IntegrationBaseSpec with JsonErrorValidators {
+class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
 
   private val lossId: String = "AAZZ1234567890a"
 

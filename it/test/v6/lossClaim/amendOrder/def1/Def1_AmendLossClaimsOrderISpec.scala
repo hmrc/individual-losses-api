@@ -18,23 +18,17 @@ package v6.lossClaim.amendOrder.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors._
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
-import play.api.http.Status.*
 import play.api.libs.json.*
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers.*
 import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v6.lossClaims.amendOrder.def1.model.request.Claim
 import v6.lossClaims.common.models.TypeOfClaim
 
-class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1793.enabled" -> false) ++ super.servicesConfig
+class Def1_AmendLossClaimsOrderISpec extends IntegrationBaseSpec {
 
   val claim1: Claim        = Claim("1234567890ABEF1", 1)
   val claim2: Claim        = Claim("1234567890ABCDE", 2)
@@ -45,12 +39,14 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
     // resetting custom writes for Seq[Claim] so it doesn't use custom Writes defined in the model
     def writes: OWrites[Claim]        = Json.writes[Claim]
     def writesSeq: Writes[Seq[Claim]] = Writes.seq[Claim](writes)
-    Json.parse(s"""
-                  |{
-                  |   "typeOfClaim": "$typeOfClaim",
-                  |   "listOfLossClaims": ${Json.toJson(listOfLossClaims)(writesSeq)}
-                  |}
-      """.stripMargin)
+    Json.parse(
+      s"""
+        |{
+        |   "typeOfClaim": "$typeOfClaim",
+        |   "listOfLossClaims": ${Json.toJson(listOfLossClaims)(writesSeq)}
+        |}
+      """.stripMargin
+    )
   }
 
   "Calling the Amend Loss Claims Order endpoint" should {
@@ -63,11 +59,11 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, Status.NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, downstreamQueryParam, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(requestJson()))
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
@@ -89,7 +85,7 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
             MtdIdLookupStub.ninoFound(nino)
           }
 
-          val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestBody))
+          val response: WSResponse = await(request().put(requestBody))
           response.status shouldBe expectedStatus
           response.json shouldBe expectedError.asJson
           response.header("Content-Type") shouldBe Some("application/json")
@@ -100,6 +96,7 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
       validationErrorTest("AA123456A", "BadDate", requestJson(), BAD_REQUEST, TaxYearClaimedForFormatError)
       validationErrorTest("AA123456A", "2020-22", requestJson(), BAD_REQUEST, RuleTaxYearRangeInvalidError)
       validationErrorTest("AA123456A", "2017-18", requestJson(), BAD_REQUEST, RuleTaxYearNotSupportedError)
+      validationErrorTest("AA123456A", "2026-27", requestJson(), BAD_REQUEST, RuleTaxYearForVersionNotSupportedError)
       validationErrorTest("AA123456A", "2019-20", requestJson(typeOfClaim = "carry-sideways-fhl"), BAD_REQUEST, TypeOfClaimFormatError)
       validationErrorTest("AA123456A", "2023-24", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError)
       validationErrorTest(
@@ -128,10 +125,10 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+            DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamQueryParam, downstreamStatus, errorBody(downstreamCode))
           }
 
-          val response: WSResponse = await(request().withQueryStringParameters("taxYear" -> taxYear).put(requestJson()))
+          val response: WSResponse = await(request().put(requestJson()))
           response.json shouldBe expectedError.asJson
           response.status shouldBe expectedStatus
           response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -140,19 +137,16 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
       }
 
       val errors = List(
-        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearClaimedForFormatError),
-        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-        (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-        (CONFLICT, "NOT_SEQUENTIAL", BAD_REQUEST, RuleSequenceOrderBroken),
-        (CONFLICT, "SEQUENCE_START", BAD_REQUEST, RuleInvalidSequenceStart),
-        (CONFLICT, "NO_FULL_LIST", BAD_REQUEST, RuleLossClaimsMissing),
-        (NOT_FOUND, "CLAIM_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+        (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearClaimedForFormatError),
+        (BAD_REQUEST, "1216", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "1000", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "1108", NOT_FOUND, NotFoundError),
+        (UNPROCESSABLE_ENTITY, "1109", BAD_REQUEST, RuleSequenceOrderBroken),
+        (UNPROCESSABLE_ENTITY, "1110", BAD_REQUEST, RuleInvalidSequenceStart),
+        (UNPROCESSABLE_ENTITY, "1111", BAD_REQUEST, RuleLossClaimsMissing),
+        (UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow),
+        (NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
       errors.foreach(serviceErrorTest.tupled)
@@ -163,19 +157,21 @@ class Def1_AmendLossClaimsOrderIfsISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino              = "AA123456A"
-    val taxYear           = "2023-24"
-    val downstreamTaxYear = "23-24"
-    val downstreamUri     = s"/income-tax/claims-for-relief/preferences/$downstreamTaxYear/$nino"
+    val nino: String                              = "AA123456A"
+    val taxYear: String                           = "2023-24"
+    val downstreamQueryParam: Map[String, String] = Map("taxYear" -> "23-24")
+    val downstreamUri: String                     = s"/itsd/income-sources/claims-for-relief/$nino/preferences"
 
-    def uri: String = s"/$nino/loss-claims/order/$taxYear"
+    private def uri: String = s"/$nino/loss-claims/order/$taxYear"
 
     def errorBody(code: String): String =
       s"""
-         |{
-         |  "code": "$code",
-         |  "reason": "downstream message"
-         |}
+        |[
+        |  {
+        |    "errorCode": "$code",
+        |    "errorDescription": "error description"
+        |  }
+        |]
       """.stripMargin
 
     def setupStubs(): StubMapping

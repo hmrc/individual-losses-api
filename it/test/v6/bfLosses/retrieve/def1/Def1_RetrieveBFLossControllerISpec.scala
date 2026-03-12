@@ -27,7 +27,7 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
-class Def1_RetrieveBFLossControllerIfsHipISpec extends IntegrationBaseSpec {
+class Def1_RetrieveBFLossControllerISpec extends IntegrationBaseSpec {
 
   val lossAmount        = 531.99
   val businessId        = "XKIS00000000988"
