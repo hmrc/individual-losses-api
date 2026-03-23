@@ -5,8 +5,8 @@ info:
   title: Individual Losses (MTD)
   description: |
     The following endpoints are stateful in the Sandbox:
+      * Retrieve Losses and Claims    
       * Create or Amend Losses and Claims
-      * Retrieve Losses and Claims
       * Delete Losses and Claims
     
     # Send fraud prevention data
