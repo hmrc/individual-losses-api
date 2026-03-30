@@ -34,7 +34,7 @@
             },
             "terminalLosses": {
               "type": "number",
-              "description": "The amount of the current tax year's trading losses to be carry back under Section 89 and applied against profits of the three previous years, starting with the earliest year first. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+              "description": "Update the field description to: The amount of the current tax year's trading losses to be carry back under Section 89 and applied against profits of the three previous years, starting with the latest year first. The value must be between 0 and 99999999999.99 up to 2 decimal places.\n\n",
               "example": 5000.99,
               "multipleOf": 0.01,
               "minimum": 0,
