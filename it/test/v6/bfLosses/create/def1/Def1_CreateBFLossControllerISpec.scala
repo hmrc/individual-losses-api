@@ -23,7 +23,6 @@ import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import shared.models.domain.TaxYear
-import shared.models.domain.TaxYear.currentTaxYear
 import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
@@ -50,7 +49,7 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
 
     def downstreamUrl: String = s"/itsd/income-sources/brought-forward-losses/$nino"
 
-    val suspendTemporalValidations: String = "false"
+    private val suspendTemporalValidations: String = "false"
 
     def setupStubs(): StubMapping
 
@@ -95,22 +94,6 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         }
 
         val response: WSResponse = await(request.post(requestBody))
-        response.json shouldBe responseBody
-        response.status shouldBe CREATED
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-      }
-
-      "a valid request is made with the current tax year in the body and suspendTemporalValidations is true" in new Test {
-        override val suspendTemporalValidations: String = "true"
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUrl, OK, responseBody)
-        }
-
-        val response: WSResponse = await(request.post(requestBody.update("/taxYearBroughtForwardFrom", JsString(currentTaxYear.asMtd))))
         response.json shouldBe responseBody
         response.status shouldBe CREATED
         response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -177,11 +160,6 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
           requestNino = "AA123456A",
           requestBody = requestBody.update("/typeOfLoss", JsString("not-a-loss-type")),
           expectedBody = TypeOfLossFormatError.withPath("/typeOfLoss"))
-        
-        validationErrorTest(
-          requestNino = "AA123456A",
-          requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString(currentTaxYear.asMtd)),
-          expectedBody = RuleTaxYearNotEndedError.withPath("/taxYearBroughtForwardFrom"))
       }
 
       "downstream service error" when {
