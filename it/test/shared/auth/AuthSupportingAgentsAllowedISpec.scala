@@ -74,7 +74,7 @@ abstract class AuthSupportingAgentsAllowedISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = sendMtdRequest(request)
-        response.status.shouldBe(expectedMtdSuccessStatus)
+        response.status shouldBe expectedMtdSuccessStatus
       }
     }
 
@@ -94,7 +94,7 @@ abstract class AuthSupportingAgentsAllowedISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = sendMtdRequest(request)
-        response.status.shouldBe(expectedMtdSuccessStatus)
+        response.status shouldBe expectedMtdSuccessStatus
       }
     }
   }

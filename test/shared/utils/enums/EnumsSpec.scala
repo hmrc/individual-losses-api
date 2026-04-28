@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ class EnumsSpec extends UnitSpec with Inspectors {
     }
 
     "allows external parse by name" in {
-      Enums.parser(values).lift("enum-one").shouldBe(Some(`enum-one`))
+      Enums.parser(values).lift("enum-one") shouldBe Some(`enum-one`)
       Enums.parser(values).lift("unknown") shouldBe None
     }
 

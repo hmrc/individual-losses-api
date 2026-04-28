@@ -76,7 +76,7 @@ abstract class AuthMainAgentsOnlyISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = sendMtdRequest(request())
-        response.status.shouldBe(expectedMtdSuccessStatus)
+        response.status shouldBe expectedMtdSuccessStatus
       }
     }
 
@@ -93,7 +93,7 @@ abstract class AuthMainAgentsOnlyISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = sendMtdRequest(request())
 
-        response.status.shouldBe(FORBIDDEN)
+        response.status shouldBe FORBIDDEN
         response.body should include(ClientOrAgentNotAuthorisedError.message)
       }
     }
@@ -111,7 +111,7 @@ abstract class AuthMainAgentsOnlyISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = sendMtdRequest(request())
-        response.status.shouldBe(FORBIDDEN)
+        response.status shouldBe FORBIDDEN
       }
     }
 
@@ -125,7 +125,7 @@ abstract class AuthMainAgentsOnlyISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = sendMtdRequest(request())
-        response.status.shouldBe(FORBIDDEN)
+        response.status shouldBe FORBIDDEN
         response.body should include(ClientOrAgentNotAuthorisedError.message)
       }
     }
@@ -139,7 +139,7 @@ abstract class AuthMainAgentsOnlyISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = sendMtdRequest(request())
-        response.status.shouldBe(INTERNAL_SERVER_ERROR)
+        response.status shouldBe INTERNAL_SERVER_ERROR
         response.body should include(InternalError.message)
       }
     }
@@ -153,7 +153,7 @@ abstract class AuthMainAgentsOnlyISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = sendMtdRequest(request())
-        response.status.shouldBe(FORBIDDEN)
+        response.status shouldBe FORBIDDEN
         response.body should include(ClientOrAgentNotAuthorisedError.message)
       }
     }
