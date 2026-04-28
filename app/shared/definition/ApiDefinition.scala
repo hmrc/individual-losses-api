@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,4 +57,10 @@ case class APIDefinition(name: String,
 
 object APIDefinition {
   implicit val formatAPIDefinition: OFormat[APIDefinition] = Json.format[APIDefinition]
+}
+
+case class Definition(api: APIDefinition)
+
+object Definition {
+  implicit val formatDefinition: OFormat[Definition] = Json.format[Definition]
 }
