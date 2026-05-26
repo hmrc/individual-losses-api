@@ -26,7 +26,6 @@ class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
 
   private val businessId           = "000000000000001"
   private val lossAmount           = 123.45
-  private val ifsTaxYearDownstream = "2020"
   private val hipTaxYearDownstream = 2020
   private val taxYear              = "2019-20"
   private val lastModified         = Timestamp("2018-07-13T12:13:48.763Z")
@@ -48,24 +47,9 @@ class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
       test(IncomeSourceType.`15`, TypeOfLoss.`foreign-property`)
 
       def test(incomeSourceType: IncomeSourceType, typeOfLoss: TypeOfLoss): Unit =
-        s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" when {
-          "feature switch is disabled (IFS enabled)" in {
-            val downstreamJson =
-              Json.parse(s"""
-                   |{
-                   |  "incomeSourceId": "$businessId",
-                   |  "incomeSourceType": "$incomeSourceType",
-                   |  "broughtForwardLossAmount": $lossAmount,
-                   |  "taxYear": "$ifsTaxYearDownstream",
-                   |  "submissionDate": "$lastModified"
-                   |}
-             """.stripMargin)
-
-            downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
-          }
-          "feature switch is enabled (HIP enabled)" in {
-            val downstreamJson =
-              Json.parse(s"""
+        s"convert the downstream incomeSourceType of $incomeSourceType typeOfLoss $typeOfLoss" in {
+          val downstreamJson =
+            Json.parse(s"""
                    |{
                    |  "incomeSourceId": "$businessId",
                    |  "incomeSourceType": "$incomeSourceType",
@@ -75,8 +59,8 @@ class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
                    |}
              """.stripMargin)
 
-            downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
-          }
+          downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+
         }
 
       "reading a self-employment brought forward loss" must {
@@ -84,25 +68,9 @@ class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
         test(LossType.CLASS4, TypeOfLoss.`self-employment-class4`)
 
         def test(lossType: LossType, typeOfLoss: TypeOfLoss): Unit =
-          s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" when {
-            "feature switch is disabled (IFS enabled)" in {
-              val downstreamJson: JsValue =
-                Json.parse(s"""
-                     |{
-                     |  "incomeSourceId": "$businessId",
-                     |  "lossType": "$lossType",
-                     |  "broughtForwardLossAmount": $lossAmount,
-                     |  "taxYear": "$ifsTaxYearDownstream",
-                     |  "submissionDate": "$lastModified"
-                     |}
-               """.stripMargin)
-
-              downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
-            }
-
-            "feature switch is enabled (HIP enabled)" in {
-              val downstreamJson: JsValue =
-                Json.parse(s"""
+          s"convert the downstream lossType of $lossType typeOfLoss $typeOfLoss" in {
+            val downstreamJson: JsValue =
+              Json.parse(s"""
                      |{
                      |  "incomeSourceId": "$businessId",
                      |  "lossType": "$lossType",
@@ -112,8 +80,8 @@ class Def1_RetrieveBFLossResponseSpec extends UnitSpec {
                      |}
                """.stripMargin)
 
-              downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
-            }
+            downstreamJson.as[Def1_RetrieveBFLossResponse] shouldBe responseWith(typeOfLoss)
+
           }
       }
     }

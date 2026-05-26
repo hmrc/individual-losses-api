@@ -34,8 +34,7 @@ object Def1_RetrieveLossClaimResponse {
   implicit val writes: OWrites[Def1_RetrieveLossClaimResponse] = Json.writes[Def1_RetrieveLossClaimResponse]
 
   implicit val reads: Reads[Def1_RetrieveLossClaimResponse] = (
-    ((JsPath \ "taxYearClaimedFor").read[String].map(TaxYear.fromDownstream(_).asMtd) orElse
-      (JsPath \ "taxYearClaimedFor").read[Int].map(TaxYear.fromDownstreamInt(_).asMtd)) and
+    (JsPath \ "taxYearClaimedFor").read[Int].map(TaxYear.fromDownstreamInt(_).asMtd) and
       ((JsPath \ "incomeSourceType").read[IncomeSourceType].map(_.toTypeOfLoss)
         orElse Reads.pure(TypeOfLoss.`self-employment`)) and
       (JsPath \ "reliefClaimed").read[ReliefClaimed].map(_.toTypeOfClaim) and

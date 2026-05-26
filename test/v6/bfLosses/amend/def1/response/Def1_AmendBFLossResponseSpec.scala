@@ -26,7 +26,7 @@ class Def1_AmendBFLossResponseSpec extends UnitSpec {
 
   private val businessId        = "000000000000001"
   private val lossAmount        = 123.45
-  private val taxYearDownstream = "2020"
+  private val taxYearDownstream = 2020
   private val taxYear           = "2019-20"
   private val lastModified      = Timestamp("2018-07-13T12:13:48.763Z")
 
@@ -54,7 +54,7 @@ class Def1_AmendBFLossResponseSpec extends UnitSpec {
                           |  "incomeSourceId": "$businessId",
                           |  "incomeSourceType": "$incomeSourceType",
                           |  "broughtForwardLossAmount": $lossAmount,
-                          |  "taxYear": "$taxYearDownstream",
+                          |  "taxYearBroughtForwardFrom": $taxYearDownstream,
                           |  "submissionDate": "$lastModified"
                           |}
              """.stripMargin)
@@ -75,7 +75,7 @@ class Def1_AmendBFLossResponseSpec extends UnitSpec {
                           |  "incomeSourceId": "$businessId",
                           |  "lossType": "$lossType",
                           |  "broughtForwardLossAmount": $lossAmount,
-                          |  "taxYear": "$taxYearDownstream",
+                          |  "taxYearBroughtForwardFrom": $taxYearDownstream,
                           |  "submissionDate": "$lastModified"
                           |}
                """.stripMargin)

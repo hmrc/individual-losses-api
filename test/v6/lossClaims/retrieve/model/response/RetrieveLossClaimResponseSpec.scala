@@ -38,23 +38,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
   )
 
   "Json Reads" should {
-    def ifsDownstreamPropertyJson(incomeSourceType: String): JsValue = {
-      Json.parse(
-        s"""
-           |{
-           |  "incomeSourceId": "000000000000001",
-           |  "incomeSourceType": "$incomeSourceType",
-           |  "reliefClaimed": "CSFHL",
-           |  "taxYearClaimedFor": "2020",
-           |  "claimId": "notUsed",
-           |  "submissionDate": "2021-11-05T11:56:28Z",
-           |  "sequence": 1
-           |}
-        """.stripMargin
-      )
-    }
-
-    def hipDownstreamPropertyJson(incomeSourceType: String): JsValue = {
+    def downstreamPropertyJson(incomeSourceType: String): JsValue = {
       Json.parse(
         s"""
            |{
@@ -70,22 +54,7 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
       )
     }
 
-    def ifsDownstreamEmploymentJson: JsValue = {
-      Json.parse(
-        """
-           |{
-           |  "incomeSourceId": "000000000000001",
-           |  "reliefClaimed": "CF",
-           |  "taxYearClaimedFor": "2020",
-           |  "claimId": "notUsed",
-           |  "submissionDate": "2021-11-05T11:56:28Z",
-           |  "sequence": 1
-           |}
-         """.stripMargin
-      )
-    }
-
-    def hipDownstreamEmploymentJson: JsValue = {
+    def downstreamEmploymentJson: JsValue = {
       Json.parse(
         """
           |{
@@ -111,40 +80,22 @@ class RetrieveLossClaimResponseSpec extends UnitSpec with MockSharedAppConfig {
           sequence = Some(1)
         )
 
-    "convert property JSON from downstream into a valid model for property type 02" when {
-      "taxYearClaimedFor is a String" in {
-        val result = ifsDownstreamPropertyJson("02").as[Def1_RetrieveLossClaimResponse]
-        result shouldBe downstreamToModel(TypeOfLoss.`uk-property`)
-      }
+    "convert property JSON from downstream into a valid model for property type 02" in {
+      val result = downstreamPropertyJson("02").as[Def1_RetrieveLossClaimResponse]
+      result shouldBe downstreamToModel(TypeOfLoss.`uk-property`)
 
-      "taxYearClaimedFor is an Int" in {
-        val result = hipDownstreamPropertyJson("02").as[Def1_RetrieveLossClaimResponse]
-        result shouldBe downstreamToModel(TypeOfLoss.`uk-property`)
-      }
     }
 
-    "convert se json from downstream into a valid model" when {
-      "taxYearClaimedFor is a String" in {
-        ifsDownstreamEmploymentJson.as[Def1_RetrieveLossClaimResponse] shouldBe Def1_RetrieveLossClaimResponse(
-          "2019-20",
-          TypeOfLoss.`self-employment`,
-          TypeOfClaim.`carry-forward`,
-          "000000000000001",
-          Some(1),
-          Timestamp("2021-11-05T11:56:28Z")
-        )
-      }
+    "convert se json from downstream into a valid model" in {
+      downstreamEmploymentJson.as[Def1_RetrieveLossClaimResponse] shouldBe Def1_RetrieveLossClaimResponse(
+        "2019-20",
+        TypeOfLoss.`self-employment`,
+        TypeOfClaim.`carry-forward`,
+        "000000000000001",
+        Some(1),
+        Timestamp("2021-11-05T11:56:28Z")
+      )
 
-      "taxYearClaimedFor is an Int" in {
-        hipDownstreamEmploymentJson.as[Def1_RetrieveLossClaimResponse] shouldBe Def1_RetrieveLossClaimResponse(
-          "2019-20",
-          TypeOfLoss.`self-employment`,
-          TypeOfClaim.`carry-forward`,
-          "000000000000001",
-          Some(1),
-          Timestamp("2021-11-05T11:56:28Z")
-        )
-      }
     }
   }
 
