@@ -16,7 +16,6 @@
 
 import sbt.*
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-import org.scalafmt.sbt.ScalafmtPlugin
 import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "individual-losses-api"
