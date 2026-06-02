@@ -29,7 +29,7 @@ import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 
 class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
-  
+
   val downstreamResponseJson: JsValue = Json.parse(s"""
       |{
       |  "incomeSourceId": "XKIS00000000988",
@@ -178,7 +178,7 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
         expectedStatus = BAD_REQUEST,
         expectedBody = NinoFormatError
       )
-      
+
       validationErrorTest(
         requestNino = "AA123456A",
         requestClaimId = "BADClaimId",
@@ -186,14 +186,15 @@ class Def1_AmendLossClaimTypeISpec extends IntegrationBaseSpec {
         expectedStatus = BAD_REQUEST,
         expectedBody = ClaimIdFormatError
       )
-      
+
       validationErrorTest(
         requestNino = "AA123456A",
         requestClaimId = "AAZZ1234567890a",
-        requestBody = Json.obj(), expectedStatus = BAD_REQUEST,
+        requestBody = Json.obj(),
+        expectedStatus = BAD_REQUEST,
         expectedBody = RuleIncorrectOrEmptyBodyError
       )
-      
+
       validationErrorTest(
         requestNino = "AA123456A",
         requestClaimId = "AAZZ1234567890a",

@@ -120,46 +120,51 @@ class Def1_CreateBFLossControllerISpec extends IntegrationBaseSpec with JsonErro
         }
 
         validationErrorTest(requestNino = "BADNINO", requestBody = requestBody, expectedBody = NinoFormatError)
-        
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("XXX")),
-          expectedBody = TaxYearFormatError.withPath("/taxYearBroughtForwardFrom"))
-        
+          expectedBody = TaxYearFormatError.withPath("/taxYearBroughtForwardFrom")
+        )
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("2021-23")),
-          expectedBody = RuleTaxYearRangeInvalidError.withPath("/taxYearBroughtForwardFrom"))
-        
+          expectedBody = RuleTaxYearRangeInvalidError.withPath("/taxYearBroughtForwardFrom")
+        )
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("2017-18")),
-          expectedBody = RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom"))
-        
+          expectedBody = RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom")
+        )
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.update("/taxYearBroughtForwardFrom", JsString("2026-27")),
-          expectedBody = RuleTaxYearForVersionNotSupportedError.withPath("/taxYearBroughtForwardFrom"))
-        
+          expectedBody = RuleTaxYearForVersionNotSupportedError.withPath("/taxYearBroughtForwardFrom")
+        )
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.update("/lossAmount", JsNumber(12.345)),
           expectedBody = ValueFormatError.withPath("/lossAmount"))
-        
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.update("/businessId", JsString("not-a-business-id")),
           expectedBody = BusinessIdFormatError)
-        
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.removeProperty("/lossAmount"),
           expectedBody = RuleIncorrectOrEmptyBodyError.withPath("/lossAmount"))
-        
+
         validationErrorTest(
           requestNino = "AA123456A",
           requestBody = requestBody.update("/typeOfLoss", JsString("not-a-loss-type")),
-          expectedBody = TypeOfLossFormatError.withPath("/typeOfLoss"))
+          expectedBody = TypeOfLossFormatError.withPath("/typeOfLoss")
+        )
       }
 
       "downstream service error" when {

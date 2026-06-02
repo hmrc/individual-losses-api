@@ -152,63 +152,63 @@ class Def1_CreateLossClaimISpec extends IntegrationBaseSpec {
         expectedStatus = BAD_REQUEST,
         expectedBody = NinoFormatError
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim(businessId, typeOfLoss, "20111", "carry-forward"),
         expectedStatus = BAD_REQUEST,
         expectedBody = TaxYearClaimedForFormatError.withPath("/taxYearClaimedFor")
       )
-      
+
       createLossClaimValidationErrorTest(
-        requestNino = "AA123456A", 
-        requestBody = Json.obj(), 
-        expectedStatus = BAD_REQUEST, 
+        requestNino = "AA123456A",
+        requestBody = Json.obj(),
+        expectedStatus = BAD_REQUEST,
         expectedBody = RuleIncorrectOrEmptyBodyError
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim(businessId, typeOfLoss, "2011-12", "carry-forward"),
         expectedStatus = BAD_REQUEST,
         expectedBody = RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor")
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim(businessId, typeOfLoss, "2026-27", "carry-forward"),
         expectedStatus = BAD_REQUEST,
         expectedBody = RuleTaxYearForVersionNotSupportedError.withPath("/taxYearClaimedFor")
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim(businessId, typeOfLoss, "2019-25", "carry-forward"),
         expectedStatus = BAD_REQUEST,
         expectedBody = RuleTaxYearRangeInvalidError.withPath("/taxYearClaimedFor")
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim(businessId, "self-employment-class", "2019-20", "carry-forward"),
         expectedStatus = BAD_REQUEST,
         expectedBody = TypeOfLossFormatError.withPath("/typeOfLoss")
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim("sdfsf", typeOfLoss, "2019-20", "carry-forward"),
         expectedStatus = BAD_REQUEST,
         expectedBody = BusinessIdFormatError
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim(businessId, typeOfLoss, taxYear, "carry-sideways-fhl"),
         expectedStatus = BAD_REQUEST,
         expectedBody = RuleTypeOfClaimInvalid
       )
-      
+
       createLossClaimValidationErrorTest(
         requestNino = "AA123456A",
         requestBody = generateLossClaim(businessId, typeOfLoss, taxYear, "carry-forward-type"),
