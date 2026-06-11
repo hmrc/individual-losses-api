@@ -16,6 +16,10 @@
 
 package v6.bfLosses.delete.def1
 
+import api.models.domain.TaxYear
+import api.models.errors.*
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
 import play.api.http.HeaderNames.ACCEPT
@@ -23,10 +27,6 @@ import play.api.http.Status.*
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import api.models.domain.TaxYear
-import api.models.errors.*
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import api.support.IntegrationBaseSpec
 
 class Def1_DeleteBFLossControllerISpec extends IntegrationBaseSpec {
 

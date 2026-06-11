@@ -16,12 +16,12 @@
 
 package v6.bfLosses.common.resolvers
 
-import cats.data.Validated.{Invalid, Valid}
-import cats.data.*
-import common.errors.TypeOfLossFormatError
-import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import api.controllers.validators.resolvers.ResolverSupport
 import api.models.errors.MtdError
+import cats.data.*
+import cats.data.Validated.{Invalid, Valid}
+import common.errors.TypeOfLossFormatError
+import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import v6.bfLosses.common.domain.TypeOfLoss
 
 object ResolveBFTypeOfLossFromJson extends ResolverSupport {

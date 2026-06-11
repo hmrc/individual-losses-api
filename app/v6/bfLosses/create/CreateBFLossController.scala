@@ -16,15 +16,15 @@
 
 package v6.bfLosses.create
 
-import config.LossesFeatureSwitches
-import play.api.libs.json.JsValue
-import play.api.mvc.{Action, ControllerComponents}
 import api.config.SharedAppConfig
 import api.controllers.*
 import api.controllers.validators.Validator
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
+import config.LossesFeatureSwitches
+import play.api.libs.json.JsValue
+import play.api.mvc.{Action, ControllerComponents}
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
 import v6.bfLosses.create.model.response.CreateBFLossResponse
 

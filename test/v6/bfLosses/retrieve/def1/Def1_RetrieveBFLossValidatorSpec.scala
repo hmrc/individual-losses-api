@@ -16,11 +16,11 @@
 
 package v6.bfLosses.retrieve.def1
 
-import common.errors.LossIdFormatError
 import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors.*
 import api.utils.UnitSpec
+import common.errors.LossIdFormatError
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData

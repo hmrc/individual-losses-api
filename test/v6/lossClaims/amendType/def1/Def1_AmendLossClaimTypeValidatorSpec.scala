@@ -16,11 +16,11 @@
 
 package v6.lossClaims.amendType.def1
 
-import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
-import play.api.libs.json.{JsValue, Json}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
+import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
+import play.api.libs.json.{JsValue, Json}
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.common.models.{ClaimId, TypeOfClaim}
 

@@ -16,13 +16,7 @@
 
 package v6.lossClaims.amendOrder
 
-import _root_.common.errors.{
-  RuleInvalidSequenceStart,
-  RuleLossClaimsMissing,
-  RuleOutsideAmendmentWindow,
-  RuleSequenceOrderBroken,
-  TaxYearClaimedForFormatError
-}
+import _root_.common.errors.*
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper

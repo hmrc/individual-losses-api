@@ -16,6 +16,9 @@
 
 package v6.bfLosses.amend.def1
 
+import api.models.errors.*
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged, RuleOutsideAmendmentWindow}
 import play.api.http.HeaderNames.ACCEPT
@@ -25,9 +28,6 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import api.models.errors.*
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import api.support.IntegrationBaseSpec
 
 class Def1_AmendBFLossControllerISpec extends IntegrationBaseSpec {
 

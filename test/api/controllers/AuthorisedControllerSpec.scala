@@ -16,13 +16,13 @@
 
 package api.controllers
 
-import play.api.Configuration
-import play.api.libs.json.JsObject
-import play.api.mvc.{Action, AnyContent, Result}
 import api.config.MockSharedAppConfig
 import api.models.auth.UserDetails
 import api.models.errors.*
 import api.services.*
+import play.api.Configuration
+import play.api.libs.json.JsObject
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier

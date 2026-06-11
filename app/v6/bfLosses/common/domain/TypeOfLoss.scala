@@ -16,8 +16,8 @@
 
 package v6.bfLosses.common.domain
 
-import play.api.libs.json.Format
 import api.utils.enums.Enums
+import play.api.libs.json.Format
 
 enum TypeOfLoss {
   case `uk-property-fhl`, `uk-property`, `foreign-property-fhl-eea`, `foreign-property`, `self-employment`, `self-employment-class4`

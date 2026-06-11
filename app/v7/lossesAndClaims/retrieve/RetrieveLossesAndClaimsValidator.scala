@@ -16,13 +16,13 @@
 
 package v7.lossesAndClaims.retrieve
 
-import cats.data.Validated
-import cats.data.Validated.*
-import cats.implicits.*
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
+import cats.data.Validated
+import cats.data.Validated.*
+import cats.implicits.*
 import v7.lossesAndClaims.minimumTaxYear
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 

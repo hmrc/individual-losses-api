@@ -16,11 +16,11 @@
 
 package api.controllers.validators.resolvers
 
+import api.models.domain.DateRange
+import api.models.errors.{EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
-import api.models.domain.DateRange
-import api.models.errors.{EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError}
 
 import java.time.LocalDate
 import scala.math.Ordering.Implicits.infixOrderingOps

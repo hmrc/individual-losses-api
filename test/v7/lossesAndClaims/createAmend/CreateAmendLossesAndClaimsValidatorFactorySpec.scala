@@ -16,12 +16,12 @@
 
 package v7.lossesAndClaims.createAmend
 
-import org.scalactic.Prettifier.default
-import play.api.libs.json.*
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
+import org.scalactic.Prettifier.default
+import play.api.libs.json.*
 import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.{requestBodyJson, requestBodyModel}
 import v7.lossesAndClaims.createAmend.request.*
 

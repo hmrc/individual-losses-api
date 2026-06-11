@@ -16,13 +16,13 @@
 
 package v6.lossClaims.amendOrder.def1
 
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.ResolveParsedNumber
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
 import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken}
-import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.ResolveParsedNumber
-import api.models.errors.*
 import v6.lossClaims.amendOrder.def1.model.request.Def1_AmendLossClaimsOrderRequestData
 import v6.lossClaims.common.resolvers.ResolveLossClaimId
 

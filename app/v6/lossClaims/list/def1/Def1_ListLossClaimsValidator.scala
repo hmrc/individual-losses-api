@@ -16,16 +16,16 @@
 
 package v6.lossClaims.list.def1
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
-import api.models.errors.*
-import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.common.models.TypeOfClaim
 import v6.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
+import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData
 import v6.lossClaims.list.model.request.ListLossClaimsRequestData
 

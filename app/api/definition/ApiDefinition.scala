@@ -16,9 +16,9 @@
 
 package api.definition
 
-import play.api.libs.json.{Format, Json, OFormat}
 import api.routing.Version
 import api.utils.enums.Enums
+import play.api.libs.json.{Format, Json, OFormat}
 
 enum APIStatus {
   case ALPHA, BETA, STABLE, DEPRECATED, RETIRED

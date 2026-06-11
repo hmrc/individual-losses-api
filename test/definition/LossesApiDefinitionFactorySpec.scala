@@ -16,7 +16,6 @@
 
 package definition
 
-import cats.implicits.catsSyntaxValidatedId
 import api.config.Deprecation.NotDeprecated
 import api.config.MockSharedAppConfig
 import api.definition.*
@@ -24,6 +23,7 @@ import api.definition.APIStatus.BETA
 import api.mocks.MockHttpClient
 import api.routing.{Version6, Version7}
 import api.utils.UnitSpec
+import cats.implicits.catsSyntaxValidatedId
 
 class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSharedAppConfig {
 

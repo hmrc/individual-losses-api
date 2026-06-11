@@ -16,21 +16,15 @@
 
 package v6.bfLosses.amend.def1
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.domain.TaxYear
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern, ResolveTaxYearMinMax}
-import api.models.domain.TaxYear
-import api.models.errors.{
-  MtdError,
-  RuleIncorrectOrEmptyBodyError,
-  RuleTaxYearForVersionNotSupportedError,
-  RuleTaxYearNotSupportedError,
-  ValueFormatError
-}
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.common.domain.LossId

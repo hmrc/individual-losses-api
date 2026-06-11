@@ -16,8 +16,8 @@
 
 package v6.lossClaims.amendType
 
-import play.api.libs.json.Reads
 import api.schema.DownstreamReadable
+import play.api.libs.json.Reads
 import v6.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 import v6.lossClaims.amendType.model.response.AmendLossClaimTypeResponse
 

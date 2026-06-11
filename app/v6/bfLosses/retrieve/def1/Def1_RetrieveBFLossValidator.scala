@@ -24,6 +24,7 @@ import cats.implicits.catsSyntaxTuple2Semigroupal
 import v6.bfLosses.common.resolvers.ResolveBFLossId
 import v6.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
+
 import javax.inject.Singleton
 
 @Singleton

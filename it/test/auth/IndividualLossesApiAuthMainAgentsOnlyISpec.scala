@@ -16,9 +16,9 @@
 
 package auth
 
+import api.auth.AuthMainAgentsOnlyISpec
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import api.auth.AuthMainAgentsOnlyISpec
 import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.requestBodyJson
 
 class IndividualLossesApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {

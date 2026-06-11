@@ -16,11 +16,6 @@
 
 package v6.lossClaims.amendType
 
-import cats.implicits.catsSyntaxValidatedId
-import common.errors.RuleTypeOfClaimInvalid
-import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
 import api.config.Deprecation.NotDeprecated
 import api.config.MockSharedAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -29,6 +24,11 @@ import api.models.domain.{TaxYear, Timestamp}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.RuleTypeOfClaimInvalid
+import play.api.Configuration
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 import v6.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}

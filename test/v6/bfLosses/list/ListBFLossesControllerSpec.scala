@@ -16,11 +16,6 @@
 
 package v6.bfLosses.list
 
-import cats.implicits.catsSyntaxValidatedId
-import common.errors.TypeOfLossFormatError
-import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
 import api.config.Deprecation.NotDeprecated
 import api.config.MockSharedAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -28,6 +23,11 @@ import api.models.domain.{BusinessId, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.TypeOfLossFormatError
+import play.api.Configuration
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
 import v6.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v6.bfLosses.list
 import v6.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData

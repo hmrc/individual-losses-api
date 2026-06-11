@@ -16,8 +16,6 @@
 
 package v7.lossesAndClaims.createAmend
 
-import cats.implicits.catsSyntaxEither
-import common.errors.RuleOutsideAmendmentWindow
 import api.controllers.RequestContext
 import api.models.errors.{
   BusinessIdFormatError,
@@ -32,6 +30,8 @@ import api.models.errors.{
   TaxYearFormatError
 }
 import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.catsSyntaxEither
+import common.errors.RuleOutsideAmendmentWindow
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}

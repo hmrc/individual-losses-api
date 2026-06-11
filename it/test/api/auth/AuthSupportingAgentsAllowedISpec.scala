@@ -16,12 +16,12 @@
 
 package api.auth
 
+import api.services.*
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
-import api.services.*
-import api.support.IntegrationBaseSpec
 
 abstract class AuthSupportingAgentsAllowedISpec extends IntegrationBaseSpec {
 

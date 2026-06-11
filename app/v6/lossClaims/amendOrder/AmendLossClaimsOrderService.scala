@@ -17,10 +17,10 @@
 package v6.lossClaims.amendOrder
 
 import _root_.common.errors.*
-import cats.implicits.*
 import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.*
 import v6.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 
 import javax.inject.Inject

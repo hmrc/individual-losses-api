@@ -16,13 +16,13 @@
 
 package v6.bfLosses.create.def1
 
-import common.errors.TypeOfLossFormatError
-import play.api.libs.json.{JsObject, JsValue, Json}
 import api.config.MockSharedAppConfig
 import api.controllers.validators.Validator
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
+import common.errors.TypeOfLossFormatError
+import play.api.libs.json.{JsObject, JsValue, Json}
 import v6.bfLosses.common.domain.TypeOfLoss
 import v6.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v6.bfLosses.create.model.request.CreateBFLossRequestData

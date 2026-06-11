@@ -16,11 +16,6 @@
 
 package v6.bfLosses.retrieve
 
-import cats.implicits.catsSyntaxValidatedId
-import common.errors.LossIdFormatError
-import play.api.Configuration
-import play.api.libs.json.Json
-import play.api.mvc.Result
 import api.config.Deprecation.NotDeprecated
 import api.config.MockSharedAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -28,6 +23,11 @@ import api.models.domain.Timestamp
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.LossIdFormatError
+import play.api.Configuration
+import play.api.libs.json.Json
+import play.api.mvc.Result
 import v6.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v6.bfLosses.retrieve
 import v6.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData

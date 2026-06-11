@@ -16,10 +16,10 @@
 
 package config
 
+import api.utils.UnitSpec
 import play.api.Configuration
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
-import api.utils.UnitSpec
 
 class LossesFeatureSwitchesSpec extends UnitSpec {
 

@@ -16,13 +16,13 @@
 
 package v7.lossesAndClaims
 
+import api.models.errors.*
+import api.services.{AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
-import api.models.errors.*
-import api.services.{AuthStub, DownstreamStub, MtdIdLookupStub}
-import api.support.IntegrationBaseSpec
 import v7.lossesAndClaims.retrieve.fixtures.RetrieveLossesAndClaimsFixtures.{downstreamResponseBodyJson, mtdResponseBodyJson}
 
 class RetrieveLossesAndClaimsControllerISpec extends IntegrationBaseSpec {

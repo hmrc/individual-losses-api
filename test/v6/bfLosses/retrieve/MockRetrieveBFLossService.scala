@@ -16,11 +16,11 @@
 
 package v6.bfLosses.retrieve
 
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import api.controllers.RequestContext
-import api.services.ServiceOutcome
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 import v6.bfLosses.retrieve.model.response.RetrieveBFLossResponse
 

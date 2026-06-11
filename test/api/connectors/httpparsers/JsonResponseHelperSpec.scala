@@ -16,9 +16,9 @@
 
 package api.connectors.httpparsers
 
+import api.utils.UnitSpec
 import play.api.libs.json.{JsValue, Json, Reads}
 import play.api.test.Helpers.OK
-import api.utils.UnitSpec
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 

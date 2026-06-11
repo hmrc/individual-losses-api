@@ -16,8 +16,8 @@
 
 package v6.bfLosses.amend.def1.request
 
-import play.api.libs.json.{JsValue, Json}
 import api.utils.UnitSpec
+import play.api.libs.json.{JsValue, Json}
 import v6.bfLosses.amend.def1.model.request.Def1_AmendBFLossRequestBody
 import v6.bfLosses.amend.model.request.AmendBFLossRequestBody
 

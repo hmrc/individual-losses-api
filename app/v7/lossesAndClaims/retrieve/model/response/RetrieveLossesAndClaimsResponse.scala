@@ -16,8 +16,8 @@
 
 package v7.lossesAndClaims.retrieve.model.response
 
-import play.api.libs.json.*
 import api.models.domain.Timestamp
+import play.api.libs.json.*
 
 case class RetrieveLossesAndClaimsResponse(submittedOn: Timestamp, claims: Option[Claims], losses: Option[Losses])
 

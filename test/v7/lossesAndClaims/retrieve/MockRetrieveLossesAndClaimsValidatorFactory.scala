@@ -16,8 +16,8 @@
 
 package v7.lossesAndClaims.retrieve
 
-import org.scalamock.handlers.CallHandler
 import api.controllers.validators.{MockValidatorFactory, Validator}
+import org.scalamock.handlers.CallHandler
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 
 trait MockRetrieveLossesAndClaimsValidatorFactory extends MockValidatorFactory[RetrieveLossesAndClaimsRequestData] {

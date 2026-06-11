@@ -16,11 +16,11 @@
 
 package api.utils.enums
 
+import api.utils.UnitSpec
 import cats.Show
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.Inspectors
 import play.api.libs.json.*
-import api.utils.UnitSpec
 
 enum Enum {
   case `enum-one`, `enum-two`, `enum-three`

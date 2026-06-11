@@ -16,11 +16,11 @@
 
 package v6.lossClaims.list
 
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import api.config.SharedAppConfig
 import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

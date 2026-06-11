@@ -16,11 +16,11 @@
 
 package v6.lossClaims.common.resolvers
 
+import api.controllers.validators.resolvers.ResolverSupport
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import common.errors.TypeOfLossFormatError
-import api.controllers.validators.resolvers.ResolverSupport
-import api.models.errors.MtdError
 import v6.lossClaims.common.models.TypeOfLoss
 
 object ResolveLossClaimTypeOfLoss extends ResolverSupport {

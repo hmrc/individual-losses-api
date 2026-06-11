@@ -17,8 +17,8 @@
 package v6.lossClaims.create
 
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{JsValue, Json}
 import api.utils.UnitSpec
+import play.api.libs.json.{JsValue, Json}
 import v6.lossClaims.create.def1.Def1_CreateLossClaimValidator
 
 class CreateLossClaimValidatorFactorySpec extends UnitSpec with JsonErrorValidators {

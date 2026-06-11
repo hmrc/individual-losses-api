@@ -16,8 +16,8 @@
 
 package v6.bfLosses.retrieve.model.response
 
-import play.api.libs.json.OWrites
 import api.utils.JsonWritesUtil
+import play.api.libs.json.OWrites
 import v6.bfLosses.retrieve.def1.model.response.Def1_RetrieveBFLossResponse
 
 trait RetrieveBFLossResponse

@@ -16,17 +16,17 @@
 
 package v6.bfLosses.create.def1
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.domain.TaxYear
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import common.errors.TypeOfLossFormatError
 import play.api.libs.json.JsValue
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.*
-import api.models.domain.TaxYear
-import api.models.errors.*
-import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}
 import v6.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
+import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}
 import v6.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
 

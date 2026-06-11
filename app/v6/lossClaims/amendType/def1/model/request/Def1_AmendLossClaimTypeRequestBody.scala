@@ -16,8 +16,8 @@
 
 package v6.lossClaims.amendType.def1.model.request
 
-import play.api.libs.json.{Json, OWrites, Reads}
 import api.config.SharedAppConfig
+import play.api.libs.json.{Json, OWrites, Reads}
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestBody
 import v6.lossClaims.common.models.TypeOfClaim
 

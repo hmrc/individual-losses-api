@@ -16,9 +16,9 @@
 
 package api.definition
 
-import play.api.libs.json.Json
 import api.routing.Version3
 import api.utils.UnitSpec
+import play.api.libs.json.Json
 
 class ApiDefinitionSpec extends UnitSpec {
 

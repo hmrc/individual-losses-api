@@ -16,11 +16,6 @@
 
 package v6.bfLosses.delete
 
-import cats.implicits.catsSyntaxValidatedId
-import common.errors.RuleDeleteAfterFinalDeclarationError
-import play.api.Configuration
-import play.api.libs.json.JsValue
-import play.api.mvc.Result
 import api.config.Deprecation.NotDeprecated
 import api.config.MockSharedAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -30,6 +25,11 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
 import api.services.MockAuditService
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.RuleDeleteAfterFinalDeclarationError
+import play.api.Configuration
+import play.api.libs.json.JsValue
+import play.api.mvc.Result
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData

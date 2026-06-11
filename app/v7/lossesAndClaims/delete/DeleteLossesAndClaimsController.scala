@@ -16,12 +16,12 @@
 
 package v7.lossesAndClaims.delete
 
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import api.config.SharedAppConfig
 import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

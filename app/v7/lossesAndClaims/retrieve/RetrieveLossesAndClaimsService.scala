@@ -16,10 +16,10 @@
 
 package v7.lossesAndClaims.retrieve
 
-import cats.implicits.*
 import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.*
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 import v7.lossesAndClaims.retrieve.model.response.RetrieveLossesAndClaimsResponse
 

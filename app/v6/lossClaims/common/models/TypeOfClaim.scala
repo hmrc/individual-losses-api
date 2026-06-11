@@ -16,8 +16,8 @@
 
 package v6.lossClaims.common.models
 
-import play.api.libs.json.Format
 import api.utils.enums.Enums
+import play.api.libs.json.Format
 
 enum TypeOfClaim {
   case `carry-forward`, `carry-sideways`, `carry-forward-to-carry-sideways`, `carry-sideways-fhl`

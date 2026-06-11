@@ -16,11 +16,11 @@
 
 package v6.bfLosses.delete.def1
 
-import common.errors.LossIdFormatError
 import api.controllers.validators.Validator
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
+import common.errors.LossIdFormatError
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData

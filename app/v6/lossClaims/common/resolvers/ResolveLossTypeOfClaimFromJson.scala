@@ -16,12 +16,12 @@
 
 package v6.lossClaims.common.resolvers
 
+import api.controllers.validators.resolvers.ResolverSupport
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import common.errors.TypeOfClaimFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import api.controllers.validators.resolvers.ResolverSupport
-import api.models.errors.MtdError
 import v6.lossClaims.common.models.TypeOfClaim
 
 /** Given the whole request body, checks for the typeOfClaim field and validates it if present.

@@ -16,8 +16,8 @@
 
 package v6.bfLosses.create.model.request
 
-import play.api.libs.json.*
 import api.utils.JsonWritesUtil
+import play.api.libs.json.*
 import v6.bfLosses.create.def1.model.request.Def1_CreateBFLossRequestBody
 
 trait CreateBFLossRequestBody

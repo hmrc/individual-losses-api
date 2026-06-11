@@ -16,10 +16,10 @@
 
 package v6.bfLosses.list
 
+import api.config.SharedAppConfig
 import api.connectors.DownstreamUri.IfsUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import api.config.SharedAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v6.bfLosses.list.model.request.ListBFLossesRequestData

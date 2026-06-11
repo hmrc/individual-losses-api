@@ -16,18 +16,18 @@
 
 package v6.lossClaims.amendType.def1
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern, ResolveTaxYearMinMax}
+import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.implicits.*
 import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveStringPattern, ResolveTaxYearMinMax}
-import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError}
-import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
+import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 
 class Def1_AmendLossClaimTypeValidator(nino: String, claimId: String, body: JsValue, taxYearClaimedFor: String)
     extends Validator[AmendLossClaimTypeRequestData] {

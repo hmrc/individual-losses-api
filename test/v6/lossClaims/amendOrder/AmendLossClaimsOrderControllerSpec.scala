@@ -17,10 +17,6 @@
 package v6.lossClaims.amendOrder
 
 import _root_.common.errors.RuleSequenceOrderBroken
-import cats.implicits.catsSyntaxValidatedId
-import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
 import api.config.Deprecation.NotDeprecated
 import api.config.MockSharedAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -29,6 +25,10 @@ import api.models.domain.TaxYear
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
+import cats.implicits.catsSyntaxValidatedId
+import play.api.Configuration
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
 import v6.lossClaims.amendOrder.def1.model.request.{Claim, Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
 import v6.lossClaims.common.models.TypeOfClaim
 

@@ -16,9 +16,9 @@
 
 package v7.lossesAndClaims.createAmend.request
 
-import play.api.libs.json.{JsNumber, JsValue, Json}
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
+import play.api.libs.json.{JsNumber, JsValue, Json}
 import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.*
 
 class CreateAmendLossesAndClaimsRequestBodySpec extends UnitSpec with JsonErrorValidators {

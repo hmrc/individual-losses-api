@@ -16,8 +16,8 @@
 
 package v6.bfLosses.common.domain
 
-import play.api.libs.json.*
 import api.utils.enums.Enums
+import play.api.libs.json.*
 
 enum LossType(val toTypeOfLoss: TypeOfLoss) {
   case INCOME extends LossType(TypeOfLoss.`self-employment`)

@@ -16,10 +16,10 @@
 
 package config
 
+import api.config.{FeatureSwitches, SharedAppConfig}
 import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
-import api.config.{SharedAppConfig, FeatureSwitches}
 
 /** API-specific feature switches.
   */

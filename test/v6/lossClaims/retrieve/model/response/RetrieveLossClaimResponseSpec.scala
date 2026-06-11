@@ -16,10 +16,10 @@
 
 package v6.lossClaims.retrieve.model.response
 
-import play.api.libs.json.{JsValue, Json}
 import api.config.MockSharedAppConfig
 import api.models.domain.Timestamp
 import api.utils.UnitSpec
+import play.api.libs.json.{JsValue, Json}
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse
 

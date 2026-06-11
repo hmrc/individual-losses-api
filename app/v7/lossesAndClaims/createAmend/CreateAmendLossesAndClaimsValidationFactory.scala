@@ -16,8 +16,8 @@
 
 package v7.lossesAndClaims.createAmend
 
-import play.api.libs.json.JsValue
 import api.controllers.validators.Validator
+import play.api.libs.json.JsValue
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.Singleton

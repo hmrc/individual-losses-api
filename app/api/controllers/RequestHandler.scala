@@ -16,15 +16,8 @@
 
 package api.controllers
 
-import cats.data.EitherT
-import cats.data.Validated.Valid
-import cats.implicits.*
-import play.api.http.Status
-import play.api.libs.json.{JsValue, Writes}
-import play.api.mvc.Result
-import play.api.mvc.Results.InternalServerError
-import api.config.SharedAppConfig
 import api.config.Deprecation.Deprecated
+import api.config.SharedAppConfig
 import api.controllers.validators.Validator
 import api.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
 import api.models.outcomes.ResponseWrapper
@@ -32,6 +25,13 @@ import api.routing.Version
 import api.services.ServiceOutcome
 import api.utils.DateUtils.longDateTimestampGmt
 import api.utils.Logging
+import cats.data.EitherT
+import cats.data.Validated.Valid
+import cats.implicits.*
+import play.api.http.Status
+import play.api.libs.json.{JsValue, Writes}
+import play.api.mvc.Result
+import play.api.mvc.Results.InternalServerError
 
 import scala.concurrent.{ExecutionContext, Future}
 

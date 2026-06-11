@@ -16,8 +16,8 @@
 
 package v7.lossesAndClaims.retrieve.model.response
 
-import play.api.libs.json.{JsValue, Json}
 import api.utils.UnitSpec
+import play.api.libs.json.{JsValue, Json}
 import v7.lossesAndClaims.retrieve.fixtures.RetrieveLossesAndClaimsFixtures.*
 
 class RetrieveLossesAndClaimsResponseSpec extends UnitSpec {

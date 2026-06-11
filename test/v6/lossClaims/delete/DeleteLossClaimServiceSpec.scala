@@ -16,11 +16,11 @@
 
 package v6.lossClaims.delete
 
-import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow, TaxYearClaimedForFormatError}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import common.errors.{ClaimIdFormatError, RuleOutsideAmendmentWindow, TaxYearClaimedForFormatError}
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 import v6.lossClaims.delete.model.request.DeleteLossClaimRequestData

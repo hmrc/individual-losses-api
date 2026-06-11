@@ -16,11 +16,11 @@
 
 package v6.bfLosses.list
 
-import common.errors.TypeOfLossFormatError
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import common.errors.TypeOfLossFormatError
 import v6.bfLosses.common.domain.TypeOfLoss
 import v6.bfLosses.list
 import v6.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData

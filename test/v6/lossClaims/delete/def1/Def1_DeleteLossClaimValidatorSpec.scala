@@ -16,11 +16,11 @@
 
 package v6.lossClaims.delete.def1
 
-import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import api.controllers.validators.Validator
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
+import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError}
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData
 import v6.lossClaims.delete.model.request.DeleteLossClaimRequestData

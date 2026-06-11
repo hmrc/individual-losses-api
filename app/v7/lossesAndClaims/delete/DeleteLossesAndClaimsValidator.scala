@@ -16,12 +16,12 @@
 
 package v7.lossesAndClaims.delete
 
-import cats.data.Validated
-import cats.implicits.catsSyntaxTuple3Semigroupal
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
+import cats.data.Validated
+import cats.implicits.catsSyntaxTuple3Semigroupal
 import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 import v7.lossesAndClaims.minimumTaxYear
 

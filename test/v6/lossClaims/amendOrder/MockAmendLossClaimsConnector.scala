@@ -16,10 +16,10 @@
 
 package v6.lossClaims.amendOrder
 
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import api.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v6.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData
 

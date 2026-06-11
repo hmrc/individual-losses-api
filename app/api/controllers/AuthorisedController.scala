@@ -16,11 +16,11 @@
 
 package api.controllers
 
-import play.api.mvc.*
-import api.config.{SharedAppConfig, ConfigFeatureSwitches}
+import api.config.{ConfigFeatureSwitches, SharedAppConfig}
 import api.models.auth.UserDetails
 import api.models.errors.MtdError
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import play.api.mvc.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 

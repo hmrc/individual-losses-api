@@ -16,15 +16,15 @@
 
 package v7.lossesAndClaims.createAmend
 
-import config.LossesFeatureSwitches
-import play.api.libs.json.JsValue
-import play.api.mvc.{Action, ControllerComponents}
 import api.config.SharedAppConfig
 import api.controllers.*
 import api.controllers.validators.Validator
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
+import config.LossesFeatureSwitches
+import play.api.libs.json.JsValue
+import play.api.mvc.{Action, ControllerComponents}
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}

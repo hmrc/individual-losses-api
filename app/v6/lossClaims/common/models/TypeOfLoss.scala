@@ -16,8 +16,8 @@
 
 package v6.lossClaims.common.models
 
-import play.api.libs.json.Format
 import api.utils.enums.Enums
+import play.api.libs.json.Format
 
 enum TypeOfLoss {
   case `uk-property`, `foreign-property`, `self-employment`

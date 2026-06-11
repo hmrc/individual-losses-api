@@ -16,6 +16,11 @@
 
 package v7.lossesAndClaims
 
+import api.models.domain.TaxYear
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.errors.RuleOutsideAmendmentWindow
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -23,11 +28,6 @@ import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
-import api.models.domain.TaxYear
-import api.models.errors.*
-import api.models.utils.JsonErrorValidators
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import api.support.IntegrationBaseSpec
 import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.requestBodyJson
 
 import scala.math.Ordering.Implicits.infixOrderingOps

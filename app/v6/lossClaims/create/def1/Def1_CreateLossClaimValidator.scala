@@ -16,18 +16,18 @@
 
 package v6.lossClaims.create.def1
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveJsonObject, ResolveNino, ResolveTaxYearMinMax}
+import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
 import common.errors.{RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import play.api.libs.json.JsValue
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveJsonObject, ResolveNino, ResolveTaxYearMinMax}
-import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
-import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.common.models.TypeOfClaim.*
 import v6.lossClaims.common.models.TypeOfLoss.*
 import v6.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLossFromJson, ResolveLossTypeOfClaimFromJson}
+import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v6.lossClaims.create.model.request.CreateLossClaimRequestData
 

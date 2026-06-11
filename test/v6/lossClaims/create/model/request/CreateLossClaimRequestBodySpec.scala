@@ -16,12 +16,12 @@
 
 package v6.lossClaims.create.model.request
 
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.libs.json.{JsObject, JsValue, Json}
 import api.config.MockSharedAppConfig
 import api.models.domain.TaxYear
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
+import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
+import play.api.libs.json.{JsObject, JsValue, Json}
 import v6.lossClaims.common.models.*
 import v6.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 

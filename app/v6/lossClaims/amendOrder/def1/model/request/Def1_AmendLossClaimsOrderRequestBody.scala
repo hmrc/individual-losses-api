@@ -16,8 +16,8 @@
 
 package v6.lossClaims.amendOrder.def1.model.request
 
-import play.api.libs.json.{Json, OWrites, Reads}
 import api.utils.JsonWritesUtil
+import play.api.libs.json.{Json, OWrites, Reads}
 import v6.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestBody
 import v6.lossClaims.common.models.TypeOfClaim
 

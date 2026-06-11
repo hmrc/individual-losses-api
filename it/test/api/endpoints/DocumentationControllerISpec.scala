@@ -16,15 +16,15 @@
 
 package api.endpoints
 
+import api.config.SharedAppConfig
+import api.routing.{Version, Versions}
+import api.support.IntegrationBaseSpec
 import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.DefaultBodyReadables.*
 import play.api.libs.ws.WSResponse
-import api.config.SharedAppConfig
-import api.routing.{Version, Versions}
-import api.support.IntegrationBaseSpec
 
 import scala.util.Try
 

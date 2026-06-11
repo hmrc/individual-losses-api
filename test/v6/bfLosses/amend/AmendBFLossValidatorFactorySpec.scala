@@ -17,8 +17,8 @@
 package v6.bfLosses.amend
 
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{JsValue, Json}
 import api.utils.UnitSpec
+import play.api.libs.json.{JsValue, Json}
 import v6.bfLosses.amend.def1.Def1_AmendBFLossValidator
 
 class AmendBFLossValidatorFactorySpec extends UnitSpec with JsonErrorValidators {

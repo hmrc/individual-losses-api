@@ -16,11 +16,11 @@
 
 package v6.lossClaims.retrieve
 
-import common.errors.ClaimIdFormatError
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import common.errors.ClaimIdFormatError
 import v6.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
 import v6.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse

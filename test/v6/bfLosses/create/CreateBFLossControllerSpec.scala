@@ -16,11 +16,6 @@
 
 package v6.bfLosses.create
 
-import cats.implicits.catsSyntaxValidatedId
-import common.errors.RuleDuplicateSubmissionError
-import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
 import api.config.Deprecation.NotDeprecated
 import api.config.MockSharedAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -29,6 +24,11 @@ import api.models.domain.TaxYear
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
+import cats.implicits.catsSyntaxValidatedId
+import common.errors.RuleDuplicateSubmissionError
+import play.api.Configuration
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
 import v6.bfLosses.common.domain.TypeOfLoss
 import v6.bfLosses.create
 import v6.bfLosses.create.def1.model.request.{Def1_CreateBFLossRequestBody, Def1_CreateBFLossRequestData}

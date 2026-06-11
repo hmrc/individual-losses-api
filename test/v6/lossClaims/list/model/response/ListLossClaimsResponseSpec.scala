@@ -16,9 +16,9 @@
 
 package v6.lossClaims.list.model.response
 
-import play.api.libs.json.Json
 import api.config.MockSharedAppConfig
 import api.utils.UnitSpec
+import play.api.libs.json.Json
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.list.def1.response.{Def1_ListLossClaimsResponse, ListLossClaimsItem}
 
