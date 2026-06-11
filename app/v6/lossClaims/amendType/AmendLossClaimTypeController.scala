@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendType
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -36,7 +36,7 @@ class AmendLossClaimTypeController @Inject() (
     auditService: AuditService,
     cc: ControllerComponents,
     idGenerator: IdGenerator
-)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "amend-loss-claim-type"

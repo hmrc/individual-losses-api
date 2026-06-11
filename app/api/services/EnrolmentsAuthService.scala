@@ -16,7 +16,7 @@
 
 package api.services
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.models.auth.UserDetails
 import api.models.errors.{InternalError, *}
 import api.models.outcomes.AuthOutcome
@@ -33,7 +33,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConfig: SharedAppConfig) extends Logging {
+class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConfig: AppConfig) extends Logging {
 
   private lazy val authorisationEnabled = appConfig.confidenceLevelConfig.authValidationEnabled
 

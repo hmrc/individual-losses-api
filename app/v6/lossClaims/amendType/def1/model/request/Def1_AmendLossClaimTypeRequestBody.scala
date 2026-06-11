@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendType.def1.model.request
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads}
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestBody
 import v6.lossClaims.common.models.TypeOfClaim
@@ -26,7 +26,7 @@ case class Def1_AmendLossClaimTypeRequestBody(typeOfClaim: TypeOfClaim) extends 
 object Def1_AmendLossClaimTypeRequestBody {
   implicit val reads: Reads[Def1_AmendLossClaimTypeRequestBody] = Json.reads
 
-  implicit def writes(implicit appConfig: SharedAppConfig): OWrites[Def1_AmendLossClaimTypeRequestBody] =
+  implicit def writes(implicit appConfig: AppConfig): OWrites[Def1_AmendLossClaimTypeRequestBody] =
     (o: Def1_AmendLossClaimTypeRequestBody) => {
       Json.obj(
         "updatedReliefClaimed" -> o.typeOfClaim.toReliefClaimed

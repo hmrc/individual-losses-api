@@ -17,7 +17,7 @@
 package api.controllers
 
 import api.config.Deprecation.{Deprecated, NotDeprecated}
-import api.config.{Deprecation, MockSharedAppConfig, SharedAppConfig}
+import api.config.{Deprecation, MockAppConfig, AppConfig}
 import api.controllers.validators.Validator
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.auth.UserDetails
@@ -47,7 +47,7 @@ class RequestHandlerSpec
     with Status
     with HeaderNames
     with ResultExtractors
-    with MockSharedAppConfig {
+    with MockAppConfig {
 
   private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
@@ -74,8 +74,8 @@ class RequestHandlerSpec
     UserRequest[AnyContent](userDetails, fakeRequest)
   }
 
-  implicit val appConfig: SharedAppConfig = mockSharedAppConfig
-  private val mockService                 = mock[DummyService]
+  implicit val appConfig: AppConfig = mockAppConfig
+  private val mockService           = mock[DummyService]
 
   private def service =
     (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *).anyNumberOfTimes()
@@ -91,7 +91,7 @@ class RequestHandlerSpec
   }
 
   def mockDeprecation(deprecationStatus: Deprecation): CallHandler[Validated[String, Deprecation]] =
-    MockedSharedAppConfig
+    MockedAppConfig
       .deprecationFor(Version(userRequest))
       .returns(deprecationStatus.valid)
       .anyNumberOfTimes()
@@ -151,7 +151,7 @@ class RequestHandlerSpec
         "return RuleRequestCannotBeFulfilled error" in {
           val requestHandler = successRequestHandler.withNoContentResult()
 
-          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(true).anyNumberOfTimes()
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(true).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val expectedContent = Json.parse(
@@ -166,7 +166,7 @@ class RequestHandlerSpec
           for (gtsHeader <- gtsHeaders) {
 
             val userRequest2 = UserRequest[AnyContent](userDetails, FakeRequest().withHeaders(versionHeader, gtsHeader))
-            val result       = requestHandler.handleRequest()(ctx, userRequest2, implicitly[ExecutionContext], mockSharedAppConfig)
+            val result       = requestHandler.handleRequest()(ctx, userRequest2, implicitly[ExecutionContext], mockAppConfig)
 
             status(result) shouldBe 422
             header("X-CorrelationId", result) shouldBe Some(generatedCorrelationId)
@@ -181,12 +181,12 @@ class RequestHandlerSpec
 
           service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
 
-          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(false).anyNumberOfTimes()
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(false).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
 
-          val result = requestHandler.handleRequest()(ctx2, userRequest, ec, mockSharedAppConfig)
+          val result = requestHandler.handleRequest()(ctx2, userRequest, ec, mockAppConfig)
 
           contentAsJson(result) shouldBe successResponseJson
           header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
@@ -209,7 +209,7 @@ class RequestHandlerSpec
               )
             )
 
-            MockedSharedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 
@@ -233,7 +233,7 @@ class RequestHandlerSpec
                 None
               )
             )
-            MockedSharedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 

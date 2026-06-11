@@ -16,7 +16,7 @@
 
 package v6.bfLosses.create
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.*
 import api.controllers.validators.Validator
 import api.routing.Version
@@ -38,7 +38,7 @@ class CreateBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                         validatorFactory: CreateBFLossValidatorFactory,
                                         auditService: AuditService,
                                         cc: ControllerComponents,
-                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "create-bf-loss"

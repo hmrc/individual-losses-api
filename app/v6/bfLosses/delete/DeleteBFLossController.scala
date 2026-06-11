@@ -16,7 +16,7 @@
 
 package v6.bfLosses.delete
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -33,7 +33,7 @@ class DeleteBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                         validatorFactory: DeleteBFLossValidatorFactory,
                                         auditService: AuditService,
                                         cc: ControllerComponents,
-                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "delete-bf-loss"

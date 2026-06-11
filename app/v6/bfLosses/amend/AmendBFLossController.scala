@@ -16,7 +16,7 @@
 
 package v6.bfLosses.amend
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -35,7 +35,7 @@ class AmendBFLossController @Inject() (val authService: EnrolmentsAuthService,
                                        validatorFactory: AmendBFLossValidatorFactory,
                                        auditService: AuditService,
                                        cc: ControllerComponents,
-                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "amend-bf-loss"

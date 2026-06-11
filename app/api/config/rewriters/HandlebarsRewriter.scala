@@ -16,12 +16,12 @@
 
 package api.config.rewriters
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache
 
 trait HandlebarsRewriter {
-  implicit val appConfig: SharedAppConfig
+  implicit val appConfig: AppConfig
 
   protected val hb: Handlebars =
     new Handlebars()

@@ -16,7 +16,7 @@
 
 package v6.lossClaims.list
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
@@ -33,7 +33,7 @@ class ListLossClaimsController @Inject() (
     validatorFactory: ListLossClaimsValidatorFactory,
     cc: ControllerComponents,
     idGenerator: IdGenerator
-)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "list-loss-claims"

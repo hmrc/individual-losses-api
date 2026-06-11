@@ -16,14 +16,14 @@
 
 package api.connectors
 
-import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
+import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockAppConfig}
 import api.utils.UnitSpec
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DownstreamStrategySpec extends UnitSpec with ScalaFutures with MockSharedAppConfig {
+class DownstreamStrategySpec extends UnitSpec with ScalaFutures with MockAppConfig {
 
   "StandardStrategy" must {
     "use the supplied DownstreamConfig" in {
@@ -72,13 +72,13 @@ class DownstreamStrategySpec extends UnitSpec with ScalaFutures with MockSharedA
     val offStrategy = mock[DownstreamStrategy]
 
     "use the provided onStrategy when the switch is enabled" in {
-      MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("someSwitch.enabled" -> true))
+      MockedAppConfig.featureSwitchConfig.returns(Configuration("someSwitch.enabled" -> true))
 
       DownstreamStrategy.switchedStrategy(onStrategy, offStrategy, "someSwitch") shouldBe onStrategy
     }
 
     "use the provided offStrategy when the switch is disabled" in {
-      MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("someSwitch.enabled" -> false))
+      MockedAppConfig.featureSwitchConfig.returns(Configuration("someSwitch.enabled" -> false))
 
       DownstreamStrategy.switchedStrategy(onStrategy, offStrategy, "someSwitch") shouldBe offStrategy
     }

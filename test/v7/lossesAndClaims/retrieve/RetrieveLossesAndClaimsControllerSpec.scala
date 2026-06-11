@@ -87,11 +87,11 @@ class RetrieveLossesAndClaimsControllerSpec
 
     protected def callController(): Future[Result] = controller.retrieve(validNino, businessId, taxYear)(fakeRequest)
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns true
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns true
 
   }
 

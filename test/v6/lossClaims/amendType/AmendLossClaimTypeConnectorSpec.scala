@@ -70,7 +70,7 @@ class AmendLossClaimTypeConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { self: ConnectorTest =>
-    val connector: AmendLossClaimTypeConnector = new AmendLossClaimTypeConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: AmendLossClaimTypeConnector = new AmendLossClaimTypeConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }

@@ -16,7 +16,7 @@
 
 package api.endpoints
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.routing.{Version, Versions}
 import api.support.IntegrationBaseSpec
 import io.swagger.v3.parser.OpenAPIV3Parser
@@ -30,7 +30,7 @@ import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  private val config = app.injector.instanceOf[SharedAppConfig]
+  private val config = app.injector.instanceOf[AppConfig]
 
   private lazy val enabledVersions: Seq[Version] =
     (1 to 99).collect {

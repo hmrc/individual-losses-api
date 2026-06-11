@@ -16,7 +16,7 @@
 
 package v6.lossClaims.create.model.request
 
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.models.domain.TaxYear
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
@@ -25,7 +25,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import v6.lossClaims.common.models.*
 import v6.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 
-class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
+class CreateLossClaimRequestBodySpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
   val lossClaimSelfEmployment: Def1_CreateLossClaimRequestBody = Def1_CreateLossClaimRequestBody(
     taxYearClaimedFor = "2019-20",

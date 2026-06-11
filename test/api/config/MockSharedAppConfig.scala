@@ -23,45 +23,45 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import play.api.Configuration
 
-trait MockSharedAppConfig extends TestSuite with MockFactory {
+trait MockAppConfig extends TestSuite with MockFactory {
 
-  implicit val mockSharedAppConfig: SharedAppConfig = mock[SharedAppConfig]
+  implicit val mockAppConfig: AppConfig = mock[AppConfig]
 
-  object MockedSharedAppConfig {
+  object MockedAppConfig {
     // MTD ID Lookup Config
-    def mtdIdBaseUrl: CallHandler0[String] = (() => mockSharedAppConfig.mtdIdBaseUrl: String).expects()
+    def mtdIdBaseUrl: CallHandler0[String] = (() => mockAppConfig.mtdIdBaseUrl: String).expects()
 
-    def ifsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockSharedAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
+    def ifsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
 
     def hipDownstreamConfig: CallHandler[BasicAuthDownstreamConfig] =
-      (() => mockSharedAppConfig.hipDownstreamConfig: BasicAuthDownstreamConfig).expects()
+      (() => mockAppConfig.hipDownstreamConfig: BasicAuthDownstreamConfig).expects()
 
     // API Config
-    def featureSwitchConfig: CallHandler0[Configuration]         = (() => mockSharedAppConfig.featureSwitchConfig: Configuration).expects()
-    def apiGatewayContext: CallHandler0[String]                  = (() => mockSharedAppConfig.apiGatewayContext: String).expects()
-    def apiStatus(version: Version): CallHandler[String]         = (mockSharedAppConfig.apiStatus: Version => String).expects(version)
-    def endpointsEnabled(version: String): CallHandler[Boolean]  = (mockSharedAppConfig.endpointsEnabled(_: String)).expects(version)
-    def endpointsEnabled(version: Version): CallHandler[Boolean] = (mockSharedAppConfig.endpointsEnabled: Version => Boolean).expects(version)
+    def featureSwitchConfig: CallHandler0[Configuration]         = (() => mockAppConfig.featureSwitchConfig: Configuration).expects()
+    def apiGatewayContext: CallHandler0[String]                  = (() => mockAppConfig.apiGatewayContext: String).expects()
+    def apiStatus(version: Version): CallHandler[String]         = (mockAppConfig.apiStatus: Version => String).expects(version)
+    def endpointsEnabled(version: String): CallHandler[Boolean]  = (mockAppConfig.endpointsEnabled(_: String)).expects(version)
+    def endpointsEnabled(version: Version): CallHandler[Boolean] = (mockAppConfig.endpointsEnabled: Version => Boolean).expects(version)
 
     def deprecationFor(version: Version): CallHandler[Validated[String, Deprecation]] =
-      (mockSharedAppConfig.deprecationFor(_: Version)).expects(version)
+      (mockAppConfig.deprecationFor(_: Version)).expects(version)
 
-    def apiDocumentationUrl(): CallHandler[String] = (() => mockSharedAppConfig.apiDocumentationUrl: String).expects()
+    def apiDocumentationUrl(): CallHandler[String] = (() => mockAppConfig.apiDocumentationUrl: String).expects()
 
     def apiVersionReleasedInProduction(version: String): CallHandler[Boolean] =
-      (mockSharedAppConfig.apiVersionReleasedInProduction: String => Boolean).expects(version)
+      (mockAppConfig.apiVersionReleasedInProduction: String => Boolean).expects(version)
 
     def endpointReleasedInProduction(version: String, key: String): CallHandler[Boolean] =
-      (mockSharedAppConfig.endpointReleasedInProduction: (String, String) => Boolean).expects(version, key)
+      (mockAppConfig.endpointReleasedInProduction: (String, String) => Boolean).expects(version, key)
 
     def confidenceLevelConfig: CallHandler0[ConfidenceLevelConfig] =
-      (() => mockSharedAppConfig.confidenceLevelConfig).expects()
+      (() => mockAppConfig.confidenceLevelConfig).expects()
 
     def endpointAllowsSupportingAgents(endpointName: String): CallHandler[Boolean] =
-      (mockSharedAppConfig.endpointAllowsSupportingAgents(_: String)).expects(endpointName)
+      (mockAppConfig.endpointAllowsSupportingAgents(_: String)).expects(endpointName)
 
     def allowRequestCannotBeFulfilledHeader(version: Version): CallHandler[Boolean] =
-      (mockSharedAppConfig.allowRequestCannotBeFulfilledHeader: Version => Boolean).expects(version)
+      (mockAppConfig.allowRequestCannotBeFulfilledHeader: Version => Boolean).expects(version)
 
   }
 

@@ -16,14 +16,14 @@
 
 package routing
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.routing.*
 import play.api.routing.Router
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton case class LossesVersionRoutingMap @Inject() (
-    appConfig: SharedAppConfig,
+    appConfig: AppConfig,
     defaultRouter: Router,
     v6Router: v6.Routes,
     v7Router: v7.Routes

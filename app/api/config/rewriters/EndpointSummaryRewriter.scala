@@ -16,13 +16,13 @@
 
 package api.config.rewriters
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
 
 import java.util.regex.Pattern
 import javax.inject.{Inject, Singleton}
 
-@Singleton class EndpointSummaryRewriter @Inject() (appConfig: SharedAppConfig) {
+@Singleton class EndpointSummaryRewriter @Inject() (appConfig: AppConfig) {
 
   private val rewriteSummaryRegex = "([\\s]*)(summary: [\"]?)(.*)".r
   private val yamlLength          = ".yaml".length

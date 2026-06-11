@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import api.config.{MockSharedAppConfig, SharedAppConfig}
+import api.config.{MockAppConfig, AppConfig}
 import api.mocks.MockHttpClient
 import api.models.outcomes.ResponseWrapper
 import api.utils.UnitSpec
@@ -29,7 +29,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with MockSharedAppConfig with Status with MimeTypes with HeaderNames {
+class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with MockAppConfig with Status with MimeTypes with HeaderNames {
   self =>
 
   case class Result(value: Int)
@@ -62,8 +62,8 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
     HeaderCarrier(otherHeaders = inputHeaders)
 
   val connector: BaseDownstreamConnector = new BaseDownstreamConnector {
-    val http: HttpClientV2         = mockHttpClient
-    val appConfig: SharedAppConfig = mockSharedAppConfig
+    val http: HttpClientV2   = mockHttpClient
+    val appConfig: AppConfig = mockAppConfig
   }
 
   private def uri(apiContractHeaders: Seq[(String, String)] = standardContractHeaders, passThroughHeaderNames: Seq[String] = Nil) =

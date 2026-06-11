@@ -123,7 +123,7 @@ class ListLossClaimsConnectorSpec extends ConnectorSpec {
   trait Test { self: ConnectorTest =>
 
     protected val connector: ListLossClaimsConnector =
-      new ListLossClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+      new ListLossClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     protected def success(taxYear: String): Either[ResponseWrapper[DownstreamErrors], ResponseWrapper[ListLossClaimsResponse]] =
       Right(ResponseWrapper(correlationId, singleClaimResponseModel(taxYear)))

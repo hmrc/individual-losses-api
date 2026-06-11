@@ -16,7 +16,7 @@
 
 package v7.lossesAndClaims.retrieve
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.*
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
@@ -33,7 +33,7 @@ class RetrieveLossesAndClaimsController @Inject() (
     validatorFactory: RetrieveLossesAndClaimsValidatorFactory,
     cc: ControllerComponents,
     idGenerator: IdGenerator
-)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "retrieve-losses-and-claims"

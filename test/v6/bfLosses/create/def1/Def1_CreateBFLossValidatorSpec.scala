@@ -16,7 +16,7 @@
 
 package v6.bfLosses.create.def1
 
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.controllers.validators.Validator
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
@@ -64,7 +64,7 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
     validLossAmount
   )
 
-  class Test extends MockSharedAppConfig {
+  class Test extends MockAppConfig {
 
     implicit val clock: Clock = Clock.fixed(Instant.parse("2022-07-11T10:00:00.00Z"), ZoneId.of("UTC"))
 

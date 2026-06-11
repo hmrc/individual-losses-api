@@ -52,7 +52,7 @@ class RetrieveLossesAndClaimsConnectorSpec extends ConnectorSpec {
 
   private trait Test {
     self: ConnectorTest =>
-    val connector: RetrieveLossesAndClaimsConnector = new RetrieveLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: RetrieveLossesAndClaimsConnector = new RetrieveLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }

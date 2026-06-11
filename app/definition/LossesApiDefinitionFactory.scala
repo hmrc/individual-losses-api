@@ -16,14 +16,14 @@
 
 package definition
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.definition.*
 import api.routing.{Version6, Version7}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class LossesApiDefinitionFactory @Inject() (protected val appConfig: SharedAppConfig) extends ApiDefinitionFactory {
+class LossesApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) extends ApiDefinitionFactory {
 
   val definition: Definition =
     Definition(

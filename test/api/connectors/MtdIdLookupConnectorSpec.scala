@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.connectors.MtdIdLookupConnector.Outcome
 import api.mocks.MockHttpClient
 import uk.gov.hmrc.http.StringContextOps
@@ -28,14 +28,14 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
   val nino  = "test-nino"
   val mtdId = "test-mtdId"
 
-  trait Test extends ConnectorSpec with MockHttpClient with MockSharedAppConfig {
+  trait Test extends ConnectorSpec with MockHttpClient with MockAppConfig {
 
     val connector = new MtdIdLookupConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
-    MockedSharedAppConfig.mtdIdBaseUrl returns baseUrl
+    MockedAppConfig.mtdIdBaseUrl returns baseUrl
   }
 
   "getMtdId" should {

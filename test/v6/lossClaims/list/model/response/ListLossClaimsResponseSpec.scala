@@ -16,13 +16,13 @@
 
 package v6.lossClaims.list.model.response
 
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.utils.UnitSpec
 import play.api.libs.json.Json
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.list.def1.response.{Def1_ListLossClaimsResponse, ListLossClaimsItem}
 
-class ListLossClaimsResponseSpec extends UnitSpec with MockSharedAppConfig {
+class ListLossClaimsResponseSpec extends UnitSpec with MockAppConfig {
 
   val nino: String = "AA123456A"
   val taxYear      = "2018-19"

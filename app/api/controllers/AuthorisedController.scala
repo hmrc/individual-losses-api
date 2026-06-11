@@ -16,7 +16,7 @@
 
 package api.controllers
 
-import api.config.{ConfigFeatureSwitches, SharedAppConfig}
+import api.config.{ConfigFeatureSwitches, AppConfig}
 import api.models.auth.UserDetails
 import api.models.errors.MtdError
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -30,7 +30,7 @@ case class UserRequest[A](userDetails: UserDetails, request: Request[A]) extends
 
 abstract class AuthorisedController(
     cc: ControllerComponents
-)(implicit appConfig: SharedAppConfig, ec: ExecutionContext)
+)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends BackendController(cc) {
 
   val authService: EnrolmentsAuthService

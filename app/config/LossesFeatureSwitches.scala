@@ -16,7 +16,7 @@
 
 package config
 
-import api.config.{FeatureSwitches, SharedAppConfig}
+import api.config.{FeatureSwitches, AppConfig}
 import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
@@ -36,6 +36,6 @@ case class LossesFeatureSwitches(protected val featureSwitchConfig: Configuratio
 }
 
 object LossesFeatureSwitches {
-  def apply()(implicit appConfig: SharedAppConfig): LossesFeatureSwitches = LossesFeatureSwitches(appConfig.featureSwitchConfig)
+  def apply()(implicit appConfig: AppConfig): LossesFeatureSwitches = LossesFeatureSwitches(appConfig.featureSwitchConfig)
 
 }

@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendType.model.request
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.utils.JsonWritesUtil
 import play.api.libs.json.OWrites
 import v6.lossClaims.amendType.def1.model.request.Def1_AmendLossClaimTypeRequestBody
@@ -26,7 +26,7 @@ trait AmendLossClaimTypeRequestBody { def typeOfClaim: TypeOfClaim }
 
 object AmendLossClaimTypeRequestBody extends JsonWritesUtil {
 
-  implicit def writes(implicit appConfig: SharedAppConfig): OWrites[AmendLossClaimTypeRequestBody] = writesFrom {
+  implicit def writes(implicit appConfig: AppConfig): OWrites[AmendLossClaimTypeRequestBody] = writesFrom {
     case a: Def1_AmendLossClaimTypeRequestBody =>
       implicitly[OWrites[Def1_AmendLossClaimTypeRequestBody]].writes(a)
   }

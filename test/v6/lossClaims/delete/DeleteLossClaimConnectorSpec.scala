@@ -46,7 +46,7 @@ class DeleteLossClaimConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { self: ConnectorTest =>
-    val connector: DeleteLossClaimConnector = new DeleteLossClaimConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: DeleteLossClaimConnector = new DeleteLossClaimConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val request: Def1_DeleteLossClaimRequestData =
       Def1_DeleteLossClaimRequestData(nino = nino, claimId = claimId, taxYearClaimedFor = taxYearClaimedFor)

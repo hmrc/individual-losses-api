@@ -17,14 +17,14 @@
 package api.config.rewriters
 
 import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import api.config.{ConfigFeatureSwitches, SharedAppConfig}
+import api.config.{ConfigFeatureSwitches, AppConfig}
 import com.github.jknack.handlebars.Options
 
 import javax.inject.{Inject, Singleton}
 
 /** Checks whether the feature is enabled in the current environment e.g. ET/Sandbox.
   */
-@Singleton class OasFeatureRewriter @Inject() (implicit val appConfig: SharedAppConfig) extends HandlebarsRewriter {
+@Singleton class OasFeatureRewriter @Inject() (implicit val appConfig: AppConfig) extends HandlebarsRewriter {
 
   private val fs = ConfigFeatureSwitches()
 

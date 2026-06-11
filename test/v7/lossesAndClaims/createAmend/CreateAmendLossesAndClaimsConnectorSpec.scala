@@ -68,7 +68,7 @@ class CreateAmendLossesAndClaimsConnectorSpec extends ConnectorSpec {
     self: ConnectorTest =>
 
     val connector: CreateAmendLossesAndClaimsConnector =
-      new CreateAmendLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+      new CreateAmendLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
   }
 

@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import api.config.{BasicAuthDownstreamConfig, ConfigFeatureSwitches, DownstreamConfig, SharedAppConfig}
+import api.config.{BasicAuthDownstreamConfig, ConfigFeatureSwitches, DownstreamConfig, AppConfig}
 import com.google.common.base.Charsets
 
 import java.util.Base64
@@ -90,7 +90,7 @@ object DownstreamStrategy {
     *   the strategy to use when the switch is disabled
     */
   def switchedStrategy(onStrategy: => DownstreamStrategy, offStrategy: => DownstreamStrategy, switchName: String)(implicit
-      appConfig: SharedAppConfig): DownstreamStrategy =
+      appConfig: AppConfig): DownstreamStrategy =
     if (ConfigFeatureSwitches().isEnabled(switchName)) onStrategy else offStrategy
 
 }

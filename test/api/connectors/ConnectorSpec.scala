@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
+import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockAppConfig}
 import api.mocks.MockHttpClient
 import api.utils.UnitSpec
 import org.scalamock.handlers.CallHandler
@@ -49,7 +49,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       Some("this-api")
     )
 
-  protected trait ConnectorTest extends UnitSpec with MockHttpClient with MockSharedAppConfig {
+  protected trait ConnectorTest extends UnitSpec with MockHttpClient with MockAppConfig {
     protected val baseUrl: String = "http://test-BaseUrl"
 
     protected lazy val requiredHeaders: Seq[(String, String)]
@@ -123,7 +123,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   protected trait IfsTest extends StandardConnectorTest {
     override val name = "ifs"
 
-    MockedSharedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
+    MockedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
   }
 
   protected trait HipTest extends ConnectorTest {
@@ -143,7 +143,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       "Gov-Test-Scenario"    -> "DEFAULT"
     ) ++ intent.map("intent" -> _)
 
-    MockedSharedAppConfig.hipDownstreamConfig
+    MockedAppConfig.hipDownstreamConfig
       .anyNumberOfTimes() returns BasicAuthDownstreamConfig(this.baseUrl, environment, clientId, clientSecret, Some(allowedHeaders))
 
   }

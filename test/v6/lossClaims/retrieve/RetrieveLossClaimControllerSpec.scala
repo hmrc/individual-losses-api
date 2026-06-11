@@ -17,7 +17,7 @@
 package v6.lossClaims.retrieve
 
 import api.config.Deprecation.NotDeprecated
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.Timestamp
 import api.models.errors.*
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 class RetrieveLossClaimControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockSharedAppConfig
+    with MockAppConfig
     with MockRetrieveLossClaimValidatorFactory
     with MockRetrieveLossClaimService {
 
@@ -115,13 +115,13 @@ class RetrieveLossClaimControllerSpec
 
     protected def callController(): Future[Result] = controller.retrieve(validNino, claimId)(fakeRequest)
 
-    MockedSharedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
+    MockedAppConfig.deprecationFor(Version9).returns(NotDeprecated.valid).anyNumberOfTimes()
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
   }
 

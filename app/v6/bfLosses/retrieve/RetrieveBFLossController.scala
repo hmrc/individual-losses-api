@@ -16,7 +16,7 @@
 
 package v6.bfLosses.retrieve
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.*
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
@@ -31,7 +31,7 @@ class RetrieveBFLossController @Inject() (val authService: EnrolmentsAuthService
                                           service: RetrieveBFLossService,
                                           validatorFactory: RetrieveBFLossValidatorFactory,
                                           cc: ControllerComponents,
-                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "retrieve-bf-loss"

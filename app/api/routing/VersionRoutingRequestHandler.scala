@@ -16,7 +16,7 @@
 
 package api.routing
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
@@ -29,7 +29,7 @@ import javax.inject.{Inject, Provider, Singleton}
 class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingMap,
                                               errorHandler: HttpErrorHandler,
                                               httpConfiguration: HttpConfiguration,
-                                              config: SharedAppConfig,
+                                              config: AppConfig,
                                               filters: HttpFilters,
                                               action: DefaultActionBuilder)
     extends DefaultHttpRequestHandler(

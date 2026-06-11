@@ -50,7 +50,7 @@ class DeleteLossesAndClaimsConnectorSpec extends ConnectorSpec {
 
   private trait Test {
     self: ConnectorTest =>
-    val connector: DeleteLossesAndClaimsConnector = new DeleteLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: DeleteLossesAndClaimsConnector = new DeleteLossesAndClaimsConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
 }
