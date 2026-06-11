@@ -17,10 +17,10 @@
 package v6.bfLosses.list.def1
 
 import common.errors.TypeOfLossFormatError
-import shared.controllers.validators.Validator
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.controllers.validators.Validator
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v6.bfLosses.common.domain.IncomeSourceType
 import v6.bfLosses.list.def1.model.request.Def1_ListBFLossesRequestData
 import v6.bfLosses.list.model.request.ListBFLossesRequestData

@@ -16,7 +16,7 @@
 
 package v6.lossClaims.create.def1.model.request
 
-import shared.models.domain.Nino
+import api.models.domain.Nino
 import v6.lossClaims.create.CreateLossClaimSchema
 import v6.lossClaims.create.model.request.CreateLossClaimRequestData
 

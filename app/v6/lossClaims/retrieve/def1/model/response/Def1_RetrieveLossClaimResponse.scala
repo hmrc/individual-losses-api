@@ -18,7 +18,7 @@ package v6.lossClaims.retrieve.def1.model.response
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
-import shared.models.domain.{TaxYear, Timestamp}
+import api.models.domain.{TaxYear, Timestamp}
 import v6.lossClaims.common.models.*
 import v6.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 

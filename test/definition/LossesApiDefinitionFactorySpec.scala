@@ -17,13 +17,13 @@
 package definition
 
 import cats.implicits.catsSyntaxValidatedId
-import shared.config.Deprecation.NotDeprecated
-import shared.config.MockSharedAppConfig
-import shared.definition.*
-import shared.definition.APIStatus.BETA
-import shared.mocks.MockHttpClient
-import shared.routing.{Version6, Version7}
-import shared.utils.UnitSpec
+import api.config.Deprecation.NotDeprecated
+import api.config.MockSharedAppConfig
+import api.definition.*
+import api.definition.APIStatus.BETA
+import api.mocks.MockHttpClient
+import api.routing.{Version6, Version7}
+import api.utils.UnitSpec
 
 class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSharedAppConfig {
 

@@ -24,10 +24,10 @@ import common.errors.{
   RuleTypeOfClaimInvalid,
   TaxYearClaimedForFormatError
 }
-import shared.models.domain.{Nino, TaxYear, Timestamp}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
+import api.models.domain.{Nino, TaxYear, Timestamp}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 import v6.lossClaims.amendType.model.response.AmendLossClaimTypeResponse

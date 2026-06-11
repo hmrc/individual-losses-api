@@ -21,16 +21,10 @@ import cats.data.Validated.Invalid
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{
-  ResolveNino,
-  ResolveNonEmptyJsonObject,
-  ResolveParsedNumber,
-  ResolveStringPattern,
-  ResolveTaxYearMinMax
-}
-import shared.models.domain.TaxYear
-import shared.models.errors.{
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveParsedNumber, ResolveStringPattern, ResolveTaxYearMinMax}
+import api.models.domain.TaxYear
+import api.models.errors.{
   MtdError,
   RuleIncorrectOrEmptyBodyError,
   RuleTaxYearForVersionNotSupportedError,

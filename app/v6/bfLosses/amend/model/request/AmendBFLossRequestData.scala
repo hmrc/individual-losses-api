@@ -16,7 +16,7 @@
 
 package v6.bfLosses.amend.model.request
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 import v6.bfLosses.amend.AmendBFLossSchema
 import v6.bfLosses.common.domain.LossId
 

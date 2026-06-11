@@ -16,7 +16,7 @@
 
 package v6.lossClaims.retrieve
 
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 import v6.lossClaims.retrieve.def1.Def1_RetrieveLossClaimValidator
 
 class RetrieveLossClaimValidatorFactorySpec extends UnitSpec {

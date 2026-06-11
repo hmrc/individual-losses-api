@@ -17,9 +17,9 @@
 package v6.lossClaims.amendType.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockSharedAppConfig
-import shared.models.domain.Timestamp
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.models.domain.Timestamp
+import api.utils.UnitSpec
 import v6.lossClaims.amendType.def1.model.response.Def1_AmendLossClaimTypeResponse
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 

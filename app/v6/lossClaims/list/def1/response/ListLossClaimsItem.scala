@@ -18,7 +18,7 @@ package v6.lossClaims.list.def1.response
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
-import shared.models.domain.TaxYear
+import api.models.domain.TaxYear
 import v6.lossClaims.common.models.*
 
 case class ListLossClaimsItem(businessId: String,

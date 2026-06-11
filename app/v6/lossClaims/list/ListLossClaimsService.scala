@@ -17,9 +17,9 @@
 package v6.lossClaims.list
 
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
-import shared.controllers.RequestContext
-import shared.models.errors.*
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.services.{BaseService, ServiceOutcome}
 import v6.lossClaims.list.def1.response.Def1_ListLossClaimsResponse
 import v6.lossClaims.list.model.request.ListLossClaimsRequestData
 import v6.lossClaims.list.model.response.ListLossClaimsResponse

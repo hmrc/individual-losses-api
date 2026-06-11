@@ -19,9 +19,9 @@ package v7.lossesAndClaims.createAmend
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.*
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.*
-import shared.models.errors.*
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.*
+import api.models.errors.*
 import v7.lossesAndClaims.commons.PreferenceOrderEnum
 import v7.lossesAndClaims.createAmend.request.*
 

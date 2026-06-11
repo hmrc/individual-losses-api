@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendType
 
-import shared.connectors.DownstreamOutcome
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite

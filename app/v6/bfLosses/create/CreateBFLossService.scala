@@ -18,9 +18,9 @@ package v6.bfLosses.create
 
 import cats.implicits.*
 import common.errors._
-import shared.controllers.RequestContext
-import shared.models.errors.*
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.services.{BaseService, ServiceOutcome}
 import v6.bfLosses.create.model.request.CreateBFLossRequestData
 import v6.bfLosses.create.model.response.CreateBFLossResponse
 

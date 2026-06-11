@@ -16,7 +16,7 @@
 
 package v6.lossClaims.list
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import v6.lossClaims.list.ListLossClaimsSchema.Def1
 import v6.lossClaims.list.def1.Def1_ListLossClaimsValidator
 import v6.lossClaims.list.model.request.ListLossClaimsRequestData

@@ -16,9 +16,9 @@
 
 package v7.lossesAndClaims.delete
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v7.lossesAndClaims.delete.model.request.DeleteLossesAndClaimsRequestData
 
 class DeleteLossesAndClaimsValidatorFactorySpec extends UnitSpec {

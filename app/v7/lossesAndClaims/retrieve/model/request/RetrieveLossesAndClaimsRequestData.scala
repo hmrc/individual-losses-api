@@ -16,6 +16,6 @@
 
 package v7.lossesAndClaims.retrieve.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
 case class RetrieveLossesAndClaimsRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

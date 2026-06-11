@@ -17,10 +17,10 @@
 package v6.lossClaims.create
 
 import common.errors._
-import shared.models.domain.Nino
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.{ServiceOutcome, ServiceSpec}
+import api.models.domain.Nino
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.{ServiceOutcome, ServiceSpec}
 import v6.lossClaims.common.models.*
 import v6.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}
 import v6.lossClaims.create.def1.model.response.Def1_CreateLossClaimResponse

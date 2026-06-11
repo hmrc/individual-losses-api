@@ -21,13 +21,13 @@ import common.errors.ClaimIdFormatError
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import shared.config.Deprecation.NotDeprecated
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.domain.Timestamp
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.routing.Version9
+import api.config.Deprecation.NotDeprecated
+import api.config.MockSharedAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.domain.Timestamp
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.routing.Version9
 import v6.lossClaims.common.models.{ClaimId, TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData
 import v6.lossClaims.retrieve.def1.model.response.Def1_RetrieveLossClaimResponse

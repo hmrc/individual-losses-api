@@ -16,6 +16,6 @@
 
 package v7.lossesAndClaims.delete.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
 case class DeleteLossesAndClaimsRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

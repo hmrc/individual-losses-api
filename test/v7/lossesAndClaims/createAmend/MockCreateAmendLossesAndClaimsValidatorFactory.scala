@@ -18,7 +18,7 @@ package v7.lossesAndClaims.createAmend
 
 import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsValue
-import shared.controllers.validators.{MockValidatorFactory, Validator}
+import api.controllers.validators.{MockValidatorFactory, Validator}
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 trait MockCreateAmendLossesAndClaimsValidatorFactory extends MockValidatorFactory[CreateAmendLossesAndClaimsRequestData] {

@@ -16,8 +16,8 @@
 
 package v6.lossClaims.retrieve
 
-import shared.controllers.RequestContext
-import shared.services.ServiceOutcome
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite

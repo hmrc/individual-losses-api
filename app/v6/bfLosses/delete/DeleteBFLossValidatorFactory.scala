@@ -16,7 +16,7 @@
 
 package v6.bfLosses.delete
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import v6.bfLosses.delete.DeleteBFLossSchema.Def1
 import v6.bfLosses.delete.def1.Def1_DeleteBFLossValidator
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData

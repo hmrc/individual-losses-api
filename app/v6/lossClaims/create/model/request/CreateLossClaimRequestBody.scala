@@ -17,8 +17,8 @@
 package v6.lossClaims.create.model.request
 
 import play.api.libs.json.*
-import shared.config.SharedAppConfig
-import shared.utils.JsonWritesUtil
+import api.config.SharedAppConfig
+import api.utils.JsonWritesUtil
 import v6.lossClaims.create.def1.model.request.Def1_CreateLossClaimRequestBody
 
 trait CreateLossClaimRequestBody {

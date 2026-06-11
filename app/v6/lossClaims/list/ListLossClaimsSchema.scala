@@ -17,7 +17,7 @@
 package v6.lossClaims.list
 
 import play.api.libs.json.Reads
-import shared.schema.DownstreamReadable
+import api.schema.DownstreamReadable
 import v6.lossClaims.list.def1.response.Def1_ListLossClaimsResponse
 import v6.lossClaims.list.model.response.ListLossClaimsResponse
 

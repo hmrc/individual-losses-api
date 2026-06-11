@@ -16,7 +16,7 @@
 
 package v6.bfLosses.amend
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import play.api.libs.json.JsValue
 import v6.bfLosses.amend.AmendBFLossSchema.Def1
 import v6.bfLosses.amend.def1.Def1_AmendBFLossValidator

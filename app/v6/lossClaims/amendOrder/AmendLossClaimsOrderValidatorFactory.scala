@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendOrder
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import play.api.libs.json.JsValue
 import v6.lossClaims.amendOrder.AmendLossClaimsOrderSchema.Def1
 import v6.lossClaims.amendOrder.def1.Def1_AmendLossClaimsOrderValidator

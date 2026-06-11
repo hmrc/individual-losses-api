@@ -19,7 +19,7 @@ package config
 import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
-import shared.config.{SharedAppConfig, FeatureSwitches}
+import api.config.{SharedAppConfig, FeatureSwitches}
 
 /** API-specific feature switches.
   */

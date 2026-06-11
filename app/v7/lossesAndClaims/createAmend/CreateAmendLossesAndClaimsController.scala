@@ -19,12 +19,12 @@ package v7.lossesAndClaims.createAmend
 import config.LossesFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import shared.config.SharedAppConfig
-import shared.controllers.*
-import shared.controllers.validators.Validator
-import shared.routing.Version
-import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import shared.utils.IdGenerator
+import api.config.SharedAppConfig
+import api.controllers.*
+import api.controllers.validators.Validator
+import api.routing.Version
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.utils.IdGenerator
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}

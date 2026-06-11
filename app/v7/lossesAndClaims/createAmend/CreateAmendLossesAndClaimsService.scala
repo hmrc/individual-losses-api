@@ -18,8 +18,8 @@ package v7.lossesAndClaims.createAmend
 
 import cats.implicits.catsSyntaxEither
 import common.errors.RuleOutsideAmendmentWindow
-import shared.controllers.RequestContext
-import shared.models.errors.{
+import api.controllers.RequestContext
+import api.models.errors.{
   BusinessIdFormatError,
   InternalError,
   MtdError,
@@ -31,7 +31,7 @@ import shared.models.errors.{
   RuleTaxYearNotEndedError,
   TaxYearFormatError
 }
-import shared.services.{BaseService, ServiceOutcome}
+import api.services.{BaseService, ServiceOutcome}
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}

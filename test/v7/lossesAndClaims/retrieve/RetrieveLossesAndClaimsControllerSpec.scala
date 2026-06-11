@@ -18,10 +18,10 @@ package v7.lossesAndClaims.retrieve
 
 import play.api.Configuration
 import play.api.mvc.Result
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.domain.{BusinessId, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.domain.{BusinessId, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
 import v7.lossesAndClaims.retrieve.fixtures.RetrieveLossesAndClaimsFixtures.{mtdResponseBodyJson, responseBodyModel}
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 

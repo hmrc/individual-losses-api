@@ -23,11 +23,11 @@ import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
-import shared.models.domain.TaxYear
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import shared.support.IntegrationBaseSpec
+import api.models.domain.TaxYear
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.requestBodyJson
 
 import scala.math.Ordering.Implicits.infixOrderingOps

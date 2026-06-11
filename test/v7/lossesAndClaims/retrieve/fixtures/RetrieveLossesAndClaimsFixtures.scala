@@ -17,7 +17,7 @@
 package v7.lossesAndClaims.retrieve.fixtures
 
 import play.api.libs.json.{JsValue, Json}
-import shared.models.domain.Timestamp
+import api.models.domain.Timestamp
 import v7.lossesAndClaims.commons.PreferenceOrderEnum.`carry-back`
 import v7.lossesAndClaims.retrieve.model.response.*
 

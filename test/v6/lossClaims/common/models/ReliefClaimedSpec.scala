@@ -16,8 +16,8 @@
 
 package v6.lossClaims.common.models
 
-import shared.utils.UnitSpec
-import shared.utils.enums.EnumJsonSpecSupport
+import api.utils.UnitSpec
+import api.utils.enums.EnumJsonSpecSupport
 import v6.lossClaims.common.models.ReliefClaimed.*
 
 class ReliefClaimedSpec extends UnitSpec with EnumJsonSpecSupport {

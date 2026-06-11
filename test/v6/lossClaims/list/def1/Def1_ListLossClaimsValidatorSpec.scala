@@ -17,10 +17,10 @@
 package v6.lossClaims.list.def1
 
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
-import shared.controllers.validators.Validator
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.controllers.validators.Validator
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.list.ListLossClaimsValidatorFactory
 import v6.lossClaims.list.def1.request.Def1_ListLossClaimsRequestData

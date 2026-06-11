@@ -21,10 +21,10 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
 import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYearMinMax}
-import shared.models.domain.TaxYear
-import shared.models.errors.*
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYearMinMax}
+import api.models.domain.TaxYear
+import api.models.errors.*
 import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.amendOrder.def1.model.request.{Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}
 import v6.lossClaims.amendOrder.model.request.AmendLossClaimsOrderRequestData

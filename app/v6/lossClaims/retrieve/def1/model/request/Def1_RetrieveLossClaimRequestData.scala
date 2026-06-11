@@ -16,7 +16,7 @@
 
 package v6.lossClaims.retrieve.def1.model.request
 
-import shared.models.domain.Nino
+import api.models.domain.Nino
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.retrieve.RetrieveLossClaimSchema
 import v6.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData

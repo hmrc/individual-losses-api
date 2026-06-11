@@ -16,7 +16,7 @@
 
 package v7.lossesAndClaims.createAmend.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
 case class CreateAmendLossesAndClaimsRequestData(nino: Nino,
                                                  businessId: BusinessId,

@@ -16,7 +16,7 @@
 
 package v6.bfLosses.retrieve
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import v6.bfLosses.retrieve.RetrieveBFLossSchema.Def1
 import v6.bfLosses.retrieve.def1.Def1_RetrieveBFLossValidator
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData

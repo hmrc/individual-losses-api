@@ -16,10 +16,10 @@
 
 package v7.lossesAndClaims.retrieve
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v7.lossesAndClaims.retrieve.fixtures.RetrieveLossesAndClaimsFixtures.responseBodyModel
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 import v7.lossesAndClaims.retrieve.model.response.RetrieveLossesAndClaimsResponse

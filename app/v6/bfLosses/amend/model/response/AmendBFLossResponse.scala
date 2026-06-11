@@ -17,7 +17,7 @@
 package v6.bfLosses.amend.model.response
 
 import play.api.libs.json.*
-import shared.utils.JsonWritesUtil
+import api.utils.JsonWritesUtil
 import v6.bfLosses.amend.def1.model.response.Def1_AmendBFLossResponse
 
 trait AmendBFLossResponse

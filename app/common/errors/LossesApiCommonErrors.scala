@@ -17,7 +17,7 @@
 package common.errors
 
 import play.api.http.Status.BAD_REQUEST
-import shared.models.errors.MtdError
+import api.models.errors.MtdError
 
 // MtdError types that are common to SA Accounts API.
 

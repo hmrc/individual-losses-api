@@ -18,7 +18,7 @@ package auth
 
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import shared.auth.AuthSupportingAgentsAllowedISpec
+import api.auth.AuthSupportingAgentsAllowedISpec
 import v7.lossesAndClaims.createAmend.fixtures.CreateAmendLossesAndClaimsFixtures.requestBodyJson
 
 class IndividualLossesApiAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {

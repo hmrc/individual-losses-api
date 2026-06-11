@@ -19,10 +19,10 @@ package v7.lossesAndClaims.createAmend
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import play.api.libs.json.*
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.*
-import shared.models.domain.TaxYear
-import shared.models.errors.*
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.domain.TaxYear
+import api.models.errors.*
 import v7.lossesAndClaims.createAmend.CreateAmendLossesAndClaimsRulesValidator.validateBusinessRules
 import v7.lossesAndClaims.createAmend.request.{CreateAmendLossesAndClaimsRequestBody, CreateAmendLossesAndClaimsRequestData}
 import v7.lossesAndClaims.minimumTaxYear

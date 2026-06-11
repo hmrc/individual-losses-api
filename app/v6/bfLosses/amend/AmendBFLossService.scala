@@ -18,9 +18,9 @@ package v6.bfLosses.amend
 
 import cats.implicits.*
 import common.errors.{LossIdFormatError, RuleLossAmountNotChanged, RuleOutsideAmendmentWindow}
-import shared.controllers.RequestContext
-import shared.models.errors.*
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.services.{BaseService, ServiceOutcome}
 import v6.bfLosses.amend
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 import v6.bfLosses.amend.model.response.AmendBFLossResponse

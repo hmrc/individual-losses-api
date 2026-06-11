@@ -16,7 +16,7 @@
 
 package v6.lossClaims.list
 
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 import v6.lossClaims.list.def1.Def1_ListLossClaimsValidator
 
 class ListLossClaimsValidatorFactorySpec extends UnitSpec {

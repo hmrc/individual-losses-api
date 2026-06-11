@@ -16,7 +16,7 @@
 
 package v6.bfLosses.create.def1.model.request
 
-import shared.models.domain.TaxYear
+import api.models.domain.TaxYear
 import play.api.libs.json.*
 import v6.bfLosses.common.domain.TypeOfLoss
 import v6.bfLosses.common.domain.TypeOfLoss.*

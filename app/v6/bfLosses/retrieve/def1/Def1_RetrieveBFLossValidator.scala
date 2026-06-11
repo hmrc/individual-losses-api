@@ -16,9 +16,9 @@
 
 package v6.bfLosses.retrieve.def1
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.ResolveNino
-import shared.models.errors.MtdError
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.ResolveNino
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import v6.bfLosses.common.resolvers.ResolveBFLossId

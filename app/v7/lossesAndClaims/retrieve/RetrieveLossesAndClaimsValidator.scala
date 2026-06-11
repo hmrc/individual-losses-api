@@ -19,10 +19,10 @@ package v7.lossesAndClaims.retrieve
 import cats.data.Validated
 import cats.data.Validated.*
 import cats.implicits.*
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import api.models.domain.TaxYear
+import api.models.errors.MtdError
 import v7.lossesAndClaims.minimumTaxYear
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 

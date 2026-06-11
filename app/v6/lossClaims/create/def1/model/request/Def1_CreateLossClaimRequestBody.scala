@@ -17,7 +17,7 @@
 package v6.lossClaims.create.def1.model.request
 
 import play.api.libs.json.*
-import shared.models.domain.TaxYear
+import api.models.domain.TaxYear
 import v6.lossClaims.common.models.TypeOfLoss.{`foreign-property`, `self-employment`, `uk-property`}
 import v6.lossClaims.common.models.{TypeOfClaim, TypeOfLoss}
 import v6.lossClaims.create.model.request.CreateLossClaimRequestBody

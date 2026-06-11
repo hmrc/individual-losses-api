@@ -17,10 +17,10 @@
 package v6.lossClaims.retrieve.def1
 
 import common.errors.ClaimIdFormatError
-import shared.controllers.validators.Validator
-import shared.models.domain.Nino
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.controllers.validators.Validator
+import api.models.domain.Nino
+import api.models.errors.*
+import api.utils.UnitSpec
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.retrieve.RetrieveLossClaimValidatorFactory
 import v6.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData

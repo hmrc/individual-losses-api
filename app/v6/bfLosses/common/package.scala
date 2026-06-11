@@ -16,7 +16,7 @@
 
 package v6.bfLosses
 
-import shared.models.domain.TaxYear
+import api.models.domain.TaxYear
 
 package object common {
   val minimumTaxYear: TaxYear = TaxYear.ending(2019)

@@ -16,7 +16,7 @@
 
 package v6.bfLosses.delete.def1.model.request
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.DeleteBFLossSchema
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData

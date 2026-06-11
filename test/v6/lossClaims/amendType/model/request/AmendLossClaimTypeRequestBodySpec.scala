@@ -18,8 +18,8 @@ package v6.lossClaims.amendType.model.request
 
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockSharedAppConfig
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.utils.UnitSpec
 import v6.lossClaims.amendType.def1.model.request.Def1_AmendLossClaimTypeRequestBody
 import v6.lossClaims.common.models.TypeOfClaim
 import v6.lossClaims.common.models.TypeOfClaim.*

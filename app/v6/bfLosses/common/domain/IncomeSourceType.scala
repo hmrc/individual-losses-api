@@ -17,7 +17,7 @@
 package v6.bfLosses.common.domain
 
 import play.api.libs.json.*
-import shared.utils.enums.Enums
+import api.utils.enums.Enums
 
 enum IncomeSourceType(val toTypeOfLoss: TypeOfLoss) {
   case `01` extends IncomeSourceType(TypeOfLoss.`self-employment`)

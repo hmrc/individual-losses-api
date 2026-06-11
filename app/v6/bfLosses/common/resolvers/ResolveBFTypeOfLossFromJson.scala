@@ -20,8 +20,8 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.data.*
 import common.errors.TypeOfLossFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import shared.controllers.validators.resolvers.ResolverSupport
-import shared.models.errors.MtdError
+import api.controllers.validators.resolvers.ResolverSupport
+import api.models.errors.MtdError
 import v6.bfLosses.common.domain.TypeOfLoss
 
 object ResolveBFTypeOfLossFromJson extends ResolverSupport {

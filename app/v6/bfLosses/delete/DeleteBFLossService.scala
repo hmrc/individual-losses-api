@@ -18,9 +18,9 @@ package v6.bfLosses.delete
 
 import cats.implicits.*
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
-import shared.controllers.RequestContext
-import shared.models.errors.*
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.services.{BaseService, ServiceOutcome}
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import javax.inject.Inject

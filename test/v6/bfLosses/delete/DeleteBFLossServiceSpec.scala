@@ -17,10 +17,10 @@
 package v6.bfLosses.delete
 
 import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData

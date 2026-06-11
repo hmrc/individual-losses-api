@@ -22,8 +22,8 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
-import shared.models.errors.MtdError
+import api.controllers.validators.Validator
+import api.models.errors.MtdError
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData
 
 trait MockAmendBFLossValidatorFactory extends TestSuite with MockFactory {

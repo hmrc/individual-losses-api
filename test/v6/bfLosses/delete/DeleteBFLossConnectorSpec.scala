@@ -16,9 +16,9 @@
 
 package v6.bfLosses.delete
 
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.delete.def1.model.request.Def1_DeleteBFLossRequestData

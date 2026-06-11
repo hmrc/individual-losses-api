@@ -16,9 +16,9 @@
 
 package v6.bfLosses.retrieve
 
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, Timestamp}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{Nino, Timestamp}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v6.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v6.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData

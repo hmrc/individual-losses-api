@@ -16,7 +16,7 @@
 
 package v6.bfLosses.create.model.request
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 import v6.bfLosses.create.CreateBFLossSchema
 
 trait CreateBFLossRequestData {

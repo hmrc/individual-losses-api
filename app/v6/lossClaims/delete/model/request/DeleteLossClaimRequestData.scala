@@ -16,7 +16,7 @@
 
 package v6.lossClaims.delete.model.request
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.delete.DeleteLossClaimSchema
 

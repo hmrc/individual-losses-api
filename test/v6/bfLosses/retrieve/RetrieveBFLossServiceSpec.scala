@@ -17,10 +17,10 @@
 package v6.bfLosses.retrieve
 
 import common.errors.LossIdFormatError
-import shared.models.domain.{Nino, Timestamp}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
+import api.models.domain.{Nino, Timestamp}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v6.bfLosses.common.domain.{LossId, TypeOfLoss}
 import v6.bfLosses.retrieve
 import v6.bfLosses.retrieve.def1.model.request.Def1_RetrieveBFLossRequestData

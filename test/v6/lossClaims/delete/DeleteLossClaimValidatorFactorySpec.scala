@@ -16,8 +16,8 @@
 
 package v6.lossClaims.delete
 
-import shared.controllers.validators.Validator
-import shared.utils.UnitSpec
+import api.controllers.validators.Validator
+import api.utils.UnitSpec
 import v6.lossClaims.delete.def1.Def1_DeleteLossClaimValidator
 import v6.lossClaims.delete.model.request.DeleteLossClaimRequestData
 

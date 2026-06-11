@@ -16,8 +16,8 @@
 
 package v6.bfLosses.list
 
-import shared.models.utils.JsonErrorValidators
-import shared.utils.UnitSpec
+import api.models.utils.JsonErrorValidators
+import api.utils.UnitSpec
 import v6.bfLosses.list.def1.Def1_ListBFLossesValidator
 
 class ListBFLossesValidatorFactorySpec extends UnitSpec with JsonErrorValidators {

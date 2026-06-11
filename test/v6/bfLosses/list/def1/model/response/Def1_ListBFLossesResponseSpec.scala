@@ -17,7 +17,7 @@
 package v6.bfLosses.list.def1.model.response
 
 import play.api.libs.json.Json
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 import v6.bfLosses.common.domain.TypeOfLoss
 
 class Def1_ListBFLossesResponseSpec extends UnitSpec {

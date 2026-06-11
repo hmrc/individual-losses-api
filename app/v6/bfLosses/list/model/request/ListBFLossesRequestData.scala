@@ -16,7 +16,7 @@
 
 package v6.bfLosses.list.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v6.bfLosses.common.domain.IncomeSourceType
 import v6.bfLosses.list.ListBFLossesSchema
 

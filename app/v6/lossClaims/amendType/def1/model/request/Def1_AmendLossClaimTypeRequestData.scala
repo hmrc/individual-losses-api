@@ -16,7 +16,7 @@
 
 package v6.lossClaims.amendType.def1.model.request
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 import v6.lossClaims.amendType.AmendLossClaimTypeSchema
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData
 import v6.lossClaims.common.models.ClaimId

@@ -20,10 +20,10 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
 import common.errors.TypeOfLossFormatError
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
-import shared.models.domain.TaxYear
-import shared.models.errors.*
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
+import api.models.domain.TaxYear
+import api.models.errors.*
 import v6.bfLosses.common.domain.TypeOfLoss.*
 import v6.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}

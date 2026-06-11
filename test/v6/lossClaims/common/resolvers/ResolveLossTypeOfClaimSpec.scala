@@ -18,7 +18,7 @@ package v6.lossClaims.common.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import common.errors.TypeOfClaimFormatError
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 import v6.lossClaims.common.models.TypeOfClaim
 
 class ResolveLossTypeOfClaimSpec extends UnitSpec {

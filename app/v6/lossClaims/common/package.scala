@@ -16,7 +16,7 @@
 
 package v6.lossClaims
 
-import shared.models.domain.TaxYear
+import api.models.domain.TaxYear
 
 package object common {
   val minimumTaxYear: TaxYear = TaxYear.ending(2020)

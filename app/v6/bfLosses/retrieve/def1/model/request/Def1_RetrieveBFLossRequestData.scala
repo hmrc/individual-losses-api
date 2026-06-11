@@ -16,7 +16,7 @@
 
 package v6.bfLosses.retrieve.def1.model.request
 
-import shared.models.domain.Nino
+import api.models.domain.Nino
 import v6.bfLosses.common.domain.LossId
 import v6.bfLosses.retrieve.RetrieveBFLossSchema
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData

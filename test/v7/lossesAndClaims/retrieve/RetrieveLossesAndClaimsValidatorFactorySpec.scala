@@ -16,9 +16,9 @@
 
 package v7.lossesAndClaims.retrieve
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 
 class RetrieveLossesAndClaimsValidatorFactorySpec extends UnitSpec {

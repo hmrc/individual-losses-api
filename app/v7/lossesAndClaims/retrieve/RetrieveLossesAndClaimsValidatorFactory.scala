@@ -16,7 +16,7 @@
 
 package v7.lossesAndClaims.retrieve
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import v7.lossesAndClaims.retrieve.model.request.RetrieveLossesAndClaimsRequestData
 
 import javax.inject.Singleton

@@ -19,8 +19,8 @@ package config
 import com.google.inject.AbstractModule
 import definition.LossesApiDefinitionFactory
 import routing.LossesVersionRoutingMap
-import shared.definition.ApiDefinitionFactory
-import shared.routing.VersionRoutingMap
+import api.definition.ApiDefinitionFactory
+import api.routing.VersionRoutingMap
 
 class LossesPlayModule extends AbstractModule {
 

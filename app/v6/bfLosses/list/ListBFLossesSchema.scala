@@ -17,7 +17,7 @@
 package v6.bfLosses.list
 
 import play.api.libs.json.Reads
-import shared.schema.DownstreamReadable
+import api.schema.DownstreamReadable
 import v6.bfLosses.list.def1.model.response.Def1_ListBFLossesResponse
 import v6.bfLosses.list.model.response.ListBFLossesResponse
 

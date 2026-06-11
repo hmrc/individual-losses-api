@@ -16,8 +16,8 @@
 
 package v7.lossesAndClaims.commons
 
-import shared.utils.UnitSpec
-import shared.utils.enums.EnumJsonSpecSupport
+import api.utils.UnitSpec
+import api.utils.enums.EnumJsonSpecSupport
 import v7.lossesAndClaims.commons.PreferenceOrderEnum.{`carry-back`, `carry-sideways`}
 
 class PreferenceOrderEnumSpec extends UnitSpec with EnumJsonSpecSupport {

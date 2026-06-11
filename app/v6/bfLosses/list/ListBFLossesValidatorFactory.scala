@@ -16,7 +16,7 @@
 
 package v6.bfLosses.list
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import v6.bfLosses.list.ListBFLossesSchema.Def1
 import v6.bfLosses.list.def1.Def1_ListBFLossesValidator
 import v6.bfLosses.list.model.request.ListBFLossesRequestData
