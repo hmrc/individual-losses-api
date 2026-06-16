@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import api.config.{MockAppConfig, AppConfig}
+import api.config.{AppConfig, MockAppConfig}
 import api.mocks.MockHttpClient
 import api.models.outcomes.ResponseWrapper
 import api.utils.UnitSpec

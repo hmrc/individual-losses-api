@@ -18,7 +18,7 @@ package api.controllers
 
 import api.config.rewriters.*
 import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import api.config.{MockAppConfig, RealAppConfig, AppConfig}
+import api.config.{AppConfig, MockAppConfig, RealAppConfig}
 import api.definition.*
 import api.routing.{Version, Versions}
 import com.typesafe.config.ConfigFactory

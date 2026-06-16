@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import api.config.{BasicAuthDownstreamConfig, ConfigFeatureSwitches, DownstreamConfig, AppConfig}
+import api.config.{AppConfig, BasicAuthDownstreamConfig, ConfigFeatureSwitches, DownstreamConfig}
 import com.google.common.base.Charsets
 
 import java.util.Base64

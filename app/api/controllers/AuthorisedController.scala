@@ -16,7 +16,7 @@
 
 package api.controllers
 
-import api.config.{ConfigFeatureSwitches, AppConfig}
+import api.config.{AppConfig, ConfigFeatureSwitches}
 import api.models.auth.UserDetails
 import api.models.errors.MtdError
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}

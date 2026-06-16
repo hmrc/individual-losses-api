@@ -16,7 +16,7 @@
 
 package api.connectors
 
-import api.config.{DownstreamConfig, AppConfig}
+import api.config.{AppConfig, DownstreamConfig}
 
 case class DownstreamUri[+Resp](
     path: String,

@@ -17,7 +17,7 @@
 package api.config.rewriters
 
 import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import api.config.{ConfigFeatureSwitches, AppConfig}
+import api.config.{AppConfig, ConfigFeatureSwitches}
 import com.github.jknack.handlebars.Options
 
 import javax.inject.{Inject, Singleton}

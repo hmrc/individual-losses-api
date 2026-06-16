@@ -16,7 +16,7 @@
 
 package config
 
-import api.config.{FeatureSwitches, AppConfig}
+import api.config.{AppConfig, FeatureSwitches}
 import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
