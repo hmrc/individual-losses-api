@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,9 +59,6 @@ trait MockAppConfig extends TestSuite with MockFactory {
 
     def endpointAllowsSupportingAgents(endpointName: String): CallHandler[Boolean] =
       (mockAppConfig.endpointAllowsSupportingAgents(_: String)).expects(endpointName)
-
-    def allowRequestCannotBeFulfilledHeader(version: Version): CallHandler[Boolean] =
-      (mockAppConfig.allowRequestCannotBeFulfilledHeader: Version => Boolean).expects(version)
 
   }
 
