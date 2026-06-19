@@ -51,4 +51,5 @@ class DocumentationController @Inject() (
       }
       assets.rewriteableAt(path, filename, rewriters)(request)
     }
+
 }
