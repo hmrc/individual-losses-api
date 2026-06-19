@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class DocumentationController @Inject() (
     Ok(Json.toJson(selfAssessmentApiDefinition.definition))
   }
 
-  def asset(version: String, filename: String): Action[AnyContent] = {
+  def asset(version: String, filename: String): Action[AnyContent] =
     CORSActionBuilder(configuration).async { implicit request =>
       val path = s"/public/api/conf/$version"
       val rewriters = docRewriters.rewriteables.flatMap {
@@ -51,6 +51,4 @@ class DocumentationController @Inject() (
       }
       assets.rewriteableAt(path, filename, rewriters)(request)
     }
-  }
-
 }

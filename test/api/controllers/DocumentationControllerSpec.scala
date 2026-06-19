@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,6 +177,8 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     MockedAppConfig.featureSwitchConfig returns Configuration("openApiFeatureTest.enabled" -> featureEnabled)
 
+    private implicit val materializer: Materializer = NoMaterializer
+
     private val apiFactory = new ApiDefinitionFactory {
       protected val appConfig: AppConfig = mockAppConfig
 
@@ -214,8 +216,6 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
     )
 
     private val assets                              = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])
-    implicit private val materializer: Materializer = NoMaterializer
-    protected def controller                        = new DocumentationController(apiFactory, docRewriters, assets, config, cc)
+    protected def controller = new DocumentationController(apiFactory, docRewriters, assets, config, cc)
   }
-
 }
