@@ -215,7 +215,8 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
       new OasFeatureRewriter()(mockAppConfig)
     )
 
-    private val assets = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])
+    private val assets       = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])
     protected def controller = new DocumentationController(apiFactory, docRewriters, assets, config, cc)
   }
+
 }
