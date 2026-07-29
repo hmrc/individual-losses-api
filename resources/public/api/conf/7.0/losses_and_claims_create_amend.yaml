@@ -3,7 +3,7 @@ description: |
   This endpoint allows a developer to submit or amend a claim or a brought-forward-loss for a specified individual and business for a given tax year.  A National Insurance number, business ID and tax year are required.
   **This endpoint can only be used after the tax year has ended.**
 
-  Note: It is essential that customers submit carry back losses before the final declaration when tax liability adjustments are submitted using the Create or Amend Tax Liability Adjustments endpoint in the Individuals Tax Liability Adjustments API
+  **Note:** It is essential that customers submit carry back losses before the final declaration when tax liability adjustments are submitted using the Create or Amend Tax Liability Adjustments endpoint in the [Individuals Tax Liability Adjustments API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individuals-tax-liability-adjustments-api).
   
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
