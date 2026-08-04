@@ -29,7 +29,15 @@ object APIStatus {
   val parser: PartialFunction[String, APIStatus] = Enums.parser(values)
 }
 
-case class APIVersion(version: Version, status: APIStatus, endpointsEnabled: Boolean)
+enum APIAccessType {
+  case CONTROLLED, PUBLIC
+}
+
+object APIAccessType {
+  given Format[APIAccessType] = Enums.format(values)
+}
+
+case class APIVersion(version: Version, status: APIStatus, access: APIAccessType, endpointsEnabled: Boolean)
 
 object APIVersion {
   implicit val formatAPIVersion: OFormat[APIVersion] = Json.format[APIVersion]

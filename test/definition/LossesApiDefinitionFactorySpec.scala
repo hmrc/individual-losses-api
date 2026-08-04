@@ -34,6 +34,7 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with M
           MockedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
           MockedAppConfig.apiStatus(version) returns "BETA"
           MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+          MockedAppConfig.controlledAccessEnabled returns false
           MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
         }
 
@@ -50,17 +51,55 @@ class LossesApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with M
                 APIVersion(
                   Version6,
                   status = BETA,
+                  access = APIAccessType.PUBLIC,
                   endpointsEnabled = true
                 ),
                 APIVersion(
                   Version7,
                   status = BETA,
+                  access = APIAccessType.PUBLIC,
                   endpointsEnabled = true
                 )
               ),
               requiresTrust = None
             )
           )
+      }
+    }
+  }
+
+  "set the access level" when {
+    "the controlled access flag is enabled" should {
+      "to be CONTROLLED" in {
+
+        List(Version6, Version7).foreach { version =>
+          MockedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
+          MockedAppConfig.apiStatus(version) returns "BETA"
+          MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+          MockedAppConfig.controlledAccessEnabled returns true
+          MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
+        }
+
+        val apiDefinitionFactory = new LossesApiDefinitionFactory(mockAppConfig)
+
+        apiDefinitionFactory.definition.api.versions.head.access shouldBe APIAccessType.CONTROLLED
+      }
+    }
+
+    "the controlled access flag is disabled" should {
+      "return PUBLIC" in {
+
+        List(Version6, Version7).foreach { version =>
+          MockedAppConfig.apiGatewayContext.anyNumberOfTimes() returns "individuals/losses"
+          MockedAppConfig.apiStatus(version) returns "BETA"
+          MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+          MockedAppConfig.controlledAccessEnabled returns false
+          MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
+        }
+
+        val apiDefinitionFactory = new LossesApiDefinitionFactory(mockAppConfig)
+
+        apiDefinitionFactory.definition.api.versions.head.access shouldBe APIAccessType.PUBLIC
       }
     }
   }

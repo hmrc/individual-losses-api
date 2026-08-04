@@ -16,19 +16,21 @@
 
 package api.definition
 
+import api.definition.APIAccessType.PUBLIC
 import api.routing.Version3
 import api.utils.UnitSpec
 import play.api.libs.json.Json
 
 class ApiDefinitionSpec extends UnitSpec {
 
-  private val apiVersion: APIVersion       = APIVersion(Version3, APIStatus.ALPHA, endpointsEnabled = true)
+  private val apiVersion: APIVersion       = APIVersion(Version3, APIStatus.ALPHA, PUBLIC, endpointsEnabled = true)
   private val apiDefinition: APIDefinition = APIDefinition("b", "c", "d", List("category"), List(apiVersion), Some(false))
 
   private val apiVersionJson = Json.parse("""
       {
         "version": "3.0",
         "status": "ALPHA",
+        "access": "PUBLIC",
         "endpointsEnabled": true
       }
     """)
@@ -43,6 +45,7 @@ class ApiDefinitionSpec extends UnitSpec {
           {
             "version": "3.0",
             "status": "ALPHA",
+            "access": "PUBLIC",
             "endpointsEnabled": true
           }
         ],
@@ -61,6 +64,7 @@ class ApiDefinitionSpec extends UnitSpec {
             {
               "version": "3.0",
               "status": "ALPHA",
+              "access": "PUBLIC",
               "endpointsEnabled": true
             }
           ],
