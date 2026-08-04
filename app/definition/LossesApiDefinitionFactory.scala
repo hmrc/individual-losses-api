@@ -18,6 +18,7 @@ package definition
 
 import api.config.AppConfig
 import api.definition.*
+import api.definition.APIAccessType.{CONTROLLED, PUBLIC}
 import api.routing.{Version6, Version7}
 
 import javax.inject.{Inject, Singleton}
@@ -36,11 +37,13 @@ class LossesApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) 
           APIVersion(
             version = Version6,
             status = buildAPIStatus(Version6),
+            access = if (appConfig.controlledAccessEnabled) CONTROLLED else PUBLIC,
             endpointsEnabled = appConfig.endpointsEnabled(version = Version6)
           ),
           APIVersion(
             version = Version7,
             status = buildAPIStatus(Version7),
+            access = if (appConfig.controlledAccessEnabled) CONTROLLED else PUBLIC,
             endpointsEnabled = appConfig.endpointsEnabled(version = Version7)
           )
         ),

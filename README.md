@@ -25,7 +25,7 @@ Run the microservice from the console using: `sbt run` (starts on port 9779 by d
 
 Start the service manager profile: 
 ```bash
-sm2 --start MTDFB_LOSSES
+sm2 -start MTDFB_LOSSES
 ```
 
 ## Run Tests
@@ -72,4 +72,4 @@ the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation
 ## License
 
 This code is open source software licensed under
-the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
+the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html)

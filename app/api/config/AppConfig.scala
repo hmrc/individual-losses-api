@@ -52,6 +52,8 @@ class AppConfig @Inject() (val config: ServicesConfig, protected[config] val con
 
   def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
 
+  def controlledAccessEnabled: Boolean = config.getBoolean("api.controlled-access.enabled")
+
   /** Like endpointsEnabled, but will return false if version doesn't exist.
     */
   def safeEndpointsEnabled(version: String): Boolean =
