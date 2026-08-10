@@ -1,3 +1,5 @@
+> HMRC is no longer accepting production credential access requests for new 2026–27 quarterly update products, as the market window for these products has now closed.
+
 Use the Individual Losses API to submit, edit and retrieve information about a customer's brought forward losses for their self employment or property business that happened before signing up for Making Tax Digital for Income Tax. It can also be used to make loss claims.
 
 This API is related to the following customer journey:
