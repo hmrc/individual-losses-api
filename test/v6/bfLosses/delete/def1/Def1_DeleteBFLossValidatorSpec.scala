@@ -85,7 +85,7 @@ class Def1_DeleteBFLossValidatorSpec extends UnitSpec {
           Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
       }
 
-      "passed a taxYear before the maximum supported" in {
+      "passed a taxYear after the maximum supported" in {
         validator(validNino, validLossId, "2026-27").validateAndWrapResult() shouldBe
           Left(ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError))
       }

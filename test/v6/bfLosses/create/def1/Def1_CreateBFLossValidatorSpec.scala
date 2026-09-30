@@ -140,11 +140,20 @@ class Def1_CreateBFLossValidatorSpec extends UnitSpec {
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "given an unsupported tax year" in new Test {
+      "given a taxYear below the earliest supported tax year" in new Test {
         val result: Either[ErrorWrapper, CreateBFLossRequestData] =
           validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "2015-16")).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError.withPath("/taxYearBroughtForwardFrom")))
+      }
+    }
+
+    "return RuleTaxYearForVersionNotSupportedError" when {
+      "given a taxYear above the latest supported tax year" in new Test {
+        val result: Either[ErrorWrapper, CreateBFLossRequestData] =
+          validator(validNino, validTaxYear, requestBodyJson(taxYearBroughtForwardFrom = "2026-27")).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError.withPath("/taxYearBroughtForwardFrom")))
       }
     }
 

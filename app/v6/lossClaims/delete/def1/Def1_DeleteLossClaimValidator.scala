@@ -17,7 +17,7 @@
 package v6.lossClaims.delete.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinMax}
+import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveNino}
 import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
@@ -29,8 +29,9 @@ import v6.lossClaims.delete.model.request.DeleteLossClaimRequestData
 
 class Def1_DeleteLossClaimValidator(nino: String, claimId: String, taxYearClaimedFor: String) extends Validator[DeleteLossClaimRequestData] {
 
-  private val resolveTaxYearClaimedFor = ResolveTaxYearMinMax(
-    minMax = (minimumTaxYear, maximumTaxYear),
+  private val resolveTaxYearClaimedFor = ResolveDetailedTaxYear(
+    minimumTaxYear = minimumTaxYear,
+    maximumTaxYear = Some(maximumTaxYear),
     minError = RuleTaxYearNotSupportedError,
     maxError = RuleTaxYearForVersionNotSupportedError,
     formatError = TaxYearClaimedForFormatError

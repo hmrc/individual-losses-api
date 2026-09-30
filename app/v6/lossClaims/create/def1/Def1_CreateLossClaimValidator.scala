@@ -17,7 +17,7 @@
 package v6.lossClaims.create.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveJsonObject, ResolveNino, ResolveTaxYearMinMax}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveJsonObject, ResolveNino}
 import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
@@ -52,8 +52,9 @@ class Def1_CreateLossClaimValidator(nino: String, body: JsValue) extends Validat
     )
 
   private def validateParsedData(parsed: Def1_CreateLossClaimRequestData): Validated[Seq[MtdError], Def1_CreateLossClaimRequestData] = {
-    val resolveTaxYear = ResolveTaxYearMinMax(
-      (minimumTaxYear, maximumTaxYear),
+    val resolveTaxYear = ResolveDetailedTaxYear(
+      minimumTaxYear = minimumTaxYear,
+      maximumTaxYear = Some(maximumTaxYear),
       minError = RuleTaxYearNotSupportedError.withPath("/taxYearClaimedFor"),
       maxError = RuleTaxYearForVersionNotSupportedError.withPath("/taxYearClaimedFor"),
       formatError = TaxYearClaimedForFormatError.withPath("/taxYearClaimedFor"),

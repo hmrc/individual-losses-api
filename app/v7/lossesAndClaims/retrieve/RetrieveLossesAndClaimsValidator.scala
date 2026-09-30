@@ -17,7 +17,7 @@
 package v7.lossesAndClaims.retrieve
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveNino}
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
@@ -31,7 +31,7 @@ class RetrieveLossesAndClaimsValidator(nino: String, businessId: String, taxYear
   def validate: Validated[Seq[MtdError], RetrieveLossesAndClaimsRequestData] = (
     ResolveNino(nino),
     ResolveBusinessId(businessId),
-    ResolveTaxYearMinimum(minimumTaxYear)(taxYear)
+    ResolveDetailedTaxYear(minimumTaxYear).apply(taxYear)
   ).mapN(RetrieveLossesAndClaimsRequestData.apply)
 
 }

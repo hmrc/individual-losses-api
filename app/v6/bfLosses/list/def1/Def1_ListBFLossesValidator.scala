@@ -17,7 +17,7 @@
 package v6.bfLosses.list.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveNino, ResolverSupport}
 import api.models.domain.TaxYear
 import api.models.errors.*
 import cats.data.Validated
@@ -37,8 +37,9 @@ class Def1_ListBFLossesValidator(nino: String, taxYearBroughtForwardFrom: String
     extends Validator[ListBFLossesRequestData]
     with ResolverSupport {
 
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    (minimumTaxYear, maximumTaxYear),
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = minimumTaxYear,
+    maximumTaxYear = Some(maximumTaxYear),
     minError = RuleTaxYearNotSupportedError,
     maxError = RuleTaxYearForVersionNotSupportedError
   )

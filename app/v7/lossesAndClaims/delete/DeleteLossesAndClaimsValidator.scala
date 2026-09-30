@@ -17,7 +17,7 @@
 package v7.lossesAndClaims.delete
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveNino}
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
@@ -31,7 +31,7 @@ class DeleteLossesAndClaimsValidator(nino: String, businessId: String, taxYear: 
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
-      ResolveTaxYearMinimum(minimumTaxYear)(taxYear)
+      ResolveDetailedTaxYear(minimumTaxYear).apply(taxYear)
     ).mapN(DeleteLossesAndClaimsRequestData.apply)
 
 }

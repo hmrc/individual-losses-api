@@ -32,8 +32,8 @@ class CreateAmendLossesAndClaimsValidator(nino: String, businessId: String, taxY
 
   private val resolveJson = new ResolveNonEmptyJsonObject[CreateAmendLossesAndClaimsRequestBody]()
 
-  private val resolveTaxYear = ResolveTaxYearMinimum(
-    minimumTaxYear,
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = minimumTaxYear,
     allowIncompleteTaxYear = !temporalValidationEnabled
   )
 

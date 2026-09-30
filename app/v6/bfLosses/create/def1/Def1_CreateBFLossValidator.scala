@@ -41,16 +41,17 @@ class Def1_CreateBFLossValidator @Inject() (nino: String, taxYear: String, body:
   private val resolveJson: ResolveJsonObject[Def1_CreateBFLossRequestBody] = new ResolveJsonObject[Def1_CreateBFLossRequestBody]()
   private val resolveParsedNumber: ResolveParsedNumber                     = ResolveParsedNumber()
 
-  def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
+  private def resolvedTaxYear(taxYear: String, taxYearErrorPath: Option[String] = None): Validated[Seq[MtdError], TaxYear] = {
     def withPath(error: MtdError): MtdError = taxYearErrorPath.fold(error)(error.withPath)
 
-    ResolveTaxYearMinMax(
-      (minimumTaxYear, maximumTaxYear),
+    ResolveDetailedTaxYear(
+      minimumTaxYear = minimumTaxYear,
+      maximumTaxYear = Some(maximumTaxYear),
       minError = withPath(RuleTaxYearNotSupportedError),
       maxError = withPath(RuleTaxYearForVersionNotSupportedError),
       formatError = withPath(TaxYearFormatError),
       rangeError = withPath(RuleTaxYearRangeInvalidError)
-    )(taxYear)
+    ).apply(taxYear)
   }
 
   def validate: Validated[Seq[MtdError], CreateBFLossRequestData] =
