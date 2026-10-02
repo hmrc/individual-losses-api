@@ -37,10 +37,9 @@ class Def1_AmendBFLossValidator(nino: String, lossId: String, taxYear: String, b
   private val resolveLossId = new ResolveStringPattern("^[A-Za-z0-9]{15}$".r, LossIdFormatError)
   private val resolveJson   = new ResolveNonEmptyJsonObject[Def1_AmendBFLossRequestBody]()
 
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (minimumTaxYear, maximumTaxYear)
-
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    minMaxTaxYears,
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = minimumTaxYear,
+    maximumTaxYear = Some(maximumTaxYear),
     minError = RuleTaxYearNotSupportedError,
     maxError = RuleTaxYearForVersionNotSupportedError
   )

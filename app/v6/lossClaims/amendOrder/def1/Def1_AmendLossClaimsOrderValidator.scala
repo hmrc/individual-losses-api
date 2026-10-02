@@ -17,7 +17,7 @@
 package v6.lossClaims.amendOrder.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYearMinMax}
+import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveJsonObject, ResolveNino}
 import api.models.domain.TaxYear
 import api.models.errors.*
 import cats.data.Validated
@@ -33,11 +33,11 @@ import v6.lossClaims.common.resolvers.ResolveLossTypeOfClaimFromJson
 
 class Def1_AmendLossClaimsOrderValidator(nino: String, taxYearClaimedFor: String, body: JsValue) extends Validator[AmendLossClaimsOrderRequestData] {
 
-  private val resolveJson                        = new ResolveJsonObject[Def1_AmendLossClaimsOrderRequestBody]
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (minimumTaxYear, maximumTaxYear)
+  private val resolveJson = new ResolveJsonObject[Def1_AmendLossClaimsOrderRequestBody]
 
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    minMaxTaxYears,
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = minimumTaxYear,
+    maximumTaxYear = Some(maximumTaxYear),
     minError = RuleTaxYearNotSupportedError,
     maxError = RuleTaxYearForVersionNotSupportedError,
     formatError = TaxYearClaimedForFormatError,

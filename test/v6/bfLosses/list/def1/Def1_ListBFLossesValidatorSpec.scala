@@ -151,7 +151,7 @@ class Def1_ListBFLossesValidatorSpec extends UnitSpec {
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "the tax year is too early" in {
+      "the tax year is below the earliest supported tax year" in {
         val result = validator(validNino, "2017-18", Some(validLossType), Some(validBusinessId)).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
@@ -160,7 +160,7 @@ class Def1_ListBFLossesValidatorSpec extends UnitSpec {
     }
 
     "return RuleTaxYearForVersionNotSupportedError" when {
-      "the tax year is too early" in {
+      "the tax year is above the latest supported tax year" in {
         val result = validator(validNino, "2026-27", Some(validLossType), Some(validBusinessId)).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearForVersionNotSupportedError)

@@ -17,7 +17,7 @@
 package v6.bfLosses.delete.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinMax}
+import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveNino}
 import api.models.domain.TaxYear
 import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
@@ -32,10 +32,9 @@ import javax.inject.Singleton
 @Singleton
 class Def1_DeleteBFLossValidator(nino: String, body: String, taxYear: String) extends Validator[DeleteBFLossRequestData] {
 
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (minimumTaxYear, maximumTaxYear)
-
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    minMaxTaxYears,
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = minimumTaxYear,
+    maximumTaxYear = Some(maximumTaxYear),
     minError = RuleTaxYearNotSupportedError,
     maxError = RuleTaxYearForVersionNotSupportedError
   )

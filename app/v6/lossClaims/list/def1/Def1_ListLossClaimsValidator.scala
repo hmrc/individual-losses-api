@@ -17,7 +17,7 @@
 package v6.lossClaims.list.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax, ResolverSupport}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveNino, ResolverSupport}
 import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
@@ -37,8 +37,9 @@ class Def1_ListLossClaimsValidator(nino: String,
     extends Validator[ListLossClaimsRequestData]
     with ResolverSupport {
 
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    minMax = (minimumTaxYear, maximumTaxYear),
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = minimumTaxYear,
+    maximumTaxYear = Some(maximumTaxYear),
     minError = RuleTaxYearNotSupportedError,
     maxError = RuleTaxYearForVersionNotSupportedError,
     formatError = TaxYearClaimedForFormatError
