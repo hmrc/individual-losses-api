@@ -20,7 +20,6 @@ import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.*
-import common.errors.ClaimIdFormatError
 import v6.lossClaims.retrieve.model.request.RetrieveLossClaimRequestData
 import v6.lossClaims.retrieve.model.response.RetrieveLossClaimResponse
 

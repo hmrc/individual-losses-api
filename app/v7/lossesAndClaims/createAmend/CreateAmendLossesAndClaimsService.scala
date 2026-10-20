@@ -31,7 +31,7 @@ import api.models.errors.{
 }
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.catsSyntaxEither
-import common.errors.RuleOutsideAmendmentWindow
+import api.models.errors.RuleOutsideAmendmentWindow
 import v7.lossesAndClaims.createAmend.request.CreateAmendLossesAndClaimsRequestData
 
 import javax.inject.{Inject, Singleton}

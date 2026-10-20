@@ -23,7 +23,6 @@ import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.catsSyntaxTuple4Semigroupal
-import common.errors.LossIdFormatError
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import v6.bfLosses.amend.def1.model.request.{Def1_AmendBFLossRequestBody, Def1_AmendBFLossRequestData}
 import v6.bfLosses.amend.model.request.AmendBFLossRequestData

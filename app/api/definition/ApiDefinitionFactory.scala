@@ -17,21 +17,43 @@
 package api.definition
 
 import api.config.AppConfig
-import api.routing.Version
+import api.definition.APIAccessType.{CONTROLLED, PUBLIC}
+import api.routing.{Version6, Version7}
 import api.utils.Logging
 import cats.data.Validated.Invalid
 
-trait ApiDefinitionFactory extends Logging {
+import javax.inject.{Inject, Singleton}
 
-  protected val mtdCategory = "INCOME_TAX_MTD"
+@Singleton
+class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
 
-  protected val appConfig: AppConfig
+  lazy val definition: Definition =
+    Definition(
+      api = APIDefinition(
+        name = "Individual Losses (MTD)",
+        description = "An API for providing individual losses data",
+        context = appConfig.apiGatewayContext,
+        categories = List("INCOME_TAX_MTD"),
+        versions = List(
+          APIVersion(
+            version = Version6,
+            status = buildAPIStatus(Version6),
+            access = if (appConfig.controlledAccessEnabled) CONTROLLED else PUBLIC,
+            endpointsEnabled = appConfig.endpointsEnabled(version = Version6)
+          ),
+          APIVersion(
+            version = Version7,
+            status = buildAPIStatus(Version7),
+            access = if (appConfig.controlledAccessEnabled) CONTROLLED else PUBLIC,
+            endpointsEnabled = appConfig.endpointsEnabled(version = Version7)
+          )
+        ),
+        requiresTrust = None
+      )
+    )
 
-  val definition: Definition
-
-  def buildAPIStatus(version: Version): APIStatus = {
+  protected[definition] def buildAPIStatus(version: api.routing.Version): APIStatus = {
     checkDeprecationConfigFor(version)
-
     APIStatus.parser
       .lift(appConfig.apiStatus(version))
       .getOrElse {
@@ -40,7 +62,7 @@ trait ApiDefinitionFactory extends Logging {
       }
   }
 
-  private def checkDeprecationConfigFor(version: Version): Unit =
+  private def checkDeprecationConfigFor(version: api.routing.Version): Unit =
     appConfig.deprecationFor(version) match {
       case Invalid(error) => throw new Exception(error)
       case _              => ()

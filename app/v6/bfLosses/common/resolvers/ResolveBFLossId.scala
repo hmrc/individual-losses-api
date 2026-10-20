@@ -17,10 +17,9 @@
 package v6.bfLosses.common.resolvers
 
 import api.controllers.validators.resolvers.ResolverSupport
-import api.models.errors.MtdError
+import api.models.errors.{MtdError, LossIdFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import common.errors.LossIdFormatError
 import v6.bfLosses.common.domain.LossId
 
 import scala.util.matching.Regex

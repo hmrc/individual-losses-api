@@ -22,7 +22,6 @@ import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
-import common.errors.{ClaimIdFormatError, RuleInvalidSequenceStart, RuleSequenceOrderBroken}
 import v6.lossClaims.amendOrder.def1.model.request.Def1_AmendLossClaimsOrderRequestData
 import v6.lossClaims.common.resolvers.ResolveLossClaimId
 

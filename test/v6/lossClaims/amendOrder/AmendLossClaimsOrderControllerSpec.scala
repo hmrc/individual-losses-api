@@ -16,7 +16,6 @@
 
 package v6.lossClaims.amendOrder
 
-import _root_.common.errors.RuleSequenceOrderBroken
 import api.config.Deprecation.NotDeprecated
 import api.config.MockAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}

@@ -19,14 +19,12 @@ package config
 import api.definition.ApiDefinitionFactory
 import api.routing.VersionRoutingMap
 import com.google.inject.AbstractModule
-import definition.LossesApiDefinitionFactory
-import routing.LossesVersionRoutingMap
 
 class LossesPlayModule extends AbstractModule {
 
   override def configure(): Unit = {
-    bind(classOf[ApiDefinitionFactory]).to(classOf[LossesApiDefinitionFactory]).asEagerSingleton()
-    bind(classOf[VersionRoutingMap]).to(classOf[LossesVersionRoutingMap]).asEagerSingleton()
+    bind(classOf[ApiDefinitionFactory]).asEagerSingleton()
+    bind(classOf[VersionRoutingMap]).asEagerSingleton()
   }
 
 }

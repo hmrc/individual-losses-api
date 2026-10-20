@@ -26,7 +26,6 @@ import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
 import api.services.MockAuditService
 import cats.implicits.catsSyntaxValidatedId
-import common.errors.RuleDeleteAfterFinalDeclarationError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
