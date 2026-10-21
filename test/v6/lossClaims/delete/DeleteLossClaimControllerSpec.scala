@@ -25,7 +25,6 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
 import cats.implicits.catsSyntaxValidatedId
-import common.errors.ClaimIdFormatError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result

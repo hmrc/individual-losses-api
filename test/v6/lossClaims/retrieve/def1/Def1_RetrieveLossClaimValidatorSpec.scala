@@ -20,7 +20,6 @@ import api.controllers.validators.Validator
 import api.models.domain.Nino
 import api.models.errors.*
 import api.utils.UnitSpec
-import common.errors.ClaimIdFormatError
 import v6.lossClaims.common.models.ClaimId
 import v6.lossClaims.retrieve.RetrieveLossClaimValidatorFactory
 import v6.lossClaims.retrieve.def1.model.request.Def1_RetrieveLossClaimRequestData

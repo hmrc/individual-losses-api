@@ -20,7 +20,6 @@ import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.*
-import common.errors.LossIdFormatError
 import v6.bfLosses.retrieve
 import v6.bfLosses.retrieve.model.request.RetrieveBFLossRequestData
 import v6.bfLosses.retrieve.model.response.RetrieveBFLossResponse

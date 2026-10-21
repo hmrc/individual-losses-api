@@ -23,7 +23,6 @@ import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
-import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.amendOrder.def1.model.request.{Def1_AmendLossClaimsOrderRequestBody, Def1_AmendLossClaimsOrderRequestData}

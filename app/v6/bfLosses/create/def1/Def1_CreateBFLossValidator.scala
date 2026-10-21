@@ -23,7 +23,6 @@ import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple3Semigroupal
-import common.errors.TypeOfLossFormatError
 import play.api.libs.json.JsValue
 import v6.bfLosses.common.resolvers.ResolveBFTypeOfLossFromJson
 import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}

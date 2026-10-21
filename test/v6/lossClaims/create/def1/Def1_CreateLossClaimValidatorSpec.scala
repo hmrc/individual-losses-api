@@ -20,7 +20,6 @@ import api.models.domain.Nino
 import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
-import common.errors.{RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import v6.lossClaims.common.models.*
 import v6.lossClaims.create.def1.model.request.{Def1_CreateLossClaimRequestBody, Def1_CreateLossClaimRequestData}

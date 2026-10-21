@@ -23,7 +23,6 @@ import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
-import common.errors.TypeOfLossFormatError
 import v6.bfLosses.common.domain.TypeOfLoss.*
 import v6.bfLosses.common.domain.{IncomeSourceType, TypeOfLoss}
 import v6.bfLosses.common.{maximumTaxYear, minimumTaxYear}

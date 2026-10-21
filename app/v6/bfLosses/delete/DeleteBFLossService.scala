@@ -20,7 +20,6 @@ import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.*
-import common.errors.{LossIdFormatError, RuleDeleteAfterFinalDeclarationError, RuleOutsideAmendmentWindow}
 import v6.bfLosses.delete.model.request.DeleteBFLossRequestData
 
 import javax.inject.Inject

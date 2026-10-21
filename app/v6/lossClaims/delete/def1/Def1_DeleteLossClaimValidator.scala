@@ -18,10 +18,9 @@ package v6.lossClaims.delete.def1
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveNino}
-import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError}
+import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError, TaxYearClaimedForFormatError}
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
-import common.errors.TaxYearClaimedForFormatError
 import v6.lossClaims.common.resolvers.ResolveLossClaimId
 import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}
 import v6.lossClaims.delete.def1.model.request.Def1_DeleteLossClaimRequestData

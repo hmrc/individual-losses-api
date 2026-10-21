@@ -24,7 +24,6 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.routing.Version9
 import cats.implicits.catsSyntaxValidatedId
-import common.errors.TypeOfLossFormatError
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result

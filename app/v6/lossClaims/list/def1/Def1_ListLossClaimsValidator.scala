@@ -22,7 +22,6 @@ import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
-import common.errors.{TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import v6.lossClaims.common.models.TypeOfClaim
 import v6.lossClaims.common.resolvers.{ResolveLossClaimTypeOfLoss, ResolveLossTypeOfClaim}
 import v6.lossClaims.common.{maximumTaxYear, minimumTaxYear}

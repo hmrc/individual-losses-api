@@ -18,10 +18,16 @@ package v6.lossClaims.amendType.def1
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveJsonObject, ResolveNino, ResolveStringPattern}
-import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError}
+import api.models.errors.{
+  MtdError,
+  RuleTaxYearForVersionNotSupportedError,
+  RuleTaxYearNotSupportedError,
+  ClaimIdFormatError,
+  TaxYearClaimedForFormatError,
+  TypeOfClaimFormatError
+}
 import cats.data.Validated
 import cats.implicits.*
-import common.errors.{ClaimIdFormatError, TaxYearClaimedForFormatError, TypeOfClaimFormatError}
 import play.api.libs.json.JsValue
 import v6.lossClaims.amendType.def1.model.request.{Def1_AmendLossClaimTypeRequestBody, Def1_AmendLossClaimTypeRequestData}
 import v6.lossClaims.amendType.model.request.AmendLossClaimTypeRequestData

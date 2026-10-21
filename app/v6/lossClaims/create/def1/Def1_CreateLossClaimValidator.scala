@@ -18,11 +18,10 @@ package v6.lossClaims.create.def1
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveJsonObject, ResolveNino}
-import api.models.errors.{MtdError, RuleTaxYearForVersionNotSupportedError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError}
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
-import common.errors.{RuleTypeOfClaimInvalid, TaxYearClaimedForFormatError, TypeOfClaimFormatError, TypeOfLossFormatError}
 import play.api.libs.json.JsValue
 import v6.lossClaims.common.models.TypeOfClaim.*
 import v6.lossClaims.common.models.TypeOfLoss.*
