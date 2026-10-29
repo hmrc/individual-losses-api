@@ -176,6 +176,64 @@ class RequestHandlerSpec
         header("Link", result) shouldBe Some(documentationUrl)
       }
     }
+    "a request is made to a deprecated version" must {
+      "return the correct response" when {
+        "deprecatedOn and sunsetDate exists" in {
+
+          val requestHandler = RequestHandler
+            .withValidator(successValidatorForRequest)
+            .withService(mockService.service)
+            .withPlainJsonResult(successCode)
+
+          service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
+
+          mockDeprecation(
+            Deprecated(
+              deprecatedOn = LocalDateTime.of(2023, 1, 17, 12, 0),
+              sunsetDate = Some(LocalDateTime.of(2024, 1, 17, 12, 0))
+            )
+          )
+
+          MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+
+          val result = requestHandler.handleRequest()
+
+          contentAsJson(result) shouldBe successResponseJson
+          header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
+          header("Deprecation", result) shouldBe Some("Tue, 17 Jan 2023 12:00:00 GMT")
+          header("Sunset", result) shouldBe Some("Wed, 17 Jan 2024 12:00:00 GMT")
+          header("Link", result) shouldBe Some("http://someUrl")
+
+          status(result) shouldBe successCode
+        }
+
+        "only deprecatedOn exists" in {
+          val requestHandler = RequestHandler
+            .withValidator(successValidatorForRequest)
+            .withService(mockService.service)
+            .withPlainJsonResult(successCode)
+
+          service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
+
+          mockDeprecation(
+            Deprecated(
+              deprecatedOn = LocalDateTime.of(2023, 1, 17, 12, 0),
+              None
+            )
+          )
+          MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+
+          val result = requestHandler.handleRequest()
+
+          contentAsJson(result) shouldBe successResponseJson
+          header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
+          header("Deprecation", result) shouldBe Some("Tue, 17 Jan 2023 12:00:00 GMT")
+          header("Sunset", result) shouldBe None
+          header("Link", result) shouldBe Some("http://someUrl")
+          status(result) shouldBe successCode
+        }
+      }
+    }
 
     "a request fails with validation errors" must {
       "return the errors" in {
